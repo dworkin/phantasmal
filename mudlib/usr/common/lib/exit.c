@@ -1,4 +1,5 @@
 #include <config.h>
+#include <exit.h>
 
 inherit OBJECT;
 
@@ -52,12 +53,12 @@ void set_destination(object new_dest) {
 void set_exit_type(int new_type) {
   if(previous_program() == EXITD) {
     switch (new_type) {
-      case 1: /* one way */
-      case 2: /* two way */
+      case ET_ONEWAY:
+      case ET_TWOWAY:
               type = new_type;
               break;
       default: /* unknown type */
-              type = 2;
+              type = ET_TWOWAY;
               break;
     }
   } else error("Only EXITD can set exit types!");
