@@ -281,7 +281,7 @@ nomask string place(object obj, object to) {
        * location
        */
       if (get_user()) {
-	err = obj->get_brief()->to_string(get_user()); + " is not in this room";
+	err = obj->get_brief()->to_string(get_user());
       } else {
 	err = obj->get_brief()->get_content_by_lang(LANG_englishUS);
       }
@@ -300,7 +300,7 @@ nomask string place(object obj, object to) {
   while (cur_loc != location) {
     if (cur_loc == nil) {
       /* the place to move to is not a descendent of the mob's location
-       * so return false
+       * so return an error
        */
       if (get_user()) {
 	err = to->get_brief()->to_string(get_user()); + " is not in this room";
@@ -319,10 +319,10 @@ nomask string place(object obj, object to) {
   /* remove all common elements from the ends of the remove & add lists */
 
   common = sizeof(add_tree & rem_tree);
-  
+
   if (common != 0) {
-    add_tree = add_tree[..(-common)];
-    rem_tree = rem_tree[..(-common)];
+    add_tree = add_tree[..(sizeof(add_tree)-common-1)];
+    rem_tree = rem_tree[..(sizeof(rem_tree)-common-1)];
   }
 
   err = catch(path_place(rem_tree, add_tree, obj));
