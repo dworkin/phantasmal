@@ -11,7 +11,8 @@ priority.
                          Requirements
 
 The Phantasmal ObjectD requires the Kernel Library.  It should
-otherwise be quite easy to detach from Phantasmal and use on its own.
+otherwise be quite easy to detach from Phantasmal, but it would be
+difficult to use with the Kernel Library.
 
 
                            APIs
