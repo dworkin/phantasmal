@@ -1,15 +1,13 @@
-static void create(varargs int clone) {
-  ::create(clone);
+#include "phantasmal/log.h"
+
+static void room_created(void) {
+  LOGD->write_syslog("Room has been created.", LOG_WARNING);
 }
 
-void upgraded(varargs int clone) {
-  if(SYSTEM()) {
-    ::upgraded(clone);
-  }
+static void room_upgraded(void) {
+  LOGD->write_syslog("Room has been upgraded.", LOG_WARNING);
 }
 
-void destructed(void) {
-  if(SYSTEM()) {
-    ::destructed();
-  }
+static void room_destructed(void) {
+  LOGD->write_syslog("Room has been destructed.", LOG_WARNING);
 }
