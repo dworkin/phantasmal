@@ -25,6 +25,9 @@ static void create(varargs int clone) {
 void upgraded(varargs int clone) {
   int ctr;
 
+  if(!SYSTEM())
+    return;
+
   /* Note:  these must mesh with include/channel.h.  Don't just modify
      stuff here. */
   channel_attributes = ({ ({ "OOC", 0 }),
@@ -50,6 +53,9 @@ void upgraded(varargs int clone) {
 mixed* channel_list(object user) {
   mixed* ret, *tmp;
   int    ctr, is_admin;
+
+  if(!SYSTEM() && !COMMON() && !GAME())
+    return nil;
 
   ret = ({ });
   is_admin = user->is_admin();
@@ -80,6 +86,9 @@ mixed* channel_list(object user) {
 int get_channel_by_name(string name, object user) {
   int ctr;
 
+  if(!SYSTEM() && !COMMON() && !GAME())
+    return -1;
+
   for(ctr = 0; ctr < sizeof(channel_attributes); ctr++) {
     if(!STRINGD->stricmp(channel_attributes[ctr][0], name)) {
       return ctr;
@@ -93,6 +102,9 @@ void string_to_channel(int channel, string str, varargs int modifiers) {
   int    ctr, do_write;
   mixed* keys;
   int    sub_dat;
+
+  if(!SYSTEM() && !COMMON() && !GAME())
+    return;
 
   keys = map_indices(channels[channel]);
   for(ctr = 0; ctr < sizeof(keys); ctr++) {
@@ -117,6 +129,9 @@ void string_to_channel(int channel, string str, varargs int modifiers) {
 int subscribe_user(object user, int channel, varargs int arg) {
   int    attrib, ctr;
 
+  if(!SYSTEM() && !COMMON() && !GAME())
+    return -1;
+
   if(channel < 0 || channel >= num_channels) {
     return -1;
   }
@@ -135,6 +150,9 @@ int subscribe_user(object user, int channel, varargs int arg) {
 
 int unsubscribe_user(mixed user, int channel) {
   string name;
+
+  if(!SYSTEM() && !COMMON() && !GAME())
+    return -1;
 
   if(typeof(user) == T_STRING) {
     name = user;
@@ -159,12 +177,18 @@ int unsubscribe_user(mixed user, int channel) {
 void unsubscribe_user_from_all(object user) {
   int ctr, chan;
 
+  if(!SYSTEM() && !COMMON() && !GAME())
+    return;
+
   for(chan = 0; chan < num_channels; chan++) {
     unsubscribe_user(user, chan);
   }
 }
 
 int is_subscribed(object user, int channel) {
+  if(!SYSTEM() && !COMMON() && !GAME())
+    return -1;
+
   if(channels[channel][user->query_name()]) {
     return 1;
   }
@@ -173,6 +197,9 @@ int is_subscribed(object user, int channel) {
 }
 
 int sub_data_level(object user, int channel) {
+  if(!SYSTEM() && !COMMON() && !GAME())
+    return -1;
+
   if(channels[channel][user->query_name()]) {
     return channels[channel][user->query_name()][1];
   }
