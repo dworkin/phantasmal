@@ -55,9 +55,9 @@
     <pre>
 void message(string text);
 e.g.
-    user->message("Hello there!\n");
-    user->message("\tThis is an indented string.\n");
-    user->message("This is a string\non several lines\n\tpartly\nindented.\n");
+    user->message(&quot;Hello there!\n&quot;);
+    user->message(&quot;\tThis is an indented string.\n&quot;);
+    user->message(&quot;This is a string\non several lines\n\tpartly\nindented.\n&quot;);
 
     /* The result is:
 
@@ -72,268 +72,184 @@ e.g.
      */
     </pre>
 
+
+    <hr size=2>
+
+    <h2><a name="SEC4.2" href="index.html#SEC4.2">
+	LPC revisited</a></h2>
+
     <p>
-      If you have an array, mapping, or variable of any kind that you
-      want displayed on the screen for debugging purposes the sfun
-      <code>dump_array()</code> is very handy. You simply give the
-      variable you want displayed as an argument and the contents (any
-      kind) will be displayed for you.
+      Let's go through more of the LPC constructs that we didn't
+      finish in the LPC Basics section.  Now that you know the
+      basics and can use them for simple scripts, it's time to
+      find out more of what LPC can do.
     </p>
 
-<pre>
-void dump_array(mixed data)
-e.g.
-    string *name = ({ "fatty", "fido", "relic" });
-    dump_array(name);
 
-    /* The result is
+    <h3><a name="SEC4.2.1" href="index.html#SEC4.2.1">
+	Function calls</a></h3>
 
-       (Array)
-       [0] = (string) "fatty"
-       [1] = (string) "fido"
-       [2] = (string) "relic"
-     */
-</pre>
+    <p>
+      There are two kinds of function calls, internal and
+      external. We've only discussed internal calls so far.
+    </p>
 
+    <h4><a name="SEC4.2.1.1" href="index.html#SEC4.2.1.1">
+	Making object-internal function calls</a></h4>
 
+    <p>
+      <a name="IDX57"></a>
 
-<hr size=2><h2><a name="SEC52" href="index.html#SEC52">LPC revisited</a></h2>
+      Making an internal function call is as simple as writing the
+      function name and putting any arguments within parentheses
+      afterwards. The argument list is simply a list of expressions,
+      or nothing.  A function call is an expression if it returns a
+      value.  A function call followed by a <code>;</code> is a
+      statement.
+    </p>
 
-<p>
-Let's start by ripping off the rest of the LPC that was avoided in the
-first chapter. We need this in order to be able to actually create working
-objects in the game environment.
-
-</p>
-
-
-
-<h3><a name="SEC53" href="index.html#SEC53">Function calls</a></h3>
-
-<p>
-There are two kinds of function calls, internal and external. The only kind
-we have discussed so far is the internal one even though the external call
-has been displayed a few times.
-
-</p>
-
-<ul>
-<li><a href="lpc.html#SEC54">Internal calls</a>: Making object-internal function calls
-<li><a href="lpc.html#SEC55">External single calls</a>: Making object-external single function calls
-<li><a href="lpc.html#SEC56">External multiple calls</a>: Making object-external multiple function calls
-</ul>
-
-
-
-<h4><a name="SEC54" href="index.html#SEC54">Making object-internal function calls</a></h4>
-<p>
-<a name="IDX57"></a>
-[call_self]
-
-</p>
-<p>
-Making an internal function call is as simple as writing the function name
-and putting any arguments within parentheses afterwards. The argument list 
-is simply a list of expressions, or nothing. (A function call is naturally 
-an expression as well).
-
-</p>
-
-<pre>
+    <pre>
 &lt;function&gt;(&lt;argument list&gt;);
 e.g.
-    pie = atan(1.0) * 4;
-</pre>
-
-<p>
-There is another way of doing this as well. If you have the function name
-stored in a string and wish to call the function, you use the efun
-<code>call_self()</code>:
-
-</p>
-
-<pre>
-call_self(&lt;"function name"&gt;, &lt;argument list&gt;);
-e.g.
-    pie = call_self("atan", 1.0) * 4;
-</pre>
-
-<p>
-If you use <code>call_self()</code> and specify a function that doesn't exist,
-you will get an error message and the execution of the object will be
-aborted.
-
-</p>
+    pi = atan(1.0) * 4;
+    </pre>
 
 
-<h4><a name="SEC55" href="index.html#SEC55">Making single object-external function calls</a></h4>
-<p>
-<a name="IDX58"></a>
-[call_other]
+    <h4><a name="SEC4.2.1.2" href="index.html#SEC4.2.1.2">
+	Making single object-external function calls</a></h4>
 
-</p>
-<p>
-An external call is a call from one object to another. In order to do
-that you need an object reference to the object you want to call. We
-haven't discussed exactly how you acquire an object reference yet, but
-assume for the moment that it already is done for you.
+    <p>
+      <a name="IDX58"></a>
 
-</p>
+      An external call is a call from one object into another. In
+      order to do that you need an object reference to the object you
+      want to call.  We haven't discussed exactly how you acquire an
+      object reference yet, but assume for the moment that it already
+      is done for you.  Object references (the same thing as object
+      pointers) can be stored in variables of type
+      <code>object</code>.
+    </p>
 
-<pre>
+    <pre>
 mixed &lt;object reference/object path&gt;-&gt;&lt;function&gt;(&lt;argument list&gt;);
-mixed call_other(&lt;ob ref/ob path&gt;, "&lt;function&gt;", &lt;arg list&gt;);
+mixed call_other(&lt;ob ref/ob path&gt;, &quot;&lt;function&gt;&quot;, &lt;arg list&gt;);
 e.g.
     /*
-     * Assume that I want to call the function 'compute_pie' in the
-     * object "/d/Mydom/thewiz/math_ob", and that I also have the
+     * Assume that I want to call the function 'compute_pi' in the
+     * object &quot;/d/Mydom/thewiz/math_ob&quot;, and that I also have the
      * proper object pointer to it stored in the variable 'math_ob'
      */
-    pie = math_ob-&gt;compute_pie(1.0);
-    pie = "/d/Mydom/thewiz/math_ob"-&gt;compute_pie(1.0);
-    pie = call_other(math_ob, "compute_pie", 1.0);
-    pie = call_other("/d/Mydom/thewiz/math_ob", "compute_pie", 1.0);
-</pre>
+    pi = math_ob-&gt;compute_pi(1.0);
+    pi = &quot;/d/Mydom/thewiz/math_ob&quot;-&gt;compute_pi(1.0);
+    pi = call_other(math_ob, &quot;compute_pi&quot;, 1.0);
+    pi = call_other(&quot;/d/Mydom/thewiz/math_ob&quot;, &quot;compute_pi&quot;, 1.0);
+    </pre>
 
-<p>
-As you can see, the efun <code>call_other()</code> works analogous to
-<code>call_self()</code>.
+    <p>
+      Note that you can either use the <code>call_other</code>
+      function or just use the -&gt; notation.  One is syntactic sugar
+      for the other.  The behavior is identical either way.  Note
+      that if you use the <code>call_other()</code> form, you need
+      to put quotes around the function name since you're actually
+      supplying any string -- which can be a variable, or the
+      result of a computation:
+    <pre>
+pi = call_other(math_ob, &quot;computer&quot; + &quot;_pi&quot;, 1.0);
+    </pre>
+  </p>
 
-</p>
-<p>
-If you make an external call using the object path, the so called 
-<b>master object</b> will be called. If the object you call hasn't been
-loaded into memory yet, it will be. If an external call is made to a
-function that doesn't exist in the object you call, 0 will be returned
-without any error messages. Calls to objects that have bugs in the code 
-<i>will</i> result in an error message and the execution of the object 
-that made the call is aborted.
+    <p>
+      If the object you call hasn't been loaded into memory yet, it
+      will be.  If it has a <code>create()</code> function that hasn't
+      been called, that function will be called (note that the
+      <code>create()</code> function may have a different name if DGD
+      is configured differently).  If an external call is made to a
+      function that doesn't exist in the object you call, nil will be
+      silently returned without any error messages.
+    </p>
 
-</p>
-<p>
-What's the big deal with <code>call_self()</code> then? Why can't you just use
-<code>call_other()</code> all the time with the same result? Well, it has to do
-with access to functions in an object, a part of LPC that I haven't gotten
-around to explaining yet. However, the difference is that <code>call_self</code>
-really works just like any internal call in regard to function modifiers
-and function access, while <code>call_other()</code> is a pure external call.
-Remember this for the future when differences between internal and
-external access to functions are discussed.
-
-</p>
+    <p>
+      If you use an object path (a string) instead of an object
+      reference, the <b>master object</b> will be called.  The master
+      object can contain data just like any of the clones, and is
+      often a good place to store a central copy of information that
+      all clones want to use without each one needing its own copy.
+    </p>
 
 
-<h4><a name="SEC56" href="index.html#SEC56">Making multiple object-external function calls</a></h4>
+    <h3><a name="SEC4.2.2" href="index.html#SEC4.2.2">
+	Inheriting object classes</a></h3>
 
-<p>
-You can call several objects at once just as easily as a single one.
-If you have an array of path strings or object pointers, or a mapping
-where the value part are path strings or object pointers you can call
-all the referenced objects in one statement. The result will be an
-array with the return values if you call using an array and a mapping
-with the same index values as the calling mapping if you give a mapping.
+    <p>
+      Assume that you want to code a door.  Doing that means that you
+      have to create functionality that allows the opening and closing
+      of a passage between two rooms. Perhaps you want to be able to
+      lock and unlock the door, and perhaps you want the door to be
+      transparent.  All of this must be taken care of in your code.
+      Furthermore, you have to copy the same code and make small
+      variations in description and use <i>every time</i> you want to
+      make a new door.
+    </p>
 
-</p>
+    <p>
+      After a while you'll get rather tired of this, particularly
+      because you'll find that other wizards have created doors of
+      their own that work almost - but not quite - the same way your
+      does, rendering some of your nifty objects and features useless
+      anywhere but in your domain.
+    </p>
 
-<pre>
-(array/mapping)	&lt;array/mapping&gt;-&gt;&lt;function&gt;(&lt;argument list&gt;);
+    <p>
+      The object oriented way of thinking is that instead of doing
+      things over and over, you create a basic door object that can do
+      all the things you want any door to be able to do. Then you just
+      inherit this generic door into a specialized door object where
+      you configure exactly what <i>it</i> should be able to do from
+      the list of available options in the <b>parent</b> door.
+    </p>
+
+    <p>
+      It is even possible to inherit several different objects in
+      order to combine the functionality of several object types into
+      one.  Be aware that if a class's parent objects define functions
+      with the same names, they will clash.  It may not be easy to fix
+      this problem, so avoid inheriting from more than one parent
+      until you're reasonably sure what you're doing.
+    </p>
+
+    <p>
+      The syntax for inheriting objects is very simple. In the top of
+      the file you write this:
+    </p>
+
+    <pre>
+inherit &quot;&lt;file path&gt;&quot;;
 e.g.
-    /*
-     * I want a mapping where the indices are the names of the players
-     * in the game, and the values are their hitpoints.
-     */
-    object *people, *names;
-    mapping hp_map;
+	inherit &quot;/std/door&quot;;
+	inherit &quot;/usr/common/object&quot;;
+    </pre>
 
-    /* Get a list of all players. */
-    people = users();
-
-    /* Get their names. */
-    names = people-&gt;query_real_name();
-
-    /* Make a mapping to call with. Item = name:pointer */
-    hp_map = mkmapping(names, people)
-
-    /* Replace the pointers with hitpoint values. */
-    hp_map = hp_map-&gt;query_hp();
-
-    /* All this could also have been done simpler as: */
-    hp_map = mkmapping(users()-&gt;query_real_name(), users()-&gt;query_hp());
-</pre>
-
-
-
-<h3><a name="SEC57" href="index.html#SEC57">Inheriting object classes</a></h3>
-
-<p>
-Assume that you want to code an item like a door, for example. Doing
-that means that you have to create functionality that allows the opening
-and closing of a passage between two rooms. Perhaps you want to be able
-to lock and unlock the door, and perhaps you want the door to be
-transparent. All of this must be taken care of in your
-code. Furthermore, you have to copy the same code and make small
-variations in description and use <i>every time</i> you want to make a
-new door.
-
-</p>
-<p>
-After a while you'll get rather tired of this, particularly as you'll find
-that other wizards has created doors of their own that work almost - but
-not quite - the same way your does, rendering nifty objects and features
-useless anywhere but in your domain. 
-
-</p>
-<p>
-The object oriented way of thinking is that instead of doing things over
-and over you create a basic door object that can do all the things you want
-any door to be able to do. Then you just inherit this generic door into a 
-specialized door object where you configure exactly what <i>it</i> should
-be able to do from the list of available options in the <b>parent</b> door.
-
-</p>
-<p>
-It is even possible to inherit several different objects where you can
-combine the functionality of several objects into one. However, be aware
-that if the objects you inherit define functions with the same names, they
-will indeed clash. Just be aware of what you are doing and why, and you
-won't have any problems.
-
-</p>
-<p>
-The syntax for inheriting objects is very simple. In the top of the file
-you write this:
-
-</p>
-
-<pre>
-inherit "&lt;file path&gt;";
-e.g.
-	inherit "/std/door";
-	inherit "/std/room.c";
-</pre>
-
-<p>
+    <p>
 	
-<b>NB!</b> This is <b>NOT</b> a preprocessor command, it is a statement,
-so it does <b>NOT</b> have a <code>#</code> in front of it, and it is ended
-with a <code>;</code>.  As you see you may specify that it's a c-file if you
-wish, but that's not necessary.
+      Note that this is <i>not</i> a preprocessor command, it is a
+      statement, so it does <i>not</i> have a <code>#</code> in front
+      of it.  It also ends with a <code>;</code>.  As you see you may
+      specify that it's a <tt>.c</tt> file if you wish, but that's not
+      required.
+    </p>
 
-</p>
-<p>
-The <b>child</b> will inherit all functions and all variables that are declared
-in such a way as to permit inheriting. If you have a function with the same
-name as a function in the parent, your function will <b>mask</b> the parent
-one. When the function is called by an external call, your function will be
-executed. Internal calls in the parent will still go to the parent function.
-Often you need to call the parent function anyway from the child, you do 
-that by adding <code>::</code> to the internal function call.
+    <p>
+      The <b>child</b> object (the one that declares the inheritance,
+      as above) will inherit all inheritable functions and variables.
+      If a child object has a function with the same name as a
+      function in the parent, the child's function will <b>mask</b>
+      the parent's.  When the function is called by an external call
+      to the child, the child function will be executed.  To call the
+      parent function from the child, call the function name with the
+      scope operator, <code>::</code>, before it.
 
-</p>
-
-<pre>
-void
-my_func()
+    <pre>
+void my_func()
 {
     /* 
      * This function exists in the parent, and I need to
@@ -341,80 +257,46 @@ my_func()
      */
     ::my_func();        /* Call my_func() in the parent. */
 }
-</pre>
+    </pre>
 
-<p>
-It is not possible to call a masked function in the parent by an
-external call, it is only available from within the object itself. If an
-object inherits an object that has inherited another object, e.g. C
-inherits B that inherits A, then masked functions in A is only available
-from B, not from C.
+    <p>
+      It is not possible to call a masked function in the parent by an
+      external call -- only from within the object itself. If an
+      object inherits an object that has inherited another object,
+      e.g. C inherits B that inherits A, then masked functions in A
+      are available in B.  If B masks that function then C will get
+      B's version when it calls the function with the scope operator.
+      If B doesn't mask the function then C would get A's version
+      instead.
+    </p>
 
-</p>
+    <h3><a name="SEC4.2.3" href="index.html#SEC4.2.3">
+	Type identification</a></h3>
 
+    <p>
+      <a name="IDX59"></a>
+      <a name="IDX60"></a>
+      <a name="IDX61"></a>
+      <a name="IDX62"></a>
+      <a name="IDX63"></a>
+      <a name="IDX64"></a>
+      <a name="IDX65"></a>
+      [intp, floatp, functionp, stringp, objectp, mappingp, pointerp]
 
+      Due to the fact that all variables are initialized to 0 or nil,
+      and that many functions return 0 or nil when failing, it's
+      desirable to be able to determine what value you actually have
+      received.  Also, if you use the <code>mixed</code> type it's
+      essential to be able to test what the variable contains at any
+      specific time. For this purpose there's a special function
+      called <code>type_of()</code>.  It uses constants listed in the
+      header file &lt;type.h&gt;.
+    </p>
 
-<h3><a name="SEC59" href="index.html#SEC59">Type identification</a></h3>
-<p>
-<a name="IDX59"></a>
-<a name="IDX60"></a>
-<a name="IDX61"></a>
-<a name="IDX62"></a>
-<a name="IDX63"></a>
-<a name="IDX64"></a>
-<a name="IDX65"></a>
-[intp, floatp, functionp, stringp, objectp, mappingp, pointerp]
+    <pre>
+#include &lt;type.h&gt;
 
-</p>
-<p>
-Due to the fact that all variables are initialized to 0, and that
-many functions return 0 when failing, it's desirable to be able
-to determine what kind of value type you actually have received.
-Also, if you use the <code>mixed</code> type it's virtually essential to be
-able to test what the variable contains at times. For this purpose
-there's a special test function for each type that will return
-1 (true) if the tested value is of the asked for type, and 0 if not.
-
-</p>
-<dl compact>
-
-<dt>@bullet{int intp(mixed)}
-<dd>
-Test if given value is an integer
-
-<dt>@bullet{int floatp(mixed)}
-<dd>
-Test if given value is a float
-
-<dt>@bullet{functionp(mixed)}
-<dd>
-Test if given value is a function pointer
-
-<dt>@bullet{int stringp(mixed)}
-<dd>
-Test if given value is a string
-
-<dt>@bullet{int objectp(mixed)}
-<dd>
-Test if given value is an object pointer
-
-<dt>@bullet{int mappingp(mixed)}
-<dd>
-Test if given value is a mapping
-
-<dt>@bullet{int pointerp(mixed)}
-<dd>
-Test if given value is an array
-
-</dl>
-
-<p>
-<b>NB!</b> These functions test the type of the value, <b>NOT</b>
-the value itself in the sense of truth functionality. In other words
-<code>intp(0)</code> will always evaluate as true, as will
-<code>mappingp(([]))</code>.
-
-</p>
+    </pre>
 
 
 <h3><a name="SEC60" href="index.html#SEC60">Type qualifiers</a></h3>
@@ -561,15 +443,15 @@ in the unused argument variables as well.
 
 <pre>
 void
-myfun(int a, string str = "pelle", float c = 3.0);
+myfun(int a, string str = &quot;pelle&quot;, float c = 3.0);
 {
 }
 </pre>
 
 <p>
 This function must be called with at least one argument, the first, as
-it wasn't given a default value. The call <code>myfun(1, "apa");</code> will
-set <code>a</code> to <code>1</code>, <code>str</code> to <code>"apa"</code> and <code>c</code> to 
+it wasn't given a default value. The call <code>myfun(1, &quot;apa&quot;);</code> will
+set <code>a</code> to <code>1</code>, <code>str</code> to <code>&quot;apa&quot;</code> and <code>c</code> to 
 <code>3.0</code>.
 
 </p>
@@ -603,23 +485,23 @@ wheel_of_fortune()
     switch (i)
     {
     case 0..4:
-        write("Try again, sucker!\n");
+        write(&quot;Try again, sucker!\n&quot;);
         break;
 
     case 5..6:
-        write("Congrats, third prize!\n");
+        write(&quot;Congrats, third prize!\n&quot;);
         break;
 
     case 7..8:
-        write("Yes! Second prize!\n");
+        write(&quot;Yes! Second prize!\n&quot;);
         break;
 
     case 9:
-        write("WOOOOPS! You did it!\n");
+        write(&quot;WOOOOPS! You did it!\n&quot;);
         break;
 
     default:
-        write("Someone has tinkered with the wheel... Call 911!\n");
+        write(&quot;Someone has tinkered with the wheel... Call 911!\n&quot;);
         break;
     }
 }
@@ -648,9 +530,9 @@ occurs during evaluation of the given function and 0 (false) otherwise.
 <pre>
 int catch(function)
 e.g.
-    if (catch(tail("/d/Relic/fatty/hidden_donut_map")))
+    if (catch(tail(&quot;/d/Relic/fatty/hidden_donut_map&quot;)))
     {
-        write("Sorry, not possible to read that file.\n");
+        write(&quot;Sorry, not possible to read that file.\n&quot;);
         return;
     }
 </pre>
@@ -672,7 +554,7 @@ error as usual.
 throw(mixed info)
 e.g.
     if (test &lt; 5)
-        throw("The variable 'test' is less than 5\n");
+        throw(&quot;The variable 'test' is less than 5\n&quot;);
 </pre>
 
 
@@ -757,7 +639,7 @@ mapping first or last, just as long as you do it.
     </address>
     <!-- Created: Mon Jun 11 21:50:30 PDT 2001 -->
     <!-- hhmts start -->
-Last modified: Wed Apr  9 10:33:24 PDT 2003
+Last modified: Thu Apr 10 09:01:58 PDT 2003
 <!-- hhmts end -->
   </body>
 </html>
