@@ -63,6 +63,290 @@
 
   <h2> Using Regular DGD Objects and LWOs &mdash; Swapping Behavior </h2>
 
+<pre>
+Date: Mon, 9 Apr 2001 18:13:36 +0200 (CEST)
+From: "Felix A. Croes" <felix@dworkin.nl>
+Message-Id: <200104091613.SAA15464@dworkin.nl>
+To: dgd@list.imaginary.com
+Subject: Re: [DGD]1.2.18
+
+Mikael Lind <z94lind@mtek.chalmers.se> wrote:
+
+>[...]
+> Light-weight objects under DGD sound very intriguing. I do not think
+> that I have seen them mentioned before. Is it possible to get some
+> kind of explanation of what they will be like? My initial thought was
+> along the lines of objects that one can use for abstract data types
+> and similar things; basically, objects that are garbage-collected by
+> the driver.
+
+That is indeed what they are.  Like clones, they are created from a
+master object, which is a normal, persistent object.  Light-weight
+objects do have some restrictions:
+
+ - they cannot be explicitly destructed
+ - they cannot be used as an editor, user or parser object
+ - they cannot have callouts
+ - destructing a master object will also instantly destruct all
+   light-weight objects made therefrom (!)
+
+Furthermore, like arrays, they are local to the dataspace of some
+particular (persistent) object.  This means that if a light-weight
+object is exported to some other object's dataspace, it will become
+a <copy> there at the end of the LPC thread, just as currently
+happens with arrays and mappings.
+
+I hope to release a partial implementation of light-weight objects
+tonight.
+
+Regards,
+Dworkin
+</pre>
+
+<hr />
+
+<pre>
+
+Date: Tue, 10 Apr 2001 02:14:42 +0200 (CEST)
+From: "Felix A. Croes" <felix@dworkin.nl>
+Message-Id: <200104100014.CAA15964@dworkin.nl>
+To: dgd@list.imaginary.com
+Subject: [DGD]1.2.19
+
+diff -c dgd/src/Changelog:1.257 dgd/src/Changelog:1.258
+*** dgd/src/Changelog:1.257     Mon Apr  9 17:07:29 2001
+--- dgd/src/Changelog   Tue Apr 10 01:58:57 2001
+***************
+*** 1461,1463 ****
+--- 1461,1464 ----
+   - Show a proper errormessage if precompiling fails.
+   - Made a minor change to the code optimizer, in preparation for light-weight
+     objects.
++  - Partial implementation of light-weight objects.
+
+ftp://ftp.dworkin.nl/pub/dgd/experimental/1.2.18-1.2.19.gz
+
+Create a light-weight object using new_object(object obj).  The kernel
+library uses new_object(string path).  All light-weight instances
+of an object will have the same name, which is that of the master
+object with "#-1" appended.
+
+This is only a partial implementation of light-weight objects.  They
+don't garbage collect properly yet -- for instance, a light-weight
+object with a variable set to this_object() will not be deallocated --
+and upgrading doesn't work: if you upgrade an object of which light-
+weight instances exist, and the upgrade adds, removes or moves around
+variables in the object, the result is undefined and will likely
+cause a crash.
+
+Furthermore, there are no doubt new bugs.  The most stable version of
+DGD is still 1.2.18.
+
+Finally, if you restore from a statedump, you must make sure that
+all objects in it were recompiled under 1.2.18, or you may get a
+fatal error on executing code in a light-weight object.
+
+Regards,
+Dworkin
+</pre>
+
+<hr />
+
+<pre>
+Date: Thu, 21 Jun 2001 22:23:44 +0200 (CEST)
+From: "Felix A. Croes" <felix@dworkin.nl>
+Message-Id: <200106212023.WAA04346@dworkin.nl>
+To: dgd@list.imaginary.com
+Subject: Re: [DGD]Light-weight objects...
+
+"Danne Solli" <dan.solli@arrowhead.se> wrote:
+
+> I've read the new_object() manual page. I think I understand what they are,
+> but one thing I'd really like  is some real world examples of what they
+> can/should be used for... :)
+
+They are intended for abstract datatypes, or more generally, anything
+you'd use an object for in a non-MUD object oriented programming language.
+
+For those who are familiar with MudOS, they are an alternative to structs.
+
+For those who are familiar with none of the above: keep programming, and
+if you ever get into the position where you want to use arrays in which
+each element has a different type, without making the array mixed* -- take
+another look at light-weight objects.
+
+Light-weight objects have other uses in combination with normal, persistent
+objects.  For example, you could let only the rooms, players and monsters
+be persistent objects, and handle all the inventories with light-weight
+objects to save a lot of space.
+
+Regards,
+Dworkin
+</pre>
+
+<hr />
+
+<pre>
+Date: Fri, 22 Jun 2001 18:07:09 +0200
+From: Erwin Harte <harte@xs4all.nl>
+To: dgd@list.imaginary.com
+Subject: Re: [DGD]Light-weight objects...
+Message-ID: <20010622180709.S21409@mail.is-here.com>
+
+On Fri, Jun 22, 2001 at 11:59:58AM -0500, Thomas Annandale wrote:
+> I don't understand what's to keep me from replacing every single instance
+> of clone_object with new_object.  As far as I can see, lightweight objects
+> are exactly the same as normal objects except, as you say, they take up
+> less space and are automatically garbage collected.  Why WOULDN'T you use
+> them whenever possible?  There has to be some kind of drawback, or
+> something that you can't do with a lightweight object.  What is it?
+
+- You can't use call_out()s
+- If you destruct the base off of which the LWOs are new_object()'d,
+  all of them disappear.
+- You don't have explicit control over when a LWO stops to exist, it's
+  picked up by garbage-collection.
+
+I think there may be more, but those are the ones I remember. :-)
+
+Erwin.
+-- 
+Erwin Harte <harte@xs4all.nl>
+</pre>
+
+<hr />
+
+<pre>
+From: Par Winzell <zell@skotos.net>
+Message-ID: <15155.31901.94563.455302@alyx.skotos.net>
+Date: Fri, 22 Jun 2001 10:13:01 -0700
+To: dgd@list.imaginary.com
+Subject: Re: [DGD]Light-weight objects...
+
+ > - You can't use call_out()s
+ > - If you destruct the base off of which the LWOs are new_object()'d,
+ >   all of them disappear.
+ > - You don't have explicit control over when a LWO stops to exist, it's
+ >   picked up by garbage-collection.
+ > 
+ > I think there may be more, but those are the ones I remember. :-)
+
+The biggest one, in my book --
+
+ - If you export a reference to a LWO to another object, which keeps
+   the reference after the completion of the current thread, the LWO
+   will be -duplicated- precisely as arrays are.
+
+Since we've gotten used to being able to store object references in
+all kinds of ways -- e.g. use them to index mappings -- this is a big
+change. If you get it wrong, you'll have duplicate LWO's all over the
+place that don't end up garbage collected.
+
+Zell
+</pre>
+
+<hr />
+
+<pre>
+From: dgd at list.imaginary.com (Par Winzell)
+Date: Wed Jan  9 01:00:01 2002
+Subject: [DGD] (no subject)
+Message-ID: <15419.58933.540170.382180@troll.skotos.net>
+
+ >   When a lightweight object is created using new_object(), the Kernel
+ > MUDLib appears not to notify the object manager (I'm looking at
+ > new_object() in /mud/lib/auto.c).  I guess that's fine since you can just
+ > recompile the parent object and the lightweight objects will be
+ > updated.  But many folks use an upgrade() method to update objects
+ > when they're compiled.  How will we do the same for lightweight objects?
+
+You won't. LWO's can't be tracked. Any reference to a LWO keeps it
+alive eternally, which would be a disaster. The whole point of LWO's
+is that they spring into existance and disappear without attachments.
+
+You can, of course, use compile_object() on an already compiled LWO
+master object and it will update all the LWO's made from it. I'm not
+sure what you mean by an upgrade() function; you only need a complex
+upgrade mechanism for recompiling inheritables.
+
+Zell
+</pre>
+
+<hr />
+
+<pre>
+From: dgd at list.imaginary.com (Felix A. Croes)
+Date: Wed Jan  9 08:34:01 2002
+Subject: [DGD] Lightweight objects, arrays and copying
+Message-ID: <200201091414.PAA00136@dworkin.nl>
+
+Noah Lee Gibbs <angelbob@monkeyspeak.com> wrote:
+
+>[...]
+>   The lightweight objects contain object members that point to each
+> other, which is fine since they're all sitting inside the same regular
+> object.  They contain arrays of references to each other, so they're full
+> of circular references.  That's fine, I can break all the circular
+> references prior to MUD shutdown so there shouldn't be any problem with
+> garbage collection.
+
+There never is a problem with garbage collection.  DGD handles that, no
+matter if the LWO structures are self-referential.
+
+
+>   My question (other than -- is all the above stuff true?) is whether the
+> bag object with all its LWOs will have to be swapped in all at once.  If
+> it gets very big, will that be a serious problem?
+
+Yes.  It is a good idea to distribute a very large amount of data across
+several persistent objects.
+
+There are more reasons for partitioning your data.  Once multi-processor
+support goes in, DGD will handle 100 threads which each make a modification
+to one of 1000 persistent objects much more easily than 100 threads all
+modifying the same object.
+
+Regards,
+Dworkin
+</pre>
+
+<hr />
+
+<pre>
+From dgd at list.imaginary.com  Tue May 20 11:33:01 2003
+From: dgd at list.imaginary.com (Par Winzell)
+Date: Tue May 20 11:33:01 2003
+Subject: [DGD] LWO Behavior in mappings
+In-Reply-To: <5.1.0.14.0.20030520092736.00b1fad0@mail.netwalk.com>
+References: <1179.192.168.0.24.1053411222.squirrel@webmail.illiji.net> <5.1.0.14.0.20030520092736.00b1fad0@mail.netwalk.com>
+Message-ID: <3ECA58B4.9000702@skotos.net>
+
+Jay,
+
+> The problem is that I was using a lightweight object as the index into 
+> the mapping, and these mapping entries were living beyond the end of the 
+> current thread.  Further, the mapping lived in a different object than 
+> the one that had the original reference to the lightweight object.  So 
+> at the end of the thread, the lightweight object in the mapping was 
+> copied.  In a later thread, I would check to see if the lightweight 
+> object existed in the mapping yet...since it had been copied, the answer 
+> was always no, and I would create a new entry for it, which created yet 
+> another copy at the end of the thread, etc.  Multiply this by a hundred 
+> lightweight objects, and you can reach 10,000 entries in a fairly small 
+> number of threads.
+> 
+> It seems that the moral is to not use lightweight objects as indices 
+> into mappings, except in limited circumstances.
+
+Right. And not just lightweight objects. And not just indices in a 
+mapping. Anytime you get an array, mapping or LWO from another object 
+and store it past the end of a thread, all direct pointer comparisons to 
+those objects have undefined behaviour.
+
+Easy to say, sometimes hard to really burn into your cortex.
+
+Zell
+</pre>
 
   <p style="text-size: 150%"> <a href="../index.html"> Back to top level
     </a> </p>

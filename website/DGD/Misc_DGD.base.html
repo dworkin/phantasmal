@@ -13,10 +13,9 @@
 	</a> </li>
       <li> <a href="#Pike"> The Pike language and how it relates to LPC
 	  and DGD </a> </li>
-      <li> <a href="#SkotosArchitecture">
-	  Footnote:  the Skotos architecture -- a MUDLib and utilities
-	  based on DGD
-	</a> </li>
+      <li> There's a <a href="http://www.m-u-d.co.uk/mudbuild">site</a>
+        with a <a href="external/mudbuild.zip">MUD builder</a> that is
+        adverised as semi-DGD-compatible.</li>
     </ul>
 
     <h2> Low-level docs </h2>
@@ -52,6 +51,8 @@
 
       <li>Some outdated <a href="http://dgd.is-here.com/dgd/kfuns/">
           Kernel Function documentation</a></li>
+      <li> A <a href="http://dgd.is-here.com/cgi-bin/man.cgi">page
+	of documentation, currently not linking to much</a> </li>
       <li>Erlend Simonsen's
         <a href="http://gurba.sytes.net/~erlends/gurba.html">
           GurbaLib</a> page is around. </li>
@@ -94,63 +95,6 @@
       even <a href="http://pike.roxen.com/download/gpl/">released under
         the GPL</a>.
     </p>
-
-    <hr />
-
-    <a name="SkotosArchitecture"> </a>
-
-    <h2> Skotos Architecture </h2>
-
-    <p> This is an example of the kind of edifice you could build on
-      the Kernel MUDLib, pretty much unmodified.  You'd have to be
-      as motivated as a company full of busy and inspired people to
-      build something as
-        cool as
-        <a href="http://www.skotos.net"> Skotos </a> did, of course.
-      </p>
-
-<pre>
- -------------------------------------------------------------
-/                          Game                               \
-\                          World                              /
- -------------------------------------------------------------
-/                          Game                               \
-\                     Specific Mechanics                      /
- =============================================================
- -------------------------------------   ---------------------
-/                WorldLib             \ /       IFLib         \
-|   inventory            stance pose   |                      |
-|  proximity  details  faces  desc     |   socials     verbs  |
-\    exits  gender  volition  physics / \   adverbs  errors   /
- --- - - - - - - - - - - - - - - - --- \ \ -- - - - - - - - --
-/                 DevLib                \ /   ToolLib         \
-|     Services             Interpreters  |                    |
-|                                        |    sam  |   dtd    |
-|  sid  | devd  ||  state | forms | sami |  xmlgen | xmlparse |
-\  logd | helpd ||        |       |     / \                   /
- -------------------------------------------------------------
-/                                                             \
-|                               System                        |
-|                               Library                       |
-|        Object Services          ||      Net Services        |
-|                                 ||                          |
-|  initd | idd | progdbd |syslogd || nptd | httpd | devuserd@ |
-\        |     |         |        ||      |       |           /
- -------------------------------------------------------------
-/                                                             \
-|                               Kernel                        |
-|                               Library                       |
-|                                                             |
-|    security  ownership  resources  thread-local  logon      |
-\                                       storage               /
- -------------------------------------------------------------
-/                                                             \
-|                            D G D                            |
-|                                                             |
-|  LPC Compiler  |  Run-Time  |  Database  |  I/O  |  Parser  |
-\                |            |            |       |          /
- -------------------------------------------------------------
-</pre>
 
     <p style="font-size: 150%"> <a href="index.html"> Back to top level
       </a> </p>

@@ -271,6 +271,23 @@ if I thought a feature desirable, I would have implemented it myself. :)
     built-in HTTPD that should instead be written in LPC.
   </p>
 
+  <h3> Error When Calling Non-Existent Function </h3>
+
+  <p>
+    In LPC, when you use a call_other() statement and call a function
+    that doesn't exist, you just get (nil) returned, not an error.
+    This isn't likely to change because it's possible to override
+    call_other() in your AUTO object and check for nonexistent calls
+    to other objects (except perhaps from the DRIVER object, which
+    doesn't inherit AUTO implicitly).
+  </p>
+
+  <p>
+    In the Kernel Library, you can do this with the extra AUTO object
+    feature, but objects in your System directory will have to
+    explicitly inherit the extra AUTO object.  Phantasmal does this.
+  </p>
+
   <p style="text-size: 150%"> <a href="index.html"> Back to LPC &amp; DGD
       Page
     </a> </p>

@@ -1,0 +1,346 @@
+From dgd at list.imaginary.com  Fri Apr  5 02:15:01 2002
+From: dgd at list.imaginary.com (Par Winzell)
+Date: Fri Apr  5 02:15:01 2002
+Subject: [DGD] PNG construction
+Message-ID: <3CAD55C7.8050103@skotos.net>
+
+Hi folks,
+
+As part of the Skotos mudlib I hacked together a bit of LPC to generate
+PNG images on the fly. It's rather an ardous task to subject LPC to and
+it's not optimized (I'm sure the CRC and Adler32 checksums could be made
+simultaneously in the same run-through of the data) but it works.
+
+So just in case there is interest (in which case perhaps I'll comment it
+a bit too ;) -- without further ado --
+
+
+PNG.C --
+
+private inherit "/lib/string";
+
+private inherit "./zlib";
+private inherit "./util";
+private inherit "./crc";
+
+static string make_png_chunk(string type, string data);
+
+# define CHUNK_IHDR     "IHDR"
+# define CHUNK_IDAT     "IDAT"
+# define CHUNK_IEND     "IEND"
+
+static
+string construct_png(int **lines, varargs int colour, int scale) {
+    string ihdr, idat, iend;
+    string *data;
+    int width, height, i, j;
+
+    if (!scale) {
+       scale = 1;
+    }
+
+    height = scale * sizeof(lines);
+    width = scale * sizeof(lines[0]);
+
+    data = allocate(height);
+    for (i = 0; i < height; i ++) {
+       data[i] = "\000" + spaces((colour ? 3 : 1) * width);
+       for (j = 0; j < width; j ++) {
+          if (colour) {
+             data[i][3*j+1] = (lines[i/scale][j/scale] >> 16) & 0xFF;
+             data[i][3*j+2] = (lines[i/scale][j/scale] >>  8) & 0xFF;
+             data[i][3*j+3] = (lines[i/scale][j/scale] >>  0) & 0xFF;
+          } else {
+             data[i][j+1] = lines[i/scale][j/scale] & 0xFF;
+          }
+       }
+    }
+    ihdr = make_png_chunk(CHUNK_IHDR,
+                          be_int32(width) +      /* 4 bytes of width */
+                          be_int32(height) +     /* 4 bytes of height */
+                          byte(8) +              /* bits per sample */
+                          byte(colour ? 2 : 0) + /* no palette/alpha */
+                          byte(0) +              /* compress method */
+                          byte(0) +              /* filter method */
+                          byte(0));              /* interlace method */
+
+    idat = make_png_chunk(CHUNK_IDAT, deflate_stream(implode(data, "")));
+
+    iend = make_png_chunk(CHUNK_IEND, "");
+
+    return
+       byte(137) + byte(80) + byte(78) + byte(71) +
+       byte(13) + byte(10) + byte(26) + byte(10) +
+       ihdr + idat + iend;
+}
+
+static
+string make_png_chunk(string type, string data) {
+    return
+       be_int32(strlen(data)) +
+       type + data +
+       be_int32(crc(type + data));
+}
+
+
+
+ZLIB.C --
+
+private inherit "./util";
+
+# define MAX_BLOCK 16384
+
+static
+string deflated_blocks(string data) {
+    string *blocks;
+    int i;
+
+    blocks = allocate(1+(strlen(data)-1)/MAX_BLOCK);
+    for (i = 0; i < sizeof(blocks)-1; i ++) {
+       blocks[i] =
+           "\000" +
+          le_int16(MAX_BLOCK) + le_int16(~MAX_BLOCK) +
+          data[.. MAX_BLOCK-1];
+       data = data[MAX_BLOCK ..];
+    }
+    blocks[i] = "\001" +
+       le_int16(strlen(data)) + le_int16(~strlen(data)) +
+       data;
+
+    return implode(blocks, "");
+}
+
+static
+string deflate_stream(string data) {
+    string blocks;
+    int s1, s2, i;
+
+    blocks = deflated_blocks(data);
+
+    s1 = 1; s2 = 0;
+    for (i = 0; i < strlen(data); i ++) {
+       s1 = (s1 + data[i]) % 65521;
+       s2 = (s1 + s2) % 65521;
+    }
+    return
+       byte(120) +
+       byte(31 - (120*256 % 31)) +
+       blocks +
+       be_int32(s2 << 16 | s1);
+}
+
+
+
+UTIL.C --
+
+static
+string be_int32(int i) {
+    string str;
+
+    str = "    ";
+    str[0] = (i >> 24) & 0xFF;
+    str[1] = (i >> 16) & 0xFF;
+    str[2] = (i >>  8) & 0xFF;
+    str[3] = (i >>  0) & 0xFF;
+
+    return str;
+}
+
+static
+string be_int16(int i) {
+    string str;
+
+    str = "  ";
+    str[0] = (i >> 8) & 0xFF;
+    str[1] = (i >> 0) & 0xFF;
+
+    return str;
+}
+
+static
+string le_int32(int i) {
+    string str;
+
+    str = "    ";
+    str[3] = (i >> 24) & 0xFF;
+    str[2] = (i >> 16) & 0xFF;
+    str[1] = (i >>  8) & 0xFF;
+    str[0] = (i >>  0) & 0xFF;
+
+    return str;
+}
+
+static
+string le_int16(int i) {
+    string str;
+
+    str = "  ";
+    str[1] = (i >> 8) & 0xFF;
+    str[0] = (i >> 0) & 0xFF;
+
+    return str;
+}
+
+static
+string byte(int i) {
+    string str;
+
+    str = " ";
+    str[0] = i & 0xFF;
+
+    return str;
+}
+
+
+
+
+
+CRC.C --
+
+int *crc_table;
+
+static
+void build_table() {
+    int c, i, k;
+
+    crc_table = allocate(256);
+    for (i = 0; i < 256; i ++) {
+       c = i;
+       for (k = 0; k < 8; k ++) {
+          if (c & 1) {
+             c = 0xedb88320 ^ (c >> 1);
+          } else {
+             c = c >> 1;
+          }
+          crc_table[i] = c;
+       }
+    }
+}
+
+static
+int crc(string data) {
+    int c, i;
+
+    if (!crc_table) {
+       build_table();
+    }
+
+    c = 0xffffffff;
+
+    for (i = 0; i < strlen(data); i ++) {
+       c = crc_table[(c ^ data[i]) & 0xff] ^ (c >> 8);
+    }
+    return ~c;
+}
+
+
+
+
+From: dgd at list.imaginary.com (Erwin Harte)
+Date: Fri Apr  5 08:36:01 2002
+Subject: [DGD] PNG construction
+In-Reply-To: <3CAD55C7.8050103@skotos.net>
+Message-ID: <20020405140525.GU1025@kansas.is-here.com>
+
+On Fri, Apr 05, 2002 at 01:44:07AM -0600, Par Winzell wrote:
+> Hi folks,
+> 
+> As part of the Skotos mudlib I hacked together a bit of LPC to generate
+> PNG images on the fly. It's rather an ardous task to subject LPC to and
+> it's not optimized (I'm sure the CRC and Adler32 checksums could be made
+> simultaneously in the same run-through of the data) but it works.
+> 
+> So just in case there is interest (in which case perhaps I'll comment it
+> a bit too ;) -- without further ado --
+> 
+> 
+> PNG.C --
+> 
+> private inherit "/lib/string";
+
+Is spaces() the only thing you use from /lib/string.c?  Not that it's
+hard to guess for others what it does... ;-)
+
+[...]
+>       data[i] = "\000" + spaces((colour ? 3 : 1) * width);
+
+But just for completeness a copy of this function's implementation:
+
+    string spaces(int num) {
+       string res, str;
+
+       str =
+	  "                                        " +
+	  "                                        ";
+       res = "";
+       while (num > 80) {
+	  res += str;
+	  num -= 80;
+       }
+       return res + str[.. num-1];
+    }
+
+I noticed the 'compress' flag being 0, this means that a 32 x 32 image
+of 8 bit grayscale will be 1024 bytes in size.  Not too bad for
+generating small images but might get a little bit out of hand for,
+for instance, generating game maps or graphs on the fly that contain a
+lot of background colour.
+
+How hard would it be to add a basic compression scheme to the mix? :-)
+
+Cheers,
+
+Erwin.
+-- 
+Erwin Harte <harte@xs4all.nl>
+
+
+
+From: dgd at list.imaginary.com (Par Winzell)
+Date: Fri Apr  5 14:38:01 2002
+Subject: [DGD] PNG construction
+Message-ID: <3CADFE93.5070107@skotos.net>
+
+>>private inherit "/lib/string";
+> 
+> 
+> Is spaces() the only thing you use from /lib/string.c?  Not that it's
+> hard to guess for others what it does... ;-)
+
+[snipped source] Thanks, forgot about that. That's also one of those things 
+that a real implementation would want to optimize... most of those blocks 
+could be allocated just once and re-used automatically with DGD's copy- 
+on-write behaviour, I guess.
+
+> I noticed the 'compress' flag being 0, this means that a 32 x 32 image
+> of 8 bit grayscale will be 1024 bytes in size.  Not too bad for
+> generating small images but might get a little bit out of hand for,
+> for instance, generating game maps or graphs on the fly that contain a
+> lot of background colour.
+
+It's not quite that simple. The compress byte is not a flag, but the method 
+used -- '0' is the only one currently implemented, and it's the 'deflate' 
+method of 'zlib'. However, the zlib stream -does- have an 'uncompressed' 
+scheme, so the blocks are raw data. The other two choices are 'deflate with 
+dynamic Huffman' and 'deflate with static Huffman'. Both implement more or 
+less the 'gzip' algorithm -- the Lempel-Ziv (spelling?) algorithm from '77 
+or so.
+
+I wrote an implementation of that myself in my distant youth, and while I'm 
+sure I could do it five times as fast now, it's still a non-trivial project 
+-- figure at least a day's work to write and another to debug. I also don't 
+think LPC is suited to quite that level of bit-fiddling -- it'd probably at 
+least quadruple the amount of time it'd take to generate an image.
+
+I do wish the PNG implementation had come with an uncompressed option, and 
+also a simpler compression scheme, for exactly this kind of thing. Even a 
+run-length encoding of the scanlines would've been nice.
+
+Of course, any serious use of generated images in DGD should offload the 
+task to a standalone server -- should be quite trivial to build one -- one 
+that accepts incoming requests like 'construct an image using this binary 
+data: blah blah blah' and gets in return a PNG data stream, or perhaps more 
+pragmatic, a URL to a .png file it just created that's reachable by Apache 
+running on the same machine.
+
+Zell

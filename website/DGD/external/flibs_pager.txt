@@ -1,0 +1,111 @@
+Date: Wed, 28 Feb 2001 10:25:38 +0000 (GMT)
+From: Matthew Jenkins <matt@esb.co.uk>
+X-Sender: matt@firelite.inner.esb.co.uk
+To: dgd@list.imaginary.com
+Subject: Re: [DGD]Cat / More
+
+
+On Mon, 26 Feb 2001, Michel Racicot wrote:
+
+>   Hi there, how can i code some kind of pause (to do a "cat" or "more" like command) anyone as some advice ?
+> 
+>   I suppose i'll have to use read_file ... ;o) Or maybe editor ??? I found out a way but i wonder if there is some "best way" to do it... 
+> 
+>   Is there some kind of way to obtain the file size (to later use as some offset system for the optionals read_file parameters...) ?
+> 
+>   Actually, i do read the file in a single string and display some part of it using subsets ... then i flip my user in a "waiting" state to wait for enter to be pressed... 
+> 
+>   Thank you
+> 
+>   JesterX
+> 
+
+Here's how I do it in my PGlp development system:
+
+This creates a nice pretty paged output of a file up to the max string
+size - which is plenty big enough for most things...
+
+This code relies on one or to special functions in my mudlib, but thet can
+be easilly cut out and it'll still work the same (color(), bar() etc)
+
+this "pager" operates pretty much identicle to the ew-too / PG+ pager used
+in hundreds of talkers the world over.
+
+Flibs
+
+--CUT--
+
+static string pager_text;
+static int pager_current;
+static string pager_header;
+int pager_size;
+pager_init(str,head)
+{
+        pager_header=head;
+        pager_text = explode(str,"\n");
+        pager_current=0;
+        pager_more("");
+}
+
+pager_more(str)
+{
+        int o;
+        int i;
+        o=pager_current;
+        if(str=="b")
+        {
+                pager_current=pager_current-pager_size-pager_size;
+                if(pager_current<0) pager_current=0;
+                str="";
+        }
+        if(str=="t")
+        {
+                pager_current=0;
+                str="";
+        }
+        if(str=="q")
+        {
+                return 1;
+        }
+        if(str=="")
+        {
+                write(cls()+bar(pager_header)+"\n");
+                if(pager_size==0)
+                {
+                        for(i=pager_current; i<sizeof(pager_text); i++)
+                                write(pager_text[i]+"\n");
+                } else {
+
+for(i=pager_current; (i<pager_current+pager_size) &&
+(i<sizeof(pager_text)); i++)
+                                write(pager_text[i]+"\n");
+                }
+                write(bar("")+"\n");
+                pager_current=i;
+                if(pager_current<sizeof(pager_text))
+                {
+
+write("[Pager: "+(o+1)+"-"+i+" ("+sizeof(pager_text)+") ["+((i*100)/sizeof(pager_text))+"%]
+<command>/[RETUR
+N]/t/b/q] ");
+                        input_to("pager_more");
+                }
+        } else {
+                command(str);
+                i=pager_current;
+
+write("[Pager: "+((o+1)-pager_size)+"-"+i+" ("+sizeof(pager_text)+") ["+((i*100)/sizeof(pager_text))+"%]
+<command>/[
+RETURN]/t/b/q] ");
+                input_to("pager_more");
+                return 1;
+        }
+}
+
+set_pager(s)
+{
+        pager_size=s;
+}
+
+
+--CUT--

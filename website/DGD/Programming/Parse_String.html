@@ -254,6 +254,956 @@ Regards,
 Dworkin
 </pre>
 
+<hr />
+
+<pre>
+From: Par Winzell <zell@skotos.net>
+Message-ID: <15077.44945.803778.78438@alyx.skotos.net>
+Date: Tue, 24 Apr 2001 09:53:37 -0700
+To: dgd@list.imaginary.com
+Subject: Re: [DGD]parse_string
+
+ > I wanna do some simple string replacements using regexp, but can't see an
+ > easy way of doing it.  It looks like the parse_string() kfun will be able
+ > to do it, if I could only work out what the hell the parse_string function
+ > actually does.
+
+Yes, parse_string()'s functionality easily encompasses (and exceeds)
+regexp parsing. You feed it a grammar and the string to be parsed and
+it tries to deconstruct the latter using the rules of the former.
+
+It is a very generic mechanism that takes some getting used to, and
+the reason it is presented in the documentation without examples and
+such is probably that any decent computer science graduate will have
+taken at least one course where he is forced to soak his mind in the
+details of context-free parsing.
+
+Here is a very simple grammar:
+
+	whitespace = /[ ]+/
+	colour = /blue/
+	colour = /red/
+	noun = /[a-zA-Z]+/
+
+	Nonsense: colour noun
+	Nonsense: Nonsense 'and' colour noun
+
+
+The parsing does two things: first it chops the string into 'tokens',
+and you instruct it precisely how to do that using the first bunch of
+lines (in regexp format); spaces become whitespace, 'blue' and 'red'
+are immediately dubbed 'colour', and any other string of letters is
+a noun.
+
+Tokenization is fundamentally a simple process (though parse_string()
+does it in tricky ways) -- it eats input character by character in a
+straight-forward manner and sorts the input into well-defined buckets.
+
+If we send in the string 'blue yellow dog cat' it is categorized as
+
+	blue:	colour
+	<space>	whitespace
+	yellow:	colour
+	<space>	whitespace
+	dog:	noun
+	<space>	whitespace
+	cat:	noun
+	<space>	whitespace
+
+The true glory of parse_string() is in the second process, guided by
+the latter lines in the grammar. These lines specify what constitutes
+a valid input string and what doesn't. If we just had one line,
+
+	Nonsense: colour noun
+
+then the only valid input strings would be
+
+	blue dog
+	blue cat
+	yellow wombat
+
+etc, etc. But, the second rule as you see is self-referential, which
+is the source of the complexity. A valid input string is also defined
+as any valid input string followed by 'and', colour, noun.
+
+So if
+
+	blue dog
+
+is valid,
+
+	blue dog and yellow cat
+
+is also valid. Thus
+
+	blue dog and yellow cat and green rocket
+
+is also. To prove that it actually works,
+
+> code parse_string("whitespace = /[ \n\r]+/\ncolour = /red/\ncolour = /blue/\n noun = /[a-zA-Z]+/\nFoo: Foo 'and' colour noun\nFoo: colour noun\n", "blue frog and red dog")
+$53 = ({ "blue", "frog", "and", "red", "dog" })
+
+> code parse_string("whitespace = /[ \n\r]+/\ncolour = /red/\ncolour = /blue/\n noun = /[a-zA-Z]+/\nFoo: Foo 'and' colour noun\nFoo: colour noun\n", "blue frog red dog")
+$54 = nil
+
+
+So you see, parse_string() returns nil when the input string doesn't
+match the parsing rules. 'blue frog red dog' is not valid because two
+parts must be conjoined with an 'and' inbetween.
+
+
+If you want to dig further into the construction of these grammars,
+there is a wealth of writings on the matter out there. The defining
+text on compilers and parsing when I went to school was the dragon
+book, and I'd imagine it still does the trick:
+
+	Dragon Book n. The classic text Compilers: Principles,
+	Techniques and Tools, by Alfred V. Aho, Ravi Sethi, and
+	Jeffrey D. Ullman (Addison-Wesley 1986; ISBN 0-201-10088-6),
+
+If there are problems with parse_string(), I'd say one of the major
+ones is that you really have to be fairly well-versed in constructing
+grammars to avoid a whole slew of pitfalls, as soon as you try to do
+anything complex. We need a whole library of LPC wrappers around the
+core functionality (IMHO) to make it really useful. The grammar texts
+ought to be machine-generated from simpler specifications, with lots
+of checks being made (e.g. for ambiguity).
+
+
+A regexp package using parse_string() would be just such a wrapper,
+and it should not be terribly difficult, since the token definitions
+themselves are regexps.
+
+Zell
+</pre>
+
+<hr />
+
+<pre>
+Date: Thu, 7 Jun 2001 04:51:43 +0200
+From: Erwin Harte <harte@xs4all.nl>
+To: dgd@list.imaginary.com
+Subject: Re: [DGD]Parse String
+Message-ID: <20010607045143.X21409@mail.is-here.com>
+
+On Wed, Jun 06, 2001 at 09:49:13PM -0400, S. Foley wrote:
+> I apologize in advance if I am working off of an outdated parse_string
+> help file.
+> 
+> My first question relates to the type of 'operators' (I don't know what
+> else to call them) usable in token rules.  The help file for parse
+> string indicates the following such operators are available:
+
+I think they may be called 'quantifiers', not sure though.
+
+> >and, with regular expressions "a" and "b":
+> >
+> >   a*      zero or more occurrences of a	(highest precedence)
+> >   a+      one or more occurrences of a
+> >   ab      the concatenation of a and b
+> >   a|b     a or b
+> >   (a)     a					(lowest precedence)
+> 
+> Yet looking at an example grammar Mr. Croes wrote I see the following:
+> 
+> >FLOAT_CONST = /[0-9]+\\.[0-9]*([eE][-+]?[0-9]+)/ \
+> >FLOAT_CONST = /[0-9]*\\.[0-9]+([eE][-+]?[0-9]+)/ \
+> 
+> Now from what I understand '?' is frequently used in regular expressions
+> to indicate 0 or 1 occurences of what precedes it.  Is that what it is
+> being used for here?
+
+Yes. :)
+
+>                       If so, are there any other 'operators' like this
+> that are frequently used in regular expressions that are useable in
+> token rules that are undocumented (assuming I have an up to date help
+> file for parse_string)?
+
+Not that I'm aware of, assuming you're referring to such things as
+\d and \s to represent [0-9] and [\t\n\r ] for instance?  I _think_
+Dworkin considers those unnecessary syntactic sugar, convenient but
+not required in the essential functionality.  For instance, there is
+as far as I know no <regexp>{n,m} support, since those can be
+rewritten with the already available features.
+
+> I also have another question relating to precedence.  The parse_string
+> help file states the following:
+> 
+> >For any regular expression, the longest possible token will be
+> >matched.  The name "whitespace" is reserved for defining a special
+> >token, which is simply skipped.  More than one rule may be specified > for 
+> >each token, including whitespace.
+> 
+> >If a string matches more than token, the token for which the rule
+> >appears first in the grammar is selected.  If a string does not match
+> >any token, it is rejected and parsing fails.
+> 
+> My question is if I define some tokens:
+> 
+>   token1 = /[a-z]+/
+>   token2 = /.*/
+> 
+> Despite the fact that the rule for token1 precedes the rule for token2,
+> nothing is ever going to be matched up to token1 because the longest
+> match precedence rule takes precedence over all?  My experiments with
+> the function and my reading up on the subject of regexp's seem to
+> indicate that this would be the case.
+
+Yes.  The order becomes important when more than one rule matches, for
+instance:
+
+  token1 = /[a-zA-Z0-9]+/
+  token2 = /foo/
+
+In thise case, the sequence 'foo' would be seen as a token1, not
+token2, so that any rule with token2 in it will never be matched in
+practice.
+
+There is another catch, if you define something like this:
+
+  word = /[a-z]+/
+
+  rule : word 'foo'
+
+Then the 'word' regexp will never match 'foo' because it is used in
+the grammar.  A workaround here is to do something like this:
+
+  word = /[a-z]+/
+
+  rule : _word 'foo'
+
+  _word : word
+  _word : 'foo'
+
+> I have one last theoretical question.  I've been told that for every
+> regular expression it is possible to write an inverse regular expression.  
+> That is to say, if I have a regular expression A, I can
+> write a regular expression B such that everything that A matches, B will
+> not match, and everything A does not match, B will match.  How difficult
+> would it be to implement an 'operator' (like * or +) for token rules
+> that could be used to mean any string that does not match the regular
+> expression that precedes it?  Would it be possible to write a front
+> end to parse_string using parse_string itself to generate B from A?
+> 
+> I have almost no background in the computer sciences, so I apologize
+> if any of these questions were trivial.
+
+For individual cases it _sounds_ straightforward, but it wouldn't
+surprise me at all if there were some very nasty catches lurking
+right around the corner there... anyone else feel like tackling this
+one? :-)
+
+Erwin.
+-- 
+Erwin Harte <harte@xs4all.nl>
+</pre>
+
+<hr />
+
+<pre>
+Date: Fri, 15 Jun 2001 14:18:18 +0200 (CEST)
+From: "Felix A. Croes" <felix@dworkin.nl>
+Message-Id: <200106151218.OAA25941@dworkin.nl>
+To: dgd@list.imaginary.com
+Subject: Re: [DGD]parse_string()
+
+"S. Foley" <s_d_foley@hotmail.com> wrote:
+
+> More parse_string stuff from me I'm afraid.
+>
+> Here's how I understand how parse_string works.  Please correct me if I'm 
+> wrong.  I suspect I have some fundamental misconceptions.
+>
+> You have a string to parse, some token rules, and some production rules.
+> Is the string tokenized immediately with respect to the token rules prior to 
+> the production rules?  The concept in my head is that the string is 
+> translated into some sequence of tokens, and then the production rules get 
+> used to try to recreate the same token sequence.  If the production rules 
+> can create a match, then the string may be parsed according to the grammar.  
+> I'm starting to feel as if I have it totally backwards though.
+
+This is correct.  The string is tokenized first, and the tokens are then
+parsed.
+
+
+> I have a more practical question that I've tried to solve on and off for a 
+> few months now.  I'm trying to write a function that will explode a string 
+> with a delimiter specified by a regular expression.  My initial thought was 
+> to simply take the regular expression I wanted to use as a delimiter, use a 
+> catchall token to catch everything else (like /.+/) and it would be cake.  
+> Initially I assumed that there was a way to write the production rules to 
+> get around the longest match rule, but since the tokenizing of the string 
+> happens prior to the workings of the production rules (err...right?) this is 
+> impossible.
+
+Quite.  You can, of course, make a grammar for a regular expression,
+but using regular expressions for this is much more efficient.
+
+
+> Next, I figured I could use /./ instead of /.+/, and just use some LPC 
+> functions in the production rule to craft the array.  But that's insane of 
+> course, because you are generating an ungodly number of tokens, since the 
+> tokenizing occurs prior to the production rules (err... right?).  So while 
+> it would kinda work, it's incredibly inefficient.
+
+Correct.
+
+
+> So I started wondering if every regular expression A had some inverse 
+> regular expression B, such that everything A match, B didn't, and everything 
+> A didn't, B did.  If I could generate B from A, then I could easily write 
+> the production rules and limit the number of tokens to the bare minimum 
+> required...
+>
+> Where I'm currently stuck is how to express the inverse of the concatenation 
+> of two regular expressions, a and b.  Is there some trick to it?  You can 
+> assume for this that I am able to express the inverse of a (!a) and the 
+> inverse of b (!b).
+
+A very good question.
+
+Each regular expression has an inverse.  This is easy to prove: each
+regular expression has a corresponding deterministic finite automaton,
+and vice versa.  So the inverse regular expression is the one which
+expresses the same DFA, but with the final and non-final states
+transposed.
+
+Building a DFA for a regular expression is exactly what parse_string()
+does.  Unfortunately, the optimal way to compute the inverse of a
+regular expression is very close to actually constructing the DFA,
+transposing final and non-final states, etc.  This is of course
+ridiculous.  If you actually have to build your own DFA to be able
+to implement regexplode(), there isn't much point in using
+parse_string() in the first place.
+
+So the question becomes, should there be an easier way to use
+parse_string() for implementing regexplode()?  The answer to that
+question is yes.  I am going to think this over for a bit, to see
+what I can do about it.
+
+Regards,
+Dworkin
+</pre>
+
+<hr />
+
+<pre>
+Date: Thu Sep 27 11:59:00 2001
+Subject: [DGD] 1.2.31
+Message-ID: <200109271654.SAA01683@dworkin.nl>
+
+Mikael Lind <z94lind@mtek.chalmers.se> wrote:
+
+> Quoting Felix A. Croes from 20:39, 2001-09-26:
+>
+> > A word of caution about the nomatch token rule: this is a fallback rule
+> > for the case when nothing else matches.  A possible match of all other
+> > tokens will have been attempted at every position in a nomatch string,
+> > so this can get very inefficient.  [...]
+>
+> Still, would not the nomatch token rule be a good way to implement
+> regexplode(), recently discussed on this list?
+
+It would be.  To put things in perspective, the standard implementation
+for searching a regular expression in a string is even less efficient
+than a DGD version using nomatch tokens.
+
+Regards,
+Dworkin
+</pre>
+
+<hr />
+
+<pre>
+Date: Thu Sep 27 12:50:01 2001
+Subject: [DGD] string parsing..
+In-Reply-To: <00db01c14779$83c8bbb0$0100a8c0@cc84920a>
+Message-ID: <20010927124538.F1113@kansas.is-here.com>
+
+On Thu, Sep 27, 2001 at 07:26:15PM +0200, Nico Lammers wrote:
+[...]
+> 
+> But now I still don't know how to use parse_string() ;-)
+> 
+> It seemed to me that the examples I gave would be easy to do.. but maybe
+> I'm wrong?
+
+Hmm... using Elemel's code (untested):
+
+    static string
+    regsub(string str, string regexp, string subst)
+    {
+	string *bits;
+
+	bits = parse_string("whitespace = /" + regexp + "/\n"
+			  + "text = nomatch\n"
+			  + "TEXT: text TEXT\n"
+			  + "TEXT:", str);
+	return implode(bits, subst);
+    }
+
+You could probably do this without the implode if you used a different
+token than whitespace for the regexp and an extra function to replace
+the token with the substitute text.
+
+Erwin.
+-- 
+Erwin Harte <harte@xs4all.nl>
+</pre>
+
+<hr />
+
+<pre>
+From dgd at list.imaginary.com  Thu Sep 27 13:06:01 2001
+From: dgd at list.imaginary.com (Erwin Harte)
+Date: Thu Sep 27 13:06:01 2001
+Subject: [DGD] parse_string() example
+Message-ID: <20010927130157.G1113@kansas.is-here.com>
+
+This one I wrote in May '98, to parse config-files of something:
+
+    parse_string("whitespace  = / +/\n" +
+		 "string      = /\"[^\"]+\"/\n" +
+		 "junk        = /./\n" +
+
+		 "pattern     : sequence\n" +
+
+		 "sequence    : options              ? pp_a\n" +
+		 "sequence    : sequence options ? pp_b\n" +
+
+		 "options     : element              ? pp_c\n" +
+		 "options     : options '|' element  ? pp_d\n" +
+
+		 "element     : string               ? pp_e\n" +
+		 "element     : '(' pattern ')'      ? pp_f\n", line);
+
+It would make an attempt at parsing lines containing stuff like this:
+
+    "word0" (("word1" "word2") | "word3")
+
+What the pp_[a-f] functions did I leave up to your own imagination.
+
+Erwin.
+-- 
+Erwin Harte <harte@xs4all.nl>
+</pre>
+
+<hr />
+
+<pre>
+From dgd at list.imaginary.com  Sun Dec  9 16:28:00 2001
+From: dgd at list.imaginary.com (Par Winzell)
+Date: Sun Dec  9 16:28:00 2001
+Subject: [DGD] Desperately Wanted
+In-Reply-To: <5.1.0.14.0.20011209151141.023b53f0@mail>
+References: <200112091446.PAA04114@dworkin.nl>
+ <5.1.0.14.0.20011209151141.023b53f0@mail>
+Message-ID: <15379.57885.573752.149699@troll.skotos.net>
+
+David,
+
+ > I would kill for, give booze / pizza / money / code boring objects for,
+ > do just about anything for a code snippet or a deeper explanation
+ > of the parse_string() function.
+
+First, a computer science degree helps or an equivalent amount
+of immersion in context-free grammars help. Alternately you can
+try to give yourself a crash course; I suggest buying a book in
+print. The traditional work is "the dragon book",
+
+http://www.amazon.com/exec/obidos/ISBN%3D0201100886/104-5095468-2962302
+
+but it's not cheap. You can get the basic idea from various web
+pages, but any non-trivial use of parse_string gets into subtle
+stuff pretty quickly (specifically, ambiguous grammars).
+
+My second recommendation is a Google search for
+
+	mud-dev string parsing
+
+where you have to click on 'repeat search with ommitted results
+included' at the bottom of the page. This will uncover all the
+discussions in late 1997 on DGD's parse_string(), most of it by
+Dworkin himself. I believe this is the first node:
+
+http://www.kanga.nu/archives/MUD-Dev-L/1997Q4/msg00164.php
+
+
+There are also lots of people who have done parse_string work
+on this very list. Here is a small grammar that Skotos uses to
+parse ascii representations of LPC values. This is overkill,
+because a simple recursive descent parser can do the trick... 
+
+... but hell, it works pretty darn well.
+
+=========================================================================
+private
+string query_grammar() {
+   return
+      "whitespace = /[ \t\r\n]+/\n" +
+      "int = /[0-9]+/\n" +
+      "float = /[+-]?([0-9]+\\.|[0-9]*\\.[0-9]+)([eE][+-]?[0-9]+)?/\n" +
+      "str = /\"([^\\\\\"]*\\\\.)*[^\\\\\"]*\"/\n" +
+      "obj = /<[^>]+>/\n" +
+
+      "Value: 'nil' ? make_nil\n" +
+      "Value: int ? parse_int\n" +
+      "Value: float ? parse_flt\n" +
+      "Value: str ? parse_str\n" +
+      "Value: obj ? parse_obj\n" +
+      "Value: '{' '}' ? empty_array\n" +
+      "Value: '{' ArrList '}' ? pick_middle\n" +
+      "Value: '[' ']' ? empty_mapping\n" +
+      "Value: '[' MapList ']' ? pick_middle\n" +
+      "ArrList: Value ? make_array\n" +
+      "ArrList: ArrList ',' Value ? build_array\n" +
+      "MapList: Value ':' Value ? make_mapping\n" +
+      "MapList: MapList ',' Value ':' Value ? build_mapping\n";
+}
+=========================================================================
+
+With:
+
+=========================================================================
+static
+mixed *colour_value(mixed *tree) {
+   return ({ paint_value(tree[3], (int) tree[1]) });
+}
+
+static
+mixed *make_nil(mixed *tree) {
+   return ({ nil });
+}
+
+static
+mixed *parse_int(mixed *tree) {
+   return ({ (int) tree[0] });
+}
+
+static
+mixed *parse_flt(mixed *tree) {
+   SysLog(dump_value(tree));
+   return ({ (float) tree[0] });
+}
+
+      "Value: float {{ return ({ (float) tree[0] }); }}"
+
+static
+mixed *parse_str(mixed *tree) {
+   return ({
+      replace_strings(tree[0][1 .. strlen(tree[0])-2],
+		      "\\\"", "\"",
+		      "\\\\", "\\")
+	 });
+}
+
+static
+mixed *parse_obj(string *tree) {
+   object obj;
+
+   obj = find_object(tree[0][1 .. strlen(tree[0])-2]);
+   if (!obj) {
+      error("cannot find object " + tree[0]);
+   }
+   return ({ obj });
+}
+
+static
+mixed *pick_middle(mixed *tree) {
+   return tree[1 .. 1];
+}
+
+static
+mixed *empty_array(mixed *tree) {
+   return ({ ({ }) });
+}
+
+static
+mixed *make_array(mixed *tree) {
+   return ({ tree });
+}
+
+static
+mixed *build_array(mixed *tree) {
+   return ({ tree[0] + ({ tree[2] }) });
+}
+
+static
+mixed *empty_mapping(mixed *tree) {
+   return ({ ([ ]) });
+}
+
+static
+mixed *make_mapping(mixed *tree) {
+   return ({ ([ tree[0] : tree[2] ]) });
+}
+
+static
+mixed *build_mapping(mixed *tree) {
+   return ({ tree[0] + ([ tree[2] : tree[4] ]) });
+}
+=========================================================================
+
+
+There are lots more interesting examples out there. Anyone?
+
+Zell
+</pre>
+
+<hr />
+
+<pre>
+From dgd at list.imaginary.com  Mon Dec 10 14:02:01 2001
+From: dgd at list.imaginary.com (Par Winzell)
+Date: Mon Dec 10 14:02:01 2001
+Subject: [DGD] Re: Parse String and Virtual Objects
+In-Reply-To: <F16eS48qun63QxHPI5R00009e02@hotmail.com>
+References: <F16eS48qun63QxHPI5R00009e02@hotmail.com>
+Message-ID: <15381.4428.583330.389047@troll.skotos.net>
+
+S. Foley writes:
+
+ > This function really isn't too hard to figure out, though the effort 
+ > required is something north of 'none'.  I have no formal training in the 
+ > computer sciences or any programming language and through a combination of 
+ > the list archives, web searches on grammars, and trial and error use of the 
+ > actual function, I was able to figure it out (and as bulbs go, I'm not 
+ > particularly bright ;) ).
+
+I agree that you can get a pretty good idea of what it does by just
+staring at examples long enough. The problem comes when you exceed a
+certain level of complexity in your grammars. If there are many ways
+to correctly parse a given string with a grammar, parsing takes more
+and more time. It takes some real work to keep this from happening to
+a complex grammar. It also gets real bad real fast for a lot of cases
+that look very innocent.
+
+The C language has a classic case of fairly simple ambiguity --
+
+	if (E1) if (E2) S1; else S2;
+
+has two legitimate parsings:
+
+	if (E1) {
+		if (E2) {
+			S1;
+		} else {
+			S2;
+		}
+	}
+
+OR
+
+	if (E1) {
+		if (E2) {
+			S1;
+		}
+	} else {
+		S2;
+	}
+
+
+A parser like YACC/BISON just picks one (the former, I think),
+but parse_string() gives you the option of collecting them all.
+
+The if if else ambiguity isn't so bad, but there are examples
+that get very bad very fast...
+
+... and now after writing all this, I don't remember if DGD does
+or does not suffer a slow-down from an ambiguius grammar if it
+is called without its third argument (which specifies how many
+ambigously valid parse trees to return at each branch point).
+
+Felix?
+
+Zell
+</pre>
+
+<hr />
+
+<pre>
+From dgd at list.imaginary.com  Mon Dec 10 14:36:00 2001
+From: dgd at list.imaginary.com (Felix A. Croes)
+Date: Mon Dec 10 14:36:00 2001
+Subject: [DGD] Re: Parse String and Virtual Objects
+Message-ID: <200112102021.VAA05902@dworkin.nl>
+
+Par Winzell <zell@skotos.net> wrote:
+
+>[...]
+> The if if else ambiguity isn't so bad, but there are examples
+> that get very bad very fast...
+>
+> ... and now after writing all this, I don't remember if DGD does
+> or does not suffer a slow-down from an ambiguius grammar if it
+> is called without its third argument (which specifies how many
+> ambigously valid parse trees to return at each branch point).
+
+parse_string() will always attempt all possible ambiguous parsings,
+even if you do not instruct it to return more than one parse tree.
+This is unlikely ever to be a problem with parsing player commands,
+but it can be terrible when you try to parse a much longer string
+with a grammar that contains a few innocent mistakes.
+
+Regards,
+Dworkin
+</pre>
+
+<hr />
+
+<pre>
+From dgd at list.imaginary.com  Mon Dec  2 08:47:01 2002
+From: dgd at list.imaginary.com (Jay Shaffstall)
+Date: Mon Dec  2 08:47:01 2002
+Subject: [DGD] Debugging a parse_string() grammar.
+In-Reply-To: <20021202052456.63525.qmail@web20206.mail.yahoo.com>
+Message-ID: <5.1.0.14.0.20021202094904.00b07990@mail.netwalk.com>
+
+Keith,
+
+>I was wondering what a good way was to debug a grammar
+>for use with parse_string().  I'm trying to write a
+>grammar, but it never seems to parse the way I want it
+>to, and was wondering if there was a way of figuring
+>out why it parses the way it does.
+
+One technique I've found helpful is to use an LPC function in the grammar 
+to print out the tokens that match that rule.  That often gives me a clue 
+as to why it isn't parsing the way I think it should be parsing.
+
+Jay
+</pre>
+
+<hr />
+
+<pre>
+From: dgd at list.imaginary.com (Erwin Harte)
+Date: Thu Mar 20 22:47:01 2003
+Subject: [DGD] parse_string() wierdness???
+In-Reply-To: <20030321043652.93433.qmail@web20206.mail.yahoo.com>
+Message-ID: <20030321044656.GR13089@sleepy.dwarf>
+
+On Thu, Mar 20, 2003 at 08:36:52PM -0800, Keith Dunwoody wrote:
+[...]
+> I'm trying to develop a parse_string() grammar.  I'm
+> expecting the grammar to be very large, so I'm putting
+> it into another file, which I load at runtime.  At the
+> top of my file, I defined whitespace as:
+> 
+> whitespace = /[ \r\n\b\t]+/
+> 
+[...]
+>   grammar = "whitespace = /[ \r\n\t\b]+/\n" + grammar;
+> 
+> it works!  It seems that the parse_string() doesn't
+> convert '\n' etc into newlines.  Is this the correct
+> behaviour?
+
+Remember that for strings in LPC code, normal conversion code applies,
+so occurances of \r, \n, \t, \b are converted to the relevant ASCII.
+
+When you read the same looking text from a file you get what would be
+equivalent to \\r, \\n, \\t, \\b if you put them in LPC strings.
+
+So, yes, this is what you should expect, if you want to read your
+grammar from a file you'll want to do some conversions that under
+normal circumstances the LPC parser would do for you.
+
+Hope that helps,
+
+Erwin.
+-- 
+Erwin Harte <harte@xs4all.nl>
+</pre>
+
+<hr />
+
+<pre>
+From dgd at list.imaginary.com  Thu Mar 20 22:50:02 2003
+From: dgd at list.imaginary.com (Jay Shaffstall)
+Date: Thu Mar 20 22:50:02 2003
+Subject: [DGD] parse_string() wierdness???
+In-Reply-To: <20030321043652.93433.qmail@web20206.mail.yahoo.com>
+Message-ID: <5.1.0.14.0.20030320235117.02fdf4c0@mail.netwalk.com>
+
+Keith,
+
+>I'm trying to develop a parse_string() grammar.  I'm
+>expecting the grammar to be very large, so I'm putting
+>it into another file, which I load at runtime.  At the
+>top of my file, I defined whitespace as:
+>
+>whitespace = /[ \r\n\b\t]+/
+
+Here's my take on this, from doing something similar in Phantasmal's UNQ 
+format.  When you include the whitespace token in LPC, the \n is converted 
+to a newline as part of interpreting LPC, not by 
+parse_string.  parse_string gets a string that already has newlines in it.
+
+When you have the \n in a file, and read it in using read_file, what you 
+get are two characters, '\' and 'n'.  If you want that converted to a 
+newline, you'll have to make a pass through yourself to detect the common 
+escape sequences and insert the correct single character into the string, 
+before calling parse_string.
+
+Jay
+</pre>
+
+<hr />
+
+<pre>
+From dgd at list.imaginary.com  Tue Mar 25 23:24:00 2003
+From: dgd at list.imaginary.com (Erwin Harte)
+Date: Tue Mar 25 23:24:00 2003
+Subject: [DGD] comments in parse_string() grammars?
+In-Reply-To: <20030326051019.83604.qmail@web20203.mail.yahoo.com>
+References: <20030326051019.83604.qmail@web20203.mail.yahoo.com>
+Message-ID: <20030326052328.GN27511@sleepy.dwarf>
+
+On Tue, Mar 25, 2003 at 09:10:19PM -0800, Keith Dunwoody wrote:
+> Is there any way of putting a comment in a
+> parse_string() grammar?
+
+No, this is a typical case of DGD's bare bones approach, you are
+encouraged to write a wrapper that strips out the comments (whichever
+commenting style you prefer) and present the stripped grammar to the
+actual parse_string() kfun.
+
+This also gives you the opportunity to do other conversions if you so
+desire, like embedding LPC code into the grammar that you detect and
+deal with appropriately.
+
+This could be as simple as this (warning: uncompiled/untested code):
+
+    mixed *
+    parse_string(string grammar, string str, varargs int alternatives)
+    {
+        int i, sz;
+        string *lines;
+
+        lines = explode(grammar, "\n");
+        for (i = 0, sz = sizeof(lines); i < sz; i++) {
+            if (lines[i] && strlen(lines[i]) && lines[i][0] == '#') {
+                lines[i] = nil;
+            }
+        }
+        return ::parse_string(implode(lines, "\n"), str, alternatives);
+    }
+
+Hope that helps,
+
+Erwin.
+-- 
+Erwin Harte <harte@xs4all.nl>
+</pre>
+
+<hr />
+
+<pre>
+From dgd at list.imaginary.com  Wed May 14 11:01:00 2003
+From: dgd at list.imaginary.com (Jay Shaffstall)
+Date: Wed May 14 11:01:00 2003
+Subject: [DGD] Grammar question
+Message-ID: <5.1.0.14.0.20030514114256.00ad06d0@mail.netwalk.com>
+
+I thought I'd been doing pretty well with writing grammars, but have just 
+encountered a problem that I could use some assistance with.  I have the 
+following simple grammar that demonstrates the problem:
+
+	whitespace = /[\b\n\r\t ]/
+	word = /[^\b\n\r\t ]+/
+	command: 'write' multiword
+	multiword: word multiword
+	multiword: word
+
+The goal is to support a command of the form "write *" where * is any 
+sequence of words.  This works fine, except when one of the words is 
+"write".  So "write I will write" will fail to parse.
+
+I'm obviously not understanding how the grammars parse, since to me it 
+looks as if the grammar should match "write I will write".  Can anyone 
+explain why this does not parse, and suggest a way around the problem?
+
+Thanks,
+Jay
+</pre>
+
+<hr />
+
+<pre>
+From dgd at list.imaginary.com  Wed May 14 11:07:00 2003
+From: dgd at list.imaginary.com (Erwin Harte)
+Date: Wed May 14 11:07:00 2003
+Subject: [DGD] Grammar question
+In-Reply-To: <5.1.0.14.0.20030514114256.00ad06d0@mail.netwalk.com>
+References: <5.1.0.14.0.20030514114256.00ad06d0@mail.netwalk.com>
+Message-ID: <20030514160642.GV17525@sleepy.dwarf>
+
+On Wed, May 14, 2003 at 12:04:29PM -0400, Jay Shaffstall wrote:
+[...]
+> I'm obviously not understanding how the grammars parse, since to me it 
+> looks as if the grammar should match "write I will write".  Can anyone 
+> explain why this does not parse, and suggest a way around the problem?
+
+To parse_string() once you've used a constant string, it won't match
+the more generic tokens that you've defined.
+
+Here's a workaround:
+
+ 	whitespace = /[\b\n\r\t ]/
+ 	word = /[^\b\n\r\t ]+/
+ 	command: 'write' multiword
+	multiword: Word multiword
+	multiword: Word
+
+	Word: word
+	Word: 'write'
+
+You'll want to extend Word with any other keywords that occur in your
+grammar.
+
+Hope that helps,
+
+Erwin.
+-- 
+Erwin Harte        |  I'm using a whitelist to block spam.  If you get
+harte@is-here.com  |  a bounce when emailing me directly that either
+                   |  means you haven't emailed me in the past 7 years
+                   |  or your address changed.  If so, please register.
+</pre>
+
+<hr />
+
+<pre>
+From dgd at list.imaginary.com  Fri Oct 24 16:52:01 2003
+From: dgd at list.imaginary.com (Felix A. Croes)
+Date: Fri Oct 24 16:52:01 2003
+Subject: [DGD] Re: parse_string() and ambiguity
+In-Reply-To: <003601c39a70$3a27d710$cc244b43@maxcmilotlno0p>
+Message-ID: <200310242151.h9OLp4Fm019653@pattern.dworkin.nl>
+
+"S. Foley" <zeppo1@mindspring.com> wrote:
+
+> Consider the string input to parse string 'I run' and the same lame grammar:
+>
+> SENTENCE : SUBJECT PREDICATE  /* rule 1*/
+> SUBJECT : word                                    /* rule 2*/
+> PREDICATE : word                               /* rule 3*/
+>
+> 'I run' is tokenized to ({ word, word }) which can be arrived at first by
+> application of rule #1, then #2, and then #3, or via application of #1, #3,
+> and then #2.  The bottom line is that the difference in order of application
+> isn't relevant?
+
+It isn't relevant because the parse tree is the same in both cases.  The
+first word is a SUBJECT and the same word is a PREDICATE.  Don't look at
+the "application order"; only look at the resulting parse tree.
+
+Regards,
+Dworkin
+</pre>
+
   <p style="text-size: 150%"> <a href="index.html"> Back to DGD &amp; LPC
       Page </a> </p>
             <address>

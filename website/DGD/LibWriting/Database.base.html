@@ -103,5 +103,61 @@ Regards,
 Dworkin
 </pre>
 
+<hr />
+
+<pre>
+From dgd at list.imaginary.com  Fri Feb  1 17:21:00 2002
+From: dgd at list.imaginary.com (Erwin Harte)
+Date: Fri Feb  1 17:21:00 2002
+Subject: [DGD] Need some guidance
+In-Reply-To: <5.1.0.14.0.20020201222806.009f8e90@mail.btinternet.com>
+References: <5.1.0.14.0.20020201222806.009f8e90@mail.btinternet.com>
+Message-ID: <20020201225914.GP1336@kansas.is-here.com>
+
+On Fri, Feb 01, 2002 at 10:39:17PM +0000, Shevek wrote:
+> What I'm looking to do is to hook a DGD server up to a MySQL database. 
+> Sounds a bit odd, but I want to use something like Apache to serve web 
+> pages with info off the database, PHP to run the dynamic content, and the 
+> DGD server to process activity within the site (ie Playing around with the 
+> information without being driven by user events), and provide chat via a 
+> Java applet (Probably just a simple binary connection).
+> 
+> Ever so minor problem (:>) is that I can't figure out how to access the 
+> database from within DGD. The  rest doesn't appear incredibly difficult to 
+> put together, but it all revolves around that hookup.
+
+You'd have to either link the MySQL libraries into DGD with some
+special commands to execute queries (which sounds like an interesting
+challenge, to me), or have some ability to create outgoing connections
+and connect to the MySQL port.  No clue how easy it is to communicate
+with a MySQL daemon, though.
+
+> Any suggestions on how to proceed would be gratefully received. Or, and it 
+> sounds wierd now I think of it, would it be better to just lose the MySQL 
+> functionality and code some DB style object directly in LPC (Sounds 
+> difficult to do well for multiple connections, or for neatness of DB).
+
+It all depends on what you want to do.  If you keep an object per
+table for the indexes (make sure you don't trip over the mapping or
+array size limitations) and an object per X table entries, then you
+can probably do some fairly efficient queries without needing to swap
+things in unnecessarily.  How many entries you store per object all
+depends on how big you think the individual entries will be (if you
+have some text or blob columns then it can add up rather quickly).
+
+Next problem: How to figure out where to store a table row.  You
+probably want to do something based on an md5 hash of the primary
+index of that row, take the first X bytes/characters (depending on
+whether you handle it as hex or not) and use that in a mapping from
+md5-indices to objects.
+
+Just my bit of brainstorming, hope it gets you started in the right
+direction somehow. :-)
+
+Erwin.
+-- 
+Erwin Harte <harte@xs4all.nl>
+</pre>
+
   <p style="text-size: 150%"> <a href="../index.html"> Back to top level
     </a> </p>

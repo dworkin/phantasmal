@@ -1,0 +1,60 @@
+From dgd at list.imaginary.com  Tue Dec 18 08:15:02 2001
+From: dgd at list.imaginary.com (Mikael Lind)
+Date: Tue Dec 18 08:15:02 2001
+Subject: [DGD] Current Time
+In-Reply-To: <OE44ESQn34Hzshcv5Mi00002db8@hotmail.com>
+Message-ID: <Pine.OSF.4.33.0112181421090.2628-100000@rho005.mtek.chalmers.se>
+
+Quoting Chooser Fireman from 21:59, 2001-12-17:
+
+> Wondering if there was a way to get the current time?
+>
+> And if there is, is it possible to say add 6 weeks to it or something?
+
+Example code:
+
+void display(string message) {
+    /* echo the message to a user, for instance */
+    /* ... */
+}
+
+void display_time() {
+    /*
+     * timestamps for present and future use ;D
+     *
+     * a timestamp is a count of seconds elapsed since 1970-01-01,
+     * 00:00:00, a.k.a. the Epoch
+     */
+    int present, future;
+
+    present = time(); /* get the current time */
+    future = present + (6 * 7 * 24 * 60 * 60); /* add six weeks */
+    display("The present: " + ctime(present));
+    display("The future: " + ctime(future));
+
+    display("I will notify you when the present becomes the future.");
+    call_out("display_future", future - present);
+}
+
+void display_future() {
+    display("The future is here.");
+}
+
+So, time() fetches you a timestamp for the present, while ctime()
+formats a timestamp into a description.
+
+dgd/doc/kfun/time
+dgd/doc/kfun/ctime
+
+If you need higher resolution than seconds, there is also
+millitime().
+
+dgd/doc/kfun/millitime
+
+// Mikael / Elemel
+
+--
+I embrace my desire to feel the rhythm / To feel connected enough to
+step aside and weep like a widow / To feel inspired / To fathom the
+power / To witness the beauty / To bathe in the fountain / To swing
+on the spiral of our divinity and still be a human // Tool

@@ -2,6 +2,27 @@
 
   <h2> DGD's State Dumps </h2>
 
+<pre>
+From: Par Winzell <zell@skotos.net>
+Message-ID: <15022.63579.898904.805527@alyx.skotos.net>
+Date: Tue, 13 Mar 2001 20:49:31 -0800
+To: dgd@list.imaginary.com
+Subject: Re: [DGD]compile_object() kfun
+
+ > But: Surely you would be saving data to a file, and create()
+ > would reload from the file? Or is the persistence so good
+ > that saving to file is no longer needed?
+
+I've ripped out save_object() and restore_object() from my version
+of DGD entirely; they are completely redundant. I use write_file()
+only for logging, and read_file() only for parsing XML files, which
+is how I cold-start configurations.
+
+No important daemon bothers saving its state to file. If we had to
+cold-start we'd be screwed anyway. It's all in the dumpfile.
+
+Zell
+</pre>
 
   <p style="text-size: 150%"> <a href="../index.html"> Back to top level
     </a> </p>

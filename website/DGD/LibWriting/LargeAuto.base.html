@@ -114,5 +114,24 @@
     be needed to resolve the object name).
   </p>
 
+  <h3> Multiple Files and File Size </h3>
+
+  <p>
+    It's often convenient to break functionality up into separate
+    files.  Normally in DGD that means parent objects.  The
+    functionality and variable scope are kept separate, and
+    cleanliness is maintained.  The AUTO object can't inherit from any
+    libraries.  If it did, they would inherit it again (since every
+    library does), which would make a circular dependency.
+  </p>
+
+  <p>
+    However, if you're making a large AUTO object and want the
+    convenience of multiple files, you <i>can</i> use #include to put
+    them all in one place rather than using 'inherit'.  This is one of
+    the few times that #include is a reasonable way to add functions
+    to an object.
+  </p>
+
   <p style="text-size: 150%"> <a href="../index.html"> Back to top level
     </a> </p>

@@ -91,5 +91,72 @@
     but it does alter some of the code.
   </p>
 
+<pre>
+From dgd at list.imaginary.com  Sat Feb 16 08:30:01 2002
+From: dgd at list.imaginary.com (Erwin Harte)
+Date: Sat Feb 16 08:30:01 2002
+Subject: [DGD] Object recompiled when objectd calls compile()?
+In-Reply-To: <Pine.BSF.4.21.0202152334220.39358-100000@hoot.monkeyspeak.com>
+References: <Pine.BSF.4.21.0202152334220.39358-100000@hoot.monkeyspeak.com>
+Message-ID: <20020216140645.GS1336@kansas.is-here.com>
+
+On Fri, Feb 15, 2002 at 11:44:39PM -0800, Noah Lee Gibbs wrote:
+>   Hi.  I'm having an odd problem with my objectd, and I'm hoping one of
+> you folks will have an idea how to solve it...
+> 
+>   My objectd will call an upgraded() method on an object being recompiled
+> if one exists.  That's all well and good.
+> 
+[...]
+> 
+>   Short of having a call_out to call upgraded, does anybody here know a
+> good way to have an upgraded() method call the new version of the function
+> instead of the old one?  I've been recompiling twice when I care about the
+> contents of the upgraded function as a workaround, but it gets tedious...
+
+No, as far as I'm aware a call_out(..., 0) is the best approach for
+that, _re_compiled code doesn't go into effect until the thread has
+finished.  This may seem silly now but what if you're recompiling the
+very object you are currently calling a function in?
+
+Hope that helps,
+
+Erwin.
+-- 
+Erwin Harte <harte@xs4all.nl>
+</pre>
+
+<hr />
+
+<pre>
+From dgd at list.imaginary.com  Sat Feb 16 10:10:01 2002
+From: dgd at list.imaginary.com (Felix A. Croes)
+Date: Sat Feb 16 10:10:01 2002
+Subject: [DGD] Object recompiled when objectd calls compile()?
+Message-ID: <200202161545.QAA12308@dworkin.nl>
+
+Erwin Harte <harte@xs4all.nl> wrote:
+
+> On Fri, Feb 15, 2002 at 11:44:39PM -0800, Noah Lee Gibbs wrote:
+> [...]
+> > 
+> >   Short of having a call_out to call upgraded, does anybody here know a
+> > good way to have an upgraded() method call the new version of the function
+> > instead of the old one?  I've been recompiling twice when I care about the
+> > contents of the upgraded function as a workaround, but it gets tedious...
+>
+> No, as far as I'm aware a call_out(..., 0) is the best approach for
+> that, _re_compiled code doesn't go into effect until the thread has
+> finished.  This may seem silly now but what if you're recompiling the
+> very object you are currently calling a function in?
+
+Furthermore, suppose that you are recompiling several objects that
+depend upon eachother.  If each recompilation goes into effect instantly,
+things might go wrong before the last one can be recompiled.
+
+Regards,
+Dworkin
+</pre>
+
   <p style="text-size: 150%"> <a href="../index.html"> Back to top level
     </a> </p>

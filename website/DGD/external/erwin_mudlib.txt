@@ -1,0 +1,163 @@
+Date: Fri, 20 Apr 2001 17:04:21 +0200
+From: Erwin Harte <harte@xs4all.nl>
+To: dgd@list.imaginary.com
+Subject: Re: [DGD]Initializing problem
+Message-ID: <20010420170421.T15162@harte.xs4all.nl>
+
+
+--IJpNTDwzlM2Ie8A6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Fri, Apr 20, 2001 at 10:59:55AM +0200, Mikael Lind wrote:
+[...]
+> 
+> On a more serious note, I think it could be a very good idea to
+> supply minimal implementations of ~System/initd, ~System/sys/telnetd
+> and ~System/obj/user with the kernel library. This will give new
+> developers a good place to start hacking at. Any comments on this?
+
+Attached you'll find a minimal ~System implementation containing the
+following files (and one directory):
+
+-rw-r--r-- harte/harte     340 2001-04-20 16:51:52 include/System.h
+-rw-r--r-- harte/harte     480 2001-04-20 16:54:29 usr/System/initd.c
+-rw-r--r-- harte/harte    6228 2001-04-20 16:52:33 usr/System/obj/user.c
+-rw-r--r-- harte/harte    1620 2001-04-20 16:23:57 usr/System/obj/wiztool.c
+-rw-r--r-- harte/harte     572 2001-04-20 16:18:10 usr/System/sys/telnetd.c
+-rw-r--r-- harte/harte      45 2001-04-20 16:52:22 usr/System/lib/user.c
+-rw-r--r-- harte/harte      48 2001-04-20 16:12:55 usr/System/lib/wiztool.c
+drwxr-sr-x harte/harte       0 2001-04-20 16:48:49 usr/System/data/
+
+The only relatively big files are the ~System/obj/ files which were
+copied from their /kernel/obj/ counterparts and then adapted to work
+with ~System/ objects instead of /kernel/obj/ objects.
+
+Sample session:
+
+  ---- driver ----
+  $ bin/driver mud.dgd 
+  Apr 20 16:57:00 ** DGD 1.2.18
+  Apr 20 16:57:00 ** Initializing...
+  Apr 20 16:57:00 ** Initialization complete.
+  
+  ----
+
+  ---- admin ----
+  $ telnet localhost 6047
+  Trying 127.0.0.1...
+  Connected to localhost.
+  Escape character is '^]'.
+
+  Demo DGD 1.2.18 (telnet)
+
+  login: admin
+  Pick a new password:
+  Retype new password:
+  Password changed.
+  # grant nino access
+  # grant nino / full
+  # quit
+  Connection closed by foreign host.
+  ----
+
+  ---- nino ----
+  $ telnet localhost 6047
+  Trying 127.0.0.1...
+  Connected to localhost.
+  Escape character is '^]'.
+
+  Demo DGD 1.2.18 (telnet)
+
+  login: nino
+  Pick a new password:
+  Retype new password:
+  Password changed.
+  > code $nino
+  $0 = </usr/System/obj/user#27>
+  > code $0->query_wiztool()
+  $1 = </usr/System/obj/wiztool#26>
+  > status
+  <...>
+
+  > quit
+  Connection closed by foreign host.
+  ----
+
+The 'query_wiztool()' function in ~System/obj/user.c is the only thing
+I added, just to demonstrate that it is using that one and not the
+version in /kernel/obj/wiztool.c
+
+For fun'n'kicks, do a diff between the /kernel/obj/{user.c,wiztool.c}
+objects and the ~System/obj/{user.c,wiztool.c} versions, it's really
+not that much to get started, and without touching /kernel/. :-)
+
+Enjoy,
+
+Erwin.
+-- 
+Erwin Harte      : `Don't mind Erwin, he gets crabby. :)'
+harte@xs4all.nl  :    -- Par Winzell <zell@skotos.net>
+
+--IJpNTDwzlM2Ie8A6
+Content-Type: application/octet-stream
+Content-Disposition: attachment; filename="System.tar.gz"
+Content-Transfer-Encoding: base64
+
+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
+
+--IJpNTDwzlM2Ie8A6--

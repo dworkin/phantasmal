@@ -870,5 +870,983 @@ http://www.skotos.net/storybuilders/.
 . <http://www.Skotos.net>               o510/647-2760  f510/647-2761 ..
 </pre>
 
+<hr />
+
+<pre>
+Date: Wed Sep 26 17:14:01 2001
+Subject: [DGD] Commercial use
+Message-ID: <200109262208.AAA00645@dworkin.nl>
+
+Starting today, DGD is available for commercial use again, directly from
+BeeHive Internet Technologies.  Quintus, which previously held an
+exclusive license, is bankrupt and their license is terminated.
+
+Licensing inquiries can be directed at <dgd-licensing@dworkin.nl>.  You
+should realize that the situation at present is in a state of flux, and
+we will probably create a new Copyright file, which at present is
+identical to the old one, but with all reference to ichat/Acuity/Quintus
+removed.
+
+My plans:
+
+ - DGD remains free for non-commercial use.
+ - Non-profit organisations will be able to license DGD for a modest fee.
+ - Other commercial use will be much more expensive, similar to what
+   Skotos has been charging for a sublicense.
+
+Regards,
+Dworkin
+</pre>
+
+<hr />
+
+<pre>
+From dgd at list.imaginary.com  Wed Feb 27 20:04:00 2002
+From: dgd at list.imaginary.com (Christopher Allen)
+Date: Wed Feb 27 20:04:00 2002
+Subject: [DGD] Question...
+References: <Pine.BSF.4.21.0202271651240.16025-100000@hoot.monkeyspeak.com>
+Message-ID: <002b01c1bff8$8ea7a2b0$143ca183@titan>
+
+"Noah Gibbs" <angelbob@monkeyspeak.com>:
+>   Anyway, that's what you get if it parses as UNQ.  Then the UNQ DTD
+> parser, which does *not* use parse_string, examines structure like the
+> above and parses it into a better structure.  That section doesn't use
+> parse_string, so I can do better error checking.  For instance if your
+DTD
+> says that the "number" field of "room" should be an integer, the word
+> "bob" as an argument to "number" above is going to cause an error.  In
+> particular, the stack returned will look something like:
+
+The Skotos StoryBuilder library does something similar, though it does
+not have a strict DGD. For instance, here is the XML of a real (but
+simple) object:
+
+<object id="OBJ(Ur:tool:smith:anvil)">
+  <context/>
+  <Base:Thing>
+    <Ur:UrObject/>
+    <Base:Inventory/>
+    <Base:Misc gender="neuter" volition="false" weapon="false"
+default_stance="none" combinable="false" discrete="false"
+by_weight="false" tight="false" scriptrunner="false">
+      <Base:Edible value="false"/>
+      <Base:Potable value="false"/>
+      <Base:DrinkMessageFirst/>
+      <Base:DrinkMessageThird/>
+      <Base:Potable value="false"/>
+      <Base:Transparency value="true"/>
+      <Base:Unsafe value="false"/>
+      <Base:Safe value="false"/>
+      <Base:ClothesExpected value="false"/>
+      <Base:DieMessageFirst/>
+      <Base:DieMessageThird/>
+    </Base:Misc>
+    <Base:Details>
+      <Base:Detail id="anvil" prime="true" def="false" abstract="false"
+hidden="false" luminosity="0">
+        <Base:Preposition close="true" against="true" under="false"
+on="true" inside="true" near="true" over="true" behind="true"
+before="true" beside="true"/>
+        <Base:Names>
+          <Base:Name sname="anvil" pname="anvils"/>
+        </Base:Names>
+        <Base:Adjectives>
+          <Base:Adjective adjective="forge"/>
+          <Base:Adjective adjective="grimy"/>
+          <Base:Adjective adjective="heavy"/>
+          <Base:Adjective adjective="iron"/>
+          <Base:Adjective adjective="metal"/>
+          <Base:Adjective adjective="smith"/>
+          <Base:Adjective adjective="smithing"/>
+          <Base:Adjective adjective="waist-high"/>
+          <Base:Adjective adjective="waisted"/>
+        </Base:Adjectives>
+        <Base:Descriptions>
+          <Base:Description type="brief">anvil</Base:Description>
+          <Base:Description type="examine">
+             A grimy, heavy iron anvil, with a slightly narrowed waist
+and a smooth upper surface at about waist height. It is mounted on a
+sturdy, scarred wooden post. The anvil does not have a horn, but it does
+have a square hardy hole (for mounting tool pieces in) and a round
+pritchel hole (for punching out pieces of iron).
+          </Base:Description>
+          <Base:Description type="glance">
+             A heavy, waisted anvil.
+          </Base:Description>
+          <Base:Description type="look">
+             A grimy, heavy iron anvil, with a slightly narrowed waist.
+It is mounted on a sturdy, scarred wooden post.
+          </Base:Description>
+        </Base:Descriptions>
+        <Base:Exit door="false" never_obvious="false"
+obvious_when_open="false"/>
+        <Base:Climbable/>
+      </Base:Detail>
+      <Base:Detail id="base" prime="false" def="false" abstract="false"
+hidden="false" luminosity="0">
+        <Base:Preposition close="true" against="true" under="false"
+on="false" inside="false" near="true" over="false" behind="false"
+before="false" beside="false"/>
+        <Base:Names>
+          <Base:Name sname="base" pname="base"/>
+          <Base:Name sname="waist" pname="waists"/>
+        </Base:Names>
+        <Base:Adjectives>
+          <Base:Adjective adjective="anvil"/>
+          <Base:Adjective adjective="forge"/>
+          <Base:Adjective adjective="grimy"/>
+          <Base:Adjective adjective="heavy"/>
+          <Base:Adjective adjective="iron"/>
+          <Base:Adjective adjective="metal"/>
+          <Base:Adjective adjective="smith"/>
+          <Base:Adjective adjective="smithing"/>
+          <Base:Adjective adjective="smooth"/>
+        </Base:Adjectives>
+        <Base:Descriptions>
+          <Base:Description type="brief">
+             anvil's base
+          </Base:Description>
+          <Base:Description type="glance">
+             The waist and base of a heavy anvil.
+          </Base:Description>
+          <Base:Description type="look">
+             The middle section of the anvil narrows down slightly to
+form a waist. The base is set atop a sturdy, scarred wooden post. The
+pritchel hole in the anvil's upper surface penetrates all the way down
+to exit the upper curve of the waist.
+          </Base:Description>
+        </Base:Descriptions>
+        <Base:Exit door="false" never_obvious="false"
+obvious_when_open="false"/>
+        <Base:Climbable/>
+      </Base:Detail>
+      <Base:Detail id="hardy hole" prime="false" def="false"
+abstract="false" hidden="false" luminosity="0">
+        <Base:Preposition close="true" against="true" under="false"
+on="true" inside="true" near="true" over="true" behind="false"
+before="false" beside="false"/>
+        <Base:Names>
+          <Base:Name sname="hole" pname="holes"/>
+        </Base:Names>
+        <Base:Adjectives>
+          <Base:Adjective adjective="anvil"/>
+          <Base:Adjective adjective="forge"/>
+          <Base:Adjective adjective="grimy"/>
+          <Base:Adjective adjective="hardy"/>
+          <Base:Adjective adjective="heavy"/>
+          <Base:Adjective adjective="iron"/>
+          <Base:Adjective adjective="metal"/>
+          <Base:Adjective adjective="smith"/>
+          <Base:Adjective adjective="smithing"/>
+          <Base:Adjective adjective="smooth"/>
+        </Base:Adjectives>
+        <Base:Descriptions>
+          <Base:Description type="brief">
+             anvil's hardy hole
+          </Base:Description>
+          <Base:Description type="examine">
+             There are two holes in the smooth, waist-high upper surface
+of the anvil; one of these is the hardy hole. It is square, about an
+inch across and a few inches deep.
+          </Base:Description>
+          <Base:Description type="glance">
+             The square hardy hole on the top of an anvil.
+          </Base:Description>
+          <Base:Description type="look">
+             There are two holes in the smooth upper surface of the
+anvil; one of these is square, and is the hardy hole.
+          </Base:Description>
+        </Base:Descriptions>
+        <Base:Exit door="false" never_obvious="false"
+obvious_when_open="false"/>
+        <Base:Climbable/>
+      </Base:Detail>
+      <Base:Detail id="post" prime="false" def="true" abstract="false"
+hidden="false" luminosity="0">
+        <Base:Preposition close="true" against="true" under="false"
+on="true" inside="false" near="true" over="true" behind="false"
+before="false" beside="false"/>
+        <Base:Names>
+          <Base:Name sname="post" pname="posts"/>
+          <Base:Name sname="mount" pname="mounts"/>
+        </Base:Names>
+        <Base:Adjectives>
+          <Base:Adjective adjective="anvil"/>
+          <Base:Adjective adjective="forge"/>
+          <Base:Adjective adjective="knee-high"/>
+          <Base:Adjective adjective="round"/>
+          <Base:Adjective adjective="scarred"/>
+          <Base:Adjective adjective="sturdy"/>
+          <Base:Adjective adjective="thick"/>
+          <Base:Adjective adjective="wood"/>
+          <Base:Adjective adjective="wooden"/>
+        </Base:Adjectives>
+        <Base:Descriptions>
+          <Base:Description type="brief">
+             the wooden post supporting an anvil
+          </Base:Description>
+          <Base:Description type="glance">
+             A sturdy, scarred thick wooden post supporting an anvil.
+          </Base:Description>
+          <Base:Description type="look">
+             This anvil is supported on a knee high post, of sturdy,
+scarred wood.
+          </Base:Description>
+        </Base:Descriptions>
+        <Base:Exit door="false" never_obvious="false"
+obvious_when_open="false"/>
+        <Base:Climbable/>
+      </Base:Detail>
+      <Base:Detail id="pritchel hole" prime="false" def="false"
+abstract="false" hidden="false" luminosity="0">
+        <Base:Preposition close="true" against="true" under="false"
+on="true" inside="true" near="true" over="true" behind="false"
+before="false" beside="false"/>
+        <Base:Names>
+          <Base:Name sname="hole" pname="holes"/>
+        </Base:Names>
+        <Base:Adjectives>
+          <Base:Adjective adjective="anvil"/>
+          <Base:Adjective adjective="forge"/>
+          <Base:Adjective adjective="grimy"/>
+          <Base:Adjective adjective="heavy"/>
+          <Base:Adjective adjective="hole"/>
+          <Base:Adjective adjective="iron"/>
+          <Base:Adjective adjective="metal"/>
+          <Base:Adjective adjective="pritchel"/>
+          <Base:Adjective adjective="punch"/>
+          <Base:Adjective adjective="smith"/>
+          <Base:Adjective adjective="smithing"/>
+          <Base:Adjective adjective="smooth"/>
+        </Base:Adjectives>
+        <Base:Descriptions>
+          <Base:Description type="brief">
+             anvil's pritchel hole
+          </Base:Description>
+          <Base:Description type="examine">
+             There are two holes in the smooth, waist-high upper surface
+of the anvil; one of these is the pritchel hole. It is round, about an
+inch across, and penetrates all the way through the top of the anvil, to
+come out at the waist. There are many scratches and scrapes down the
+inside of the pritchel hole.
+          </Base:Description>
+          <Base:Description type="glance">
+             The round pritchel hole on the top of an anvil.
+          </Base:Description>
+          <Base:Description type="look">
+             There are two holes in the smooth upper surface of the
+anvil; one of these is round, and is the pritchel hole.
+          </Base:Description>
+        </Base:Descriptions>
+        <Base:Exit door="false" never_obvious="false"
+obvious_when_open="false"/>
+        <Base:Climbable/>
+      </Base:Detail>
+      <Base:Detail id="surface" prime="false" def="false"
+abstract="false" hidden="false" luminosity="0">
+        <Base:Preposition close="true" against="true" under="false"
+on="true" inside="false" near="true" over="true" behind="false"
+before="false" beside="false"/>
+        <Base:Names>
+          <Base:Name sname="top" pname="tops"/>
+          <Base:Name sname="surface" pname="surfaces"/>
+          <Base:Name sname="face" pname="faces"/>
+        </Base:Names>
+        <Base:Adjectives>
+          <Base:Adjective adjective="anvil"/>
+          <Base:Adjective adjective="forge"/>
+          <Base:Adjective adjective="grimy"/>
+          <Base:Adjective adjective="heavy"/>
+          <Base:Adjective adjective="iron"/>
+          <Base:Adjective adjective="metal"/>
+          <Base:Adjective adjective="smith"/>
+          <Base:Adjective adjective="smithing"/>
+          <Base:Adjective adjective="smooth"/>
+          <Base:Adjective adjective="top"/>
+          <Base:Adjective adjective="upper"/>
+        </Base:Adjectives>
+        <Base:Descriptions>
+          <Base:Description type="brief">
+             anvil's surface
+          </Base:Description>
+          <Base:Description type="examine">
+             The waist-high upper surface of the anvil is smooth and
+dark. There are two holes in it: a square hardy hole, and a round
+pritchel hole.
+          </Base:Description>
+          <Base:Description type="glance">
+             The upper surface of an anvil.
+          </Base:Description>
+          <Base:Description type="look">
+             The upper surface of the anvil is smooth and dark. There
+are two holes in it.
+          </Base:Description>
+        </Base:Descriptions>
+        <Base:Exit door="false" never_obvious="false"
+obvious_when_open="false"/>
+        <Base:Climbable/>
+      </Base:Detail>
+    </Base:Details>
+    <Base:Bulk flexible="false">
+      <Base:Mass value="50"/>
+      <Base:Density value="7.8">
+         The density of this object in relatoin to some common
+materials, listed from less dense to more dense: granite \< slate \<
+titanium \< steel \< THIS OBJECT \< bronze \< brass \< copper \< silver
+      </Base:Density>
+      <Base:Capacity value="0"/>
+      <Base:MaxWeight value="0"/>
+    </Base:Bulk>
+    <Base:Combat>
+      <Base:Strength value="1"/>
+      <Base:MaxFatigue value="1"/>
+    </Base:Combat>
+    <Base:Clothing>
+      <Base:SingleWear value="false"/>
+    </Base:Clothing>
+    <Base:Crafting see_level="0" do_level="0" time="0" attention="false"
+held="false">
+      <Base:Ingredients/>
+      <Base:Tools/>
+      <Base:CraftVerbs/>
+    </Base:Crafting>
+    <Base:Container>
+      <Base:ContainerVerbSecond/>
+      <Base:ContainerVerbThird/>
+    </Base:Container>
+    <Base:InitialContents/>
+    <Base:InitialProperties/>
+    <Core:Properties>
+      <Core:Property property="skill:fatigue">1.0</Core:Property>
+      <Core:Property property="theatre:bigmapurl">
+         "http://www.skotos.net/MarrachGame/images/MarrachMap0.jpg"
+      </Core:Property>
+      <Core:Property property="theatre:gamebrief">
+         "Castle Marrach"
+      </Core:Property>
+      <Core:Property property="theatre:gamedesc">
+         "Castle Marrach - Multiplayer Roleplaying Environment"
+      </Core:Property>
+      <Core:Property property="theatre:gameid">
+         "Marrach"
+      </Core:Property>
+      <Core:Property property="theatre:loginurl">
+         "https://www.skotos.net/user/login.php"
+      </Core:Property>
+      <Core:Property property="theatre:port">80</Core:Property>
+      <Core:Property property="theatre:realmurl"/>
+      <Core:Property property="volition">0</Core:Property>
+    </Core:Properties>
+    <Notes:Notes>
+      <Notes:Category cat="QA" catstate="Open">
+        <Notes:Note ix="974567102" state="Open" user="michaelb">
+           A tool.
+        </Notes:Note>
+      </Notes:Category>
+    </Notes:Notes>
+  </Base:Thing>
+</object>
+
+However, we can also break this up smaller, for instance, the detail
+above called "surface" can also be XML'ized as:
+
+<object id="OBJ(Ur:tool:smith:anvil)">
+  <context>
+    <iterator var="id" val="surface" type="lpc_str"/>
+  </context>
+  <Base:Detail id="surface" prime="false" def="false" abstract="false"
+hidden="false" luminosity="0">
+    <Base:Preposition close="true" against="true" under="false"
+on="true" inside="false" near="true" over="true" behind="false"
+before="false" beside="false"/>
+    <Base:Names>
+      <Base:Name sname="top" pname="tops"/>
+      <Base:Name sname="surface" pname="surfaces"/>
+      <Base:Name sname="face" pname="faces"/>
+    </Base:Names>
+    <Base:Adjectives>
+      <Base:Adjective adjective="anvil"/>
+      <Base:Adjective adjective="forge"/>
+      <Base:Adjective adjective="grimy"/>
+      <Base:Adjective adjective="heavy"/>
+      <Base:Adjective adjective="iron"/>
+      <Base:Adjective adjective="metal"/>
+      <Base:Adjective adjective="smith"/>
+      <Base:Adjective adjective="smithing"/>
+      <Base:Adjective adjective="smooth"/>
+      <Base:Adjective adjective="top"/>
+      <Base:Adjective adjective="upper"/>
+    </Base:Adjectives>
+    <Base:Descriptions>
+      <Base:Description type="brief">
+         anvil's surface
+      </Base:Description>
+      <Base:Description type="examine">
+         The waist-high upper surface of the anvil is smooth and dark.
+There are two holes in it: a square hardy hole, and a round pritchel
+hole.
+      </Base:Description>
+      <Base:Description type="glance">
+         The upper surface of an anvil.
+      </Base:Description>
+      <Base:Description type="look">
+         The upper surface of the anvil is smooth and dark. There are
+two holes in it.
+      </Base:Description>
+    </Base:Descriptions>
+    <Base:Exit door="false" never_obvious="false"
+obvious_when_open="false"/>
+    <Base:Climbable/>
+  </Base:Detail>
+</object>
+
+Or the description examine can be XML'ized:
+
+<object id="OBJ(Ur:tool:smith:anvil)">
+  <context>
+    <iterator var="id" val="surface" type="lpc_str"/>
+    <iterator var="type" val="examine" type="xml_pcdata"/>
+  </context>
+  <Base:Description type="examine">
+     The waist-high upper surface of the anvil is smooth and dark. There
+are two holes in it: a square hardy hole, and a round pritchel hole.
+  </Base:Description>
+</object>
+
+Theoretically (though never done in practice) we could convert a whole
+game into a single XML file.
+
+-- Christopher Allen
+
+------------------------------------------------------------------------
+.. Christopher Allen                                 Skotos Tech Inc. ..
+..                           1512 Walnut St., Berkeley, CA 94709-1513 ..
+.. <http://www.Skotos.net>               o510/647-2760  f510/647-2761 ..
+</pre>
+
+<hr />
+
+<pre>
+From dgd at list.imaginary.com  Sun Feb  2 12:38:06 2003
+From: dgd at list.imaginary.com (Christopher Allen)
+Date: Sun Feb  2 12:38:06 2003
+Subject: Re[2]: [DGD] Impressed with DGD
+References: <20030202104302.21810.qmail@web12503.mail.yahoo.com>
+Message-ID: <054d01c2caea$25984790$f885e8c6@artemis>
+
+"Christopher Darque" <thedarque@yahoo.com>:
+> If this game I am
+> considering is proposed, and accepted, at Skotos then this
+> might be a real possibility.
+
+If you are considering a game for us, either using your own library (as
+WAP does with Grendel's Revenge and TEC) or Skotos' own library (which
+is used by Castle Marrach), then you'll have access to our clients
+(ActiveX, Java, and Mozilla Javascript) which all use HTML font tags for
+color inside the text window.
+
+You can specify any color you want using hex codes, but the following
+are the default named ones:
+
+{ "black",    0x000000 },
+{ "white",    0xffffff },
+{ "green",    0x00ff00 },
+{ "maroon",   0x800000 },
+{ "olive",    0x008000 },
+{ "navy",     0x000080 },
+{ "purple",   0x800080 },
+{ "gray",     0x808080 },
+{ "red",      0xff0000 },
+{ "yellow",   0xffff00 },
+{ "blue",     0x0000ff },
+{ "teal",     0x008080 },
+{ "lime",     0x808000 },
+{ "aqua",     0x00ffff },
+{ "fuchsia",  0xff00ff },
+{ "silver",   0xc0c0c0 },
+
+In addition, the Alice ActiveX client supports some (but not all) of the
+Pueblo commands:
+
+        <br/>COMPLETELY FUNCTIONAL MARKUP
+        <xch_page clear=text />
+        <body bgcolor=silver text=black alink=red vlink=red link=red />
+        <hr/>
+        <br/>Testing xch_page clear=text Tag.
+        <br/>Testing body Tag.
+        <br/>Testing Header Rule.
+        <br/>Testing img img xch_mode=text Tag <img xch_mode=text/>.
+        <br/>Testing img img xch_mode=purehtml Tag <img
+xch_mode=purehtml/>.
+        <br/>Testing img img xch_mode=html Tag <img xch_mode=html/>.
+        <br/>Testing bgcolor & text & *link Attributes in body Tag.
+       <br/>Testing xch_mudtext <xch_mudtext>I'm using
+Alice</xch_mudtext>
+        <br/>Testing xch_cmd Attribute <a xch_cmd="scratch my
+ring">Scratch me</a>.
+        <br/>
+        <br/>Pueblo Forms Test:
+        <form method=xch_cmd >
+                <br/><select name=sourceselect>
+<option>Select 1</option>
+<option selected>Select 2</option>
+<option>Select 3</option>
+<option>Select 4</option>
+<option>Select 5</option>
+<option>Select 6</option>
+</select>
+<br/><textarea name=sourcetextarea rows=5 cols=30 />
+        <br/><input type=checkbox checked name=sourcecheckbox
+value=checkbox />Checkbox 1
+        <br/><input type=radio checked name=sourceradio
+value=radio />Radio 1
+        <br/><input type=number name=sourcenumber size=6
+maxlength=6 />Number 1
+        <br/><input type=text name=sourcetext size=12
+maxlength=12 />Text 1
+        <br/><input type=password name=sourcepassword size=12
+maxlength=12 />Password 1
+        <br/><input type=submit value="Send" />
+        <br/><input type=reset value="Reset" />
+        </form>
+        <br/>Character Editing Elements:
+        <br/>Testing <b>Bold</b>.
+        <br/>Testing <i>Italic</i>.
+        <br/>Testing <u>Underline</u>.
+        <br/>Testing <strike>Strike</strike>.
+        <br/>Testing <strong>Strong</strong>.
+        <br/>Testing <em>Emphasis</em>.
+        <br/>Testing <cite>Cite</cite>.
+        <br/>Testing <tt>Typewriter</tt>.
+        <br/>Testing <code>Code</code>.
+        <br/>Testing <samp>Samp</samp>.
+        <br/>
+        <br/>Block Formatting Elements:
+        <br/>Testing Header Rule:
+<hr size=4 width=50% align=center />
+        <br/>Testing Headers:
+        <h1>Header 1</h1>
+        <h2>Header 2</h2>
+        <h3>Header 3</h3>
+        <h4>Header 4</h4>
+        <h5>Header 5</h5>
+        <h6>Header 6</h6>
+        <br/><quote>Quote: The quick brown fox jumped over the lazy dog.
+The quick brown fox jumped over the lazy dog. The quick brown fox jumped
+over the lazy dog. </quote>
+        <address>Address: The quick brown fox jumped over the lazy dog.
+The quick brown fox jumped over the lazy dog. The quick brown fox jumped
+over the lazy dog.</address>
+        <blockquote>Blockquote: The quick brown fox jumped over the lazy
+dog. The quick brown fox jumped over the lazy dog. The quick brown fox
+jumped over the lazy dog.</blockquote>
+        Testing Ordered List:<ol>
+       <li>List Item One</li>
+       <li>List Item Two</li>
+       </ol>
+Testing Unordered List:<ul>
+       <li>List Item One</li>
+       <li>List Item Two</li>
+       </ul>
+Testing Directory List:<dir>
+       <li>List Item One</li>
+       <li>List Item Two</li>
+       </dir>
+Testing Menu List:<menu>
+       <li>List Item One</li>
+       <li>List Item Two</li>
+       </menu>
+Testing Definition List<dl>
+<dt>definition term</dt>
+       <dd>definition data</dd>
+       </dl>
+        Testing Font Color <font color=aqua>aqua</font>.
+       <br/>Testing Font Color <font color=black>black</font>.
+       <br/>Testing Font Color <font color=blue>blue</font>.
+       <br/>Testing Font Color <font color=fuchsia>fuchsia</font>.
+       <br/>Testing Font Color <font color=gray>gray</font>.
+       <br/>Testing Font Color <font color=green>green</font>.
+       <br/>Testing Font Color <font color=lime>lime</font>.
+       <br/>Testing Font Color <font color=maroon>maroon</font>.
+       <br/>Testing Font Color <font color=navy>navy</font>.
+       <br/>Testing Font Color <font color=olive>olive</font>.
+       <br/>Testing Font Color <font color=purple>purple</font>.
+       <br/>Testing Font Color <font color=red>red</font>.
+       <br/>Testing Font Color <font color=silver>silver</font>.
+       <br/>Testing Font Color <font color=teal>teal</font>.
+       <br/>Testing Font Color <font color=white>white</font>.
+       <br/>Testing Font Color <font color=yellow>yellow</font>.
+       <br/>Testing Font Multiset <font fgcolor=red bgcolor=white
+size="+3">Test</font>.
+        <br/>PARTIALLY FUNCTIONAL MARKUP
+       <br/>Testing Paragraph Tags:
+<br/><nobr>Testing Nobr. The quick brown fox jumped over the
+lazy dog. The quick brown fox jumped over the lazy dog. The quick brown
+fox jumped over the lazy dog. The quick brown fox jumped over the lazy
+dog.</nobr>
+<br/><base>Testing Base. The quick brown fox jumped over the
+lazy dog. The quick brown fox jumped over the lazy dog. The quick brown
+fox jumped over the lazy dog. The quick brown fox jumped over the lazy
+dog.</base>
+<br/><xmp>Testing Xmp. The quick brown fox jumped over the lazy
+dog. The quick brown fox jumped over the lazy dog. The quick brown fox
+jumped over the lazy dog. The quick brown fox jumped over the lazy
+dog.</xmp>
+<br/><listing>Testing Listing. The quick brown fox jumped over
+the lazy dog. The quick brown fox jumped over the lazy dog. The quick
+brown fox jumped over the lazy dog. The quick brown fox jumped over the
+lazy dog.</listing>
+<br/><plaintext>Testing Plaintext. The quick brown fox jumped
+over the lazy dog. The quick brown fox jumped over the lazy dog. The
+quick brown fox jumped over the lazy dog. The quick brown fox jumped
+over the lazy dog.</plaintext>
+<br/><pre>Testing Pre. The quick brown fox jumped over the lazy
+dog. The quick brown fox jumped over the lazy dog. The quick brown fox
+jumped over the lazy dog. The quick brown fox jumped over the lazy
+dog.</pre>
+        <hr/>
+        NOT-FUNCTIONAL PUEBLO MARKUP
+        <br/>Testing Font Color <font color=grey>grey</font>.
+        <br/>Testing Font Color <font color=brown>brown</font>.
+        <br/>Testing send Tag <send>touch my ring</send>.
+        <br/>Testing xch_pane Tag <xch_pane action=open name=map
+xch_panetitle="Map of the City" options="floating persistent fit
+nonsizeable" vspace=5 hspace=5/>
+        <br/>Testing xch_pane Tag <xch_pane action=open name=buttonbar
+options="fit internal" align=bottom href="test.html"/>
+        <br/>Testing href Attribute <a href="test" >Click me</a>.
+        <br/>Testing img Tag <img src="test" />.
+        <br/>Testing img Tag <img src=\$prop(this.img-url) />.
+        <br/>Testing img img xch_alert Tag <img xch_alert/>.
+        <br/>Testing xch_hint Attributes for xch_cmd links <a
+xch_cmd="scratch my ring" xch_hint="scratch my ring">Scratch me</a>.
+        <br/>Testing link vlink alink Attributes for xch_cmd links <a
+xch_cmd="scratch my ring" link=red alink=red vlink=red >Scratch me</a>.
+        <br/>Testing text Attributes for xch_cmd links <a
+xch_cmd="scratch my ring" text=red >Scratch me</a>.
+        <br/>Testing color Tag <color fore=green back=black > Green on
+Black </color>.
+        <hr/>
+
+You can also send special SKOOT commands that will command the clients
+to execute Javascript in the window that the client resides in.
+
+The Marrach game uses colors (see the command PROFILE to set default
+colours) and some the Pueblo specific tags (see the command EXITS).
+Grendel's Revenge makes most use of the SKOOT commands. To see these
+features you will need to be using our ActiveX client on Internet
+Explorer.
+
+-- Christopher Allen
+
+------------------------------------------------------------------------
+.. Christopher Allen                                 Skotos Tech Inc. ..
+..                           1512 Walnut St., Berkeley, CA 94709-1513 ..
+.. <http://www.skotos.net>           o510/647-2760x202  f510/647-2761 ..
+
+
+From dgd at list.imaginary.com  Sun Feb  2 20:03:01 2003
+From: dgd at list.imaginary.com (Christopher Allen)
+Date: Sun Feb  2 20:03:01 2003
+Subject: Re[2]: [DGD] Impressed with DGD
+References: <20030202224330.98675.qmail@web12507.mail.yahoo.com>
+Message-ID: <058801c2cb28$49460090$f885e8c6@artemis>
+
+"Christopher Darque" <thedarque@yahoo.com>":
+> > If you are considering a game for us, either using your own library
+>
+> First let me say thanks for the effort of cutting and pasting
+> all that info, I appreciate it and I have saved it for serious
+> study. I am fairly familiar with HTML and Pueblo, but I know
+> very little about ActiveX.
+
+You don't really need to know about the clients, just how to interface
+with them. For instance, in our Marrach client, when an object is
+dropped in a room, it also shows up in a popup menu to the right of the
+of the text area. The way this works is that whenever an object arrives
+in a room, a SKOOT event is sent, basically something like "SKOOT 15 a
+rock". The web page recieves the SKOOT 15 messages, and sends it to
+function 15, which in our case is the javascript:
+
+function addObject(str) {
+  var ix, pos, name;
+
+  pos = str.indexOf(' ');
+  if (pos >= 0) {
+    ix = str.substring(0, pos);
+    name = str.substring(pos+1);
+    if (this["objectSet"] == null) {
+        this["objectSet"] = new Object();
+    }
+    this["objectSet"][ix] = name;
+    updateAll();
+//    alert('object ' + name + ' added');
+  }
+}
+
+The fact that we use 15 for addObject is not relevant -- WAP uses a
+completely different set of SKOOT # messages that call Javascripts that
+they wrote for their client. Whatever you can do in Javascript
+dynamically (i.e. without refreshing the page) can be done using this
+technique.
+
+> Second, where might I find more technical docs on the Skotos
+> systems?  If I do decide to propose this to your Company I
+> would almost certainly use your Lib as the starting point.
+
+There is quite a bit of documentation that you get when you are involved
+with developing for us, however, I'd say though we have alot, is never
+enough ;-)
+
+> Your use of non-telnet clients does open up some interesting
+> possibilities, such as a split screen with the room visual
+> at the top and a scrolling text box below for everything
+> else.
+
+It is even possible to have the client be a 1x1 pixel client, and just
+use it to control the dynamic web page.
+
+-- Christopher Allen
+
+------------------------------------------------------------------------
+.. Christopher Allen                                 Skotos Tech Inc. ..
+..                           1512 Walnut St., Berkeley, CA 94709-1513 ..
+.. <http://www.skotos.net>           o510/647-2760x202  f510/647-2761 ..
+</pre>
+
+<hr />
+
+<pre>
+From dgd at list.imaginary.com  Mon Feb 17 19:56:01 2003
+From: dgd at list.imaginary.com (Christopher Allen)
+Date: Mon Feb 17 19:56:01 2003
+Subject: [DGD] XML
+Message-ID: <082901c2d6f0$c0684830$f885e8c6@artemis>
+
+<kevinc@seaplace.org>:
+> Has anybody built a XML parser and/or DTD validator for DGD?
+>
+> Does such a request even make sense?  I'm thinking along the lines of
+> being able to pass DTD/XML documents to a DGD object and have that
+object
+> being able to respond to queries about the XML document.
+>
+> It gets more complicated when I start thinking about multi DGD
+instances
+> communicating between themselves via XML, but one thing at a time.
+
+All of the Skotos games use XML for exchange, i.e. internally objects
+are stored as DGD persistent objects, but all can be exported and
+imported as XML. We make no attempt to try to be totally faithful to the
+various XML issues like DTD vs. Schemes, etc. We also have some XML
+'shortcuts', dynamic object handles, and an XML control language called
+SAM, that allow us to do interesting things with dynamic content that
+might break a purist XML parser.
+
+However, that we do as much as we do with XML and have multiple games
+proves at least it can be done.
+
+Enclosed is a simple example rose in our example directory, that shows
+our XML for a simple object.
+
+-- Christopher Allen
+
+------------------------------------------------------------------------
+.. Christopher Allen                                 Skotos Tech Inc. ..
+..                           1512 Walnut St., Berkeley, CA 94709-1513 ..
+.. <http://www.skotos.net>           o510/647-2760x202  f510/647-2761 ..
+
+
+
+<object id="OBJ(Examples:complete:desc:rose-red-w/thorns)">
+  <context/>
+  <Base:Thing>
+    <Ur:UrObject/>
+    <Base:Transient>
+      <Base:Inventory/>
+    </Base:Transient>
+    <Base:Misc gender="neuter" volition="false" weapon="false"
+default_stance="none" combinable="false" discrete="false"
+by_weight="false" tight="false" scriptrunner="false">
+      <Base:Edible value="false"/>
+      <Base:Potable value="false"/>
+      <Base:DrinkMessageFirst/>
+      <Base:DrinkMessageThird/>
+      <Base:Transparency value="false"/>
+      <Base:Unsafe value="false"/>
+      <Base:Safe value="false"/>
+      <Base:ClothesExpected value="false"/>
+      <Base:DieMessageFirst/>
+      <Base:DieMessageThird/>
+    </Base:Misc>
+    <Base:Details>
+      <Base:Detail id="default" prime="true" def="false"
+abstract="false" hidden="false" luminosity="0">
+        <Base:Preposition close="true" against="true" under="false"
+on="true" inside="false" near="true" over="true" behind="true"
+before="true" beside="true"/>
+        <Base:Names>
+          <Base:Name sname="rose" pname="roses"/>
+          <Base:Name sname="flower" pname="flowers"/>
+        </Base:Names>
+        <Base:Adjectives>
+          <Base:Adjective adjective="deep"/>
+          <Base:Adjective adjective="red"/>
+        </Base:Adjectives>
+        <Base:Descriptions>
+          <Base:Description type="brief">red rose</Base:Description>
+          <Base:Description type="examine">
+             A rose with deep red petals.
+          </Base:Description>
+          <Base:Description type="look">
+             A deep red rose.
+          </Base:Description>
+          <Base:Description type="react-post:sense/smell-dob">
+             The deep red rose has a rich, rose-scented floral bouquet,
+with a slight sweet undertone of musk.
+          </Base:Description>
+          <Base:Description type="react-post:sense/taste-iob">
+             The red rose petals have a somewhat bitter, grassy taste,
+with a slightly fruity aftertaste somewhat like a ripe peach. The petals
+have a kind of a soft gritty texture and are somewhat succulent.
+          </Base:Description>
+          <Base:Description type="react-post:sense/touch-dob">
+             The stem of the red rose is stiff and has many sharp
+thorns, but the petals are velvety soft.
+          </Base:Description>
+        </Base:Descriptions>
+        <Base:Exit door="false" never_obvious="false"
+obvious_when_open="false" hidden_when_closed="false" separate="false"
+self-locking="false" deadbolt="false"/>
+        <Base:Climbable/>
+      </Base:Detail>
+      <Base:Detail id="petals" prime="false" def="true" abstract="false"
+hidden="false" luminosity="0">
+        <Base:Preposition close="false" against="false" under="false"
+on="false" inside="false" near="true" over="false" behind="false"
+before="false" beside="false"/>
+        <Base:Names>
+          <Base:Name sname="petal" pname="petals"/>
+          <Base:Name sname="petals"/>
+        </Base:Names>
+        <Base:Adjectives>
+          <Base:Adjective adjective="deep"/>
+          <Base:Adjective adjective="red"/>
+          <Base:Adjective adjective="soft"/>
+        </Base:Adjectives>
+        <Base:Descriptions>
+          <Base:Description type="brief">
+             the red petals of a rose
+          </Base:Description>
+          <Base:Description type="look">
+             The deep red petals of a rose.
+          </Base:Description>
+          <Base:Description type="react-post:sense/touch-dob">
+             The deep red petals of the rose feel very soft, almost
+velvety.
+          </Base:Description>
+        </Base:Descriptions>
+        <Base:Exit door="false" never_obvious="false"
+obvious_when_open="false" hidden_when_closed="false" separate="false"
+self-locking="false" deadbolt="false"/>
+        <Base:Climbable/>
+      </Base:Detail>
+      <Base:Detail id="stemandthorns" prime="false" def="true"
+abstract="false" hidden="false" luminosity="0">
+        <Base:Preposition close="false" against="false" under="false"
+on="false" inside="false" near="true" over="false" behind="false"
+before="false" beside="false"/>
+        <Base:Names>
+          <Base:Name sname="stem" pname="stems"/>
+          <Base:Name sname="thorn" pname="thorns"/>
+        </Base:Names>
+        <Base:Adjectives>
+          <Base:Adjective adjective="deep"/>
+          <Base:Adjective adjective="red"/>
+          <Base:Adjective adjective="sharp"/>
+          <Base:Adjective adjective="stiff"/>
+          <Base:Adjective adjective="thorny"/>
+        </Base:Adjectives>
+        <Base:Descriptions>
+          <Base:Description type="brief">
+             the thorny stem of a red rose
+          </Base:Description>
+          <Base:Description type="examine">
+             The stem of a deep red a rose, covered in thorns.
+          </Base:Description>
+          <Base:Description type="look">
+             The thorny stem of a rose.
+          </Base:Description>
+          <Base:Description type="react-post:sense/touch-dob">
+             The stem of the rose is stiff and is covered with many
+thorns that feel quite sharp.
+          </Base:Description>
+        </Base:Descriptions>
+        <Base:Exit door="false" never_obvious="false"
+obvious_when_open="false" hidden_when_closed="false" separate="false"
+self-locking="false" deadbolt="false"/>
+        <Base:Climbable/>
+      </Base:Detail>
+    </Base:Details>
+    <Base:Bulk immobile="false" flexible="false">
+      <Base:Mass value="1"/>
+      <Base:Density value="1"/>
+      <Base:Capacity value="0"/>
+      <Base:MaxWeight value="1"/>
+    </Base:Bulk>
+    <Base:Combat>
+      <Base:Strength value="1"/>
+      <Base:MaxFatigue value="1"/>
+    </Base:Combat>
+    <Base:Clothing>
+      <Base:SingleWear value="false"/>
+    </Base:Clothing>
+    <Base:Crafting see_level="0" do_level="0" time="0" attention="false"
+held="false">
+      <Base:Ingredients/>
+      <Base:Tools/>
+      <Base:CraftVerbs/>
+    </Base:Crafting>
+    <Base:Container>
+      <Base:ContainerVerbSecond/>
+      <Base:ContainerVerbThird/>
+    </Base:Container>
+    <Base:InitialContents/>
+    <Base:InitialProperties/>
+    <Core:Properties>
+      <Core:Property property="trait:flower">rose</Core:Property>
+    </Core:Properties>
+    <Notes:Notes/>
+  </Base:Thing>
+</object>
+
+
+From dgd at list.imaginary.com  Fri Feb 21 01:50:01 2003
+From: dgd at list.imaginary.com (Christopher Allen)
+Date: Fri Feb 21 01:50:01 2003
+Subject: [DGD] Commercial Licenses?
+References: <20030221031828.19888.qmail@web13807.mail.yahoo.com>
+Message-ID: <019f01c2d97d$8071b470$f885e8c6@artemis>
+
+"Alan Wood" <alan_wood@yahoo.com>:
+> Any chance to go on a royalty basis or % of profit or
+> whatnot?  Or will there be a "you can't make a profit,
+> but you can ask for donations" license?
+
+We'd be glad to talk with you further if you are serious. A license from
+Skotos would be more restrictive then probably what Felix could offer
+you (for instance, we can't offer you the multi-processor version) but
+we also would be willing to working something out with you given the
+right contractual conditions.
+
+-- Christopher Allen
+
+------------------------------------------------------------------------
+.. Christopher Allen                                 Skotos Tech Inc. ..
+..                           1512 Walnut St., Berkeley, CA 94709-1513 ..
+.. <http://www.skotos.net>           o510/647-2760x202  f510/647-2761 ..
+</pre>
+
   <p style="text-size: 150%"> <a href="../index.html"> Back to top level
     </a> </p>

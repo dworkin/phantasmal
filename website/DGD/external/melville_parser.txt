@@ -1,0 +1,184 @@
+From dgd at list.imaginary.com  Sun Dec  9 05:10:01 2001
+From: dgd at list.imaginary.com (David Jackson)
+Date: Sun Dec  9 05:10:01 2001
+Subject: [DGD] Code Snippet for New Melville Command Parser
+In-Reply-To: <OE51paoG1VRIjn04x290001cd09@hotmail.com>
+Message-ID: <5.1.0.14.0.20011209044724.023abd50@mail>
+
+Submitted for general critique.  My only goal is to learn how to be a 
+better LPC programmer, so be kind.
+
+David Jackson
+
+str is in the input string from the player.
+
+
+word = explode(str, " ");
+
+for(i=0;i<sizeof(word);i++)
+{
+
+         /* Identification of Verbs */
+
+	/* Is this a bin command? */
+
+	if (file_exists("/cmds/player/"+word[i]+".c")==1)
+	{
+         	verb = word[i];
+	        word[i] = "";
+		continue;
+         }
+
+	/* Is this a wizard command? */
+
+	if (myprivs=="wizard" || myprivs=="admin")
+	{
+         	if (file_exists("/cmds/wizard/"+word[i]+".c")==1)
+		{
+	        verb = word[i];
+	        word[i] = "";
+	        continue;
+	        }
+         }
+
+         /* Is this a command defined by our environment? */
+
+	if(environment)
+	{
+		if (environment->query_mycommands(word[i]))
+		{
+	        verb = word[i];
+	        word[i] = "";
+	        continue;
+         	}
+         }
+
+	/* Is this a command defined by something in our inventory? */
+
+	    obs = query_inventory() ;
+
+	    if (obs && sizeof(obs)>0)
+	    {
+		for (x=0;x<sizeof(obs);x++)
+		{
+                     if(obs[x]->query_mycommands(word[i]))
+		    {
+                     verb = word[i];
+	            word[i] = "";
+                     continue;
+                     }
+		}
+	    }
+
+	/* Is this a command defined by something in the inventory of our 
+environment? */
+         if (environment)
+	{
+
+		obs = environment->query_inventory() ;
+
+		if (obs)
+		{
+		    for (x=0;x<sizeof(obs);x++)
+		    {
+				if (obs[x]->query_mycommands(word[i]))
+				{
+				verb = word[i] ;
+                                 word[i] = "";
+		                continue;
+				}
+		    }
+		}
+	    }
+
+	/* Identification of Nouns and Adjectives*/
+
+	    /* check our inventory */
+
+	    obs = query_inventory() ;
+	    if (obs && sizeof(obs)>0)
+	    {
+		for (x=0;x<sizeof(obs);x++)
+		{
+                     if(obs[x]->query_noun(word[i]))
+		    {
+			if(!noun1)
+		        {
+				for(a=0;a<sizeof(word);a++)
+         	                {
+					if(obs[x]->query_adjective(word[a]))
+                         	        {
+                                         adj1 = word[a];
+                                         }
+                                 }
+                     	noun1 = word[i];
+	    		word[i] = "";
+  	                continue;
+			}
+				for(a=0;a<sizeof(word);a++)
+         	                {
+	        	        	if(obs[x]->query_adjective(word[a]))
+                         	        {
+                                         adj2 = word[a];
+                                         }
+                                 }
+
+		    noun2 = word[i];
+		    word[i] = "";
+                     continue;
+		    }
+		}
+	    }
+
+             /* check inventory of our environment */
+
+	    if (environment)
+	    {
+
+		obs = environment->query_inventory() ;
+
+		if (obs)
+		{
+		    for (x=0;x<sizeof(obs);x++)
+		    {
+		    	if (obs[x]->query_noun(word[i]))
+			{
+				if(!noun1)
+				{
+				for(a=0;a<sizeof(word);a++)
+         	                {
+	        	        	if(obs[x]->query_adjective(word[a]))
+                         	        {
+                                         adj1 = word[a];
+                                         }
+                                 }
+
+				noun1 = word[i];
+			    	word[i] = "";
+                     		continue;
+			    	}
+				for(a=0;a<sizeof(word);a++)
+         	                {
+	        	        	if(obs[x]->query_adjective(word[a]))
+                         	        {
+                                         adj2 = word[a];
+                                         }
+                                 }
+
+			noun2 = word[i];
+			word[i] = "";
+	                continue;
+			}
+		    }
+		}
+	    }
+
+
+}
+
+/* END OF LOOP */
+
+         /* Okay, we have identified all valid verbs, nouns, and 
+adjective-noun pairs */
+         write("Attempting to: " + verb + " with the " + adj1 + " " + noun1 
++ " and the " + adj2 + " " + noun2 + "\n");

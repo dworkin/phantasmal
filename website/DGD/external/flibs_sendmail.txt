@@ -1,0 +1,206 @@
+Date: Sat, 31 Mar 2001 12:54:15 +0100 (BST)
+From: Matthew Jenkins <matt@esb.co.uk>
+To: dgd@list.imaginary.com
+Subject: Re: [DGD]External commands
+
+
+Yep - here it is...
+
+Drop this into one of your existing kfun files, recompile dgd, reboot, and
+you should have the sendmail() function...
+
+I'm sure the system call can be cleaned up a bit, but it does the job I
+want it to, so why change? ;)
+
+flibs
+
+-- BEGIN --
+
+# ifdef FUNCDEF
+FUNCDEF("sendmail", kf_sendmail, pt_sendmail)
+# else
+char pt_sendmail[] = { C_TYPECHECKED | C_STATIC, T_VOID, 5, T_STRING,
+T_STRING, T_STRING, T_STRING, T_STRING };
+
+int kf_sendmail(f)
+register frame *f;
+{
+        FILE *fd;
+        char *command;
+        command = malloc(128);
+        fd = fopen("tmail","w");
+        fprintf(fd,"HELO\n");
+        fprintf(fd,"MAIL FROM: %s\n",f->sp[3].u.string->text);
+        fprintf(fd,"RCPT TO: %s\n",f->sp[2].u.string->text);
+        fprintf(fd,"DATA\n");
+        fprintf(fd,"Subject: %s\n\n",f->sp[1].u.string->text);
+        fprintf(fd,"%s",f->sp[0].u.string->text);
+        fprintf(fd,"\n.\nQUIT\n");
+        fclose(fd);
+        sprintf(command,"sendmail -bs -F%s <tmail >tmail.out",
+				f->sp[4].u.string->text);
+        system(command);
+        str_del((f->sp++)->u.string);
+        str_del((f->sp++)->u.string);
+        str_del((f->sp++)->u.string);
+        str_del((f->sp++)->u.string);
+        free(command);
+        return 0;
+}
+#endif
+
+-- END --
+
+On Fri, 30 Mar 2001, Jason Murray wrote:
+
+> >From: Lerkista <lerkista@planetatierra.net>
+> >Reply-To: dgd@list.imaginary.com
+> >To: <dgd@list.imaginary.com>
+> >Subject: [DGD]External commands
+> >Date: Fri, 30 Mar 2001 17:03:04 -0600
+> >
+> >There's a way to run commands of the shell of unix within the DGD??
+> >I want to run a script to send mails!!
+> >
+> 
+> Not without altering DGD source and recompiling. Though did I hear kfuns are 
+> pluggable in the new DGD? Or am I thinking of something completely 
+> different? Anyway, in addition to the new kfun you write, the auto object 
+> would need to be modified to provide a suitable wrapper, such as who/what 
+> can access the function from within DGD and so forth.
+> 
+> Jason
+> _________________________________________________________________
+> Get your FREE download of MSN Explorer at http://explorer.msn.com
+> 
+> 
+> List config page:  http://list.imaginary.com/mailman/listinfo/dgd
+> 
+
+
+List config page:  http://list.imaginary.com/mailman/listinfo/dgd
+
+Date: Sat, 31 Mar 2001 14:55:23 +0200
+From: Erwin Harte <harte@xs4all.nl>
+To: dgd@list.imaginary.com
+Subject: Re: [DGD]External commands
+
+On Sat, Mar 31, 2001 at 12:54:15PM +0100, Matthew Jenkins wrote:
+> 
+> Yep - here it is...
+> 
+> Drop this into one of your existing kfun files, recompile dgd, reboot, and
+> you should have the sendmail() function...
+> 
+> I'm sure the system call can be cleaned up a bit, but it does the job I
+> want it to, so why change? ;)
+
+Because:
+
+- You don't do any sanity-checking of the email-addresses yourself.
+- You don't do any checking of what results sendmail might give you.
+- What if this is called with 'foo | rm -rf /' as 5th parameter?
+- The 'tmail' file, in what directory does it end up, the top of the
+  (mud)lib?
+- You don't unlink the 'tmail' file, so someone with read-access there
+  can read other people's outgoing email.
+
+Just some pointers. :)
+
+Erwin.
+-- 
+Erwin Harte      : `Don't mind Erwin, he gets crabby. :)'
+harte@xs4all.nl  :    -- Par Winzell <zell@skotos.net>
+
+List config page:  http://list.imaginary.com/mailman/listinfo/dgd
+
+Date: Sat, 31 Mar 2001 16:47:22 +0100 (BST)
+From: Matthew Jenkins <matt@esb.co.uk>
+To: dgd@list.imaginary.com
+Subject: Re: [DGD]External commands
+
+On Sat, 31 Mar 2001, Erwin Harte wrote:
+
+> On Sat, Mar 31, 2001 at 12:54:15PM +0100, Matthew Jenkins wrote:
+> > 
+> > Yep - here it is...
+> > 
+> > Drop this into one of your existing kfun files, recompile dgd, reboot, and
+> > you should have the sendmail() function...
+> > 
+> > I'm sure the system call can be cleaned up a bit, but it does the job I
+> > want it to, so why change? ;)
+> 
+> Because:
+> 
+> - You don't do any sanity-checking of the email-addresses yourself.
+
+Not within that function I don't - I leave that up to the LPC wrapper
+function that accepts all the details of the email...
+
+> - You don't do any checking of what results sendmail might give you.
+
+No - sendmail emails back error messages...
+
+> - What if this is called with 'foo | rm -rf /' as 5th parameter?
+
+then you email someone the message "foo | rm -rf".
+
+> - The 'tmail' file, in what directory does it end up, the top of the
+>   (mud)lib?
+
+at the moment, yes.  But then, I personally couldn't give a monkey's about
+where it is.  I suppose I should move it to ${MUDLIB}/tmp...
+
+> - You don't unlink the 'tmail' file, so someone with read-access there
+>   can read other people's outgoing email.
+
+Only the one last email, and as I am the only one with read access on my
+system then it really doesn't bother me.
+
+Flibs
+
+
+Date: Sat, 31 Mar 2001 18:09:20 +0200
+From: Erwin Harte <harte@xs4all.nl>
+To: dgd@list.imaginary.com
+Subject: Re: [DGD]External commands
+
+On Sat, Mar 31, 2001 at 04:47:22PM +0100, Matthew Jenkins wrote:
+> 
+> On Sat, 31 Mar 2001, Erwin Harte wrote:
+> 
+[...]
+> 
+> > - What if this is called with 'foo | rm -rf /' as 5th parameter?
+> 
+> then you email someone the message "foo | rm -rf /".
+
+Uhm.  Ok, my mistake, let me rephrase:
+
+What if f->sp[4].u.string->text contains the text "foo | rm -rf /" as
+contents?  Do you check for that?
+
+|        sprintf(command,"sendmail -bs -F%s <tmail >tmail.out",
+|                f->sp[4].u.string->text);
+|        system(command);
+
+You'd end up with:
+
+  "sendmail -bs -Ffoo | rm -rf / <tmail >tmail.out"
+
+How do you think system() is going to interpret that?
+
+It's not that I think you don't care, but keep in mind that while you
+are using this on a game where you are apparently the only one in
+charge, if you're offering the code to others who are not, they might
+not be aware of these flaws and find their games/computers hacked or
+supposedly private email monitored by third parties who should not be
+able to.
+
+Please be careful.
+
+Erwin.
+-- 
+Erwin Harte      : `Don't mind Erwin, he gets crabby. :)'
+harte@xs4all.nl  :    -- Par Winzell <zell@skotos.net>

@@ -130,7 +130,10 @@
     Note that programs under &frasl;kernel can't inherit a second AUTO
     object.  You don't get to mess with them.  Similarly, nothing
     under &frasl;usr&frasl;System can get a second AUTO object.  They
-    just get the regular one.
+    just get the regular one.  If you really need objects under
+    &frasl;usr&frasl;System to inherit from your additional AUTO
+    object, you can have them inherit from it explicitly, with an
+    'inherit' statement, like usual.
   </p>
             <address>
             <span><a href="mailto:angelbob-remove-spamfree@spamfree.users.sf.net">Noah Gibbs</a></span>

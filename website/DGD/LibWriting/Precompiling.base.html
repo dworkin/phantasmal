@@ -10,5 +10,57 @@
     library if you compile DGD.  It's fairly easy to figure out.
   </p>
 
+<pre>
+
+From dgd at list.imaginary.com  Tue Jun  3 01:06:00 2003
+From: dgd at list.imaginary.com (Noah Gibbs)
+Date: Tue Jun  3 01:06:00 2003
+Subject: [DGD] Damage Weapons and Stuff (Math and Code)
+In-Reply-To: <000901c3297f$a0d0f4e0$0c01a8c0@DeepThought>
+Message-ID: <20030603060505.91091.qmail@web12809.mail.yahoo.com>
+
+--- Ben Chambers <bjchamb@bellsouth.net> wrote:
+> In C++ it is the difference between
+
+  Okay.  Looks like the sin/cos version takes 45/47ths
+as long, so it's 47/45ths as fast.  So about a 4%
+difference in speed, roughly.
+
+> How badly would it slow down in DGD?  Would one
+> version slow down more than the other?
+
+  Hard to tell.  And it would make a big difference
+whether it was precompiled or interpreted --
+precompiled would probably be pretty comparable to
+this, interpreted probably would not.  You could try
+it and see.  I maintain that if it takes 0.00045
+seconds and you're doing it around 75 times/second at
+absolute most, it doesn't much matter.  But that's
+just me.
+
+> Would it pay to modify the C++ code for DGD to
+> make this a built in command?
+
+  Try precompiling first.  Neither of these would
+change.  Like, probably ever.  And you wouldn't get
+much out of building it into the server directly that
+precompiling doesn't get you.  Some, but probably not
+much.  I'd say definitely not enough to want to
+require breaking full DGD compatibility with the rest
+of the world.
+  Then again, if you start based on GurbaLib or
+something, your compatibility with the rest of the
+world is already toast.  But *do* bear in mind that if
+your install instructions start with "first, rebuild
+the DGD server", you're gonna lose audience members,
+and you're going for a very small, very specialized
+audience in the first place.
+
+
+=====
+------
+noah_gibbs@yahoo.com
+</pre>
+
   <p style="text-size: 150%"> <a href="../index.html"> Back to top level
     </a> </p>
