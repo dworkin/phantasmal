@@ -7,6 +7,7 @@
     ~enUS{a juicy turnip}}
   ~ldesc{
     ~enUS{You see a plump, juicy turnip.  Well, I mean, plump and juicy for a turnip.}}
+  ~article{0}
   ~flags{0}
   ~nouns{{~enUS{turnip}}}
   ~adjectives{{~enUS{juicy,plump,large}}}
@@ -23,6 +24,7 @@
 You're not sure, exactly, if it's dead, dying, or just
 _very_ relaxed.  Its facial expression, being that of a weasel,
 doesn't give you any clues.}}
+  ~article{0}
   ~flags{0}
   ~nouns{{~enUS{weasel}}}
   ~adjectives{{~enUS{lifeless,limp}}}
@@ -37,6 +39,7 @@ doesn't give you any clues.}}
   ~ldesc{
     ~enUS{You see an old breadbox, apparently meant to contain bread.  A faded logo
 on the side may once have advertised the box's maker.}}
+  ~article{0}
   ~flags{3}
   ~nouns{{~enUS{breadbox,box}}}
   ~adjectives{{~enUS{bread,large,largish}}}
@@ -52,6 +55,7 @@ on the side may once have advertised the box's maker.}}
     ~enUS{The blade is curved, and more jagged than it has any right to be.
 It was clearly designed to frighten before cutting, and tear while
 cutting.}}
+  ~article{0}
   ~flags{0}
   ~nouns{{~enUS{knife,dagger}}}
   ~adjectives{{~enUS{ceremonial,curved,jagged}}}
@@ -71,6 +75,7 @@ Ew.}}
   ~edesc{
     ~enUS{Glinting in the wombatty depths, you see...  Nothing special.  Darkness.
 Wombat fumes.  About the usual, you hope.}}
+  ~article{0}
   ~flags{7}
   ~nouns{{~enUS{wombat,mouth}}}
   ~adjectives{{~enUS{stuffed,immobile}}}
@@ -84,6 +89,7 @@ Wombat fumes.  About the usual, you hope.}}
     ~enUS{an open sarcophagus}}
   ~ldesc{
     ~enUS{It's old and sarcophariffic.}}
+  ~article{0}
   ~flags{7}
   ~nouns{{~enUS{sarcophagus,coffin}}}
   ~adjectives{{}}
@@ -97,54 +103,8 @@ Wombat fumes.  About the usual, you hope.}}
     ~enUS{the wombat's uvula}}
   ~ldesc{
     ~enUS{It's dangly, in the slimy way that only uvulas can dangle.}}
+  ~article{0}
   ~flags{4}
   ~nouns{{~enUS{uvula}}}
   ~adjectives{{}}
-}
-~portable{
-  ~number{207}
-  ~location{300}
-  ~bdesc{
-    ~enUS{ancient table}}
-  ~gdesc{
-    ~enUS{A new portable object}}
-  ~ldesc{
-    ~enUS{This table is so stained from year upon year of life in the student lounge
-that its material is impossible to determine.  You'd guess it's made of
-wood, though you haven't a clue what kind.  It's certainly brown, but
-not the kind of brown that any normal object begins life.}}
-  ~flags{4}
-  ~nouns{{~enUS{table}}}
-  ~adjectives{{~enUS{ancient,old,wood,wooden,brown,stained,stain,worn}}}
-}
-~portable{
-  ~number{208}
-  ~location{300}
-  ~bdesc{
-    ~enUS{old couches}}
-  ~gdesc{
-    ~enUS{A new portable object}}
-  ~ldesc{
-    ~enUS{The old couches have seen better years, and perhaps decades.  They appear
-to be brown and green in color, though it's not clear that they all started
-that way.}}
-  ~flags{4}
-  ~nouns{{~enUS{couch,couches,sofa,sofas}}}
-  ~adjectives{{~enUS{old,large,worn,brown,green}}}
-}
-~portable{
-  ~number{209}
-  ~location{300}
-  ~bdesc{
-    ~enUS{floor}}
-  ~gdesc{
-    ~enUS{floor}}
-  ~ldesc{
-    ~enUS{The floor was once carpeted, as wisps of heavy thread near the walls attest.
-Looks like no special care was taken when removing it.  The floor is
-covered in nasty, sticky residue of several kinds, some obviously food
-related.}}
-  ~flags{4}
-  ~nouns{{~enUS{floor,board,boards,down,thread,threads,carpet,residue}}}
-  ~adjectives{{~enUS{carpeted,nasty,sticky,heavy}}}
 }

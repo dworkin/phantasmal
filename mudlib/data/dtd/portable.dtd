@@ -1,5 +1,5 @@
 ~DTD{
-  ~portable{number?,location?,bdesc,gdesc,ldesc,edesc?,flags?,
+  ~portable{number?,location?,bdesc,gdesc,ldesc,edesc?,article,flags?,
             nouns,adjectives?}
   ~number{int}
   ~location{int}
@@ -7,6 +7,7 @@
   ~gdesc{phrase}
   ~ldesc{phrase}
   ~edesc{phrase}
+  ~article{int}
   ~flags{int}
   ~nouns{phrase+}
   ~adjectives{phrase*}

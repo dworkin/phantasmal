@@ -90,6 +90,10 @@
 #define EXITD_PHRASES       "/data/phrase/exitd.phr"
 #define USER_COMMANDS_FILE  "/data/phrase/user_cmds.unq"
 
+#define WELCOME_MESSAGE     "/data/text/welcome.msg"
+#define SUSPENDED_MESSAGE   "/data/text/suspended.msg"
+#define SHUTDOWN_MESSAGE    "/data/text/shutdown.msg"
+
 # undef SYS_PERSISTENT
 # undef SYS_DATAGRAMS	    /* off by default */
 

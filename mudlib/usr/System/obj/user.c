@@ -785,7 +785,6 @@ static int process_message(string str)
       for(ctr = 0; ctr < size; ctr++) {
 	command = SYSTEM_USER->query_command_sets(locale, ctr, cmd);
 	if(command) {
-	  send_string("\n");
 	  call_other(this_object(),                /* Call on self... */
 		     command[0],                   /* The function */
 		     this_object(),                /* This user */

@@ -1,11 +1,13 @@
 ~DTD{
-  ~room{number?,location?,bdesc,gdesc,ldesc,edesc?,nouns,adjectives?,exit*}
+  ~room{number?,location?,bdesc,gdesc,ldesc,edesc?,article,nouns,
+        adjectives?,exit*}
   ~number{int}
   ~location{int}
   ~bdesc{phrase}
   ~gdesc{phrase}
   ~ldesc{phrase}
   ~edesc{phrase}
+  ~article{int}
   ~nouns{phrase+}
   ~adjectives{phrase*}
   ~exit{string}

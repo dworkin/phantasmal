@@ -63,7 +63,7 @@ static void cmd_compile(object user, string cmd, string str)
 {
   string objname;
 
-  user->message("Compiling '" + str + "'.\n");
+  user->message("Compiling '" + str + "'.\r\n");
 
   if(!sscanf(str, "$%*d") && sscanf(str, "%s.c", objname)) {
     mixed* status;
@@ -73,7 +73,7 @@ static void cmd_compile(object user, string cmd, string str)
       /* Check to see if there are children and most recent issue is
 	 destroyed... */
       if(status[3] && sizeof(status[3]) && !status[6]) {
-	user->message("Can't recompile -- library issue has children!\n");
+	user->message("Can't recompile -- library issue has children!\r\n");
 	return;
       }
     }
@@ -83,8 +83,8 @@ static void cmd_compile(object user, string cmd, string str)
     wiz::cmd_compile(user, cmd, str);
   } : {
     if(ERRORD->last_compile_errors()) {
-      user->message("===Compile errors:\n" + ERRORD->last_compile_errors());
-      user->message("---\n");
+      user->message("===Compile errors:\r\n" + ERRORD->last_compile_errors());
+      user->message("---\r\n");
     }
 
     if(ERRORD->last_runtime_error()) {
@@ -94,46 +94,46 @@ static void cmd_compile(object user, string cmd, string str)
       }
 
       user->message("===Runtime error: '" + ERRORD->last_runtime_error()
-		    + "'.\n");
-      user->message("---\n");
+		    + "'.\r\n");
+      user->message("---\r\n");
     }
 
     if(ERRORD->last_stack_trace()) {
       user->message("===Stack trace: '" + ERRORD->last_stack_trace()
-		    + "'.\n");
-      user->message("---\n");
+		    + "'.\r\n");
+      user->message("---\r\n");
     }
 
     return;
   }
 
-  user->message("Done.\n");
+  user->message("Done.\r\n");
 }
 
 
 static void cmd_destruct(object user, string cmd, string str)
 {
-  user->message("Destructing '" + str + "'.\n");
+  user->message("Destructing '" + str + "'.\r\n");
 
   catch {
     wiz::cmd_destruct(user, cmd, str);
   } : {
     if(ERRORD->last_runtime_error()) {
       user->message("===Runtime error: '" + ERRORD->last_runtime_error()
-		    + "'.\n");
-      user->message("---\n");
+		    + "'.\r\n");
+      user->message("---\r\n");
     }
 
     if(ERRORD->last_stack_trace()) {
       user->message("===Stack trace: '" + ERRORD->last_stack_trace()
-		    + "'.\n");
-      user->message("---\n");
+		    + "'.\r\n");
+      user->message("---\r\n");
     }
 
     return;
   }
 
-  user->message("Done.\n");
+  user->message("Done.\r\n");
 }
 
 
@@ -145,7 +145,7 @@ static void cmd_people(object user, string cmd, string str)
   int i, sz;
 
   if (str) {
-    message("Usage: " + cmd + "\n");
+    message("Usage: " + cmd + "\r\n");
     return;
   }
 
@@ -158,7 +158,7 @@ static void cmd_people(object user, string cmd, string str)
     str += (query_ip_number(usr->query_conn()) + SPACE16)[.. 15] +
       (usr->get_idle_time() + " seconds idle" + SPACE16)[..18] +
       ((sizeof(owners & ({ name })) == 0) ? " " : "*") +
-      name + "\n";
+      name + "\r\n";
   }
   message(str);
 }
@@ -168,7 +168,7 @@ static void cmd_writelog(object user, string cmd, string str)
   if(str) {
     LOGD->write_syslog(str);
   } else {
-    user->message("Usage: " + cmd + " <string to log>\n");
+    user->message("Usage: " + cmd + " <string to log>\r\n");
   }
 }
 
@@ -185,7 +185,7 @@ static void cmd_log_subscribe(object user, string cmd, string str) {
   if(str && sscanf(str, "%s %d", chan, lev) == 2) {
     LOGD->set_channel_sub(chan, lev);
     user->message("Setting channel sub for '" + chan + "' to "
-		  + lev + "\n");
+		  + lev + "\r\n");
     return;
   } else if (str && sscanf(str, "%s %s", chan, levname) == 2
 	     && LOGD->get_level_by_name(levname)) {
@@ -194,25 +194,25 @@ static void cmd_log_subscribe(object user, string cmd, string str) {
     level = LOGD->get_level_by_name(levname);
     LOGD->set_channel_sub(chan, level);
     user->message("Setting channel sub for '" + chan + "' to "
-		  + level + "\n");
+		  + level + "\r\n");
     return;
   } else if (str && sscanf(str, "%s", chan)) {
     lev = LOGD->channel_sub(chan);
     if(lev == -1) {
-      user->message("No subscription to channel '" + chan + "'\n");
+      user->message("No subscription to channel '" + chan + "'\r\n");
     } else {
-      user->message("Sub to channel '" + chan + "' is " + lev + "\n");
+      user->message("Sub to channel '" + chan + "' is " + lev + "\r\n");
     }
     return;
   } else {
-    user->message("Usage: %log_subscribe <channel> <level>\n");
+    user->message("Usage: %log_subscribe <channel> <level>\r\n");
   }
 }
 
 static void cmd_list_dest(object user, string cmd, string str)
 {
   if(str && !STRINGD->is_whitespace(str)) {
-    user->message("Usage: " + cmd + "\n");
+    user->message("Usage: " + cmd + "\r\n");
     return;
   }
 
@@ -236,20 +236,20 @@ static void cmd_od_report(object user, string cmd, string str)
   i = -1;
   if(!str || (sscanf(str, "$%d%s", i, str) == 2 &&
 	      (i < 0 || i >= hmax || str != ""))) {
-    message("Usage: " + cmd + " <obj> | $<ident>\n");
+    message("Usage: " + cmd + " <obj> | $<ident>\r\n");
     return;
   }
 
   if (i >= 0) {
     obj = fetch(i);
     if(typeof(obj) != T_OBJECT) {
-      message("Not an object.\n");
+      message("Not an object.\r\n");
       return;
     }
   } else if (sscanf(str, "$%s", str)) {
     obj = ::ident(str);
     if (!obj) {
-      message("Unknown: $ident.\n");
+      message("Unknown: $ident.\r\n");
       return;
     }
   } else if (sscanf(str, "#%*d")) {
@@ -262,9 +262,9 @@ static void cmd_od_report(object user, string cmd, string str)
 
   str = catch(report = OBJECTD->report_on_object(obj));
   if(str) {
-    str += "\n";
+    str += "\r\n";
   } else if (!report) {
-    str = "Nil report from Object Manager!\n";
+    str = "Nil report from Object Manager!\r\n";
   } else {
     str = report;
   }
@@ -275,24 +275,24 @@ static void cmd_od_report(object user, string cmd, string str)
 
 static void cmd_full_rebuild(object user, string cmd, string str) {
   if(str && !STRINGD->is_whitespace(str)) {
-    user->message("Usage: " + cmd + "\n");
+    user->message("Usage: " + cmd + "\r\n");
     return;
   }
 
   if(!access(user->query_name(), "/", FULL_ACCESS)) {
     user->message("Currently only those with full administrative access "
-		  + "may do a full rebuild.\n");
+		  + "may do a full rebuild.\r\n");
     return;
   }
 
-  user->message("Recompiling auto object...\n");
+  user->message("Recompiling auto object...\r\n");
 
   catch {
     OBJECTD->recompile_auto_object(user);
   } : {
     if(ERRORD->last_compile_errors()) {
-      user->message("===Compile errors:\n" + ERRORD->last_compile_errors());
-      user->message("---\n");
+      user->message("===Compile errors:\r\n" + ERRORD->last_compile_errors());
+      user->message("---\r\n");
     }
 
     if(ERRORD->last_runtime_error()) {
@@ -302,20 +302,20 @@ static void cmd_full_rebuild(object user, string cmd, string str) {
       }
 
       user->message("===Runtime error: '" + ERRORD->last_runtime_error()
-		    + "'.\n");
-      user->message("---\n");
+		    + "'.\r\n");
+      user->message("---\r\n");
     }
 
     if(ERRORD->last_stack_trace()) {
       user->message("===Stack trace: '" + ERRORD->last_stack_trace()
-		    + "'.\n");
-      user->message("---\n");
+		    + "'.\r\n");
+      user->message("---\r\n");
     }
 
     return;
   }
 
-  user->message("Done.\n");
+  user->message("Done.\r\n");
 }
 
 
@@ -325,8 +325,8 @@ static void cmd_help(object user, string cmd, string str) {
 
   if (str && sscanf(str, "%d %s", index, str) == 2) {
     if(index < 1) {
-      user->message("Usage: " + cmd + " <word>\n");
-      user->message("   or  " + cmd + " <num> <word>\n");
+      user->message("Usage: " + cmd + " <word>\r\n");
+      user->message("   or  " + cmd + " <num> <word>\r\n");
       return;
     }
     index = index - 1;  /* User sees 1-indexed, we see 0-indexed */
@@ -342,19 +342,19 @@ static void cmd_help(object user, string cmd, string str) {
     if((sizeof(hlp) <= index) || (sizeof(hlp) <= 0)
        || (index < 0)) {
       user->message("Only " + sizeof(hlp) + " help files on \""
-		    + str + "\".\n");
+		    + str + "\".\r\n");
     } else {
       if(sizeof(hlp) > 1) {
 	user->message("Help on " + str + ":    [" + sizeof(hlp)
-		      + " entries]\n");
+		      + " entries]\r\n");
       }
       user->message(hlp[index][1]->to_string(user));
-      user->message("\n");
+      user->message("\r\n");
     }
     return;
   }
 
-  user->message("No help on \"" + str + "\".\n");
+  user->message("No help on \"" + str + "\".\r\n");
 }
 
 
@@ -368,18 +368,18 @@ static void cmd_new_portable(object user, string cmd, string str) {
     portnum = -1;
   } else if(sscanf(str, "%*s %*s") == 2
 	    || sscanf(str, "#%d", portnum) != 1) {
-    user->message("Usage: " + cmd + " [#port num]\n");
+    user->message("Usage: " + cmd + " [#port num]\r\n");
     return;
   }
 
   if(PORTABLED->get_port_by_num(portnum)) {
-    user->message("There is already a portable with that number!\n");
+    user->message("There is already a portable with that number!\r\n");
     return;
   }
 
   segown = OBJNUMD->get_segment_owner(portnum / 100);
   if(portnum >= 0 && segown && segown != PORTABLED) {
-    user->message("That number is in a segment reserved for non-portables!\n");
+    user->message("That number is in a segment reserved for non-portables!\r\n");
     return;
   }
 
@@ -395,7 +395,7 @@ static void cmd_new_portable(object user, string cmd, string str) {
     user->get_location()->add_to_container(port);
   }
 
-  user->message("Added portable #" + port->get_number() + ".\n");
+  user->message("Added portable #" + port->get_number() + ".\r\n");
 }
 
 static void cmd_delete_portable(object user, string cmd, string str) {
@@ -404,13 +404,13 @@ static void cmd_delete_portable(object user, string cmd, string str) {
 
   if(!str || STRINGD->is_whitespace(str)
      || sscanf(str, "%*s %*s") == 2 || !sscanf(str, "#%d", portnum)) {
-    user->message("Usage: " + cmd + " #<portable num>\n");
+    user->message("Usage: " + cmd + " #<portable num>\r\n");
     return;
   }
 
   port = PORTABLED->get_portable_by_num(portnum);
   if(!port) {
-    user->message("No portable by that number (#" + portnum + ").\n");
+    user->message("No portable by that number (#" + portnum + ").\r\n");
     return;
   }
 
@@ -431,11 +431,11 @@ static void cmd_list_portables(object user, string cmd, string str) {
   string  tmp;
 
   if(str && !STRINGD->is_whitespace(str)) {
-    user->message("Usage: " + cmd + "\n");
+    user->message("Usage: " + cmd + "\r\n");
     return;
   }
 
-  user->message("Portables:\n");
+  user->message("Portables:\r\n");
 
   portables = ({ });
   port_seg = PORTABLED->get_portable_segments();
@@ -456,13 +456,13 @@ static void cmd_list_portables(object user, string cmd, string str) {
     phr = port->get_glance();
     tmp += "  " + portables[ctr] + "   ";
     tmp += phr->to_string(user);
-    tmp += "\n";
+    tmp += "\r\n";
 
     /* Output as each line finishes for debugging */
     user->message(tmp);
     tmp = "";
   }
-  user->message("-----\n");
+  user->message("-----\r\n");
 
 }
 
@@ -471,16 +471,16 @@ static void cmd_segment_map(object user, string cmd, string str) {
   int hs, ctr;
 
   if(str && !STRINGD->is_whitespace(str)) {
-    user->message("Usage: " + cmd + "\n");
+    user->message("Usage: " + cmd + "\r\n");
     return;
   }
 
-  user->message("Segments:\n");
+  user->message("Segments:\r\n");
   hs = OBJNUMD->get_highest_segment();
   for(ctr = 0; ctr <= hs; ctr++) {
-    user->message(ctr + "   " + OBJNUMD->get_segment_owner(ctr) + "\n");
+    user->message(ctr + "   " + OBJNUMD->get_segment_owner(ctr) + "\r\n");
   }
-  user->message("--------\n");
+  user->message("--------\r\n");
 }
 
 
@@ -491,9 +491,9 @@ static void cmd_save_portables(object user, string cmd, string str) {
   int    ctr;
 
   if(!str || STRINGD->is_whitespace(str)) {
-    user->message("Usage: " + cmd + " <file to write>\n");
+    user->message("Usage: " + cmd + " <file to write>\r\n");
     user->message("   or  " + cmd
-		  + " <file to write> #<num> #<num> #<num>...\n");
+		  + " <file to write> #<num> #<num> #<num>...\r\n");
     return;
   }
 
@@ -502,7 +502,7 @@ static void cmd_save_portables(object user, string cmd, string str) {
   rename_file(str, str + ".old");  /* Try to remove & rename, just in case */
 
   if(sizeof(get_dir(str)[0])) {
-    user->message("Couldn't make space for file -- can't overwrite!\n");
+    user->message("Couldn't make space for file -- can't overwrite!\r\n");
     return;
   }
 
@@ -526,14 +526,14 @@ static void cmd_save_portables(object user, string cmd, string str) {
       if(sscanf(args[ctr], "#%d", portnum)) {
 	ports += ({ portnum });
       } else {
-	user->message("'" + args[ctr] + "' is not a valid portable number.\n");
+	user->message("'" + args[ctr] + "' is not a valid portable number.\r\n");
 	return;
       }
     }
   }
 
   if(!ports || !sizeof(ports)) {
-    user->message("No portables to save!\n");
+    user->message("No portables to save!\r\n");
     return;
   }
 
@@ -542,7 +542,7 @@ static void cmd_save_portables(object user, string cmd, string str) {
     port = PORTABLED->get_portable_by_num(ports[ctr]);
 
     if(!port) {
-      user->message("\nCan't find portable #" + ports[ctr] + ".\n");
+      user->message("\r\nCan't find portable #" + ports[ctr] + ".\r\n");
       continue;
     }
 
@@ -553,7 +553,7 @@ static void cmd_save_portables(object user, string cmd, string str) {
     user->message(".");
   }
 
-  user->message("\nDone!\n");
+  user->message("\r\nDone!\r\n");
 }
 
 
@@ -565,12 +565,12 @@ static void cmd_load_portables(object user, string cmd, string str) {
 
   if(!access(user->query_name(), "/", FULL_ACCESS)) {
     user->message("Currently only those with full administrative access "
-		  + "may load portables.\n");
+		  + "may load portables.\r\n");
     return;
   }
 
   if(!str || STRINGD->is_whitespace(str)) {
-    user->message("Usage: " + cmd + " <file to load>\n");
+    user->message("Usage: " + cmd + " <file to load>\r\n");
     return;
   }
 
@@ -583,7 +583,7 @@ static void cmd_load_portables(object user, string cmd, string str) {
 	ports += ({ portnum });
       } else {
 	user->message("'" + args[iter]
-		      + "' doesn't look like a portable number!\n");
+		      + "' doesn't look like a portable number!\r\n");
 	return;
       }
     }
@@ -592,12 +592,12 @@ static void cmd_load_portables(object user, string cmd, string str) {
   /* Check validity of file */
   str = STRINGD->trim_whitespace(str);
   if(!sizeof(get_dir(str)[0])) {
-    user->message("Can't find file: " + str + "\n");
+    user->message("Can't find file: " + str + "\r\n");
     return;
   }
   port_file = read_file(str);
   if(!port_file || !strlen(port_file)) {
-    user->message("Error reading portable file, or file is empty.\n");
+    user->message("Error reading portable file, or file is empty.\r\n");
     return;
   }
   if(strlen(port_file) > MAX_STRING_SIZE - 3) {
@@ -613,7 +613,7 @@ static void cmd_load_portables(object user, string cmd, string str) {
   }
   tmp = SYSTEM_WIZTOOL->parse_to_portable(port_file);
   if(!tmp) {
-    user->message("Cannot parse UNQ as portable while adding portables!\n");
+    user->message("Cannot parse UNQ as portable while adding portables!\r\n");
     return;
   }
 
@@ -639,20 +639,20 @@ static void cmd_load_portables(object user, string cmd, string str) {
     for(iter = 0; iter < sizeof(ports); iter++) {
       tmp += "#" + ports[iter] + " ";
     }
-    tmp += "\n";
+    tmp += "\r\n";
     user->message(tmp);
 
     if(sizeof(unq_data)) {
-      user->message("Attempting remaining portables:\n\n");
+      user->message("Attempting remaining portables:\r\n\r\n");
     } else {
-      user->message("No specified portables found, ignoring.\n");
+      user->message("No specified portables found, ignoring.\r\n");
       return;
     }
   }
 
-  user->message("Registering portables...\n");
+  user->message("Registering portables...\r\n");
   PORTABLED->add_dtd_unq_portables(unq_data, user->get_location(), str);
-  user->message("Done.\n");
+  user->message("Done.\r\n");
 }
 
 static void cmd_set_port_flag(object user, string cmd, string str) {
@@ -660,9 +660,12 @@ static void cmd_set_port_flag(object user, string cmd, string str) {
   int    objnum, val;
   object port;
 
+  val = 1;
+
   if(sscanf(str, "#%d %s %d", objnum, flag, val) != 3
-     && sscanf(str, "#%d %s %s", objnum, flag, vstring) != 3) {
-    user->message("Usage: " + cmd + " #<portnum> <flagname> <val>\n");
+     && sscanf(str, "#%d %s %s", objnum, flag, vstring) != 3
+     && sscanf(str, "#%d %s", objnum, flag) != 2) {
+    user->message("Usage: " + cmd + " #<portnum> <flagname> [<val>]\r\n");
     return;
   }
 
@@ -676,14 +679,14 @@ static void cmd_set_port_flag(object user, string cmd, string str) {
 	      || vstring == "false") {
       val = 0;
     } else {
-      user->message("Don't recognize '" + vstring + "' as true or false.\n");
+      user->message("Don't recognize '" + vstring + "' as true or false.\r\n");
       return;
     }
   }
 
   port = PORTABLED->get_portable_by_num(objnum);
   if(!port) {
-    user->message("Don't recognize object #" + objnum + " as a portable.\n");
+    user->message("Don't recognize object #" + objnum + " as a portable.\r\n");
     return;
   }
 
@@ -697,9 +700,9 @@ static void cmd_set_port_flag(object user, string cmd, string str) {
 	     || flag == "descless") {
     port->set_no_desc(val);
   } else {
-    user->message("Don't recognize '" + flag + "' as a portable flag.\n");
+    user->message("Don't recognize '" + flag + "' as a portable flag.\r\n");
     return;
   }
 
-  user->message("Done.\n");
+  user->message("Done.\r\n");
 }

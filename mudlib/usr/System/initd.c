@@ -141,6 +141,8 @@ private void save_mud_data(void) {
 		       LOG_FATAL);
   }
 
+  
+
   LOGD->write_syslog("Writing rooms to file", LOG_NORMAL);
   objects = MAPD->rooms_in_zone(0) - ({ 0 });
   for(ctr = 0; ctr < sizeof(objects); ctr++) {

@@ -1,6 +1,7 @@
 #include <config.h>
 
 #include <phrase.h>
+#include <grammar.h>
 
 /*
  * /lib/object.c
@@ -26,12 +27,15 @@ object edesc;  /* An "examine" description, meant to convey details only
 		  available when searched for.  Defaults to ldesc. */
 
 /* Specifiers, determining how the player may refer to the object.
-   These replace the name field, above, with something complex and
+   These replace the name field (obsolete) with something complex and
    localized. */
 mixed** nouns;   /* An array of phrases for the various nouns which can
 		    specify this object */
 mixed** adjectives;  /* An array of phrases for allowable adjectives that
 			specify this object */
+
+int     desc_article; /* This is the article type which may be optionally
+			 prepended to brief and glance descriptions */
 
 /* Tracking number for OBJNUMD */
 int    tr_num;
@@ -65,6 +69,47 @@ void destructed(int clone) {
 
 object get_location(void) {
   return location;
+}
+
+/* This private routine takes a locale and a phrase struct and tries
+   to deduce the appropriate article to use for it. */
+private string choose_article(int locale, object desc) {
+  if(locale == LANG_espanolUS) {
+    return "el";
+  } else if(locale == LANG_englishUS) {
+    switch(desc_article) {
+    case ART_DEFINITE:
+      return "the";
+    case ART_PROPER:
+      return "";
+    case ART_INDEFINITE: {
+      if(STRINGD->should_use_an(desc->get_content_by_lang(LANG_englishUS))) {
+	return "an";
+      }
+      return "a";
+    }
+    default:
+      return "some";
+    }
+  }
+
+  return "---";
+}
+
+string get_brief_article(int locale) {
+  return choose_article(locale, bdesc);
+}
+
+string get_glance_article(int locale) {
+  return choose_article(locale, gdesc);
+}
+
+int get_article_type(void) {
+  return desc_article;
+}
+
+void set_article_type(int new_type) {
+  desc_article = new_type;
 }
 
 object get_mobile(void) {

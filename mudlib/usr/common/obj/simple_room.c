@@ -90,6 +90,8 @@ string to_unq_text(void) {
     ret += "  ~edesc{" + edesc->to_unq_text() + "}\n";
   }
 
+  ret += "  ~article{" + desc_article + "}\n";
+
   /* Skip debug locale */
   tmp_n = tmp_a = "";
   for(locale = 1; locale < sizeof(nouns); locale++) {
@@ -138,6 +140,8 @@ void from_dtd_unq(mixed* unq) {
       set_look(unq[ctr][1]);
     else if(unq[ctr][0] == "edesc")
       set_examine(unq[ctr][1]);
+    else if(unq[ctr][0] == "article")
+      desc_article = unq[ctr][1];
     else if(unq[ctr][0] == "nouns") {
       for(ctr2 = 0; ctr2 < sizeof(unq[ctr][1]); ctr2++) {
 	add_noun(unq[ctr][1][ctr2]);

@@ -299,11 +299,14 @@ static void cmd_goto_room(object user, string cmd, string str) {
   if(sscanf(str, "#%d", roomnum)) {
     room = MAPD->get_room_by_num(roomnum);
     if(!room) {
-      user->message("Can't locate room #" + roomnum + "\n");
+      room = PORTABLED->get_portable_by_num(roomnum);
+    }
+    if(!room) {
+      user->message("Can't locate room or portable #" + roomnum + "\n");
       return;
     }
   } else {
-    user->message("Usage: " + cmd + " #<room number>\n");
+    user->message("Usage: " + cmd + " #<location num>\n");
     return;
   }
 

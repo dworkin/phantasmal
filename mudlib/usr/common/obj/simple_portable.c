@@ -42,6 +42,7 @@ string to_unq_text(void) {
     ret += "  ~edesc{" + edesc->to_unq_text() + "}\n";
   }
  
+  ret += "  ~article{" + desc_article + "}\n";
   ret += "  ~flags{" + portflags + "}\n";
 
   /* Skip debug locale */
@@ -90,6 +91,8 @@ void from_dtd_unq(mixed* unq) {
       set_look(unq[ctr][1]);
     else if(unq[ctr][0] == "edesc")
       set_examine(unq[ctr][1]);
+    else if(unq[ctr][0] == "article")
+      desc_article = unq[ctr][1];
     else if(unq[ctr][0] == "flags")
       portflags = unq[ctr][1];
     else if(unq[ctr][0] == "nouns") {

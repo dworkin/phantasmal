@@ -9,6 +9,7 @@
 #include <status.h>
 #include <limits.h>
 #include <log.h>
+#include <grammar.h>
 
 inherit access API_ACCESS;
 
@@ -69,19 +70,19 @@ static void cmd_set_obj_desc(object user, string cmd, string str) {
   desc = nil;
   if(!str || str == "") {
     obj = user->get_location();
-    user->message("(This location)\n");
+    user->message("(This location)\r\n");
   } else if(sscanf(str, "%s %s", objname, desc) == 2
 	    || sscanf(str, "%s", objname)) {
     obj = resolve_object_name(user, objname);
   }
 
   if(!obj) {
-    user->message("Not a valid object to be set!\n");
+    user->message("Not a valid object to be set!\r\n");
     return;
   }
 
   user->message("Locale is ");
-  user->message(PHRASED->name_for_language(user->get_locale()) + "\n");
+  user->message(PHRASED->name_for_language(user->get_locale()) + "\r\n");
 
   if(!desc) {
     object state1, state2;
@@ -101,7 +102,7 @@ static void cmd_set_obj_desc(object user, string cmd, string str) {
     object phr;
 
     user->message("Setting " + look_type + " desc on object #"
-		  + obj->get_number() + "\n");
+		  + obj->get_number() + "\r\n");
 
     if(!function_object("get_" + look_type, obj))
       error("Can't find getter function for " + look_type + " in "
@@ -117,14 +118,14 @@ static void cmd_set_obj_desc(object user, string cmd, string str) {
 
 
 static void cmd_stat(object user, string cmd, string str) {
-  int     objnum, ctr;
+  int     objnum, ctr, art_type;
   object  obj, room, port, exit, location;
   string* words;
-  mixed*  objs;
+  mixed*  objs, *art_desc;
 
   if(!str || STRINGD->is_whitespace(str) || sscanf(str, "%*s %*s") == 2
      || !sscanf(str, "#%d", objnum)) {
-    user->message("Usage: " + cmd + " #<obj num>\n");
+    user->message("Usage: " + cmd + " #<obj num>\r\n");
     return;
   }
 
@@ -136,7 +137,7 @@ static void cmd_stat(object user, string cmd, string str) {
 
   if(!obj) {
     user->message("No object #" + objnum
-		  + " found registered with MAPD, EXITD or PORTABLED.\n");
+		  + " found registered with MAPD, EXITD or PORTABLED.\r\n");
     return;
   }
 
@@ -150,81 +151,90 @@ static void cmd_stat(object user, string cmd, string str) {
       if(location->get_glance()) {
 	user->message(" (");
 	user->send_phrase(location->get_glance());
-	user->message(")\n");
+	user->message(")\r\n");
       } else {
-	user->message("\n");
+	user->message("\r\n");
       }
     } else {
-      user->message(" (unregistered)\n");
+      user->message(" (unregistered)\r\n");
     }
   } else {
-    user->message(" (none)\n");
+    user->message(" (none)\r\n");
   }
 
   user->message("Descriptions ("
 		+ PHRASED->locale_name_for_language(user->get_locale())
-		+ ")\n");
+		+ ")\r\n");
 
-  user->message("Brief:\n  ");
+  user->message("Brief:\r\n  ");
   if(obj->get_brief()) {
-    user->message("'" + obj->get_brief()->to_string(user) + "'\n");
+    user->message("'" + obj->get_brief()->to_string(user) + "'\r\n");
   } else {
-    user->message("(none)\n");
+    user->message("(none)\r\n");
   }
 
-  user->message("Glance:\n  ");
+  user->message("Glance:\r\n  ");
   if(obj->get_glance()) {
-    user->message("'" + obj->get_glance()->to_string(user) + "'\n");
+    user->message("'" + obj->get_glance()->to_string(user) + "'\r\n");
   } else {
-    user->message("(none)\n");
+    user->message("(none)\r\n");
   }
 
-  user->message("Look:\n  ");
+  user->message("Look:\r\n  ");
   if(obj->get_look()) {
-    user->message("'" + obj->get_look()->to_string(user) + "'\n");
+    user->message("'" + obj->get_look()->to_string(user) + "'\r\n");
   } else {
-    user->message("(none)\n");
+    user->message("(none)\r\n");
   }
 
-  user->message("Examine:\n  ");
+  user->message("Examine:\r\n  ");
   if(obj->get_examine()) {
     if(obj->get_examine() == obj->get_look()) {
-      user->message("(defaults to Look desc)\n");
+      user->message("(defaults to Look desc)\r\n");
     } else {
-      user->message("'" + obj->get_examine()->to_string(user) + "'\n");
+      user->message("'" + obj->get_examine()->to_string(user) + "'\r\n");
     }
   } else {
-    user->message("(none)\n");
+    user->message("(none)\r\n");
   }
 
+  /* Show user the article type */
+  user->message("Article: ");
+  art_type = obj->get_article_type();
+  art_desc = ({ "Undefined", "Definite (the)", "Indefinite (a/an)",
+		  "Proper Name (no article)", "Illegal", "Illegal" });
+  user->message(art_desc[art_type]);
+  user->message("\r\n");
+
+  /* Show user the nouns and adjectives */
   user->message("Nouns ("
 		+ PHRASED->locale_name_for_language(user->get_locale())
 		+ "): ");
   words = obj->get_nouns(user->get_locale());
   user->message(implode(words, ", "));
-  user->message("\n");
+  user->message("\r\n");
 
   user->message("Adjectives ("
 		+ PHRASED->locale_name_for_language(user->get_locale())
 		+ "): ");
   words = obj->get_adjectives(user->get_locale());
   user->message(implode(words, ", "));
-  user->message("\n");
+  user->message("\r\n");
 
-  user->message("\n");
+  user->message("\r\n");
 
   if(port) {
-    user->message("Portable flags:\n");
+    user->message("Portable flags:\r\n");
     if(port->is_container()) {
-      user->message("  container:  yes\n");
+      user->message("  container:  yes\r\n");
     }
     if(port->is_open()) {
-      user->message("  open:       yes\n");
+      user->message("  open:       yes\r\n");
     }
     if(port->is_no_desc()) {
-      user->message("  descless:   yes\n");
+      user->message("  descless:   yes\r\n");
     }
-    user->message("\n");
+    user->message("\r\n");
   }
   if(function_object("num_objects_in_container", obj)) {
     user->message("Contains objects [" + obj->num_objects_in_container()
@@ -238,28 +248,70 @@ static void cmd_stat(object user, string cmd, string str) {
 	user->message("<unreg> ");
       }
     }
-    user->message("\nContains " + sizeof(obj->mobiles_in_container())
-		  + " mobiles.\n\n");
+    user->message("\r\nContains " + sizeof(obj->mobiles_in_container())
+		  + " mobiles.\r\n\r\n");
   }
 
   if(obj->get_mobile()) {
-    user->message("Object is sentient.\n");
+    user->message("Object is sentient.\r\n");
     if(obj->get_mobile()->get_user()) {
       user->message("Object is "
 		    + obj->get_mobile()->get_user()->query_name()
-		    + "'s body.\n");
+		    + "'s body.\r\n");
     }
   }
 
   if(room) {
-    user->message("Registered with MAPD as a room.\n");
+    user->message("Registered with MAPD as a room.\r\n");
   }
   if(port) {
-    user->message("Registered with PORTABLED as a portable.\n");
+    user->message("Registered with PORTABLED as a portable.\r\n");
   }
   if(exit) {
-    user->message("Registered with EXITD as an exit.\n");
+    user->message("Registered with EXITD as an exit.\r\n");
   }
+}
+
+
+static void cmd_set_obj_article(object user, string cmd, string str) {
+  string  objname, article;
+  mapping arts;
+  int     artnum;
+  object  obj;
+
+  arts = ([ "def": ART_DEFINITE,
+	    "definite": ART_DEFINITE,
+	    "the": ART_DEFINITE,
+	    "prop": ART_PROPER,
+	    "none": ART_PROPER,
+	    "proper": ART_PROPER,
+	    "name": ART_PROPER,
+	    "a": ART_INDEFINITE,
+	    "an": ART_INDEFINITE,
+	    "ind": ART_INDEFINITE,
+	    "indefinite": ART_INDEFINITE,
+	    "indef": ART_INDEFINITE,
+	    ]);
+
+  if(!str || sscanf(str, "%*s %*s %*s") == 3
+     || sscanf(str, "%s %s", objname, article) != 2) {
+    user->message("Usage: " + cmd + " #<objnum> <article>\r\n");
+  }
+
+  obj = resolve_object_name(user, objname);
+  if(!obj) {
+    user->message("Can't find object '" + objname + "'.\r\n");
+    return;
+  }
+
+  if(!arts[article]) {
+    user->message("The word '" + article
+		  + "' doesn't seem to be a kind of article.\r\n");
+    return;
+  }
+
+  obj->set_article_type(arts[article]);
+  user->message("Article type set.\r\n");
 }
 
 
@@ -272,14 +324,14 @@ static void cmd_add_nouns(object user, string cmd, string str) {
     str = STRINGD->trim_whitespace(str);
 
   if(!str || str == "" || !sscanf(str, "%*s %*s")) {
-    user->message("Usage: " + cmd + " <noun> [<noun> <noun>...]\n");
+    user->message("Usage: " + cmd + " #<objnum> [<noun> <noun>...]\r\n");
     return;
   }
 
   words = explode(str, " ");
   obj = resolve_object_name(user, words[0]);
   if(!obj) {
-    user->message("Can't find object '" + words[0] + "'.\n");
+    user->message("Can't find object '" + words[0] + "'.\r\n");
     return;
   }
 
@@ -289,11 +341,11 @@ static void cmd_add_nouns(object user, string cmd, string str) {
 
   user->message("Adding nouns ("
 		+ PHRASED->locale_name_for_language(user->get_locale())
-		+ ").\n");
+		+ ").\r\n");
   phr = new_object(LWO_PHRASE);
   phr->set_content_by_lang(user->get_locale(), implode(words[1..],","));
   obj->add_noun(phr);
-  user->message("Done.\n");
+  user->message("Done.\r\n");
 }
 
 
@@ -303,16 +355,16 @@ static void cmd_clear_nouns(object user, string cmd, string str) {
   if(str)
     str = STRINGD->trim_whitespace(str);
   if(!str || str == "" || sscanf(str, "%*s %*s")) {
-    user->message("Usage: " + cmd + "\n");
+    user->message("Usage: " + cmd + "\r\n");
     return;
   }
 
   obj = resolve_object_name(user, str);
   if(obj) {
     obj->clear_nouns();
-    user->message("Cleared.\n");
+    user->message("Cleared.\r\n");
   } else {
-    user->message("Couldn't find object '" + str + "'.\n");
+    user->message("Couldn't find object '" + str + "'.\r\n");
   }
 }
 
@@ -326,14 +378,14 @@ static void cmd_add_adjectives(object user, string cmd, string str) {
     str = STRINGD->trim_whitespace(str);
 
   if(!str || str == "" || !sscanf(str, "%*s %*s")) {
-    user->message("Usage: " + cmd + " #<objnum> [<adj> <adj>...]\n");
+    user->message("Usage: " + cmd + " #<objnum> [<adj> <adj>...]\r\n");
     return;
   }
 
   words = explode(str, " ");
   obj = resolve_object_name(user, words[0]);
   if(!obj) {
-    user->message("Can't find object '" + words[0] + "'.\n");
+    user->message("Can't find object '" + words[0] + "'.\r\n");
     return;
   }
 
@@ -343,11 +395,11 @@ static void cmd_add_adjectives(object user, string cmd, string str) {
 
   user->message("Adding adjectives ("
 		+ PHRASED->locale_name_for_language(user->get_locale())
-		+ ").\n");
+		+ ").\r\n");
   phr = new_object(LWO_PHRASE);
   phr->set_content_by_lang(user->get_locale(), implode(words[1..],","));
   obj->add_adjective(phr);
-  user->message("Done.\n");
+  user->message("Done.\r\n");
 }
 
 
@@ -357,16 +409,16 @@ static void cmd_clear_adjectives(object user, string cmd, string str) {
   if(str)
     str = STRINGD->trim_whitespace(str);
   if(!str || str == "" || sscanf(str, "%*s %*s")) {
-    user->message("Usage: " + cmd + "\n");
+    user->message("Usage: " + cmd + "\r\n");
     return;
   }
 
   obj = resolve_object_name(user, str);
   if(obj) {
     obj->clear_adjectives();
-    user->message("Cleared.\n");
+    user->message("Cleared.\r\n");
   } else {
-    user->message("Couldn't find object '" + str + "'.\n");
+    user->message("Couldn't find object '" + str + "'.\r\n");
   }
 }
 
@@ -377,7 +429,7 @@ static void cmd_move_obj(object user, string cmd, string str) {
 
   if(!str || sscanf(str, "%*s %*s %*s") == 3
      || sscanf(str, "#%d #%d", objnum1, objnum2) != 2) {
-    user->message("Usage: " + cmd + " #<obj> #<location>\n");
+    user->message("Usage: " + cmd + " #<obj> #<location>\r\n");
     return;
   }
 
@@ -387,7 +439,7 @@ static void cmd_move_obj(object user, string cmd, string str) {
   }
   if(!obj2) {
     user->message("The second argument must be a room or portable.  Obj #"
-		  + objnum2 + " is not.\n");
+		  + objnum2 + " is not.\r\n");
     return;
   }
 
@@ -401,7 +453,7 @@ static void cmd_move_obj(object user, string cmd, string str) {
 
   if(!obj1) {
     user->message("Obj #" + objnum1 + " doesn't appear to be a registered "
-		  + "room, portable or exit.\n");
+		  + "room, portable or exit.\r\n");
     return;
   }
 
@@ -414,5 +466,5 @@ static void cmd_move_obj(object user, string cmd, string str) {
   user->send_phrase(obj1->get_brief());
   user->message(" (#" + obj1->get_number() + ") into ");
   user->send_phrase(obj2->get_brief());
-  user->message(" (#" + obj2->get_number() + ").\n");
+  user->message(" (#" + obj2->get_number() + ").\r\n");
 }

@@ -1047,7 +1047,7 @@ string report_on_object(string spec) {
 void suspend_system() {
   if(SYSTEM()) {
     RSRCD->suspend_callouts();
-    TELNETD->suspend_input();
+    TELNETD->suspend_input(0);  /* 0 means "not shutdown" */
   } else
     error("Only privileged code can call suspend_system!");
 }
