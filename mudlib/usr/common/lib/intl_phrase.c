@@ -5,8 +5,6 @@
 
 inherit PHRASE;
 
-/* Phrase functions */
-
 mixed* content;
 
 static void create(varargs int clone)
