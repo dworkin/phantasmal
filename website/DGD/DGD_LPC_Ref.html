@@ -555,10 +555,12 @@ b = a[1..4];
       <b>...</b> operator. </p>
 
     <p> The <b>varargs</b> keyword is put into the function declaration,
-      like this:
+      like this: </p>
     <pre>
 int print_one_or_two_numbers(int first, varargs int second);
     </pre>
+
+    <p>
     This will allow the function to take one or two arguments.  The extra
     argument, if not supplied, defaults to the same value that
     an uninitialized field would.  For an integer that means the value
@@ -566,11 +568,14 @@ int print_one_or_two_numbers(int first, varargs int second);
     &quot;print_one_or_two_numbers(7,3);&quot; or
     &quot;print_one_or_two_numbers(8);&quot;.  If there are multiple
     varargs arguments, simply put the varargs keyword once, before
-    the first varargs argument.  For instance:
+    the first varargs argument.  For instance: </p>
+
     <pre>
 int print_two_to_five_numbers(int first, int second, varargs int third,
                               int fourth, int fifth);
     </pre>
+
+    <p>
     This function may be called with between two and five integers,
     as the name suggests.  You can't, for instance, call it and
     supply a &quot;fourth&quot; argument but not a &quot;third&quot;
@@ -584,10 +589,13 @@ int print_two_to_five_numbers(int first, int second, varargs int third,
       number of arguments to another varargs-type function. </p>
 
     <p> When you define a varargs function with <b>...</b>, the
-      final argument will silently become an array.  For instance:
+      final argument will silently become an array.  For instance: </p>
+
     <pre>
 void print_some_stuff(string format, mixed stuff_to_print...);
     </pre>
+
+    <p>
     Though you declared it <b>mixed</b>, stuff_to_print is actually
     a <b>mixed *</b>.  If you'd declared it <b>int</b>, it would
     have become an <b>int *</b>.  If the function is called as
@@ -609,13 +617,16 @@ void print_some_stuff(string format, mixed stuff_to_print...);
     <p> To use it, the final argument of your function call should be
       an array.  For instance, if <b>print_some_stuff</b> used
       another function underneath to do the real work, the body of
-      it might be:
+      it might be: </p>
+
     <pre>
 void print_some_stuff(string format, mixed stuff)
 {
     "/usr/leetboy/obj/myprint"->myprint(format, stuff...);
 }
     </pre>
+
+    <p>
     The call to <i>myprint</i> above would expand into a call
     like the original one -- one with four arguments in the example
     above.  So the array is expanded back into the individual
@@ -690,14 +701,17 @@ void print_some_stuff(string format, mixed stuff)
     <h3> Other Differences </h3>
 
     <p> In LPC you can't do the C-style &quot;declare and initialize&quot;
-      with both of those things on one line.  For instance, this:
+      with both of those things on one line.  For instance, this: </p>
+
     <pre>
 mapping dinner_schedule = ([ ]);
-    </pre> should instead be this: <pre>
+    </pre>
+    <p> should instead be this: </p>
+
+    <pre>
 mapping dinner_schedule;
 dinner_schedule = ([ ]);
     </pre>
-  </p>
 
     <p> Unlike C, LPC doesn't have a proper &quot;char&quot; type.  Instead,
       it just uses integers.  This can cause some slightly oddities, but
@@ -719,7 +733,8 @@ dinner_schedule = ([ ]);
       error, and if so then you'd like to catch the error, possibly
       examine the return value and do some cleanup.  LPC can help
       you.  Here's a bit of code from the Kernel MUDLib's
-      &quot;/lib/wiztool.c&quot;:
+      &quot;/lib/wiztool.c&quot;: </p>
+
     <pre>
     err = catch(result = ::read_file(path, offset, size));
     if (err) {
@@ -727,6 +742,8 @@ dinner_schedule = ([ ]);
         return -1;
     }
     </pre>
+
+    <p>
     The <b>message</b> and <b>read_file</b> functions do about what
     you'd expect.  The interesting bit is the <b>catch</b>
     statement.  Note the parentheses (<i>not</i> curly-braces)
@@ -741,6 +758,8 @@ dinner_schedule = ([ ]);
       at another Kernel MUDLib example, this one from
       &quot;/kernel/lib/port.c&quot;.  You'll see that it uses the
       alternate <b>catch</b> construct twice, one inside the other.
+      </p>
+
     <pre>
         catch {
             ::open_port(protocol, port);
@@ -759,6 +778,8 @@ dinner_schedule = ([ ]);
             return 0;
         }
     </pre>
+
+    <p>
     Note the curly-braces following the <b>catch</b> statement,
     and the colon and additional block following the first block.
     Notice also that this statement doesn't attempt to extract the
@@ -779,7 +800,8 @@ dinner_schedule = ([ ]);
     <p> Another difference is that there's no obvious way to get the
       error string in the second version.  The Kernel MUDLib does so
       in a couple of places since it gets passed as a parameter.
-      When it does, the result looks like this:
+      When it does, the result looks like this: </p>
+
     <pre>
             catch {
                 rlimits (-1; -1) {
@@ -790,6 +812,8 @@ dinner_schedule = ([ ]);
                 }
             } : error(::call_trace()[1][TRACE_FIRSTARG][1]);
     </pre>
+
+    <p>
     Pretty ugly.  But hey, it works...  You may have trouble with
     using this exact syntax for older versions of DGD, as well.
     Bear in mind that you're technically pulling a random piece
@@ -874,6 +898,7 @@ dinner_schedule = ([ ]);
       header file &quot;/include/status.h&quot; when DGD starts up. </p>
 
     <p>The list of queried values for 1.2.35:</p>
+
     <pre>
 # define ST_VERSION     0       /* driver version */
 # define ST_STARTTIME   1       /* system start time */
@@ -925,7 +950,8 @@ dinner_schedule = ([ ]);
       to avoid nasty, silent, cumulative memory leaks, but DGD is nicer
       than Perl or Java that way.  If you leave circular data structures
       sitting around before the late 1.2 series, you'll see error
-      messages that look something like this:
+      messages that look something like this: </p>
+
     <pre>
 FREE(000f122c/72), array.c line 1109:
  03 01 'd '. 00 0f '8 cc 04 01 00 03 00 00 00 05 03 01 'd '. 00 0f '8 ', 04 01
@@ -933,6 +959,8 @@ FREE(0010c644/48), array.c line 1109:
  03 01 'e 'r 00 0f 'R 80 04 01 00 05 00 00 00 07 03 01 'Y ': 00 0f '> 98 04 01
 [...]
     </pre>
+
+    <p>
     That means that you've made an oops and left a circular data structure
     lying around.  Now you know, so you can go clean it up.   Late
     in the 1.2 series, Dworkin added extra code to fix the same problem
@@ -960,13 +988,13 @@ changes in dgd/src/config.h:
  - at most 65535 objects
  - at most 65535 swap sectors
     </pre>
-    <i> Ed Note: This message is out-of-date.
+    <p> <i> Ed Note: This message is out-of-date.
       String size is now also
       adjustable in config.h.  Also, the number
       of arguments and
       local variables is now much higher,
       127 if memory serves. </i>
-    <br> </br>
+    <br> </br> </p>
     <p> You should note that you can get around the limit on functions
       per program listed above by separating the functions into two or more
       programs (.c files) and inheriting them. </p>
