@@ -117,7 +117,7 @@ mapping load_filemanaged_file(string path) {
     }
     if(filemap[unq_data[iter]]) {
       LOGD->write_syslog("Repeated label " + unq_data[iter] + " in file "
-			 + path + ".  Ignoring.");
+			 + path + ".  Ignoring.", LOG_WARN);
     } else {
       filemap[unq_data[iter]] = phrase;
     }
