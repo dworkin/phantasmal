@@ -95,6 +95,7 @@
 #define ZONE_FILE           "/data/object/zonefile.unq"
 #define SAFE_ROOM_FILE      "/data/object/safe_roomfile.unq"
 #define SAFE_PORT_FILE      "/data/object/safe_portablefile.unq"
+#define SAFE_ZONE_FILE      "/data/object/safe_zonefile.unq"
 #define BUG_DATA            "/data/text/bug_reports.txt"
 #define TYPO_DATA           "/data/text/typo_reports.txt"
 #define LOG_CHANNELS        "/data/system/logd_channels.unq"
