@@ -20,6 +20,7 @@
 #define CHANNELD    "/usr/common/sys/channeld"
 #define CONFIGD     "/usr/common/sys/configd"
 #define TIMED       "/usr/common/sys/timed"
+#define SOULD       "/usr/common/sys/sould"
 
 
 /* Kernel lib tie-in objects -- must be in these dirs to be recognized
@@ -90,6 +91,7 @@
 #define CONFIGD_DTD         "/data/dtd/config.dtd"
 #define ZONED_DTD           "/data/dtd/zoned.dtd"
 #define BIND_DTD            "/data/dtd/bind.dtd"
+#define SOULD_DTD           "/data/dtd/sould.dtd"
 
 /* Other data files */
 #define CONFIG_FILE         "/data/system/config.unq"
@@ -107,6 +109,7 @@
 #define SYSTEM_PHRASES      "/data/phrase/system.phr"
 #define EXITD_PHRASES       "/data/phrase/exitd.phr"
 #define USER_COMMANDS_FILE  "/data/phrase/user_cmds.unq"
+#define SOULD_FILE          "/data/system/sould.unq"
 
 #define WELCOME_MESSAGE     "/data/text/welcome.msg"
 #define SUSPENDED_MESSAGE   "/data/text/suspended.msg"
