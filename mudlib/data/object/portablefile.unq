@@ -110,7 +110,7 @@ Wombat fumes.  About the usual, you hope.}}
 }
 ~portable{
   ~number{207}
-  ~location{302}
+  ~location{300}
   ~bdesc{
     ~enUS{Angelbob}}
   ~gdesc{
@@ -124,7 +124,7 @@ Wombat fumes.  About the usual, you hope.}}
 }
 ~portable{
   ~number{208}
-  ~location{300}
+  ~location{1}
   ~bdesc{
     ~enUS{Noah}}
   ~gdesc{
@@ -134,6 +134,34 @@ Wombat fumes.  About the usual, you hope.}}
   ~article{0}
   ~flags{0}
   ~nouns{{~enUS{noah}}}
+  ~adjectives{{}}
+}
+~portable{
+  ~number{209}
+  ~location{1}
+  ~bdesc{
+    ~enUS{NewBoy}}
+  ~gdesc{
+    ~enUS{NewBoy}}
+  ~ldesc{
+    ~enUS{NewBoy wanders the MUD.}}
+  ~article{0}
+  ~flags{0}
+  ~nouns{{~enUS{newboy}}}
+  ~adjectives{{}}
+}
+~portable{
+  ~number{210}
+  ~location{1}
+  ~bdesc{
+    ~enUS{Tdl}}
+  ~gdesc{
+    ~enUS{Tdl}}
+  ~ldesc{
+    ~enUS{Tdl wanders the MUD.}}
+  ~article{0}
+  ~flags{0}
+  ~nouns{{~enUS{tdl}}}
   ~adjectives{{}}
 }
 ~portable{
@@ -272,4 +300,118 @@ directions from its front hallway.}}
   ~flags{4}
   ~nouns{{~enUS{hall,hallway}}}
   ~adjectives{{~enUS{peabody,inside,front}}}
+}
+~portable{
+  ~number{408}
+  ~location{304}
+  ~bdesc{
+    ~enUS{gaslamp}}
+  ~gdesc{
+    ~enUS{a defunct gaslamp}}
+  ~ldesc{
+    ~enUS{The old gaslamp no longer works, and probably hasn't for a number of years.
+It was all the rage once.  You have to snicker at the irony of the poor
+old thing outside the Modern History building rather than, say, the
+Ancient History hall.}}
+  ~article{0}
+  ~flags{4}
+  ~nouns{{~enUS{lamp,gaslamp,lantern,post,lamppost,lightpost,light}}}
+  ~adjectives{{~enUS{light,lamp,lantern,gas}}}
+}
+~portable{
+  ~number{409}
+  ~location{304}
+  ~bdesc{
+    ~enUS{the Block and the Tower}}
+  ~gdesc{
+    ~enUS{the Block and the Tower}}
+  ~ldesc{
+    ~enUS{Off to the southwest you can see the Block, an open area in the middle
+of campus, and the Tower within it.  The Tower is an old two-story open
+building where idle students hang out.}}
+  ~article{0}
+  ~flags{4}
+  ~nouns{{~enUS{block,tower}}}
+  ~adjectives{{}}
+}
+~portable{
+  ~number{410}
+  ~location{304}
+  ~bdesc{
+    ~enUS{academic halls}}
+  ~gdesc{
+    ~enUS{academic halls}}
+  ~ldesc{
+    ~enUS{North is the entrance to the Marsh Hall of Modern History and Languages.
+To the south is Peabody Hall and Telman beyond it.  To the West you can
+see the gardener's shed just south of Pickford Engineering Hall.  Further
+East is the home of the English and Literature departments, Merritt Hall.}}
+  ~article{0}
+  ~flags{4}
+  ~nouns{{~enUS{hall,halls}}}
+  ~adjectives{{~enUS{academic,telman,peabody,merritt,pickford,engineering,literature,english,humanities,economics,marsh,history,modern,languages}}}
+}
+~portable{
+  ~number{411}
+  ~location{304}
+  ~bdesc{
+    ~enUS{shed}}
+  ~gdesc{
+    ~enUS{the gardener's shed}}
+  ~ldesc{
+    ~enUS{To the west, you can see an old shed used by the gardener hiding in the
+trees.  North of it is Pickford Hall, and south is the Block and the
+Tower.}}
+  ~article{0}
+  ~flags{4}
+  ~nouns{{~enUS{shed,building}}}
+  ~adjectives{{~enUS{old,gardener's,decrepit,tool}}}
+}
+~portable{
+  ~number{412}
+  ~location{305}
+  ~bdesc{
+    ~enUS{not-quite-spiral steps}}
+  ~gdesc{
+    ~enUS{some not-quite-spiral steps}}
+  ~ldesc{
+    ~enUS{The steps are individually weirdly angular, and together they make an
+irregular spiral up to the sculpture outside the doors of Telman Hall.
+The pattern makes your head hurt if you look at it too long.}}
+  ~article{0}
+  ~flags{4}
+  ~nouns{{~enUS{step,steps,stair,stairs}}}
+  ~adjectives{{~enUS{spiral,not-quite-spiral,not,quite}}}
+}
+~portable{
+  ~number{413}
+  ~location{305}
+  ~bdesc{
+    ~enUS{ugly sculpture}}
+  ~gdesc{
+    ~enUS{an ugly orange sculpture}}
+  ~ldesc{
+    ~enUS{This sculpture is made of several ugly bright orange blocks arranged
+roughly into the shape of a "w".  It's not clear what it's supposed to
+be.}}
+  ~article{0}
+  ~flags{4}
+  ~nouns{{~enUS{sculpture,w,doubleyou,dubya,double-u}}}
+  ~adjectives{{~enUS{ugly,orange,w,doubleyou,dubya,double-u}}}
+}
+~portable{
+  ~number{414}
+  ~location{305}
+  ~bdesc{
+    ~enUS{academic halls}}
+  ~gdesc{
+    ~enUS{academic halls}}
+  ~ldesc{
+    ~enUS{You can see Peabody Hall to the north, and Marsh hall beyond it.  The
+Block, a clearing in the center of campus, is barely visible through the
+trees to the northwest.}}
+  ~article{0}
+  ~flags{4}
+  ~nouns{{~enUS{hall,halls,peabody,marsh,clearing,block}}}
+  ~adjectives{{~enUS{academic,peabody,marsh,distant}}}
 }

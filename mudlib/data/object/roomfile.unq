@@ -256,6 +256,8 @@ the west.}}
   ~nouns{{}}
   ~adjectives{{}}
   ~exit{e: #301 122 123}
+  ~exit{n: #304 124 125}
+  ~exit{s: #305 126 127}
 }
 ~room{
   ~number{303}
@@ -267,6 +269,38 @@ the west.}}
   ~ldesc{
     ~enUS{This room should never bee seen directly.  It is meant only as a parent
 room for outdoor rooms on the Miskatonic University campus.}}
+  ~article{0}
+  ~nouns{{}}
+  ~adjectives{{}}
+}
+~room{
+  ~number{304}
+  ~location{0}
+  ~bdesc{
+    ~enUS{Outside Marsh Hall}}
+  ~gdesc{
+    ~enUS{Outside Marsh Hall}}
+  ~ldesc{
+    ~enUS{You stand on a wooden walkway leading to Marsh Hall, which is the home
+of the Modern History and Modern Languages departments.  You can see
+academic halls in various directions, and the Block and the Tower off
+to the southwest.  A defunct lamp stands beside you.}}
+  ~article{0}
+  ~nouns{{}}
+  ~adjectives{{}}
+}
+~room{
+  ~number{305}
+  ~location{0}
+  ~bdesc{
+    ~enUS{Outside Telman Hall}}
+  ~gdesc{
+    ~enUS{Outside Telman Hall}}
+  ~ldesc{
+    ~enUS{You're standing on a set of not-quite-spiral steps which lead south into
+the entrance to Telman Hall.  An ugly sculpture is at the top of the
+steps.  You can see Peabody Hall to the north, and several more
+academic halls beyond.  The rest of campus stretches out around you.}}
   ~article{0}
   ~nouns{{}}
   ~adjectives{{}}
