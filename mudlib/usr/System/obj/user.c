@@ -1,4 +1,4 @@
-/* $Header: /cvsroot/phantasmal/mudlib/usr/System/obj/user.c,v 1.47 2003/03/14 23:06:24 angelbob Exp $ */
+/* $Header: /cvsroot/phantasmal/mudlib/usr/System/obj/user.c,v 1.48 2003/03/19 21:44:50 angelbob Exp $ */
 
 #include <kernel/kernel.h>
 #include <kernel/user.h>
@@ -871,6 +871,11 @@ static int process_message(string str)
       message("\r\n");
       send_system_phrase("Looks like no password");
       message("\r\n");
+      if(password && strlen(password)) {
+	send_system_phrase("Password change cancelled");
+	return MODE_NOECHO;
+      }
+
       return MODE_DISCONNECT;
     }
     if(strlen(str) < 4) {
@@ -889,7 +894,6 @@ static int process_message(string str)
   case STATE_NEWPASSWD2:
     if (newpasswd == str) {
       password = crypt(str);
-      /* save_object(SYSTEM_USER_DIR + "/" + name + ".pwd"); */
       save_user_to_file();
       message("\r\n");
       send_system_phrase("Password changed.");
@@ -898,6 +902,10 @@ static int process_message(string str)
       message("\r\n");
       send_system_phrase("Mismatch; password not changed.");
       message("\r\n");
+
+      set_state(previous_object(), STATE_NEWPASSWD1);
+      send_system_phrase("New password: ");
+      return MODE_NOECHO;
     }
     newpasswd = nil;
 
