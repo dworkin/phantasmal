@@ -117,11 +117,15 @@ void periodic_call_out(int how_often, string funcname, mixed args...) {
   }
 }
 
-void stop_call_out(int how_often) {
-  per_queue[how_often][object_name(previous_object())] = nil;
+private void stop_object_call_out(int how_often, string objname) {
+  per_queue[how_often][objname] = nil;
   if(map_sizeof(per_queue[how_often]) == 0) {
     priv_stop_call_out(how_often);
   }
+}
+
+void stop_call_out(int how_often) {
+  stop_object_call_out(how_often, object_name(previous_object()));
 }
 
 private void priv_start_call_out(int how_often) {
@@ -162,6 +166,7 @@ private void priv_stop_call_out(int how_often) {
 void __priv_co_hook(int how_often) {
   int    ctr;
   mixed *keys, *tmp;
+  object call_obj;
 
   if(!KERNEL()) {
     error("TIMED::__priv_co_hook can be called only by KERNEL code!");
@@ -170,12 +175,18 @@ void __priv_co_hook(int how_often) {
   LOGD->write_syslog("called __priv_co_hook...");
 
   /* Schedule the next call */
-  per_call_out[how_often] = -1;
+  per_call_out[how_often] = 0;
   priv_start_call_out(how_often);
 
   keys = map_indices(per_queue[how_often]);
   for(ctr = 0; ctr < sizeof(keys); ctr++) {
     tmp = per_queue[how_often][keys[ctr]];
-    call_other(keys[ctr], tmp[0], tmp[1]...);
+    call_obj = find_object(keys[ctr]);
+    if(call_obj) {
+      call_other(call_obj, tmp[0], tmp[1]...);
+    } else {
+      LOGD->write_syslog("Can't find object " + keys[ctr] + " to call!");
+      stop_object_call_out(how_often, keys[ctr]);
+    }
   }
 }
