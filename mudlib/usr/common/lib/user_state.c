@@ -22,9 +22,14 @@ static void create(varargs int clone) {
   }
 }
 
+/* By default, this does nothing and accepts any parameters.  Subtypes
+   may restrict it appropriately. */
+void set_up_func(mixed params...) {
+}
+
 void init(object new_user, object new_next_state) {
   if(previous_program() != SYSTEM_USER_IO)
-    error("Use push_state and pop_state functions for user states!");
+    error("Use push_new_state and pop_state functions for user states!");
 
   user = new_user;
   next_state = new_next_state;

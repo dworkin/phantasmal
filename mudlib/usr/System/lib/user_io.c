@@ -156,6 +156,15 @@ void push_state(object state) {
   state->switch_to(1); /* 1 because pushp is true */
 }
 
+void push_new_state(mixed state_type, mixed params...) {
+  object new_state;
+
+  new_state = clone_object(state_type);
+
+  new_state->set_up_func(params...);
+  push_state(new_state);
+}
+
 object peek_state(void) {
   if(!SYSTEM() && !COMMON() && !GAME())
     error("Only privileged code can call peek_state!");

@@ -89,15 +89,8 @@ static void cmd_set_obj_desc(object user, string cmd, string str) {
   user->message(PHRASED->name_for_language(user->get_locale()) + "\r\n");
 
   if(!desc) {
-    object state1, state2;
-
-    state1 = clone_object(US_OBJ_DESC);
-    state2 = clone_object(US_ENTER_DATA);
-
-    state1->set_up_func(obj, look_type, user->get_locale());
-
-    user->push_state(state1);
-    user->push_state(state2);
+    user->push_new_state(US_OBJ_DESC, obj, look_type, user->get_locale());
+    user->push_new_state(state2, US_ENTER_DATA);
 
     return;
   }
