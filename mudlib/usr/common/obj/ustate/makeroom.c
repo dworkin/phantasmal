@@ -29,6 +29,9 @@ private int    obj_type;
 #define SS_PROMPT_EXAMINE_DESC      6
 #define SS_PROMPT_NOUNS             7
 #define SS_PROMPT_ADJECTIVES        8
+#define SS_PROMPT_CONTAINER         9
+#define SS_PROMPT_OPEN             10
+#define SS_PROMPT_OPENABLE         11
 
 /* Input function return values */
 #define RET_NORMAL            1
@@ -45,7 +48,11 @@ static void prompt_look_desc_data(mixed data);
 static void prompt_examine_desc_data(mixed data);
 static int  prompt_nouns_input(string input);
 static int  prompt_adjectives_input(string input);
+static void prompt_container_data(mixed data);
+static void prompt_open_data(mixed data);
+static void prompt_openable_data(mixed data);
 
+/* Macros */
 #define NEW_PHRASE(x) PHRASED->new_simple_english_phrase(x)
 
 
@@ -54,6 +61,8 @@ static void create(varargs int clone) {
   if(!find_object(US_ENTER_DATA)) compile_object(US_ENTER_DATA);
   if(!find_object(US_ENTER_YN)) compile_object(US_ENTER_YN);
   if(!find_object(LWO_PHRASE)) compile_object(LWO_PHRASE);
+  if(!find_object(SIMPLE_ROOM)) compile_object(SIMPLE_ROOM);
+  if(!find_object(SIMPLE_PORTABLE)) compile_object(SIMPLE_PORTABLE);
   if(clone) {
     substate = SS_PROMPT_OBJ_TYPE;
     obj_type = OT_UNKNOWN;
@@ -105,18 +114,23 @@ int from_user(string input) {
   case SS_PROMPT_GLANCE_DESC:
     ret = prompt_glance_desc_input(input);
     break;
-  case SS_PROMPT_LOOK_DESC:
-  case SS_PROMPT_EXAMINE_DESC:
-    send_string("Internal error in state machine!  Cancelling OLC!\r\n");
-    pop_state();
-    return MODE_ECHO;
-    break;
   case SS_PROMPT_NOUNS:
     ret = prompt_nouns_input(input);
     break;
   case SS_PROMPT_ADJECTIVES:
     ret = prompt_adjectives_input(input);
     break;
+
+  case SS_PROMPT_LOOK_DESC:
+  case SS_PROMPT_EXAMINE_DESC:
+  case SS_PROMPT_CONTAINER:
+  case SS_PROMPT_OPEN:
+  case SS_PROMPT_OPENABLE:
+    send_string("Internal error in state machine!  Cancelling OLC!\r\n");
+    pop_state();
+    return MODE_ECHO;
+    break;
+
   default:
     send_string("Unrecognized state!  Cancelling OLC!\r\n");
     pop_state();
@@ -163,16 +177,14 @@ void switch_to(int pushp) {
     send_string(" > ");
   } else if(pushp && substate == SS_PROMPT_OBJ_TYPE) {
     /* Just allocated */
-    send_string("Creating a new object.  Type 'quit' at the prompt"
-		+ " (except on multiline prompts) to cancel.\r\n");
+    send_string("Creating a new object.  Type 'quit' at most prompts"
+		+ " (but not multiline prompts) to cancel.\r\n");
     send_string("Please enter an object type.\r\n");
     send_string("Valid values are:  room, portable (r/p)\r\n");
     send_string(" > ");
-  } else if (substate == SS_PROMPT_LOOK_DESC) {
-
-  } else if (substate == SS_PROMPT_EXAMINE_DESC) {
-    /* This probably means we just got back from getting the Look desc */
-
+  } else if (substate == SS_PROMPT_LOOK_DESC
+	     || substate == SS_PROMPT_EXAMINE_DESC) {
+    /* Do nothing */
   } else if (substate == SS_PROMPT_NOUNS) {
     /* This means we just got back from getting the Examine desc */
     send_string(" > ");
@@ -187,7 +199,10 @@ void switch_to(int pushp) {
 void switch_from(int popp) {
   if(!popp) {
     if(substate != SS_PROMPT_LOOK_DESC
-       && substate != SS_PROMPT_EXAMINE_DESC) {
+       && substate != SS_PROMPT_EXAMINE_DESC
+       && substate != SS_PROMPT_CONTAINER
+       && substate != SS_PROMPT_OPEN
+       && substate != SS_PROMPT_OPENABLE) {
       send_string("(Creating object -- suspending)\r\n");
     }
   }
@@ -202,6 +217,15 @@ void pass_data(mixed data) {
     break;
   case SS_PROMPT_EXAMINE_DESC:
     prompt_examine_desc_data(data);
+    break;
+  case SS_PROMPT_CONTAINER:
+    prompt_container_data(data);
+    break;
+  case SS_PROMPT_OPEN:
+    prompt_open_data(data);
+    break;
+  case SS_PROMPT_OPENABLE:
+    prompt_openable_data(data);
     break;
   default:
     send_string("Warning: User State was passed unrecognized data!\r\n");
@@ -282,17 +306,21 @@ static int prompt_obj_number_input(string input) {
   }
 
   location = get_user()->get_location();
-  if(location) {
+  if(location && obj_type == OT_ROOM) {
     /* The new room should be put into the same place as the room
        the user is currently standing in.  Makes a good default. */
     location = location->get_location();
   }
 
-  new_obj = clone_object(SIMPLE_ROOM);
+  if(obj_type == OT_ROOM) {
+    new_obj = clone_object(SIMPLE_ROOM);
+  } else {
+    new_obj = clone_object(SIMPLE_PORTABLE);
+  }
   zonenum = -1;
   if(obj_number < 0) {
-    if(location) {
-      zonenum = ZONED->get_zone_for_room(location);
+    if(get_user()->get_location()) {
+      zonenum = ZONED->get_zone_for_room(get_user()->get_location());
     } else {
       zonenum = 0;
     }
@@ -310,9 +338,12 @@ static int prompt_obj_number_input(string input) {
     location->add_to_container(new_obj);
   }
 
-  send_string("Added room #" + new_obj->get_number()
+  send_string("Added obj #" + new_obj->get_number()
 	      + " to zone #" + zonenum
-	      + " (" + ZONED->get_name_for_zone(zonenum) + ")" + ".\r\n\r\n");
+	      + " (" + ZONED->get_name_for_zone(zonenum) + ")" + ".\r\n");
+  send_string("Its location is #" + location->get_number()
+	      + "(" + location->get_brief()->to_string(get_user())
+	      + ")\r\n\r\n");
 
   /* Okay, now keep entering data... */
   send_string("Next, please enter a one-line brief description.\r\n");
@@ -522,15 +553,106 @@ static int prompt_nouns_input(string input) {
 }
 
 static int prompt_adjectives_input(string input) {
-  object phr;
+  object phr, edit_state;
   string adjectives;
 
-  send_string("\r\nGood.  Finishing object...\r\n");
-
   adjectives = STRINGD->trim_whitespace(input);
-  new_obj->add_adjective(process_words(adjectives));
+  if(adjectives && adjectives != "") {
+    new_obj->add_adjective(process_words(adjectives));
+  }
 
-  send_string("Done.\r\n");
+  if(obj_type == OT_ROOM) {
+    send_string("\r\nDone with room #" + new_obj->get_number() + ".\r\n");
+    return RET_POP_STATE;
+  }
 
-  return RET_POP_STATE;
+  substate = SS_PROMPT_CONTAINER;
+
+  edit_state = clone_object(US_ENTER_YN);
+  if(edit_state) {
+    edit_state->set_prompt("Is the object a container? ");
+    push_state(edit_state);
+  } else {
+    LOGD->write_syslog("Couldn't clone US_ENTER_YN state object!",
+		       LOG_ERROR);
+    return RET_POP_STATE;
+  }
+
+  return RET_NORMAL;
+}
+
+static void prompt_container_data(mixed data) {
+  object edit_state;
+
+  if(typeof(data) != T_INT) {
+    send_string("Internal error -- wrong type passed!\r\n");
+    pop_state();
+    return;
+  }
+
+  if(!data) {
+    /* Not a container, so neither open nor openable. */
+    send_string("Done with portable #" + new_obj->get_number() + ".\r\n");
+    pop_state();
+    return;
+  }
+
+  new_obj->set_container(1);
+
+  substate = SS_PROMPT_OPEN;
+
+  edit_state = clone_object(US_ENTER_YN);
+  if(edit_state) {
+    edit_state->set_prompt("Is the container open? ");
+    push_state(edit_state);
+  } else {
+    LOGD->write_syslog("Couldn't clone US_ENTER_YN state object!",
+		       LOG_ERROR);
+    pop_state();
+    return;
+  }
+}
+
+static void prompt_open_data(mixed data) {
+  object edit_state;
+
+  if(typeof(data) != T_INT) {
+    send_string("Internal error -- wrong type passed!\r\n");
+    pop_state();
+    return;
+  }
+
+  if(data) {
+    /* Container is open */
+    new_obj->set_open(1);
+  }
+
+  substate = SS_PROMPT_OPENABLE;
+
+  edit_state = clone_object(US_ENTER_YN);
+  if(edit_state) {
+    edit_state->set_prompt("Is the container freely openable and closeable? ");
+    push_state(edit_state);
+  } else {
+    LOGD->write_syslog("Couldn't clone US_ENTER_YN state object!",
+		       LOG_ERROR);
+    pop_state();
+    return;
+  }
+}
+
+static void prompt_openable_data(mixed data) {
+  if(typeof(data) != T_INT) {
+    send_string("Internal error -- wrong type passed!\r\n");
+    pop_state();
+    return;
+  }
+
+  if(data) {
+    new_obj->set_openable(1);
+  }
+
+  send_string("Done with portable #" + new_obj->get_number() + ".\r\n");
+
+  pop_state();
 }
