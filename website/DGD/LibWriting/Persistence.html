@@ -73,7 +73,7 @@
   </p>
 
   <p>
-    Note that if you <i>do</i> decide to use persistence, the <a
+    If you <i>do</i> decide to use persistence in a DGD MUDLib, the <a
     href="../Kernel">Kernel Library</a> is worth a second look.  It
     includes extra support for a lot of the issues that persistence
     can cause your MUD.
@@ -90,58 +90,59 @@
   </p>
 
   <p>
-    Some of them are referring to the game design.  However, DGD can't
-    support your game design.  <a
+    The phrases often refer to the game design.  However, DGD can't
+    dictate your game design.  <a
     href="GamePersistence.html">Persistent game design</a> is a
     different topic.
   </p>
 
   <p>
-    Primarily, they mean that the game runs as though it would never
-    shut down, and as though the server never went down, even if the
-    server <i>will</i> go down.  The game, as a single run of the
-    program, never stops and rarely even pauses.  DGD's definition of
-    Persistence involves being able to keep actual LPC-language
-    objects around, potentially forever.  The object pointers never
-    expire, you never have to save or restore, you never need to write
-    code to back up your objects &mdash; because conceptually, the
-    server never, never goes down.
+    Primarily, the DGD community means that the game runs as though it
+    would never shut down, and as though the server never went down,
+    even if the server <i>will</i> go down.  The game, as a single run
+    of the program, never stops and rarely even pauses.  DGD's
+    definition of Persistence involves being able to keep actual
+    LPC-language objects around, potentially forever.  The object
+    pointers never expire, you never have to save or restore, you
+    never need to write code to back up your objects &mdash; because
+    conceptually, the server never, never goes down.
   </p>
 
   <h3> DGD Support </h3>
 
   <p>
     If you're never going to shut the server down, you need the
-    ability to <a href="ObjectManagement.html">upgrade in place</a>.
-    Eventually you'll want to add new features, new content, new code.
-    Since you're never going to stop your current run of the program,
-    you'll need to deploy all that immediately, preferably without
-    even logging your players out.  DGD allows you to do this.
+    ability to <a href="ObjectManagement.html">upgrade your LPC
+    objects in place</a>.  Eventually you'll want to add new features,
+    new content, new code.  Since you're never going to stop your
+    current run of the program, you'll want to deploy all that
+    immediately, preferably without even logging your players out.
+    DGD allows you to do this.
   </p>
 
   <p>
-    The way it implements this goal is the <a
-    href="StateDumps.html">State Dump</a>.  A State Dump dumps a copy
-    of all your LPC objects, whether in memory or swapped out, with
-    all connections between them, to a file.  You may then, later,
-    start DGD from that State Dump file and it will pick up precisely
-    where it left off.  There are a (very) few things that necessarily
-    change (the time and date, what network connections are active),
-    but mostly this keeps all objects around forever.  When you
-    restore from a dump, it just looks like the clock skipped (or you
-    took awhile to run the next thread of execution) and all the
-    network connections suddenly dropped, which is effectively what
-    happened.
+    One way DGD simulates a single continuous run of the program is
+    the <a href="StateDumps.html">State Dump</a>.  A State Dump dumps
+    a copy of all your LPC objects, whether in memory or swapped out,
+    with all connections between them, to a file.  You may then,
+    later, start DGD from that State Dump file and it will pick up
+    precisely where it left off.  There are a (very) few things that
+    necessarily change (the time and date, what network connections
+    are active), but mostly this keeps all objects around forever.
+    When you restore from a dump, it just looks like the clock skipped
+    (or you took awhile to run the next thread of execution) and all
+    the network connections suddenly dropped, which is effectively
+    what happened.
   </p>
 
   <p>
-    Doing this requires a <a href="Cleanup.html">object cleanup</a>
-    solution.  You need to be able to find old objects that are no
-    longer in use and destruct them.  An object leak will eventually,
-    over weeks or years, bring your MUD down because old leaked
-    objects will never go away.  Rebooting no longer helps because all
-    your old objects will stick around across reboots (if you use the
-    State Dump, that is).
+    Keeping a single run of the program going for so long requires a
+    <a href="Cleanup.html">object cleanup</a> solution.  You need to
+    be able to find old objects that are no longer in use and destruct
+    them.  Over days, weeks or years, an object leak will eventually
+    bring your MUD down because old leaked objects will never go away.
+    Rebooting no longer helps because all your old objects will stick
+    around across reboots.
   </p>
 
   <p>
@@ -149,19 +150,19 @@
     of code if you don't need to rebuild all your object structures
     when you reboot.  You no longer need to write your data to disk.
     If you make a change in an object, it stays around even if you
-    don't have a way to turn that change into a data file.  That can
-    be a big, big change.
+    don't have a way to write that change to a data file.  That can be
+    a big, big change in the way you think about your MUD Library.
   </p>
 
   <p>
-    Normally, keeping all of this in RAM would mean using a ridiculous
-    amount of memory.  However, DGD is a disk-based server, and
-    believes very strongly in <a href="Swapping.html">swapping things
-    to disk</a> constantly to save your memory.  This means that if
-    you store data as LPC objects in memory, they wind up taking no
-    more memory or disk space than if you saved all idle objects to
-    disk.  But you can access them instantly as LPC objects in memory,
-    and DGD will transparently handle all swapping.
+    Normally, keeping all of your objects in RAM at all times would
+    mean using a ridiculous amount of memory.  However, DGD is a
+    disk-based server, and believes very strongly in <a
+    href="Swapping.html">swapping things to disk</a> constantly to
+    save memory.  This means that if you store data as LPC objects,
+    they wind up taking no more memory or disk space than if you saved
+    idle objects to disk.  But you can access them instantly as LPC
+    objects in memory, and DGD will transparently handle all swapping.
   </p>
 
   <h3> Persistence and Player Bodies </h3>
@@ -172,8 +173,8 @@
     player's body is represented by a single monolithic object or
     separated into a body and a connection object determines whether
     you can simply keep the player's body in memory when it's not
-    connected.  Note that you don't have to keep the body visible to
-    keep the body's LPC object stored somewhere in memory.
+    connected.  Note that you don't have to keep the body visible
+    in-game to keep the body's LPC object stored somewhere in memory.
   </p>
 
   <p>
@@ -182,7 +183,8 @@
     The MUD would simply move it to an unused or virtual room, if the
     body persists anyway.  Doing so is optional, of course, but it's
     another form of saving-to-file that can be avoided with a
-    persistent MUD if the implementor so desires.
+    persistent MUD if the implementor so desires.  If your MUD permits
+    object customization, this can be a way to save it long-term.
   </p>
 
   <p>
@@ -318,82 +320,6 @@
   <p>
     Now:  have you asked yourself why you'd ever want to?
   </p>
-
-<pre>
-Note:  Some messages modified
-
-
-From dgd at list.imaginary.com  Thu Jan  8 14:43:00 2004
-From: dgd at list.imaginary.com (Noah Gibbs)
-Date: Thu Jan  8 14:43:00 2004
-Subject: [DGD] Persistance
-In-Reply-To: <BAY10-F96EKOEoY2Lku0004114f@hotmail.com>
-Message-ID: <20040108204243.44477.qmail@web12823.mail.yahoo.com>
-
---- Robert Forshaw <iouswuoibev@hotmail.com> wrote:
-> When you eventually do reboot, how will it
-> reconnect the rooms? Doing it by 
-> file name makes this easy, but by object
-> reference, well, for a start every 
-> room object will have to be loaded, and then
-> how is it going to figure out 
-> what rooms connect to where, if not by file
-> name?
- 
-  Here's a clarification that may help.  Under Unix,
-there's something called a core dump.  Conceptually,
-it's kind of like a DGD statedump.  The idea is that
-the process's memory is all written out, along with
-*all* its state, into a big file.  That file contains
-the entire application in exactly the state it was in
-when it core dumped.
-
-  Usually, coredumps are used for debugging.  But
-certain very clever applications use them for other
-purposes.  For instance, emacs and some Perl
-applications use them for compiling.  They go through
-a very long startup sequence (several hours for
-emacs), and then the dump core *without* crashing.
-
-  When you run emacs, or run a precompiled Perl
-binary, what happens is that core dump gets loaded
-right back into memory, in the exact state where it
-dumped core.  From the newly-loaded app's point of
-view, it just dumped core and now it's time to run. 
-Every time you run the app, you're restoring from its
-just-after-build application state, without having to
-wait for hours of startup while it compiles many
-megabytes of code.
-
-  DGD statedumps work a lot like coredumps.  All your
-current running code is dumped.  All your objects are
-dumped.  All your data is dumped.  All the stuff in
-the swapfile is dumped.
-
-  And when you put it back, it's as though it had
-never been gone.  If you have a chunk of code which
-contains a statedump, you won't know on the line after
-that statedump if you just breezed through it, or if
-you've just been restored, minutes or weeks or decades
-later, from that statedump.  Maybe all your net
-connections just went down (they do that when you
-restore years later, alas).  Maybe your system clock
-just advanced by a couple of weeks.  It's hard to
-tell.  Because your function will continue just fine
-ten years later, and may *not even realize* that you
-just dumped state and restarted.
-
-  I'm exaggerating slightly.  I think the statedump
-happens just after the thread exits.  But when the
-call_out that you scheduled ten years ago happens, it
-won't know that it was scheduled ten years ago.  It'll
-just know that it's time to run again :-)
-
-=====
-------
-noah_gibbs@yahoo.com
-
-</pre>
 
 <p style="text-size: 150%"> <a href="../index.html"> Back to top level
     </a> </p>
