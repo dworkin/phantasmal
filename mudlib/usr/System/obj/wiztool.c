@@ -91,6 +91,8 @@ void upgraded(void) {
 	"@add_room"            : ({ "cmd_new_room" }),
 	"@delete_room"         : ({ "cmd_delete_room" }),
 
+	"@make_room"           : ({ "cmd_make_room" }),
+
 	"@new_exit"            : ({ "cmd_new_exit" }),
 	"@clear_exits"         : ({ "cmd_clear_exits" }),
 	"@clear_exit"          : ({ "cmd_clear_exits" }),

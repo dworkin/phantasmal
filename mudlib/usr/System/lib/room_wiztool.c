@@ -32,7 +32,7 @@ static string read_entire_file(string file) {
  */
 static void create(varargs int clone)
 {
-
+  if(!find_object(US_MAKE_ROOM)) compile_object(US_MAKE_ROOM);
 }
 
 void destructed(varargs int clone) {
@@ -555,8 +555,14 @@ static void cmd_check_deferred_exits(object user, string cmd, string str) {
 }
 
 static void cmd_make_room(object user, string cmd, string str) {
+  object state;
+
   if(str && !STRINGD->is_whitespace(str)) {
     user->message("Usage: " + cmd + "\r\n");
     return;
   }
+
+  state = clone_object(US_MAKE_ROOM);
+  state->init(user);
+  user->push_state(state);
 }
