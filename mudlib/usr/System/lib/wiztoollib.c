@@ -552,7 +552,11 @@ static void cmd_set_segment_zone(object user, string cmd, string str) {
   }
 
   if(!OBJNUMD->get_segment_owner(segnum)) {
-    user->message("Can't find that segment number!\r\n");
+    user->message("Can't find segment #" + segnum + ".  Try @segmap.\r\n");
+    return;
+  }
+  if(zonenum >= ZONED->num_zones()) {
+    user->message("Can't find zone #" + zonenum + ".  Try @zonemap.\r\n");
     return;
   }
   OBJNUMD->set_segment_zone(segnum, zonenum);
