@@ -85,6 +85,8 @@ void upgraded(void) {
 
 	"@list_room"           : ({ "cmd_list_room" }),
 	"@list_rooms"          : ({ "cmd_list_room" }),
+	"@list_obj"            : ({ "cmd_list_room" }),
+	"@list"                : ({ "cmd_list_room" }),
 	"@goto"                : ({ "cmd_goto_room" }),
 	"@goto_room"           : ({ "cmd_goto_room" }),
 	"@save_room"           : ({ "cmd_save_rooms" }),
@@ -98,6 +100,8 @@ void upgraded(void) {
 	"@make_room"           : ({ "cmd_make_obj" }),
 	"@make_port"           : ({ "cmd_make_obj" }),
 	"@make_portable"       : ({ "cmd_make_obj" }),
+	"@make_detail"         : ({ "cmd_make_obj" }),
+	"@make_det"            : ({ "cmd_make_obj" }),
 	"@delete"              : ({ "cmd_delete_obj" }),
 	"@delete_obj"          : ({ "cmd_delete_obj" }),
 	"@delete_object"       : ({ "cmd_delete_obj" }),
