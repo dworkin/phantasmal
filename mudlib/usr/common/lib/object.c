@@ -48,6 +48,8 @@ object archetype;
 
 /* Details -- sub-objects that are part of this one */
 mixed*  details;
+object  detail_of;
+
 /* Objects contained in this one */
 mixed*  objects;
 /* Mobiles of objects contained in this one */
@@ -382,10 +384,6 @@ object* find_contained_objects(object user, string namestr) {
   return nil;
 }
 
-object* get_details(void) {
-  return details[..];
-}
-
 
 /* Access-protected functions */
 
@@ -396,6 +394,11 @@ object* get_details(void) {
    happen.  Instead it should be set with the assorted container commands. */
 void set_location(object new_loc) {
   if(previous_program() == OBJECT) {
+    if(detail_of) {
+      LOGD->write_syslog("Setting location of obj #" + tr_num
+			 + " despite detail_of being set!", LOG_ERROR);
+    }
+
     location = new_loc;
   }
 }
@@ -411,6 +414,9 @@ void prepend_to_container(object obj) {
 
   if(obj->get_location())
     error("Remove from previous container before adding!");
+
+  if(obj->get_detail_of())
+    error("Can't add a detail to a container!");
 
   obj->set_location(this_object());
   if(obj->get_mobile()) {
@@ -428,6 +434,9 @@ void append_to_container(object obj) {
   if(obj->get_location())
     error("Remove from previous container before adding!");
 
+  if(obj->get_detail_of())
+    error("Can't add a detail to a container!");
+
   obj->set_location(this_object());
   if(obj->get_mobile()) {
     mobiles += ({ obj->get_mobile() });
@@ -440,6 +449,10 @@ void append_to_container(object obj) {
 void remove_from_container(object obj) {
   if(obj->get_location() != this_object()) {
     error("Trying to remove object from wrong container!");
+  }
+
+  if(obj->get_detail_of()) {
+    error("Trying to remove detail with remove_from_container!");
   }
 
   if(objects & ({ obj }) ) {
@@ -480,6 +493,10 @@ int num_objects_in_container(void) {
 
 void set_mobile(object new_mob) {
   if(previous_program() == MOBILE || previous_program() == MOBILED) {
+    if(detail_of) {
+      error("A mobile can't (yet?) inhabit a detail!");
+    }
+
     if(mobile && location) {
       /* Remove the mobile from its container, if any */
       location->remove_mobile(mobile);
@@ -492,6 +509,42 @@ void set_mobile(object new_mob) {
   } else {
     error("You can't set that from there!");
   }
+}
+
+
+/* Detail functions */
+
+object* get_details(void) {
+  if(details && sizeof(details)) {
+    return details[..];
+  } else {
+    return nil;
+  }
+}
+
+object get_detail_of(void) {
+  return detail_of;
+}
+
+object set_detail_of(object obj) {
+  if(previous_program() != OBJECT)
+    error("Only OBJECTs can set details with set_detail_of!");
+
+  if(location && obj)
+    error("Remove from container before using set_detail_of!");
+
+  detail_of = obj;
+  set_location(obj);
+}
+
+object add_detail(object obj) {
+  obj->set_detail_of(this_object());
+  details += ({ obj });
+}
+
+object remove_detail(object obj) {
+  obj->set_detail_of(nil);
+  details -= ({ obj });
 }
 
 
