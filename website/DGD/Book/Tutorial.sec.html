@@ -378,15 +378,15 @@
 </p>
 
 <p>
-  First, try typing <kbd>code user->query_conn()</kbd>.  You should
+  First, try typing <kbd>code user-&gt;query_conn()</kbd>.  You should
   see a result like <samp>$25 = &lt;/kernel/obj/telnet#20&gt;</samp>.
   This means that history variable $25 holds a <dfn>clone</dfn> of the
   <var>/kernel/obj/telnet</var> object.  That clone is the object that
   DGD considers the <dfn>connection object</dfn>.  If you type
-  <kbd>code query_ip_name(user->query_conn())</kbd>, you should see
+  <kbd>code query_ip_name(user-&gt;query_conn())</kbd>, you should see
   either <samp>$26 = "localhost"</samp> or a similar result with your
   computer's hostname.  If you type <kbd>code
-  query_ip_number(user->query_conn())</kbd>, you should see a similar
+  query_ip_number(user-&gt;query_conn())</kbd>, you should see a similar
   result with &quot;127.0.0.1&quot; or your computer's IP address.  If
   you don't know what a hostname or IP address is, you should probably
   learn that before running your own MUD...  Both are used to locate
@@ -396,7 +396,45 @@
 <p>
   Another interesting thing you can do with the user object is to send
   output to it.  For instance try typing
-  <kbd>user->message(&quot;Bob!\n&quot;);</kbd>.
+  <kbd>user-&gt;message(&quot;Bob!\n&quot;);</kbd>.  You should see the
+  word &quot;Bob!&quot; on a line by itself, and the history variable
+  will have a value of <samp>nil</samp>.  If you remember, nil was the
+  value that a string has before it gets initialized.  It's also the
+  value that a function returns if you don't explicitly return
+  anything.
+</p>
+
+<p>
+  The backslash and n after &quot;Bob!&quot;, above, are a
+  <dfn>character escape</dfn>.  A character escape is composed of an
+  <dfn>escape character</dfn>, which is the backslash, followed by
+  another character, in this case an 'n' for the <dfn>newline
+  character</dfn>.  There are certain other character escapes that
+  have meaning, such as \b for backspace and \t for a tab.  Since the
+  backslash and the double-quote have special meaning in strings,
+  there are special character escapes to write them as well &mdash; \\
+  and \&quot;, respectively.
+</p>
+
+<p>
+  To see more of how the <dfn>newline character</dfn> works, try
+  adding more <dfn>\n</dfn> characters.  Type <kbd>code
+  user-&gt;message(&quot;Line...\n\n\n\n&quot;)</kbd>.  Note that if
+  you leave the semicolon off, you won't get nil returned, but rather
+  the number 1.  That's because the user-&gt;message function returns
+  an integer, which is either 1 or 0 for whether the entire message
+  could be sent.
+</p>
+
+<p>
+  Note that when you printed a message with more than one \n, you saw
+  more than one line of space before the returned value.  That's
+  because the user-&gt;message function writes the output directly to
+  your terminal, and it does it immediately.  So you could use it to
+  print output fancier than the returned value if you were so
+  inclined.  However, anything you print won't be saved to a history
+  variable, so make sure you're okay with it being transient.  Once
+  you print it, it's on your screen.  But other than that it's gone.
 </p>
 
 
@@ -499,7 +537,17 @@ mixed exec(object user, mixed argv...) {
   it, you'll want to use its history entry.  This command line will
   assume that the object was $15 (as in the paragraph above).  If
   yours was a different history number, you should substitute your own
-  number.  Type <kbd>code $15->exec(this_user())</kbd>.  You should
+  number.  Type <kbd>code $15-&gt;exec(this_user())</kbd>.  You should
   get a result like <samp>$16 = 7</samp>.  You've successfully
   returned the number 7.  Success!
+</p>
+
+<p>
+  We'll cover more about the structure of that file and what we mean
+  by a function later on.  Similarly, we'll cover more about why you
+  had to call it with the syntax you did.  However, in the mean time,
+  you have a good simple way to store your code and make modifications
+  to it instead of retyping the whole thing every time.  That'll be
+  useful for code like what you typed in the <a
+  href="Tutorial_Loops.html">Loops and Looping</a> section.
 </p>

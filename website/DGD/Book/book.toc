@@ -1,8 +1,25 @@
 :
   Setup
   Tutorial
+  Misc
 
 Setup:
   Installing
   RunKernel
+  KernelOverview
+
+Tutorial:
+  GettingStarted
+  VarsAndExprs
+  Loops
+  StringHandling
+  UserOutput
+  CodeInFiles
+
+ControlFlow:
+  ForWhile
+
+Misc:
+  EditorQuick
   DGDVersions
+  LPCHistory

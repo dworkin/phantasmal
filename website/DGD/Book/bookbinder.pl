@@ -139,8 +139,8 @@ sub parse_toc_contents {
 	  $newsecname = ($1 ? $1 : "");
 	  if(defined($secname)) {
 	      # Store old section info
-	      print "Setting order of '$secname' to " . join(", ", @secorder)
-		  . "\n";
+	      #print "Setting order of '$secname' to " . join(", ", @secorder)
+		#  . "\n";
 	      $chapter_order{$secname} = [ @secorder ];
 
 	      @secorder = ();
@@ -168,8 +168,8 @@ sub parse_toc_contents {
 
     if(defined($secname)) {
 	$chapter_order{$secname} = [ @secorder ];
-	print "Setting order of '$secname' to " . join(", ", @secorder)
-	    . "\n";
+	#print "Setting order of '$secname' to " . join(", ", @secorder)
+	#    . "\n";
     }
 }
 
@@ -182,12 +182,14 @@ sub parse_section_file {
     my $sectionfile = shift;
     my ($contents, @sections, $section, $secname);
 
+    #print "Reading file '$sectionfile'.\n";
+
     open(FILE, $sectionfile) or die "Can't open file $sectionfile: $!";
     $contents = join("", <FILE>);
     close(FILE);
 
     # Add empty top-level entry
-    $chapter_jumble{""} = [undef, undef];
+    $chapter_jumble{""} = [undef, undef] unless defined($chapter_jumble{""});
 
     @sections = split /^\@\@/m,$contents;
   SECT: foreach $section (@sections) {
@@ -232,6 +234,8 @@ sub add_jumbled_chapter_name {
     @subsec_list = split /\./, $fullname;
     $sec = "";
     $parent = "";
+
+    #print "Adding chapter $fullname\n";
     foreach $ent (@subsec_list) {
 	$sec .= $ent;
 	unless(defined($chapter_jumble{$sec})) {
@@ -289,16 +293,17 @@ sub sort_chapters {
 		}
 	    }
 
+	    @subsections = ();
 	    foreach $elt (@{$chapter_order{$section}}) {
 		my $eltname = $section eq "" ? $elt : "$section.$elt";
 
-		unless($intersection{$eltname}) {
+		if($intersection{$eltname}) {
+		    push @subsections, $eltname;
+		} else {
 		    print "*** WARNING: Subsection $eltname is in "
 			. "book.toc, but not the section files!\n";
 		}
 	    }
-
-	    @subsections = keys %intersection;
 	} else {
 	    @subsections = sort @subsections;
 	}
@@ -348,7 +353,7 @@ sub write_out_html {
 
     # Write out various HTML files, collecting TOC entries as we go
     ($_, $_, $_, @chapter_list) = @{$chapter_jumble{""}};
-    write_out_sections("", @chapter_list);
+    write_out_sections("", undef, @chapter_list);
 
     open(FILE, ">$outdir/index.base.html")
 	or die "Can't open index file ($outdir/index.base.html) "
@@ -372,6 +377,7 @@ sub write_out_html {
 
 sub write_out_sections {
     my $parent_section = shift;
+    my $next_page = shift;
     my @sections = @_;
 
     my ($prefix, $secnum, $index);
@@ -380,34 +386,36 @@ sub write_out_sections {
 	die "Can't get prefix for parent $parent_section!";
     }
 
-    my $section;
+    my ($section, $next);
     $index = 0;
     foreach $section (@sections) {
+	if($index == (scalar @sections) - 1) {
+	    $next = $next_page;
+	} else {
+	    $next = $sections[$index + 1];
+	}
+
 	$index++;
 	$secnum = ($prefix eq "") ? ("" . $index) : "$prefix.$index";
 	$sec_index{$section} = $secnum;
 
 	$toc_accum .= (" " x $toc_indent)
-	    . "<ul> <!-- subsections of $parent_section -->\n";
+	    . "<li><ul> <!-- subsections of $parent_section -->\n";
 	$toc_indent += 2;
 
-	html_for_section($section, $secnum);
-
-	# If there are subsections, write their HTML files also
-	my @subsections;
-	($_, $_, $_, @subsections) = @{$chapter_jumble{$section}};
-	if(scalar(@subsections)) {
-	    write_out_sections($section, @subsections);
-	}
+	html_for_section($section, $secnum, $parent_section, $next);
 
 	$toc_indent -= 2;
 	$toc_accum .= (" " x $toc_indent)
-	    . "</ul> <!-- done with $parent_section -->\n";
+	    . "</ul></li> <!-- $parent_section -->\n";
     }
 }
 
+my $most_recent_secname = "";
+
 sub html_for_section {
-    my ($secname, $secnum) = @_;
+    my ($secname, $secnum, $parent_section, $next_page) = @_;
+    my $next = $next_page;
 
     my ($title, $content, $filename, @subsections)
 	= @{$chapter_jumble{$secname}};
@@ -420,6 +428,10 @@ sub html_for_section {
     }
     open(SECFILE, ">$outdir/$filename.base.html")
 	or die "Can't open section file $filename: $!";
+
+    if(scalar @subsections) {
+	$next = $subsections[0];
+    }
 
     print "Printing to SECFILE $filename.base.html...\n";
 
@@ -449,9 +461,50 @@ sub html_for_section {
 	print SECFILE "</ul>\n";
     }
 
+    # Table for prev/home/next links
+    print SECFILE "\n<table style=\"width: 100%; border: 1px\">\n  <tr>\n";
+
     # Link to previous section
+    if(defined($most_recent_secname)) {
+	my ($prevtitle, $prevfilename);
+	($prevtitle, $_, $prevfilename)
+	    = @{$chapter_jumble{$most_recent_secname}};
+
+	print SECFILE "\n    <td><a href=\"$prevfilename.html\"> "
+	    . "&lt;&mdash; Prev<br /> "
+	    . "$prevtitle </a></td>\n";
+    }
+
+    # Link upward
+    if(defined($parent_section) and $parent_section ne "") {
+	my ($partitle, $parfilename);
+	($partitle, $_, $parfilename)
+	    = @{$chapter_jumble{$parent_section}};
+
+	print SECFILE "\n    <td align=\"center\">"
+	    . "<a href=\"$parfilename.html\"> "
+	    . "Up<br /> "
+	    . "$partitle </a></td>\n";
+    }
 
     # Link to next section
+    if(defined($next)) {
+	my ($nexttitle, $nextfilename);
+	($nexttitle, $_, $nextfilename)
+	    = @{$chapter_jumble{$next}};
+
+	print SECFILE "\n    <td align=\"right\">"
+	    . "<a href=\"$nextfilename.html\"> "
+	    . "Next &mdash;&gt; <br />"
+	    . "$nexttitle </a></td>\n";
+    }
+    print SECFILE "  </tr>\n</table>\n";
 
     close(SECFILE);
+    $most_recent_secname = $secname;
+
+    # If there are subsections, write their HTML files also
+    if(scalar(@subsections)) {
+	write_out_sections($secname, $next_page, @subsections);
+    }
 }
