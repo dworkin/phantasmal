@@ -11,15 +11,15 @@ static void set_up_heart_beat(void);
 static void load_sould(void);
 
 static void create(void) {
+  /* Build game driver and set it */
+  if(!find_object(GAME_DRIVER))
+    compile_object(GAME_DRIVER);
+
   /* Load in configuration files and set data in the common and System
      directories */
   config_unq_file();
 
   set_up_scripting();
-
-  /* Build game driver and set it */
-  if(!find_object(GAME_DRIVER))
-    compile_object(GAME_DRIVER);
 
   CONFIGD->set_game_driver(find_object(GAME_DRIVER));
 
@@ -80,13 +80,13 @@ static void configure_from_unq(mixed* unq) {
       if(set_sr)
 	error("Duplicate start_room entry in MUD config file!");
 
-      CONFIGD->set_start_room(unq[1]);
+      GAME_DRIVER->set_start_room(unq[1]);
       set_sr = 1;
     } else if (unq[0] == "meat_locker") {
       if(set_ml)
 	error("Duplicate meat_locker entry in MUD config file!");
 
-      CONFIGD->set_meat_locker(unq[1]);
+      GAME_DRIVER->set_meat_locker(unq[1]);
       set_ml = 1;
     } else {
       error("Unrecognized UNQ tag from DTD in MUD config file!");

@@ -1,4 +1,4 @@
-/* $Header: /cvsroot/phantasmal/testgame/usr/game/obj/user.c,v 1.2 2003/12/08 21:39:28 angelbob Exp $ */
+/* $Header: /cvsroot/phantasmal/testgame/usr/game/obj/user.c,v 1.3 2003/12/12 19:55:57 angelbob Exp $ */
 
 #include <kernel/kernel.h>
 #include <kernel/user.h>
@@ -11,22 +11,39 @@
 #include <phantasmal/search_locations.h>
 
 #include <config.h>
+#include <gameconfig.h>
 #include <type.h>
 
 inherit PHANTASMAL_USER;
 
-/* Duplicated in PHANTASMAL_USER */
+/* Duplicated in PHANTASMAL_USER, these are the login states */
 #define STATE_NORMAL            0
 #define STATE_LOGIN             1
 #define STATE_OLDPASSWD         2
 #define STATE_NEWPASSWD1        3
 #define STATE_NEWPASSWD2        4
 
+
+/* These are the post-login states.  Maybe these will merge with the
+   login states later, when more is in the user object. */
+#define ASTATE_UNDEFINED            0
+#define ASTATE_FIRSTLOGIN           1
+#define ASTATE_MENU                 5
+#define ASTATE_MENU_CONSOLE         6
+
+#define ASTATE_MENU_CHARACTER      10
+#define ASTATE_FALLING             11
+
+#define ASTATE_GAME               100
+
+static int account_state;
+static int menu_tally;
 static mapping commands_map;
 
 /* Prototypes */
        void upgraded(varargs int clone);
 static void cmd_social(object user, string cmd, string str);
+static int game_command(string str);
 
 /* Macros */
 #define NEW_PHRASE(x) PHRASED->new_simple_english_phrase(x)
@@ -39,6 +56,7 @@ static void cmd_social(object user, string cmd, string str);
 static void create(int clone)
 {
   ::create(clone);
+  account_state = 0;
 }
 
 void upgraded(varargs int clone) {
@@ -111,14 +129,34 @@ void upgraded(varargs int clone) {
 		     "remove"    : "cmd_remove",
 		     "open"      : "cmd_open",
 		     "close"     : "cmd_close",
-
-		     "parse"     : "cmd_parse"
     ]);
 
   }
 }
 
 /****************/
+
+static void print_account_menu(void) {
+  message_scroll("          ACCOUNT OPTIONS\r\n\r\n");
+
+  message_scroll(" 1) Create a new character\r\n");
+  message_scroll(" 2) Screen and Console Settings\r\n");
+  message_scroll(" G) Enter Game\r\n");
+  message_scroll("\r\n");
+  message_scroll("Type 'help' to get online help.\r\n");
+  message_scroll("Type 'quit' to quit.\r\n");
+}
+
+static void print_console_menu(void) {
+  message_scroll("          CONSOLE OPTIONS\r\n\r\n");
+
+  message_scroll(" Current: " + get_num_lines() + " lines, locale is "
+		 + PHRASED->name_for_language(get_locale()) + ".\r\n");
+  message_scroll(" Type 'lines <number>' to set the number of lines.\r\n");
+  message_scroll(" Type 'menu' to go back to the account menu.\r\n");
+  message_scroll("\r\n");
+
+}
 
 
 /*
@@ -151,22 +189,11 @@ int name_is_forbidden(string name) {
 }
 
 
-/*
- * NAME:	player_login()
- * DESCRIPTION:	Create the player body, set the account info and so on...
- */
-void player_login(void)
-{
+private object get_start_room(void) {
   int    start_room_num, start_zone;
-  object start_room, other_user;
+  object start_room;
 
-  if(previous_program() != PHANTASMAL_USER)
-    return;
-
-  body = nil;
-
-  /* Set up location, body, etc */
-  start_room_num = CONFIGD->get_start_room();
+  start_room_num = GAME_DRIVER->get_start_room();
   start_room = MAPD->get_room_by_num(start_room_num);
 
   /* If start room can't be found, set the start room to the void */
@@ -174,7 +201,6 @@ void player_login(void)
     LOGD->write_syslog("Can't find the start room!  Starting in the void...");
     start_room_num = 0;
     start_room = MAPD->get_room_by_num(start_room_num);
-    start_zone = 0;
     if(start_room == nil) {
       /* Panic!  No void! */
       error("Internal Error: no Void!");
@@ -186,6 +212,13 @@ void player_login(void)
       error("Internal Error:  no zone, not even zero, for start room!");
     }
   }
+
+  return start_room;
+}
+
+/* This connects a user to an existing body object, if there is one. */
+static void connect_to_body(void) {
+  object other_user, start_room;
 
   if(body_num > 0) {
     body = MAPD->get_room_by_num(body_num);
@@ -201,12 +234,42 @@ void player_login(void)
     message("Body and mobile files are misconfigured!  Internal error!\r\n");
 
     other_user->message(
-	       "Somebody has logged in with your name and account!\r\n");
+	  "Somebody has entered the game with your name and account!\r\n");
     other_user->message("Closing your connection now...\r\n");
     destruct_object(other_user);
   }
 
+  if(!body) {
+    error("Can't find body!");
+  }
 
+  location = body->get_location();
+  mobile = body->get_mobile();
+  if(!mobile) {
+    mobile = clone_object(USER_MOBILE);
+    MOBILED->add_mobile_number(mobile, -1);
+    mobile->assign_body(body);
+  }
+
+  mobile->set_user(this_object());
+  mobile->teleport(location, 1);
+
+  /* Move body to start room */
+  if(location->get_number() == GAME_DRIVER->get_meat_locker()) {
+    start_room = get_start_room();
+    mobile->teleport(start_room, 1);
+  }
+}
+
+static void create_body(void) {
+  object start_room;
+  int    start_zone;
+
+  start_room = get_start_room();
+  if(!start_room)
+    error("Can't get start room!");
+
+  /* Set up location, body, etc */
   if(!body) {
     location = start_room;
 
@@ -236,6 +299,7 @@ void player_login(void)
        in your pocket?  Would you want to? */
     body->set_length_capacity(50.0);
 
+    start_zone = ZONED->get_zone_for_room(start_room);
     MAPD->add_room_to_zone(body, -1, start_zone);
     if(!MAPD->get_room_by_num(body->get_number())) {
       LOGD->write_syslog("Error making new body!", LOG_ERR);
@@ -263,26 +327,50 @@ void player_login(void)
        file again... */
     save_user_to_file();
   } else {
-    location = body->get_location();
-    mobile = body->get_mobile();
-    if(!mobile) {
-      mobile = clone_object(USER_MOBILE);
-      MOBILED->add_mobile_number(mobile, -1);
-      mobile->assign_body(body);
-    }
-
-    mobile->set_user(this_object());
-    mobile->teleport(location, 1);
-
-    /* Move body to start room */
-    if(location->get_number() == CONFIGD->get_meat_locker()) {
-      mobile->teleport(start_room, 1);
-    }
+    error("Body already exists!");
   }
 
-  /* Show room to player */
-  message("\r\n");
-  show_room_to_player(location);
+}
+
+
+/*
+ * NAME:	player_login()
+ * DESCRIPTION:	Create the player body, set the account info and so on...
+ */
+void player_login(int first_login)
+{
+  if(previous_program() != PHANTASMAL_USER)
+    return;
+
+  body = nil;
+
+  if(first_login) {
+    message_scroll("\r\n"
+ + "You begin falling, falling, falling...\r\n\r\n"
+
+ + "You died.  You know this, though somehow you don't remember how.\r\n"
+ + "It happened only a short time ago, yet it feels like you've been\r\n"
+ + "dead forever, always dead.  And as you Rose from death, you felt\r\n"
+ + "a Presence, cold and hateful yet strangely nurturing.  You were\r\n"
+ + "drawn to it irresistibly.  You followed it, and it drew you in.\r\n\r\n"
+
+ + "You can feel yourself, still falling, yet together with the\r\n"
+ + "Presence.  Where are you?  What are you?\r\n\r\n"
+
+ + "And that's all you can remember.\r\n\r\n"
+ + "(press return to continue)\r\n");
+
+    account_state = ASTATE_FIRSTLOGIN;
+    save_user_to_file();
+  }
+
+  print_account_menu();
+  menu_tally = 0;
+
+  if(body_num > 0)
+    connect_to_body();
+
+  account_state = ASTATE_MENU;
 }
 
 
@@ -301,7 +389,7 @@ private void player_logout(void)
     int    ml_num;
     object mobile;
 
-    ml_num = CONFIGD->get_meat_locker();
+    ml_num = GAME_DRIVER->get_meat_locker();
     if(ml_num >= 0) {
       meat_locker = MAPD->get_room_by_num(ml_num);
       if(meat_locker) {
@@ -320,7 +408,148 @@ private void player_logout(void)
 }
 
 
+/* A return value of -1 means "all is well, print a prompt and wait
+   for next input". */
 int process_command(string str)
+{
+  string errstr;
+
+  switch(account_state) {
+
+  case ASTATE_FIRSTLOGIN:
+    account_state = ASTATE_MENU_CONSOLE;
+    message(
+   "You have a new account.  You'll need to create a character for it.\r\n"
+ + "Don't sweat the details too much if this is your first time.  You'll\r\n"
+ + "need to get a feel for the game first, and you're very, very likely\r\n"
+ + "to wind up creating another, or lots more, in your time here.\r\n");
+
+    print_account_menu();
+    return -1;
+
+    /* ACCOUNT MENU: */
+  case ASTATE_MENU:
+    str = STRINGD->trim_whitespace(str);
+
+    if(str == "1") {
+      if(body) {
+	message(
+    "You already have a character.  Currently you can only have one.\r\n"
+  + "You can delete the old character first, or use your current one.\r\n"
+    );
+	return -1;
+      }
+
+      if(body_num > 0) {
+	message(
+  "Weird.  We couldn't connect you to your body for some reason.\r\n"
+  + "You could delete your character or contact an admin for more help.\r\n"
+  );
+	return -1;
+      }
+
+      errstr = catch (create_body());
+      if(errstr) {
+	message("We couldn't create your body:  '" + errstr + "'.\r\n");
+	return -1;
+      }
+
+      message("Created successfully.\r\n");
+      return -1;
+    }
+
+    if(str == "2") {
+      account_state = ASTATE_MENU_CONSOLE;
+      menu_tally = 0;
+      print_console_menu();
+      return -1;
+    }
+
+    if(str == "G") {
+      if(!body) {
+	message("You have no body, or you're not connected to yours.\r\n"
+		+ "Create a character first, or contact an admin.\r\n");
+	return -1;
+      }
+
+      account_state = ASTATE_GAME;
+
+      message("\r\n");
+      show_room_to_player(location);
+
+      return -1;
+    }
+
+    if(str == "quit") {
+      message("Okay.  Bye!\r\n");
+      return MODE_DISCONNECT;
+    }
+
+    if(STRINGD->prefix_string("help", str)) {
+      string help_req;
+
+      if(sscanf(str, "help%s", help_req)) {
+	cmd_help(this_object(), "help", help_req);
+	return -1;
+      }
+      message("Couldn't parse your help request.\r\n");
+      return -1;
+    }
+
+    message("That doesn't seem to be on the menu.\r\n");
+    menu_tally++;
+    if(menu_tally > 2) {
+      print_account_menu();
+      menu_tally = 0;
+    }
+
+    return -1;
+
+    /* CONSOLE MENU: */
+  case ASTATE_MENU_CONSOLE:
+    str = STRINGD->trim_whitespace(str);
+
+    if(str == "menu") {
+      menu_tally = 0;
+      print_account_menu();
+      account_state = ASTATE_MENU;
+      return -1;
+    }
+
+    if(STRINGD->prefix_string("lines ", str)) {
+      int nlines;
+      string errcheck;
+
+      if(sscanf(str, "lines %d%s", nlines, errcheck) == 2
+	 && errcheck && strlen(errcheck)) {
+	message("Just type 'lines', a space and a number.  No more.\r\n");
+	return -1;
+      }
+      if(nlines && nlines >= -1) {
+	set_num_lines(nlines);
+	print_console_menu();
+      }
+      return -1;
+    }
+
+    message("That doesn't seem to be on the menu.\r\n");
+    menu_tally++;
+    if(menu_tally > 2) {
+      print_console_menu();
+      menu_tally = 0;
+    }
+    return -1;
+
+  case ASTATE_GAME:
+    return game_command(str);
+  }
+
+  /* Illegal state! */
+  message("Internal Error: Illegal state!\r\n");
+  return MODE_DISCONNECT;
+}
+
+static int game_command(string str)
 {
   string cmd;
   int    ctr, size;
