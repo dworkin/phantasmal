@@ -17,7 +17,7 @@ usr/System/initd.c
 
 data/object/roomfile, data/object/mobfile, data/object/zonefile
   Remove player data, remove .old and safe_* files.  Remove *~ files
-  again after editing.
+  again after editing.  Remove objects that were in inventory.
 
 data/user/*.pwd
   Remove all .pwd files
