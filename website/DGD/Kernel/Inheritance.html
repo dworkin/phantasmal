@@ -277,6 +277,48 @@ or
     look up destructed objects, only current non-destructed ones.  If
     you write an object manager, you have to take that into account
     and keep track.</p>
+
+    <h3> The Recompile Function </h3>
+
+    <p>
+      One thing that may confuse you is the recompile() function in
+      the driver.  Here's an explanation by Erwin Harte of when it
+      would be called:
+    </p>
+
+    <span style="font-size: 110%">
+
+<ul>
+ <li> object A inherits objects B and C. </li>
+ <li> both B and C inherit D. </li>
+</ul>
+
+<p>
+Now destruct object D and B, and compile both of them again.  Now you
+have two different versions of D, one used by B, the other used by C.
+</p>
+
+<p>
+It is my understanding that if you would now either 'destruct + compile'
+or 'recompile' A, recompile_object() will be called with object C,
+because that one is still inheriting an already destructed object (the
+original version of D).
+</p>
+
+<p>
+If you do not destruct it, you'll run into an error about inheriting
+different versions of the same object.  If you -do- destruct it, the
+inherit_program() will be called in the driver object for C that can
+then use the newer version of D, after which A can again inherit it.
+</p>
+
+<p>
+So the bottomline seems to be that recompile_object() is called when
+you're trying to inherit an object that in turn depends on an already
+destructed object.
+</p>
+
+</span>
             <address>
             <span><a href="mailto:angelbob-remove-spamfree@spamfree.users.sf.net">Noah Gibbs</a></span>
             </address></td>
