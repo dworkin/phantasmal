@@ -185,6 +185,11 @@ sub set_new_fields {
     }
 }
 
+################################# html_for_object ####################
+
+# This outputs an HTML file not only for the object itself, but for
+# all APIs within the object
+
 sub html_for_object {
     my (@filerefs, $fileref, $obj_name);
 
@@ -198,6 +203,8 @@ sub html_for_object {
 
     html_for_obj($obj_name, @filerefs);
 }
+
+################################# html_for_file ####################
 
 # HTML for specific API file entries
 sub html_for_file {
@@ -249,8 +256,12 @@ EOF
     $file_index++;
 }
 
+################################# html_for_obj ####################
 
 # HTML for object entry, for objects like /usr/System/obj/objectd.c.
+# This doesn't output all the API entries, html_for_object does
+# that.
+#
 sub html_for_obj {
     my ($obj_name, @filerefs) = @_;
     my ($tmpname, $fileref);
@@ -258,7 +269,7 @@ sub html_for_obj {
     $tmpname = ">$output_path/obj_idx$obj_index.html";
     open(FILE, $tmpname)
 	or die "Can't open obj index file $tmpname: $!";
-    print "Opened file $tmpname.\n";
+    $obj_filenames{$obj_name} = "obj_idx$obj_index.html";
 
     print FILE <<"EOF";
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
@@ -304,7 +315,55 @@ EOF
     close(FILE);
 }
 
+################################# html_for_index ####################
 
+# This makes an index.html file for all objects.
+#
 sub html_for_index {
+    my ($obj_name);
 
+    open(FILE, ">$output_path/index.html") or die "Can't open index.html: $!";
+
+    print FILE <<"EOF";
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title> Phantasmal API Documentation </title>
+    <style type="text/css">
+    <!--
+      p {font-family: serif, font-weight: normal; color: black;
+         font-size: 12pt }
+      h3 {font-family: serif; font-weight: bold; color: #3000FF;
+          font-size: 16pt}
+     -->
+    </style>
+  </head>
+
+  <body text="#000000" bgcolor="#DDDDDD" link="#0000EF" vlink="#51188E"
+        alink="#FF0000">
+
+    <h3 align="center"> Phantasmal API Objects </h3>
+
+    <ul>
+EOF
+    ;
+
+    for $obj_name (sort keys %obj_filenames) {
+	print FILE "<li> <a href=\"$obj_filenames{$obj_name}\">"
+	    . "$obj_name </a> </li>\n";
+    }
+
+    print FILE <<"EOF";
+    </ul>
+
+    <a href="http://sourceforge.net">
+      <img src="http://sourceforge.net/sflogo.php?group_id=48659&type=6"
+           width="210" height="62" border="0"
+           alt="SourceForge.net Logo"></a>
+  </body>
+</html>
+
+EOF
+
+    close(FILE);
 }
