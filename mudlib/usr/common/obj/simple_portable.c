@@ -1,7 +1,8 @@
+#include <kernel/kernel.h>
 #include <config.h>
 #include <map.h>
 
-inherit port ROOM;
+inherit obj ROOM;
 inherit unq UNQABLE;
 
 /* A simple portable object */
@@ -11,12 +12,12 @@ inherit unq UNQABLE;
 /* The objflags field contains a set of boolean object flags */
 #define OF_CONTAINER          1
 #define OF_OPEN               2
-#define OF_NODESC            4
+#define OF_NODESC             4
 
 int objflags;
 
 static void create(varargs int clone) {
-  port::create(clone);
+  obj::create(clone);
   unq::create(clone);
   if(clone) {
     set_brief(PHR("A portable object"));
@@ -29,12 +30,12 @@ static void create(varargs int clone) {
 }
 
 void upgraded(varargs int clone) {
-  port::upgraded(clone);
+  obj::upgraded(clone);
   unq::upgraded(clone);
 }
 
 void destructed(varargs int clone) {
-  port::destructed(clone);
+  obj::destructed(clone);
   unq::destructed(clone);
 }
 
@@ -64,11 +65,45 @@ void from_dtd_unq(mixed* unq) {
 }
 
 /* 
- * is_no_desc() override
+ * flag overrides
  */
 
 int is_no_desc() {
   return objflags & OF_NODESC;
+}
+
+int is_container() {
+  return objflags & OF_CONTAINER;
+}
+
+int is_open() {
+  return objflags & OF_OPEN;
+}
+
+private void set_flags(int flags, int value) {
+  if(value) {
+    objflags |= flags;
+  } else {
+    objflags &= ~flags;
+  }
+}
+
+void set_nodesc(int value) {
+  if(!SYSTEM())
+    error("Only SYSTEM code can currently set an object nodesc!");
+
+  set_flags(OF_NODESC, value);
+}
+
+void set_container(int value) {
+  if(!SYSTEM())
+    error("Only SYSTEM code can currently set an object as a container!");
+
+  set_flags(OF_CONTAINER, value);
+}
+
+void set_open(int value) {
+  set_flags(OF_OPEN, value);
 }
 
 /* function which returns an appropriate error message if this object
