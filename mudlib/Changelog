@@ -1,3 +1,5 @@
+Release 0.012:
+
 Release 0.011:
 	* Lots of refactoring and general code changes.  Always.  Every
 	  release.  This one too.
@@ -14,10 +16,13 @@ Release 0.011:
 	* Added "idea" command, like bug and typo.  Made sure more
 	  information was included in the reports like where the report
 	  takes place and who reported it.
-	* Added a @makeroom command and its associated user states.  The
-	  idea is that you can type @makeroom and then just answer the
+	* Added a @make_room command and its associated user states.  The
+	  idea is that you can type @make_room and then just answer the
 	  questions from there to create a new room object.  Simpler but
 	  slower than the older way.
+	* Added generic @delete command that will destroy rooms, exits,
+	  mobiles or portables.
+	* The display of @list_room now scrolls appropriately.
 	
 Release 0.010:
 
