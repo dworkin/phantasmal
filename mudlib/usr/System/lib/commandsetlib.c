@@ -1,3 +1,4 @@
+#include <kernel/kernel.h>
 #include <config.h>
 #include <log.h>
 #include <type.h>
@@ -10,14 +11,16 @@ private mixed* load_command_sets_file(string filename);
 private mixed* add_socials_cmd_set(mixed* cmd_set, int which);
 
 
-void create(void) {
+static void create(void) {
   command_sets = nil;
 }
 
 void upgraded(varargs int clone) {
-  command_sets = load_command_sets_file(USER_COMMANDS_FILE);
-  if(!command_sets) {
-    LOGD->write_syslog("Command_sets is Nil!", LOG_FATAL);
+  if(SYSTEM()) {
+    command_sets = load_command_sets_file(USER_COMMANDS_FILE);
+    if(!command_sets) {
+      LOGD->write_syslog("Command_sets is Nil!", LOG_FATAL);
+    }
   }
 }
 
@@ -29,6 +32,9 @@ void set_social_commands(void) {
 }
 
 int num_command_sets(int loc) {
+  if(!SYSTEM())
+    return 0;
+
   if(!command_sets[loc])
     return 0;
 
@@ -37,6 +43,9 @@ int num_command_sets(int loc) {
 
 mixed* query_command_sets(int loc, int num, string cmd) {
   mixed* ret;
+
+  if(!SYSTEM())
+    return nil;
 
   ret = command_sets[loc][num][cmd];
 
@@ -159,6 +168,9 @@ private mixed* load_command_sets_file(string filename) {
 private mixed* add_socials_cmd_set(mixed* cmd_set, int which) {
   int     loc, num, ctr;
   string *soc;
+
+  if(!SYSTEM())
+    return nil;
 
   loc = PHRASED->language_by_name("enUS");
 

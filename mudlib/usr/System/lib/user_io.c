@@ -16,11 +16,12 @@ int    num_lines;               /* how many lines on terminal */
 static  int    process_message(string str);
 static  void   print_prompt(void);
         void   push_state(object state);
+        void   upgraded(varargs int clone);
 
 /* Macros */
 #define NEW_PHRASE(x) PHRASED->new_simple_english_phrase(x)
 
-void create(void) {
+static void create(void) {
     state = ([ ]);
 
     state_stack = ({ });
@@ -28,26 +29,39 @@ void create(void) {
     /* More defaults */
     num_lines = 20;
 
+    upgraded();
 }
 
 void upgraded(varargs int clone) {
-  if(!find_object(US_SCROLL_TEXT)) { compile_object(US_SCROLL_TEXT); }
+  if(SYSTEM()) {
+    if(!find_object(US_SCROLL_TEXT)) { compile_object(US_SCROLL_TEXT); }
+  }
 }
 
 
 int get_num_lines(void) {
+  if(!SYSTEM() && !COMMON() && !GAME())
+    return -1;
+
   return num_lines;
 }
 
 static void set_num_lines(int new_num) {
-  num_lines = new_num;
+  if(SYSTEM()) {
+    num_lines = new_num;
+  }
 }
 
 void set_state(object key_obj, int new_state) {
-  state[key_obj] = new_state;
+  if(SYSTEM() || COMMON() || GAME()) {
+    state[key_obj] = new_state;
+  }
 }
 
 int get_state(object key_obj) {
+  if(!SYSTEM() && !COMMON() && !GAME())
+    return -1;
+
   return state[key_obj];
 }
 
@@ -55,10 +69,15 @@ int get_state(object key_obj) {
 /****** USER_STATE stack implementation ********/
 
 void to_state_stack(string str) {
-  state_stack[0]->to_user(str);
+  if(SYSTEM() || COMMON() || GAME()) {
+    state_stack[0]->to_user(str);
+  }
 }
 
-int message_scroll(string str) {
+void message_scroll(string str) {
+  if(!SYSTEM() && !COMMON() && !GAME())
+    return;
+
   if(scroll_state) {
     scroll_state->to_user(str);
   } else {
@@ -85,6 +104,9 @@ void pop_state(object state) {
   int    first_state;  /* This is a boolean value */
   int    ctr;
   object prev_state, next_state;
+
+  if(!SYSTEM() && !COMMON() && !GAME())
+    return;
 
   if(!state_stack || !sizeof(state_stack)) {
     destruct_object(state);
@@ -128,6 +150,9 @@ void push_state(object state) {
   if(!SYSTEM() && previous_program() != USER_STATE)
     error("Only privileged code can call push_state()!");
 
+  if(!SYSTEM() && !COMMON() && !GAME())
+    return;
+
   if(!state_stack) {
     state_stack = ({ });
   }
@@ -147,6 +172,9 @@ void push_state(object state) {
 }
 
 object peek_state(void) {
+  if(!SYSTEM() && !COMMON() && !GAME())
+    return nil;
+
   if(!state_stack || !sizeof(state_stack))
     return nil;
 
@@ -164,6 +192,9 @@ static void message_all_users(string str)
 {
     object *users, user;
     int i;
+
+    if(!SYSTEM() && !COMMON() && !GAME())
+      return;
 
     users = users();
     for (i = sizeof(users); --i >= 0; ) {
@@ -185,6 +216,9 @@ static void system_phrase_all_users(string str)
     object *users, user;
     int i;
 
+    if(!SYSTEM() && !COMMON() && !GAME())
+      return;
+
     users = users();
     for (i = sizeof(users); --i >= 0; ) {
 	user = users[i];
@@ -195,32 +229,9 @@ static void system_phrase_all_users(string str)
     }
 }
 
-/*
-static void system_phrase_room(object room, string str)
-{
-  object phr;
-
-  phr = PHRASED->file_phrase(SYSTEM_PHRASES, str);
-  if(!phr)
-    error("Can't get system phrase " + str);
-
-  tell_room(room, phr);
-}
-*/
-
-/*
- * NAME:	tell_room()
- * DESCRIPTION:	send message to everybody in specified location
- */
-/*
-static void tell_room(object room, mixed msg)
-{
-// replace these with proper comments if this is ever uncommented.
-// tell everyone in the room except the person themselves
-  room->tell_room(msg, ({ body }) );
-}
-*/
-
 mixed state_receive_message(string str) {
+  if(!SYSTEM() && !COMMON() && !GAME())
+    return nil;
+
   return state_stack[0]->from_user(str);
 }

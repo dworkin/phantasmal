@@ -63,8 +63,10 @@ static void create(varargs int clone)
 }
 
 void destructed(int clone) {
-  roomwiz::destructed(clone);
-  objwiz::destructed(clone);
+  if(SYSTEM()) {
+    roomwiz::destructed(clone);
+    objwiz::destructed(clone);
+  }
 }
 
 

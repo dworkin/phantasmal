@@ -31,7 +31,9 @@ static void create(varargs int clone)
 }
 
 void destructed(varargs int clone) {
+  if(SYSTEM()) {
 
+  }
 }
 
 
