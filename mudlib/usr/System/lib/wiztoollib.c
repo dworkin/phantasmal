@@ -116,6 +116,13 @@ static void cmd_compile(object user, string cmd, string str)
     }
   }
 
+  if(!sscanf(str, "$%*d") && !sscanf(str, "%*s.c")) {
+    if(!read_file(str, 0, 1) && read_file(str + ".c", 0, 1)) {
+      user->message("(compiling " + str + ".c)\r\n");
+      str += ".c";
+    }
+  }
+
   catch {
     wiz::cmd_compile(user, cmd, str);
   } : {
@@ -431,7 +438,8 @@ static void cmd_new_portable(object user, string cmd, string str) {
 
   segown = OBJNUMD->get_segment_owner(portnum / 100);
   if(portnum >= 0 && segown && segown != MAPD) {
-    user->message("That number is in a segment reserved for non-portables!\r\n");
+    user->message("That number is in a segment reserved for "
+		  + "non-portables!\r\n");
     return;
   }
 
@@ -594,4 +602,57 @@ static void cmd_zone_map(object user, string cmd, string str) {
     /* user->message("  1:   Miskatonic University\r\n"); */
   }
   user->message("-----\r\n");
+}
+
+
+static void cmd_new_mobile(object user, string cmd, string str) {
+  int    mobnum, bodynum;
+  string mobtype, segown;
+  object mobile, body;
+
+  if(!str || sscanf(str, "%*s %*s %*s %*s") == 4
+     || sscanf(str, "#%d #%d %s", mobnum, bodynum, mobtype) != 3) {
+    user->message("Usage: " + cmd
+		  + " #<new mob num> #<body num> <mobile type>\r\n");
+    return;
+  }
+
+  if(mobtype != "wander") {
+    user->message("Currently, @new_mobile only accepts the 'wander' mobile "
+		  + "type specifier.\r\n");
+    user->message("Please replace '" + mobtype
+		  + "' with 'wander' in your command,"
+		  + " or implement the new\r\n");
+    user->message("functionality.\r\n");
+    return;
+  }
+
+  body = MAPD->get_room_by_num(bodynum);
+  if((bodynum <= 0) || !body) {
+    user->message("You must supply an appropriate body number with a "
+		  + "corresponding body object.  Failed.\r\n");
+    return;
+  }
+
+  if(mobnum > 0) {
+    if(MOBILED->get_mobile_by_num(mobnum)) {
+      user->message("There is already a mobile #" + mobnum
+		    + " registered!\r\n");
+      return;
+    }
+
+    segown = OBJNUMD->get_segment_owner(mobnum / 100);
+    if(segown && segown != MOBILED) {
+      user->message("That number is in a segment reserved for "
+		    + "non-mobiles!\r\n");
+      return;
+    }
+  }
+
+  mobile = clone_object("/usr/common/obj/wander_mobile");
+  if(!mobile)
+    error("Can't clone wandering mobile!");
+
+  MOBILED->add_mobile_number(mobile, mobnum);
+  user->message("Added mobile #" + mobile->get_number() + ".\r\n");
 }
