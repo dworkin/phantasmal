@@ -54,6 +54,21 @@ void hook_emote(mixed *args) {
   }
 }
 
+/* Args -- body, target, verb */
+void hook_social(mixed *args) {
+  object actor_body, target_body;
+  string verb, ret;
+
+  if(user) {
+    ret = SOULD->get_social_string(user, args[0], args[1], args[2]);
+    if(!ret) {
+      user->message("Error getting social string!\r\n");
+    } else {
+      user->message(ret + "\r\n");
+    }
+  }
+}
+
 void hook_whisper(mixed *args) {
   if (user) {
     user->send_phrase(args[0]->get_brief());
