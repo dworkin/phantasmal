@@ -21,7 +21,7 @@ private mapping tag_code;
    what segments meant for rooms */
 private int**   zone_segments;
 
-private object  room_dtd;
+private object  room_dtd, bind_dtd;
 private int     initialized;
 
 #define PHR(x) PHRASED->new_simple_english_phrase(x)
@@ -61,7 +61,6 @@ void upgraded(varargs int clone) {
 
 void init(string room_dtd_str, string bind_dtd_str) {
   int    ctr;
-  object bind_dtd;
   mixed *unq_data;
   string bind_file, tag, file;
 
@@ -72,7 +71,7 @@ void init(string room_dtd_str, string bind_dtd_str) {
     /* read the binder file */
     bind_dtd = clone_object(UNQ_DTD);
     bind_dtd->load(bind_dtd_str);
-    
+
     bind_file = read_file(ROOM_BIND_FILE);
     if (!bind_file)
       error("Cannot read binder file " + ROOM_BIND_FILE + "!");
@@ -122,6 +121,8 @@ void destructed(int clone) {
 
   if(room_dtd)
     destruct_object(room_dtd);
+  if(bind_dtd)
+    destruct_object(bind_dtd);
 
   /* Now go through and destruct all rooms */
   numzones = ZONED->num_zones();
