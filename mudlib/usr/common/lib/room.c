@@ -115,50 +115,86 @@ void enum_room_mobiles(string cmd, object *except, mixed *args) {
 }
 
 float get_weight(void) {
-  return weight;
+  if(weight < 0.0 && archetype)
+    return archetype->get_weight();
+
+  return weight < 0.0 ? 0.0 : weight;
 }
 
 float get_volume(void) {
-  return volume;
+  if(volume < 0.0 && archetype)
+    return archetype->get_volume();
+
+  return volume < 0.0 ? 0.0 : volume;
 }
 
 float get_length(void) {
-  return length;
+  if(length < 0.0 && archetype)
+    return archetype->get_length();
+
+  return length < 0.0 ? 0.0 : length;
 }
 
 float get_weight_capacity(void) {
+  if(weight_capacity < 0.0 && archetype)
+    return archetype->get_weight_capacity();
+
   return weight_capacity;
 }
 
 float get_volume_capacity(void) {
+  if(volume_capacity < 0.0 && archetype)
+    return archetype->get_volume_capacity();
+
   return volume_capacity;
 }
 
 float get_length_capacity(void) {
+  if(length_capacity < 0.0 && archetype)
+    return archetype->get_length_capacity();
+
   return length_capacity;
 }
 
 void set_weight(float new_weight) {
+  if(!SYSTEM() && !COMMON())
+    error("Only SYSTEM code can set weights!");
+
   weight = new_weight;
 }
 
 void set_volume(float new_volume) {
+  if(!SYSTEM() && !COMMON())
+    error("Only SYSTEM code can set volumes!");
+
   volume = new_volume;
 }
 
 void set_length(float new_length) {
+  if(!SYSTEM() && !COMMON())
+    error("Only SYSTEM code can set lengths!");
+
   length = new_length;
 }
 
 void set_weight_capacity(float new_weight_capacity) {
+  if(!SYSTEM() && !COMMON())
+    error("Only SYSTEM code can set weight capacities!");
+
   weight_capacity = new_weight_capacity;
 }
 
 void set_volume_capacity(float new_volume_capacity) {
+  if(!SYSTEM() && !COMMON())
+    error("Only SYSTEM code can set volume capacities!");
+
   volume_capacity = new_volume_capacity;
 }
 
 void set_length_capacity(float new_length_capacity) {
+  if(!SYSTEM() && !COMMON())
+    error("Only SYSTEM code can set length capacities!");
+
   length_capacity = new_length_capacity;
 }
 
@@ -270,19 +306,23 @@ void set_openable(int value) {
 /* Note: These functions are trivial here (always returning nil) but
  * can be overriden to control access into or out of a room 
  * Reason is printed out to the user if the user can't enter */
+
+/* leave_object is the body attempting to leave, dir is the direction. */
 string can_leave(object leave_object, int dir) {
   return nil;
 }
 
+/* enter_object is the body attempting to enter, dir is the direction. */
 string can_enter(object enter_object, int dir) {
   return nil;
 }
 
+/* leave_object is the body leaving, dir is the direction */
 void leave(object leave_object, int dir) {
   object mob;
 
   mob = leave_object->get_mobile();
-  
+
   /* 
    * notify all mobiles in the room that this person is leaving.
    * any user mobiles are then responsable for writing this to the 
@@ -291,6 +331,7 @@ void leave(object leave_object, int dir) {
   enum_room_mobiles("hook_leave", ({ mob }), ({ leave_object, dir }) );
 }
 
+/* enter_object is the body entering, dir is the direction */
 void enter(object enter_object, int dir) {
   object mob;
 
@@ -307,10 +348,26 @@ void enter(object enter_object, int dir) {
  * the parent or a child of this object.
  */
 
+/* mover is the body of the mobile doing the moving,
+   movee is the object being moved (one of this object's contained objects)
+   new_env is the location that the object will shortly be in, which is
+           contained by this object or contains this object.
+*/
 string can_remove(object mover, object movee, object new_env) {
   return nil;
 }
 
+/* This function notifies us that an object has been removed from us.
+
+   mover is the body of the mobile doing the moving
+   movee is the object being removed from us
+   env is the location it will shortly be moved to
+
+   Note:  this function does *not* need to call remove_from_container
+   or otherwise remove the object from itself.  That will be done
+   separately.  This is just notification that the removal is
+   going to occur.
+*/
 void remove(object mover, object movee, object new_env) {
 }
 
@@ -319,6 +376,10 @@ void remove(object mover, object movee, object new_env) {
  * moved from its current room into new_room as part of a move operation
  */
 
+/* This function is called to see whether this object may be taken.
+   mover is the body of the mobile attempting to move this object
+   new_env is where it will be moving it to
+*/
 string can_get(object mover, object new_env) {
   if (get_detail_of())
     return "That's attached!  You can't get it.";
@@ -326,14 +387,25 @@ string can_get(object mover, object new_env) {
   return nil;
 }
 
+/* This function notifies us that somebody has gotten/moved this
+   object.
+   mover is the body of the mobile doing the moving
+   new_env is where it is moving us to
+
+   This function doesn't need to move the object from its parent
+   to the new environment.  That'll be done separately.  This is
+   just notification that that has happened.
+*/
 void get(object mover, object new_env) {
 }
+
 
 /* 
  * put functions are called when the movee object is being
  * moved from another object into this room.  The other
  * object can be the parent or a child.
  */
+
 
 string can_put(object mover, object movee, object old_env) {
   return nil;
