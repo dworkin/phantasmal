@@ -212,3 +212,44 @@ int prefix_string(string prefix, string str) {
 
   return 0;
 }
+
+
+/********** Locale-specific Functions ************/
+
+/* A specific check for English to see if the word "a" or the word "an"
+   is a more appropriate article for the following string. */
+int should_use_an(string str) {
+  int ctr, letter;
+
+  ctr = 0;
+  while(strlen(str) > ctr) {
+    letter = str[ctr];
+
+    if(letter <= '9' && letter >= '0') {
+      /* It's a leading digit.  Only the word for "eight" begins with a
+	 vowel sound ("one" is pronouned as "wun"), so... */
+      if(letter == '8') return 1;
+      return 0;
+    }
+
+    if(letter >= 'a' && letter <= 'z') {
+      letter += 'A' - 'a';
+    }
+    if(letter >= 'A' && letter <= 'Z') {
+      if(letter == 'A' || letter == 'E' || letter == 'I' || letter == 'O'
+	 || letter == 'U') {
+	return 1;
+      }
+      /* For now, assume a leading H or Y acts as a consonant -- not always
+	 true, alas */
+      return 0;
+    }
+
+    /* Assume English-characters that aren't letters or numbers don't
+       affect the a-versus-an thing.  Hard to tell if that's true.  But
+       it means, for instance, that we'd say "an %ox", "an #$%@$ automobile",
+       or "an ^evil^ mage".  Whatever. */
+    ctr++;
+  }
+  return 0;
+}
