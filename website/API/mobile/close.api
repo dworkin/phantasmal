@@ -1,0 +1,27 @@
+FILE
+	/usr/common/lib/mobile.c
+
+NAME
+	close - instruct the mobile to close an object
+
+PROTOTYPE
+	nomask string close(object obj_to_close)
+
+CALLED BY
+	System, Common, Game
+
+DESCRIPTION
+	Cause the mobile to attempt to close the given object.  If the
+	mobile cannot, a reason why is returned as a string.
+
+	You should access-protect your version of this and all other
+	inherited functions, including upgraded() and destructed().
+
+RETURN VALUE
+	The reason as a string, or nil for success.
+
+ERRORS
+	Usually none.
+
+SEE ALSO
+	place, open

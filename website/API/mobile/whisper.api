@@ -1,0 +1,30 @@
+FILE
+	/usr/common/lib/mobile.c
+
+NAME
+	whisper - instruct the mobile to whisper
+
+PROTOTYPE
+	nomask void whisper(object to_whom, string msg)
+
+CALLED BY
+	System, Common, Game
+
+DESCRIPTION
+	Cause the mobile to whisper to someone or something in
+	particular, normally audible to one mobile in
+	the same location.  Mobiles who can hear have their hook_whisper
+	function called to let them know that somebody has spoken
+	nearby.
+
+	You should access-protect your version of this and all other
+	inherited functions, including upgraded() and destructed().
+
+RETURN VALUE
+	None.
+
+ERRORS
+	Usually none.
+
+SEE ALSO
+	emote, say, social, hook_whisper_other, ask

@@ -1,0 +1,28 @@
+FILE
+	/usr/common/lib/mobile.c
+
+NAME
+	hook_enter - notify the mobile that somebody has entered
+
+PROTOTYPE
+	void hook_enter(object body, int direction)
+
+CALLED BY
+	System, Common, Game
+
+DESCRIPTION
+	This function is called when a mobile enters the current
+	location.  The arguments are the body object of the one
+	entering and the direction from which they entered.
+
+	You should access-protect your version of this and all other
+	inherited functions, including upgraded() and destructed().
+
+RETURN VALUE
+	None.
+
+ERRORS
+	Usually none.
+
+SEE ALSO
+	hook_leave, move, teleport, ExitD:get_name_for_dir

@@ -1,0 +1,30 @@
+FILE
+	/usr/common/lib/mobile.c
+
+NAME
+	hook_social - notify the mobile that somebody has performed a social
+
+PROTOTYPE
+	void hook_social(object body, object target, string verb)
+
+CALLED BY
+	System, Common, Game
+
+DESCRIPTION
+	This function is called when a nearby mobile performs a social
+	action.  The arguments are the body object of the actor, the body
+	of the target, and the verb for the social performed.  If there
+	is no target, nil is passed for the target body.
+
+	You should access-protect your version of this and all other
+	inherited functions, including upgraded() and destructed().
+
+RETURN VALUE
+	None.
+
+ERRORS
+	Usually none.
+
+SEE ALSO
+	hook_say, hook_emote, social, hook_whisper, hook_whisper_other,
+	hook_ask, hook_ask_other

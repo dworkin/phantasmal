@@ -1,0 +1,29 @@
+FILE
+	/usr/common/lib/mobile.c
+
+NAME
+	ask - instruct the mobile to ask something of another
+
+PROTOTYPE
+	nomask void ask(object to_whom, string msg)
+
+CALLED BY
+	System, Common, Game
+
+DESCRIPTION
+	Cause the mobile to ask someone about something in particular,
+	normally audible to all mobiles in the same location.  Mobiles
+	who can hear have their hook_ask function called to let them
+	know that somebody has spoken nearby.
+
+	You should access-protect your version of this and all other
+	inherited functions, including upgraded() and destructed().
+
+RETURN VALUE
+	None.
+
+ERRORS
+	Usually none.
+
+SEE ALSO
+	emote, say, social, whisper, hook_ask

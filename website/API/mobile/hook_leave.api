@@ -1,0 +1,28 @@
+FILE
+	/usr/common/lib/mobile.c
+
+NAME
+	hook_leave - notify the mobile that somebody has left
+
+PROTOTYPE
+	void hook_leave(object body, int direction)
+
+CALLED BY
+	System, Common, Game
+
+DESCRIPTION
+	This function is called when a mobile leaves the current
+	location.  The arguments are the body object of the one
+	leaving and the direction in which they left.
+
+	You should access-protect your version of this and all other
+	inherited functions, including upgraded() and destructed().
+
+RETURN VALUE
+	None.
+
+ERRORS
+	Usually none.
+
+SEE ALSO
+	hook_enter, move, teleport, ExitD:get_name_for_dir

@@ -1,0 +1,27 @@
+FILE
+	/usr/common/lib/mobile.c
+
+NAME
+	get_body - get the mobile's body object
+
+PROTOTYPE
+	object get_body(void)
+
+CALLED BY
+	Anybody
+
+DESCRIPTION
+	Gets the mobile's body object.
+
+	This function isn't access-protected.  You should access-protect
+	your version of this and all other inherited functions, including
+	upgraded() and destructed().
+
+RETURN VALUE
+	The body object.
+
+ERRORS
+	Usually none.
+
+SEE ALSO
+	get_user

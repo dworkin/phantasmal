@@ -1,0 +1,37 @@
+FILE
+	/usr/common/lib/mobile.c
+
+NAME
+	teleport - instruct the mobile to teleport somewhere
+
+PROTOTYPE
+	nomask string teleport(object destination, int force)
+
+CALLED BY
+	System, Common, Game
+
+DESCRIPTION
+	Cause the mobile to attempt to teleport to the specified
+	destination.  If 'force' is true, the teleport is automatically
+	successful if the destination is valid.  If the mobile cannot,
+	a reason why is returned as a string.
+
+	The 'force' parameter is primarily to allow admins to teleport
+	wherever they please without directly setting internal MUD
+	structures.
+
+	When the mobile changes rooms, the 'hook_leave' hook is invoked
+	in the old location, and the 'hook_enter' hook is invoked in
+	the new location.
+
+	You should access-protect your version of this and all other
+	inherited functions, including upgraded() and destructed().
+
+RETURN VALUE
+	The reason as a string, or nil for success.
+
+ERRORS
+	Usually none.
+
+SEE ALSO
+	move, hook_enter, hook_leave

@@ -1,0 +1,29 @@
+FILE
+	/usr/common/lib/mobile.c
+
+NAME
+	say - instruct the mobile to speak
+
+PROTOTYPE
+	nomask void say(string msg)
+
+CALLED BY
+	System, Common, Game
+
+DESCRIPTION
+	Cause the mobile to speak, normally audible to everybody in
+	the same location.  Mobiles who can hear have their hook_say
+	function called to let them know that somebody has spoken
+	nearby.
+
+	You should access-protect your version of this and all other
+	inherited functions, including upgraded() and destructed().
+
+RETURN VALUE
+	None.
+
+ERRORS
+	Usually none.
+
+SEE ALSO
+	emote, hook_say, social, whisper, ask

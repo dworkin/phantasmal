@@ -1,0 +1,29 @@
+FILE
+	/usr/common/lib/mobile.c
+
+NAME
+	emote - instruct the mobile to emote
+
+PROTOTYPE
+	nomask void emote(string msg)
+
+CALLED BY
+	System, Common, Game
+
+DESCRIPTION
+	Cause the mobile to emote, normally audible to everybody in
+	the same location.  Mobiles who can see have their hook_emote
+	function called to let them know that somebody has emoted
+	nearby.
+
+	You should access-protect your version of this and all other
+	inherited functions, including upgraded() and destructed().
+
+RETURN VALUE
+	None.
+
+ERRORS
+	Usually none.
+
+SEE ALSO
+	say, hook_emote, social, whisper, ask

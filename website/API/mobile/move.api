@@ -1,0 +1,32 @@
+FILE
+	/usr/common/lib/mobile.c
+
+NAME
+	move - instruct the mobile to move through an exit
+
+PROTOTYPE
+	nomask string move(int direction)
+
+CALLED BY
+	System, Common, Game
+
+DESCRIPTION
+	Cause the mobile to attempt to move through an exit in the
+	specified direction.  If the mobile cannot, a reason why is
+	returned as a string.
+
+	When the mobile changes rooms, the 'hook_leave' hook is invoked
+	in the old location, and the 'hook_enter' hook is invoked in
+	the new location.
+
+	You should access-protect your version of this and all other
+	inherited functions, including upgraded() and destructed().
+
+RETURN VALUE
+	The reason as a string, or nil for success.
+
+ERRORS
+	Usually none.
+
+SEE ALSO
+	teleport, hook_enter, hook_leave

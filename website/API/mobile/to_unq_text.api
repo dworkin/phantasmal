@@ -1,0 +1,28 @@
+FILE
+	/usr/common/lib/mobile.c
+
+NAME
+	to_unq_text - serialize the mobile as UNQ text
+
+PROTOTYPE
+	string to_unq_text(void)
+
+CALLED BY
+	System, Common, Game
+
+DESCRIPTION
+	This is a simple default implementation of to_unq_text() for
+	mobiles.  You'll want to override this for more customized
+	mobile types.
+
+	You should access-protect your version of this and all other
+	inherited functions, including upgraded() and destructed().
+
+RETURN VALUE
+	The serialized object as a string, or nil for failure.
+
+ERRORS
+	Usually none.
+
+SEE ALSO
+	mobile_from_dtd_unq

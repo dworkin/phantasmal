@@ -1,0 +1,30 @@
+FILE
+	/usr/common/lib/mobile.c
+
+NAME
+	get_type - get the subtype of mobile
+
+PROTOTYPE
+	string get_type(void)
+
+CALLED BY
+	Anybody
+
+DESCRIPTION
+	Gets the mobile's subtype, which is useful for serializing it.
+
+	The default implementation of this function simply causes an
+	error.
+
+	This function isn't access-protected.  You should access-protect
+	your version of this and all other inherited functions, including
+	upgraded() and destructed().
+
+RETURN VALUE
+	The type as a string, or nil.
+
+ERRORS
+	By default, always causes an error.  Varies by subtype of mobile.
+
+SEE ALSO
+	MobileD:to_unq_text

@@ -1,0 +1,28 @@
+FILE
+	/usr/common/lib/mobile.c
+
+NAME
+	set_user - set the mobile's user object
+
+PROTOTYPE
+	void set_user(object new_user)
+
+CALLED BY
+	Anybody
+
+DESCRIPTION
+	Sets the mobile's user object.  This function should probably
+	be carefully access-protected in inherited classes.
+
+	This function isn't access-protected.  You should access-protect
+	your version of this and all other inherited functions, including
+	upgraded() and destructed().
+
+RETURN VALUE
+	None.
+
+ERRORS
+	Usually none.
+
+SEE ALSO
+	get_user, get_body

@@ -1,0 +1,29 @@
+FILE
+	/usr/common/lib/mobile.c
+
+NAME
+	social - instruct the mobile to perform a social verb
+
+PROTOTYPE
+	nomask void social(string verb, object target)
+
+CALLED BY
+	System, Common, Game
+
+DESCRIPTION
+	Cause the mobile to perform a social verb, normally perceptible
+	to everybody in the same location.  Mobiles who can see have
+	their hook_social function called to let them know that somebody
+	has performed a social nearby.
+
+	You should access-protect your version of this and all other
+	inherited functions, including upgraded() and destructed().
+
+RETURN VALUE
+	None.
+
+ERRORS
+	Usually none.
+
+SEE ALSO
+	say, emote, hook_social, whisper, ask

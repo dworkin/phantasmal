@@ -1,0 +1,29 @@
+FILE
+	/usr/common/lib/mobile.c
+
+NAME
+	place - instruct the mobile to move an object from one place to
+	another
+
+PROTOTYPE
+	nomask string place(object obj_to_move, object where_to_move)
+
+CALLED BY
+	System, Common, Game
+
+DESCRIPTION
+	Cause the mobile to attempt to move the given object to the
+	specified new location.  If the mobile cannot, a reason why
+	is returned as a string.
+
+	You should access-protect your version of this and all other
+	inherited functions, including upgraded() and destructed().
+
+RETURN VALUE
+	The reason as a string, or nil for success.
+
+ERRORS
+	Usually none.
+
+SEE ALSO
+	open, close

@@ -1,0 +1,28 @@
+FILE
+	/usr/common/lib/mobile.c
+
+NAME
+	get_user - get the mobile's user object
+
+PROTOTYPE
+	object get_user(void)
+
+CALLED BY
+	Anybody
+
+DESCRIPTION
+	Gets the mobile's user object.  If the mobile doesn't represent
+	a user, nil is returned.
+
+	This function isn't access-protected.  You should access-protect
+	your version of this and all other inherited functions, including
+	upgraded() and destructed().
+
+RETURN VALUE
+	The user object or nil.
+
+ERRORS
+	Usually none.
+
+SEE ALSO
+	set_user, get_body

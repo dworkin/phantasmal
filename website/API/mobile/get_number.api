@@ -1,0 +1,26 @@
+FILE
+	/usr/common/lib/mobile.c
+
+NAME
+	get_number - get the mobile's number
+
+PROTOTYPE
+	int get_number(void)
+
+CALLED BY
+	Anybody
+
+DESCRIPTION
+	Gets the mobile's object number, assigned by ObjNumD and MobileD.
+
+	This function isn't access-protected.  You should access-protect
+	your version of this and all other inherited functions, including
+	upgraded() and destructed().
+
+RETURN VALUE
+	The integer object number or -1 if query failed.
+
+ERRORS
+	Usually none.
+
+SEE ALSO

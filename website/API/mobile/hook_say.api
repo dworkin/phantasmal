@@ -1,0 +1,29 @@
+FILE
+	/usr/common/lib/mobile.c
+
+NAME
+	hook_say - notify the mobile that somebody has spoken
+
+PROTOTYPE
+	void hook_say(object body, string message)
+
+CALLED BY
+	System, Common, Game
+
+DESCRIPTION
+	This function is called when a nearby mobile speaks.  The
+	arguments are the body object of the speaker and the string
+	that was spoken.
+
+	You should access-protect your version of this and all other
+	inherited functions, including upgraded() and destructed().
+
+RETURN VALUE
+	None.
+
+ERRORS
+	Usually none.
+
+SEE ALSO
+	say, hook_emote, hook_social, hook_whisper, hook_whisper_other,
+	hook_ask, hook_ask_other

@@ -1,0 +1,29 @@
+FILE
+	/usr/common/lib/mobile.c
+
+NAME
+	hook_whisper - notify the mobile that somebody has whispered them something
+
+PROTOTYPE
+	void hook_whisper(object body, string message)
+
+CALLED BY
+	System, Common, Game
+
+DESCRIPTION
+	This function is called when a nearby mobile whispers something
+	to this mobile.  The arguments are the body object of the actor
+	and the message that was whispered.
+
+	You should access-protect your version of this and all other
+	inherited functions, including upgraded() and destructed().
+
+RETURN VALUE
+	None.
+
+ERRORS
+	Usually none.
+
+SEE ALSO
+	hook_say, hook_emote, hook_social, whisper, hook_whisper_other,
+	hook_ask, hook_ask_other

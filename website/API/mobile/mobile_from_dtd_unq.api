@@ -1,0 +1,35 @@
+FILE
+	/usr/common/lib/mobile.c
+
+NAME
+	mobile_from_dtd_unq - static function, used for partial parsing
+	of mobiles from DTD-parsed UNQ
+
+PROTOTYPE
+	mixed mobile_from_dtd_unq(mixed *unq)
+
+CALLED BY
+	System, Common, Game
+
+DESCRIPTION
+	This implements parsing of common fields for mobiles from a
+	DTD UNQ description.  A subtype can parse out only the specific
+	fields it recognizes, then pass the resulting UNQ to this
+	function for further parsing.  See the animal_mobile for a
+	simple example.
+
+	If there is a 'data' field in the UNQ data, its value will be
+	passed back as the return value.  If there is no such value,
+	nil will be returned.
+
+	You should access-protect your version of this and all other
+	inherited functions, including upgraded() and destructed().
+
+RETURN VALUE
+	The data field from the UNQ object, or nil.
+
+ERRORS
+	Unrecognized fields or malformed UNQ will cause errors.
+
+SEE ALSO
+	MobileD:to_unq_text
