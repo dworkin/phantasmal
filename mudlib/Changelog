@@ -1,4 +1,7 @@
 Release 0.014:
+	* Weight/length/volume commands for modification
+	* Object weight, volume and length and their capacities load/save
+	* More exit stuff, including load/save
 	* Bugfix to @make_room to deal with rooms whose location is nil
 
 Release 0.013:
