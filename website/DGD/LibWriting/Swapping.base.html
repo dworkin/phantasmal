@@ -46,5 +46,36 @@
     called, or when certain driver functions are called on it.
   </p>
 
+  <p>
+    When an object is swapped out, it will only be written out if it
+    changes.  Having large objects that change frequently can make for
+    much slower swapping.  Consider separating the highly-changeable
+    parts of the objects into smaller DGD objects that will swap
+    separately.
+  </p>
+
+  <h3> Disabling Swapping </h3>
+
+  <p>
+    If you experience very high usage by your MUD of your machine's
+    CPU, but DGD's usage of ticks doesn't account for it, then DGD's
+    housekeeping tasks, especially swapping, may account for the
+    difference.  If your MUD can fit entirely in RAM, you can find out
+    if swapping is your problem by temporarily turning off swapping
+    and only using RAM.
+  </p>
+
+  <p>
+    In your DGD configuration file, set swap_fragment to 0.  That will
+    turn off ordinary swapping, but not certain operations where all
+    objects are swapped out to make room for larger contiguous blocks
+    of static memory.  By setting static_chunk to 0 as well, you can
+    eliminate all swapping in your application, even those operations.
+  </p>
+
+  <p>
+    Remember to turn swapping back on afterward!
+  </p>
+
   <p style="text-size: 150%"> <a href="../index.html"> Back to top level
     </a> </p>
