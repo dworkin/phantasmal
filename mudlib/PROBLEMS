@@ -89,11 +89,10 @@ One way to make sure this doesn't happen is to type %status at the
 command line of your MUD as an admin.  In the upper left under "Swap
 device", "sectors" shows you how many sectors your MUD uses and how
 many it can use.  You can also check out memory usage and number of
-objects to see if they need to be increased.  This stuff is all 100%
-the same as for the Kernel MUDLib, so the DGD mailing list is a good
-place to ask about what it means and how you can play with it.  In any
-case, this will tell you how close you are to exceeding your allowed
-usage of various resources.  You may also find that as you come close
-to the limit in them, it takes more ticks to do things.  If this
-happens then you may run out of ticks before you run out of sectors,
-dynamic memory or objects.
+objects.  The numbers tell you how close you are to exceeding your
+allowed usage of various resources.  You may also find that as you
+come close to the limit in them, it takes more ticks to do things.  If
+this happens then you may run out of ticks before you run out of other
+resources (like sectors).  This stuff is all entirely the same as for
+the Kernel MUDLib, so the DGD mailing list is a good place to ask
+about what the numbers mean and how you can play with them.
