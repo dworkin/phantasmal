@@ -47,8 +47,8 @@ foreach $obj (@objs) {
 
 # For each /usr/XXX/blah/foo.c object, output its files
 foreach $obj (@objs) {
-    print "\n* Object $obj APIs:\n";
-    print join(", ", map {$_->{func_name}} @{$priv_objs{$obj}}) . "\n";
+    print "* Object $obj\n";
+    #print join(", ", map {$_->{func_name}} @{$priv_objs{$obj}}) . "\n";
 
     html_for_object($obj, @{$priv_objs{$obj}});
 }
@@ -406,8 +406,17 @@ sub html_for_index {
 EOF
     ;
 
+    my ($user, $newuser);
     for $obj_name (sort keys %obj_filenames) {
-	print FILE "<li> <a href=\"$obj_filenames{$obj_name}\">"
+	if($obj_name =~ /^\/usr\/[A-Za-z0-9_]+\//) {
+	    $newuser = $1;
+	}
+
+	if($user ne $newuser) {
+	    print FILE "    </ul>\nBlorp    <ul>\n";
+	}
+
+	print FILE "      <li> <a href=\"$obj_filenames{$obj_name}\">"
 	    . "$obj_name </a> </li>\n";
     }
 
