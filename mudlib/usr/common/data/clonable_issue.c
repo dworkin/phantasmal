@@ -5,7 +5,7 @@
    If you start a war in Asia with this, don't come crying to
    me. */
 
-#include <config.h>
+#include <phantasmal/lpc_names.h>
 #include <type.h>
 #include <status.h>
 

@@ -2,8 +2,8 @@
 
 #include <phantasmal/log.h>
 #include <phantasmal/channel.h>
+#include <phantasmal/lpc_names.h>
 
-#include <config.h>
 #include <type.h>
 
 mixed*  channels;

@@ -1,8 +1,8 @@
 #include <kernel/kernel.h>
 
 #include <phantasmal/log.h>
+#include <phantasmal/lpc_names.h>
 
-#include <config.h>
 #include <type.h>
 
 /* MobileD-owned Segments */
@@ -24,6 +24,7 @@ private object add_struct_for_mobile(mixed* unq);
         void   add_dtd_unq_mobiles(mixed *unq, string filename);
 
 #define PHR(x) PHRASED->new_simple_english_phrase(x)
+#define MOBILE_BIND_FILE "/usr/common/sys/mobile_binder.unq"
 
 static void create(varargs int clone) {
   if(clone)

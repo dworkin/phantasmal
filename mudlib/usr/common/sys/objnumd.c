@@ -1,5 +1,6 @@
 #include <kernel/kernel.h>
-#include <config.h>
+
+#include <phantasmal/lpc_names.h>
 
 private mapping segments;
 private string* owners;

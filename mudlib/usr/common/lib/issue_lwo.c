@@ -1,19 +1,21 @@
+#include <phantasmal/lpc_names.h>
+
 /* This is the lightweight object (LWO) which the objectd uses to keep
    track of issues of objects -- that is, individual compiled versions
    of them.  There may be more than one issue per object in some
    cases.
 */
 
-/* (originally from objectd.c:)
-   The ISSUE_LWO is a structure which contains the info we care about
+/* The ISSUE_LWO is a structure which contains the info we care about
    for each issue.  That means it stores things like object name,
    issue compile time, and so on.  LWOs may link to each other since
-   the group of them exist entirely within the single HEAVY_ARRAY
-   (see below).  The ISSUE_LWO is never used directly, but is instead
-   used as one of LIB_LWO or CLONABLE_LWO, both of which inherit
-   from ISSUE_LWO. */
+   the group of them exist entirely within the single HEAVY_ARRAY (see
+   below).  The ISSUE_LWO is never used directly, but is instead used
+   as one of LIB_LWO or CLONABLE_LWO, both of which inherit from
+   ISSUE_LWO. */
 
-#include <config.h>
+
+/*** Object Data ***/
 
 /* The object name - may be shared with other issues of the same object */
 string ob_name;

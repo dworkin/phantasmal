@@ -2,8 +2,7 @@
 
 #include <phantasmal/timed.h>
 #include <phantasmal/log.h>
-
-#include <config.h>
+#include <phantasmal/lpc_names.h>
 
 inherit MOBILE;
 

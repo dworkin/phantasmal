@@ -1,6 +1,7 @@
 #include <kernel/kernel.h>
 
-#include <config.h>
+#include <phantasmal/lpc_names.h>
+
 #include <type.h>
 
 static mapping mobile_tags;

@@ -1,8 +1,8 @@
 #include <kernel/kernel.h>
 
 #include <phantasmal/log.h>
+#include <phantasmal/lpc_names.h>
 
-#include <config.h>
 #include <gameconfig.h>
 
 /* This is the AUTO object for scripts.  It's meant to prevent them

@@ -5,8 +5,8 @@
 #include <kernel/kernel.h>
 
 #include <phantasmal/parser.h>
+#include <phantasmal/lpc_names.h>
 
-#include <config.h>
 #include <limits.h>
 #include <type.h>
 

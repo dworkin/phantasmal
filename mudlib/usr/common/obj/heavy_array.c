@@ -5,7 +5,7 @@
    If you start a war in Asia with this, don't come crying to
    me. */
 
-#include <config.h>
+#include <phantasmal/lpc_names.h>
 
 /* This will eventually be an array type capable of holding unlimited
    numbers of items.  At the moment it's stubbed out to simply contain

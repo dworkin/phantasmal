@@ -1,8 +1,8 @@
 #include <kernel/kernel.h>
 
 #include <phantasmal/phrase.h>
+#include <phantasmal/lpc_names.h>
 
-#include <config.h>
 #include <type.h>
 #include <status.h>
 

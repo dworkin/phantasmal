@@ -1,6 +1,7 @@
 #include <kernel/kernel.h>
 
-#include <config.h>
+#include <phantasmal/lpc_names.h>
+
 #include <gameconfig.h>
 
 #define AUTHORIZED() (SYSTEM() || KERNEL() || GAME())

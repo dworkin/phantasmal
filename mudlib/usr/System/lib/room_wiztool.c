@@ -5,8 +5,8 @@
 
 #include <phantasmal/log.h>
 #include <phantasmal/exit.h>
+#include <phantasmal/lpc_names.h>
 
-#include <config.h>
 #include <type.h>
 #include <status.h>
 #include <limits.h>

@@ -1,4 +1,4 @@
-/* $Header: /cvsroot/phantasmal/mudlib/usr/System/obj/user.c,v 1.77 2003/12/10 11:41:41 angelbob Exp $ */
+/* $Header: /cvsroot/phantasmal/mudlib/usr/System/obj/user.c,v 1.78 2004/01/09 08:53:56 angelbob Exp $ */
 
 #include <kernel/kernel.h>
 #include <kernel/user.h>
@@ -9,8 +9,8 @@
 #include <phantasmal/channel.h>
 #include <phantasmal/map.h>
 #include <phantasmal/search_locations.h>
+#include <phantasmal/lpc_names.h>
 
-#include <config.h>
 #include <type.h>
 
 inherit PHANTASMAL_USER;
@@ -49,6 +49,9 @@ static void create(int clone)
 
   if(!find_object(SYSTEM_WIZTOOL))
     compile_object(SYSTEM_WIZTOOL);
+
+  if(!find_object(US_SCROLL_TEXT))
+    compile_object(US_SCROLL_TEXT);
 }
 
 void upgraded(varargs int clone) {

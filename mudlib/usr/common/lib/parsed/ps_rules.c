@@ -1,6 +1,5 @@
 #include <phantasmal/parser.h>
-
-#include <config.h>
+#include <phantasmal/lpc_names.h>
 
 /* #define LOGGING */
 

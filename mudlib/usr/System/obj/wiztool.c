@@ -1,7 +1,8 @@
 #include <kernel/kernel.h>
 #include <kernel/user.h>
 
-#include <config.h>
+#include <phantasmal/lpc_names.h>
+
 #include <type.h>
 
 inherit SYSTEM_WIZTOOLLIB;

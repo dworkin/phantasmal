@@ -1,4 +1,4 @@
-#include <config.h>
+#include <phantasmal/lpc_names.h>
 
 /* The Soundex object contains functions to extract the Soundex algorithm
    string from a given normal string.  For more on Soundex, see

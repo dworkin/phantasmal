@@ -2,8 +2,8 @@
 
 #include <phantasmal/timed.h>
 #include <phantasmal/log.h>
+#include <phantasmal/lpc_names.h>
 
-#include <config.h>
 #include <type.h>
 
 mapping* per_queue;

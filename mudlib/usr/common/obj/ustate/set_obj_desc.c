@@ -1,4 +1,5 @@
-#include <config.h>
+#include <phantasmal/lpc_names.h>
+
 #include <type.h>
 
 inherit USER_STATE;

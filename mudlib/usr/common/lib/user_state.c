@@ -1,4 +1,4 @@
-#include <config.h>
+#include <phantasmal/lpc_names.h>
 
 object user;
 object next_state;

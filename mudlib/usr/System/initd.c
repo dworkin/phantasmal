@@ -5,6 +5,7 @@
 
 #include <phantasmal/log.h>
 #include <phantasmal/version.h>
+#include <phantasmal/lpc_names.h>
 
 #include <status.h>
 #include <type.h>
@@ -14,7 +15,8 @@
 inherit access API_ACCESS;
 inherit rsrc   API_RSRC;
 
-#define HELP_DTD  ("/usr/System/sys/help.dtd")
+#define HELP_DTD   "/usr/System/sys/help.dtd"
+#define THE_VOID   "/usr/System/obj/void"
 
 /* How many objects can be saved to file in a single call_out? */
 #define SAVE_CHUNK   10
@@ -278,6 +280,8 @@ static void create(varargs int clone)
       error("Error in GAME_INITD:create()!");
     }
   }
+
+  ERRORD->done_with_init();
 }
 
 void save_mud_data(object user, string room_dirname, string mob_filename,

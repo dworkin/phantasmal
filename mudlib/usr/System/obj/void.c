@@ -1,4 +1,4 @@
-#include <config.h>
+#include <phantasmal/lpc_names.h>
 
 /* void.c:
  *

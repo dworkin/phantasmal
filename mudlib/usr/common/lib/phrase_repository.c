@@ -1,7 +1,7 @@
 #include <phantasmal/phrase.h>
 #include <phantasmal/log.h>
+#include <phantasmal/lpc_names.h>
 
-#include <config.h>
 #include <limits.h>
 #include <type.h>
 

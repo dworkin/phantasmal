@@ -1,8 +1,7 @@
 #include <kernel/kernel.h>
 
 #include <phantasmal/map.h>
-
-#include <config.h>
+#include <phantasmal/lpc_names.h>
 
 inherit MOBILE;
 

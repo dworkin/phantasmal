@@ -2,8 +2,8 @@
 
 #include <phantasmal/log.h>
 #include <phantasmal/channel.h>
+#include <phantasmal/lpc_names.h>
 
-#include <config.h>
 #include <trace.h>
 
 private object log;
@@ -12,12 +12,14 @@ private int    reset_comp_err;
 private string last_rt_err;
 private string last_st;
 private int    in_atomic_error;
+private int    in_init_sequence;
 
 static void create(varargs int clone)
 {
   log = find_object(LOGD);
   reset_comp_err = 0;
   in_atomic_error = 0;
+  in_init_sequence = 1;
 }
 
 void runtime_error(string error, int caught, mixed** trace)
@@ -92,16 +94,19 @@ void runtime_error(string error, int caught, mixed** trace)
   last_st = str;
   str = err_str + str;
 
+  /* If the first character is a $, this is a silent error.  Store it as
+   * the last error, but don't log it.
+   */
   if (error[0] != '$') {
-    /* If the first character is a $, this is a silent error.  Store it as
-     * the last error, but don't log it.
-     */
     if(caught) {
       log->write_syslog("Runtime error: " + str, LOG_WARNING);
     } else {
       log->write_syslog("Runtime error: " + str, LOG_ERROR);
     }
     send_message("Runtime error: " + str);
+    if(in_init_sequence) {
+      DRIVER->message("Runtime error: " + str);
+    }
     if(caught == 0 && this_user() && (obj=this_user()->query_user())) {
       obj->message(str);
     }
@@ -124,7 +129,7 @@ void atomic_error(string error, int atom, mixed** trace)
    * will crash if an error occures within atomic_error().
    *
    * I discovered this from experience :(.
-   * (kduwnoody)
+   * (kdunwoody)
    *
    * N.B.  I chose to write a driver message, but no log message since you
    * can't write to file from within an atomic, and this seems to count as
@@ -177,7 +182,7 @@ void atomic_error(string error, int atom, mixed** trace)
     if (len < 17) {
       function += "                 "[len ..];
     }
-    
+
     objname = trace[i][TRACE_OBJNAME];
     if (progname != objname) {
       len = strlen(progname);
@@ -226,6 +231,10 @@ void compile_error(string file, int line, string error)
   log->write_syslog("Compile error: " + file + ":" + (string)line
 		    + ": " + error);
   send_message("Compile error!");
+  if(in_init_sequence) {
+    DRIVER->message("Compile error: " + file + ": " + (string)line
+		    + ": " + error + "\n");
+  }
 }
 
 string last_compile_errors(void) {
@@ -255,4 +264,9 @@ void clear_errors(void) {
   }
 
   comp_err = last_rt_err = last_st = nil;
+}
+
+void done_with_init(void) {
+  if(previous_program() == INITD)
+    in_init_sequence = 0;
 }

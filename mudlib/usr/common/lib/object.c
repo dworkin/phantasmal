@@ -5,8 +5,7 @@
 #include <phantasmal/log.h>
 #include <phantasmal/obj_flags.h>
 #include <phantasmal/phrase.h>
-
-#include <config.h>
+#include <phantasmal/lpc_names.h>
 
 inherit tag TAGGED;
 

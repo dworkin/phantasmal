@@ -6,8 +6,8 @@
 #include <phantasmal/log.h>
 #include <phantasmal/grammar.h>
 #include <phantasmal/search_locations.h>
+#include <phantasmal/lpc_names.h>
 
-#include <config.h>
 #include <type.h>
 #include <status.h>
 #include <limits.h>

@@ -1,4 +1,3 @@
-#include <config.h>
 #include <type.h>
 
 static void create(varargs int clone) {

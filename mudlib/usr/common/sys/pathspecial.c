@@ -1,5 +1,4 @@
 #include <phantasmal/lpc_names.h>
-#include <config.h>
 
 private object game_path_object;
 

@@ -1,4 +1,4 @@
-/* $Header: /cvsroot/phantasmal/mudlib/usr/System/open/lib/userlib.c,v 1.5 2004/01/09 07:13:32 angelbob Exp $ */
+/* $Header: /cvsroot/phantasmal/mudlib/usr/System/open/lib/userlib.c,v 1.6 2004/01/09 08:53:57 angelbob Exp $ */
 
 #include <kernel/kernel.h>
 #include <kernel/user.h>
@@ -9,8 +9,8 @@
 #include <phantasmal/channel.h>
 #include <phantasmal/map.h>
 #include <phantasmal/search_locations.h>
+#include <phantasmal/lpc_names.h>
 
-#include <config.h>
 #include <type.h>
 
 inherit LIB_USER;
@@ -81,9 +81,6 @@ static void create(int clone)
 
 void upgraded(varargs int clone) {
   if(SYSTEM() || GAME()) {
-    if(!find_object(SYSTEM_WIZTOOL)) { compile_object(SYSTEM_WIZTOOL); }
-    if(!find_object(DEFAULT_USER_OBJ)) { compile_object(DEFAULT_USER_OBJ); }
-
     io::upgraded(clone);
   } else
     error("Non-System code called upgrade!");
@@ -620,7 +617,7 @@ int login(string str)
 
       /* If so, create a wiztool */
       if (!wiztool) {
-	wiztool = DEFAULT_USER_OBJ->clone_wiztool_as(str);
+	wiztool = SYSTEM_USER_OBJ->clone_wiztool_as(str);
 	if(!wiztool)
 	  error("Can't clone wiztool!");
       }
@@ -692,7 +689,7 @@ static int process_message(string str)
     system_phrase_all_users("logs in.");
     message_all_users("\r\n");
     if (!wiztool && sizeof(rsrc::query_owners() & ({ name })) != 0) {
-      wiztool = DEFAULT_USER_OBJ->clone_wiztool_as(name);
+      wiztool = SYSTEM_USER_OBJ->clone_wiztool_as(name);
       if(!wiztool)
 	error("Can't clone wiztool!");
     }

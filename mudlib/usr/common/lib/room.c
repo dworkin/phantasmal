@@ -3,8 +3,8 @@
 #include <phantasmal/log.h>
 #include <phantasmal/phrase.h>
 #include <phantasmal/map.h>
+#include <phantasmal/lpc_names.h>
 
-#include <config.h>
 #include <type.h>
 
 /* room.c:

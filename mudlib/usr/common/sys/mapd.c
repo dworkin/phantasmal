@@ -4,7 +4,6 @@
 #include <phantasmal/map.h>
 #include <phantasmal/lpc_names.h>
 
-#include <config.h>
 #include <type.h>
 
 /* The Mapd keeps track of room objects, their groupings and their
@@ -29,6 +28,8 @@ private int     initialized;
 private object* unresolved_rooms;
 
 #define PHR(x) PHRASED->new_simple_english_phrase(x)
+
+#define ROOM_BIND_FILE "/usr/common/sys/room_binder.unq"
 
 /* Prototypes */
 object get_room_by_num(int num);

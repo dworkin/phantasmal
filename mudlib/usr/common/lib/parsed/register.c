@@ -1,7 +1,7 @@
 #include <kernel/kernel.h>
-#include <phantasmal/parser.h>
 
-#include <config.h>
+#include <phantasmal/parser.h>
+#include <phantasmal/lpc_names.h>
 
 private mapping article_map;
 private mapping adverb_map;

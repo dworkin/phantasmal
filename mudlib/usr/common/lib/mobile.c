@@ -2,8 +2,7 @@
 
 #include <phantasmal/map.h>
 #include <phantasmal/phrase.h>
-
-#include <config.h>
+#include <phantasmal/lpc_names.h>
 
 /* Mobile: structure for a sentient, not-necessarily-player critter's
    mind.  The mobile will be attached to a body under any normal

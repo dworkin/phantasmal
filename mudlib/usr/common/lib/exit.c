@@ -5,8 +5,8 @@
 #include <phantasmal/phrase.h>
 #include <phantasmal/map.h>
 #include <phantasmal/obj_flags.h>
+#include <phantasmal/lpc_names.h>
 
-#include <config.h>
 #include <type.h>
 
 inherit OBJECT;

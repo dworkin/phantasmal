@@ -1,6 +1,6 @@
 #include <phantasmal/log.h>
+#include <phantasmal/lpc_names.h>
 
-#include <config.h>
 #include <limits.h>
 
 private object dtd;

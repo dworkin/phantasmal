@@ -17,8 +17,8 @@
 #include <kernel/rsrc.h>
 
 #include <phantasmal/log.h>
+#include <phantasmal/lpc_names.h>
 
-#include <config.h>
 #include <status.h>
 #include <type.h>
 #include <trace.h>
@@ -82,6 +82,11 @@ private object add_lib(string owner, string path, string* inherited);
         string destroyed_obj_list(void);
 private void   suspend_system(void);
 private void   release_system(void);
+
+
+/* These objects are used for tracking issues of objects */
+#define LIB_LWO      "/usr/common/data/lib_issue"
+#define CLONABLE_LWO "/usr/common/data/clonable_issue"
 
 
 static void create(varargs int clone)

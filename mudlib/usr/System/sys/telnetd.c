@@ -2,8 +2,7 @@
 #include <kernel/kernel.h>
 
 #include <phantasmal/log.h>
-
-#include <config.h>
+#include <phantasmal/lpc_names.h>
 
 static int    suspended, shutdown;
 
@@ -21,7 +20,13 @@ void upgraded(varargs int clone) {
   if(!SYSTEM())
     return;
 
-  if(!find_object(DEFAULT_USER_OBJ)) { compile_object(DEFAULT_USER_OBJ); }
+  /* The default user object isn't a System program any more, so
+     any Common or System things that it'll need compiled should
+     be compiled for it here.  Ditto for PHANTASMAL_USER. */
+  if(!find_object(US_SCROLL_TEXT)) compile_object(US_SCROLL_TEXT);
+  if(!find_object(SYSTEM_USER_OBJ)) compile_object(SYSTEM_USER_OBJ);
+
+  if(!find_object(DEFAULT_USER_OBJ)) compile_object(DEFAULT_USER_OBJ);
 }
 
 void suspend_input(int shutdownp) {

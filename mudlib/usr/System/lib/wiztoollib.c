@@ -4,11 +4,15 @@
 #include <kernel/user.h>
 
 #include <phantasmal/log.h>
+#include <phantasmal/lpc_names.h>
 
 #include <trace.h>
 #include <type.h>
 #include <status.h>
 #include <limits.h>
+
+#define SYSTEM_ROOMWIZTOOLLIB  "/usr/System/lib/room_wiztool"
+#define SYSTEM_OBJWIZTOOLLIB   "/usr/System/lib/obj_wiztool"
 
 inherit auto AUTO;
 inherit wiz LIB_WIZTOOL;

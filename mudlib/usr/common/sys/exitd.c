@@ -3,8 +3,8 @@
 #include <phantasmal/log.h>
 #include <phantasmal/exit.h>
 #include <phantasmal/map.h>
+#include <phantasmal/lpc_names.h>
 
-#include <config.h>
 #include <type.h>
 
 inherit PHRASE_REPOSITORY;
@@ -30,6 +30,7 @@ void upgraded(varargs int clone);
 #define PHR(x) PHRASED->new_simple_english_phrase(x)
 #define FILE(x) PHRASED->file_phrase(EXITD_PHRASES,(x))
 
+#define EXITD_PHRASES       "/usr/common/sys/exitd.phr"
 
 static void create(varargs int clone) {
   ::create(clone);

@@ -2,8 +2,7 @@
 #include <phantasmal/map.h>
 #include <phantasmal/log.h>
 #include <phantasmal/exit.h>
-
-#include <config.h>
+#include <phantasmal/lpc_names.h>
 
 inherit unq DTD_UNQABLE;
 inherit ext EXIT;
