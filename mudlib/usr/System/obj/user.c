@@ -429,7 +429,7 @@ void show_room_to_player(object location) {
 
   if(!location) {
     send_system_phrase("you are nowhere");
-    message("\n");
+    message("\r\n");
     return;
   }
 
@@ -438,34 +438,34 @@ void show_room_to_player(object location) {
     tmp = phr->to_string(this_object());
   if(tmp) {
     message(tmp);
-    message("\n");
+    message("\r\n");
   } else {
     send_system_phrase("(unnamed location)");
-    message("\n");
+    message("\r\n");
   }
 
   phr = location->get_look();
   tmp = phr ? phr->to_string(this_object()) : nil;
   if(tmp) {
     message(tmp);
-    message("\n");
+    message("\r\n");
   } else {
     send_system_phrase("(no room desc)");
-    message("\n");
+    message("\r\n");
   }
 
-  message("*****\n");
+  message("*****\r\n");
 
   objs = location->objects_in_container();
   for(ctr = 0; ctr < sizeof(objs); ctr++) {
     if(!objs[ctr]->is_no_desc()) {
       message("- ");
       send_phrase(objs[ctr]->get_brief());
-      message("\n");
+      message("\r\n");
     }
   }
 
-  message("\n");
+  message("\r\n");
 
   if(function_object("num_exits", location)) {
     send_system_phrase("Exits");
@@ -477,7 +477,7 @@ void show_room_to_player(object location) {
       phr = EXITD->get_short_for_dir(exit->get_direction());
       message(phr->to_string(this_object()) + " ");
     }
-    message("\n");
+    message("\r\n");
   }
 }
 
@@ -563,8 +563,8 @@ int login(string str)
 {
   if (previous_program() == LIB_CONN) {
     if(name_is_forbidden(str)) {
-      previous_object()->message("\nThat name is forbidden.\n"
-				 + "Please log in with a different one.\n");
+      previous_object()->message("\r\nThat name is forbidden.\r\n"
+				 + "Please log in with a different one.\r\n");
       return MODE_DISCONNECT;
     }
 
@@ -600,7 +600,7 @@ int login(string str)
       connection(previous_object());
       message_all_users(Name + " ");
       system_phrase_all_users("logs in.");
-      message_all_users("\n");
+      message_all_users("\r\n");
 
       send_system_phrase("choose new password");
       state[previous_object()] = STATE_NEWPASSWD1;
@@ -642,7 +642,7 @@ private void player_login(void)
   }
 
   /* Show room to player */
-  message("\n");
+  message("\r\n");
   show_room_to_player(location);
 }
 
@@ -678,9 +678,9 @@ void logout(int quit)
       if (quit) {
 	message_all_users(Name + " ");
 	system_phrase_all_users("logs out.");
-	message_all_users("\n");
+	message_all_users("\r\n");
       } else {
-	message_all_users(Name + " disconnected.\n");
+	message_all_users(Name + " disconnected.\r\n");
       }
     }
     player_logout();
@@ -803,7 +803,7 @@ static int process_message(string str)
 	/* } else if (strlen(str) != 0) { */
       } else {
 	send_system_phrase("No match");
-	message(": " + cmd + " " + str + "\n");
+	message(": " + cmd + " " + str + "\r\n");
       }
     }
     break;
@@ -812,17 +812,17 @@ static int process_message(string str)
     if (crypt(str, password) != password) {
       object phr;
 
-      previous_object()->message("\n");
+      previous_object()->message("\r\n");
       phr = PHRASED->file_phrase(SYSTEM_PHRASES, "Bad password.");
       previous_object()->message(phr->to_string(this_object()));
-      previous_object()->message("\n");
+      previous_object()->message("\r\n");
       return MODE_DISCONNECT;
     }
     connection(previous_object());
-    message("\n");
+    message("\r\n");
     message_all_users(Name + " ");
     system_phrase_all_users("logs in.");
-    message_all_users("\n");
+    message_all_users("\r\n");
     if (!wiztool && sizeof(rsrc::query_owners() & ({ name })) != 0) {
       wiztool = clone_object(SYSTEM_WIZTOOL, name);
     }
@@ -832,32 +832,32 @@ static int process_message(string str)
 
   case STATE_OLDPASSWD:
     if (crypt(str, password) != password) {
-      message("\n");
+      message("\r\n");
       send_system_phrase("Bad password.");
-      message("\n");
+      message("\r\n");
       break;
     }
-    message("\n");
+    message("\r\n");
     send_system_phrase("New password: ");
     state[previous_object()] = STATE_NEWPASSWD1;
     return MODE_NOECHO;
 
   case STATE_NEWPASSWD1:
     if(strlen(str) == 0) {
-      message("\n");
+      message("\r\n");
       send_system_phrase("Looks like no password");
-      message("\n");
+      message("\r\n");
       return MODE_DISCONNECT;
     }
     if(strlen(str) < 4) {
-      message("\n");
+      message("\r\n");
       send_system_phrase("must be four characters");
-      message("\n");
+      message("\r\n");
       send_system_phrase("New password: ");
       return MODE_NOECHO;
     }
     newpasswd = str;
-    message("\n");
+    message("\r\n");
     send_system_phrase("Retype new password: ");
     state[previous_object()] = STATE_NEWPASSWD2;
     return MODE_NOECHO;
@@ -867,13 +867,13 @@ static int process_message(string str)
       password = crypt(str);
       /* save_object(SYSTEM_USER_DIR + "/" + name + ".pwd"); */
       save_user_to_file();
-      message("\n");
+      message("\r\n");
       send_system_phrase("Password changed.");
-      message("\n");
+      message("\r\n");
     } else {
-      message("\n");
+      message("\r\n");
       send_system_phrase("Mismatch; password not changed.");
-      message("\n");
+      message("\r\n");
     }
     newpasswd = nil;
 
@@ -910,17 +910,17 @@ static void print_prompt(void) {
 static void cmd_ooc(object user, string cmd, string str) {
   if (!str || str == "") {
     send_system_phrase("Usage: ");
-    message(cmd + " <text>\n");
+    message(cmd + " <text>\r\n");
   } else {
     system_phrase_all_users("(OOC)");
     message_all_users(" " + Name + " ");
     system_phrase_all_users("chats");
-    message_all_users(": " + str + "\n");
+    message_all_users(": " + str + "\r\n");
 
     send_system_phrase("(OOC)");
     message(" ");
     send_system_phrase("You chat");
-    message(": " + str + "\n");
+    message(": " + str + "\r\n");
   }
 }
 
@@ -929,7 +929,7 @@ static void cmd_say(object user, string cmd, string str) {
     send_system_phrase("Usage: ");
     message(cmd + " ");
     send_system_phrase("<text>");
-    message("\n");
+    message("\r\n");
     return;
   }
 
@@ -937,10 +937,10 @@ static void cmd_say(object user, string cmd, string str) {
 
   tell_room(location, Name + " ");
   system_phrase_room(location, "says");
-  tell_room(location, ": " + str + "\n");
+  tell_room(location, ": " + str + "\r\n");
 
   send_system_phrase("You say");
-  message(": " + str + "\n");
+  message(": " + str + "\r\n");
 
 }
 
@@ -949,15 +949,15 @@ static void cmd_emote(object user, string cmd, string str) {
     send_system_phrase("Usage: ");
     message(cmd + " ");
     send_system_phrase("<text>");
-    message("\n");
+    message("\r\n");
     return;
   }
 
   str = STRINGD->trim_whitespace(str);
 
-  tell_room(location, Name + " " + str + "\n");
+  tell_room(location, Name + " " + str + "\r\n");
 
-  message(Name + " " + str + "\n");
+  message(Name + " " + str + "\r\n");
 }
 
 static void cmd_help(object user, string cmd, string str) {
@@ -969,8 +969,8 @@ static void cmd_help(object user, string cmd, string str) {
   if (str && sscanf(str, "%d %s", index, str) == 2) {
     if(index < 1) {
       send_system_phrase("Usage: ");
-      message(cmd + " <word>\n");
-      message("   or  " + cmd + " <num> <word>\n");
+      message(cmd + " <word>\r\n");
+      message("   or  " + cmd + " <num> <word>\r\n");
       return;
     }
     exact = 1;
@@ -987,13 +987,13 @@ static void cmd_help(object user, string cmd, string str) {
     if((exact && (sizeof(hlp) <= index)) || (sizeof(hlp) < 0)
        || (index < 0)) {
       message("Only " + sizeof(hlp) + " help files on \""
-	      + str + "\".\n");
+	      + str + "\".\r\n");
     } else {
       if(sizeof(hlp) > 1) {
-	message("Help on " + str + ":    [" + sizeof(hlp) + " entries]\n");
+	message("Help on " + str + ":    [" + sizeof(hlp) + " entries]\r\n");
       }
       message(hlp[index][1]->to_string(this_object()));
-      message("\n");
+      message("\r\n");
     }
     return;
   }
@@ -1007,29 +1007,29 @@ static void cmd_help(object user, string cmd, string str) {
     if(hlp && sizeof(hlp)) {
       if(index) {
 	if(index < sizeof(hlp)) {
-	  message("Help on " + hlp[index][0] + ":\n");
+	  message("Help on " + hlp[index][0] + ":\r\n");
 	  message(hlp[index][1]->to_string(this_object()));
-	  message("\n");
+	  message("\r\n");
 	} else {
 	  message("There are only " + sizeof(hlp)
-		  + " help entries that sound like " + str + ".\n");
+		  + " help entries that sound like " + str + ".\r\n");
 	}
       } else if(sizeof(hlp) == 1) {
-	message("Help on " + hlp[0][0] + ":\n");
+	message("Help on " + hlp[0][0] + ":\r\n");
 	message(hlp[0][1]->to_string(this_object()));
-	message("\n");
+	message("\r\n");
       } else {
-	message("\nWhich do you want help on:\n");
+	message("\r\nWhich do you want help on:\r\n");
 	for(index = 0; index < sizeof(hlp); index++) {
-	  message("     " + hlp[index][0] + "\n");
+	  message("     " + hlp[index][0] + "\r\n");
 	}
-	message("(type \"help <topic>\" for the topic you want)\n");
+	message("(type \"help <topic>\" for the topic you want)\r\n");
       }
       return;
     }
   }
 
-  message("No help on \"" + str + "\".\n");
+  message("No help on \"" + str + "\".\r\n");
 }
 
 static void cmd_tell(object self, string cmd, string str) {
@@ -1039,9 +1039,9 @@ static void cmd_tell(object self, string cmd, string str) {
   if (sscanf(str, "%s %s", username, str) != 2 ||
       !(user=user::find_user(username))) {
     send_system_phrase("Usage: ");
-    message(cmd + " <user> <text>\n");
+    message(cmd + " <user> <text>\r\n");
   } else {
-    user->message(Name + " tells you: " + str + "\n");
+    user->message(Name + " tells you: " + str + "\r\n");
   }
 }
 
@@ -1052,21 +1052,21 @@ static void cmd_ask(object self, string cmd, string str) {
   if (sscanf(str, "%s %s", username, str) != 2 ||
       !(user=user::find_user(username))) {
     send_system_phrase("Usage: ");
-    message(cmd + " <user> <text>\n");
+    message(cmd + " <user> <text>\r\n");
   } else {
     if(sizeof(explode(str, "?")) > 1)
-      user->message(Name + " asks you: " + str + "\n");
+      user->message(Name + " asks you: " + str + "\r\n");
     else
-      user->message(Name + " asks you: " + str + "?\n");
+      user->message(Name + " asks you: " + str + "?\r\n");
   }
 }
 
 static void cmd_yell(object user, string cmd, string str) {
-  message("Unimplemented.  Use say or ooc.\n");
+  message("Unimplemented.  Use say or ooc.\r\n");
 }
 
 static void cmd_impbug(object user, string cmd, string str) {
-  message("Unimplemented.  Use ooc.\n");
+  message("Unimplemented.  Use ooc.\r\n");
 }
 
 static void cmd_users(object user, string cmd, string str) {
@@ -1076,20 +1076,20 @@ static void cmd_users(object user, string cmd, string str) {
 
   users = users();
   send_system_phrase("Logged on:");
-  message("\n");
+  message("\r\n");
   str = "";
   for (i = 0, sz = sizeof(users); i < sz; i++) {
     name_idx = users[i]->query_name();
     if (name_idx) {
       str += "   " + name_idx + "       Idle: " + users[i]->get_idle_time()
-	+ " seconds\n";
+	+ " seconds\r\n";
     }
   }
-  message(str + "\n");
+  message(str + "\r\n");
 }
 
 static void cmd_whoami(object user, string cmd, string str) {
-  message("You are '" + name + "'.\n");
+  message("You are '" + name + "'.\r\n");
 }
 
 static void cmd_locale(object user, string cmd, string str) {
@@ -1099,7 +1099,7 @@ static void cmd_locale(object user, string cmd, string str) {
   if (!str || STRINGD->is_whitespace(str)) {
     /* Was only one word, the command itself */
     lstr = PHRASED->name_for_language(get_locale());
-    message("Current locale: " + lstr + "\n");
+    message("Current locale: " + lstr + "\r\n");
     return;
   }
 
@@ -1109,23 +1109,23 @@ static void cmd_locale(object user, string cmd, string str) {
   if (sscanf(str, "%*s %*s") == 2) {
     /* Oops, more than one left, exit with error */
     send_system_phrase("Usage: ");
-    message("locale <dialect>\n");
+    message("locale <dialect>\r\n");
     return;
   }    
 
   loc = PHRASED->language_by_name(str);
   if(loc == -1) {
-    message("Unrecognized language or dialect: " + str + ".\n");
+    message("Unrecognized language or dialect: " + str + ".\r\n");
     return;
   }
   set_locale(loc);
   message("Setting locale to " + PHRASED->name_for_language(loc)
-	  + ".\n");
+	  + ".\r\n");
   save_user_to_file();
 }
 
 static void cmd_locales(object user, string cmd, string str) {
-  message("Valid locales:\n  english\n  espanol\n\n");
+  message("Valid locales:\r\n  english\r\n  espanol\r\n\r\n");
 }
 
 static void cmd_look(object user, string cmd, string str) {
@@ -1135,7 +1135,7 @@ static void cmd_look(object user, string cmd, string str) {
   str = STRINGD->trim_whitespace(str);
 
   if(!location) {
-    user->message("You're nowhere!\n");
+    user->message("You're nowhere!\r\n");
     return;
   }
 
@@ -1153,11 +1153,11 @@ static void cmd_look(object user, string cmd, string str) {
       tmp = find_object_in_room(user, location, str);
     }
     if(!tmp) {
-      user->message("You don't find any '" + str + "'.\n");
+      user->message("You don't find any '" + str + "'.\r\n");
       return;
     }
     if(sizeof(tmp) > 1) {
-      user->message("You see more than one '" + str +"'.  You pick one.\n");
+      user->message("You see more than one '" + str +"'.  You pick one.\r\n");
     }
 
     objs = tmp[0]->objects_in_container();
@@ -1165,13 +1165,13 @@ static void cmd_look(object user, string cmd, string str) {
       for(ctr = 0; ctr < sizeof(objs); ctr++) {
 	user->message("- ");
 	user->send_phrase(objs[ctr]->get_brief());
-	user->message("\n");
+	user->message("\r\n");
       }
-      user->message("-----\n");
+      user->message("-----\r\n");
     } else {
       user->message("You see nothing in the ");
       user->send_phrase(tmp[0]->get_brief());
-      user->message(".\n");
+      user->message(".\r\n");
     }
 
     return;
@@ -1181,14 +1181,14 @@ static void cmd_look(object user, string cmd, string str) {
   if(!tmp || !sizeof(tmp)) {
     tmp = find_object_in_room(user, location, str);
     if(!tmp || !sizeof(tmp)) {
-      user->message("You don't find any '" + str + "'.\n");
+      user->message("You don't find any '" + str + "'.\r\n");
       return;
     }
   }
 
   if(sizeof(tmp) > 1) {
     user->message("More than one of those is here.  "
-		  + "You check the first one.\n\n");
+		  + "You check the first one.\r\n\r\n");
   }
 
   if(cmd[0] == 'g') {
@@ -1198,7 +1198,7 @@ static void cmd_look(object user, string cmd, string str) {
   } else {
     user->send_phrase(tmp[0]->get_look());
   }
-  user->message("\n");
+  user->message("\r\n");
 }
 
 static void cmd_inventory(object user, string cmd, string str) {
@@ -1206,19 +1206,19 @@ static void cmd_inventory(object user, string cmd, string str) {
   mixed* objs;
 
   if(str && !STRINGD->is_whitespace(str)) {
-    user->message("Usage: " + cmd + "\n");
+    user->message("Usage: " + cmd + "\r\n");
     return;
   }
 
   objs = body->objects_in_container();
   if(!objs || !sizeof(objs)) {
-    user->message("You're empty-handed.\n");
+    user->message("You're empty-handed.\r\n");
     return;
   }
   for(ctr = 0; ctr < sizeof(objs); ctr++) {
     user->message("- ");
     user->send_phrase(objs[ctr]->get_glance());
-    user->message("\n");
+    user->message("\r\n");
   }
 }
 
@@ -1231,7 +1231,7 @@ static void cmd_put(object user, string cmd, string str) {
   if(sscanf(str, "%s inside %s", obj1, obj2) != 2
      && sscanf(str, "%s into %s", obj1, obj2) != 2
      && sscanf(str, "%s in %s", obj1, obj2) != 2) {
-    user->message("Usage: " + cmd + " <obj1> in <obj2>\n");
+    user->message("Usage: " + cmd + " <obj1> in <obj2>\r\n");
     return;
   }
 
@@ -1239,7 +1239,7 @@ static void cmd_put(object user, string cmd, string str) {
   if(!portlist || !sizeof(portlist)) {
     portlist = find_object_in_room(user, location, obj1);
     if(!portlist || !sizeof(portlist)) {
-      user->message("You can't find any '" + obj1 + "' here.\n");
+      user->message("You can't find any '" + obj1 + "' here.\r\n");
       return;
     }
   }
@@ -1248,7 +1248,7 @@ static void cmd_put(object user, string cmd, string str) {
   if(!contlist || !sizeof(contlist)) {
     contlist = find_object_in_room(user, location, obj2);
     if(!contlist || !sizeof(contlist)) {
-      user->message("You can't find any '" + obj2 + "' here.\n");
+      user->message("You can't find any '" + obj2 + "' here.\r\n");
       return;
     }
   }
@@ -1265,7 +1265,7 @@ static void cmd_put(object user, string cmd, string str) {
 
   if(!sizeof(contlist)) {
     user->message("Nothing by the name '" + obj2
-		  + "' is an open container.\n");
+		  + "' is an open container.\r\n");
     return;
   }
 
@@ -1281,18 +1281,18 @@ static void cmd_put(object user, string cmd, string str) {
 
   if(!sizeof(portlist)) {
     user->message("Nothing by the name '" + obj2
-		  + "' can be put into an open container.\n");
+		  + "' can be put into an open container.\r\n");
     return;
   }
 
   if(sizeof(portlist) > 1) {
     user->message("More than one object fits '" + obj1 + "'.  "
-		  + "You pick one.\n");
+		  + "You pick one.\r\n");
   }
 
   if(sizeof(contlist) > 1) {
     user->message("More than one open container fits '" + obj2 + "'.  "
-		  + "You pick one.\n");
+		  + "You pick one.\r\n");
   }
 
   port = portlist[0];
@@ -1307,7 +1307,7 @@ static void cmd_put(object user, string cmd, string str) {
   user->send_phrase(port->get_brief());
   user->message(" in ");
   user->send_phrase(cont->get_brief());
-  user->message(".\n");
+  user->message(".\r\n");
 }
 
 static void cmd_remove(object user, string cmd, string str) {
@@ -1320,7 +1320,7 @@ static void cmd_remove(object user, string cmd, string str) {
      && sscanf(str, "%s from in %s", obj1, obj2) != 2
      && sscanf(str, "%s from %s", obj1, obj2) != 2
      && sscanf(str, "%s out of %s", obj1, obj2) != 2) {
-    user->message("Usage: " + cmd + " <obj1> from <obj2>\n");
+    user->message("Usage: " + cmd + " <obj1> from <obj2>\r\n");
     return;
   }
 
@@ -1328,7 +1328,7 @@ static void cmd_remove(object user, string cmd, string str) {
   if(!contlist || !sizeof(contlist)) {
     contlist = find_object_in_room(user, location, obj2);
     if(!contlist || !sizeof(contlist)) {
-      user->message("You can't find any '" + obj2 + "' here.\n");
+      user->message("You can't find any '" + obj2 + "' here.\r\n");
       return;
     }
   }
@@ -1344,13 +1344,13 @@ static void cmd_remove(object user, string cmd, string str) {
   tmp = nil;
   if(!contlist || !sizeof(contlist)) {
     user->message("Nothing matching '" + obj2
-		  + "' is an open container.\n");
+		  + "' is an open container.\r\n");
     return;
   }
 
   if(sizeof(contlist) > 1) {
-    user->message("More than one open container fits '" + obj2 + "'.\n");
-    user->message("You pick one.\n");
+    user->message("More than one open container fits '" + obj2 + "'.\r\n");
+    user->message("You pick one.\r\n");
   }
   cont = contlist[0];
 
@@ -1358,7 +1358,7 @@ static void cmd_remove(object user, string cmd, string str) {
   if(!portlist || !sizeof(portlist)) {
     user->message("You can't find any '" + obj1 + "' in ");
     user->send_phrase(cont->get_brief());
-    user->message(".\n");
+    user->message(".\r\n");
     return;
   }
 
@@ -1372,13 +1372,13 @@ static void cmd_remove(object user, string cmd, string str) {
   }
   portlist = tmp;
   if(sizeof(portlist) == 0) {
-    message("You can't move that around!\n");
+    message("You can't move that around!\r\n");
     return;
   }
 
   if(sizeof(portlist) > 1) {
-    user->message("More than one object fits '" + obj1 + "'.\n");
-    user->message("You pick one.\n");
+    user->message("More than one object fits '" + obj1 + "'.\r\n");
+    user->message("You pick one.\r\n");
   }
   port = portlist[0];
 
@@ -1391,17 +1391,17 @@ static void cmd_remove(object user, string cmd, string str) {
   user->send_phrase(port->get_brief());
   user->message(" from ");
   user->send_phrase(cont->get_brief());
-  user->message(" (taken).\n");
+  user->message(" (taken).\r\n");
 }
 
 static void cmd_bug(object user, string cmd, string str) {
   write_file(BUG_DATA, "Bug report: " + str);
-  message("Reported bug: " + str + "\n");
+  message("Reported bug: " + str + "\r\n");
 }
 
 static void cmd_typo(object user, string cmd, string str) {
   write_file(TYPO_DATA, "Typo report: " + str);
-  message("Reported typo: " + str + "\n");
+  message("Reported typo: " + str + "\r\n");
 }
 
 static void cmd_movement(object user, string cmd, string str) {
@@ -1413,13 +1413,13 @@ static void cmd_movement(object user, string cmd, string str) {
 
   dir = EXITD->direction_by_string(cmd);
   if(dir == -1) {
-    user->message("'" + cmd + "' doesn't look like a valid direction.\n");
+    user->message("'" + cmd + "' doesn't look like a valid direction.\r\n");
     return;
   }
 
   exit = location->get_exit(dir);
   if(!exit) {
-    user->message("You don't see an exit in that direction.\n");
+    user->message("You don't see an exit in that direction.\r\n");
     return;
   }
 
@@ -1433,15 +1433,43 @@ static void cmd_movement(object user, string cmd, string str) {
   opp_name = EXITD->get_name_for_dir(EXITD->opposite_direction(dir));
   tell_room(dest, Name + " enters from the ");
   tell_room(dest, opp_name);
-  tell_room(dest, ".\n");
+  tell_room(dest, ".\r\n");
 
   move_player(dest);
 
   tell_room(loc, Name + " leaves going ");
   tell_room(loc, EXITD->get_name_for_dir(dir));
-  tell_room(loc, ".\n");
+  tell_room(loc, ".\r\n");
 
   show_room_to_player(dest);
+}
+
+
+static void cmd_channels(object user, string cmd, string str) {
+  int    ctr;
+  mixed* chanlist;
+
+  if(str)
+    str = STRINGD->trim_whitespace(str);
+  if(!str || str == "") {
+    chanlist = CHANNELD->channel_list(user->is_admin());
+    user->message("Channels:\r\n");
+    for(ctr = 0; ctr < sizeof(chanlist); ctr++) {
+      if(CHANNELD->is_subscribed(user, ctr)) {
+	user->message("* ");
+      } else {
+	user->message("  ");
+      }
+      user->send_phrase(chanlist[ctr]);
+
+      user->message("\r\n");
+    }
+    user->message("-----\r\n");
+    return;
+  }
+
+  send_system_phrase("Usage: ");
+  message(cmd + "\r\n");
 }
 
 
@@ -1451,7 +1479,7 @@ static void cmd_get(object user, string cmd, string str) {
   if(str)
     str = STRINGD->trim_whitespace(str);
   if(!str || str == "") {
-    message("Usage: " + cmd + " <description>\n");
+    message("Usage: " + cmd + " <description>\r\n");
     return;
   }
 
@@ -1465,7 +1493,7 @@ static void cmd_get(object user, string cmd, string str) {
 
   tmp = find_object_in_room(user, location, str);
   if(!tmp || !sizeof(tmp)) {
-    message("You don't find any '" + str + "'.\n");
+    message("You don't find any '" + str + "'.\r\n");
     return;
   }
 
@@ -1479,19 +1507,19 @@ static void cmd_get(object user, string cmd, string str) {
   }
 
   if(sizeof(tmp2) == 0) {
-    message("You can't carry that!\n");
+    message("You can't carry that!\r\n");
     return;
   }
 
   if(sizeof(tmp2) > 1) {
-    message("More than one of those is here.  You choose one.\n");
+    message("More than one of those is here.  You choose one.\r\n");
   }
 
   tmp2[0]->get_location()->remove_from_container(tmp2[0]);
   body->add_to_container(tmp2[0]);
   message("You " + cmd + " ");
   send_phrase(tmp2[0]->get_glance());
-  message(".\n");
+  message(".\r\n");
 }
 
 
@@ -1501,23 +1529,23 @@ static void cmd_drop(object user, string cmd, string str) {
   if(str)
     str = STRINGD->trim_whitespace(str);
   if(!str || str == "") {
-    message("Usage: " + cmd + " <description>\n");
+    message("Usage: " + cmd + " <description>\r\n");
     return;
   }
 
   tmp = find_object_in_room(user, body, str);
   if(!tmp || !sizeof(tmp)) {
-    message("You're not carrying any '" + str + "'.\n");
+    message("You're not carrying any '" + str + "'.\r\n");
     return;
   }
 
   if(sizeof(tmp) > 1) {
-    message("You have more than one of those.  You drop one.\n");
+    message("You have more than one of those.  You drop one.\r\n");
   }
 
   body->remove_from_container(tmp[0]);
   location->add_to_container(tmp[0]);
   message("You drop ");
   send_phrase(tmp[0]->get_glance());
-  message(".\n");
+  message(".\r\n");
 }

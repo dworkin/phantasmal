@@ -10,6 +10,7 @@ mapping channel_attributes;
 
 /* Prototypes */
 void upgraded(varargs int clone);
+int is_subscribed(object user, int channel);
 
 
 static void create(varargs int clone) {
@@ -23,24 +24,40 @@ static void create(varargs int clone) {
 void upgraded(varargs int clone) {
   int ctr;
 
-  num_channels = 32;
+  num_channels = 3;
   channels = allocate(num_channels);
 
   for(ctr = 0; ctr < num_channels; ctr++) {
     channels[ctr] = ({ });
   }
 
-  channel_attributes = ([ CHANNEL_OOC              : ({ }),
-			  CHANNEL_ERR              : ({ ATTRIB_ADMIN }),
-			  CHANNEL_GOSSIP           : ({ }),
+  channel_attributes = ([ CHANNEL_OOC              : ({ "OOC", 0 }),
+			  CHANNEL_ERR              : ({ "Error",
+							  ATTRIB_ADMIN }),
+			  CHANNEL_GOSSIP           : ({ "Gossip", 0 }),
 			  ]);
+}
+
+object* channel_list(int is_admin) {
+  mixed* ret;
+  int    ctr;
+
+  ret = ({ });
+  for(ctr = 0; ctr < num_channels; ctr++) {
+    if(is_admin || !(channel_attributes[ctr][1] & ATTRIB_ADMIN)) {
+      ret +=
+	({ PHRASED->new_simple_english_phrase(channel_attributes[ctr][0]) });
+    }
+  }
+
+  return ret;
 }
 
 void phrase_to_channel(int channel, object phrase) {
   int ctr;
 
   for(ctr = 0; ctr < sizeof(channels[channel]); ctr++) {
-    channels[ctr][0]->send_phrase(phrase);
+    channels[channel][ctr][0]->send_phrase(phrase);
   }
 }
 
@@ -48,29 +65,37 @@ void string_to_channel(int channel, string str) {
   int ctr;
 
   for(ctr = 0; ctr < sizeof(channels[channel]); ctr++) {
-    channels[ctr][0]->message(str);
+    channels[channel][ctr][0]->message(str);
   }
 }
 
-int subscribe_user_to_channel(object user, int channel, string args) {
-  mixed* attrib;
-  int    ctr;
+int subscribe_user(object user, int channel, string args) {
+  int    attrib, ctr;
 
-  attrib = channel_attributes[channel];
-  if(!attrib) {
-    LOGD->write_syslog("No attributes for channel #" + channel + "!",
-		       LOG_WARN);
-    attrib = ({ });
+  if(channel < CHANNEL_OOC || channel > num_channels) {
+    return -1;
+  }
+  attrib = channel_attributes[channel][1];
+
+  if((attrib & ATTRIB_ADMIN) && !user->is_admin()) {
+    return -1;
   }
 
-  for(ctr = 0; ctr < sizeof(attrib); ctr++) {
-    if(attrib[ctr] == ATTRIB_ADMIN) {
-      if(!user->is_admin())
-	return -1;
-    } else {
-      LOGD->write_syslog("Unknown attribute " + attrib[ctr]);
-      return -1;
+  if(is_subscribed(user, channel))
+    return -1;
+
+  channels[channel] += ({ ({ user, args }) });
+  return 1;
+}
+
+int is_subscribed(object user, int channel) {
+  int ctr;
+
+  for(ctr = 0; ctr < sizeof(channels[channel]); ctr++) {
+    if(channels[channel][ctr][0] == user ) {
+      return 1;
     }
   }
 
+  return 0;
 }
