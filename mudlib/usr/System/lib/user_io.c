@@ -41,7 +41,7 @@ void upgraded(varargs int clone) {
 
 int get_num_lines(void) {
   if(!SYSTEM() && !COMMON() && !GAME())
-    return -1;
+    error("Only privileged code can call get_num_lines!");
 
   return num_lines;
 }
