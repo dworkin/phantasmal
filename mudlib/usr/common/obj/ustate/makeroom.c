@@ -122,7 +122,7 @@ int from_user(string input) {
     quitcheck = STRINGD->trim_whitespace(input);
     if(!STRINGD->stricmp(quitcheck, "quit")) {
       if(new_obj) {
-	send_string("(Quitting OLC -- leaving obj #"
+	send_string("(Quitting OLC -- not deleting obj #"
 		    + new_obj->get_number() + " -- Cancel!)\r\n");
       } else {
 	send_string("(Quitting OLC -- Cancel!)\r\n");
@@ -285,12 +285,25 @@ private string blurb_for_substate(int substate) {
       + "Example: heavy gray dull\r\n";
 
   case SS_PROMPT_WEIGHT:
+    if(new_obj && new_obj->get_archetype())
+      return "Enter the weight of the object or type 'none' to default to"
+	+ " the parent value.\r\n"
+	+ "The weight may be in kilograms, or may be followed by a "
+	+ "unit.\r\n"
+	+ "Metric: mg   g   kg     Standard: lb   oz   tons\r\n";
     return "Enter the weight of the object.\r\n"
       + "The weight may be in kilograms, or may be followed by a "
       + "unit.\r\n"
       + "Metric: mg   g   kg     Standard: lb   oz   tons\r\n";
 
   case SS_PROMPT_VOLUME:
+    if(new_obj && new_obj->get_archetype())
+      return "Enter the volume of the object or 'none' to default to"
+	+ "\r\n  the parent value.\r\n"
+	+ "The volume may be in liters, or may be followed by a "
+	+ "unit.\r\n"
+	+ "Metric: L   mL   cc   cubic m\r\n"
+	+ "Standard: oz   qt   gal   cubic ft   cubic yd\r\n";
     return "Enter the volume of the object.\r\n"
       + "The volume may be in liters, or may be followed by a "
       + "unit.\r\n"
@@ -298,6 +311,12 @@ private string blurb_for_substate(int substate) {
       + "Standard: oz   qt   gal   cubic ft   cubic yd\r\n";
 
   case SS_PROMPT_LENGTH:
+    if(new_obj && new_obj->get_archetype())
+      return "Enter the length of the longest axis of the object, or type\r\n"
+	+ "  'none' to default to the parent value.\r\n"
+	+ "The length may be in centimeters, or may be followed by a "
+	+ "unit.\r\n"
+	+ "Metric: m   mm   cm   dm     Standard: in   ft   yd\r\n";
     return "Enter the length of the longest axis of the object.\r\n"
       + "The length may be in centimeters, or may be followed by a "
       + "unit.\r\n"
@@ -310,23 +329,39 @@ private string blurb_for_substate(int substate) {
   case SS_PROMPT_OPENABLE:
 
   case SS_PROMPT_WEIGHT_CAPACITY:
-    return "Enter the weight capacity of the object, or hit enter to choose "
-      + "a reasonable default.\r\n"
+    if(new_obj && new_obj->get_archetype())
+      return "Enter the weight capacity of the object or 'none' to default"
+	+ " to\r\n  the parent's value.\r\n"
+	+ "The capacity may be in kilograms, or may be followed by a "
+	+ "unit.\r\n"
+	+ "Metric: mg   g   kg     Standard: lb   oz   tons\r\n";
+    return "Enter the weight capacity of the object.\r\n"
       + "The capacity may be in kilograms, or may be followed by a "
       + "unit.\r\n"
       + "Metric: mg   g   kg     Standard: lb   oz   tons\r\n";
 
   case SS_PROMPT_VOLUME_CAPACITY:
-    return "Enter the volume capacity of the object, or hit enter to choose "
-      + "a reasonable default.\r\n"
+    if(new_obj && new_obj->get_archetype())
+      return "Enter the volume capacity of the object, or type 'none' to "
+	+ " default\r\n  to the parent's value.\r\n"
+	+ "The capacity may be in liters, or may be followed by a "
+	+ "unit.\r\n"
+	+ "Metric: L   mL   cc   cubic m\r\n"
+	+ "Standard: oz   qt   gal   cubic ft   cubic yd\r\n";
+    return "Enter the volume capacity of the object\r\n"
       + "The capacity may be in liters, or may be followed by a "
       + "unit.\r\n"
       + "Metric: L   mL   cc   cubic m\r\n"
       + "Standard: oz   qt   gal   cubic ft   cubic yd\r\n";
 
   case SS_PROMPT_LENGTH_CAPACITY:
-    return "Enter the length of the longest axis of the container, or hit "
-      + " enter to choose a\r\n  reasonable default.\r\n"
+    if(new_obj && new_obj->get_archetype())
+      return "Enter the length of the longest axis of the container, or type "
+	+ " 'none' to\r\n  default to the parent value.\r\n"
+	+ "The length may be in centimeters, or may be followed by a "
+	+ "unit.\r\n"
+	+ "Metric: m   mm   cm   dm     Standard: in   ft   yd\r\n";
+    return "Enter the length of the longest axis of the container.\r\n"
       + "The length may be in centimeters, or may be followed by a "
       + "unit.\r\n"
       + "Metric: m   mm   cm   dm     Standard: in   ft   yd\r\n";
@@ -354,8 +389,9 @@ void switch_to(int pushp) {
   } else if (substate == SS_PROMPT_LOOK_DESC
 	     || substate == SS_PROMPT_EXAMINE_DESC) {
     /* Do nothing */
-  } else if (substate == SS_PROMPT_NOUNS) {
-    /* This means we just got back from getting the Examine desc */
+  } else if (substate == SS_PROMPT_NOUNS
+	     || substate == SS_PROMPT_WEIGHT_CAPACITY) {
+    /* This means we just got back from getting a desc */
     send_string(" > ");
   } else {
     /* Somebody else pushed and then popped a state, so we're just
@@ -1108,7 +1144,7 @@ static int prompt_length_input(string input) {
     return RET_NORMAL;
   }
 
-  new_obj->set_weight(value);
+  new_obj->set_length(value);
 
   send_string("Accepted length.\r\n");
   substate = SS_PROMPT_CONTAINER;
@@ -1202,11 +1238,264 @@ static void prompt_openable_data(mixed data) {
     new_obj->set_openable(1);
   }
 
+  substate = SS_PROMPT_WEIGHT_CAPACITY;
+  send_string(blurb_for_substate(substate));
+}
+
+
+static int prompt_weight_capacity_input(string input) {
+  mapping units;
+  string  unitstr;
+  float   value;
+  int     use_parent;
+
+  use_parent = 0;
+
+  if(!input || STRINGD->is_whitespace(input)) {
+    send_string("Let's try that again.\r\n");
+    send_string(blurb_for_substate(substate));
+
+    return RET_NORMAL;
+  }
+
+  input = STRINGD->trim_whitespace(input);
+
+  if(sscanf(input, "%f %s", value, unitstr) == 2) {
+    units = ([ "kg"             : 1.0,
+	       "kilograms"      : 1.0,
+	       "kilogram"       : 1.0,
+	       "g"              : 0.001,
+	       "grams"          : 0.001,
+	       "gram"           : 0.001,
+	       "mg"             : 0.000001,
+	       "milligrams"     : 0.000001,
+	       "milligram"      : 0.000001,
+	       "pounds"         : 0.45,
+	       "pound"          : 0.45,
+	       "lb"             : 0.45,
+	       "ounces"         : 0.028,
+	       "ounce"          : 0.028,
+	       "oz"             : 0.028,
+	       "tons"           : 990.0,
+	       "ton"            : 990.0,
+	       ]);
+
+    unitstr = STRINGD->trim_whitespace(unitstr);
+    if(units[unitstr])
+      value *= units[unitstr];
+    else {
+      send_string("I don't recognize the units '" + unitstr
+		  + "' as units of weight or mass.  Try again.\r\n");
+      send_string(blurb_for_substate(substate));
+
+      return RET_NORMAL;
+    }
+  } else if(!STRINGD->stricmp(input, "none")) {
+    use_parent = 1;
+    value = -1.0;
+  } else if(sscanf(input, "%f", value) != 1) {
+    send_string("Enter the value, optionally with units.  Something like:\r\n"
+		+ "  '4.7 oz' or '3 tons' or '0.5 mg'.  Try again.\r\n");
+    send_string(blurb_for_substate(substate));
+
+    return RET_NORMAL;
+  }
+
+  if(value < 0.0 && !use_parent) {
+    send_string("You'll want to give a number no smaller than zero.  "
+		+ "Try again.\r\n");
+    send_string(blurb_for_substate(substate));
+
+    return RET_NORMAL;
+  }
+
+  new_obj->set_weight_capacity(value);
+
+  send_string("Accepted weight capacity.\r\n");
+  substate = SS_PROMPT_VOLUME_CAPACITY;
+  send_string(blurb_for_substate(substate));
+
+  return RET_NORMAL;
+}
+
+
+static int prompt_volume_capacity_input(string input) {
+  mapping units;
+  string  unitstr;
+  float   value;
+  int     use_parent;
+
+  use_parent = 0;
+
+  if(!input || STRINGD->is_whitespace(input)) {
+    send_string("Let's try that again.\r\n");
+    send_string(blurb_for_substate(substate));
+
+    return RET_NORMAL;
+  }
+
+  input = STRINGD->trim_whitespace(input);
+
+  if(sscanf(input, "%f %s", value, unitstr) == 2) {
+    units = ([ "liter"             : 1.0,
+               "liters"            : 1.0,
+               "l"                 : 1.0,
+               "L"                 : 1.0,
+               "milliliter"        : 0.001,
+               "milliliters"       : 0.001,
+               "ml"                : 0.001,
+               "mL"                : 0.001,
+               "cubic centimeters" : 0.001,
+               "cubic centimeter"  : 0.001,
+	       "cc"                : 0.001,
+	       "cubic cm"          : 0.001,
+	       "cu cm"             : 0.001,
+	       "cubic meters"      : 1000.0,
+	       "cubic meter"       : 1000.0,
+	       "cubic m"           : 1000.0,
+	       "cu m"              : 1000.0,
+
+	       "ounces"            : 0.0296,
+	       "ounce"             : 0.0296,
+	       "oz"                : 0.0296,
+	       "pints"             : 0.473,
+	       "pint"              : 0.473,
+	       "pt"                : 0.473,
+	       "quarts"            : 0.946,
+	       "quart"             : 0.946,
+	       "qt"                : 0.946,
+	       "gallons"           : 3.784,
+	       "gallon"            : 3.784,
+	       "gal"               : 3.784,
+	       "cubic foot"        : 28.3,
+	       "cubic feet"        : 28.3,
+	       "cubic ft"          : 28.3,
+	       "cu ft"             : 28.3,
+	       "cubic yards"       : 765.0,
+	       "cubic yard"        : 765.0,
+	       "cubic yd"          : 765.0,
+	       ]);
+
+    unitstr = STRINGD->trim_whitespace(unitstr);
+    if(units[unitstr])
+      value *= units[unitstr];
+    else {
+      send_string("I don't recognize the units '" + unitstr
+		  + "' as units of volume.  Try again.\r\n");
+      send_string(blurb_for_substate(substate));
+
+      return RET_NORMAL;
+    }
+  } else if(!STRINGD->stricmp(input, "none")) {
+    use_parent = 1;
+    value = -1.0;
+  } else if(sscanf(input, "%f", value) != 1) {
+    send_string("Enter the value, optionally with units.  Something like:\r\n"
+		+ "  '1.2 liters' or '250 cc' or '35 cu dm'.  Try again.\r\n");
+    send_string(blurb_for_substate(substate));
+
+    return RET_NORMAL;
+  }
+
+  if(value < 0.0 && !use_parent) {
+    send_string("You'll want to give a number no smaller than zero.  "
+		+ "Try again.\r\n");
+    send_string(blurb_for_substate(substate));
+
+    return RET_NORMAL;
+  }
+
+  new_obj->set_volume_capacity(value);
+
+  send_string("Accepted volume capacity.\r\n");
+  substate = SS_PROMPT_LENGTH_CAPACITY;
+  send_string(blurb_for_substate(substate));
+
+  return RET_NORMAL;
+}
+
+
+static int prompt_length_capacity_input(string input) {
+  mapping units;
+  string  unitstr;
+  float   value;
+  int     use_parent;
+
+  use_parent = 0;
+
+  if(!input || STRINGD->is_whitespace(input)) {
+    send_string("Let's try that again.\r\n");
+    send_string(blurb_for_substate(substate));
+
+    return RET_NORMAL;
+  }
+
+  input = STRINGD->trim_whitespace(input);
+
+  if(sscanf(input, "%f %s", value, unitstr) == 2) {
+    units = ([ "centimeters"    : 1.0,
+	       "centimeter"     : 1.0,
+	       "cm"             : 1.0,
+	       "millimeters"    : 0.1,
+	       "millimeter"     : 0.1,
+	       "mm"             : 0.1,
+	       "decimeters"     : 10.0,
+	       "decimeter"      : 10.0,
+	       "dm"             : 10.0,
+	       "meters"         : 100.0,
+	       "meter"          : 100.0,
+	       "m"              : 100.0,
+
+	       "inches"         : 2.54,
+	       "inch"           : 2.54,
+	       "in"             : 2.54,
+	       "feet"           : 30.5,
+	       "foot"           : 30.5,
+	       "ft"             : 30.5,
+	       "yards"          : 91.4,
+	       "yard"           : 91.4,
+	       "yd"             : 91.4,
+	       ]);
+
+    unitstr = STRINGD->trim_whitespace(unitstr);
+    if(units[unitstr])
+      value *= units[unitstr];
+    else {
+      send_string("I don't recognize the units '" + unitstr
+		  + "' as units of length.  Try again.\r\n");
+      send_string(blurb_for_substate(substate));
+
+      return RET_NORMAL;
+    }
+  } else if(!STRINGD->stricmp(input, "none")) {
+    use_parent = 1;
+    value = -1.0;
+  } else if(sscanf(input, "%f", value) != 1) {
+    send_string("Enter the value, optionally with units.  Something like:\r\n"
+		+ "  '4.7 oz' or '3 tons' or '0.5 mg'.  Try again.\r\n");
+    send_string(blurb_for_substate(substate));
+
+    return RET_NORMAL;
+  }
+
+  if(value < 0.0 && !use_parent) {
+    send_string("You'll want to give a number no smaller than zero.  "
+		+ "Try again.\r\n");
+    send_string(blurb_for_substate(substate));
+
+    return RET_NORMAL;
+  }
+
+  new_obj->set_length_capacity(value);
+
+  send_string("Accepted length capacity.\r\n\r\n");
+  substate = SS_PROMPT_CONTAINER;
+
   if(obj_type == OT_PORTABLE) {
     send_string("Done with portable #" + new_obj->get_number() + ".\r\n");
   } else {
     send_string("Done with detail #" + new_obj->get_number() + ".\r\n");
   }
 
-  pop_state();
+  return RET_POP_STATE;
 }
