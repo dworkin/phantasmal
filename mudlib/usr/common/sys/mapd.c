@@ -60,12 +60,10 @@ void upgraded(varargs int clone) {
 }
 
 void init(string room_dtd_str, string bind_dtd_str) {
-  int ctr;
+  int    ctr;
   object bind_dtd;
   mixed *unq_data;
-  string bind_file;
-  string tag;
-  string file;
+  string bind_file, tag, file;
 
   if(!initialized) {
     room_dtd = clone_object(UNQ_DTD);
@@ -76,22 +74,19 @@ void init(string room_dtd_str, string bind_dtd_str) {
     bind_dtd->load(bind_dtd_str);
     
     bind_file = read_file(ROOM_BIND_FILE);
-    if (!bind_file) {
-      error("Cannot read file " + ROOM_BIND_FILE + "!");
-    }
+    if (!bind_file)
+      error("Cannot read binder file " + ROOM_BIND_FILE + "!");
 
     unq_data = UNQ_PARSER->unq_parse_with_dtd(bind_file, bind_dtd);
     if(!unq_data)
-      error("Cannot parse binder text in init!");
+      error("Cannot parse binder text in MAPD::init()!");
 
-    if (sizeof(unq_data) % 2) {
-      error("Odd sized unq chunk in init");
-    }
+    if (sizeof(unq_data) % 2)
+      error("Odd sized unq chunk in MAPD::init()!");
 
     for (ctr = 0; ctr < sizeof(unq_data); ctr += 2) {
-      if (STRINGD->stricmp(unq_data[ctr],"bind")) {
-	error("This doesn't seem to be a code/tag binding");
-      }
+      if (STRINGD->stricmp(unq_data[ctr],"bind"))
+	error("Not a code/tag binding in MAPD::init()!");
 
       if (typeof(unq_data[ctr+1]) != T_ARRAY || sizeof(unq_data[ctr+1]) != 2) {
 	/* Should never get here for proper DTD */
@@ -108,10 +103,13 @@ void init(string room_dtd_str, string bind_dtd_str) {
       }
 
       if (tag_code[tag] != nil) {
-	error("Tag " + tag + " is already bound!");
+	error("Tag " + tag + " is already bound in MAPD::init()!");
       }
 
+      /* Assign file to tag, and make sure it exists and is clonable */
       tag_code[tag] = file;
+      if(!find_object(file))
+	compile_object(file);
     }
 
     initialized = 1;
