@@ -1,11 +1,12 @@
 ~DTD{
-  ~obj{number?,location?,bdesc,gdesc,ldesc,edesc?,article,parent?,nouns,
-       adjectives?,exit*,flags?}
+  ~obj{number?,location?,detail?,bdesc,gdesc,ldesc,edesc?,article,parent?,
+       nouns,adjectives?,exit*,flags?}
   ~room:obj{}
   ~portable:obj{}
   ~body:obj{}
   ~number{int}
   ~location{int}
+  ~detail{int}
   ~bdesc{phrase}
   ~gdesc{phrase}
   ~ldesc{phrase}
