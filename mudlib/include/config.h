@@ -92,10 +92,10 @@
 
 /* Other data files */
 #define CONFIG_FILE         "/data/system/config.unq"
-#define ROOM_FILE           "/data/object/roomfile.unq"
+#define ROOM_DIR            "/data/object/stuff"
 #define MOB_FILE            "/data/object/mobfile.unq"
 #define ZONE_FILE           "/data/object/zonefile.unq"
-#define SAFE_ROOM_FILE      "/data/object/safe_roomfile.unq"
+#define SAFE_ROOM_DIR       "/data/object/safe_stuff"
 #define SAFE_MOB_FILE       "/data/object/safe_mobfile.unq"
 #define SAFE_ZONE_FILE      "/data/object/safe_zonefile.unq"
 #define ROOM_BIND_FILE      "/data/system/room_binder.unq"

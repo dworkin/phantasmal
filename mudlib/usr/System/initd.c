@@ -17,18 +17,44 @@ inherit rsrc   API_RSRC;
 private string pending_callback;
 private int __sys_suspended;
 
+
 /* Prototypes */
 private void suspend_system();
 private void release_system();
-static void __co_write_rooms(object user, int* objects, int ctr,
-			     string roomfile, string mobfile,
-			     string zonefile);
+static void __co_write_rooms(object user, int* objects, int* zones,
+			     int ctr, int zone_ctr, string roomfile,
+			     string mobfile, string zonefile);
 static void __co_write_mobs(object user, int* objects, int ctr,
 			    string mobfile, string zonefile);
 static void __co_write_zones(object user, int* objects, int ctr,
 			     string zonefile);
 static void __reboot_callback(void);
 static void __shutdown_callback(void);
+static int  read_object_dir(string path);
+
+
+static int delete_directory(string dirname) {
+  mixed **dirlisting;
+  int     ctr;
+
+  dirlisting = get_dir(dirname + "/*");
+  if(sizeof(dirlisting[0]) == 0) {
+    /* Nothing.  Maybe it was a file and not a directory? */
+
+    return remove_file(dirname);
+  }
+  for(ctr = 0; ctr < sizeof(dirlisting[0]); ctr++) {
+    if(dirlisting[1][ctr] == -2) {
+      delete_directory(dirname + "/" + dirlisting[0][ctr]);
+    } else {
+      /* Don't check the return code, we wouldn't do anything
+	 different anyway. */
+      remove_file(dirname + "/" + dirlisting[0][ctr]);
+    }
+  }
+
+  return remove_dir(dirname);
+}
 
 
 static void create(varargs int clone)
@@ -176,14 +202,14 @@ static void create(varargs int clone)
 
 
   /* Load stuff into MAPD and EXITD */
-  objs_file = read_file(ROOM_FILE);
-  if(objs_file) {
-    MAPD->add_unq_text_rooms(objs_file, ROOM_FILE);
+  if(read_object_dir(ROOM_DIR) >= 0) {
     EXITD->add_deferred_exits();
+    MAPD->do_room_resolution(1);
     rooms_loaded = 1;
   } else {
-    DRIVER->message("Can't read room file!  Starting blank!\n");
-    LOGD->write_syslog("Can't read room file!  Starting blank!", LOG_ERROR);
+    DRIVER->message("Can't read object files!  Starting incomplete!\n");
+    LOGD->write_syslog("Can't read object files!  Starting incomplete!",
+		       LOG_ERROR);
     rooms_loaded = 0;
   }
 
@@ -221,9 +247,9 @@ static void create(varargs int clone)
   if(!find_object(SOULD)) compile_object(SOULD);
 }
 
-void save_mud_data(object user, string room_filename, string mob_filename,
+void save_mud_data(object user, string room_dirname, string mob_filename,
 		   string zone_filename, string callback) {
-  int*   objects, *tmpobj;
+  int   *objects, *save_zones;
   int    cohandle, iter;
   mixed  tmp;
 
@@ -244,13 +270,13 @@ void save_mud_data(object user, string room_filename, string mob_filename,
   }
 
   LOGD->write_syslog("Writing World Data to files...", LOG_NORMAL);
-  LOGD->write_syslog("Rooms: '" + room_filename + "', Mobiles: '"
+  LOGD->write_syslog("Rooms: '" + room_dirname + "/*', Mobiles: '"
 		     + mob_filename + "', Zones: '"
 		     + zone_filename + "'", LOG_VERBOSE);
 
-  remove_file(room_filename + ".old");
-  rename_file(room_filename, room_filename + ".old");
-  remove_file(room_filename);
+  delete_directory(room_dirname + ".old");
+  rename_file(room_dirname, room_dirname + ".old");
+  delete_directory(room_dirname);
 
   remove_file(mob_filename + ".old");
   rename_file(mob_filename, mob_filename + ".old");
@@ -260,10 +286,11 @@ void save_mud_data(object user, string room_filename, string mob_filename,
   rename_file(zone_filename, zone_filename + ".old");
   remove_file(zone_filename);
 
-  if(sizeof(get_dir(room_filename)[0])) {
-    LOGD->write_syslog("Can't remove old roomfile -- trying to append!",
+  if(sizeof(get_dir(room_dirname)[0])) {
+    LOGD->write_syslog("Can't remove old room directory -- trying to append!",
 		       LOG_FATAL);
   }
+  make_dir(room_dirname);
 
   if(sizeof(get_dir(mob_filename)[0])) {
     LOGD->write_syslog("Can't remove old mobfile -- trying to append!",
@@ -275,17 +302,19 @@ void save_mud_data(object user, string room_filename, string mob_filename,
 		       LOG_FATAL);
   }
 
-  LOGD->write_syslog("Writing rooms to file " + room_filename, LOG_VERBOSE);
-  objects = ({ });
-  for(iter = 0; iter < ZONED->num_zones(); iter++) {
-    tmpobj = MAPD->rooms_in_zone(iter);
-    if(tmpobj)
-      objects += tmpobj;
-  }
+  LOGD->write_syslog("Writing rooms to files " + room_dirname, LOG_VERBOSE);
+
+  objects = MAPD->rooms_in_zone(0);
+  if(!objects) objects = ({ });
   objects -= ({ 0 });
 
-  cohandle = call_out("__co_write_rooms", 0, user, objects, 0,
-		      room_filename, mob_filename, zone_filename);
+  save_zones = ({ });
+  for(iter = 0; iter < ZONED->num_zones(); iter++) {
+    save_zones += ({ iter });
+  }
+
+  cohandle = call_out("__co_write_rooms", 0, user, objects, save_zones,
+		      0, 0, room_dirname, mob_filename, zone_filename);
   if(cohandle < 1) {
     error("Can't schedule call_out to save objects!");
   } else {
@@ -316,7 +345,7 @@ void prepare_shutdown(void)
     LOGD->write_syslog("Shutting down MUD...", LOG_NORMAL);
   }
 
-  save_mud_data(this_user(), ROOM_FILE, MOB_FILE, ZONE_FILE,
+  save_mud_data(this_user(), ROOM_DIR, MOB_FILE, ZONE_FILE,
 		"__shutdown_callback");
 }
 
@@ -369,30 +398,55 @@ private void release_system() {
 }
 
 
-static void __co_write_rooms(object user, int* objects, int ctr,
-			     string roomfile, string mobfile,
-			     string zonefile) {
-  string unq_str;
+static void __co_write_rooms(object user, int* objects, int* save_zones,
+			     int ctr, int zone_ctr, string roomdir,
+			     string mobfile, string zonefile) {
+  string unq_str, roomfile;
   object obj;
   int    chunk_ctr;
 
+  roomfile = roomdir + "/zone" + save_zones[zone_ctr] + ".unq";
+
   catch {
-    for(chunk_ctr = 0; ctr < sizeof(objects) && chunk_ctr < SAVE_CHUNK;
-	ctr++, chunk_ctr++) {
-      obj = MAPD->get_room_by_num(objects[ctr]);
+    chunk_ctr = 0;
+    while(chunk_ctr < SAVE_CHUNK
+	  && ((objects && ctr < sizeof(objects))
+	      || zone_ctr < sizeof(save_zones))) {
 
-      unq_str = obj->to_unq_text();
+      /* Save up to SAVE_CHUNK objects from the objects array. */
+      for(; ctr < sizeof(objects) && chunk_ctr < SAVE_CHUNK;
+	  ctr++, chunk_ctr++) {
+	obj = MAPD->get_room_by_num(objects[ctr]);
 
-      if(!write_file(roomfile, unq_str)) {
-	DRIVER->message("Couldn't write rooms to file!  Fix or kill driver!");
-	error("Couldn't write rooms to file " + roomfile + "!");
+	unq_str = obj->to_unq_text();
+
+	if(!write_file(roomfile, unq_str)) {
+	  DRIVER->message("Couldn't write room to file!"
+			  + "  Fix it or kill the driver!\n");
+	  error("Couldn't write rooms to file " + roomfile + "!");
+	}
       }
+
+      /* Done with this zone with time to spare?  Great, move onto the
+	 next one. */
+      while((!objects || ctr >= sizeof(objects))
+	    && zone_ctr < sizeof(save_zones)) {
+
+	zone_ctr++;
+
+	if(zone_ctr < sizeof(save_zones)) {
+	  roomfile = roomdir + "/zone" + save_zones[zone_ctr] + ".unq";
+	  objects = MAPD->rooms_in_zone(save_zones[zone_ctr]);
+	  ctr = 0;
+	}
+      }
+
     }
 
-    if(ctr < sizeof(objects)) {
+    if((objects && ctr < sizeof(objects)) || zone_ctr < sizeof(save_zones)) {
       /* Still saving rooms... */
-      if(call_out("__co_write_rooms", 0, user, objects, ctr, roomfile,
-		  mobfile, zonefile) < 1) {
+      if(call_out("__co_write_rooms", 0, user, objects, save_zones,
+		  ctr, zone_ctr, roomdir, mobfile, zonefile) < 1) {
 	error("Can't schedule call_out to continue writing rooms!");
       }
       return;
@@ -491,6 +545,34 @@ static void __co_write_zones(object user, int* objects, int ctr,
   LOGD->write_syslog("Finished writing saved data...", LOG_NORMAL);
   if(user)
     user->message("Finished writing data.\n");
+}
+
+
+static int read_object_dir(string path) {
+  mixed** dir;
+  int     ctr;
+  string  file;
+
+  dir = get_dir(path + "/zone*.unq");
+  if(!sizeof(dir[0])) {
+    LOGD->write_syslog("Can't find any '" + path
+		       + "/zone*.unq' files to load!", LOG_ERR);
+    return -1;
+  }
+
+  for(ctr = 0; ctr < sizeof(dir[0]); ctr++) {
+    /* Skip directories */
+    if(dir[1][ctr] == -2)
+      continue;
+
+    file = read_file(path + "/" + dir[0][ctr]);
+    if(!file || !strlen(file)) {
+      /* Nothing was read.  Return error. */
+      return -1;
+    }
+
+    MAPD->add_unq_text_rooms(file, ROOM_DIR + "/" + dir[0][ctr]);
+  }
 }
 
 
