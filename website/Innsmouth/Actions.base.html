@@ -1,0 +1,162 @@
+<titledef text="Actions &amp; Events" />
+
+    <h3 style="text-align: center"> Actions and Events in MUDs </h3>
+
+    <p>
+    Imagine a 'perfect' MUD, one that handles multiple languages,
+    differing perceptions and event grouping, including everything
+    that <a href="Visibility.html">this</a> document mentions, and
+    does it all seamlessly and flawlessly.  Let's describe what it
+    actually does and start assigning some names to components.
+    </p>
+
+    <p>
+    There are instantaneous events going on all the time.  This being
+    a MUD, the instantaneous events are anything that echoes, or can
+    echo, text to a player.  For instance, if somebody says something
+    in a room, that's a simple instantaneous event.  If a cannon fires,
+    or a mobile enters, those are also instantaneous events.  The
+    text echoed may be different for different players, and in some
+    cases no text may be echoed at all.  If no players are in the room,
+    or if it's too subtle an event for them to perceive, or if the
+    event gets grouped with other events and echoed later, for instance,
+    then no text will be echoed for the event.  Different text may be
+    echoed to different players, for instance if the players speak
+    different languages, or the characters have different perception
+    skills.
+    </p>
+
+    <p>
+    Some events will have multiple components -- an obvious and a hidden
+    one, for instance, or multiple different senses.  The player will
+    receive different text in different cases for these events, and our
+    perfect MUD will group the various components into a potentially
+    smaller number of pieces of text.  The cannon firing, despite the
+    hearing and smell components, can still all be grouped under
+    &quot;the cannon fires&quot;.  Sets of events that are grouped
+    together, and all go off together from the same trigger, are called
+    Event Groups.  They are the easiest kind of events to combine into
+    smaller numbers of text strings since they are, in effect, already
+    marked as potentially groupable.
+    </p>
+
+    <p>
+    Every event will consist of some pieces of player-perceivable
+    markup (PPM).  A piece of PPM can appear differently to a
+    character depending on skills known, light level, and other
+    factors described <a href="Visibility.html">here</a>.  Traditionally,
+    instantaneous events in MUDs consist of one chunk of PPM each for
+    &quot;to actor&quot;, &quot;to victim&quot;,
+    possibly &quot;to self&quot; for reflexive verbs, and
+    &quot;to others&quot;.  Specific multi-targeted events might have
+    more, and untargeted events will have fewer.
+    </p>
+
+    <p>
+    Every PPM will effectively consist of a set of Phrases.  A Phrase
+    (in Phantasmal) is a string which can appear differently to
+    different players, but not usually to different characters.  A
+    Phrase can often translate itself into different languages, so it
+    will appear differently to a player who has requested an English
+    interface than one who asks to view the MUD in Spanish.  It may
+    also contain simple markup like bold, italics, or color codes,
+    which are individually translated by different players' terminals.
+    </p>
+
+    <p>
+    Phantasmal doesn't yet support a separate PPM object, though it
+    probably should.  And it should name it something snappier :-)
+    </p>
+
+    <p>
+    Each instantaneous action will also carry information about what
+    sense it occurs in (sight, sound, taste, touch/vibration,
+    infrared, psychic/ESP, etc).  This may be combined with
+    information about what skills are required to perceive the
+    event/PPM.
+    </p>
+
+    <p>
+    Continuing Actions (CAs) are, in effect, scripted arrangements of
+    instantaneous actions.  A CA is, in concept, and action that occurs
+    over a significant period of time without changing.  A buzzing
+    sound, the sharpening of a blade, the smell of banana leaves and
+    an army shuffling down a muddy slope could all be represented as
+    Continuing Actions.  The common factor is that each of these
+    takes a nonzero period of time within the MUD.
+    </p>
+
+    <p>
+    CAs consist, effectively, of an instantaneous event to begin,
+    another for people coming into range (walking into a room with the
+    sound, for instance, or coming into view of the muddy slope),
+    another for when the CA stops, another for when you exit its field
+    of influence and a final event for when it is interrupted.  Thus,
+    for the buzzing sound:
+    </p>
+
+<pre>
+  > north
+  You enter the aviary.
+  You hear a buzzing sound here.
+  > put in earplugs
+  You put in earplugs.
+  The buzzing sound is no longer audible.
+  > remove earplugs
+  You remove your earplugs.
+  You hear a buzzing sound here.
+  > south
+  You head south.
+  The buzzing sound is no longer audible.
+  You enter the Boring Room.  You should leave north.
+  > north
+  You enter the aviary.
+  You hear a buzzing sound here.
+  > listen
+  There's a buzzing sound here.  It might be coming from some bushes.
+  > stomp on bee
+  You stomp on the bee hidden in the bushes.
+  The buzzing sound stops abruptly.
+</pre>
+
+    <p>
+    The Continuing Action may have different 'ending' events depending on
+    how it finishes.  For instance, the action of drawing a sword might
+    be a CA designed to allow for interruption:
+    </p>
+
+<pre>
+  > draw sword
+  You draw your sword with a flourish.
+  > sheathe sword
+  You do.
+  Odin enters.
+  > draw sword
+  You reach for your sword.
+  Quick as a flame, Odin wields his spear.
+  You draw your sword with a flourish.
+</pre>
+
+    <p>
+    Note that the sword-drawing CA has no starting event (or it's silent),
+    but it says you draw your sword if it completes, but that you reach
+    for your sword if it's interrupted.
+    </p>
+
+    <p>
+    An example of a complex action with several senses:
+    </p>
+
+<pre>
+  An explosion rocks the hall, the first of many.  It shakes you
+  down to your toes.
+  > close eyes
+  You hear an enormous "boom!" and smell smoke and brimstone.  You are
+  shaken down to your toes.
+  > hold nose
+  You hear an enormous "boom!".  You are shaken down to your toes.
+  > curl up in a ball on the floor
+  You hear yet another enormous "boom!".  You smell smoke and brimstone.
+  > am I holding my nose?
+  No, your arms are around your knees.
+</pre>
