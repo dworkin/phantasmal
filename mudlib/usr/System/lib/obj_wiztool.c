@@ -10,6 +10,7 @@
 #include <limits.h>
 #include <log.h>
 #include <grammar.h>
+#include <body_loc.h>
 
 inherit access API_ACCESS;
 
@@ -161,9 +162,8 @@ static void cmd_stat(object user, string cmd, string str) {
   }
 
   if(sscanf(str, "#%d", objnum) != 1) {
-    objs = user->get_location()->find_contained_objects(user, str);
-    if(!objs)
-      objs = user->get_body()->find_contained_objects(user, str);
+    objs = user->find_first_objects(str, LOC_INVENTORY, LOC_CURRENT_ROOM,
+				    LOC_BODY);
     if(!objs) {
       user->message("You don't find any object matching '"
 		    + str + "' here.\r\n");
