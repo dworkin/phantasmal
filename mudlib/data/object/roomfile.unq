@@ -1067,3 +1067,19 @@ here.}}
   ~nouns{{~enUS{marsh,peabody,halls}}}
   ~adjectives{{~enUS{telman,marsh,halls,economics,humanities,history,languages,modern}}}
 }
+~room{
+  ~number{600}
+  ~location{0}
+  ~bdesc{
+    ~enUS{In front of the hostel}}
+  ~gdesc{
+    ~enUS{In front of the hostel}}
+  ~ldesc{
+    ~enUS{You're standing in front of a large, faded, weathered building,
+far from any other buildings.  Above the doorway is a sign.  You can see
+cots through the front window.}}
+  ~flags{3}
+  ~article{0}
+  ~nouns{{}}
+  ~adjectives{{}}
+}

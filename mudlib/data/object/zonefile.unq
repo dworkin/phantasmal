@@ -37,4 +37,8 @@
          ~segnum{5}
          ~zonenum{0}
      }
+     ~segment{
+         ~segnum{6}
+         ~zonenum{2}
+     }
 }
