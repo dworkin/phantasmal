@@ -81,7 +81,7 @@ void mobile_set_tag_value(object mobile, string name, mixed value) {
 
   check_value_type(tag_arr[0], value);
 
-  call_other(mobile, (tag_arr[1] ? tag_arr[1] : "get_tag"), name, value);
+  call_other(mobile, (tag_arr[2] ? tag_arr[2] : "set_tag"), name, value);
 }
 
 mixed object_get_tag_value(object obj, string name) {
