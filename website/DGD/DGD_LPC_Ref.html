@@ -6,28 +6,35 @@
 
   <body text="#000000" bgcolor="#DDDDDD" link="#0000EF" vlink="#51188E"
 	alink="#FF0000">
-    <h1> Miscellaneous LPC Reference </h1>
+    <h1> An LPC Reference for DGD </h1>
 
     <font size="4">
 
-    <p>This stuff is all meant to be relevant to DGD's version of LPC.
-      If you're using MudOS, Amylaar or any other flavor of LPMUD then
-      don't expect most of this to be true.  Similarly, if you read LPC
-      references for other forms of LPC, you'll find that large amounts
-      will just not port well to DGD.  You'll find it most particularly
-      with game-specific code since it probably assumes a bunch of
-      kernel and library functions DGD doesn't use.</p>
+    <p>This page is all about DGD's version of LPC.  If you're using
+      MudOS, LDMUD, Amylaar or any other flavor of LPMUD then don't
+      expect all of this to be true.  If you read LPC documents
+      elsewhere on the web, some of it won't work on DGD.  It's
+      especially true of game-specific code since that usually assumes
+      there are a lot of built-in functions that DGD doesn't provide.</p>
 
-    <p>A lot of this is taken straight from the mailing list and
-      straight from Dworkin, the guy who wrote the driver.
-      A number of sections
-      below are taken from Dworkin and not credited to him at the actual
-      location.  If somebody wants to complain, I'll go through and add
-      attribution to him at each individual location in the file.
-      Otherwise I'll do what I'm doing now and you should assume that
-      anything really useful in the file is by him and anything that
-      isn't, or that's wrong, was added by me.  To be certain, check
-      the mailing list archives. </p>
+    <p>A lot of this page is taken from the mailing list and from
+      Dworkin.  Some is taken from Dworkin and not credited to him at
+      the actual location.  If somebody wants to complain, I'll go
+      through and add attribution to him at each individual location
+      in the file.  Otherwise I'll do what I'm doing now and you
+      should assume that anything really useful in the file is by him
+      and anything that isn't, or that's wrong, was added by me.  To
+      be sure about one thing or another, check the mailing list
+      archives. </p>
+
+    <hr> </hr>
+
+    <p>
+      I'm editing a web book on LPC by Ronnie Wikh to use with DGD.
+      The DGD version is <a href="LPC">here</a>.  Some sections below
+      link to it since that's the best description of these topics
+      that I have available.
+    </p>
 
     <hr> </hr>
 
@@ -116,7 +123,7 @@
 	and a better reference, at least if you're using DGD. </li>
       <li> The
 	<a href="http://www.lysator.liu.se/nanny/docs/manual/manual.html">
-	  NannyMUD LPC Manual</a> is an older dialect of LPC. </li>
+	  NannyMUD LPC Manual</a> is about an older dialect of LPC. </li>
     </ul>
   </a>
 
@@ -177,68 +184,10 @@
     <a name="CallByRef">
     <h2> Call-By-Reference vs Call-By-Value in LPC </h2>
 
-    <p>In C, most values are passed by value.  What that means is that
-      when you pass, say, an integer variable equal to 3 into a function
-      and you change it in the function, the variable doesn't change outside
-      the function and no variable already equal to 3 changes.  So the
-      following code in C doesn't do what it looks like it's supposed to.
-      In fact, it does nothing:
+    <p>
+      Here's a link to this topic in the
+      <a href="LPC/section_42.html#SEC4.2.1.3">LPC textbook</a>.
     </p>
-    <pre>
-/* Swap two integers */
-void swap(int a, int b) {
-  int tmp;
-  tmp = b;
-  b = a;
-  a = b;
-}
-    </pre>
-    <p>The reason it doesn't work is because C copies the integers
-      into new variables.  That's call-by-value because only the value
-      gets passed in.  We can use pointers in C to pass references, like
-      so: </p>
-    <pre>
-/* Swap two integers, but pass pointers to them */
-void swap(int* a, int* b) {
-  int tmp;
-  tmp = *b;
-  *b = *a;
-  *a = *b;
-}
-    </pre>
-    <p> Now we're passing references in, so it's effectively
-      call-by-reference.  In Pascal or C++ we can go one better and do
-      <i>actual</i> call-by-reference.  In C++, it looks like this: </p>
-    <pre>
-/* Swap two integers by reference */
-void swap(int& a, int& b) {
-  int tmp;
-  tmp = b;
-  b = a;
-  a = b;
-}
-    </pre>
-    <p>If you've got a good understanding of C, you know that C passes
-      arrays by reference.  That's because in C, arrays are really just
-      pointers.  If you change an element in the array, it's changed
-      <i>everywhere</i>, not just in that one function.  If you've got
-      a working knowledge of assembly language or have worked in certain
-      other languages you might say that's it's really call-by-value,
-      but that the value's just a reference.  If you don't know what
-      I mean by that, don't worry -- if you know that changing an element
-      inside the function changes it everywhere, you know the important
-      part.</p>
-    <p>There are several types LPC in DGD passes by reference, just like
-      C passes arrays by reference.  Those types are array, mapping
-      and object.  A mixed type is passed either by value or reference
-      depending on what type it &quot;really&quot; is. </p>
-    <p>This has security implications.  For instance, if you pass an
-      array of users directly back to a calling function then a wizard
-      on your MUD can call that function and remove other users from the
-      array.  That's a <i>bad</i> thing.  So instead, you'll need to
-      copy the array before returning it.  To find out how, see the
-      <a href="#ArrayOps">Array and Mapping Operations</a> section of
-      this document. </p>
   </a>
 
     <hr> </hr>
@@ -494,7 +443,7 @@ inherited_A_func("bob", "spam");
     </pre>
     <p>they'd be called like this:</p>
     <pre>
-foo::inherited_A_func("bob", "spam);
+foo::inherited_A_func("bob", "spam");
     </pre>
     <p>Nifty, yeah?  The two tricks can be combined, like this:</p>
     <pre>

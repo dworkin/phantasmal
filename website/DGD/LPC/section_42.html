@@ -167,6 +167,60 @@ pi = call_other(math_ob, &quot;computer&quot; + &quot;_pi&quot;, 1.0);
     </p>
 
 
+    <h4><a name="SEC4.2.1.3" href="index.html#SEC4.2.1.3">
+        Call-by-value versus Call-by-reference</a></h4>
+
+    <p>In LPC, most values are passed by value.  What that means is
+      that when you pass, say, an integer variable with a value of 3
+      into a function and you change that variable in the function,
+      the variable doesn't change outside the function .  So the
+      following code doesn't do what it looks like it's supposed to.
+      In fact, it does nothing:
+    </p>
+    <pre>
+/* Swap two integers */
+void swap(int a, int b) {
+  int tmp;
+  tmp = b;
+  b = a;
+  a = b;
+}
+    </pre>
+    <p>The reason it doesn't work is because LPC makes the function's
+      parameters new variables and copies the values in.  You're
+      swapping the value of the parameters, but those variables are
+      going to disappear at the end of the function.  This is called
+      call-by-value because only the value gets passed in -- the
+      original variable is copied so the function never sees it.  In
+      C, we could use pointers to pass references.  In other
+      languages, we could do what's called call-by-reference, and the
+      swap routine above could actually swap the values of the two
+      variables once the function was finished.
+      LPC passes arrays by reference.  That means that if you change
+      an element in the array, it's changed <i>everywhere</i>, not
+      just in that one function.
+    </p>
+
+    <p>
+      LPC passes several types by reference: arrays, mappings and
+      objects.  A mixed type is passed either by value or reference
+      depending on what type it &quot;really&quot; is underneath.
+    </p>
+
+    <p>
+      This has security implications.  For instance, let's say a
+      function on your MUD keeps an array of all users.  When queried,
+      it passes the array of users to a calling function. But a wizard
+      on your MUD would be able call that function and remove other
+      users from the array.  That's a <i>bad</i> thing.  So instead,
+      you just copy the array before returning it.  If you just pass
+      the array back as an array or mixed variable, it's
+      call-by-reference and the wizard can change your copy.  If you
+      copy it first, it doesn't matter how it's passed because he's
+      looking at a different copy.
+    </p>
+
+
     <h3><a name="SEC4.2.2" href="index.html#SEC4.2.2">
 	Inheriting object classes</a></h3>
 
