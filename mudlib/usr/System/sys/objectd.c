@@ -517,6 +517,11 @@ private object add_clonable(string owner, object obj, string* inherited) {
     if(!old_version) {
       LOGD->write_syslog("Can't get issue for old version!", LOG_ERR);
     }
+    if(old_version && !old_version->destroyed()) {
+      LOGD->write_syslog("Old issue is in dest_issues but not destroyed!",
+			 LOG_WARN);
+    }
+    LOGD->write_syslog("Updating destructed version of object", LOG_VERBOSE);
   }
 
   if(old_version && !old_version->destroyed()) {
@@ -527,6 +532,8 @@ private object add_clonable(string owner, object obj, string* inherited) {
 
     old_version->set_parents(inh_obj);
     register_inherit_data(old_version);
+
+    LOGD->write_syslog("Upgrading object on recompile", LOG_VERBOSE);
 
     call_upgraded(find_object(object_name(obj)));
   } else {
@@ -548,6 +555,7 @@ private object add_clonable(string owner, object obj, string* inherited) {
       transfer_clones(old_version, new_issue);
 
       /* Remove from dest array */
+      LOGD->write_syslog("Clearing destroyed issue on recompile", LOG_VERBOSE);
       dest_issues[object_name(obj)] = nil;
       dest_issues[old_index] = nil;
       dest_issues[idx] = nil;
@@ -634,7 +642,8 @@ void compile(string owner, object obj, string source,
 	     string inherited...)
 {
   if(previous_program() == DRIVER) {
-    LOGD->write_syslog("compile: " + object_name(obj), LOG_VERBOSE);
+    LOGD->write_syslog("compile: " + object_name(obj)
+		       + ", issue #" + status(obj)[O_INDEX], LOG_VERBOSE);
 
     add_clonable(owner, obj, inherited);
   }
@@ -678,7 +687,8 @@ void destruct(string owner, object obj)
     object issue;
     string objname;
 
-    LOGD->write_syslog("destruct: " + object_name(obj), LOG_VERBOSE);
+    LOGD->write_syslog("destruct: " + object_name(obj)
+		       + ", issue #" + status(obj)[O_INDEX], LOG_VERBOSE);
 
     index = status(obj)[O_INDEX];
     issue = obj_issues->index(index);
@@ -909,8 +919,9 @@ void do_initial_obj_setup(void) {
 
 /* Gives a list of destroyed object names */
 string destroyed_obj_list(void) {
-  mixed* keys;
-  int     ctr;
+  mixed*  keys;
+  int     ctr, idx;
+  object  issue;
   string  ret;
 
   ret = "Objects:\n";
@@ -919,8 +930,15 @@ string destroyed_obj_list(void) {
     if(typeof(keys[ctr]) == T_INT)
       continue;  /* Index is num, not name */
 
-    ret += "* " + obj_issues->index(dest_issues[keys[ctr]])->get_name()
-      + "(" + dest_issues[keys[ctr]] + ")" + "\n";
+    ret += "* ";
+    idx = dest_issues[keys[ctr]];
+    issue = obj_issues->index(idx);
+    if(issue) {
+      ret += issue->get_name();
+    } else {
+      ret += " (nil) ";
+    }
+    ret += "(" + dest_issues[keys[ctr]] + ")" + "\n";
   }
 
   return ret;
