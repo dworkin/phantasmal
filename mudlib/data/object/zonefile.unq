@@ -13,10 +13,10 @@
      }
      ~segment{
          ~segnum{3}
-         ~zonenum{0}
+         ~zonenum{1}
      }
      ~segment{
          ~segnum{4}
-         ~zonenum{0}
+         ~zonenum{1}
      }
 }
