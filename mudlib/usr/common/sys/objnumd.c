@@ -68,13 +68,6 @@ int get_segment_zone(int segment) {
 
   seg = segments[segment];
   if(seg) {
-
-    /* FOR UPGRADE FROM PREVIOUS VERSION ONLY */
-    /* TODO:  remove this code after release of version 0.009 */
-    if(sizeof(seg) == 2) {
-      seg += ({ -1 });
-    }
-
     return seg[2];
   }
 
