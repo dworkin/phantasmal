@@ -657,6 +657,7 @@ static void cmd_set_obj_value(object user, string cmd, string str) {
 		"volume" : "volume",
 		"vol"    : "volume",
 		"length" : "length",
+		"len"    : "length",
 		"height" : "length",
 		]);
 
