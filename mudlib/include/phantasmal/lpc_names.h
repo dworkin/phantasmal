@@ -49,6 +49,7 @@
 #define TAGGED              "/usr/common/lib/tagged"
 #define PHRASE_REPOSITORY   "/usr/common/lib/phrase_repository"
 #define SCRIPT_AUTO         "/usr/common/lib/script_auto"
+#define PHRASE              "/usr/common/lib/phrase"
 #define COMMON_AUTO         "/usr/System/open/lib/common_auto"
 
 
