@@ -10,3 +10,9 @@
   ~body{310}
 }
 
+~mobile{
+  ~type{wander}
+  ~number{502}
+  ~body{313}
+}
+

@@ -467,6 +467,73 @@ Arkham through the trees to the north and east.}}
   ~nouns{{}}
   ~adjectives{{}}
 }
+~body{
+  ~number{309}
+  ~location{304}
+  ~bdesc{
+    ~enUS{Angelbob}}
+  ~gdesc{
+    ~enUS{Angelbob}}
+  ~ldesc{
+    ~enUS{Angelbob wanders the MUD.}}
+  ~article{0}
+  ~nouns{{~enUS{angelbob}}}
+  ~adjectives{{}}
+}
+~body{
+  ~number{310}
+  ~location{1}
+  ~bdesc{
+    ~enUS{Noah}}
+  ~gdesc{
+    ~enUS{Noah}}
+  ~ldesc{
+    ~enUS{Noah wanders the MUD.}}
+  ~article{0}
+  ~nouns{{~enUS{noah}}}
+  ~adjectives{{}}
+}
+~body{
+  ~number{311}
+  ~location{1}
+  ~bdesc{
+    ~enUS{Bob}}
+  ~gdesc{
+    ~enUS{Bob}}
+  ~ldesc{
+    ~enUS{Bob wanders the MUD.}}
+  ~article{0}
+  ~nouns{{~enUS{bob}}}
+  ~adjectives{{}}
+}
+~body{
+  ~number{312}
+  ~location{1}
+  ~bdesc{
+    ~enUS{TestBoy}}
+  ~gdesc{
+    ~enUS{TestBoy}}
+  ~ldesc{
+    ~enUS{TestBoy wanders the MUD.}}
+  ~article{0}
+  ~nouns{{~enUS{testboy}}}
+  ~adjectives{{}}
+}
+~room{
+  ~number{313}
+  ~location{304}
+  ~bdesc{
+    ~enUS{a mobile turnip}}
+  ~gdesc{
+    ~enUS{a gently-vibrating mobile turnip}}
+  ~ldesc{
+    ~enUS{This turnip is vibrating slightly, and that motion is moving it around
+the floor.  You wonder if it'd be able to win a race with your old
+washing machine back home.}}
+  ~article{0}
+  ~nouns{{~enUS{turnip,vegetable}}}
+  ~adjectives{{~enUS{mobile,vibrating,gently,gently-vibrating,moving}}}
+}
 ~portable{
   ~number{400}
   ~location{300}
