@@ -31,6 +31,6 @@ int from_user(string input) {
 
 void switch_to(int pushp) {
   send_string("Enter text at the prompt.  Enter ~ on a line by itself to " +
-	      "end.\n");
+	      "end.\r\n");
   send_string(" > ");
 }
