@@ -1,5 +1,5 @@
 Replace these files with the ones in the include/kernel directory from
-DGD's Kernel MUDLib.  As of DGD version 1.2.66, the files are named
+DGD's Kernel MUDLib.  As of DGD version 1.2.93, the files are named
 access.h, kernel.h, objreg.h, rsrc.h, tls.h, user.h, and version.h.
 However, you should use whatever versions are found in the
 mud/include/kernel directory of the DGD Kernel MUDLib for your current
