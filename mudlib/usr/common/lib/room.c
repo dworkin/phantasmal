@@ -666,14 +666,25 @@ void remove_from_container(object obj) {
 }
 
 
-/********* UNQ serialization helper functions */
+/******** Functions to manage pending fields ***********/
 
 int get_pending_location(void) {
   return pending_location;
 }
 
+/* Can't override set_location, we don't have the necessary
+   privilege to call it! */
+
 int get_pending_parent(void) {
   return pending_parent;
+}
+
+void set_archetype(object new_arch) {
+  if(!SYSTEM() && !COMMON())
+    error("Only SYSTEM and COMMON objects may set archetypes!");
+
+  ::set_archetype(new_arch);
+  pending_parent = -1;
 }
 
 int get_pending_detail_of(void) {
@@ -684,10 +695,21 @@ int* get_pending_removed_details(void) {
   return pending_removed_details;
 }
 
+void set_removed_details(object *new_removed_details) {
+  if(!SYSTEM() && !COMMON())
+    error("Only SYSTEM or COMMON objects can set removed_details!");
+
+  pending_removed_details = ({ });
+  ::set_removed_details(new_removed_details);
+}
+
 void clear_pending(void) {
   pending_location = pending_parent = pending_detail_of = -1;
   pending_removed_details = ({ });
 }
+
+
+/********* UNQ serialization helper functions */
 
 /* Include only exits that appear to have been created from this room
    so that they aren't doubled up when reloaded */
