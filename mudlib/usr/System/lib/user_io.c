@@ -30,7 +30,7 @@ void create(void) {
 
 }
 
-void upgraded(void) {
+void upgraded(varargs int clone) {
   if(!find_object(US_SCROLL_TEXT)) { compile_object(US_SCROLL_TEXT); }
 }
 

@@ -1,4 +1,4 @@
-/* $Header: /cvsroot/phantasmal/mudlib/usr/System/obj/user.c,v 1.64 2003/04/12 00:23:09 kdunwoody Exp $ */
+/* $Header: /cvsroot/phantasmal/mudlib/usr/System/obj/user.c,v 1.65 2003/05/25 06:03:02 angelbob Exp $ */
 
 #include <kernel/kernel.h>
 #include <kernel/user.h>
@@ -47,7 +47,7 @@ static object mobile;           /* Mobile for body object */
 static object location;         /* Location of body */
 
 /* Prototypes */
-        void   upgraded(void);
+        void   upgraded(varargs int clone);
 static  int    process_message(string str);
 static  void   print_prompt(void);
 private int    name_is_forbidden(string name);
@@ -71,17 +71,17 @@ static void create(int clone)
     /* Default to enUS locale */
     locale = PHRASED->language_by_name("english");
   } else {
-    upgraded();
+    upgraded(clone);
   }
 }
 
-void upgraded(void) {
+void upgraded(varargs int clone) {
   if(!find_object(SYSTEM_WIZTOOL)) { compile_object(SYSTEM_WIZTOOL); }
   if(!find_object(USER_MOBILE)) { compile_object(USER_MOBILE); }
   if(!find_object(SIMPLE_ROOM)) { compile_object(SIMPLE_ROOM); }
 
-  cmd::upgraded();
-  io::upgraded();
+  cmd::upgraded(clone);
+  io::upgraded(clone);
 }
 
 

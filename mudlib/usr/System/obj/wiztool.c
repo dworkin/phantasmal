@@ -15,7 +15,7 @@ private mixed* command_sets;
 private object room_dtd;        /* DTD for room def'n */
 
 /* Prototypes */
-void upgraded(void);
+void upgraded(varargs int clone);
 
 /*
  * NAME:	create()
@@ -28,7 +28,7 @@ static void create(int clone)
     user = this_user();
     command_sets = nil;
   } else {
-    upgraded();
+    upgraded(clone);
   }
 }
 
@@ -41,7 +41,7 @@ void destructed(int clone) {
 }
 
 /* Called by objectd when recompiling */
-void upgraded(void) {
+void upgraded(varargs int clone) {
   string dtd_file;
 
   command_sets

@@ -14,7 +14,7 @@ void create(void) {
   command_sets = nil;
 }
 
-void upgraded(void) {
+void upgraded(varargs int clone) {
   command_sets = load_command_sets_file(USER_COMMANDS_FILE);
   if(!command_sets) {
     LOGD->write_syslog("Command_sets is Nil!", LOG_FATAL);
