@@ -445,11 +445,29 @@ static void cmd_clear_adjectives(object user, string cmd, string str) {
 static void cmd_move_obj(object user, string cmd, string str) {
   object obj1, obj2;
   int    objnum1, objnum2;
+  string second;
 
   if(!str || sscanf(str, "%*s %*s %*s") == 3
-     || sscanf(str, "#%d #%d", objnum1, objnum2) != 2) {
+     || ((sscanf(str, "#%d #%d", objnum1, objnum2) != 2)
+	 && (sscanf(str, "#%d %s", objnum1, second) != 2))) {
     user->message("Usage: " + cmd + " #<obj> #<location>\r\n");
+    user->message("    or " + cmd + " #<obj> here\r\n");
     return;
+  }
+
+  if(second && STRINGD->stricmp(second, "here")) {
+    user->message("Usage: " + cmd + " #<obj> #<location>\r\n");
+    user->message("    or " + cmd + " #<obj> here\r\n");
+  }
+
+  if(second) {
+    if(user->get_location()) {
+      objnum2 = user->get_location()->get_number();
+    } else {
+      user->message("You can't move an object to your current location "
+		    + "unless you have one!\r\n");
+      return;
+    }
   }
 
   obj2 = MAPD->get_room_by_num(objnum2);
