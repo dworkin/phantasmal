@@ -14,7 +14,7 @@
  */
 #define GAME_INITD            "/usr/game/initd"
 #define GAME_DRIVER           "/usr/game/sys/gamedriver"
-
-#define CONFIGD_DTD           "/usr/common/sys/config.dtd"
-
 #define HEART_BEAT            "/usr/game/sys/heart_beat"
+
+/* SoN Custom Room Script objects inherit from this. */
+#define CUSTOM_ROOM_PARENT    "/usr/game/lib/cr_parent"

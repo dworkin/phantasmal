@@ -15,8 +15,12 @@ static void set_up_scripting(void);
 static void set_up_heart_beat(void);
 static void load_sould(void);
 static void load_tagd(void);
+static void load_custom_rooms(void);
+static int read_object_dir(string path);
 
 static void create(void) {
+  string mob_file;
+
   LOGD->write_syslog("**** Starting Test Game, "
 		     + GAME_VERSION + " ****");
 
@@ -38,7 +42,31 @@ static void create(void) {
   /* Register a help directory for the HelpD to use */
   HELPD->new_help_directory("/usr/game/help");
 
+  /* Load the SoulD with social commands */
   load_sould();
+
+  /* Register a new custom room type.  Compile the custom room object
+     first, since MAPD can't legally do so. */
+  compile_object("/usr/game/obj/custom_room");
+  MAPD->add_unq_binding("custom", "/usr/game/obj/custom_room");
+
+  /* Load stuff into MAPD and EXITD */
+  if(read_object_dir(ROOM_DIR) >= 0) {
+    EXITD->add_deferred_exits();
+    MAPD->do_room_resolution(1);
+  } else {
+    LOGD->write_syslog("Can't read object files!  Starting incomplete!",
+		       LOG_ERROR);
+  }
+
+  /* Load the mobilefile into MOBILED */
+  mob_file = read_file(MOB_FILE);
+  if(mob_file) {
+    MOBILED->add_unq_text_mobiles(mob_file, MOB_FILE);
+  } else {
+    LOGD->write_syslog("Can't read mobile file!  Starting w/o mobiles!",
+		       LOG_ERROR);
+  }
 
   /* Set up heart_beat functions */
   if(!find_object(HEART_BEAT))
@@ -71,6 +99,8 @@ static void set_up_scripting(void) {
   call_other("/usr/game/script/test_script", "???");
 }
 
+/* Read and parse config.unq according to config.dtd.  Then call
+   config_from_unq to load the data into the Game Driver. */
 static void config_unq_file(void) {
   object config_dtd;
   string config_dtd_file, config_file;
@@ -90,7 +120,7 @@ static void config_unq_file(void) {
   destruct_object(config_dtd);
 }
 
-/* Parse UNQ in config.unq */
+/* Parse UNQ data from config.unq, load it into Game Driver */
 static void configure_from_unq(mixed* unq) {
   int set_sr, set_ml;
 
@@ -173,5 +203,41 @@ static void load_tagd(void) {
     }
 
     call_other(TAGD, add_func, tag_name, tag_type, tag_get, tag_set);
+  }
+}
+
+/* This function looks through the appropriate subdirectories for room
+   files and sets them up with the MapD */
+static void load_custom_rooms(void) {
+
+}
+
+/* read_object_dir loads all rooms and exits from the specified directory,
+   which should be in canonical Phantasmal saved format.  This is used to
+   restore saved data from %shutdown and from %datadump. */
+static int read_object_dir(string path) {
+  mixed** dir;
+  int     ctr;
+  string  file;
+
+  dir = get_dir(path + "/zone*.unq");
+  if(!sizeof(dir[0])) {
+    LOGD->write_syslog("Can't find any '" + path
+		       + "/zone*.unq' files to load!", LOG_ERR);
+    return -1;
+  }
+
+  for(ctr = 0; ctr < sizeof(dir[0]); ctr++) {
+    /* Skip directories */
+    if(dir[1][ctr] == -2)
+      continue;
+
+    file = read_file(path + "/" + dir[0][ctr]);
+    if(!file || !strlen(file)) {
+      /* Nothing was read.  Return error. */
+      return -1;
+    }
+
+    MAPD->add_unq_text_rooms(file, ROOM_DIR + "/" + dir[0][ctr]);
   }
 }
