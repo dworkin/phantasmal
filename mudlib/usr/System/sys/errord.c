@@ -100,7 +100,7 @@ void atomic_error(string error, int atom, mixed** trace)
     reset_comp_err = 1;
   }
 
-  log->write_syslog("Atomic error: " + error);
+  /* log->write_syslog("Atomic error: " + error); */
   send_message("Atomic error: " + error);
 }
 
