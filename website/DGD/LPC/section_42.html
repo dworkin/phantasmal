@@ -217,24 +217,49 @@ pi = call_other(math_ob, &quot;computer&quot; + &quot;_pi&quot;, 1.0);
     </p>
 
     <pre>
-inherit &quot;&lt;file path&gt;&quot;;
+[private] inherit [prefix] &quot;&lt;file path&gt;&quot;;
 e.g.
 	inherit &quot;/std/door&quot;;
 	inherit &quot;/usr/common/object&quot;;
+        private inherit foo &quot;/usr/bob/secret_parent&quot;;
     </pre>
 
     <p>
 	
       Note that this is <i>not</i> a preprocessor command, it is a
       statement, so it does <i>not</i> have a <code>#</code> in front
-      of it.  It also ends with a <code>;</code>.  As you see you may
-      specify that it's a <tt>.c</tt> file if you wish, but that's not
+      of it.  It also ends with a <code>;</code>.  You may specify
+      that it's a <tt>.c</tt> file if you wish, but doing so isn't
       required.
+    </p>
+
+    <p>
+      Inheritance statements <i>must</i> come before any variable or
+      function definitions, including in #include files.  This is one
+      reason you can't use the standard include file (mentioned in a
+      later chapter) to add a variable to every LPC program -- if you
+      did, that variable would be declared before any inheritance, so
+      no LPC program could inherit anything!
     </p>
 
     <p>
       The <b>child</b> object (the one that declares the inheritance,
       as above) will inherit all inheritable functions and variables.
+      This means that simply calling a function with the name declared
+      in the parent will call that function as the parent defines it.
+      Or, if the child defines it, it will be called with the child's
+      definition.  That is the power of inheritance -- the same name
+      can refer to any of a family of functions, tailored to different
+      classes.
+    </p>
+
+    <p>
+      Variables are also inherited, and can be referred to by name.
+      The variable's name, by itself, points to the parent's instance
+      of that variable, so it works just like functions.
+    </p>
+
+    <p>
       If a child object has a function with the same name as a
       function in the parent, the child's function will <b>mask</b>
       the parent's.  When the function is called by an external call
@@ -252,6 +277,16 @@ void my_func()
     ::my_func();        /* Call my_func() in the parent. */
 }
     </pre>
+  </p>
+
+    <p>
+      If a parent is inherited with a prefix, for example, <tt>inherit
+      foo &quot;/usr/bob/fooclass&quot;</tt>, the method above won't
+      work.  Instead of calling with a scope operator before it, it
+      must be called with the prefix, the scope operator and then the
+      function name.  So <tt>::my_func();</tt> above might become
+      <tt>foo::myfunc();</tt>.
+    </p>
 
     <p>
       It is not possible to call a masked function in the parent by an
@@ -262,6 +297,17 @@ void my_func()
       B's version when it calls the function with the scope operator.
       If B doesn't mask the function then C would get A's version
       instead.
+    </p>
+
+    <p>
+      If a parent is inherited with the <b>private</b> keyword, only
+      the class inheriting it will be able to see its functions.
+      External function calls won't find the <b>private</b> parent's
+      functions, and child classes won't be able to call the functions
+      inherited from that parent.  To export the functions in a
+      <b>private</b> parent class, have the child class declare
+      functions with the same names that pass the arguments through to
+      the parent.
     </p>
 
     <h3><a name="SEC4.2.3" href="index.html#SEC4.2.3">
@@ -660,7 +706,7 @@ copy_arr = arr[..];
     </address>
     <!-- Created: Mon Jun 11 21:50:30 PDT 2001 -->
     <!-- hhmts start -->
-Last modified: Tue Jun 10 13:31:11 PDT 2003
+Last modified: Mon Jun 30 18:01:06 PDT 2003
 <!-- hhmts end -->
   </body>
 </html>
