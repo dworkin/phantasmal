@@ -16,7 +16,7 @@ usr/System/initd.c
   Check for Kernel MUDLib version and DGD version -- allow the widest
   range of DGD versions that seems reasonable.
 
-data/object/roomfile, data/object/mobfile, data/object/zonefile
+data/object/stuff/zone*, data/object/mobfile, data/object/zonefile
   Remove player data, remove .old and safe_* files.  Remove *~ files
   again after editing.  Remove objects that were in inventory.
 
