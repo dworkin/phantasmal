@@ -81,12 +81,12 @@
 /* Non-LPC configuration files */
 
 /* UNQ DTDs */
-#define MAPD_ROOM_DTD       "/data/dtd/room.dtd"
-#define MOB_FILE_DTD        "/data/dtd/mobile.dtd"
-#define CONFIGD_DTD         "/data/dtd/config.dtd"
-#define ZONED_DTD           "/data/dtd/zoned.dtd"
+#define MAPD_ROOM_DTD       "/usr/common/sys/room.dtd"
+#define MOB_FILE_DTD        "/usr/common/sys/mobile.dtd"
+#define CONFIGD_DTD         "/usr/common/sys/config.dtd"
+#define ZONED_DTD           "/usr/common/sys/zoned.dtd"
 #define BIND_DTD            "/usr/common/sys/bind.dtd"
-#define SOULD_DTD           "/data/dtd/sould.dtd"
+#define SOULD_DTD           "/usr/common/sys/sould.dtd"
 
 /* Other data files */
 #define CONFIG_FILE         "/data/system/config.unq"
