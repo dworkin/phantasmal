@@ -35,23 +35,13 @@ with a colon.  For instance, "emote chuckles" will give output like
 "Sam chuckles".
 }}
 
-~name{~enUS{chat,ooc}}
-~desc{~enUS{
-ooc       This sends a broadcast message out on the out-of-character
-          channel.  See "help ooc" for more about the ooc channel.
-channel   This allows you to select subscribed chat channels.  See
-          "help channel".
-
-Synonyms for OOC command:  chat, gossip
-
-See also:  out-of-character
-}}
 
 ~name{~enUS{out-of-character}}
 ~desc{~enUS{
-This chat command broadcasts a message to everybody listening to the
-out-of-character channel.  Note that people needn't listen to the OOC
-channel (see 'help channel') if they don't want to.  This channel
+
+The chat command broadcasts a message to everybody listening to the
+out-of-character channel.  Note that people needn't listen to the chat
+channel (see 'help channel') if they don't want to.  The channel
 should be used only for out-of-character messages.  Some things that
 are explicitly forbidden are how to solve in-game puzzles, trading
 equipment, asking directions to MUD locations, objects or NPCs, asking
@@ -61,10 +51,11 @@ properties, or asking about how a particular NPC acts or fights.
 Some things that you explicitly *can* use OOC for are greeting players
 when you enter or exit the MUD ("howdy, all!"), discussing out-of-game
 things like MUD clients, and asking about game mechanics and features
-like how particular commands work.  If you do both, for instance
-asking how a command works on a particular NPC, we'll make a judgement
-call.  It's usually pretty obvious when you're just trying to get away
-with something, so don't.  You don't get to argue with our decisions.
+like how particular commands work.  If you do both acceptable and
+unacceptable things -- for instance asking how a command works on a
+particular NPC -- we'll make a judgement call.  It's usually pretty
+obvious when you're just trying to get away with something, so don't.
+You don't get to argue with our decisions.
 
 See also:  ooc, harassment
 }
