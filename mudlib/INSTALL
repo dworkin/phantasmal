@@ -51,8 +51,7 @@ suitable for builders, but that hasn't yet been implemented.
 Many of the standard Kernel MUDLib commands have been altered to have
 a "%" in front of the name.  These are documented in the help. Type
 "help" to start using player help, or "@help" to start using admin
-help.  A few undocumented commands still exist and are unchanged from
-the Kernel MUDLib.  Player commands have no punctuation on the front
-and should all be documented.  In case of conflict or uncertainty,
-the lists in /usr/System/lib/wiztoollib.c and
-/data/phrase/user_cmds.unq are definitive.
+help.  Player commands have no punctuation on the front and should all
+be documented.  In case of conflict or uncertainty, the lists in
+/usr/System/lib/wiztoollib.c and /data/phrase/user_cmds.unq are
+definitive.
