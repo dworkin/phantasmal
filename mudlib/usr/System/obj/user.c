@@ -1,4 +1,4 @@
-/* $Header: /cvsroot/phantasmal/mudlib/usr/System/obj/user.c,v 1.10 2002/06/04 21:44:42 angelbob Exp $ */
+/* $Header: /cvsroot/phantasmal/mudlib/usr/System/obj/user.c,v 1.11 2002/06/04 22:28:03 angelbob Exp $ */
 
 #include <kernel/kernel.h>
 #include <kernel/user.h>
@@ -83,7 +83,6 @@ static void create(int clone)
 
 void upgraded(void) {
   if(!find_object(SYSTEM_WIZTOOL)) { compile_object(SYSTEM_WIZTOOL); }
-  if(!find_object(PLAYERBODY)) { compile_object(PLAYERBODY); }
   if(!find_object(SIMPLE_MOBILE)) { compile_object(SIMPLE_MOBILE); }
   if(!find_object(SIMPLE_PORTABLE)) { compile_object(SIMPLE_PORTABLE); }
 

@@ -30,6 +30,7 @@
 /* Libraries -- inheritable, not clonable */
 #define USER_STATE          "/usr/common/lib/user_state"
 #define UNQABLE             "/usr/common/lib/unqable"
+#define DTD_UNQABLE         "/usr/common/lib/dtd_unqable"
 #define PHRASE_REPOSITORY   "/usr/common/lib/phrase_repository"
 #define PHRASE              "/usr/common/lib/phrase"
 #define INTL_PHRASE         "/usr/common/lib/intl_phrase"
@@ -58,7 +59,6 @@
 
 /* Specific objects (clonable) */
 #define THE_VOID            "/usr/System/obj/void"
-#define PLAYERBODY          "/usr/common/obj/playerbody"
 
 
 /* DGD Lightweight objects */
