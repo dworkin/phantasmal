@@ -2,39 +2,40 @@
 
 To get Phantasmal running, please read the INSTALL file.  To start
 customizing a Phantasmal-based MUD, read SETUP.  Before you make
-significant code changes to Phantasmal, please read doc/Modifying.
+significant code changes to Phantasmal's internal components, please
+read doc/Modifying.
 
-Phantasmal is based on the Kernel MUDLib that ships with DGD.  It
-tries to be reasonably fast and secure, but prefers robustness to
-speed.  Phantasmal's primary focus is on features you don't find in
-every MUD, especially things you *should*.  It currently competes
-mostly with Melville and with GurbaLib.  Melville is simple to use and
-there's not much there.  It's good if you're building from scratch.
+Phantasmal runs on top of the Kernel MUDLib that ships with DGD.
+Phantasmal tries to be reasonably fast and secure, but prefers
+robustness to speed.  The primary focus is on features you don't find
+in every MUD library, especially things you *should* find in more of
+them.  In the DGD arena, Phantasmal currently competes mostly with
+Melville and with GurbaLib.  Melville is simple to use and there's not
+much there.  It's good if you're building absolutely from scratch.
 GurbaLib has more of a game in place.  It's for implementors who want
-a game with the rules already coded and pretty standard.  See
-"http://phantasmal.sourceforge.net/Compare.html" for a detailed
-comparison of Phantasmal to other current DGD MUDLibs.
+a fairly standard fantasy MUD with things like guilds and simple NPCs
+already in place.  See "http://phantasmal.sf.net/Compare.html" for a
+detailed comparison of Phantasmal to other current DGD MUDLibs.
 
-Phantasmal is meant for low-volume MUDs -- those with a small number
-of simultaneously-connected players.  It's designed to allow excellent
-service for that small number.  In this day and age a hobbyist MUD
-that gets 50 to 60 players a night is doing well.  Modern cheap
-desktop computers are ridiculously powerful when serving that few
-connections.  Bandwidth is more of a worry than processor speed.  This
-would all be different if we were dealing with much 3D graphics or
-even 2D bitmaps, or if big crowds of NPCs were to being simulated.
-But the age where we run stuff like DikuMUDs because we have to is
-over...
+Phantasmal doesn't currently compete seriously with Lima, the most
+powerful and popular MUD Library for MudOS.  Lima, like Gurbalib,
+implements a powerful and extensive set of game rules.  Phantasmal
+does not.  Phantasmal might more reasonably be seen as competing with
+MudOS -- the combination of Phantasmal, the Kernel Library and DGD are
+jointly similar in power and complexity to using MudOS by itself.
 
 
                         Current Status
 
-Phantasmal is in the process of separating itself out from the game's
-descriptions and themes.  That will let it act as a kind of standard
-library for other MUDs, kind of like what the Kernel Library does.
-The Kernel Library is the DGD standard library for inheritance and
-security, and Phantasmal would become a standard library for MUD stuff
-like rooms and scripts.
+Phantasmal has separated itself out from the theme and interface of
+games built using it.  This makes it more similar to a driver, or a
+themeless MUDLib, than like fantasy MUDLibs like Lima, 2.4.5 or
+GurbaLib.  Phantasmal acts as a kind of standard library for MUDs, but
+higher level than the Kernel Library does.  The Kernel Library is the
+DGD standard library for inheritance and security, and Phantasmal
+hopes to be a standard library for rooms, scripts, events, mobiles and
+so on.  However, the details of command names, MUD theme and building,
+and mobile AI are left to the individual MUDs using Phantasmal.
 
 The latest information, features, code and tutorials can be located at
 "http://phantasmal.sourceforge.net".
