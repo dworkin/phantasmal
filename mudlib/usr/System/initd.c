@@ -63,6 +63,8 @@ static void create(varargs int clone)
 
   driver = find_object(DRIVER);
 
+  driver->message("Loading system objects...\n");
+
   /* Start LOGD and log MUD startup */
   if(!find_object(LOGD)) { compile_object(LOGD); }
   /* Channels aren't set yet... */
@@ -93,6 +95,11 @@ static void create(varargs int clone)
   /* Compile the Phrase manager (before HelpD) */
   if(!find_object(PHRASED)) { compile_object(PHRASED); }
 
+  /* Load command parser */
+  if (!find_object(PARSED)) { compile_object(PARSED); }
+
+  driver->message("Parsing help file...\n");
+
   /* Set up online help */
   if(!find_object(HELPD)) { compile_object(HELPD); }
 
@@ -102,6 +109,8 @@ static void create(varargs int clone)
 
   HELPD->load_help_dtd(help_dtd);
   HELPD->new_help_directory("/data/help");
+
+  driver->message("Loading phantasmal object system...\n");
 
   /* Compile the Objnumd */
   if(!find_object(OBJNUMD)) { compile_object(OBJNUMD); }
@@ -152,6 +161,8 @@ static void create(varargs int clone)
     LOGD->write_syslog("Can't read room file!  Starting blank!", LOG_ERROR);
     rooms_loaded = 0;
   }
+
+  driver->message("Loading mobiles...\n");
 
   /* Set up the MOBILED */
   MOBILED->init();

@@ -67,6 +67,8 @@ place     / cmd_put,
 remove    / cmd_remove,
 open      / cmd_open,
 close     / cmd_close,
+
+parse     / cmd_parse,
 }
 
 ~esUS{

@@ -1,4 +1,4 @@
-/* $Header: /cvsroot/phantasmal/mudlib/usr/System/obj/user.c,v 1.51 2003/03/20 06:37:32 angelbob Exp $ */
+/* $Header: /cvsroot/phantasmal/mudlib/usr/System/obj/user.c,v 1.52 2003/03/24 00:34:23 kdunwoody Exp $ */
 
 #include <kernel/kernel.h>
 #include <kernel/user.h>
@@ -941,6 +941,20 @@ static void print_prompt(void) {
   }
 }
 
+
+/* Temporary command for testing the parser */
+
+static void cmd_parse(object user, string cmd, string str) {
+  mixed output;
+
+  output = PARSED->parse_cmd(str);
+
+  if (output == nil) {
+    message("FAILED!\r\n");
+  } else {
+    message("PARSED!\r\n" + STRINGD->mixed_sprint(output) + "\r\n");
+  }
+}
 
 /************** User-level commands *************************/
 

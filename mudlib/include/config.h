@@ -21,6 +21,7 @@
 #define CONFIGD     "/usr/common/sys/configd"
 #define TIMED       "/usr/common/sys/timed"
 #define SOULD       "/usr/common/sys/sould"
+#define PARSED      "/usr/common/sys/parsed"
 
 
 /* Kernel lib tie-in objects -- must be in these dirs to be recognized
@@ -42,7 +43,6 @@
 #define ROOM                "/usr/common/lib/room"
 #define EXIT                "/usr/common/lib/exit"
 #define MOBILE              "/usr/common/lib/mobile"
-
 
 /* Instantiable (clonable) MUD structures */
 #define ACCOUNT             "/usr/common/obj/account"
@@ -109,6 +109,7 @@
 #define EXITD_PHRASES       "/data/phrase/exitd.phr"
 #define USER_COMMANDS_FILE  "/data/phrase/user_cmds.unq"
 #define SOULD_FILE          "/data/system/sould.unq"
+#define NL_PARSE_FILE       "/data/parser/nl_parser.dpd"
 
 #define WELCOME_MESSAGE     "/data/text/welcome.msg"
 #define SUSPENDED_MESSAGE   "/data/text/suspended.msg"

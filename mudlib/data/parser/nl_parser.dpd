@@ -1,0 +1,203 @@
+punct = /[\.;!]/
+pronoun = /((him)|(her)|(it))/
+digits = /([0-9]+)/
+wnum = /((one)|(two)|(three)|(four)|(five)|(six)|(seven)|(eight)|(nine))/
+teens = /((ten)|(eleven)|(twelve)|(thirteen)|(fourteen)|(fifteen)|(sixteen)|(seventeen)|(eighteen)|(ninteen))/
+wtens = /((twenty)|(thirty)|(fourty)|(fifty)|(sixty)|(seventy)|(eighty)|(ninty))/
+
+prep = /((on)|(from)|(into)|(at)|(towards))/
+
+iv = /((users)|(who)|(whoami)|(but)|(typo)|(idea)|(i(nv(entory)?)?))/
+iv_n = /@@AA@@/
+iv_n_adj = /((north)|(n)|(south)|(s)|(east)|(e)|(west)|(w)|(ne)|(nw)|(se)|(sw)|(southeast)|(southwest)|(northeast)|(northwest)|(up)|(down)|(in)|(out))/
+iv_adj = /@@A@@/
+
+itv = /(g(l(ance?)?))|(l(ook)?)|(ex(a(mine)?)?)|(drop)/
+itv_n = /run/
+itv_n_adj = /@@D@@/
+itv_adj = /@@E@@/
+
+ibv = /@@F@@/
+ibv_n = /@@G@@/
+ibv_n_adj = /@@H@@/
+ibv_adj = /@@I@@/
+
+itbv = /@@J@@/
+itbv_n = /@@K@@/
+itbv_n_adj = /@@L@@/
+itbv_adj = /@@M@@/
+
+tv = /(open|close)/
+tv_n = /(take)/
+tv_n_adj = /@@P@@/
+tv_adj = /go/
+
+tbv = /(get|put|place|remove)/
+tbv_n = /@@R@@/
+tbv_n_adj = /@@T@@/
+tbv_adj = /@@S@@/
+
+bv = /@@U@@/
+bv_n = /@@V@@/
+bv_n_adj = /@@W@@/
+bv_adj = /@@X@@/
+
+n = /@@Y@@/
+adj = /@@Z@@/
+n_adj = /[a-zA-Z]+/
+
+line: sentance 
+line: sub_line 
+line: sub_line sentance 
+line: 
+
+sub_line: sentance punct 
+sub_line: sub_line sentance punct 
+
+sentance: clause 
+sentance: sentance 'and' clause 
+sentance: sentance 'but' clause
+
+clause: iverb
+clause: tverb np
+clause: tverb pp
+clause: bverb np pp
+clause: bverb pp pp
+
+iverb: iv
+iverb: iv_n
+iverb: iv_n_adj
+iverb: iv_adj
+iverb: itv
+iverb: itv_n
+iverb: itv_n_adj
+iverb: itv_adj
+iverb: ibv
+iverb: ibv_n
+iverb: ibv_n_adj
+iverb: ibv_adj
+iverb: itbv
+iverb: itbv_n
+iverb: itbv_n_adj
+iverb: itbv_adj
+
+tverb: tv
+tverb: tv_n 
+tverb: tv_n_adj
+tverb: tv_adj
+tverb: itv
+tverb: itv_n
+tverb: itv_n_adj
+tverb: itv_adj
+tverb: tbv
+tverb: tbv_n
+tverb: tbv_n_adj
+tverb: tbv_adj
+tverb: itbv
+tverb: itbv_n
+tverb: itbv_n_adj
+tverb: itbv_adj
+
+bverb: bv_n
+bverb: bv_n_adj
+bverb: bv
+bverb: bv_adj
+bverb: ibv_n
+bverb: ibv_n_adj
+bverb: ibv
+bverb: ibv_adj
+bverb: tbv_n
+bverb: tbv_n_adj
+bverb: tbv
+bverb: tbv_adj
+bverb: itbv_n
+bverb: itbv_n_adj
+bverb: itbv
+bverb: itbv_adj
+
+noun: n
+noun: n_adj
+noun: iv_n
+noun: iv_n_adj
+noun: tv_n
+noun: tv_n_adj
+noun: bv_n
+noun: bv_n_adj
+noun: itv_n
+noun: itv_n_adj
+noun: tbv_n
+noun: tbv_n_adj
+noun: itbv_n
+noun: itbv_n_adj
+noun: ibv_n
+noun: ibv_n_adj
+
+adject: adj
+adject: n_adj
+adject: iv_n_adj 
+adject: iv_adj 
+adject: tv_n_adj
+adject: tv_adj
+adject: bv_n_adj
+adject: bv_adj
+adject: itv_n_adj
+adject: itv_adj
+adject: itv_n_adj
+adject: itv_adj
+adject: ibv_n_adj
+adject: ibv_adj
+adject: itbv_n_adj
+adject: itbv_adj
+adject: tbv_n_adj
+adject: tbv_adj
+adject: noun '\'s'
+adject: noun '\''
+
+np: adjp noun
+np: pronoun
+np: adjp det adjp noun
+np: np 'and' adjp noun
+np: np 'and' pronoun
+np: np 'and' adjp det adjp noun
+np: np 'except' adjp noun
+np: np 'except' pronoun
+np: np 'except' adjp det adjp noun
+
+adjp:
+adjp: adjp adject
+
+pp: prep np
+
+det: num
+det: 'all' 'but' num
+det: 'all'
+det: 'no'
+det: 'a'
+det: 'the'
+
+num: number
+num: hundreds
+num: thousands
+num: thousands
+det: millions
+
+ones: wnum
+
+tens: ones
+tens: teens
+tens: wtens '-' ones
+tens: wtens ones
+
+hundreds: tens
+hundreds: tens 'hundred' tens
+hundreds: tens 'hundred' 'and' tens
+hundreds: tens 'hundred' '-' 'and' '-' tens
+
+thousands: hundreds 'thousand' hundreds
+thousands: hundreds 'thousand' 'and' hundreds
+
+millions: hundreds 'million' thousands
+millions: hundreds 'million' 'and' thousands
+
+number: digits ? dig2num
+number: number digits ? cat_num
