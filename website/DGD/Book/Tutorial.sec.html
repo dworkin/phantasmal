@@ -367,6 +367,39 @@
 </p>
 
 
+@@SECTION Tutorial.UserOutput Sending Output to the User
+
+<p>
+  In your code statements, there is also a variable called
+  <var>user</var>.  That variable represents the current user object,
+  which is the network connection that you have to the DGD server.
+  There are certain functions you can call on it which do various
+  things.
+</p>
+
+<p>
+  First, try typing <kbd>code user->query_conn()</kbd>.  You should
+  see a result like <samp>$25 = &lt;/kernel/obj/telnet#20&gt;</samp>.
+  This means that history variable $25 holds a <dfn>clone</dfn> of the
+  <var>/kernel/obj/telnet</var> object.  That clone is the object that
+  DGD considers the <dfn>connection object</dfn>.  If you type
+  <kbd>code query_ip_name(user->query_conn())</kbd>, you should see
+  either <samp>$26 = "localhost"</samp> or a similar result with your
+  computer's hostname.  If you type <kbd>code
+  query_ip_number(user->query_conn())</kbd>, you should see a similar
+  result with &quot;127.0.0.1&quot; or your computer's IP address.  If
+  you don't know what a hostname or IP address is, you should probably
+  learn that before running your own MUD...  Both are used to locate
+  internet-connected machines by other machines.
+</p>
+
+<p>
+  Another interesting thing you can do with the user object is to send
+  output to it.  For instance try typing
+  <kbd>user->message(&quot;Bob!\n&quot;);</kbd>.
+</p>
+
+
 @@SECTION Tutorial.CodeInFiles Making and Using LPC Files
 
 <p>
@@ -425,10 +458,48 @@ mixed exec(object user, mixed argv...) {
 </p>
 
 <p>
-  You should make an LPC file like that, but where it says
-  &quot;&lt;Your Code&gt;&quot; above, you should substitute
-  <code>return 7;</code>.  That will give a really simple object which
-  should return the number 7 when you call its function.  So this is
-  the object that the Kernel Library would create internally when you
-  used the command <kbd>code 7</kbd>.
+  To create the LPC file, you'll need to use your editor to create a
+  file called <tt>/usr/admin/myobj.c</tt>.  Note that that filename is
+  relative to the directory of the Kernel Library, so if you installed
+  DGD in <tt>C:\DGD</tt>, you'll need to make the file
+  <tt>C:\DGD\mud\usr\admin\myobj.c</tt>.  If you installed dgd in
+  <tt>/home/bob/dgd</tt>, you'll need to make the file
+  <tt>/home/bob/dgd/mud/usr/admin/myobj.c</tt>.
+</p>
+
+<p>
+  You should make an LPC file exactly like the above, except that
+  where it says &quot;&lt;Your Code&gt;&quot;, you should substitute
+  <code>return 7;</code>.  That way, the test object will return the
+  number 7 when you call its function.  So you'll have created the
+  object that the Kernel Library would create internally if you used
+  the command <kbd>code 7</kbd>.
+</p>
+
+<p>
+  Now you'll need to compile the object.  To do that, from admin's
+  command line, you'll want to type <kbd>compile
+  /usr/admin/myobj.c</kbd>.  You may just be able to type <kbd>compile
+  myobj.c</kbd> for the same result &mdash; use the <kbd>pwd</kbd>
+  command to make sure you're in the <tt>/usr/admin</tt> directory.
+</p>
+
+<p>
+  In either case, you should see a result like <samp>$15 =
+  &lt;/usr/admin/myobj&gt;</samp>.  If you get errors instead (other
+  than file not found) then your code isn't quite right.  Look at it
+  again carefully.  If it can't find the file, then perhaps you didn't
+  put it in the right place, or perhaps you didn't type he compile
+  line perfectly.  Check them both again.  Try it until you get the
+  result above.
+</p>
+
+<p>
+  Once you have, you've made a usable object.  To call a function on
+  it, you'll want to use its history entry.  This command line will
+  assume that the object was $15 (as in the paragraph above).  If
+  yours was a different history number, you should substitute your own
+  number.  Type <kbd>code $15->exec(this_user())</kbd>.  You should
+  get a result like <samp>$16 = 7</samp>.  You've successfully
+  returned the number 7.  Success!
 </p>
