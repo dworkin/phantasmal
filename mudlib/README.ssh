@@ -22,7 +22,9 @@ KERNEL LIBRARY INSTALLATION:
    -T means not to use a pseudo-tty, -p 6048 connects to the binary port which
    is 6048 by default (this can be changed by editing the mud.dgd configuration
    file) and <hostname> is the name of the host to connect to.  If you're
-   running ssh on the same host as DGD, just use 'localhost'.
+   running ssh on the same host as DGD, just use 'localhost'.  You may also
+   need to supply a "-l user" option, where "user" should be replaced by
+   your actual login name.
  - Though users without programming rights in the kernel library do not have
    a password, ssh will still prompt them for one -- just hit the return key.
  - You won't see anything while logging in (that includes the room you login
