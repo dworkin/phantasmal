@@ -1,0 +1,16 @@
+~name{~enUS{@list_mob, @list_mobile, @list_mobiles,
+            @list, @mobile, @mobiles,
+            list_mob, list_mobile, list_mobiles,
+            list mob, list mobile, list mobiles,
+            @list mob, @list mobile, @list mobiles,
+            @listmob, @listmobile, @listmobiles }}
+~keywords{admin}
+~desc{
+  ~enUS{
+
+The @list_mob or @list_mobiles command currently lists every mobile in
+the MUD that is currently registered with the MOBILED.
+
+See Also:  MOBILED, @stat, @delete_mobile
+
+}}
