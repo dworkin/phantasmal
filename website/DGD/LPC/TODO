@@ -27,6 +27,7 @@ the editor
 LWOs
 ASN numbers
 Thread-local storage -- why it matters when everything looks single-threaded
+Note:  all inheritance is virtual?
 
 
 * Kernel Library:
