@@ -144,7 +144,7 @@ void add_room_to_zone(object room, int num, int req_zone) {
 
 /* For backwards compatibility */
 void add_room_number(object room, int num) {
-  add_room_to_zone(room, num, -1);
+  add_room_to_zone(room, num, 0);
 }
 
 void set_room_alias(string alias, object room) {
@@ -214,15 +214,16 @@ private int assign_room_to_zone(int num, object room, int req_zone) {
       return -1;
     }
     zone = OBJNUMD->get_segment_zone(segnum);
-    if(zone != req_zone && req_zone != -1)
+    if(zone != req_zone && req_zone != 0)
       error("Room number (#" + num
 	    + ") not in requested zone (#" + req_zone
 	    + ") in assign_room_to_zone!");
 
     OBJNUMD->allocate_in_segment(segnum, num, room);
-    if(zone == -1) {
-      LOGD->write_syslog("Zone is less than zero!", LOG_WARN);
-      zone = 0;
+
+    if(zone < 0) {
+      error("Zone is less than zero in assign_room_to_zone(" + num
+	    + ", <room>, " + req_zone + ")!");
     }
 
     if(!sizeof(zone_segments[zone] & ({ segnum }))) {
@@ -231,8 +232,6 @@ private int assign_room_to_zone(int num, object room, int req_zone) {
     return num;
   } else {
     zone = req_zone;
-    if(req_zone == -1)
-      zone = 0;
 
     for(ctr = 0; ctr < sizeof(zone_segments[zone]); ctr++) {
       num = OBJNUMD->new_in_segment(zone_segments[zone][ctr], room);
@@ -252,7 +251,8 @@ private int assign_room_to_zone(int num, object room, int req_zone) {
 
 
 private int assign_room_number(int num, object room) {
-  return assign_room_to_zone(num, room, -1);
+  /* Assign as unzoned */
+  return assign_room_to_zone(num, room, 0);
 }
 
 
