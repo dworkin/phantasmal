@@ -13,6 +13,9 @@ void upgraded(varargs int clone);
 
 mixed* zone_table;
 
+/* Are we decoding the unq zonelist or segments */
+int load_type;
+
 static void create(varargs int clone) {
   if(clone)
     error("Cloning zoned is not allowed!");
@@ -27,10 +30,7 @@ static void create(varargs int clone) {
 void upgraded(varargs int clone) {
   set_dtd_file(ZONED_DTD);
   dtd::upgraded(clone);
-  zone_table = ({ ({ "Unzoned", ([ ]) }),
-		    ({ "Miskatonic University", ([ ]) }),
-		    ({ "Innsmouth", ([ ]) }),
-		    });
+  zone_table = ({ ({ "Unzoned", ([ ]) }) });
 }
 
 void destructed(int clone) {
@@ -45,18 +45,37 @@ void destructed(int clone) {
 void init_from_file(string file) {
   if(strlen(file) > MAX_STRING_SIZE - 3)
     error("Zonefile is too large in ZONED->init_from_file!");
-
+  load_type = 1;
   from_unq_text(file);
 }
 
+/* Load in the available zones */
+void init_zonelist_from_file(string file) {
+  if(strlen(file) > MAX_STRING_SIZE - 3)
+    error("Zonefile is too large in ZONED->init_from_file!");
+  load_type = 2;
+  from_unq_text(file);
+}
 
 /******* Functions for DTD_UNQABLE *************************/
 
 mixed* to_dtd_unq(void) {
-  int    ctr, highseg, zone;
-  mixed *tmp;
+  int    ctr, highseg, zone, numzones;
+  mixed *tmp, *zonetmp;
 
   highseg = OBJNUMD->get_highest_segment();
+  
+  zonetmp = ({ "zonelist", ({ }) });
+  numzones = sizeof(zone_table);
+  for(ctr = 0; ctr < numzones; ctr++){
+    zonetmp[1] +=  ({ ({ "zone",
+		        ({ ({ "zonenum", ctr }),
+  			   ({ "name", zone_table[ctr][0] }) 
+		         })
+	  	      })
+	            });
+  }
+ 
   tmp = ({ "zones", ({ }) });
   for(ctr = 0; ctr <= highseg; ctr++) {
     if(!OBJNUMD->get_segment_owner(ctr))
@@ -71,7 +90,7 @@ mixed* to_dtd_unq(void) {
 		   });
   }
 
-  return tmp;
+  return zonetmp + tmp;
 }
 
 string get_parse_error_stack(void) {
@@ -80,45 +99,71 @@ string get_parse_error_stack(void) {
 
 void from_dtd_unq(mixed* unq) {
   mixed *zones, *segment_unq;
+  int segnum,zonenum;
+  string zonename;
 
-  if(sizeof(unq) != 2)
-    error("There should be exactly one zones section in the ZONED file!");
+  if(sizeof(unq) != 4)
+    error("There should be exactly one 'zones' and one 'zonelist' section in the ZONED file!");
 
-  if(unq[0] != "zones")
-    error("Unrecognized section in ZONED file -- must start with 'zones'!");
+  if(unq[0] != "zonelist")
+    error("Unrecognized section in ZONED file -- must start with 'zonelist'!");
+  else if(unq[2] != "zones")
+    error("Unrecognized section in ZONED file -- second section must be 'zones'!");
 
-  zones = unq[1];
-  while(sizeof(zones)) {
-    int segnum, zonenum;
+ if (load_type == 1){
+    
+    zones = unq[3]; /* load zones values */
+    while(sizeof(zones)) {
+    
+      /* Everything in the zones entry must be a segment. */
+      if(typeof(zones[0]) != T_ARRAY
+         || sizeof(zones[0]) < 2
+         || zones[0][0] != "segment" )
+        error("Format error in zone file, expected 'segment' section!");
 
-    /* Everything in the zones entry must be a segment. */
-    if(typeof(zones[0]) != T_ARRAY
-       || sizeof(zones[0]) < 2
-       || zones[0][0] != "segment")
-      error("Format error in zone file, expected 'segment' section!");
+      if( zones[0][0] == "segment" ){
+        segment_unq = zones[0][1];
 
-    segment_unq = zones[0][1];
+        if(sizeof(segment_unq) != 2
+           || segment_unq[0][0] != "segnum"
+           || segment_unq[1][0] != "zonenum") {
+          error("ZONED segment doesn't fit format "
+	        + "[segnum, <int>, zonenum, <int>]!");
+        }
 
-    if(sizeof(segment_unq) != 2
-       || segment_unq[0][0] != "segnum"
-       || segment_unq[1][0] != "zonenum") {
-      error("ZONED segment doesn't fit format "
-	    + "[segnum, <int>, zonenum, <int>]!");
+        segnum = segment_unq[0][1];
+        zonenum = segment_unq[1][1];
+        /* Set zone for segment */
+        if(OBJNUMD->get_segment_owner(segnum)) {
+          OBJNUMD->set_segment_zone(segnum, zonenum);
+        } else {
+          LOGD->write_syslog("Unowned segment, dropping seg #" + segnum,
+			     LOG_WARN);
+        }
+      }
+      zones = zones[1..];    
     }
-
-    segnum = segment_unq[0][1];
-    zonenum = segment_unq[1][1];
-
-    /* Set zone for segment */
-    if(OBJNUMD->get_segment_owner(segnum)) {
-      OBJNUMD->set_segment_zone(segnum, zonenum);
-    } else {
-      LOGD->write_syslog("Unowned segment, dropping seg #" + segnum,
-			 LOG_WARN);
+    
+  } else if( load_type == 2) {
+    
+    zones = unq[1]; /* load zonelist values */
+    while(sizeof(zones)) {
+      if( zones[0][0] == "zone" ){
+          segment_unq = zones[0][1];
+          zonenum = segment_unq[0][1];
+          zonename = segment_unq[1][1];
+          if (zonename != "Unzoned"){
+            zone_table += ({ ({ zonename, ([ ]) }) });
+            /* Is this zone in the position expected in the table */
+            if (zone_table[zonenum][0] != zonename){
+              error("\nZONED: Incorrect zone table order "+zonename+" #"+zonenum+"\n");
+            } 
+          }
+      } 
+      /* Remove that segment, move on */
+      zones = zones[1..];    
     }
-
-    /* Remove that segment, move on */
-    zones = zones[1..];
+    
   }
 
 }
@@ -186,4 +231,12 @@ int get_zone_for_room(object room) {
   zone = OBJNUMD->get_segment_zone(segment);
 
   return zone;
+}
+
+int add_new_zone( string zonename ){
+  if (zonename && zonename != ""){
+    int zonenum;
+    zone_table += ({ ({ zonename, ([ ]) }) });
+    return num_zones()-1;
+  }
 }
