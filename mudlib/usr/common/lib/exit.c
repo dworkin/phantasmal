@@ -4,6 +4,7 @@
 #include <log.h>
 #include <phrase.h>
 #include <map.h>
+#include <obj_flags.h>
 
 #include <kernel/kernel.h>
 
@@ -21,14 +22,7 @@ int    link_to;             /* exit # that a two-way links to */
 object from_location;
 object destination;
 
-/* Flags */
-/* The objflags field contains a set of boolean object flags */
-#define OF_CONTAINER          1
-#define OF_OPEN               2
-#define OF_OPENABLE           8
-#define OF_LOCKED             16
-#define OF_LOCKABLE           32
-
+/* Object flags uses flag values in obj_flags.h */
 private int objflags;
 
 static void create(varargs int clone) {

@@ -4,6 +4,7 @@
 #include <phrase.h>
 #include <grammar.h>
 #include <log.h>
+#include <obj_flags.h>
 
 /*
  * /lib/object.c
@@ -62,14 +63,7 @@ mixed*  objects;
 /* Mobiles of objects contained in this one */
 mixed*  mobiles;
 
-/* Flags */
-/* The objflags field contains a set of boolean object flags */
-#define OF_CONTAINER          1
-#define OF_OPEN               2
-#define OF_OPENABLE           8
-#define OF_LOCKED             16
-#define OF_LOCKABLE           32
-
+/* Object flags uses flag values in obj_flags.h */
 private int objflags;
 
 /* how hard is this lock to pick? */
