@@ -13,35 +13,31 @@
 
     <font size="4">
 
-    <p> There are some things specific to the original
-      Phantasmal development effort, the one on Sourceforge as
-      Phantasmal, and the one I'm personally working on.  I'll
-      mention them.  I consider them generally good etiquette
-      for anybody doing work based on Phantasmal, but they're only
-      mandatory when you're working with <i>me</i>. </p>
+    <p> I consider everything here to be generally good etiquette for
+      doing work based on Phantasmal.  These are only mandatory when
+      you're working with <i>me</i> specifically.  But you may find
+      that they're good for your own work, too. </p>
 
-    <p> When you add a significant new feature, be sure to
-      update the documentation.  I'm pretty bad about updating
-      the stuff in the docs directory too, but at a minimum
-      try to update the Changelog and add any new appropriate
-      online help.  The help is found in the &quot;/data/help&quot;
-      subdirectory.  Other stuff to consider:  new tutorials,
-      post what you did on the forums, update bug/feature reports
-      in the SourceForge tracker. </p>
+    <p> When you add a significant new feature, be sure to update the
+      documentation.  At a minimum try to update the Changelog and add
+      any new appropriate online help.  Other stuff to consider: new
+      tutorials, post what you did on the forums, update bug/feature
+      reports in the SourceForge tracker.  Also consider adding it to
+      more than one Phantasmal game if it applies -- we've got both
+      testgame and the mudlib. </p>
 
     <p> Where it's reasonable to do, try to make stuff
       <a href="http://phantasmal.sf.net/Tutorial/Admin/Compiling.html">
-	update itself when recompiled</a>
-      with the upgraded() function.  This
-      turns out to be highly useful for things that read data
-      files, such as the HELPD, the various binders, phrase
-      repositories and so on.  Basically, make a given entity
-      reread its data files when you recompile it.  That keeps
-      you from needing a command-line &quot;@update_help&quot;,
-      &quot;@update_phrases&quot;, &quot;@update_mob_binder&quot;,
-      etc command for everything with its own data files.
-      Instead, type &quot;%full_rebuild&quot; and you're there.
-      No muss, no fuss. </p>
+	update itself when recompiled</a> with the upgraded()
+      function.  This turns out to be highly useful for things that
+      read data files, such as the HELPD, the various binders, phrase
+      repositories and so on.  Basically, make a given entity reread
+      its data files when you recompile it.  That keeps you from
+      needing a command-line &quot;@update_help&quot;,
+      &quot;@update_phrases&quot;, &quot;@update_mob_binder&quot;, etc
+      command for everything with its own data files.  Instead, type
+      &quot;%full_rebuild&quot; and you're there.  No muss, no
+      fuss. </p>
 
     <h4 align="center"> CVS Checkins </h4>
     <ul>
@@ -55,19 +51,20 @@
 	The roomfile and mobfile, for instance, don't need to be
 	checked in unless you've actually built something
 	significant.  The bug-report and idea-report files normally
-	shouldn't be checked in at all. </li>
+	shouldn't be checked in at all.  Don't include your character's
+	body and mobile in the roomfiles or the mobfile, either. </li>
 
       <li> If you add debugging print statements, log statements,
 	driver messages or whatnot, make sure you do it in keeping
 	with the way Phantasmal works now.  Notice the current lack
 	of any DRIVER->message() calls after bootup, and how almost
 	every LOGD->write_syslog() call specifies a log level so
-	you can turn it off easily. </li>
+	you can turn it off easily.  Keep up that tradition. </li>
 
-      <li> When you do your update, you'll notice which files have
-	been modified -- &quot;cvs update&quot; will show you this
-	stuff.  Check it over again to make sure you checked in
-	everything you meant to. </li>
+      <li> When you do your update, you'll notice which files in your
+        repository have been modified -- &quot;cvs update&quot; will
+        show you this stuff.  Check it over again to make sure you
+        checked in everything you meant to. </li>
 
       <li> Never check in code that doesn't compile.  For preference,
 	never check in code that breaks other people's stuff.  It
@@ -84,25 +81,23 @@
 	saying &quot;huh?  That's not what the checkin comment said,&quot;
 	then you did it wrong. </li>
 
-      <li> Check in your code a couple of files at a time, where possible.
-	Rather than checking in a huge swath of files at once and giving
-	a comment like &quot;redesigned frobnication in c minor&quot;,
-	for a given couple of files, say something like &quot;added new
-	fields to the DTD for mobiles.  Added new parsing and UNQ code
-	to make them useful.&quot;  The exception to this is if you've
-	written and checked in a design document detailing your changes
-	in minute detail, and that design document is expected to be
-	available for a long time.  So you could check in a bunch
-	of stuff and say &quot;see doc/design/frobnication_spec&quot;
-	and that'd be okay as long as frobnication_spec spells out
-	everything down to what files changed in what ways. </li>
+      <li> Check in your code a couple of files at a time, where
+	possible.  Rather than checking in a huge swath of files at
+	once and giving a comment like &quot;redesigned frobnication
+	in c minor&quot;, for a given couple of files, say something
+	like &quot;added new fields to the DTD for mobiles.  Added new
+	parsing and UNQ code to make them useful.&quot; The exception
+	to this is if you've written and checked in a design document
+	detailing your changes in minute detail, and that design
+	document is expected to be available for a long time.  So you
+	could check in a bunch of stuff and say &quot;see
+	doc/design/frobnication_spec&quot; and that'd be okay as long
+	as frobnication_spec spells out everything -- down to what
+	files changed in what ways. </li>
 
       <li> If you can't recall what you changed in a given file,
-	&quot;cvs diff&quot; is your friend.  Personally, I like to
-	say &quot;cvs diff -c /usr/common/blah/myfile | more&quot;,
-	though obviously there are other useful ways to do it.
-	This can prevent checkin comments like &quot;changed some
-	stuff&quot;. </li>
+	&quot;cvs diff -c&quot; is your friend.  This prevents checkin
+	comments like &quot;changed some stuff&quot;. </li>
 
     </ul>
 
@@ -137,57 +132,77 @@
     <h4 align="center"> Inter-Object Security </h4>
 
     <ul>
+
       <li> Upgraded() functions should be guarded by
         &quot;if(SYSTEM())&quot; constructs, plus perhaps a guard for
-        being called by the object itself.  Create() functions should
-        be static.  Destructed() functions should also be callable
-        only by System callers.  In a library, the upgraded() and
-        destructed() functions, if present, should be static. </li>
+        being called by the object itself or its child objects.
+        Create() functions should be static.  Destructed() functions
+        should also be callable only by System callers.  In a library,
+        the upgraded() and destructed() functions, if present, should
+        be static. </li>
+
       <li> Use the SYSTEM(), COMMON() and GAME() checks liberally.
         Decide who should call a particular function and guard it
 	appropriately.  The best, of course, is to specifically
 	check previous_program() so that only the expected caller
 	can call the function.  Functions that only the current
 	object calls should be marked private. </li>
+
       <li> <i>Every</i> Phantasmal function should be one of: static,
-        private, checks SYSTEM/COMMON/GAME, or documented to say
-	exactly why not.  The only functions that don't need to be
-	access-protected are utility functions like the ones in
-	STRINGD that have no access to any Phantasmal data. </li>
-      <li> Never call anything in a publicly writable directory.  Never
-        call a method of any object in a writable directory if you don't
-	trust all possible writers.  Remember who has access to what.
+        private, checks previous_program(), or documented to say
+        exactly why not.  The only functions that don't need to be
+        access-protected are utility functions like the ones in
+        STRINGD that have no access to any Phantasmal data.  They can
+	exist, but you should document why anybody is allowed to call
+	them. </li>
+
+      <li> Never call anything in a publicly writable directory.
+        Never call a method of any object in a writable directory if
+        you don't trust all possible writers.  Remember who has access
+        to what.  Remember that if a directory is writable by a given
+        object, that object could have overwritten the file and
+        recompiled the object while you weren't looking.  Don't trust
+	it.
       </li>
+
       <li> Never pass your internal data structures to the outside world
         without copying.  The caller may not realize that the data
 	structure is sensitive to you.  Always copy it first so that
-	you don't have to trust the caller's security.
+	you don't have to trust the caller not to modify it.
       </li>
+
       <li> Never gratuitously add callers without reason.  Sure, you
         may trust &quot;common&quot;, but why give it specific access
-        to something it doesn't need?  Know who calls a function and
-	give them, and only them, access.
+        to something it doesn't need?  You should know who calls a
+        function.  Give them, and only them, access.
       </li>
+
     </ul>
 
     <h4 align="center"> Adding Commands </h4>
     <ul>
       <li> Add an entry to the online help for that command </li>
-      <li> Add the command to &quot;/data/phrase/user_cmds.unq&quot; or
-	&quot;/usr/System/obj/wiztool.c&quot;. </li>
-      <li> Add the command's associated function to
-	&quot;/usr/System/obj/user.c&quot; or one of the wiztool libraries
-	in &quot;/usr/System/lib/&quot;. </li>
+      <li> Add the command to &quot;/data/phrase/user_cmds.unq&quot;,
+	&quot;/usr/System/obj/wiztool.c&quot; or the equivalent. </li>
+
+      <li> Add the command's associated function to the user object or
+        userlib, or one of the wiztool libraries in
+        &quot;/usr/System/lib/&quot;. </li>
+
       <li> Make sure the command checks usage.  See one of the existing
 	commands for how to do this.  If it's used improperly, it
 	should print a message saying so. </li>
-      <li> Make sure the command gives status messages so that if there's
-	an error midway through, you'll know if it succeeded properly.
-	That way you don't have to be subscribed to the log channel
-	to know that an error occurred. </li>
+
+      <li> Make sure the command gives status messages to the user
+        object that called it.  Then if there's an error midway
+        through, the user will know if it succeeded properly.  That
+        way you don't have to be subscribed to the error channel to
+        know that an error occurred. </li>
+
       <li> Players and administrators need to have a good example of
 	how to use the command.  A Tutorial is an appropriate way
 	to handle this for administrators. </li>
+
       <li> Mention in the Changelog that you added the command. </li>
     </ul>
 
@@ -198,20 +213,23 @@
 	help. </li>
       <li> Make sure that their code can be upgraded when the file
 	is recompiled, to the extent that you can. </li>
+
       <li> Objects should save and load with %datadump and %shutdown
-	and stuff.  If they don't, they should either be entirely
-	made of code (no data, no data structures) or have some
-	other serviceable way to save and load.  Requiring %reboot
-	is <i>not</i>
-	an acceptable way to save and load, it <i>must</i> be
-	possible for objects to survive a %shutdown. </li>
+	and stuff.  If they don't, they should either be entirely made
+	of code (no data, no data structures) or have some other
+	serviceable way to save and load.  Requiring %reboot is
+	<i>not</i> an acceptable way to save and load, it <i>must</i>
+	be possible for objects to survive a %shutdown. </li>
+
       <li> Objects should survive a %shutdown and reload as near to
 	unaltered as possible.  They should behave the same way
 	before as after.  Seriously. </li>
-      <li> If these new objects can be created or manipulated by
-	users or administrators, we'll need web documentation.
-	Submitting a Tutorial would be a great way to handle
-	this for admin commands. </li>
+
+      <li> If these new objects can be created or manipulated by users
+	or administrators, we'll need web documentation.  Submitting a
+	Tutorial would be a great way to handle this for admin
+	commands.  You could also submit API docs. </li>
+
       <li> Mention in the Changelog that you added the objects and
 	any commands that deal with them. </li>
     </ul>
@@ -222,13 +240,15 @@
 	Commands&quot; for further details.  There should always
 	be admin commands in the wiztool for the fields, and there may
 	be user commands as well. </li>
+
       <li> Add get and set functions for the new field to the object
 	it's a member of.  If there's a document for that object in
 	&quot;/doc/api&quot;, add documentation for those functions. </li>
-      <li> Add the field to the object's UNQ DTD in the &quot;/data/dtd&quot;
-	directory.  Add it to the object's UNQ read and write functions.
-	This only applies to fields that need to be loadable and
-	saveable. </li>
+
+      <li> Add the field to the object's UNQ DTD.  Add it to the
+	object's UNQ read and write functions.  This only applies to
+	fields that need to be loadable and saveable. </li>
+
       <li> If the field may need to be set for common objects, add it
 	to the MAKE_ROOM user state.  Make sure the field is prompted
 	for only when appropriate, and that it behaves reasonably

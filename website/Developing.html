@@ -34,86 +34,70 @@
       else.  Feel free to submit improvements and updates to it,
       you're helping the larger community by doing so. </p>
 
-    <p> The SETUP text file in Phantasmal's root directory
-      contains a bit about its overall architecture, and
-      you'll get a bit in README and INSTALL as well.  Make
-      sure to look through them.  These files are prominently
-      placed specifically because Phantasmal aims at
-      developers rather than &quot;end-users&quot; who will
-      use the MUD as supplied. </p>
+    <p> The SETUP text file in Phantasmal's root directory contains a
+      bit about its overall architecture, and you'll get a bit in
+      README and INSTALL as well.  Make sure to look through them.
+      These files are prominently placed.  That's because Phantasmal
+      aims at developers rather than &quot;end-users&quot; who will
+      use the MUD as supplied.  We don't want a lot of stock MUDLibs,
+      so try to be creative :-) </p>
 
-    <p> The final sources of documentation are that community
-      itself -- the DGD mailing list, the Phantasmal Sourceforge
-      forums.  While I try to fold the information from these
-      sources into the other web sites and text files, nothing beats
-      the original source for detail and elaboration.  And speaking
-      of &quot;the original source&quot;, remember that the DGD
-      community is still small.  That means there are limits to what
-      you can find within it, but it also means that basically
-      anybody you can still find is happy to answer questions.  I
-      love to do so (I can steal my answers back and put them on the
-      web site), and Steve, the Melville author, is also quite
-      pleasant and polite, and is still active on the DGD mailing
-      list.  If you've got a question related to MUDLibs generally
-      or to Phantasmal or Melville specifically you'll find the DGD
-      Mailing List is an appreciative forum. </p>
+    <p> The final sources of documentation are the community itself.
+      Look to the DGD mailing list and the Phantasmal Sourceforge
+      forums.  I try to fold the information from the list and forums
+      into the web site, but I'm only human.  Nothing beats the
+      original source for detail and elaboration.  And speaking of
+      &quot;the original source&quot;, remember that the DGD community
+      is still small.  That means there are limits to what you can
+      find within it, but it also means that anybody you can find is
+      happy to answer questions.  I love to do so (I can steal my
+      answers back and put them on the web site).  Steve Schmidt the
+      Melville author (aka mobydick), is also quite pleasant and
+      polite.  He's still active on the DGD mailing list.  If you've
+      got a question related to Phantasmal or Melville, you'll find
+      the DGD Mailing List is an appreciative forum. </p>
 
-    <p> In the extended DGD community is Skotos -- they keep
-      Dworkin fed, they keep DGD humming along and they occasionally
-      contribute to the mailing list.  They frequently write
-      new <a href="http://www.skotos.net/articles">articles</a>.
-      You can find a little &quot;Phantasmal's Best Of&quot; for
-      those articles <a href="Innsmouth/Articles.html">here</a>. </p>
+    <p> In the extended DGD community is Skotos -- they keep Dworkin
+      fed by paying him money.  They keep DGD humming along and they
+      occasionally contribute to the mailing list.  They frequently
+      write new <a href="http://www.skotos.net/articles">articles</a>.
+      You can find a little &quot;Phantasmal's Best Of&quot; for those
+      articles <a href="Innsmouth/Articles.html">here</a>. </p>
 
     <h4 align="center"> The Source Tree </h4>
 
-    <p> After you've read the documentation, it's time to grab
-      some sources and play with them.  Before you start
-      developing a MUDLib or DGD itself, make sure you can use
-      the regular code-drops.  That means making an experimental
-      version of DGD from 1.2 and a massive number of patches at
-      the moment, and grabbing the latest release number of
-      Phantasmal from SourceForge.  There's a lot of documentation
-      on how to do that on the DGD site and in the INSTALL text
-      file in Phantasmal. </p>
+    <p> After you've read the documentation, it's time to grab some
+      sources and play with them.  Before you start developing a
+      MUDLib or DGD itself, make sure you can use the regular
+      code-drops.  That means making an experimental version of DGD
+      from 1.2.50 and a bunch of patches.  Then grab the latest
+      release of Phantasmal from SourceForge.  There's a lot of
+      documentation on how to do that on the DGD site and in the
+      INSTALL text file in Phantasmal.  Alternately, skip all that and
+      grab the bundled version, but it's harder to do SourceForge
+      development for Phantasmal that way. </p>
 
     <p> There's a choice you're going to have to make if you're
-      developing your own MUDLib -- will you keep up with
-      mainstream Phantasmal, or will you branch off at some
-      point and do stuff on your own?  Phantasmal is in the
-      public domain so you can legally do either, or you can
-      do a hybrid of both.  If you're keeping up with Phantasmal
-      or taking a hybrid approach, you'll need to keep a
-      Phantasmal source tree around and see how the diffs work.
-      Features that you want to keep, you can fold right in.
-      Anything that conflicts with your own work, you'll need
-      to adapt or discard. </p>
+      developing your own MUDLib -- will you keep up with mainstream
+      Phantasmal, or will you branch off at some point and do stuff on
+      your own?  Phantasmal is in the public domain so you can legally
+      do either, or you can do a hybrid of both.  If you're keeping up
+      with Phantasmal or taking a hybrid approach then you'll need to
+      keep a Phantasmal source tree around.  Then you can keep it up
+      to date with regular diffs and patching.  Features that you want
+      to keep, you can fold right in.  Anything that conflicts with
+      your own work, you'll need to adapt or discard. </p>
 
-    <p> To do that, you'll want to get the latest CVS version of
-      Phantasmal and keep it well-updated.  Once you've set up the
-      repository, make sure to run &quot;cvs update -Pd&quot;
-      regularly, though you'll note that any empty directories not
-      in CVS you have will go away when you do -- that pesky
-      &quot;-d&quot; option prunes empty directories.  You'll still
-      want to update periodically, and if the directory deletion
-      bothers you, you can always put an empty
-      &quot;.cvsignore&quot; file into the directory or something
-      similar to keep it from going away. </p>
+    <p> So get the latest CVS version of Phantasmal and keep it
+      well-updated.  Once you've set up the repository, make sure to
+      run &quot;cvs update -Pd&quot; regularly.  Those options will
+      prune away empty directories, which is usually a good thing, but
+      can occasionally be irritating. </p>
 
-    <p> There are a lot of other things that may be useful for
-      a clean project.  You may want to do some or all of
-      them.  To see my version of those things, check out
+    <p> There are a lot of other things that may be useful for your
+      project.  To see my recommendations for development, check out
       the document for <a href="SFDevelopment.html">SourceForge
-	Phantasmal Development</a>, especially the things
-      about adding new types of objects, new commands and so
-      on. </p>
-
-    <p> There can be problems with using the Win32 native CVS
-      client.  As a non-Windows-user I'm just quoting another
-      developer on this, but try the Cygnus CVS version as an
-      alternative if you're having troubles.  Check out the
-      PROBLEMS text file that comes with Phantasmal for a more
-      complete description of how this problem manifests. </p>
+      Phantasmal Development</a>. </p>
 
     <p> This last bit is just a matter of courtesy, but I'd love
       to know how you're doing with Phantasmal.  Let me know
