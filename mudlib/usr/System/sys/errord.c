@@ -91,7 +91,11 @@ void runtime_error(string error, int caught, mixed** trace)
     /* If the first character is a $, this is a silent error.  Store it as
      * the last error, but don't log it.
      */
-    log->write_syslog("Runtime error: " + str);
+    if(caught) {
+      log->write_syslog("Runtime error: " + str, LOG_WARNING);
+    } else {
+      log->write_syslog("Runtime error: " + str, LOG_ERROR);
+    }
     send_message("Runtime error: " + str);
     if(caught == 0 && this_user() && (obj=this_user()->query_user())) {
       obj->message(str);
