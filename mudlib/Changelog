@@ -14,10 +14,10 @@ Release 0.011:
 	* Added "idea" command, like bug and typo.  Made sure more
 	  information was included in the reports like where the report
 	  takes place and who reported it.
-	* Added the beginnings of a @makeroom command and its associated
-	  user states.  The idea is that you can type @makeroom and then
-	  just answer the questions from there to create a new room object.
-	  Simpler but slower than the current way.
+	* Added a @makeroom command and its associated user states.  The
+	  idea is that you can type @makeroom and then just answer the
+	  questions from there to create a new room object.  Simpler but
+	  slower than the older way.
 	
 Release 0.010:
 
