@@ -42,7 +42,9 @@ static void create(varargs int clone) {
 }
 
 void destructed(int clone) {
-  destruct_object(chan_dtd);
+  if(previous_program() == OBJECTD) {
+    destruct_object(chan_dtd);
+  }
 }
 
 void start_channels(void) {
