@@ -594,3 +594,30 @@ static void cmd_set_obj_flag(object user, string cmd, string str) {
 
   user->message("Done.\r\n");
 }
+
+
+static void cmd_make_obj(object user, string cmd, string str) {
+  object state;
+  string typename;
+
+  if(str && !STRINGD->is_whitespace(str)) {
+    user->message("Usage: " + cmd + "\r\n");
+    return;
+  }
+
+  if(cmd == "@make_room") {
+    typename = "room";
+  } else if (cmd == "@make_port" || cmd == "@make_portable") {
+    typename = "portable";
+  } else {
+    user->message("I don't recognize the kind of object "
+		  + "you're trying to make.\r\n");
+    return;
+  }
+
+  state = clone_object(US_MAKE_ROOM);
+  if(typename)
+    state->specify_type(typename);
+
+  user->push_state(state);
+}
