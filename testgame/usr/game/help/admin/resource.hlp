@@ -1,0 +1,77 @@
+~name{~enUS{resource,quotas,resources,permissions,security}}
+~keywords{admin}
+~desc{
+  ~enUS{
+
+The Security, resource and quota command set is copied from DGD's
+Kernel MUDLib's versions of the same functionality.  Those commands
+are:
+
+help %access            Shows an admin's access
+help %quota             Checks or sets quotas
+help %rsrc              Shows an admin's resource limits or usage
+help %grant             Grants an admin additional access
+help %ungrant           Removes existing access
+
+}}
+
+
+~name{~enUS{%rsrc,@rsrc,rsrc}}
+~keywords{admin}
+~desc{
+  ~enUS{
+
+The %rsrc command typed by itself will show the MUD's total usage of
+the same resources %quota affects.  This doesn't just show your usage.
+It shows everybody's.  With a resource name and a numerical limit
+%rsrc will set the new total limit to the given value.  With just a
+resource name %rsrc will list the usage of that resource by all
+wizards.
+
+Examples:
+%rsrc                    Show total use of every resource
+%rsrc ticks              Show everybody's tick usage
+%rsrc ticks -1           Try to unrestrict tick usage
+}}
+
+
+~name{~enUS{%quota,@quota,quota}}
+~keywords{admin}
+~desc{
+  ~enUS{
+
+The %quota command lists a wizard's resource usage.  With no arguments
+it gives the usages for the user that typed it.  With one argument it
+gives the usages for the wizard whose name is given.  With two
+arguments it takes a wizard's name and a resource type (such as ticks,
+stack, or callouts) to give the usage for.  With three arguments of
+the form "%quota <user> <rsrc> <limit>" it will try to set that user's
+limit on that resource to the number specified.  You must have the
+necessary privilege for this operation to succeed.  For most limits,
+-1 means infinite.
+
+Examples:
+  %quota                          Show your own quotas
+  %quota angelbob                 Show angelbob's quotas
+  %quota angelbob ticks           Show angelbob's "ticks" quota
+  %quota angelbob ticks 75        Set angelbob's "ticks" quota
+}}
+
+
+~name{~enUS{%access,@access,access}}
+~keywords{admin}
+~desc{
+  ~enUS{
+
+You can use the %access command on a wizard's name to find out his
+file and directory access.  You can use it with no argument to find
+out your own access.  With the special string "global" you can find
+out what directories allow everybody read access.  You can %access a
+file to find out who has what access to it.
+
+Examples:
+  %access                          Show your own access
+  %access angelbob                 Show angelbob's access
+  %access global                   What areas are global?
+  %access /usr/System/sys/objectd  Who can access the objectd?
+}}

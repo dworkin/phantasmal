@@ -1,0 +1,115 @@
+~name{~enUS{OBJECTD,objectd,object daemon,object demon}}
+~keywords{admin}
+~desc{
+  ~enUS{
+
+The objectd keeps track of LPC programs, including when they get
+compiled, destructed and cloned.  Its activities occur entirely
+automatically, and it can be queried about an object or instance with
+the %od_report command.
+
+It tracks DGD issue indices as returned by the status() DGD kfun with
+offset O_INDEX into the returned array.  These are separate from, and
+may collide with, objregd's object numbers.
+
+}}
+
+
+~name{~enUS{MAPD,mapd,map daemon,MAP daemon}}
+~keywords{admin}
+~desc{
+  ~enUS{
+
+The Map Daemon, or MAPD, is an internal component of the MUD that
+keeps track of rooms, zones, exits, etc.  Objects can have exits, you
+can stand in them, and they can otherwise be entirely roomlike without
+being exactly rooms -- think of a car, or being on a motorcycle, or in
+a pup tent.  Whether something is, in the MUD's estimation, a room is
+determined by whether it is registered with MAPD.  Any room registered
+with MAPD is likely to use the OBJREGD numbering scheme.
+
+}}
+
+
+~name{~enUS{CONFIGD,config daemon}}
+~keywords{admin}
+~desc{
+  ~enUS{
+
+The Config Daemon, or ConfigD, exists only to read some settings from
+a file and keep them around.  You can see the results by typing
+%get_config.
+
+See also:  daemons, %get_config
+
+}}
+
+
+~name{~enUS{get configuration, configuration, get config, get_config}}
+~keywords{admin}
+~desc{
+  ~enUS{
+
+The %get_config command shows the data currently in the ConfigD.
+
+See also: ConfigD
+
+}}
+
+
+~name{~enUS{EXITD,exitd,exit daemon,EXIT daemon}}
+~keywords{admin}
+~desc{
+  ~enUS{
+
+The Exit Daemon, or EXITD, is an internal component of the MUD that
+keeps track of exits.  An exit can be used to go from one room to
+another, though an exit is not guaranteed to always have a single,
+static destination.
+
+}}
+
+
+~name{~enUS{OBJREGD,objregd,object registration daemon,objreg daemon,
+            objectreg daemon, objreg demon, objectreg demon}}
+~keywords{admin}
+~desc{
+  ~enUS{
+
+The Object Registration Daemon, or objregd, keeps track of numbering
+of objects.  MAPD generally makes sure that rooms get registered with
+this automatically.  Other objects will be appropriately registered
+with it as they are numbered (and implemented!).  This makes sure
+there are no collisions between portable numbers, room numbers, exit
+numbers, etc.  Normally, the objregd will allocate these numbers in
+segments of 100, so for instance numbers 0-99 will be rooms, 100-199
+might be exits, et cetera.
+
+These numbers are different from the objectd's instance numbers, which
+*can* overlap.  See objectd for details.
+
+Any objregd number is an object number.  One registered with MAPD is
+also a room number.  One that corresponds to an exit is also an exit
+number, and so on.  Every exit number and room number is thus an
+object number, and some object numbers may be, for instance, room
+numbers.
+
+}}
+
+
+~name{~enUS{daemon,daemons,demon,demons}}
+~keywords{admin}
+~desc{
+  ~enUS{
+
+Daemons are internal MUD components that track things or otherwise
+provide services.  The current set includes:
+
+EXITD
+MAPD
+MOBILED
+OBJREGD
+OBJECTD
+CONFIGD
+
+}}

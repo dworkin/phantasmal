@@ -1,0 +1,395 @@
+~name{~enUS{object,objects,obj,objs}}
+~keywords{admin}
+~desc{
+  ~enUS{
+
+Objects in Phantasmal includes not just portables (traditional
+objects) but also rooms, details, exits and others.  There are a
+number of commands for objects, which therefore work on all of those
+object types.  Here are the current crop:
+
+help @stat
+help @move
+
+help @set_glance
+help @set_brief
+help @set_look
+help @set_examine
+
+help @set_object_article
+help @set_object_detail
+help @add_nouns
+help @add_adjectives
+help @clear_nouns
+help @clear_adjectives
+
+help @set_object_value       (This is a family of commands)
+
+help @delete
+
+See also commands for portables, rooms and so on for certain operations
+specific to those objects.
+
+}}
+
+
+~name{~enUS{segment,segments,seg,segs}}
+~keywords{admin}
+~desc{
+  ~enUS{
+
+Objects are allocated in 100-number segments.  For instance, the range
+#1300-#1399 forms a single segment.  A given segment is managed by
+only one daemon, so for instance if the 1300 segment contains a single
+room (managed by MAPD) then all of that segment must be composed of
+rooms (or empty).
+
+See @segmap, @set_segment_zone.
+
+}}
+
+
+~name{~enUS{segment_map, seg_map, segmap}}
+~keywords{admin}
+~desc{
+  ~enUS{
+
+The @segment_map (or @segmap) command lists the segments numerically
+in ascending order followed by the daemon managing each.  For instance:
+
+    Segments:
+    0   /usr/common/sys/mapd
+    1   /usr/common/sys/exitd
+    2   /usr/common/sys/portabled
+
+In this case, #0-#99 would be rooms managed by MAPD, #100-#199 would be
+exits managed by ExitD, and #200-#299 would be portables managed by
+PortableD.
+
+See also:  MAPD, EXITD, PORTABLED, MOBILED, @set_seg_zone
+
+}}
+
+
+~name{~enUS{set_segment_zone,
+            set_seg_zone, set segment zone}}
+~keywords{admin}
+~desc{
+  ~enUS{
+
+The @set_segment_zone or @set_seg_zone command sets what zone a given
+segment belongs to (see "help @segmap").  A given zone will usually
+encompass a number of segments including rooms, portables, exits, and
+others.  Grouping the segments into zones allows the builder interface
+to group everything related to a given area despite the division of
+different kinds of objects.  The syntax is:
+
+@set_seg_zone #6 #2
+
+The command above sets segment 6, containing objects #600-#699, to be
+part of zone #2.
+
+See also:  @segmap, segments, @zonemap, zones
+
+}}
+
+
+~name{~enUS{zone_map, zonemap}}
+~keywords{admin}
+~desc{
+  ~enUS{
+
+The @zonemap command lists the general contents of the MUD's zones
+by number, giving a brief description of each.
+
+See also:  @segmap, @set_seg_zone, segments, zones
+
+}}
+
+
+~name{~enUS{set_brief,brief,brief desc,
+            brief description, set brief desc, set brief description}}
+~keywords{admin}
+~desc{
+  ~enUS{
+
+The Brief description is the shortest of all object descriptions and
+is normally used as part of a list of objects so as to minimize length
+and distraction.  It can be set by @set_brief: "@set_brief #75 flower",
+or simply "@set_brief #75".  The brief description should not start
+with an article (such as "a", "an", or "the").
+
+If used in the latter form a text-entry mode will begin.  No commands
+may be typed until the tilde (\~) is entered on a line by itself to
+stop entering text.
+
+See also @set_glance, @set_look, @set_examine, @set_obj_art
+
+}}
+
+
+~name{~enUS{set_glance,glance,glance desc,
+	glance description, set glance desc, set glance description }}
+~keywords{admin}
+~desc{
+  ~enUS{
+
+The Glance description is given when an object is looked at briefly,
+but not so briefly as the "brief" description.  It can be set by
+@set_glance: "@set_glance #75 pretty flower", or simply "@set_glance
+#75".
+
+If used in the latter form a text-entry mode will begin.  No commands
+may be typed until the tilde (\~) is entered on a line by itself to
+stop entering text.
+
+See also @set_brief, @set_look, @set_examine, @set_obj_art
+
+}}
+
+
+~name{~enUS{set_look,look,look desc,look description,
+            set_look_desc, set look description}}
+~keywords{admin}
+~desc{
+  ~enUS{
+
+The Look description is given when an object is looked at for a
+significant period of time.  It is the primary room description, or
+the description a player receives when specifically choosing to look
+at a portable, detail or exit.  It can be set by @set_look: "@set_look
+#75 A very pretty flower with petals and leaves", or simply "@set_look
+#75".
+
+If used in the latter form a text-entry mode will begin.  No commands
+may be typed until the tilde (\~) is entered on a line by itself to
+stop entering text.
+
+See also @set_brief, @set_glance, @set_examine
+
+}}
+
+
+~name{~enUS{set_examine,examine,examine desc, set examine desc,
+            examine description, set examine description}}
+~keywords{admin}
+~desc{
+  ~enUS{
+
+The Examine description is given when an object is specifically
+examined in a very close-up and time consuming way.  There is
+currently no examine command, rendering it briefly useless.  The
+examine description is optional, unlike the other three.  It can be
+set by @set_examine: "@set_examine #75 You see a bug on the flower!",
+or simply "@set_examine #75".
+
+If used in the latter form a text-entry mode will begin.  No commands
+may be typed until the tilde (\~) is entered on a line by itself to
+stop entering text.
+
+See also @set_brief, @set_glance, @set_look
+
+}}
+
+
+~name{~enUS{set_object_article, set_object_art,
+            set_obj_article, set_obj_art,
+            article, definite, indefinite, proper, proper noun,
+            proper nouns}}
+~keywords{admin}
+~desc{
+  ~enUS{
+
+The @set_obj_art (or @set_object_article) command tells whether the
+brief and glance descriptions of an object should be referred to using
+a definite article, an indefinite article, or no article (as would
+be appropriate for a proper noun like "Tom" or "King Ted").
+
+The syntax is "@set_obj_art #749 definite".  Appropriate values for
+the second argument include "definite", "def", "indefinite", "indef",
+and "proper".  More may be added later.
+
+See also @add_nouns, @add_adj, @set_brief, @set_glance
+
+}}
+
+
+~name{~enUS{set_obj_flag, set_obj_flags,
+            set_object_flag, set_object_flags, set_objflag,
+            set_objflags, setobjflag, setobjflags,
+            contain, cont, containment, container, containers,
+            open, open container, openable, openable container, set container,
+	    set locked, set lockable, locked, lockable,
+            set open,set openable,descless,nodesc,no_desc,
+            set_port_flag, set_portable_flag, set_port_flags,
+            set_portable_flags}}
+~keywords{admin}
+~desc{
+  ~enUS{
+
+The @set_obj_flag (or @set_object_flag) command sets flags on objects,
+such as whether they are containers and whether they are open.  For
+instance:
+
+  @set_obj_flag #237 cont true
+  @set_obj_flag #294 open 0
+  @set_object_flags #901 openable 1
+  @set_object_flags #748 nodesc yes
+
+The values, if present, should indicate true or false -- like "true",
+"false", "yes", "no", 1, 0.  If absent, the values default to true.
+The first argument is the object number of a room or portable.  The
+middle argument is a flag name, and can be "cont" or "container" to
+set whether the object is a container, "open" to set whether it is
+currently open, "openable" to say whether it can be easily opened or
+closed, "locked" to say whether it is locked or not, "lockable" to
+say whether it can be locked or not, "nodesc" for scenery objects,
+or possibly other flag names.
+To get a list of flag names, type "@set_obj_flag flagnames".
+
+Note: the "nodesc" flag will be retired soon in favor of actual object
+details.  We hope to have details in usable shape for release 0.11 of
+Phantasmal.
+
+}}
+
+
+~name{~enUS{set_object_parent, set_object_par,
+            set_obj_parent, set_obj_par, set_parent, set_par,
+            parent, inherit, inheritance, data inheritance, urobject,
+            urobjects, ur_object, ur_object, ur object, ur objects}}
+~keywords{admin}
+~desc{
+  ~enUS{
+
+The @set_obj_par (or @set_object_parent, or @set_parent) command sets
+the parent of an object for data inheritance.  This means the child
+object will inherit various data, including details, from the parent
+object.  The syntax is "@set_obj_parent <child> <parent>" where
+"<child>" and "<parent>" are portable or room numbers prefixed with
+a pound ("#") sign.
+
+If "<parent>" is #-1 or the word 'none', the parent is cleared, and
+the object will be set to have no parent.
+
+You can check an object's current parent using the 'stat' command.
+
+}}
+
+
+~name{~enUS{move}}
+~keywords{admin}
+~desc{
+  ~enUS{
+
+The @move command takes two object numbers as arguments.  The first is
+the object number to be moved, the second is the location to move it
+to.  For instance:
+
+@move #200 #0
+
+The above would move object #200 into object #0 (the Void).  The
+command works on rooms and portables, both as objects to move and as
+destinations.  You can use the word "here" instead of the second
+object to move an object into your current room.
+
+See also @goto
+
+}}
+
+~name{~enUS{stat}}
+~keywords{admin}
+~desc{
+  ~enUS{
+
+The @stat command gives a reasonably complete summary of everything about
+a particular object number.  For instance you can type "@stat #0" and
+find out the Void's various descriptions, what rooms it contains, that
+it is registered with MAPD, and so on.  @stat works on rooms, portables,
+exits and mobiles.
+
+See Also:  MAPD, OBJREGD, MOBILED, EXITD, room, portable, mobile, exit
+
+}}
+
+
+~name{~enUS{addnoun,add_noun}}
+~keywords{admin}
+~desc{
+  ~enUS{
+
+The @add_noun command adds one or more one-word nouns to an object's
+noun list.  The object may then be referred to using these nouns.
+
+Syntax: @add_noun #<obj num> noun [noun, noun, noun...]
+
+See also: @stat, @clear_nouns, @add_adjective
+}}
+
+
+
+~name{~enUS{addadjective,add_adjective,
+            addadj,add_adj}}
+~keywords{admin}
+~desc{
+  ~enUS{
+
+The @add_adjective command adds one or more one-word adjectives to an
+object's adjective list.  The object may then be referred to using
+these adjectives.
+
+Syntax: @add_adjective #<obj num> adj [adj, adj, adj...]
+
+See also: @stat, @clear_adjectives, @add_noun
+
+}}
+
+
+
+~name{~enUS{clearnoun,clear_noun,
+            clearnouns,clear_nouns}}
+~keywords{admin}
+~desc{
+  ~enUS{
+
+The @clear_nouns command clears all current nouns for an object, so more
+should normally be added with @add_noun.
+
+Syntax: @clear_nouns #<obj num>
+
+See Also: @clear_adjectives, @add_noun
+}}
+
+
+~name{~enUS{clearadjective, clear_adjective,
+            clearadjectives, clear_adjectives,
+            clearadj, clear_adj}}
+~keywords{admin}
+~desc{
+  ~enUS{
+
+The @clear_adjectives command clears all current adjectives for an
+object, so more should normally be added with @add_adjective.
+
+Syntax: @clear_adjectives #<obj num>
+
+See Also: @clear_nouns, @add_adjective
+}}
+
+~name{~enUS{delete,
+            delete_obj, delete_object, delete_objects,
+            deleteobj, deleteobject, deleteobjects }}
+~keywords{admin}
+~desc{
+  ~enUS{
+
+The @delete or @delete_object command will delete an object in the
+current room, or any object in the MUD by number.  This object may be
+a mobile, portable, room or exit.  Examples:
+
+@delete #374
+@delete red cow
+
+See Also:  objects, @stat
+
+}}

@@ -1,0 +1,23 @@
+~name{~enUS{credits}}
+~desc{~enUS{
+This MUD runs on the DGD MUD Server and the Phantasmal MUDLib.
+
+The DGD Server is written by Felix Croes and is well-documented at
+www.angelbob.com/projects/DGD_Page.html.  It's free for noncommercial
+use.
+
+The Phantasmal MUDLib is currently in early pre-alpha and as such is
+not yet available to the public.  For more information, please contact
+angelbob@monkeyspeak.com and check www.angelbob.com/projects/mudlib/
+
+Much of the MUD is inspired by other MUDs.  Credit goes to Armageddon
+and CthulhuMUD, and tremendous credit to Adam Wiggins' truly excellent
+Blood Dusk (http://dusk.org/BloodDusk), a MUD without peer.  Several
+policies and systems from Blood Dusk were taken specifically because
+of the impressive theme and atmosphere that they helped Blood Dusk to
+foster.
+
+Many of this MUD's and Phantasmal's ideas were nurtured with the
+help of Tom Lokovic and of the MUD-Dev mailing list at kanga.nu.
+Thanks, all!
+}}

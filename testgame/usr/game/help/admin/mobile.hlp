@@ -1,0 +1,88 @@
+~name{~enUS{mobile,mobiles,mob,mobs,creature,creatures,npc,npcs,NPC,NPCs,NPCS,
+            monster,monsters}}
+~keywords{admin}
+~desc{
+  ~enUS{
+
+Mobiles are the "minds" of anything with its own volition, such as
+players or monsters.  The body is a standard object (see "help rooms")
+with the mobile attached to it.
+
+Some commands to play with mobiles:
+@list_mobile              Lists mobiles with numbers
+@delete_mobile            Deletes mobiles by number
+@new_mobile               Creates a new mobile in an existing body
+@stat                     View a mobile (or its body) by number
+
+}}
+
+
+~name{~enUS{list_mob, list_mobile, list_mobiles,
+            list mob, list mobile, list mobiles,
+            listmob, listmobile, listmobiles }}
+~keywords{admin}
+~desc{
+  ~enUS{
+
+The @list_mob or @list_mobiles command currently lists every mobile in
+the MUD that is currently registered with the MOBILED and a bit of
+information about each.  Simply type "@list_mob", by itself, at the
+prompt.
+
+See Also:  MOBILED, @stat, @delete_mobile, @new_mobile
+
+}}
+
+
+~name{~enUS{new_mob, new_mobile, new_mobiles,
+            new mob, new mobile, new mobiles,
+            newmob, newmobile, newmobiles }}
+~keywords{admin}
+~desc{
+  ~enUS{
+
+The @new_mob or @new_mobile command creates a new mobile of a
+specified type, with a specified body.  The syntax is:
+
+@new_mob #<mobnum> #<bodynum> <type>
+or
+@new_mob #<bodynum> <type>
+
+The mobnum, if provided, must be -1, or must be a number in an unowned
+or MOBILED segment.  Normally you should pass -1, which will
+automatically assign a number.  The bodynum should be an existing
+portable object registered with MAPD.  It will serve as the mobile's
+body, and the type should be a mobile type registered with the mobiled
+binder.  Example:
+
+@new_mob #-1 #347 wander
+@new_mob #347 wander
+
+These will create a new mobile with an autoassigned number, which will
+use object #347 as its body and will use the "wander" mobile type.
+
+See Also:  MOBILED, @stat, @delete_mobile, @list_mobiles, @segmap
+
+}}
+
+
+~name{~enUS{delete_mob, delete_mobile, delete_mobiles,
+            delete mob, delete mobile, delete mobiles,
+            deletemob, deletemobile, deletemobiles }}
+~keywords{admin}
+~desc{
+  ~enUS{
+
+The @delete_mob or @delete_mobile command currently deletes the
+specified mobile by number.  For instance:
+
+  @delete_mob #507
+
+Note that @delete_mob doesn't work on mobiles that currently have a
+user object (those of logged-in users, basically).  You have to wait
+for them to log out to use this for cleanup.  Note that this also
+won't delete the mob's body, which you *can* do with a logged-in user.
+
+See Also:  MOBILED, mobiles, @list_mobiles, @new_mobile
+
+}}
