@@ -346,7 +346,7 @@ EOF
     ;
 
     # "See also" entry
-    print FILE "      <dd> ";
+    print FILE "  <dd> ";
     my @see_also = split(/,/, $fileref->{see_also});
 
     @see_also = map {s/^\s+//; $_} map {s/\s+$//; $_} @see_also;
@@ -354,9 +354,9 @@ EOF
     @see_also = grep {defined($_) and $_ ne ""} @see_also;
 
     @see_also = map { link_to_html($_); } @see_also;
-    print FILE join(",\n      ", @see_also);
+    print FILE join(",\n  ", @see_also);
 
-    print FILE "</dd>\n";
+    print FILE "  </dd>\n</dl>\n";
 
     close(FILE);
 }
