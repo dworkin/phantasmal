@@ -58,7 +58,7 @@
           <td class="content">
 
 
-<h2> 2.3 Looping and Iteration </h2>
+<h2> 3.3 Looping and Iteration </h2>
 
 
 <p>
@@ -66,16 +66,16 @@
   guess from the previous section.  For instance, let's say you wanted
   to find out how many times you'd have to double the number two
   before you got to some very high number.  That's something you could
-  probably do in your head or on paper for reasonable numbers, but for
-  a number like ten million, you're probably better off letting the
+  probably do in your head or on paper for small numbers.  But for a
+  number like ten million, you're probably better off letting the
   computer do it.
 </p>
 
 <p>
   Try typing <kbd> code int times; int count; times = 0; count = 2;
   while(count < 10000000) { count = count * 2; times = times + 1; }
-  return times;</kbd> Note that you must <em>not</em> hit return
-  before the very end, you have to type the whole thing on one line.
+  return times;</kbd> Note that you must <em>not</em> hit return until
+  the very end &mdash; you have to type the whole thing on one line.
   If you do it right, you should get 23 as the answer.
 </p>
 
@@ -91,18 +91,19 @@
 
 <p>
   You know about declaring variables and setting values, but
-  <dfn>while</dfn> is a new one.  While takes a condition in parentheses,
-  and then a bunch of stuff between curly braces.  The stuff in curly
-  braces is done over and over again until the condition in
-  parentheses is false.  So in the first example above, the code will
-  keep doubling the count variable and adding one to the times
-  variable until count is no longer less than ten million.  Then it
-  will return the count, which is how many times it had to double.
+  <dfn>while</dfn> is a new one.  While takes a condition in
+  parentheses, and then a bunch of stuff between curly braces.  The
+  stuff in curly braces is done over and over again until the
+  condition in parentheses is false.  So in the first example above,
+  the code will keep doubling the <var>count</var> variable and adding
+  one to the <var>times</var> variable until <var>count</var> is no
+  longer less than ten million.  Then it will return <var>count</var>,
+  which is how many times it had to double.
 </p>
 
 <p>
-  Knowing that much, you should be able to figure out the second
-  example on your own.
+  Once you understand the first example, you should be able to figure
+  out the second example on your own.
 </p>
 
 <p>
@@ -114,18 +115,20 @@
   is funny.  Note that after the word &quot;for&quot;, you have three
   different pieces of code in the parentheses, each separated by a
   semicolon.  The first piece of the code is done before the loop
-  begins &mdash; in this case, setting times to 0 and count to 2.  The
-  second part is checked every time through the loop.  In this case
-  it's checking whether count is more than ten million, just like the
-  while loop did.
+  begins.  In this case, it sets <var>times</var> to 0 and
+  <var>count</var> to 2.  The second piece of code, <code>count <
+  10000000</code> is checked every time through the loop.  In this
+  case it's checking whether count is more than ten million, just like
+  the while loop did.
 </p>
 
 <p>
   And the last section is done at the end of every time through the
   loop.  So the things that were inside the while loop have moved to
-  the third section of code in the for loop's parentheses.  You can
-  decide where to put which code since putting it in the third section
-  of the parentheses is the same as putting it in the body.
+  the for loop's third section of code.  Putting code in the third
+  section of the parentheses has the same effect as putting it in the
+  loop body, so you can divide the code between the two however you
+  like.
 </p>
 
 

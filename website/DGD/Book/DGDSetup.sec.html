@@ -3,8 +3,8 @@
 <p>
   The first step in learning any new programming language is to set up
   the tools.  For most languages, that means the compiler or
-  interpreter and possibly a debugger.  In DGD, that means the server,
-  also called the driver.
+  interpreter and possibly a debugger.  For DGD, that means setting up
+  the DGD driver, sometimes called the DGD server or DGD interpreter.
 </p>
 
 <p>
@@ -18,7 +18,7 @@
 <p>
   The DGD driver changes a lot from year to year, so any instructions
   on installation may be out of date.  These instructions are valid as
-  of early 2004 (DGD version 1.2.73), but if you have any problems
+  of early 2005 (DGD version 1.2.101), but if you have any problems
   with them you should try a <a
   href="http://www.google.com">Google</a> search on &quot;DGD&quot;,
   &quot;compiling DGD&quot; or &quot;installing DGD&quot; to find out
@@ -28,13 +28,12 @@
 </p>
 
 <p>
-  It's possible that by the time you read this, you'll be able to get
-  DGD in an easily-installable form like RPM files or a
-  self-extracting archive with an InstallShield installer.  As I write
-  it, though, the only choices are simple archive files (.zip for
-  Windows, .sit.hqx for Macintosh and .tar.gz for Unix) and installing
-  for yourself.  This book will document as though you were doing it
-  that way.
+  It's possible that you'll be able to find DGD in an
+  easily-installable form like RPM files or FreeBSD's ports tree or a
+  self-extracting archive with an InstallShield installer.  The usual
+  choice, though, is to download a simple archive file (.zip for
+  Windows, .sit.hqx for Macintosh and .tar.gz for Unix) and install it
+  for yourself.
 </p>
 
 <p>
@@ -55,21 +54,22 @@
 </p>
 
 <pre>
-NETBSD          NetBSD.  This is the default.
-BSD386          FreeBSD or 386BSD.
-LINUX           Linux.  Copy src/host/Makefile.sysv to src/host/Makefile.
-SUNOS4          SunOS 4.x.
-SOLARIS         SunOS 5.x.  Copy src/host/Makefile.sysv to src/host/Makefile,
-                and in src/Makefile also set LIBS to -lsocket -lnsl
-DECALPHA        DEC Alpha.  Copy src/host/Makefile.sysv to src/host/Makefile.
-BEOS            BeOS.  Set LDFLAGS to -lbe -ltracker, and copy
-                src/host/Makefile.beos to src/host/Makefile.
-WIN32           Windows NT or Windows 95.  Follow the instructions in
-                src/host/pc/README.
-MACOS           Mac System 6 to 9.  Follow the instructions in
-                src/host/mac/README.
-GENERIC_BSD     BSD Unix.
-GENERIC_SYSV    SYSV Unix.  Copy src/host/Makefile.sysv to src/host/Makefile.
+DARWIN		Darwin/OS X.  Also works for NetBSD, FreeBSD, OpenBSD and Linux.
+LINUX		Older versions of Linux.  Copy src/host/Makefile.sysv to
+		src/host/Makefile.
+SUNOS4		SunOS 4.x.
+SOLARIS		SunOS 5.x.  In src/Makefile set LIBS to -lsocket -lnsl.  Older
+		versions also require src/host/Makefile.sysv to be copied to
+		src/host/Makefile.
+DECALPHA	DEC Alpha.  Copy src/host/Makefile.sysv to src/host/Makefile.
+BEOS		BeOS.  In src/Makefile set LIBS to -lbe -ltracker, and copy
+		src/host/Makefile.beos to src/host/Makefile.
+WIN32		Windows NT or Windows 95.  Follow the instructions in
+		src/host/pc/README.
+MACOS		Mac System 6 to 9.  Follow the instructions in
+		src/host/mac/README.
+GENERIC_BSD	BSD Unix.
+GENERIC_SYSV	SYSV Unix.  Copy src/host/Makefile.sysv to src/host/Makefile.
 </pre>
 
 <p>
@@ -146,21 +146,24 @@ GENERIC_SYSV    SYSV Unix.  Copy src/host/Makefile.sysv to src/host/Makefile.
 <p>
   Once you've done that, you'll need to run the DGD program.  If
   you're running on Windows and you compiled with Visual C++, you can
-  run it by itself and then choose the mud.dgd program from the menu.
-  If you compiled on Unix or used the Cygnus tools on Windows, you'll
-  need to run the program from the command line, with the .dgd file as
-  an argument.  For instance, from Unix, in the DGD directory, you might
-  type <kbd>./bin/driver mud.dgd</kbd>.
+  run dgd by double-clicking it and then choose the mud.dgd program
+  from the menu.  If you compiled on Unix or used the Cygnus tools on
+  Windows, you'll need to run the program from the command line, with
+  the .dgd file as an argument.  For instance, from Unix, in the DGD
+  directory, you might type <kbd>./bin/driver mud.dgd</kbd>.  Note
+  that while Win32 permits you to run DGD from the command line, you
+  won't get proper error output if you do.  So it's recommended you
+  run DGD and then choose a configuration file from the menu instead.
 </p>
 
 <p>
-  If you've done it correctly, DGD will print messages about what
-  version you're running and various other things, then it will sit
-  and do nothing.  If you're not used to running your own MUD server,
-  this can be a bit disconcerting.  Don't worry, it's normal.  In
-  fact, if DGD stops and goes back to the command line (normally with
-  an error message), <em>that</em> would be abnormal.  The messages
-  you should expect will look something like this:
+  If you've done it correctly then DGD will print messages about what
+  version you're running and various other things.  Then nothing
+  visible will happen.  If you're not used to running your own MUD
+  server, this can be a bit disconcerting.  Don't worry, it's normal.
+  In fact, if DGD stops and goes back to the command line (usually
+  with an error message), <em>that</em> would be abnormal.  The
+  messages DGD prints will look something like this:
 </p>
 
 <pre>
@@ -171,35 +174,38 @@ Jan 29 16:09:53 ** Initialization complete.
 
 <p>
   Once you're running the server, you'll need to telnet to your MUD.
-  That requires a telnet client of some kind.  On unix, that normally
-  means running telnet from the command line.  The syntax is simply
+  That requires a telnet client or MUD client.  On Unix, the simplest
+  method is to run telnet from the command line.  The syntax is simply
   <kbd>telnet &lt;host&gt; &lt;port&gt;</kbd>, where host is the name
   or IP address of the host you're telnetting to, and port is the port
   number.  If you leave off the port number, telnet will use port 23
-  by default, which is almost never what you want for a MUD.  On
-  Windows, you'll want to download a MUD client like zMUD or a
-  terminal program like TeraTerm or Putty.  Do a web search on any of
-  those names, or just on 'Windows terminal program'.
+  by default, which is almost never what you want for a MUD.
+</p>
+
+<p>
+  On Windows, you'll want to download a MUD client like zMUD or a
+  terminal program like TeraTerm or Putty.  Do a web search on one of
+  those names, or just on 'Windows terminal program' or 'Win32 MUD
+  client' or similar.
 </p>
 
 <p>
   Telnet back to your own machine, on the port where DGD is running.
   Normally your machine's address will be 127.0.0.1 when you telnet to
   it, which is called the <dfn>localhost</dfn> address.  The Kernel
-  Library will usually run on port 6047, though you can check the file
-  <tt>mud.dgd</tt> to be sure.  You'll want to telnet to the telnet
-  port, not the binary port, from that file.  Your telnet program will
-  just connect to a telnet or SSH server if you don't tell it the
-  correct port number.
+  Library will usually start its telnet server on port 6047, though
+  you can check the file <tt>mud.dgd</tt> to be sure.  You'll want to
+  telnet to the telnet port, not the binary port, from that file.
+  Your telnet program will attempt to connect to the wrong port if you
+  don't tell it the correct port number.
 </p>
 
 <p>
   The Kernel Library will ask you for a login name.  Tell it you are
   <kbd>admin</kbd>.  Then choose a password for this account.  The
   admin account is special, and gets a lot of privileges that other
-  accounts don't &mdash; you won't be able to do most of the exercises
-  in this book except with a privileged account.  When you first set
-  up the Kernel Library, the admin account is the only one.
+  accounts don't &mdash; you won't be able to do many of the exercises
+  in this book except with a privileged account.
 </p>
 
 
@@ -229,5 +235,6 @@ Jan 29 16:09:53 ** Initialization complete.
 
 <p>
   The Kernel Library actually has a number of other commands, most of
-  them for admin.  But those will be covered later as we need them.
+  them only for administrators, not players.  Those will be covered
+  later as we need them.
 </p>

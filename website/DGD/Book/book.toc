@@ -1,7 +1,11 @@
 :
+  Introduction
   Setup
   Tutorial
+  ControlFlow
   Misc
+
+Introduction:
 
 Setup:
   Installing
@@ -17,6 +21,8 @@ Tutorial:
   CodeInFiles
   Arrays
   Mappings
+  Functions
+  Objects
 
 ControlFlow:
   ForWhile

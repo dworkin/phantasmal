@@ -1,3 +1,8 @@
+Key:
+  - In original, not (yet?) in LPC version
+  = In both original and LPC version
+  + Added for LPC version
+
 1. Tutorial
   = Getting Started
   = Variables and Arithmetic Expressions

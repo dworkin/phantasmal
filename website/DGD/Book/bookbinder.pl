@@ -116,6 +116,7 @@ sort_chapters();
 # Write out content into .base.html files
 write_out_html();
 
+print "Finished writing HTML output!\n";
 
 ############## Supporting functions ##############################
 
@@ -433,7 +434,7 @@ sub html_for_section {
 	$next = $subsections[0];
     }
 
-    print "Printing to SECFILE $filename.base.html...\n";
+    #print "Printing to SECFILE $filename.base.html...\n";
 
     print SECFILE "<titledef text=\"$title\">\n\n";
 

@@ -58,7 +58,7 @@
           <td class="content">
 
 
-<h2> 2.2 Variables and Arithmetic Expressions </h2>
+<h2> 3.2 Variables and Arithmetic Expressions </h2>
 
 
 <p>
@@ -68,12 +68,15 @@
 </p>
 
 <p>
-  A <dfn>variable</dfn> is a named piece of storage space.  A variable can
-  hold a <dfn>value</dfn>, such as the integer 94 or the character string
-  &quot;Bob's your uncle!&quot;.  The variable has a name that you use
-  to refer to that storage.  The value of the variable may change over
-  time.  For instance, you may add 2 to the variable, giving 96
-  instead of 94.  But the variable name will not.
+  A <dfn>variable</dfn> is a named piece of storage space.  A variable
+  can hold a <dfn>value</dfn>, such as the integer 94 or the character
+  string &quot;Bob's your uncle!&quot; (an integer is a whole number,
+  either positive or negative, and a character string is a series of
+  letters, numbers and punctuation like a word or a sentence).  The
+  variable has a name that you use to refer to that storage.  The
+  value of the variable may change over time.  For instance, you may
+  add 2 to the variable, giving 96 instead of 94.  But the variable
+  name will not change.
 </p>
 
 <p>
@@ -81,11 +84,11 @@
   to type it as written, with the commas.  You should see a result
   like <samp>$7 = 101</samp>.  The commas are a special operator that
   means &quot;do the things in order, but only worry about the value
-  of the <i>last</i> one&quot;.  So we did three things with that code
-  statement.  We set the variable a to have the value 94.  Then we
-  changed what a was equal to by setting it to its old value plus 7.
-  Then, the very last part of the command, after the last comma, was
-  a.  Since comma means &quot; only pay attention to the last one
+  of the <em>last</em> one&quot;.  So we did three things with that
+  code statement.  We set the variable a to have the value 94.  Then
+  we changed what a was equal to by setting it to its old value plus
+  7.  Then, the very last part of the command, after the last comma,
+  was a.  Since comma means &quot; only pay attention to the last one
   &quot;, the value returned was a's new value of 94 + 7, or 101.
 </p>
 
@@ -96,26 +99,27 @@
   finish your code with a semicolon or an end-curly-brace.  Otherwise
   you'll get very strange behavior indeed.  Try typing <kbd>code a =
   94; a = a + 7; return a;</kbd>.  You should get 101, the same result
-  as above.  If you just get 94, you forgot the ending semicolon
-  &mdash; try it again.  Note the 'return' statement at the end.  When
-  you don't use a semicolon at the end of your code command, the
-  Kernel Library assumes you're just writing a little expression and
-  you want its value.  That's what you've been doing so far.  If you
-  end your code command with a semicolon or an end-curly-brace,
-  though, you'll need to include your own return statement if you want
-  anything returned.  The return statement does roughly what the last
-  statement after the comma did last paragraph.  Its value is what
-  gets returned, and so that value is what gets assigned to a history
-  variable like $9 or $26.
+  as above.  If you just get 94, you forgot the ending semicolon.  Try
+  it again.  Note the 'return' statement at the end.  When you don't
+  use a semicolon at the end of your code command, the Kernel Library
+  assumes you're just writing a little expression and you want its
+  value.  That's what you've been doing so far.  If you end your code
+  command with a semicolon or an end-curly-brace then you'll need to
+  include your own return statement if you want anything returned.
+  The return statement does what the last statement after the comma
+  did in the last paragraph.  Its value is what gets returned, and so
+  that value is what gets assigned to a history variable like $9 or
+  $26.
 </p>
 
 <p>
-  Note that a variable in LPC isn't like a mathematical variable, and
-  the equals sign above doesn't really mean equality in a mathematical
-  sense.  Instead, the equals is often called <dfn>assignment</dfn> to
-  indicate that it is setting the variable to have a value.  But
-  unlike in mathematics, the variable can be repeatedly assigned,
-  changing its value throughout your code.
+  A variable in LPC isn't exactly like a mathematical variable.  The
+  equals sign above doesn't really mean equality in a mathematical
+  sense.  Instead, the equals is often called <dfn>assignment</dfn>.
+  It is setting the variable to have a value.  But unlike in
+  mathematics, the variable can be repeatedly assigned, changing its
+  value throughout your code.  A variable's value is the most recent
+  value that has been assigned to it.
 </p>
 
 <p>
@@ -131,34 +135,35 @@
 </p>
 
 <p>
-  Most of the operations are exact, but division of integers is not.
-  If you divide, say, five by two, you'll find that DGD automatically
-  rounds down to 2.  DGD will always round toward zero when you divide
-  integers.  Test with the code command and see.
+  Most of DGD's operations give exactly the answer you'd expect, but
+  division of integers sometimes doesn't.  If you divide, say, five by
+  two, you'll find that DGD automatically rounds down to 2.  DGD will
+  always round toward zero when you divide integers.  Test with the
+  code command and see.
 </p>
 
 <p>
-  Integers (and even floating point numbers) are limited in size.  If
-  you try typing <kbd>code 10000 * 10000 * 10000</kbd>, you'll see a
-  strange result &mdash; it's negative!  That's because integers have
-  a maximum value of a little more than four billion, and if your
-  numbers get larger than that, they'll wrap back around.  Unsigned
-  number variables (we'll talk about them later) will wrap back to
-  zero, while signed number variables will wrap to negative numbers.
-  Similarly, if your integer variable gets smaller than the smallest
-  allowed number, which may be large and negative, it will wrap back
-  into being positive.  This wrapping is because DGD's basic numbers
-  are of a fixed size, and there are only so many possible numbers
-  that a single variable can represent.  If you need larger or smaller
+  Integers are limited in size.  If you try typing <kbd>code 10000 *
+  10000 * 10000</kbd>, you'll see a strange result &mdash; it's
+  negative!  That's because integers have a maximum value of a little
+  more than four billion.  If your numbers get larger than that,
+  they'll wrap back around.  Unsigned integer variables (we'll talk
+  about them later) will wrap back to zero, while signed integer
+  variables will wrap to negative numbers.  If you're subtracting or
+  multiplying and your integer variable gets smaller than the smallest
+  allowed number (around negative four billion) it will wrap back into
+  being positive.  This wrapping is because DGD's basic numbers are of
+  a fixed size, and there are only so many possible numbers that a
+  single variable can represent.  If you need larger or smaller
   integers than that, you'll find that DGD's Arbitrary-Precision
   Signed Numbers (called ASNs) are the way to go.  They're explained
   in a later chapter.
 </p>
 
 <p>
-  You can declare your own variables rather than using the ones that
-  the code command gives you by default.  Integer (that means whole
-  numbers, not decimals or fractions) variables are declared to be of
+  The code command gives you a set of variables with names like
+  <var>a</var>, <var>b</var>, <var>c</var>, et cetera.  You can also
+  declare your own new ones.  Integer variables are declared to be of
   type <dfn>int</dfn>.  So you might type <kbd>code int sam; sam = 7;
   sam = sam + 4; return sam;</kbd>.  Note that you must declare the
   variables at the very beginning.  If you try typing <kbd>code a = 4;
@@ -169,20 +174,21 @@
 </p>
 
 <p>
-  Note for C users: in C, you could say <code>int sam = 7;</code> and
-  it would work fine.  DGD doesn't allow you to declare and initialize
-  a variable in that way, so don't.
+  A note for users of the C language: in C, you could say <code>int
+  sam = 7;</code> instead of <code>int sam; sam = 7;</code> and it
+  would work fine.  DGD doesn't allow you to declare and initialize a
+  variable in that way, so don't.
 </p>
 
 <p>
   Not every value or variable is an integer, so not every variable is
-  declared using int.  You can also have <dfn>unsigned</dfn>
-  variables, which are integers that can't hold negative values.  You
-  can declare an unsigned variable called <var>bruno</var> by typing
-  <code>unsigned int bruno;</code>, or just <code>unsigned
-  bruno;</code> Try subtracting a larger unsigned number from a
-  smaller one and see what happens!  The wraparound can be hard to
-  understand if you're not used to it.
+  declared using <code>int</code>.  You can also have
+  <dfn>unsigned</dfn> variables, which are integers that can't hold
+  negative values.  You can declare an unsigned variable called
+  <var>bruno</var> by typing <code>unsigned int bruno;</code>, or just
+  <code>unsigned bruno;</code> Try subtracting a larger unsigned
+  number from a smaller one and see what happens!  The wraparound can
+  be surprising if you're not used to it.
 </p>
 
 <p>

@@ -58,24 +58,77 @@
           <td class="content">
 
 
-<h2> 2.8 Mappings </h2>
+<h2> 3.8 Mappings </h2>
 
 
 <p>
   Mappings are data structures, rather like arrays.  An array is a
   sequence of values (often numbers).  A <dfn>mapping</dfn> is a sort
   of dictionary of values, so that you can find a value by looking up
-  its key.  A mapping is written almost, but not quite, like an array.
+  its name, called a <dfn>key</dfn>.  You'll see mappings called
+  <dfn>hash tables</dfn> in some other languages.
 </p>
 
 <p>
+  Let's say we wanted to look through an array of strings and make
+  sure there were no repeated elements.  Specifically, we wanted to
+  read through an array and return another array which had no repeated
+  elements, so every value was unique.
+</p>
+
+<pre>
+string *unique(string *array) {
+  mapping elements;
+  int     ctr;
+
+  elements = ([ ]);
+  for(ctr = 0; ctr < sizeof(array); ctr++) {
+    elements[array[ctr]] = 1;
+  }
+
+  return map_indices(elements);
+}
+</pre>
+
+<p>
+  Notice that <var>mapping</var> is used like <var>int</var> to
+  declare variables.  Notice also that we have to initialize the
+  mapping to a new empty value before we assign anything to it.
+</p>
+
+<p>
+  A mapping in LPC is written almost, but not quite, like an array.
   The mapping <code>([ &quot;a&quot; : 1, &quot;b&quot; : 2,
   &quot;c&quot; : 3 ])</code> can be dereferenced like an array.  But
   instead of dereferencing by number, this mapping is dereferenced by
   name.  So if a mapping called <var>letters</var> had that value,
   then <code>letters[&quot;a&quot;]</code> would have the value 1 and
   <code>letters[&quot;c&quot;]</code> would have the value 3.
+  <code>([ ])</code> is a fresh new empty mapping &mdash; there are no
+  keys or values at all in it.
 </p>
+
+<p>
+  Try compiling a new <tt>/usr/admin/myobj.c</tt> with the function
+  above in it.  This can be instead of the old function, or in
+  addition to it.  Once you've successfully compiled <tt>myobj.c</tt>,
+  try typing <kbd>&quot;/usr/admin/myobj&quot;->unique( ({
+  &quot;bob&quot;, &quot;sam&quot;, &quot;murray&quot;,
+  &quot;bob&quot; }) )</kbd>.  You should get a result like <samp>$45
+  = ({ "bob", "murray", "sam" })</samp>.  The result contains all the
+  same strings as the original, but in a different order, and with no
+  repeated &quot;bob&quot;.  You've just called your function on the
+  object, but you didn't use quite the same syntax you've been using.
+  Instead, you used the object's name in double quotes.  The object's
+  name is the same as the filename, but without the <tt>.c</tt> on the
+  end.
+</p>
+
+<p>
+  
+</p>
+
+
 
 <table style="width: 100%; border: 1px">
   <tr>
@@ -84,7 +137,7 @@
 
     <td align="center"><a href="Tutorial.html"> Up<br /> A Quick LPC Tutorial </a></td>
 
-    <td align="right"><a href="Misc.html"> Next &mdash;&gt; <br />A Miscellany </a></td>
+    <td align="right"><a href="Tutorial_Functions.html"> Next &mdash;&gt; <br />Functions </a></td>
   </tr>
 </table>
             <address>

@@ -58,13 +58,13 @@
           <td class="content">
 
 
-<h2> 1.1 Installing DGD </h2>
+<h2> 2.1 Installing DGD </h2>
 
 
 <p>
   The DGD driver changes a lot from year to year, so any instructions
   on installation may be out of date.  These instructions are valid as
-  of early 2004 (DGD version 1.2.73), but if you have any problems
+  of early 2005 (DGD version 1.2.101), but if you have any problems
   with them you should try a <a
   href="http://www.google.com">Google</a> search on &quot;DGD&quot;,
   &quot;compiling DGD&quot; or &quot;installing DGD&quot; to find out
@@ -74,13 +74,12 @@
 </p>
 
 <p>
-  It's possible that by the time you read this, you'll be able to get
-  DGD in an easily-installable form like RPM files or a
-  self-extracting archive with an InstallShield installer.  As I write
-  it, though, the only choices are simple archive files (.zip for
-  Windows, .sit.hqx for Macintosh and .tar.gz for Unix) and installing
-  for yourself.  This book will document as though you were doing it
-  that way.
+  It's possible that you'll be able to find DGD in an
+  easily-installable form like RPM files or FreeBSD's ports tree or a
+  self-extracting archive with an InstallShield installer.  The usual
+  choice, though, is to download a simple archive file (.zip for
+  Windows, .sit.hqx for Macintosh and .tar.gz for Unix) and install it
+  for yourself.
 </p>
 
 <p>
@@ -101,21 +100,22 @@
 </p>
 
 <pre>
-NETBSD          NetBSD.  This is the default.
-BSD386          FreeBSD or 386BSD.
-LINUX           Linux.  Copy src/host/Makefile.sysv to src/host/Makefile.
-SUNOS4          SunOS 4.x.
-SOLARIS         SunOS 5.x.  Copy src/host/Makefile.sysv to src/host/Makefile,
-                and in src/Makefile also set LIBS to -lsocket -lnsl
-DECALPHA        DEC Alpha.  Copy src/host/Makefile.sysv to src/host/Makefile.
-BEOS            BeOS.  Set LDFLAGS to -lbe -ltracker, and copy
-                src/host/Makefile.beos to src/host/Makefile.
-WIN32           Windows NT or Windows 95.  Follow the instructions in
-                src/host/pc/README.
-MACOS           Mac System 6 to 9.  Follow the instructions in
-                src/host/mac/README.
-GENERIC_BSD     BSD Unix.
-GENERIC_SYSV    SYSV Unix.  Copy src/host/Makefile.sysv to src/host/Makefile.
+DARWIN		Darwin/OS X.  Also works for NetBSD, FreeBSD, OpenBSD and Linux.
+LINUX		Older versions of Linux.  Copy src/host/Makefile.sysv to
+		src/host/Makefile.
+SUNOS4		SunOS 4.x.
+SOLARIS		SunOS 5.x.  In src/Makefile set LIBS to -lsocket -lnsl.  Older
+		versions also require src/host/Makefile.sysv to be copied to
+		src/host/Makefile.
+DECALPHA	DEC Alpha.  Copy src/host/Makefile.sysv to src/host/Makefile.
+BEOS		BeOS.  In src/Makefile set LIBS to -lbe -ltracker, and copy
+		src/host/Makefile.beos to src/host/Makefile.
+WIN32		Windows NT or Windows 95.  Follow the instructions in
+		src/host/pc/README.
+MACOS		Mac System 6 to 9.  Follow the instructions in
+		src/host/mac/README.
+GENERIC_BSD	BSD Unix.
+GENERIC_SYSV	SYSV Unix.  Copy src/host/Makefile.sysv to src/host/Makefile.
 </pre>
 
 <p>

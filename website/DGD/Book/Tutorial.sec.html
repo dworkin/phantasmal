@@ -1,7 +1,7 @@
 @@SECTION Tutorial A Quick LPC Tutorial
 
 <p>
-  LPC is a powerful, extensive and subtle language.  Yet it's pretty
+  LPC is a powerful, extensive and subtle language.  But it's pretty
   easy to learn the basics, at least enough to get by.  This tutorial
   will show you the basics without getting bogged down in the details.
   There's plenty of time for <em>that</em> later on.
@@ -12,8 +12,8 @@
 <p>
   Now that you have the Kernel Library running, it's time to start
   learning some simple LPC code.  There are two ways to test your LPC
-  code with the Kernel Library.  We'll start with the simpler of the
-  two, which is called the &quot;code&quot; command.
+  code with the Kernel Library.  We'll start with the simpler way,
+  which is called the &quot;code&quot; command.
 </p>
 
 <p>
@@ -32,9 +32,8 @@
   Next try typing <kbd>code status()[ST_VERSION]</kbd>.  Note the
   opening and closing parentheses go <em>before</em>
   <var>ST_VERSION</var> in square brackets.  If you do it right,
-  you'll get the current version of DGD, such as &quot;DGD
-  1.2.70&quot;, returned between quotation marks, and of course
-  assigned to a history number like $2.
+  you'll get the current version of DGD, such as <samp>$2 = &quot;DGD
+  1.2.101&quot;.
 </p>
 
 <p>
@@ -69,8 +68,8 @@
   add spaces, it's useful to know.  Note that you <em>cannot</em> add
   spaces before the <kbd>code</kbd> command.  The Kernel Library won't
   parse it correctly, and will tell you that there isn't any such
-  command as nothing.  That's a weakness in the Kernel Library's command
-  parser, though, it's not a problem with LPC as a whole.
+  command as nothing.  It's a bug in the Kernel Library's command
+  parser.
 </p>
 
 <p>
@@ -93,12 +92,15 @@
 </p>
 
 <p>
-  A <dfn>variable</dfn> is a named piece of storage space.  A variable can
-  hold a <dfn>value</dfn>, such as the integer 94 or the character string
-  &quot;Bob's your uncle!&quot;.  The variable has a name that you use
-  to refer to that storage.  The value of the variable may change over
-  time.  For instance, you may add 2 to the variable, giving 96
-  instead of 94.  But the variable name will not.
+  A <dfn>variable</dfn> is a named piece of storage space.  A variable
+  can hold a <dfn>value</dfn>, such as the integer 94 or the character
+  string &quot;Bob's your uncle!&quot; (an integer is a whole number,
+  either positive or negative, and a character string is a series of
+  letters, numbers and punctuation like a word or a sentence).  The
+  variable has a name that you use to refer to that storage.  The
+  value of the variable may change over time.  For instance, you may
+  add 2 to the variable, giving 96 instead of 94.  But the variable
+  name will not change.
 </p>
 
 <p>
@@ -106,11 +108,11 @@
   to type it as written, with the commas.  You should see a result
   like <samp>$7 = 101</samp>.  The commas are a special operator that
   means &quot;do the things in order, but only worry about the value
-  of the <i>last</i> one&quot;.  So we did three things with that code
-  statement.  We set the variable a to have the value 94.  Then we
-  changed what a was equal to by setting it to its old value plus 7.
-  Then, the very last part of the command, after the last comma, was
-  a.  Since comma means &quot; only pay attention to the last one
+  of the <em>last</em> one&quot;.  So we did three things with that
+  code statement.  We set the variable a to have the value 94.  Then
+  we changed what a was equal to by setting it to its old value plus
+  7.  Then, the very last part of the command, after the last comma,
+  was a.  Since comma means &quot; only pay attention to the last one
   &quot;, the value returned was a's new value of 94 + 7, or 101.
 </p>
 
@@ -121,26 +123,27 @@
   finish your code with a semicolon or an end-curly-brace.  Otherwise
   you'll get very strange behavior indeed.  Try typing <kbd>code a =
   94; a = a + 7; return a;</kbd>.  You should get 101, the same result
-  as above.  If you just get 94, you forgot the ending semicolon
-  &mdash; try it again.  Note the 'return' statement at the end.  When
-  you don't use a semicolon at the end of your code command, the
-  Kernel Library assumes you're just writing a little expression and
-  you want its value.  That's what you've been doing so far.  If you
-  end your code command with a semicolon or an end-curly-brace,
-  though, you'll need to include your own return statement if you want
-  anything returned.  The return statement does roughly what the last
-  statement after the comma did last paragraph.  Its value is what
-  gets returned, and so that value is what gets assigned to a history
-  variable like $9 or $26.
+  as above.  If you just get 94, you forgot the ending semicolon.  Try
+  it again.  Note the 'return' statement at the end.  When you don't
+  use a semicolon at the end of your code command, the Kernel Library
+  assumes you're just writing a little expression and you want its
+  value.  That's what you've been doing so far.  If you end your code
+  command with a semicolon or an end-curly-brace then you'll need to
+  include your own return statement if you want anything returned.
+  The return statement does what the last statement after the comma
+  did in the last paragraph.  Its value is what gets returned, and so
+  that value is what gets assigned to a history variable like $9 or
+  $26.
 </p>
 
 <p>
-  Note that a variable in LPC isn't like a mathematical variable, and
-  the equals sign above doesn't really mean equality in a mathematical
-  sense.  Instead, the equals is often called <dfn>assignment</dfn> to
-  indicate that it is setting the variable to have a value.  But
-  unlike in mathematics, the variable can be repeatedly assigned,
-  changing its value throughout your code.
+  A variable in LPC isn't exactly like a mathematical variable.  The
+  equals sign above doesn't really mean equality in a mathematical
+  sense.  Instead, the equals is often called <dfn>assignment</dfn>.
+  It is setting the variable to have a value.  But unlike in
+  mathematics, the variable can be repeatedly assigned, changing its
+  value throughout your code.  A variable's value is the most recent
+  value that has been assigned to it.
 </p>
 
 <p>
@@ -156,34 +159,35 @@
 </p>
 
 <p>
-  Most of the operations are exact, but division of integers is not.
-  If you divide, say, five by two, you'll find that DGD automatically
-  rounds down to 2.  DGD will always round toward zero when you divide
-  integers.  Test with the code command and see.
+  Most of DGD's operations give exactly the answer you'd expect, but
+  division of integers sometimes doesn't.  If you divide, say, five by
+  two, you'll find that DGD automatically rounds down to 2.  DGD will
+  always round toward zero when you divide integers.  Test with the
+  code command and see.
 </p>
 
 <p>
-  Integers (and even floating point numbers) are limited in size.  If
-  you try typing <kbd>code 10000 * 10000 * 10000</kbd>, you'll see a
-  strange result &mdash; it's negative!  That's because integers have
-  a maximum value of a little more than four billion, and if your
-  numbers get larger than that, they'll wrap back around.  Unsigned
-  number variables (we'll talk about them later) will wrap back to
-  zero, while signed number variables will wrap to negative numbers.
-  Similarly, if your integer variable gets smaller than the smallest
-  allowed number, which may be large and negative, it will wrap back
-  into being positive.  This wrapping is because DGD's basic numbers
-  are of a fixed size, and there are only so many possible numbers
-  that a single variable can represent.  If you need larger or smaller
+  Integers are limited in size.  If you try typing <kbd>code 10000 *
+  10000 * 10000</kbd>, you'll see a strange result &mdash; it's
+  negative!  That's because integers have a maximum value of a little
+  more than four billion.  If your numbers get larger than that,
+  they'll wrap back around.  Unsigned integer variables (we'll talk
+  about them later) will wrap back to zero, while signed integer
+  variables will wrap to negative numbers.  If you're subtracting or
+  multiplying and your integer variable gets smaller than the smallest
+  allowed number (around negative four billion) it will wrap back into
+  being positive.  This wrapping is because DGD's basic numbers are of
+  a fixed size, and there are only so many possible numbers that a
+  single variable can represent.  If you need larger or smaller
   integers than that, you'll find that DGD's Arbitrary-Precision
   Signed Numbers (called ASNs) are the way to go.  They're explained
   in a later chapter.
 </p>
 
 <p>
-  You can declare your own variables rather than using the ones that
-  the code command gives you by default.  Integer (that means whole
-  numbers, not decimals or fractions) variables are declared to be of
+  The code command gives you a set of variables with names like
+  <var>a</var>, <var>b</var>, <var>c</var>, et cetera.  You can also
+  declare your own new ones.  Integer variables are declared to be of
   type <dfn>int</dfn>.  So you might type <kbd>code int sam; sam = 7;
   sam = sam + 4; return sam;</kbd>.  Note that you must declare the
   variables at the very beginning.  If you try typing <kbd>code a = 4;
@@ -194,20 +198,21 @@
 </p>
 
 <p>
-  Note for C users: in C, you could say <code>int sam = 7;</code> and
-  it would work fine.  DGD doesn't allow you to declare and initialize
-  a variable in that way, so don't.
+  A note for users of the C language: in C, you could say <code>int
+  sam = 7;</code> instead of <code>int sam; sam = 7;</code> and it
+  would work fine.  DGD doesn't allow you to declare and initialize a
+  variable in that way, so don't.
 </p>
 
 <p>
   Not every value or variable is an integer, so not every variable is
-  declared using int.  You can also have <dfn>unsigned</dfn>
-  variables, which are integers that can't hold negative values.  You
-  can declare an unsigned variable called <var>bruno</var> by typing
-  <code>unsigned int bruno;</code>, or just <code>unsigned
-  bruno;</code> Try subtracting a larger unsigned number from a
-  smaller one and see what happens!  The wraparound can be hard to
-  understand if you're not used to it.
+  declared using <code>int</code>.  You can also have
+  <dfn>unsigned</dfn> variables, which are integers that can't hold
+  negative values.  You can declare an unsigned variable called
+  <var>bruno</var> by typing <code>unsigned int bruno;</code>, or just
+  <code>unsigned bruno;</code> Try subtracting a larger unsigned
+  number from a smaller one and see what happens!  The wraparound can
+  be surprising if you're not used to it.
 </p>
 
 <p>
@@ -228,16 +233,16 @@
   guess from the previous section.  For instance, let's say you wanted
   to find out how many times you'd have to double the number two
   before you got to some very high number.  That's something you could
-  probably do in your head or on paper for reasonable numbers, but for
-  a number like ten million, you're probably better off letting the
+  probably do in your head or on paper for small numbers.  But for a
+  number like ten million, you're probably better off letting the
   computer do it.
 </p>
 
 <p>
   Try typing <kbd> code int times; int count; times = 0; count = 2;
   while(count < 10000000) { count = count * 2; times = times + 1; }
-  return times;</kbd> Note that you must <em>not</em> hit return
-  before the very end, you have to type the whole thing on one line.
+  return times;</kbd> Note that you must <em>not</em> hit return until
+  the very end &mdash; you have to type the whole thing on one line.
   If you do it right, you should get 23 as the answer.
 </p>
 
@@ -253,18 +258,19 @@
 
 <p>
   You know about declaring variables and setting values, but
-  <dfn>while</dfn> is a new one.  While takes a condition in parentheses,
-  and then a bunch of stuff between curly braces.  The stuff in curly
-  braces is done over and over again until the condition in
-  parentheses is false.  So in the first example above, the code will
-  keep doubling the count variable and adding one to the times
-  variable until count is no longer less than ten million.  Then it
-  will return the count, which is how many times it had to double.
+  <dfn>while</dfn> is a new one.  While takes a condition in
+  parentheses, and then a bunch of stuff between curly braces.  The
+  stuff in curly braces is done over and over again until the
+  condition in parentheses is false.  So in the first example above,
+  the code will keep doubling the <var>count</var> variable and adding
+  one to the <var>times</var> variable until <var>count</var> is no
+  longer less than ten million.  Then it will return <var>count</var>,
+  which is how many times it had to double.
 </p>
 
 <p>
-  Knowing that much, you should be able to figure out the second
-  example on your own.
+  Once you understand the first example, you should be able to figure
+  out the second example on your own.
 </p>
 
 <p>
@@ -276,18 +282,20 @@
   is funny.  Note that after the word &quot;for&quot;, you have three
   different pieces of code in the parentheses, each separated by a
   semicolon.  The first piece of the code is done before the loop
-  begins &mdash; in this case, setting times to 0 and count to 2.  The
-  second part is checked every time through the loop.  In this case
-  it's checking whether count is more than ten million, just like the
-  while loop did.
+  begins.  In this case, it sets <var>times</var> to 0 and
+  <var>count</var> to 2.  The second piece of code, <code>count <
+  10000000</code> is checked every time through the loop.  In this
+  case it's checking whether count is more than ten million, just like
+  the while loop did.
 </p>
 
 <p>
   And the last section is done at the end of every time through the
   loop.  So the things that were inside the while loop have moved to
-  the third section of code in the for loop's parentheses.  You can
-  decide where to put which code since putting it in the third section
-  of the parentheses is the same as putting it in the body.
+  the for loop's third section of code.  Putting code in the third
+  section of the parentheses has the same effect as putting it in the
+  loop body, so you can divide the code between the two however you
+  like.
 </p>
 
 @@SECTION Tutorial.StringHandling Simple String Manipulation
@@ -295,18 +303,18 @@
 <p>
   Some time back, we called the status() function, and extracted a
   result which wasn't a number at all.  It was a <dfn>string</dfn>,
-  which is a set of character values, one after the other in a list.
-  Of course, it doesn't usually look that way.  It usually looks like
-  a word or phrase or paragraph.
+  which is a set of character values, one after the other.  Of course,
+  it doesn't usually look that way.  It usually looks like a word or
+  phrase or paragraph.
 </p>
 
 <p>
-  In DGD, just like in C, strings use what's called ASCII code.  Since
-  computers represent numbers internally rather than letters, every
+  In DGD, just like in C, strings use what's called ASCII code.
+  Computers represent everything with numbers internally.  So every
   printable character (and many special characters with no printable
   representation) must be assigned a number.  ASCII is one way to
-  assign those numbers.  A DGD string is just a sequence of those
-  numbers, each representing a character.
+  assign those numbers.  A DGD string is just a sequence of numbers,
+  each representing a letter, number or other printable character.
 </p>
 
 <p>
@@ -314,7 +322,7 @@
   &quot;&quot;.  That's a sequence of <em>zero</em> characters, and it
   just means &quot;no string here&quot;.  The string can also hold the
   special value <dfn>nil</dfn>.  Every string holds <var>nil</var>
-  when you first declare it.  So do more complicated data types we'll
+  when you first declare it.  So do certain other data types we'll
   talk about later.  <var>Nil</var> isn't a valid string, it's just a
   placeholder meaning that the string isn't usable yet &mdash; you
   have to assign a value to it first.
@@ -324,8 +332,7 @@
   So go ahead and type <kbd>code &quot;Hello world!&quot;</kbd>.  You
   should see a result something like <samp>$15 = &quot;Hello
   world!&quot;</samp>.  The quotation marks around it mean that it's a
-  string.  In LPC, a string is always double-quoted, never
-  single-quoted or quoted with other more interesting marks.
+  string.  In LPC, a string is always double-quoted.
 </p>
 
 <p>
@@ -339,14 +346,14 @@
 
 <p>
   Remember that the string is made of a sequence of numbers which
-  encode characters.  In LPC, you can extract one of these numbers
+  represent characters.  In LPC you can extract one of these numbers
   with the square-brace operator.  For instance, type <kbd>code
   &quot;A&quot;[0]</kbd>.  You should see a result like <samp>$20 =
   65</samp>.  That's because 65 is the ASCII encoding for an uppercase
   A.  Try using strings other than &quot;A&quot; and you can see more
   ASCII encodings.  You'll notice that all the uppercase letters are
-  ordered alphabetically within themselves, as are the lowercase
-  letters.
+  ordered alphabetically within themselves so B is 66, C is 67 and so
+  on.  The lowercase letters do the same thing.
 </p>
 
 <p>
@@ -364,7 +371,8 @@
   that can't just be an ASCII number.  So if you extract more than one
   character from a string, LPC gives you another string.  Try typing
   <kbd>code &quot;Big Bertha&quot;[0..2]</kbd>.  You should get the
-  result &quot;Big&quot;.  That's characters number zero through two.
+  result &quot;Big&quot;.  That's characters number zero through two
+  &mdash; the first through third characters.
 </p>
 
 <p>
@@ -374,15 +382,15 @@
   Similarly, using <code>[3..]</code> would mean &quot;from the fourth
   character to the end of the string&quot;.  Perl and some LPC
   dialects let you specify negative numbers to measure from the end of
-  the string, but DGD chooses not to do so.  So only use positive
+  the string, but DGD does not.  So you should only use positive
   numbers for your string offsets.
 </p>
 
 <p>
-  You can also take the length of a string in characters.  For
+  You can also find the length of a string in characters.  For
   instance, type <kbd>code strlen(&quot;Bob's Aunt Polly&quot;)</kbd>.
   You should get a result like <samp>$24 = 16</samp>.  That's because
-  the string contains sixteen characters, which includes the
+  the string contains sixteen characters &mdash; that includes the
   apostrophe and both spaces.  Character counting with strlen()
   includes punctuation and other special characters as well as letters
   and numbers.
@@ -392,11 +400,10 @@
 @@SECTION Tutorial.UserOutput Sending Output to the User
 
 <p>
-  In your code statements, there is also a variable called
+  In your code statements, you can also use a variable called
   <var>user</var>.  That variable represents the current user object,
   which is the network connection that you have to the DGD server.
-  There are certain functions you can call on it which do various
-  things.
+  There are certain functions you can call on it to do various things.
 </p>
 
 <p>
@@ -408,11 +415,12 @@
   <kbd>code query_ip_name(user-&gt;query_conn())</kbd>, you should see
   either <samp>$26 = "localhost"</samp> or a similar result with your
   computer's hostname.  If you type <kbd>code
-  query_ip_number(user-&gt;query_conn())</kbd>, you should see a similar
-  result with &quot;127.0.0.1&quot; or your computer's IP address.  If
-  you don't know what a hostname or IP address is, you should probably
-  learn that before running your own MUD...  Both are used to locate
-  internet-connected machines by other machines.
+  query_ip_number(user-&gt;query_conn())</kbd>, you should see a
+  similar result with &quot;127.0.0.1&quot; or your computer's IP
+  address.  If you don't know what a hostname or IP address is, you
+  should probably learn that before running your own MUD...  Both are
+  used by internet-connected machines to locate other
+  internet-connected machines.
 </p>
 
 <p>
@@ -423,7 +431,7 @@
   variable will have a value of <var>nil</var>.  If you remember,
   <var>nil</var> was the value that a string has before it gets
   initialized.  It's also the value that a function returns if you
-  don't explicitly return anything.
+  don't specifically return anything at all.
 </p>
 
 <p>
@@ -436,10 +444,10 @@
   \t for a tab.  Since the backslash and the double-quote have special
   meaning in strings, there are special character escapes to write
   them as well &mdash; \\ and \&quot;, respectively.  Note that with
-  some telnet clients you'll need to write an end-of-line as \n\r or
-  (more rarely) \r\n.  So if your telnet is doing odd things at line
-  endings, try that.  You may also want to see if there's an option
-  for treating line endings differently &mdash; many telnet clients
+  some MUD libraries you'll need to write an end-of-line as \n\r or
+  \r\n.  So if your telnet is doing odd things at line endings, try
+  that.  You may also want to see if there's an option in your telnet
+  client for treating line endings differently.  Many telnet clients
   (including PuTTY on Win32) support changing the behavior with an
   option.
 </p>
@@ -447,22 +455,22 @@
 <p>
   To see more of how the <dfn>newline character</dfn> works, try
   adding more <dfn>\n</dfn> characters.  Type <kbd>code
-  user-&gt;message(&quot;Line...\n\n\n\n&quot;)</kbd>.  Note that if
-  you leave the semicolon off, you won't get <var>nil</var> returned,
+  user-&gt;message(&quot;Line...\n\n\n\n&quot;)</kbd>.  If you leave
+  the semicolon off like that, you won't get <var>nil</var> returned,
   but rather the number 1.  That's because the user-&gt;message
   function returns an integer, which is either 1 or 0 for whether the
   entire message could be sent.
 </p>
 
 <p>
-  Note that when you printed a message with more than one \n, you saw
-  more than one line of space before the returned value.  That's
-  because the user-&gt;message function writes the output directly to
-  your terminal, and it does it immediately.  So you could use it to
-  print output fancier than the returned value if you were so
-  inclined.  However, anything you print won't be saved to a history
-  variable, so make sure you're okay with it being transient.  Once
-  you print it, it's on your screen.  But other than that it's gone.
+  When you printed a message with more than one \n, you saw more than
+  one line of space before the returned value.  That's because the
+  user-&gt;message function writes the output directly to your
+  terminal, and it does it immediately.  So you could use it to print
+  fancier output if you wanted to.  Anything you print won't be saved
+  to a history variable, so make sure you're okay with it only being
+  on the screen.  There's way for DGD to get it back and play with it
+  more.
 </p>
 
 
@@ -471,27 +479,39 @@
 <p>
   You may be getting pretty tired of the code command by now.  Even if
   you're not, you're probably starting to understand why we don't use
-  it for big programs.  Retyping all that stuff can get ugly, and
-  typos are difficult to correct.  And the code would certainly
-  <em>look</em> better if it could be formatted properly...
+  it for big programs.  Retyping all that stuff can get ugly.  Typos
+  are difficult to correct if you're retyping everything.  And the
+  code would certainly <em>look</em> better if it could be formatted
+  properly.
 </p>
 
 <p>
-  To start using LPC files, you'll first need to be able to edit files
-  of source code somehow.  That means you'll need an editor.
+  To start using LPC files, you'll first need to be able to edit text
+  files somehow.  That means you'll need an <dfn>editing program</dfn>,
+  or <dfn>editor</dfn>.
 </p>
 
 <p>
-  On Unix, essentially any editor will do.  On Windows, however,
-  you'll need to be careful because most editors use Windows-style
-  line breaks, which DGD doesn't use properly.  If you download a copy
-  of TextPad, that editor will handle line breaks properly.  There are
-  also versions of emacs and vi for Windows, and either will work.  Or
-  you can use the <a href="Misc_EditorQuick.html">built-in DGD
-  editor</a>, though that's generally less convenient.  I don't know
-  the situation on Macintosh computers, so I don't know what editors
-  are available.  In any case, no matter the platform, the built-in
-  DGD editor will work fine.
+  Since you're running your own copy of DGD, the easiest way for you
+  to edit files is to use an editing program that's on your desktop.
+  While it's possible to use the <a
+  href="Misc_EditorQuick.html">built-in DGD editor</a>, it's probably
+  easier not to.  The built-in one isn't a very good editor by modern
+  standards, and it's hard to use if you're used to normal desktop
+  editing programs.
+</p>
+
+<p>
+  On Unix, whatever editor you've already got will almost certainly
+  do.  On Windows, however, you'll need to be careful because most
+  editors put Windows-style line breaks into text files.  DGD requires
+  Unix-style line breaks in its text files.  If you don't know what
+  line breaks are, don't worry too much, but <em>do</em> follow the
+  instructions here anyway.  TextPad is a freely available Win32
+  editor that will handle line breaks properly.  There are also
+  versions of emacs and vi for Windows, and either will work.  I don't
+  know the situation on Macintosh computers, so I don't know what
+  editors are available that will handle non-native line breaks.
 </p>
 
 <p>
@@ -520,8 +540,8 @@ mixed exec(object user, mixed argv...) {
   instance, a <code>return</code> statement is added before your code
   if that code doesn't end with a semicolon or end-curly-brace.  Also,
   your code has all the history references turned into something more
-  palatable to LPC since the history variables aren't part of LPC
-  proper.  They're only part of the code command.
+  palatable.  The history variables aren't part of DGD's dialect of
+  LPC.  They're only part of the Kernel Library.
 </p>
 
 <p>
@@ -544,8 +564,8 @@ mixed exec(object user, mixed argv...) {
 </p>
 
 <p>
-  Now you'll need to compile the object.  To do that, from admin's
-  command line, you'll want to type <kbd>compile
+  Now you'll need to compile the object.  To do that from the admin
+  user's command line you'll want to type <kbd>compile
   /usr/admin/myobj.c</kbd>.  You may just be able to type <kbd>compile
   myobj.c</kbd> for the same result &mdash; use the <kbd>pwd</kbd>
   command to make sure you're in the <tt>/usr/admin</tt> directory.
@@ -553,12 +573,13 @@ mixed exec(object user, mixed argv...) {
 
 <p>
   In either case, you should see a result like <samp>$15 =
-  &lt;/usr/admin/myobj&gt;</samp>.  If you get errors instead (other
-  than file not found) then your code isn't quite right.  Look at it
-  again carefully.  If it can't find the file, then perhaps you didn't
-  put it in the right place, or perhaps you didn't type he compile
-  line perfectly.  Check them both again.  Try it until you get the
-  result above.
+  &lt;/usr/admin/myobj&gt;</samp>.  If you get errors instead then
+  your code isn't quite right or there's something wrong with the file
+  (did you use the right name?).  Look at both again carefully.  If
+  DGD can't find the file, then perhaps you didn't put it in the right
+  place, or perhaps you didn't type the &quot;compile&quot; line
+  perfectly.  Check them both again.  Try it until you get the result
+  above.
 </p>
 
 <p>
@@ -574,7 +595,7 @@ mixed exec(object user, mixed argv...) {
 <p>
   Go back and look at the code again.  You may have realized that the
   long line starting with <var>mixed</var> declares all those
-  single-letter variables I mentioned earlier.  <code>Mixed</code> is
+  single-letter variables I mentioned earlier.  <code>Mixed</code>
   declares a variable, just as <var>int</var> and <var>float</var> do.
   A <var>mixed</var> variable can hold any DGD type.  You
   <em>could</em> just make all of your variables mixed rather than
@@ -583,20 +604,23 @@ mixed exec(object user, mixed argv...) {
 </p>
 
 <p>
-  DGD doesn't guarantee that variables like 'c' and 'f' are globally
-  declared.  The code command chooses to provide them.  Constants like
-  <var>ST_VERSION</var> aren't really part of the language either.
-  They're included by the series of <code>#include</code> directives
-  at the start of the source file.  In your own code, you'll need to
-  specifically include the files for any constants you may wish to
-  use.
+  DGD doesn't actually have magic variables that are available
+  everywhere called 'c' and 'f' and so on.  The code command provides
+  them.  But in a regular LPC file, you'll have to declare them if you
+  want to use them.  Constants like <var>ST_VERSION</var> aren't
+  really part of the language either.  The code command has them
+  because of the <code>#include</code> directives at the start of the
+  source file.  In your own code, you'll need to specifically include
+  the files for any constants you may wish to use.  So if you want to
+  use <var>ST_VERSION</var>, you'll need to include status.h from your
+  LPC object.
 </p>
 
 <p>
   There's also a weird line starting with <code>/*</code> and ending
   with <code>*/</code>.  That line is called a <dfn>comment</dfn>, and
   it's designed to let other programmers know things about your code.
-  DGD just skips it, so you can <em>comment</em> on your own code, to
+  It has no effect, so you can <em>comment</em> on your own code, to
   humans only.  A comment is allowed to span multiple lines, or it can
   cover only part of a single line..  It goes from the <code>/*</code>
   to the <code>*/</code>, whether that's only part of a line, or pages
@@ -604,27 +628,28 @@ mixed exec(object user, mixed argv...) {
 </p>
 
 <p>
-  We'll cover more about the specifics of that file and what we mean
-  by a function later on.  Similarly, we'll cover more about why you
-  had to call it with the syntax you did.  However, in the mean time,
-  you have a good simple way to store your code and make modifications
-  to it instead of retyping the whole thing every time.  That'll be
-  useful for code like what you typed in the <a
-  href="Tutorial_Loops.html">Loops and Looping</a> section.
+  We'll cover more about the specifics of myobj.c and what we mean by
+  a function later on.  We'll cover more about what the
+  &quot;code&quot; command to call it actually did.  However, in the
+  mean time, you have a good simple way to store your code and make
+  modifications to it instead of retyping the whole thing every time.
+  That'll be useful for longer bits of code like what you typed in the
+  <a href="Tutorial_Loops.html">Loops and Looping</a> section.
 </p>
 
 @@SECTION Tutorial.Arrays Arrays
 
 <p>
-  An <dfn>array</dfn> is a list of values, usually all of the same
-  type.  An array is meant to make it easy to reference arbitrary
-  elements of the array by number.  However, an array is slow when you
-  add or remove elements.
+  An <dfn>array</dfn> is a list of values, either all of the same type
+  or of multiple types.  An array makes it easy to reference values by
+  their number &mdash; for instance, it's easy to say &quot;give me
+  the fourth value in the array&quot;.  However, an array is slow when
+  you add values or remove them.
 </p>
 
 <p>
   Let's write a function to count digits in a string.  Go ahead and
-  change <tt>myobj.c</tt> (or make a new object) to the following:
+  change <tt>myobj.c</tt> (or make a new file) to the following:
 </p>
 
 <pre>
@@ -636,7 +661,10 @@ mixed count_digits(string str) {
   num_count = allocate_int(10);
 
   for(ctr = 0; ctr &lt; strlen(str); ctr++) {
-    num_count[str[ctr] - '0']++;
+    if((str[ctr] &lt;= '9') &amp;&amp;
+       (str[ctr] &gt;= '0')) {
+      num_count[str[ctr] - '0']++;
+    }
   }
 
   user = this_user();
@@ -653,8 +681,8 @@ mixed count_digits(string str) {
   /usr/admin/myobj.c</kbd>.  If you're not using <tt>myobj.c</tt> as
   the filename, substitute the one you're using.  You should get a
   result like <samp>$34 = &lt;/usr/admin/myobj&gt;</samp>.  Now, using
-  the history variable you get back ($34 in the example), type
-  <kbd>$34->count_digits(&quot;0123456789&quot;)</kbd>, or the
+  the history variable you get back (we'll pretend it's $34 here),
+  type <kbd>$34->count_digits(&quot;0123456789&quot;)</kbd>, or the
   equivalent with your own history variable number.  You should see a
   result like the following:
 </p>
@@ -666,10 +694,10 @@ $36 = nil
 
 <p>
   Since the function doesn't explicitly return anything, the history
-  variable result is <var>nil</var>.  But since it uses the
-  <code>user-&gt;message</code> function to send output to the user,
-  the list of number counts is printed out.  Try calling the function
-  a few more times with arguments different from
+  variable result is <var>nil</var>.  But since the function calls
+  <code>user-&gt;message</code> to send output to the user (that's
+  you!), the list of number counts is printed out.  Try calling the
+  function a few more times with arguments different from
   &quot;0123456789&quot;.  It will count the number of occurrences of
   each digit in your input.
 </p>
@@ -683,10 +711,10 @@ $36 = nil
   when calling the function.  You'll also notice that instead of
   having <code>object user, mixed argv...</code> in parentheses, it
   has <code>string str</code>.  That section tells what the function
-  needs to be passed &mdash; for the first function, you supplied
-  <code>this_user()</code>, while for <var>count_digits</var>, you
-  supplied a single string which was called &quot;str&quot; throughout
-  the function.
+  needs to do its thing.  For the &quot;return 7&quot; function, you
+  called it with <code>this_user()</code>, a user object, in
+  parentheses.  For <var>count_digits</var>, you gave a string which
+  it then counted numbers in.
 </p>
 
 <p>
@@ -695,15 +723,15 @@ $36 = nil
   like <var>mixed</var> or <var>int</var>.  A variable of type
   <var>object</var> will hold a compiled DGD object, such as a
   connection object, or the object that <tt>myobj.c</tt> compiles
-  into.
+  into.  In <var>count_digits</var>, it holds a user object like the
+  one you passed to the function in the last section.
 </p>
 
 <p>
   You'll notice that the variable declaration for <var>num_count</var>
   starts with <var>int</var>, but that there's an asterisk in front of
-  it.  The asterisk means that <var>num_count</var> isn't an integer,
-  but rather an <dfn>array</dfn> of integers.  That means that it's a
-  list of integers, ten in this case.
+  the variable name.  The asterisk means that <var>num_count</var>
+  isn't an integer, but rather an <dfn>array</dfn> of integers.
 </p>
 
 <p>
@@ -712,7 +740,8 @@ $36 = nil
   initialized to something.  One way to assign reasonable values to an
   array of integers is the allocate_int function, which returns an
   array of zeroes.  The array is as long as the number in parentheses
-  is big.  For the example above, that means ten zeroes.
+  is big.  For the example above, that means it returns an array of
+  ten zeroes.
 </p>
 
 <p>
@@ -729,7 +758,9 @@ $36 = nil
   quotes will evaluate the that character's integer.  Try typing
   <kbd>code 'A'</kbd> and you should get a result of 65, just like in
   the <a href="Tutorial_StringHandling">section on handling
-  strings</a>.
+  strings</a>.  The 'if' statement checks to make sure that the
+  character is a number between 0 and 9.  That way letter, spaces and
+  punctuation will be ignored.
 </p>
 
 <p>
@@ -738,21 +769,22 @@ $36 = nil
   array, like a string, you can take a single element from it.  So if
   an array called <var>arr</var> contains a zero followed by four
   nines, then the value of <code>arr[0]</code> is zero, and the value
-  of <code>arr[3]</code> is nine.
+  of <code>arr[1]</code>, <code>arr[2]</code> and <code>arr[3]</code>
+  would each be nine.  If you tried to check <code>arr[4]</code>,
+  you'd get an error because there are only four elements and you
+  tried to ask about the fifth one.
 </p>
 
 <p>
-  The square brackets are used twice in the code above, one inside the
-  other.  The first is to dereference a particular character of the
-  string, which is the same string dereference you saw before.  Then
-  <code>'0'</code> is subtracted from that character.  The numbers 0
-  through 9, when ASCII encoded, become 48 through 57.  Remember that
-  these codes are for the printable 0 through 9, so it's not the same
-  as the actual numbers.  Since the numbers are in order, starting
-  with zero, you can subtract ASCII zero (which equals the number 48)
-  from an ASCII digit such as the ones you typed in, and get a number
-  0 through 9 for which digit it was.  That's why we subtract the
-  character zero from that character of the string.
+  In <code>num_count[str[ctr] - '0']++;</code>, the square brackets
+  are used twice, one inside the other.  The first is to dereference a
+  character of the string, just like before.  Then <code>'0'</code> is
+  subtracted from that character.  The numbers 0 through 9, when ASCII
+  encoded, become 48 through 57.  Since the numbers are in order,
+  starting with zero, you can subtract ASCII zero (which equals the
+  number 48) from an ASCII digit such as the ones you typed in, and
+  get a number 0 through 9 for which digit it was.  That's why we
+  subtract the character zero from that character of the string.
 </p>
 
 <p>
@@ -771,15 +803,16 @@ $36 = nil
   So the array mentioned above would be written <code>({ 0, 9, 9, 9, 9
   })</code> in LPC.  Instead of the allocate_int call, you could have
   written <code>num_count = ({ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 });</code>
+  The curly braces have to be <em>inside</em> the parentheses, they
+  can't be outside them.
 </p>
 
 <p>
   Arrays can also be added to each other like strings.  Adding them
-  will return an array which is as long as the first array's length
-  plus the second array's length.  The first array's elements will be
-  first, followed by those of the second array.  So <kbd>code ({ 1, 2,
-  3 }) + ({ 7, 8, 9 })</kbd> will print a result like <samp>$40 = ({
-  1, 2, 3, 7, 8, 9 })</samp>.
+  will make a new array which is all the elements of the first array
+  followed by all the elements of the second array.  So <kbd>code ({
+  1, 2, 3 }) + ({ 7, 8, 9 })</kbd> will print a result like <samp>$40
+  = ({ 1, 2, 3, 7, 8, 9 })</samp>.
 </p>
 
 
@@ -789,15 +822,15 @@ $36 = nil
   Mappings are data structures, rather like arrays.  An array is a
   sequence of values (often numbers).  A <dfn>mapping</dfn> is a sort
   of dictionary of values, so that you can find a value by looking up
-  its key.  You'll see them called <dfn>hash tables</dfn> in some
-  other languages.
+  its name, called a <dfn>key</dfn>.  You'll see mappings called
+  <dfn>hash tables</dfn> in some other languages.
 </p>
 
 <p>
-  Say we wanted to look through an array and make sure there were no
-  repeat elements.  Specifically, we wanted to read through an array
-  and return another array which had no repeated elements, but wasn't
-  guaranteed to be in the same order.
+  Let's say we wanted to look through an array of strings and make
+  sure there were no repeated elements.  Specifically, we wanted to
+  read through an array and return another array which had no repeated
+  elements, so every value was unique.
 </p>
 
 <pre>
@@ -827,8 +860,9 @@ string *unique(string *array) {
   instead of dereferencing by number, this mapping is dereferenced by
   name.  So if a mapping called <var>letters</var> had that value,
   then <code>letters[&quot;a&quot;]</code> would have the value 1 and
-  <code>letters[&quot;c&quot;]</code> would have the value 3.  So
-  <code>([ ])</code> is a fresh new empty mapping.
+  <code>letters[&quot;c&quot;]</code> would have the value 3.
+  <code>([ ])</code> is a fresh new empty mapping &mdash; there are no
+  keys or values at all in it.
 </p>
 
 <p>
@@ -838,13 +872,13 @@ string *unique(string *array) {
   try typing <kbd>&quot;/usr/admin/myobj&quot;->unique( ({
   &quot;bob&quot;, &quot;sam&quot;, &quot;murray&quot;,
   &quot;bob&quot; }) )</kbd>.  You should get a result like <samp>$45
-  = ({ "bob", "murray", "sam" })</samp>.  Note that this contains all
-  the same strings as the original, but in a different order, and with
-  no repeated &quot;bob&quot;.  Note also that you've just called your
-  function on the object, but you <em>didn't</em> use the same syntax
-  you've been using.  Instead, you used the object's name in double
-  quotes.  That's the same as the filename, but without the
-  <tt>.c</tt> on the end.
+  = ({ "bob", "murray", "sam" })</samp>.  The result contains all the
+  same strings as the original, but in a different order, and with no
+  repeated &quot;bob&quot;.  You've just called your function on the
+  object, but you didn't use quite the same syntax you've been using.
+  Instead, you used the object's name in double quotes.  The object's
+  name is the same as the filename, but without the <tt>.c</tt> on the
+  end.
 </p>
 
 <p>
@@ -859,7 +893,7 @@ string *unique(string *array) {
   explored how they work.
 </p>
 
-@@SECTION Tutorial.Objects
+@@SECTION Tutorial.Objects Objects
 
 <p>
 </p>

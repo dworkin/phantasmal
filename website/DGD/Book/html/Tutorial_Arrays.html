@@ -58,12 +58,20 @@
           <td class="content">
 
 
-<h2> 2.7 Arrays </h2>
+<h2> 3.7 Arrays </h2>
 
 
 <p>
+  An <dfn>array</dfn> is a list of values, either all of the same type
+  or of multiple types.  An array makes it easy to reference values by
+  their number &mdash; for instance, it's easy to say &quot;give me
+  the fourth value in the array&quot;.  However, an array is slow when
+  you add values or remove them.
+</p>
+
+<p>
   Let's write a function to count digits in a string.  Go ahead and
-  change <tt>myobj.c</tt> (or make a new object) to the following:
+  change <tt>myobj.c</tt> (or make a new file) to the following:
 </p>
 
 <pre>
@@ -75,7 +83,10 @@ mixed count_digits(string str) {
   num_count = allocate_int(10);
 
   for(ctr = 0; ctr &lt; strlen(str); ctr++) {
-    num_count[str[ctr] - '0']++;
+    if((str[ctr] &lt;= '9') &amp;&amp;
+       (str[ctr] &gt;= '0')) {
+      num_count[str[ctr] - '0']++;
+    }
   }
 
   user = this_user();
@@ -92,8 +103,8 @@ mixed count_digits(string str) {
   /usr/admin/myobj.c</kbd>.  If you're not using <tt>myobj.c</tt> as
   the filename, substitute the one you're using.  You should get a
   result like <samp>$34 = &lt;/usr/admin/myobj&gt;</samp>.  Now, using
-  the history variable you get back ($34 in the example), type
-  <kbd>$34->count_digits(&quot;0123456789&quot;)</kbd>, or the
+  the history variable you get back (we'll pretend it's $34 here),
+  type <kbd>$34->count_digits(&quot;0123456789&quot;)</kbd>, or the
   equivalent with your own history variable number.  You should see a
   result like the following:
 </p>
@@ -105,10 +116,10 @@ $36 = nil
 
 <p>
   Since the function doesn't explicitly return anything, the history
-  variable result is <var>nil</var>.  But since it uses the
-  <code>user-&gt;message</code> function to send output to the user,
-  the list of number counts is printed out.  Try calling the function
-  a few more times with arguments different from
+  variable result is <var>nil</var>.  But since the function calls
+  <code>user-&gt;message</code> to send output to the user (that's
+  you!), the list of number counts is printed out.  Try calling the
+  function a few more times with arguments different from
   &quot;0123456789&quot;.  It will count the number of occurrences of
   each digit in your input.
 </p>
@@ -122,10 +133,10 @@ $36 = nil
   when calling the function.  You'll also notice that instead of
   having <code>object user, mixed argv...</code> in parentheses, it
   has <code>string str</code>.  That section tells what the function
-  needs to be passed &mdash; for the first function, you supplied
-  <code>this_user()</code>, while for <var>count_digits</var>, you
-  supplied a single string which was called &quot;str&quot; throughout
-  the function.
+  needs to do its thing.  For the &quot;return 7&quot; function, you
+  called it with <code>this_user()</code>, a user object, in
+  parentheses.  For <var>count_digits</var>, you gave a string which
+  it then counted numbers in.
 </p>
 
 <p>
@@ -134,15 +145,15 @@ $36 = nil
   like <var>mixed</var> or <var>int</var>.  A variable of type
   <var>object</var> will hold a compiled DGD object, such as a
   connection object, or the object that <tt>myobj.c</tt> compiles
-  into.
+  into.  In <var>count_digits</var>, it holds a user object like the
+  one you passed to the function in the last section.
 </p>
 
 <p>
   You'll notice that the variable declaration for <var>num_count</var>
   starts with <var>int</var>, but that there's an asterisk in front of
-  it.  The asterisk means that <var>num_count</var> isn't an integer,
-  but rather an <dfn>array</dfn> of integers.  That means that it's a
-  list of integers, ten in this case.
+  the variable name.  The asterisk means that <var>num_count</var>
+  isn't an integer, but rather an <dfn>array</dfn> of integers.
 </p>
 
 <p>
@@ -151,7 +162,8 @@ $36 = nil
   initialized to something.  One way to assign reasonable values to an
   array of integers is the allocate_int function, which returns an
   array of zeroes.  The array is as long as the number in parentheses
-  is big.  For the example above, that means ten zeroes.
+  is big.  For the example above, that means it returns an array of
+  ten zeroes.
 </p>
 
 <p>
@@ -168,7 +180,9 @@ $36 = nil
   quotes will evaluate the that character's integer.  Try typing
   <kbd>code 'A'</kbd> and you should get a result of 65, just like in
   the <a href="Tutorial_StringHandling">section on handling
-  strings</a>.
+  strings</a>.  The 'if' statement checks to make sure that the
+  character is a number between 0 and 9.  That way letter, spaces and
+  punctuation will be ignored.
 </p>
 
 <p>
@@ -177,21 +191,22 @@ $36 = nil
   array, like a string, you can take a single element from it.  So if
   an array called <var>arr</var> contains a zero followed by four
   nines, then the value of <code>arr[0]</code> is zero, and the value
-  of <code>arr[3]</code> is nine.
+  of <code>arr[1]</code>, <code>arr[2]</code> and <code>arr[3]</code>
+  would each be nine.  If you tried to check <code>arr[4]</code>,
+  you'd get an error because there are only four elements and you
+  tried to ask about the fifth one.
 </p>
 
 <p>
-  The square brackets are used twice in the code above, one inside the
-  other.  The first is to dereference a particular character of the
-  string, which is the same string dereference you saw before.  Then
-  <code>'0'</code> is subtracted from that character.  The numbers 0
-  through 9, when ASCII encoded, become 48 through 57.  Remember that
-  these codes are for the printable 0 through 9, so it's not the same
-  as the actual numbers.  Since the numbers are in order, starting
-  with zero, you can subtract ASCII zero (which equals the number 48)
-  from an ASCII digit such as the ones you typed in, and get a number
-  0 through 9 for which digit it was.  That's why we subtract the
-  character zero from that character of the string.
+  In <code>num_count[str[ctr] - '0']++;</code>, the square brackets
+  are used twice, one inside the other.  The first is to dereference a
+  character of the string, just like before.  Then <code>'0'</code> is
+  subtracted from that character.  The numbers 0 through 9, when ASCII
+  encoded, become 48 through 57.  Since the numbers are in order,
+  starting with zero, you can subtract ASCII zero (which equals the
+  number 48) from an ASCII digit such as the ones you typed in, and
+  get a number 0 through 9 for which digit it was.  That's why we
+  subtract the character zero from that character of the string.
 </p>
 
 <p>
@@ -210,15 +225,16 @@ $36 = nil
   So the array mentioned above would be written <code>({ 0, 9, 9, 9, 9
   })</code> in LPC.  Instead of the allocate_int call, you could have
   written <code>num_count = ({ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 });</code>
+  The curly braces have to be <em>inside</em> the parentheses, they
+  can't be outside them.
 </p>
 
 <p>
   Arrays can also be added to each other like strings.  Adding them
-  will return an array which is as long as the first array's length
-  plus the second array's length.  The first array's elements will be
-  first, followed by those of the second array.  So <kbd>code ({ 1, 2,
-  3 }) + ({ 7, 8, 9 })</kbd> will print a result like <samp>$40 = ({
-  1, 2, 3, 7, 8, 9 })</samp>.
+  will make a new array which is all the elements of the first array
+  followed by all the elements of the second array.  So <kbd>code ({
+  1, 2, 3 }) + ({ 7, 8, 9 })</kbd> will print a result like <samp>$40
+  = ({ 1, 2, 3, 7, 8, 9 })</samp>.
 </p>
 
 

@@ -58,14 +58,14 @@
           <td class="content">
 
 
-<h2> 2.1 Getting Started </h2>
+<h2> 3.1 Getting Started </h2>
 
 
 <p>
   Now that you have the Kernel Library running, it's time to start
   learning some simple LPC code.  There are two ways to test your LPC
-  code with the Kernel Library.  We'll start with the simpler of the
-  two, which is called the &quot;code&quot; command.
+  code with the Kernel Library.  We'll start with the simpler way,
+  which is called the &quot;code&quot; command.
 </p>
 
 <p>
@@ -84,9 +84,8 @@
   Next try typing <kbd>code status()[ST_VERSION]</kbd>.  Note the
   opening and closing parentheses go <em>before</em>
   <var>ST_VERSION</var> in square brackets.  If you do it right,
-  you'll get the current version of DGD, such as &quot;DGD
-  1.2.70&quot;, returned between quotation marks, and of course
-  assigned to a history number like $2.
+  you'll get the current version of DGD, such as <samp>$2 = &quot;DGD
+  1.2.101&quot;.
 </p>
 
 <p>
@@ -121,8 +120,8 @@
   add spaces, it's useful to know.  Note that you <em>cannot</em> add
   spaces before the <kbd>code</kbd> command.  The Kernel Library won't
   parse it correctly, and will tell you that there isn't any such
-  command as nothing.  That's a weakness in the Kernel Library's command
-  parser, though, it's not a problem with LPC as a whole.
+  command as nothing.  It's a bug in the Kernel Library's command
+  parser.
 </p>
 
 <p>

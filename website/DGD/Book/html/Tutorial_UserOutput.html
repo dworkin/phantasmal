@@ -58,15 +58,14 @@
           <td class="content">
 
 
-<h2> 2.5 Sending Output to the User </h2>
+<h2> 3.5 Sending Output to the User </h2>
 
 
 <p>
-  In your code statements, there is also a variable called
+  In your code statements, you can also use a variable called
   <var>user</var>.  That variable represents the current user object,
   which is the network connection that you have to the DGD server.
-  There are certain functions you can call on it which do various
-  things.
+  There are certain functions you can call on it to do various things.
 </p>
 
 <p>
@@ -78,11 +77,12 @@
   <kbd>code query_ip_name(user-&gt;query_conn())</kbd>, you should see
   either <samp>$26 = "localhost"</samp> or a similar result with your
   computer's hostname.  If you type <kbd>code
-  query_ip_number(user-&gt;query_conn())</kbd>, you should see a similar
-  result with &quot;127.0.0.1&quot; or your computer's IP address.  If
-  you don't know what a hostname or IP address is, you should probably
-  learn that before running your own MUD...  Both are used to locate
-  internet-connected machines by other machines.
+  query_ip_number(user-&gt;query_conn())</kbd>, you should see a
+  similar result with &quot;127.0.0.1&quot; or your computer's IP
+  address.  If you don't know what a hostname or IP address is, you
+  should probably learn that before running your own MUD...  Both are
+  used by internet-connected machines to locate other
+  internet-connected machines.
 </p>
 
 <p>
@@ -93,7 +93,7 @@
   variable will have a value of <var>nil</var>.  If you remember,
   <var>nil</var> was the value that a string has before it gets
   initialized.  It's also the value that a function returns if you
-  don't explicitly return anything.
+  don't specifically return anything at all.
 </p>
 
 <p>
@@ -106,10 +106,10 @@
   \t for a tab.  Since the backslash and the double-quote have special
   meaning in strings, there are special character escapes to write
   them as well &mdash; \\ and \&quot;, respectively.  Note that with
-  some telnet clients you'll need to write an end-of-line as \n\r or
-  (more rarely) \r\n.  So if your telnet is doing odd things at line
-  endings, try that.  You may also want to see if there's an option
-  for treating line endings differently &mdash; many telnet clients
+  some MUD libraries you'll need to write an end-of-line as \n\r or
+  \r\n.  So if your telnet is doing odd things at line endings, try
+  that.  You may also want to see if there's an option in your telnet
+  client for treating line endings differently.  Many telnet clients
   (including PuTTY on Win32) support changing the behavior with an
   option.
 </p>
@@ -117,22 +117,22 @@
 <p>
   To see more of how the <dfn>newline character</dfn> works, try
   adding more <dfn>\n</dfn> characters.  Type <kbd>code
-  user-&gt;message(&quot;Line...\n\n\n\n&quot;)</kbd>.  Note that if
-  you leave the semicolon off, you won't get <var>nil</var> returned,
+  user-&gt;message(&quot;Line...\n\n\n\n&quot;)</kbd>.  If you leave
+  the semicolon off like that, you won't get <var>nil</var> returned,
   but rather the number 1.  That's because the user-&gt;message
   function returns an integer, which is either 1 or 0 for whether the
   entire message could be sent.
 </p>
 
 <p>
-  Note that when you printed a message with more than one \n, you saw
-  more than one line of space before the returned value.  That's
-  because the user-&gt;message function writes the output directly to
-  your terminal, and it does it immediately.  So you could use it to
-  print output fancier than the returned value if you were so
-  inclined.  However, anything you print won't be saved to a history
-  variable, so make sure you're okay with it being transient.  Once
-  you print it, it's on your screen.  But other than that it's gone.
+  When you printed a message with more than one \n, you saw more than
+  one line of space before the returned value.  That's because the
+  user-&gt;message function writes the output directly to your
+  terminal, and it does it immediately.  So you could use it to print
+  fancier output if you wanted to.  Anything you print won't be saved
+  to a history variable, so make sure you're okay with it only being
+  on the screen.  There's way for DGD to get it back and play with it
+  more.
 </p>
 
 
