@@ -1,4 +1,4 @@
-/* $Header: /cvsroot/phantasmal/mudlib/usr/System/open/lib/userlib.c,v 1.8 2004/09/06 00:07:04 angelbob Exp $ */
+/* $Header: /cvsroot/phantasmal/mudlib/usr/System/open/lib/userlib.c,v 1.9 2004/09/14 05:09:55 angelbob Exp $ */
 
 #include <kernel/kernel.h>
 #include <kernel/user.h>
@@ -13,6 +13,7 @@
 
 #include <type.h>
 
+inherit COMMON_AUTO;
 inherit LIB_USER;
 inherit user API_USER;
 inherit rsrc API_RSRC;
@@ -236,6 +237,10 @@ static int restore_user_from_file(string str) {
 nomask int ustate_send_string(string str) {
   if(previous_program() == USER_STATE)
     return ::message(str);
+  else {
+    LOGD->write_syslog("Called by " + previous_program());
+    error("Only USER_STATE can call PHANTASMAL_USER:ustate_send_string!");
+  }
 }
 
 /* This does a lowest-level, unfiltered send to the connection object

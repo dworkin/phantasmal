@@ -1,4 +1,4 @@
-/* $Header: /cvsroot/phantasmal/mudlib/usr/System/obj/user.c,v 1.78 2004/01/09 08:53:56 angelbob Exp $ */
+/* $Header: /cvsroot/phantasmal/mudlib/usr/System/obj/user.c,v 1.79 2004/09/14 05:09:53 angelbob Exp $ */
 
 #include <kernel/kernel.h>
 #include <kernel/user.h>
@@ -13,6 +13,7 @@
 
 #include <type.h>
 
+inherit COMMON_AUTO;
 inherit PHANTASMAL_USER;
 
 /* Duplicated in PHANTASMAL_USER */

@@ -20,7 +20,7 @@ private object game_path_object;
 string path_special(string file) {
   string user, subdir;
 
-  if(file == "/usr/System/open/lib/common_auto")
+  if(file == COMMON_AUTO)
     return nil;
 
   if(sscanf(file, "/usr/%s/%s/%*s", user, subdir) != 3) {

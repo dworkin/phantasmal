@@ -5,6 +5,8 @@
 
 #include <type.h>
 
+inherit COMMON_AUTO;
+
 /* User-state processing stack */
 private object* state_stack;
 
@@ -59,7 +61,7 @@ void to_state_stack(string str) {
 
 void message_scroll(string str) {
   if(!SYSTEM() && !COMMON() && !GAME())
-    return;
+    error("Only privileged code can call message_scroll!");
 
   if(scroll_state) {
     scroll_state->to_user(str);
@@ -156,7 +158,7 @@ void push_state(object state) {
 
 object peek_state(void) {
   if(!SYSTEM() && !COMMON() && !GAME())
-    return nil;
+    error("Only privileged code can call peek_state!");
 
   if(!state_stack || !sizeof(state_stack))
     return nil;

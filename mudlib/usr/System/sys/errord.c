@@ -6,6 +6,8 @@
 
 #include <trace.h>
 
+inherit COMMON_AUTO;
+
 private object log;
 private string comp_err;
 private int    reset_comp_err;

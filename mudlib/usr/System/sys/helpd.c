@@ -9,6 +9,8 @@
 #include <trace.h>
 #include <status.h>
 
+inherit COMMON_AUTO;
+
 /* Reference to Soundexd */
 private object  soundex;
 

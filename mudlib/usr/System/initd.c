@@ -12,6 +12,7 @@
 #include <config.h>
 #include <gameconfig.h>
 
+inherit COMMON_AUTO;
 inherit access API_ACCESS;
 inherit rsrc   API_RSRC;
 

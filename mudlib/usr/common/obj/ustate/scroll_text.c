@@ -1,4 +1,5 @@
 #include <phantasmal/lpc_names.h>
+#include <phantasmal/log.h>
 #include <kernel/user.h>
 
 inherit USER_STATE;
@@ -10,6 +11,7 @@ private int     active;
 static void create(varargs int clone) {
   ::create();
   is_clone = clone;
+
   if(clone) {
     /* Not the current state (yet) */
     active = 0;
@@ -59,6 +61,8 @@ static void scroll_page(void) {
   text = call_other(US_SCROLL_TEXT, "get_text");
 
   if(!text) {
+    LOGD->write_syslog("No text found in US_SCROLL_TEXT:scroll_page!",
+		       LOG_ERROR);
     return;
   }
 
@@ -77,7 +81,7 @@ static void scroll_page(void) {
   text = implode(lines, "\n");
   call_other(US_SCROLL_TEXT, "set_text", text);
 
-  text = implode(firstlines, "\n") + "\r\n";
+  text = implode(firstlines, "\r\n") + "\r\n";
   send_string(text);
 
   /* Print prompt at bottom */

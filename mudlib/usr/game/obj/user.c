@@ -1,4 +1,4 @@
-/* $Header: /cvsroot/phantasmal/mudlib/usr/game/obj/user.c,v 1.11 2004/09/07 00:05:33 angelbob Exp $ */
+/* $Header: /cvsroot/phantasmal/mudlib/usr/game/obj/user.c,v 1.12 2004/09/14 05:09:55 angelbob Exp $ */
 
 #include <kernel/kernel.h>
 #include <kernel/user.h>
@@ -131,7 +131,7 @@ int name_is_forbidden(string name) {
   string filename;
 
   if(previous_program() != PHANTASMAL_USER)
-    return 1;
+    error("Wrong program calling name_is_forbidden!");
 
   /* No trailing spaces or slashes in names allowed */
   if (!name || strlen(name) == 0 || sscanf(name, "%*s ") != 0 ||
