@@ -67,26 +67,19 @@
       Phantasmal-based Game </h3>
 
     <p>
-      When you're building your MUD, you'd like to change /usr/game a
-      lot.  You'd like to change stuff in /usr/common and /usr/System
-      very little, if at all, if you can manage.  And you should
-      never, never change stuff in /kernel.  There's no reason to do
-      it, and you'll break compatibility and security if you try.
-    </p>
-
-    <p>
       The idea is that /usr/game is where your game's rules are kept.
       That's the part that <i>you</i> supply, the details of your
       MUD's specific world.  Phantasmal doesn't need to know what you
       name your skills or classes (if any), what you name your
-      commands or exactly what your users see.  Phantasmal just keeps
-      track of zones, rooms, exits and NPCs, and supplies you a
-      standard library of functions to play with.  You use what you
-      want and leave the rest alone.  But most especially, you
-      concentrate on what makes your game special, unique and
-      different, and let Phantasmal quibble about the basics of
-      getting one object to fit inside another and what file format is
-      best for separating English strings from French.
+      commands or exactly what your users see.  Phantasmal (the part
+      in /usr/common and /usr/System) just keeps track of zones,
+      rooms, exits and NPCs, and supplies you a standard library of
+      functions to play with.  You use what you want and leave the
+      rest alone.  But most especially, you concentrate on what makes
+      your game special, unique and different, and let Phantasmal
+      quibble about the basics of getting one object to fit inside
+      another and what file format is best for separating English
+      strings from French.
     </p>
 
     <p>
@@ -95,14 +88,18 @@
       that for you, yet.  The idea is that you can put each staff
       member's stuff in a separate directory, and then link zones into
       the main MUD when they work correctly.  That's not fully spelled
-      out yet, though.
+      out yet, though.  However, to let that work, and to support the
+      Kernel Library's idea of how permissions and security work, each
+      staff member should get their own account and their own
+      directory.  That directory should be called /usr/bobo for an
+      immortal named &quot;bobo&quot;, for instance.
     </p>
 
     <p>
-      Note that one reason not to change /usr/common or /usr/System is
-      so that you can easily use new versions of Phantasmal.  If you
-      make it easy to upgrade, you'll get new features for free
-      whenever Phantasmal adds them.
+      Note that one <i>more</i> reason not to change /usr/common or
+      /usr/System is so that you can easily use new versions of
+      Phantasmal.  If you make it easy to upgrade, you'll get new
+      features for free whenever Phantasmal adds them.
     </p>
             <address> 
             <span><a href="mailto:angelbob-remove-spamfree@spamfree.users.sf.net">Noah Gibbs</a></span> 
