@@ -13,10 +13,6 @@
 # compatible.  But you can at least let the script package them up for
 # you.
 
-# TODO:
-# Figure out what to do if DGD isn't already built.  Normally, there
-# should be a dgd/bin/driver binary.
-
 use strict;
 use Cwd;
 use File::Spec;
@@ -129,8 +125,14 @@ print "Cleaning up non-game files & dirs...\n";
 system("rm -rf $outdir/phantasmal");
 system("rm -rf $outdir/dgd");
 
+# This won't survive cleaning (at least, not intact), so kill it now
+# and recopy it after cleaning is done.
+system("rm -rf $outdir/bundled");
+
+system("rm -f $outdir/usr/game/users/*.pwd");
+
 system("rm -f $outdir/tmp/swap $outdir/log/System.log "
-       . " $outdir/usr/game/users/*.pwd $outdir/bin/driver.old "
+       . " $outdir/bin/driver.old "
        . " $outdir/include/float.h $outdir/include/limits.h "
        . " $outdir/include/status.h $outdir/include/type.h "
        . " $outdir/include/trace.h");
@@ -141,16 +143,18 @@ system("find $outdir -name CVS -type d -print > /tmp/distrib_tmp.txt");
 system("rm -rf `cat /tmp/distrib_tmp.txt`");
 
 # Remove all README, INSTALL, UPDATES and .cvsignore files
-system("find $outdir -name \"README\" -o -name \"INSTALL\" "
-       . "-o -name \"UPDATES\" "
-       . "-o -name \".cvsignore\" -exec rm \\{\\} \\;");
+system("find $outdir -name README -exec rm \\{\\} \\;");
+system("find $outdir -name INSTALL -exec rm \\{\\} \\;");
+system("find $outdir -name UPDATES -exec rm \\{\\} \\;");
+system("find $outdir -name .cvsignore -exec rm \\{\\} \\;");
 
 system("find . -name \"*~\" -exec rm \\{\\} \\;");
 system("find . -name \"#*\" -exec rm \\{\\} \\;");
 system("find . -name \".#*\" -exec rm \\{\\} \\;");
 
 print "Moving bundle-specific files...\n";
-system("mv $outdir/bundled/* $outdir/");
-system("rmdir $outdir/bundled");
+system("cp -r $testgamedir/bundled/* $outdir/");
+# Get rid of CVS dir we picked up from $testgamedir/bundled
+system("rm -rf $outdir/CVS");
 
 print "*** Finished! ***\n";
