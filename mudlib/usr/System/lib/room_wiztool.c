@@ -144,7 +144,8 @@ static void cmd_new_room(object user, string cmd, string str) {
   if(roomnum < 0) {
     zonenum = ZONED->get_zone_for_room(user->get_location());
     if(zonenum < 0) {
-      LOGD->write_syslog("Odd, zone is less than 0 when making new room...");
+      LOGD->write_syslog("Odd, zone is less than 0 when making new room...",
+			 LOG_WARN);
       zonenum = 0;
     }
   }
