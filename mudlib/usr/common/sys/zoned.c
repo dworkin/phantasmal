@@ -2,6 +2,7 @@
 #include <type.h>
 #include <kernel/kernel.h>
 #include <log.h>
+#include <limits.h>
 
 /* ZoneD -- daemon that tracks zones -- currently mostly hardcoded */
 
@@ -36,6 +37,19 @@ void destructed(int clone) {
   dtd::destructed(clone);
 }
 
+/******* Init Function called by INITD *********************/
+
+/* The zonefile's contents are passed through the string
+   argument.  Currently zone files must be DGD's string
+   size or less. */
+void init_from_file(string file) {
+  if(strlen(file) > MAX_STRING_SIZE - 3)
+    error("Zonefile is too large in ZONED->init_from_file!");
+
+  from_unq_text(file);
+}
+
+
 /******* Functions for DTD_UNQABLE *************************/
 
 mixed* to_dtd_unq(void) {
@@ -65,7 +79,7 @@ string get_parse_error_stack(void) {
 }
 
 void from_dtd_unq(mixed* unq) {
-  mixed *zones, *segment;
+  mixed *zones, *segment_unq;
 
   if(sizeof(unq) > 2)
     error("There should be only one zones section in the ZONED file!");
@@ -73,15 +87,43 @@ void from_dtd_unq(mixed* unq) {
   if(unq[0] != "zones")
     error("Unrecognized section in ZONED file -- must start with 'zones'!");
 
+  LOGD->write_syslog("Loading zone data in ZONED...");
+
   zones = unq[1];
   while(sizeof(zones)) {
+    int segnum, zonenum;
+
     /* Everything in the zones entry must be a segment. */
-    segment = zones[1];
+    if(typeof(zones[0]) != T_ARRAY
+       || sizeof(zones[0]) < 2
+       || zones[0][0] != "segment")
+      error("Format error in zone file, expected 'segment' section!");
+
+    segment_unq = zones[0][1];
+
+    if(sizeof(segment_unq) != 2
+       || segment_unq[0][0] != "segnum"
+       || segment_unq[1][0] != "zonenum") {
+      error("ZONED segment doesn't fit format "
+	    + "[segnum, <int>, zonenum, <int>]!");
+    }
+
+    segnum = segment_unq[0][1];
+    zonenum = segment_unq[1][1];
+
+    /* Set zone for segment */
+    if(OBJNUMD->get_segment_owner(segnum)) {
+      OBJNUMD->set_segment_zone(segnum, zonenum);
+      LOGD->write_syslog("Setting segment owner (" + segnum + ","
+			 + zonenum + ")");
+    } else {
+      LOGD->write_syslog("Unowned segment, dropping seg #" + segnum);
+    }
 
     /* Remove that segment, move on */
-    zones = zones[2..];
-
+    zones = zones[1..];
   }
+
 }
 
 void write_to_file(string filename) {
@@ -117,12 +159,25 @@ mixed* get_segments_in_zone(int zonenum) {
 void add_segment_to_zone(int zonenum, int segment) {
   if(previous_program() != OBJNUMD)
     error("Only OBJNUMD can add segments to a zone!");
+
+  if(sizeof(zone_table) <= zonenum) {
+    error("Can't add segment to nonexistent zone!");
+  }
   zone_table[zonenum][1][segment] = 1;
 }
 
 void remove_segment_from_zone(int zonenum, int segment) {
   if(previous_program() != OBJNUMD)
     error("Only OBJNUMD can remove segments from a zone!");
+
+  if(zonenum < 0)
+    return;
+
+  if(sizeof(zone_table) <= zonenum) {
+    LOGD->write_syslog("Nonexistent zone, not in table!", LOG_WARN);
+    return;
+  }
+
   zone_table[zonenum][1][segment] = nil;
 }
 
