@@ -15,10 +15,10 @@ inherit obj OBJECT;
 
 mixed* exits;
 
-private int pending_location;
-private int pending_parent;
-private int pending_detail_of;
-
+private int  pending_location;
+private int  pending_parent;
+private int  pending_detail_of;
+private int* pending_removed_details;
 
 /* Flags */
 /* The objflags field contains a set of boolean object flags */
@@ -40,6 +40,7 @@ static void create(varargs int clone) {
     pending_parent = -1;
     pending_location = -1;
     pending_detail_of = -1;
+    pending_removed_details = ({ });
   }
 }
 
@@ -58,7 +59,7 @@ void destructed(int clone) {
   }
 
   /* Destruct all details */
-  objs = get_details();
+  objs = get_immediate_details();
   if(!objs) objs = ({ }); /* Prevent error below */
   for(index = 0; index < sizeof(objs); index++) {
     remove_detail(objs[index]);
@@ -304,8 +305,13 @@ int get_pending_detail_of(void) {
   return pending_detail_of;
 }
 
+int* get_pending_removed_details(void) {
+  return pending_removed_details;
+}
+
 void clear_pending(void) {
   pending_location = pending_parent = pending_detail_of = -1;
+  pending_removed_details = ({ });
 }
 
 /* Include only exits that appear to have been created from this room
@@ -352,8 +358,9 @@ private string exits_to_unq(void) {
  */
 
 string to_unq_flags(void) {
-  string ret, tmp_n, tmp_a;
-  int locale;
+  string  ret, tmp_n, tmp_a;
+  object *rem;
+  int     locale, ctr;
 
   ret = "  ~number{" + tr_num + "}\n";
   if (get_detail_of()) {
@@ -394,6 +401,20 @@ string to_unq_flags(void) {
   ret += "  ~adjectives{{" + tmp_a + "}}\n";
 
   ret += exits_to_unq();
+
+  if(get_removed_details()) {
+    rem = get_removed_details();
+
+    ret += "  ~removed_details{";
+    for(ctr = 0; ctr < sizeof(rem) - 1; ctr++) {
+      ret += rem[ctr]->get_number() + ", ";
+    }
+    /* Add final element, no comma */
+    if(sizeof(rem))
+      ret += rem[sizeof(rem) - 1]->get_number();
+
+    ret += "}\n";
+  }
 
   return ret;
 }
@@ -475,6 +496,13 @@ void from_dtd_tag(string tag, mixed value) {
     } else {
       error("Can't parse as exit desc: '" + value + "'");
     }
+  } else if(tag == "removed_details") {
+    if(typeof(value) == T_INT) {
+      pending_removed_details = ({ value });
+    } else if(typeof(value) == T_ARRAY) {
+      pending_removed_details = value;
+    } else
+      error("Unreasonable type for removed_details!");
   } else { 
     error("Don't recognize tag " + tag + " in function from_dtd_tag()");
   }

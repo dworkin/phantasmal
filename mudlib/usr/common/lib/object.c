@@ -1,5 +1,6 @@
 #include <config.h>
 
+#include <kernel/kernel.h>
 #include <phrase.h>
 #include <grammar.h>
 #include <log.h>
@@ -47,7 +48,13 @@ object mobile;
 object archetype;
 
 /* Details -- sub-objects that are part of this one */
-mixed*  details;
+
+/* "details" lists immediate details of this object.  "removed_details"
+   lists details that the object's parent has but that this object
+   does not.  "detail_of" is an object that this object is a detail of,
+   or nil. */
+object* details;
+object* removed_details;
 object  detail_of;
 
 /* Objects contained in this one */
@@ -193,7 +200,11 @@ object get_archetype(void) {
 }
 
 void set_archetype(object new_arch) {
+  if(!SYSTEM() && !COMMON())
+    error("Only SYSTEM and COMMON objects may set archetypes!");
+
   archetype = new_arch;
+  removed_details = nil;
 }
 
 void add_noun(object phr) {
@@ -394,7 +405,7 @@ object* find_contained_objects(object user, string namestr) {
    happen.  Instead it should be set with the assorted container commands. */
 void set_location(object new_loc) {
   if(previous_program() == OBJECT) {
-    if(detail_of) {
+    if(detail_of && detail_of != new_loc) {
       LOGD->write_syslog("Setting location of obj #" + tr_num
 			 + " despite detail_of being set!", LOG_ERROR);
     }
@@ -523,8 +534,12 @@ object* get_details(void) {
   if(!parent_details)
     parent_details = ({ });
 
+  if(removed_details) {
+    parent_details -= removed_details;
+  }
+
   if(details && sizeof(details)) {
-    return parent_details + details[..];
+    return parent_details + details;
   } else {
     return sizeof(parent_details) ? parent_details : nil;
   }
@@ -540,6 +555,21 @@ object* get_immediate_details(void) {
   }
 }
 
+object *get_removed_details(void) {
+  if(removed_details && sizeof(removed_details)) {
+    return removed_details;
+  } else {
+    return nil;
+  }
+}
+
+void set_removed_details(object *new_removed_details) {
+  if(!SYSTEM() && !COMMON())
+    error("Only SYSTEM or COMMON objects can set removed_details!");
+
+  removed_details = new_removed_details[..];
+}
+
 object get_detail_of(void) {
   return detail_of;
 }
@@ -552,21 +582,64 @@ object set_detail_of(object obj) {
     error("Remove from container before using set_detail_of!");
 
   detail_of = obj;
-  set_location(obj);
+
+  if(obj)
+    set_location(obj);
 }
 
-object add_detail(object obj) {
+void add_detail(object obj) {
+  if(!SYSTEM() && !COMMON())
+    error("Only SYSTEM and COMMON objects may add details!");
+
+  if(removed_details && sizeof(removed_details & ({ obj }))) {
+    /* Our parent has this detail and we overrode it.  So we'll
+       remove the override. */
+    removed_details -= ({ obj });
+
+    if(obj->get_detail_of()) {
+      /* This is still a detail of somebody else, probably our
+	 parent (directly or indirectly).  We already removed the
+	 override, it's not legal to make it our own detail when
+	 it's somebody else's, so let's just return. */
+      return;
+    }
+  }
+
   obj->set_detail_of(this_object());
   details += ({ obj });
 }
 
-object remove_detail(object obj) {
+
+void remove_detail(object obj) {
+  if(!SYSTEM() && !COMMON())
+    error("Only SYSTEM and COMMON objects may remove details!");
+
+  /* TODO:  go through all children (in the archetype sense) and
+     remove this detail from their removed_detail lists? */
+
+  if( !sizeof(details & ({ obj })) ) {
+    object *parent_details;
+
+    /* This isn't one of our immediate details.  Check to see if
+       we should add it to the removed_details array. */
+
+    if(archetype)
+      parent_details = archetype->get_details();
+
+    if(parent_details && sizeof(parent_details & ({ obj })) > 0) {
+      removed_details += ({ obj });
+      return;
+    }
+
+    error("You can't remove a detail that isn't in this object!");
+  }
+
   obj->set_detail_of(nil);
   details -= ({ obj });
 }
 
 
-/* Functions for MAPD, EXITD, etc use - overridden in child classes */
+/* Functions for use by MAPD, EXITD, etc - overridden in child classes */
 
 void set_number(int num) {
   string prog;
