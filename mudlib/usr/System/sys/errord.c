@@ -24,7 +24,7 @@ void runtime_error(string error, int caught, mixed** trace)
   object obj;
 
   if(reset_comp_err) {
-    LOGD->write_syslog("Clearing comp_err in runtime_error!", LOG_NORMAL);
+    log->write_syslog("Clearing comp_err in runtime_error!", LOG_NORMAL);
     comp_err = nil;
     reset_comp_err = 0;
   } else {
@@ -128,7 +128,7 @@ void atomic_error(string error, int atom, mixed** trace)
    * and I think runtime_error() should be called right after this anyway
    * (kdunwoody)
   if(reset_comp_err) {
-    LOGD->write_syslog("Clearing comp_err in atomic_error!", LOG_NORMAL);
+    log->write_syslog("Clearing comp_err in atomic_error!", LOG_NORMAL);
     comp_err = nil;
     reset_comp_err = 0;
   } else {
@@ -210,7 +210,7 @@ void atomic_error(string error, int atom, mixed** trace)
 void compile_error(string file, int line, string error)
 {
   if(reset_comp_err) {
-    LOGD->write_syslog("Clearing comp_err in compile_error!", LOG_NORMAL);
+    log->write_syslog("Clearing comp_err in compile_error!", LOG_NORMAL);
     reset_comp_err = 0;
     comp_err = "";
   }
