@@ -61,52 +61,81 @@
           <td class="content">
 
 
-  <h3 style="text-align: center"> Phantasmal's Current Features </h3>
+  <h2 style="text-align: center"> Phantasmal's Current Features </h2>
+
+  <h3> Game Features </h3>
+
+  <ul>
+    <li>Fully-customizable NPCs, coded in LPC</li>
+    <li>Mostly-customizable rooms and objects, coded in LPC</li>
+    <li>Normal in-MUD portable objects, containers, etc</li>
+    <li>Object details - objects can be part of other objects, and
+      details can also be containers, etc</li>
+    <li>Full weight, volume and size systems for objects</li>
+    <li>Normal in-MUD online communication with says, chatting, emotes,
+      social commands, etc</li>
+    <li>Powerful online help-system that matches queries in many different
+      ways, including Soundex (phonetic)</li>
+  </ul>
+
+  <h3> Admin &amp; Builder Features </h3>
+
+  <ul>
+    <li>Supports plaintext telnet, SSH, and very limited MUDclient support</li>
+    <li>Object data inheritance and parent objects to save you time -
+      almost every object property can be inherited</li>
+    <li>Typed, inherited tag system for custom properties</li>
+    <li>Carefully-vetted scripting interface to allow semi-trusted code
+      to run without causing your MUD damage</li>
+    <li>Full, heavily-documented OLC (online creation) commands.  Anything
+      that Phantasmal supports can be created online</li>
+    <li>Massive documentation - in-game help, online tutorials,
+      HTTPable help, downloadable
+      web site archives on DGD and Phantasmal</li>
+    <li>Full, instant code upgrades for all in-game code - never be forced
+      to reboot the server again! </li>
+    <li>Support for full or partial
+      <a href="DGD/LibWriting/Persistence.html">persistent operation</a>
+      in the DGD sense.  Statedumps, upgrades, the works.
+  </ul>
+
+  <h3> Architectural Features </h3>
+
+  <ul>
+    <li>Powerful Object Manager to track code changes and object
+      dependencies</li>
+    <li>Human-editable XML-like UNQ format for all data files</li>
+    <li>Robust error-tolerant object load and save</li>
+    <li>Phrase structures support markup and internationalization
+      (e.g. Spanish-lang support) for almost all in-game text</li>
+  </ul>
+
+  <h3> The Details </h3>
 
   <p>
-    Phantasmal is a standard library for game features like NPCs,
-    rooms and details.  It's a good base to begin construction from,
-    but not a full game by itself.  Everything in this document is
-    specific to Phantasmal and&frasl;or Seas of Night.
+    Phantasmal is a good base to begin construction from, but not a
+    full game by itself.  Seas of Night is a test game to show off
+    Phantasmal's power as a library.  Some listed features require
+    Seas of Night or another Phantasmal-based library.
   </p>
 
   <p>
-    Phantasmal allows logins and talking, chatting on channels and
-    emote.  There's a SoulD to handle social commands (like giggle,
-    burp and so on).  It has SSH support for player logins.
+    Phantasmal has scripts, though it needs to integrate them into
+    more of what it does.  It has tags, which are arbitrary object
+    properties that make scripts really interesting.
   </p>
 
   <p>
-    There are simple autonomous mobiles that can wander about, and
-    enough hooks that it's possible to get them to respond to
-    reasonable stimuli.  Getting them to act reasonably is still in
-    development, but the infrastructure is there.
+    Objects use a set of object descriptions inspired by Skotos'
+    series of Building Blocks <a
+    href="http://www.skotos.net/articles">articles</a>.  Details also
+    work similarly.
   </p>
 
   <p>
-    Portables can be gotten, dropped and generally manipulated.  They
-    work fine as containers.  See the tutorials for examples of online
-    creation.  Objects save and load happily in any topology, stacked
-    to any depth, and there are permanent bodies and inventory.
-    Objects can have other objects as &quot;details&quot;, which allow
-    you to examine an object or setting in many particulars.  All
-    these objects have weight, volume and size, and capacities for
-    same.  A full inheritance system lets these properties propagate
-    automatically to child objects.  The usual basic MUD commands for
-    playing with objects, containers and rooms are implemented.  There
-    are Online Creation (OLC) commands which allow an administrator to
-    create, modify and destroy the entire MUD world.  Objects use a
-    set of object descriptions inspired by Skotos' series of Building
-    Blocks <a href="http://www.skotos.net/articles">articles</a>.
-  </p>
-
-  <p>
-    There is a convenient online help system.  It reads directories
-    recursively and registers online help files localized to any or
-    all supported locales.  It does Soundex matching (only in English
-    currently) for words without explicit help entries.  The help
-    system is well populated and quite adequate to the needs of a
-    starting MUD.
+    Phantasmal is built on the DGD Kernel Library.  This gives it a
+    good, secure base.  It also allows Phantasmal's secure scripts
+    and rebuild-in-place.
   </p>
 
   <p>
@@ -133,35 +162,9 @@
     in many ways, including Document Type Definitions to simplify
     parsing.  Localized structures and help files are stored this way.
     The UNQ parsing system is doing well and supports backslash
-    escaping but not (yet) markup.  UNQ Document Type Definitions
-    (DTDs) are well supported and greatly aid parsing most of the
-    objects that Phantasmal stores in files.
-  </p>
-
-  <p>
-    Phantasmal builds on the code of the DGD Kernel Library and
-    borrows specific tricks and concepts from several other MUDLibs.
-    This gives it a good, secure base which is reinforced by
-    additional security code in the Phantasmal Game API.  Phantasmal
-    uses a lot of Kernel Library features like inheritance, full
-    rebuilding and handling file security by user directory.
-  </p>
-
-  <p>
-    Phantasmal has scripts, though it needs to integrate them into
-    more of what it does.  It has tags, which are arbitrary object
-    properties necessary to make scripts useful.
-  </p>
-
-  <p>
-    There's a simple object manager to handle in-place upgrades.  This
-    is one of the requirements for a persistent MUD.  The ObjectD uses
-    DGD's lightweight objects (LWOs) to keep its footprint reasonable,
-    and manages them heirarchically to permit future expansion to very
-    large number of objects.  Its current form tracks objects but
-    doesn't help with partial rebuilds, only whole-hog AUTO upgrades.
-    Until Phantasmal gets significantly larger and&frasl;or slower
-    that's unlikely to be a real problem.
+    escaping and markup.  UNQ Document Type Definitions (DTDs) are
+    well supported and greatly aid parsing most of the objects that
+    Phantasmal stores in files.
   </p>
             <address>
             <span><a href="mailto:angelbob-remove-spamfree@spamfree.users.sf.net">Noah Gibbs</a></span>
