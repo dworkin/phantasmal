@@ -43,6 +43,10 @@ private int objflags;
 float weight, volume, length;
 float weight_capacity, volume_capacity, length_capacity;
 
+/* These are the total current amount of weight and volume
+   being held in the object. */
+float current_weight, current_volume;
+
 
 #define PHR(x) PHRASED->new_simple_english_phrase(x)
 
@@ -50,6 +54,9 @@ static void create(varargs int clone) {
   obj::create(clone);
   if(clone) {
     exits = ({ });
+
+    current_weight = 0.0;
+    current_volume = 0.0;
 
     pending_parent = -1;
     pending_location = -1;
@@ -68,8 +75,8 @@ void destructed(int clone) {
   for(index = 0; index < sizeof(objs); index++) {
     remove_from_container(objs[index]);
 
-    if(location)
-      location->add_to_container(objs[index]);
+    if(obj::get_location())
+      obj::get_location()->add_to_container(objs[index]);
   }
 
   /* Destruct all details */
@@ -81,13 +88,21 @@ void destructed(int clone) {
     destruct_object(objs[index]);
   }
 
-  if(detail_of)
-    location->remove_detail(this_object());
+  if(obj::get_detail_of())
+    obj::get_location()->remove_detail(this_object());
+
+  if(obj::get_location()) {
+    LOGD->write_syslog("Destructing a ROOM without removing it!",
+		       LOG_WARN);
+  }
 
   obj::destructed(clone);
 }
 
 void upgraded(varargs int clone) {
+  /* TODO:  ROOM should recalculate weights and volumes when
+     upgraded.  @stat might want to check the object as well. */
+
   obj::upgraded();
 }
 
@@ -115,43 +130,43 @@ void enum_room_mobiles(string cmd, object *except, mixed *args) {
 }
 
 float get_weight(void) {
-  if(weight < 0.0 && archetype)
-    return archetype->get_weight();
+  if(weight < 0.0 && obj::get_archetype())
+    return obj::get_archetype()->get_weight();
 
   return weight < 0.0 ? 0.0 : weight;
 }
 
 float get_volume(void) {
-  if(volume < 0.0 && archetype)
-    return archetype->get_volume();
+  if(volume < 0.0 && obj::get_archetype())
+    return obj::get_archetype()->get_volume();
 
   return volume < 0.0 ? 0.0 : volume;
 }
 
 float get_length(void) {
-  if(length < 0.0 && archetype)
-    return archetype->get_length();
+  if(length < 0.0 && obj::get_archetype())
+    return obj::get_archetype()->get_length();
 
   return length < 0.0 ? 0.0 : length;
 }
 
 float get_weight_capacity(void) {
-  if(weight_capacity < 0.0 && archetype)
-    return archetype->get_weight_capacity();
+  if(weight_capacity < 0.0 && obj::get_archetype())
+    return obj::get_archetype()->get_weight_capacity();
 
   return weight_capacity;
 }
 
 float get_volume_capacity(void) {
-  if(volume_capacity < 0.0 && archetype)
-    return archetype->get_volume_capacity();
+  if(volume_capacity < 0.0 && obj::get_archetype())
+    return obj::get_archetype()->get_volume_capacity();
 
   return volume_capacity;
 }
 
 float get_length_capacity(void) {
-  if(length_capacity < 0.0 && archetype)
-    return archetype->get_length_capacity();
+  if(length_capacity < 0.0 && obj::get_archetype())
+    return obj::get_archetype()->get_length_capacity();
 
   return length_capacity;
 }
@@ -340,7 +355,7 @@ static string is_open_cont(object user) {
    leave_object is the body attempting to leave,
    dir is the direction. */
 string can_leave(object user, object leave_object, int dir) {
-  if(mobile)
+  if(obj::get_mobile())
     return "You can't leave a sentient being!"
       + "  In fact, you shouldn't even be here.";
 
@@ -361,7 +376,7 @@ string can_leave(object user, object leave_object, int dir) {
    enter_object is the body attempting to enter,
    dir is the direction. */
 string can_enter(object user, object enter_object, int dir) {
-  if(mobile)
+  if(obj::get_mobile())
     return "You can't enter a sentient being!  Don't be silly.";
 
   if (dir == DIR_TELEPORT) {
@@ -447,7 +462,7 @@ void remove(object mover, object movee, object new_env) {
   new_env is where it will be moving it to
 */
 string can_get(object user, object mover, object new_env) {
-  if(mobile) {
+  if(obj::get_mobile()) {
     if(!user) return "sentient being";
     return get_brief()->to_string(user)
       + " is a sentient being!  You can't pick them up.";
@@ -499,6 +514,74 @@ string can_put(object user, object mover, object movee, object old_env) {
   old_env is the location of the object that just contained movee
 */
 void put(object mover, object movee, object old_env) {
+}
+
+
+/********* Overrides of OBJECT functions for containers */
+
+/* Note:  add_to_container calls append_to_container, so we don't
+   need to explicitly override it.  If we did, we'd get double-count
+   on weight and volume added that way */
+
+void append_to_container(object obj) {
+  float obj_weight, obj_volume;
+
+  obj_weight = obj->get_weight();
+  if(obj_weight >= 0.0)
+    current_weight += obj_weight;
+  else
+    LOGD->write_syslog("Negative weight in append_to_container!",
+		       LOG_WARN);
+
+  obj_volume = obj->get_volume();
+  if(obj_volume >= 0.0)
+    current_volume += obj_volume;
+  else
+    LOGD->write_syslog("Negative volume in append_to_container!",
+		       LOG_WARN);
+
+  obj::append_to_container(obj);
+}
+
+
+void prepend_to_container(object obj) {
+  float obj_weight, obj_volume;
+
+  obj_weight = obj->get_weight();
+  if(obj_weight >= 0.0)
+    current_weight += obj_weight;
+  else
+    LOGD->write_syslog("Negative weight in prepend_to_container!",
+		       LOG_WARN);
+
+  obj_volume = obj->get_volume();
+  if(obj_volume >= 0.0)
+    current_volume += obj_volume;
+  else
+    LOGD->write_syslog("Negative volume in prepend_to_container!",
+		       LOG_WARN);
+
+  obj::prepend_to_container(obj);
+}
+
+void remove_from_container(object obj) {
+  float obj_weight, obj_volume;
+
+  obj_weight = obj->get_weight();
+  if(obj_weight >= 0.0)
+    current_weight -= obj_weight;
+  else
+    LOGD->write_syslog("Negative weight in remove_from_container!",
+		       LOG_WARN);
+
+  obj_volume = obj->get_volume();
+  if(obj_volume >= 0.0)
+    current_volume -= obj_volume;
+  else
+    LOGD->write_syslog("Negative volume in remove_from_container!",
+		       LOG_WARN);
+
+  obj::remove_from_container(obj);
 }
 
 
@@ -603,8 +686,8 @@ string to_unq_flags(void) {
   ret = "  ~number{" + tr_num + "}\n";
   if (get_detail_of()) {
     ret += "  ~detail{" + get_detail_of()->get_number() + "}\n";
-  } else if (location) {
-    ret += "  ~location{" + location->get_number() + "}\n";
+  } else if (obj::get_location()) {
+    ret += "  ~location{" + obj::get_location()->get_number() + "}\n";
   }
   ret += "  ~bdesc{" + bdesc->to_unq_text() + "}\n";
   ret += "  ~gdesc{" + gdesc->to_unq_text() + "}\n";
@@ -614,8 +697,8 @@ string to_unq_flags(void) {
   }
   ret += "  ~flags{" + objflags + "}\n";
 
-  if(archetype) {
-    ret += "  ~parent{" + archetype->get_number() + "}\n";
+  if(obj::get_archetype()) {
+    ret += "  ~parent{" + obj::get_archetype()->get_number() + "}\n";
   }
   ret += "  ~article{" + desc_article + "}\n";
 
