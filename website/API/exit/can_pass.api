@@ -1,0 +1,36 @@
+FILE
+	/usr/common/lib/exit.c
+
+NAME
+	can_pass - query whether somebody can pass through the exit
+
+PROTOTYPE
+	string can_pass(object user, object pass_through)
+
+CALLED BY
+	Anybody
+
+DESCRIPTION
+	This function should return a string reason why the user or mobile
+	can't pass through, if they can't.  If they <i>can</i> pass
+	through, it should return nil.
+
+	If a non-user mobile is passing through, 'user' will be nil.  In
+	any case, pass_through should be the body of the user or mobile
+	attempting to pass through.
+
+	The default implementation will check is_open to see if the exit
+	is open, but do no other checking.
+
+	This function isn't access-protected.  You should access-protect
+	your version of this and all other inherited functions, including
+	upgraded() and destructed().
+
+RETURN VALUE
+	The reason the mobile can't pass, or nil.
+
+ERRORS
+	Usually none.
+
+SEE ALSO
+	is_open, pass

@@ -1,0 +1,34 @@
+FILE
+	/usr/common/lib/exit.c
+
+NAME
+	get_link - get the linked object number of the exit
+
+PROTOTYPE
+	int get_link(void)
+
+CALLED BY
+	Anybody
+
+DESCRIPTION
+	Gets the linked object number of the exit.  Certain exit types
+	like ET_TWOWAY have an additional object linked to them, which is
+	destroyed when they are.  This function gives the object number
+	of that linked object.
+
+	The function returns the number and not the object itself because
+	the querier may not have access to the linked object, depending
+	on the game's security scheme.
+
+	This function isn't access-protected.  You should access-protect
+	your version of this and all other inherited functions, including
+	upgraded() and destructed().
+
+RETURN VALUE
+	The integer object number of the linked object.
+
+ERRORS
+	Usually none.
+
+SEE ALSO
+	get_destination, get_exit_type

@@ -1,0 +1,33 @@
+FILE
+	/usr/common/lib/exit.c
+
+NAME
+	pass - alert the exit that somebody passed through
+
+PROTOTYPE
+	void pass(object passed_through)
+
+CALLED BY
+	Anybody
+
+DESCRIPTION
+	This function is useless unless you override it.  You should secure
+	it to COMMON() and SYSTEM() callers so that you don't get spoofed
+	by another caller.  The function tells you that somebody
+	successfully passed through, and the exit should respond.  The
+	passed_through object is generally the body of a mobile.
+
+	The default implementation does nothing.
+
+	This function isn't access-protected.  You should access-protect
+	your version of this and all other inherited functions, including
+	upgraded() and destructed().
+
+RETURN VALUE
+	None.
+
+ERRORS
+	Usually none.
+
+SEE ALSO
+	can_pass

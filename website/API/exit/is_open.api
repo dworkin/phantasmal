@@ -1,0 +1,27 @@
+FILE
+	/usr/common/lib/exit.c
+
+NAME
+	is_open - query whether exit is open
+
+PROTOTYPE
+	int is_open(void)
+
+CALLED BY
+	Anybody
+
+DESCRIPTION
+	Returns true if the object is open, false otherwise.
+
+	This function isn't access-protected.  You should access-protect
+	your version of this and all other inherited functions, including
+	upgraded() and destructed().
+
+RETURN VALUE
+	Whether the object is open.
+
+ERRORS
+	Usually none.
+
+SEE ALSO
+	is_container, is_openable, is_locked

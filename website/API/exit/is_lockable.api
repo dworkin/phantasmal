@@ -1,0 +1,27 @@
+FILE
+	/usr/common/lib/exit.c
+
+NAME
+	is_lockable - query whether exit is lockable
+
+PROTOTYPE
+	int is_lockable(void)
+
+CALLED BY
+	Anybody
+
+DESCRIPTION
+	Returns true if the object is lockable, false otherwise.
+
+	This function isn't access-protected.  You should access-protect
+	your version of this and all other inherited functions, including
+	upgraded() and destructed().
+
+RETURN VALUE
+	Whether the object is lockable.
+
+ERRORS
+	Usually none.
+
+SEE ALSO
+	is_container, is_open, is_locked, is_lockable

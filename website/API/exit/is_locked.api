@@ -1,0 +1,27 @@
+FILE
+	/usr/common/lib/exit.c
+
+NAME
+	is_locked - query whether exit is locked
+
+PROTOTYPE
+	int is_locked(void)
+
+CALLED BY
+	Anybody
+
+DESCRIPTION
+	Returns true if the object is locked, false otherwise.
+
+	This function isn't access-protected.  You should access-protect
+	your version of this and all other inherited functions, including
+	upgraded() and destructed().
+
+RETURN VALUE
+	Whether the object is locked.
+
+ERRORS
+	Usually none.
+
+SEE ALSO
+	is_container, is_lockable, is_open

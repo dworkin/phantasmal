@@ -1,0 +1,28 @@
+FILE
+	/usr/common/lib/exit.c
+
+NAME
+	get_from_location - get the location the exit travels from
+
+PROTOTYPE
+	object get_from_location(void)
+
+CALLED BY
+	Anybody
+
+DESCRIPTION
+	Gets the location the exit leaves from.  It is a DGD object for
+	a room.
+
+	This function isn't access-protected.  You should access-protect
+	your version of this and all other inherited functions, including
+	upgraded() and destructed().
+
+RETURN VALUE
+	The location as a DGD object.
+
+ERRORS
+	Usually none.
+
+SEE ALSO
+	get_destination

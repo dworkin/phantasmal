@@ -1,0 +1,29 @@
+FILE
+	/usr/common/lib/exit.c
+
+NAME
+	get_direction - get the direction of the exit
+
+PROTOTYPE
+	int get_direction(void)
+
+CALLED BY
+	Anybody
+
+DESCRIPTION
+	Gets the direction the exit leaves in.  See ExitD for functions
+	to interpret directions, and &lt;exit.h&gt; for constant names
+	for them.
+
+	This function isn't access-protected.  You should access-protect
+	your version of this and all other inherited functions, including
+	upgraded() and destructed().
+
+RETURN VALUE
+	The integer object direction.
+
+ERRORS
+	Usually none.
+
+SEE ALSO
+	get_destination, get_name_for_dir, get_short_for_dir

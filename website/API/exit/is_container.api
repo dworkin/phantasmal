@@ -1,0 +1,27 @@
+FILE
+	/usr/common/lib/exit.c
+
+NAME
+	is_container - query whether exit is a container
+
+PROTOTYPE
+	int is_container(void)
+
+CALLED BY
+	Anybody
+
+DESCRIPTION
+	Returns true if the object is a container, false otherwise.
+
+	This function isn't access-protected.  You should access-protect
+	your version of this and all other inherited functions, including
+	upgraded() and destructed().
+
+RETURN VALUE
+	Whether the object is a container.
+
+ERRORS
+	Usually none.
+
+SEE ALSO
+	is_open, is_openable
