@@ -47,8 +47,8 @@ API
   clear_all_exits - takes a room and removes all exits from it
      and their corresponding return exits.
 
-  remove_exit - takes a room and an exit coming from it.  Removes
-     that exit and its corresponding return exit.
+  clear_exit - takes an exit.  Removes that exit and its
+     corresponding return exit.
 
   get_exit_segments - returns a list of the segments that MAPD
      tracks exits with.

@@ -490,7 +490,7 @@ static void cmd_delete_obj(object user, string cmd, string str) {
     user->message("Removing exit...\r\n");
     /* Do an exit delete */
     exit = EXITD->get_exit_by_num(obj_num);
-    EXITD->remove_exit(exit->get_from_location(), exit);
+    EXITD->clear_exit(exit);
 
     user->message("Done.\r\n");
   } else {
