@@ -18,13 +18,22 @@ static void cmd_list_exit(object user, string cmd, string str);
 #define SPACE10 "          "
 #define SPACE40 (SPACE10 + SPACE10 + SPACE10 + SPACE10)
 
-private string ralign10(string str, int alignment) {
-  return (str + SPACE10)[..(alignment-1)];
+private string ralign10(mixed num, int width)
+{
+    string str;
+
+    str = SPACE10 + (string) num;
+    return str[strlen(str) - width ..];
 }
 
-private string ralign40(string str, int alignment) {
-  return (str + SPACE40)[..(alignment-1)];
+private string ralign40(mixed num, int width)
+{
+    string str;
+
+    str = SPACE40 + (string) num;
+    return str[strlen(str) - width ..];
 }
+
 
 static string read_entire_file(string file) {
   string ret;
