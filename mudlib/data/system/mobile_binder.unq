@@ -7,3 +7,8 @@
   ~tag{user}
   ~code{/usr/common/obj/user_mobile}
 }
+
+~bind{
+  ~tag{animal}
+  ~code{/usr/common/obj/animal_mobile}
+}
