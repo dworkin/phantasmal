@@ -1,4 +1,5 @@
 Release 0.016:
+	* Updated for compatibility with DGD 1.2.68, which breaks back-compat
 	* Removed old %get_config command
 	* Made objects able to specifically remove nouns/adjs for
 	  multiple inheritance
