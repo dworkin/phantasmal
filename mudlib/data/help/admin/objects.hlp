@@ -22,6 +22,8 @@ object types.  Here are the current crop:
 @help @clear_nouns
 @help @clear_adjectives
 
+@help @delete
+
 See also commands for portables, rooms and so on for certain operations
 specific to those objects.
 
@@ -372,4 +374,25 @@ object, so more should normally be added with @add_adjective.
 Syntax: @clear_adjectives #<obj num>
 
 See Also: @clear_nouns, @add_adjective
+}}
+
+~name{~enUS{@delete_obj, @delete_object, @delete_objects,
+            @delete, @object, @objects,
+            delete_obj, delete_object, delete_objects,
+            delete obj, delete object, delete objects,
+            @delete obj, @delete object, @delete objects,
+            @deleteobj, @deleteobject, @deleteobjects }}
+~keywords{admin}
+~desc{
+  ~enUS{
+
+The @delete or @delete_object command will delete an object in the
+current room, or any object in the MUD by number.  This object may be
+a mobile, portable, room or exit.  Examples:
+
+@delete #374
+@delete red cow
+
+See Also:  objects, @stat
+
 }}
