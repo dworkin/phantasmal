@@ -4,6 +4,7 @@ help talking               Speaking to the room you're in
 help chat                  Chatting with players elsewhere in the MUD
 help yell                  Yelling to anybody nearby
 help locale                Changing the language you perceive the MUD in
+help channel               Turning channels on and off
 }}
 
 
@@ -36,15 +37,19 @@ with a colon.  For instance, "emote chuckles" will give output like
 "Sam chuckles".
 }}
 
-~name{~enUS{chat}}
+~name{~enUS{chat,ooc}}
 ~desc{~enUS{
 ooc       This sends a broadcast message out on the out-of-character
           channel.  See "help ooc" for more about the ooc channel.
 channel   This allows you to select subscribed chat channels.  See
           "help channel".
+
+Synonyms for OOC command:  chat, gossip
+
+See also:  out-of-character
 }}
 
-~name{~enUS{ooc,out-of-character}}
+~name{~enUS{out-of-character}}
 ~desc{~enUS{
 This chat command broadcasts a message to everybody listening to the
 out-of-character channel.  Note that people needn't listen to the OOC
@@ -62,6 +67,8 @@ like how particular commands work.  If you do both, for instance
 asking how a command works on a particular NPC, we'll make a judgement
 call.  It's usually pretty obvious when you're just trying to get away
 with something, so don't.  You don't get to argue with our decisions.
+
+See also:  ooc, harassment
 }
 ~esUS{
 Fuera De Personaje
