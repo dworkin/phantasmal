@@ -22,7 +22,7 @@ require privilege on the caller's part to perform successfully.
 }}
 
 
-~name{~enUS{shutdown,%shutdown,@shutdown,shut down,%shut_down,shut_down}}
+~name{~enUS{%shutdown,shut down}}
 ~keywords{admin}
 ~desc{
   ~enUS{
@@ -42,7 +42,7 @@ See also %reboot.
 
 }}
 
-~name{~enUS{reboot,%reboot,restart}}
+~name{~enUS{%reboot,restart}}
 ~keywords{admin}
 ~desc{
   ~enUS{
@@ -63,7 +63,7 @@ See also %shutdown.
 
 }}
 
-~name{~enUS{swapout,%swapout,swap out,swap_out,%swap_out}}
+~name{~enUS{%swapout,swap out}}
 ~keywords{admin}
 ~desc{
   ~enUS{
@@ -82,7 +82,7 @@ See also: %statedump, %save, %shutdown, %reboot
 }}
 
 
-~name{~enUS{statedump,%statedump,@statedump,state dump,state_dump,%state_dump}}
+~name{~enUS{%statedump,state dump}}
 ~keywords{admin}
 ~desc{
   ~enUS{
@@ -102,8 +102,7 @@ See also: %shutdown, %reboot, %save
 }}
 
 
-~name{~enUS{datadump,%datadump,@datadump,data dump,data_dump,%data_dump,
-            %save, save, @save}}
+~name{~enUS{%datadump,data dump,%save}}
 ~keywords{admin}
 ~desc{
   ~enUS{
@@ -119,8 +118,7 @@ See also: %shutdown, %reboot, %safesave, %statedump
 }}
 
 
-~name{~enUS{safesave,%safesave,@safesave,safe save,safe_save,%safe_save,
-            %save, save, @save}}
+~name{~enUS{%safesave,safe save}}
 ~keywords{admin}
 ~desc{
   ~enUS{
@@ -140,7 +138,7 @@ See also: %shutdown, %reboot, %safesave, %statedump
 }}
 
 
-~name{~enUS{%status,@status,status}}
+~name{~enUS{%status}}
 ~keywords{admin}
 ~desc{
   ~enUS{
@@ -153,7 +151,7 @@ it's using, and its start time and uptime.
 }}
 
 
-~name{~enUS{who,%who,@who,people,%people,@people}}
+~name{~enUS{%who,%people}}
 ~keywords{admin}
 ~desc{
   ~enUS{
@@ -164,8 +162,7 @@ currently logged in from.
 
 }}
 
-~name{~enUS{write_log,%write_log,@write_log,@log,%log,log,@log_write,
-            %log_write,log_write,writelog,%writelog,@writelog}}
+~name{~enUS{%write_log,%log, %log_write,%writelog}}
 ~keywords{admin}
 ~desc{
   ~enUS{
@@ -177,10 +174,11 @@ very poor way to send the equivalent of e-mail except on the most
 excellently-run MUDs since most of the time the log gets briefly read
 through (or not) and tossed out to make room for the next one.
 
+See also:  %log_subscribe, logfile, log channel
+
 }}
 
-~name{~enUS{log_subscribe,%log_subscribe,@log_subscribe,subscribe_log,
-	%subscribe_log,@subscribe_log,subscribe log,log subscribe, log,
+~name{~enUS{%log_subscribe,subscribe_log,
         subscribe, level, levels, subscription}}
 ~keywords{admin}
 ~desc{
@@ -205,5 +203,62 @@ The levels of messages are:
 
 You can type the text string on the right (normal, fatal, etc)
 instead of the number to set the logging level.
+
+}}
+
+~name{~enUS{log file, file log, logfile, file}}
+~keywords{admin}
+~desc{
+  ~enUS{
+
+The log file keeps track of what's going on in the MUD.
+Administrators can see entries as they are made on the log channel.
+They can choose what goes into it with the %log_subscribe command.
+Its current default location is /log/System.log in the Phantasmal
+directory tree.
+
+See also:  log channel, %log_subscribe
+
+}}
+
+
+~name{~enUS{log channel, channel log, logchannel}}
+~keywords{admin}
+~desc{
+  ~enUS{
+
+Administrators can subscribe to the log channel with the channels
+command.  You can also subscribe at a particular level of severity
+with the same command.  For instance:
+
+channel log on verbose
+channel log on error
+
+You'll get all notifications at that level and above (so "verbose"
+gives lots), even if the logfile isn't actually receiving them
+because of its %log_subscribe settings.
+
+See also:  logfile, %log_subscribe
+
+}}
+
+
+~name{~enUS{error channel, channel error, errorchannel}}
+~keywords{admin}
+~desc{
+  ~enUS{
+
+Administrators can subscribe to the error channel with the channels
+command.  You can also subscribe at a particular level of severity
+with the same command.  For instance:
+
+channel error on verbose
+channel error on error
+
+Currently errors aren't divided by severity, so any subscription to
+the channel will send you all uncaught errors that the ErrorD
+receives.
+
+See also:  logfile, %log_subscribe
 
 }}
