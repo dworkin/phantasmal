@@ -68,164 +68,176 @@
     <dl>
       <dt>Afuns</dt>
       <dd>An Afun, short for &quot;Auto Function&quot;, is defined in the
-	Auto object and behaves like an Kfun.  It may override an existing
-	Kfun. </dd>
+        Auto object and behaves like an Kfun.  It may override an existing
+        Kfun. </dd>
       <dt>Applies</dt>
       <dd>Applies are functions in the MUDLib that the DGD driver calls.
-	These are pretty much always in the Driver object, at least in DGD.
-	They're not the same as Hooks because Hooks are called by other
-	code in the MUDLib, not by the DGD driver binary itself.</dd>
+        These are pretty much always in the Driver object, at least in DGD.
+        They're not the same as Hooks because Hooks are called by other
+        code in the MUDLib, not by the DGD driver binary itself.</dd>
       <dt>Atomic Functions</dt>
       <dd> Atomic functions are very, very uncommon even in LPMUDs.  DGD
-	is really pretty much unique in having them.  An Atomic Function
-	is one which, if it gets an error, basically never happened.
-	Any variables, global data and whatnot that it played with will
-	be back in the same state as if the function had never run.
-	Atomic functions may not read or write network connections, nor
-	read or write files.  Otherwise, they can do anything allowable
-	in DGD LPC. </dd>
+        is really pretty much unique in having them.  An Atomic Function
+        is one which, if it gets an error, basically never happened.
+        Any variables, global data and whatnot that it played with will
+        be back in the same state as if the function had never run.
+        Atomic functions may not read or write network connections, nor
+        read or write files.  Otherwise, they can do anything allowable
+        in DGD LPC. </dd>
       <dt>Auto object</dt>
       <dd>The second LPC object created.  All later LPC objects, everything
-	except the Auto object itself and the Driver object, inherit from
-	Auto.  Auto is a common place to override the standard DGD Kfuns
-	with versions tuned for your particular MUDLib. </dd>
+        except the Auto object itself and the Driver object, inherit from
+        Auto.  Auto is a common place to override the standard DGD Kfuns
+        with versions tuned for your particular MUDLib. </dd>
       <dt>Clonable</dt>
       <dd> In MUDLibs that separate Inheritable and Clonable, a Program
-	which may be cloned.  It may have variables and other state, its
-	functions may be called and it may be recompiled in place.  In
-	MUDLibs that don't separate the two, this distinction doesn't
-	matter, but then a reboot may be necessary to upgrade objects.
-	Compare Inheritable.</dd>
+        which may be cloned.  It may have variables and other state, its
+        functions may be called and it may be recompiled in place.  In
+        MUDLibs that don't separate the two, this distinction doesn't
+        matter, but then a reboot may be necessary to upgrade objects.
+        Compare Inheritable.</dd>
       <dt>Clone</dt>
       <dd> A clone is basically an &quot;instance&quot;, in an object
-	oriented sense, of a master object.  Every clone shares its code
-	(called a Program) with the master but each maintains an individual
-	copy of the data.</dd>
+        oriented sense, of a master object.  Every clone shares its code
+        (called a Program) with the master but each maintains an individual
+        copy of the data.</dd>
       <dt>Driver object</dt>
       <dd>The first LPC object created.  It field a number of hooked called
-	(see Hooks) from the actual DGD driver, the real C code.</dd>
+        (see Hooks) from the actual DGD driver, the real C code.</dd>
       <dt>Driver program</dt>
       <dd>The actual binary program in C, not LPC, that starts up the whole
-	LPC environment and begins running the interpreted parts.  It may
-	be extended with a variety of packages and extensions, or be normal
-	&quot;vanilla&quot; DGD.  The driver implements common functions
-	that programs can't do for themselves and that any big program
-	is likely to need.  See also MUDLib. </dd>
+        LPC environment and begins running the interpreted parts.  It may
+        be extended with a variety of packages and extensions, or be normal
+        &quot;vanilla&quot; DGD.  The driver implements common functions
+        that programs can't do for themselves and that any big program
+        is likely to need.  See also MUDLib. </dd>
       <dt>Efuns</dt>
       <dd>Short for External Functions.  Efuns are functions which are
-	defined or overridden by the MUDLib's auto object.  Basically,
-	just like AFuns.</dd>
+        defined or overridden by the MUDLib's auto object.  Basically,
+        just like AFuns.</dd>
+      <dt>Execution Rounds</dt>
+      <dd>
+        Execution rounds are what used to be called DGD Threads.  An
+        execution round occurs in response to an event.  Any event
+        will be responded to by some piece of LPC code somewhere in
+        your MUD.  One run of that code is called an execution round.
+        Whenever an ER ends a bunch of stuff happens.  For instance,
+        objects are swapped to disk, and send_message and
+        send_datagram actually send.  Shutdowns, reboots and state
+        dumps wait for the current ER to end before they occur...  So
+        don't do your post-dump or post-shutdown stuff right after
+        your shutdown call.  Wait until the current ER has ended so
+        you're sure shutdown has already been called.
+      </dd>
       <dt>Hooks</dt>
       <dd>Functions which get called when certain things happen.  They're
-	like event handlers in some languages except that, as with Java
-	interfaces, you don't get to pick their names, you just supply an
-	Object with all the right function names defined.  You register
-	with another part of the MUDLib for a Hook -- if the driver just
-	does it automatically, it's an Apply instead of a Hook.</dd>
+        like event handlers in some languages except that, as with Java
+        interfaces, you don't get to pick their names, you just supply an
+        Object with all the right function names defined.  You register
+        with another part of the MUDLib for a Hook -- if the driver just
+        does it automatically, it's an Apply instead of a Hook.</dd>
       <dt>Inheritable</dt>
       <dd>In MUDLibs that separate Inheritable and Clonable, a Program
-	from which other programs may inherit.  It may not be cloned,
-	none of its functions can be directly called and it may have no
-	variables nor any other kind of state.  If it needs to be dynamically
-	upgraded, it will be destroyed rather than recompiled in place,
-	and it will be regenerated on demand from the new source.  This
-	is restrictive, but without it you may need to reboot the server
-	to upgrade objects.  Compare Clonable.</dd>
+        from which other programs may inherit.  It may not be cloned,
+        none of its functions can be directly called and it may have no
+        variables nor any other kind of state.  If it needs to be dynamically
+        upgraded, it will be destroyed rather than recompiled in place,
+        and it will be regenerated on demand from the new source.  This
+        is restrictive, but without it you may need to reboot the server
+        to upgrade objects.  Compare Clonable.</dd>
       <dt>Issue</dt>
       <dd>If you stumble into the thorny territory of writing your own object
-	manager, as you'll need to do in order to upgrade (recompile) objects
-	without rebooting for a Persistent MUD, you'll probably need to know
-	about Issues.  An Issue of an object, in particular of an Inheritable
-	object, is a compiled version of that object.  Until every object
-	inheriting from a given Issue has been destructed or recompiled, the
-	Issue is still there, lurking.  An object manager can be careful to
-	destroy any old Issues when it recompiles a new one, but that's a
-	nontrivial undertaking.  It is easiest to keep track of issues by
-	their object index, which will be different for each issue.
-	See the example object manager code on the
-	main page and the mailing list archives.</dd>
+        manager, as you'll need to do in order to upgrade (recompile) objects
+        without rebooting for a Persistent MUD, you'll probably need to know
+        about Issues.  An Issue of an object, in particular of an Inheritable
+        object, is a compiled version of that object.  Until every object
+        inheriting from a given Issue has been destructed or recompiled, the
+        Issue is still there, lurking.  An object manager can be careful to
+        destroy any old Issues when it recompiles a new one, but that's a
+        nontrivial undertaking.  It is easiest to keep track of issues by
+        their object index, which will be different for each issue.
+        See the example object manager code on the
+        main page and the mailing list archives.</dd>
       <dt>Kfuns</dt>
       <dd>Kfuns are DGD Kernel Functions, not to be confused with the Kernel
-	MUDLib, a different beast.  These are the basic things that DGD lets
-	your MUDLib do.  The MUDLib may override them so that the actual
-	objects your wizards create use Kfuns different from the ones
-	DGD supplies.  See Auto object.</dd>
+        MUDLib, a different beast.  These are the basic things that DGD lets
+        your MUDLib do.  The MUDLib may override them so that the actual
+        objects your wizards create use Kfuns different from the ones
+        DGD supplies.  See Auto object.</dd>
       <dt>LFuns</dt>
       <dd>Lfuns are local functions, functions local to a given object or
-	program.</dd>
+        program.</dd>
       <dt>Lightweight Object</dt>
       <dd> DGD is a disk-based MUD, and swaps out its objects regularly
-	(indeed, constantly) to a swap file.  Little things like member
-	variables (including arrays and mappings), get swapped as part of
-	the object they're part of.  If they're referenced by another
-	object, then instead of being shared they'll be copied into the
-	other object as well when the current Thead (qv) of execution
-	completes.  LWOs have .c files that define them, but act otherwise
-	just like arrays and mappings -- they're part of the object that
-	references them, swap with it and are copied if multiple objects
-	reference them. </dd>
+        (indeed, constantly) to a swap file.  Little things like member
+        variables (including arrays and mappings), get swapped as part of
+        the object they're part of.  If they're referenced by another
+        object, then instead of being shared they'll be copied into the
+        other object as well when the current Thead (qv) of execution
+        completes.  LWOs have .c files that define them, but act otherwise
+        just like arrays and mappings -- they're part of the object that
+        references them, swap with it and are copied if multiple objects
+        reference them. </dd>
       <dt>LWO</dt>
       <dd> A Lightweight Object. </dd>
       <dt>Master</dt>
       <dd>A clone is produced from a master object using the clone_object
-	kfun.  In some MUDLibs, the master must be a Clonable and may not
-	be an Inheritable.</dd>
+        kfun.  In some MUDLibs, the master must be a Clonable and may not
+        be an Inheritable.</dd>
       <dt>MUDLib</dt>
       <dd>A MUDLib is the layer of LPC on top of the Driver program that
-	runs the actual game or application you want.  The MUDLib implements
-	stuff you know your wizards or other users will want to do that
-	not every program built on DGD will necessarily want.  This includes
-	things like rooms, mobiles and objects.  Remember, not only do
-	different MUDs implement these things in different ways, but DGD
-	can be used for pretty much any kind of network server, not just
-	MUDs.</dd>
+        runs the actual game or application you want.  The MUDLib implements
+        stuff you know your wizards or other users will want to do that
+        not every program built on DGD will necessarily want.  This includes
+        things like rooms, mobiles and objects.  Remember, not only do
+        different MUDs implement these things in different ways, but DGD
+        can be used for pretty much any kind of network server, not just
+        MUDs.</dd>
       <dt>Object</dt>
       <dd>A chunk of code which may inherit from other objects.  It tracks
-	its own data.  The same thing as a Program.</dd>
+        its own data.  The same thing as a Program.</dd>
       <dt>Object manager</dt>
       <dd>To have a Persistent MUD, you'll need to keep track of what
-	inherits and clones what so that you can recompile or destroy all
-	the right stuff at all the right times.  There's a massive amount
-	of deep, confusing mailing list traffic on this deep, confusing
-	topic.  To cut to the chase, you can try installing Geir Harald
-	Hansen's Object Manager from the top page's LPC Code Examples. </dd>
+        inherits and clones what so that you can recompile or destroy all
+        the right stuff at all the right times.  There's a massive amount
+        of deep, confusing mailing list traffic on this deep, confusing
+        topic.  To cut to the chase, you can try installing Geir Harald
+        Hansen's Object Manager from the top page's LPC Code Examples. </dd>
       <dt>Persistent MUD</dt>
       <dd>A Persistent MUD is one that never does the usual save, recompile,
-	reboot routine.  Instead it keeps its memory state around and
-	recompiles stuff in-place.  This is very, very hard to do in most
-	languages and impossible in pretty much every other MUD server.
-	That's why DGD is so proud of being able to do it well.  To do this
-	properly, you'll need a MUDLib that separates Inheritable and
-	Clonable objects -- nothing that's both inherited from and cloned.
-	See Inheritable, Clonable, and Object Manager. </dd>
+        reboot routine.  Instead it keeps its memory state around and
+        recompiles stuff in-place.  This is very, very hard to do in most
+        languages and impossible in pretty much every other MUD server.
+        That's why DGD is so proud of being able to do it well.  To do this
+        properly, you'll need a MUDLib that separates Inheritable and
+        Clonable objects -- nothing that's both inherited from and cloned.
+        See Inheritable, Clonable, and Object Manager. </dd>
       <dt>Program</dt>
       <dd>The LPC code of an object.  In many MUDLibs,
-	it must be either an Inheritable or a Clonable but may not be
-	both.</dd>
+        it must be either an Inheritable or a Clonable but may not be
+        both.</dd>
       <dt>Thread</dt>
-      <dd>A thread of execution -- if multiple Threads are occurring, that
-	means multiple things are happening more-or-less at the same time,
-	and maybe <i>really</i> at the same time if you've got multiple
-	processors running DGD.  Whenever a thread ends
-	a bunch of stuff happens including swapping objects to disk and
-	send_message and send_datagram actually sending.
-	Shutdown, reboot and state dumps wait for the current thread
-	to end so don't do your post-dump or post-shutdown stuff right after
-	your shutdown call.  Wait until the current thread has ended so
-	you're sure shutdown has been called.  Note that DGD code
-	always acts exactly as though it's single-threaded, even when it's
-	actually running multithreaded.  How it does this is Deep Voodoo,
-	and should be questioned only by those with a profound understanding
-	of Atomic Functions (qv). </dd>
+      <dd>
+        A thread of execution -- if multiple Threads are occurring,
+        that means multiple things are happening more-or-less at the
+        same time, and maybe <i>really</i> at the same time if you've
+        got multiple processors running DGD.  This is also the old,
+        confusing, now-obsolete term for an Execution Round (qv).
+        Note that DGD code always acts exactly as though it's
+        single-threaded, even when it's actually running
+        multithreaded.  How it does this is Deep Voodoo, and should be
+        questioned only by those with a profound understanding of
+        Atomic Functions (qv).
+      </dd>
       <dt> Tick </dt>
       <dd> A tick is a hardware-independent abstraction of CPU usage.
         DGD runs on multiple platforms, and you'd like them to have
-	similar behavior with respect to things like CPU quotas.  So
-	DGD rates various operations by how processor-intensive they are,
-	and marks off ticks accordingly.  Tick usage can be limited by
-	the rlimits() construct, and monitored by status().  The Kernel
-	Library has a quota system for ticks that prevents you using
-	too many at a time, or too many total.
+        similar behavior with respect to things like CPU quotas.  So
+        DGD rates various operations by how processor-intensive they are,
+        and marks off ticks accordingly.  Tick usage can be limited by
+        the rlimits() construct, and monitored by status().  The Kernel
+        Library has a quota system for ticks that prevents you using
+        too many at a time, or too many total.
         </dd>
     </dl>
 
