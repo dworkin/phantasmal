@@ -6,11 +6,13 @@ Rooms are objects which are registered with MAPD.
 
 Some commands to play with rooms:
 @list_room               Lists existing rooms by number
+@stat                    View room details by number
 @goto_room               Goes to an existing room by number
 @save_rooms              Save rooms to a file
 @load_rooms              Load rooms from a file
 @new_room                Allocates a new room
 @delete_room             Destroys a room
+
 }}
 
 
