@@ -1,17 +1,1 @@
-~mobile{
-  ~type{wander}
-  ~name{a mobile turnip}
-  ~number{502}
-  ~body{313}
-}
-
-~mobile{
-  ~type{animal}
-  ~name{a dog}
-  ~number{503}
-  ~body{314}
-  ~data{
-    ~aggression{0}
-  }
-}
 
