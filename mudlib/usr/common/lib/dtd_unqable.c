@@ -93,6 +93,13 @@ string to_unq_text(void) {
   return result;
 }
 
+
+/* Just in case we need it... */
+string get_parse_error_stack(void) {
+  return dtd->get_parse_error_stack();
+}
+
+
 /* This method converts the object to the same sort of template
    that parsing an UNQ file with a DTD yields.  This template
    can then be converted to text. */

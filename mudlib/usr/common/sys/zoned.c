@@ -60,6 +60,10 @@ mixed* to_dtd_unq(void) {
   return tmp;
 }
 
+string get_parse_error_stack(void) {
+  return ::get_parse_error_stack();
+}
+
 void from_dtd_unq(mixed* unq) {
   mixed *zones, *segment;
 
