@@ -191,7 +191,8 @@ void add_unq_binding(string tag_name, string tag_path) {
     error("(Nil) isn't a valid tag in add_unq_binding!");
 
   if (tag_code[tag_name] != nil) {
-    error("Tag name '" + tag_name + "' is already bound in MAPD::init()!");
+    error("Tag name '" + tag_name
+	  + "' is already bound in MAPD::add_unq_binding()!");
   }
 
   /* Assign file to tag, and make sure it exists and is clonable */
@@ -364,7 +365,8 @@ private object add_struct_for_room(mixed* unq) {
   }
 
   if (tag_code[tag_name] == nil) {
-    error("Tag " + tag_name + " not bound to any code!");
+    error("Tag " + tag_name
+	  + " is not bound to any code! (destructed, perhaps?)");
   }
 
   if (!find_object(tag_code[tag_name])) {
