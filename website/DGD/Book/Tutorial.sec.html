@@ -616,6 +616,13 @@ mixed exec(object user, mixed argv...) {
 @@SECTION Tutorial.Arrays Arrays
 
 <p>
+  An <dfn>array</dfn> is a list of values, usually all of the same
+  type.  An array is meant to make it easy to reference arbitrary
+  elements of the array by number.  However, an array is slow when you
+  add or remove elements.
+</p>
+
+<p>
   Let's write a function to count digits in a string.  Go ahead and
   change <tt>myobj.c</tt> (or make a new object) to the following:
 </p>
@@ -782,14 +789,78 @@ $36 = nil
   Mappings are data structures, rather like arrays.  An array is a
   sequence of values (often numbers).  A <dfn>mapping</dfn> is a sort
   of dictionary of values, so that you can find a value by looking up
-  its key.  A mapping is written almost, but not quite, like an array.
+  its key.  You'll see them called <dfn>hash tables</dfn> in some
+  other languages.
 </p>
 
 <p>
+  Say we wanted to look through an array and make sure there were no
+  repeat elements.  Specifically, we wanted to read through an array
+  and return another array which had no repeated elements, but wasn't
+  guaranteed to be in the same order.
+</p>
+
+<pre>
+string *unique(string *array) {
+  mapping elements;
+  int     ctr;
+
+  elements = ([ ]);
+  for(ctr = 0; ctr < sizeof(array); ctr++) {
+    elements[array[ctr]] = 1;
+  }
+
+  return map_indices(elements);
+}
+</pre>
+
+<p>
+  Notice that <var>mapping</var> is used like <var>int</var> to
+  declare variables.  Notice also that we have to initialize the
+  mapping to a new empty value before we assign anything to it.
+</p>
+
+<p>
+  A mapping in LPC is written almost, but not quite, like an array.
   The mapping <code>([ &quot;a&quot; : 1, &quot;b&quot; : 2,
   &quot;c&quot; : 3 ])</code> can be dereferenced like an array.  But
   instead of dereferencing by number, this mapping is dereferenced by
   name.  So if a mapping called <var>letters</var> had that value,
   then <code>letters[&quot;a&quot;]</code> would have the value 1 and
-  <code>letters[&quot;c&quot;]</code> would have the value 3.
+  <code>letters[&quot;c&quot;]</code> would have the value 3.  So
+  <code>([ ])</code> is a fresh new empty mapping.
 </p>
+
+<p>
+  Try compiling a new <tt>/usr/admin/myobj.c</tt> with the function
+  above in it.  This can be instead of the old function, or in
+  addition to it.  Once you've successfully compiled <tt>myobj.c</tt>,
+  try typing <kbd>&quot;/usr/admin/myobj&quot;->unique( ({
+  &quot;bob&quot;, &quot;sam&quot;, &quot;murray&quot;,
+  &quot;bob&quot; }) )</kbd>.  You should get a result like <samp>$45
+  = ({ "bob", "murray", "sam" })</samp>.  Note that this contains all
+  the same strings as the original, but in a different order, and with
+  no repeated &quot;bob&quot;.  Note also that you've just called your
+  function on the object, but you <em>didn't</em> use the same syntax
+  you've been using.  Instead, you used the object's name in double
+  quotes.  That's the same as the filename, but without the
+  <tt>.c</tt> on the end.
+</p>
+
+<p>
+  
+</p>
+
+
+@@SECTION Tutorial.Functions Functions
+
+<p>
+  You've seen some functions in previous sections, but we haven't really
+  explored how they work.
+</p>
+
+@@SECTION Tutorial.Objects
+
+<p>
+</p>
+

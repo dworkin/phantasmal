@@ -1,0 +1,66 @@
+1. Tutorial
+  = Getting Started
+  = Variables and Arithmetic Expressions
+  = The For Statement
+  - Symbolic Constants
+  - Character Input and Output
+  + String Manipulation
+  + LPC Files
+  = Arrays
+  + Mappings
+  - Functions
+  * Objects?
+  - Arguments -- Call by Value
+  - Character Arrays
+  - External Variables and Scope
+
+2. Types, Operators and Expressions
+  - Variable Names
+  - Data Types and Sizes
+  - Constants
+  - Declarations
+  - Arithmetic Operators
+  - Relational and Logical Operators
+  - Type Conversions
+  - Increment and Decrement Operators
+  - Bitwise Operators
+  - Assignment Operators and Expressions
+  - Conditional Expressions
+  - Precedence and Order of Evaluation
+
+3. Control Flow
+  - Statements and Blocks
+  - If-Else
+  - Else-If
+  - Switch
+  - Loops -- While and For
+  - Loops -- Do-while
+  - Break and Continue
+  - Goto and Labels
+
+4. Functions and Program Structure
+  - Basics of Functions
+  - Functions Returning Non-integers
+  - External Variables
+  - Scope Rules
+  - Header Files
+  - Static Variables
+  - Register Variables
+  - Block Structure
+  - Initialization
+  - Recursion
+  - The C Preprocessor
+
+5. Pointers and Arrays
+  - Pointers and Addresses
+  - Pointers and Function Arguments
+  - Pointers and Arrays
+  - Address Arithmetic
+  - Character Pointers and Functions
+  - Pointer Arrays; Pointers to Pointers
+  - Multi-dimensional Arrays
+  - Initialization of Pointer Arrays
+  - Pointers vs Multi-dimensional Arrays
+  - Command-line Arguments
+  - Pointers to Functions
+  - Complicated Declarations
