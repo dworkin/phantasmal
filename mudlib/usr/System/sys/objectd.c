@@ -1042,9 +1042,12 @@ string report_on_object(string spec) {
 /*
   Suspend_system suspends network input, new logins and callouts
   except in this object.  (idea stolen from Geir Harald Hansen's
-  ObjectD)
+  ObjectD).  This will need to be copied to any and every object
+  that suspends callouts -- the RSRCD checks previous_object()
+  to find out who *isn't* suspended.  TelnetD only suspends
+  new incoming network activity.
 */
-void suspend_system() {
+private void suspend_system() {
   if(SYSTEM()) {
     RSRCD->suspend_callouts();
     TELNETD->suspend_input(0);  /* 0 means "not shutdown" */
@@ -1055,7 +1058,7 @@ void suspend_system() {
 /*
   Releases everything that suspend_system suspends.
 */
-void release_system() {
+private void release_system() {
   if(SYSTEM()) {
     RSRCD->release_callouts();
     TELNETD->release_input();
