@@ -114,7 +114,7 @@ void from_unq(mixed* unq) {
   mixed* dtd_unq;
 
   if(!dtd) {
-    error("You must override the default from_unq_text method for "
+    error("You must override the default from_unq method for "
 	  + object_name(this_object()) + " or supply a DTD!");
   }
 

@@ -109,7 +109,7 @@ object get_destination() {
  *
  * creates a string out of the object flags.
  */
-string to_unq_flags(void) {
+static string to_unq_flags(void) {
   object dest, shortphr, other_exit;
   string  ret, tmp_n, tmp_a;
   int locale, opp_dir;
@@ -185,7 +185,7 @@ string to_unq_flags(void) {
  * loads data from the unq parsed with a room-derived dtd.
  */
 
-void from_dtd_tag(string tag, mixed value) {
+static void from_dtd_tag(string tag, mixed value) {
   int ctr;
 
   if (tag=="rnumber") {
@@ -341,4 +341,5 @@ string can_pass(object user, object pass_object) {
 
 /* Called when a user passes through the exit */
 void pass(object pass_object) {
+
 }

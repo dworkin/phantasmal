@@ -504,11 +504,19 @@ private mixed parse_to_string_with_mods(mixed* type, mixed unq) {
 
       /* Only one obj, but since this has modifiers return it as
 	 an array-of-one. */
-      return ({ tmp });
+      if(repmin <= 1 && repmax >= 1)
+	return ({ tmp });
+      else {
+	accum_error += "Number of entries doesn't fit " + type[1]
+	  + " modifier\n";
+	return nil;
+      }
     }
 
-    if(typeof(unq) != T_ARRAY)
+    if(typeof(unq) != T_ARRAY) {
+      /* Not a string and not an array.  Error! */
       error("Unreasonable type parsing UNQ!");
+    }
 
     /* Okay, multiple entries -- typeof(unq) is T_ARRAY */
     unq = UNQ_PARSER->trim_empty_tags(unq);
@@ -529,7 +537,8 @@ private mixed parse_to_string_with_mods(mixed* type, mixed unq) {
     }
 
     if (sizeof(ret) < repmin || sizeof(ret) > repmax) {
-      accum_error += "Number of entries doesn't fit ? mod\n";
+      accum_error += "Number of entries doesn't fit " + type[1]
+	+ " modifier\n";
       return nil;
     }
 

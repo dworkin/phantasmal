@@ -27,9 +27,10 @@ mixed* basic_unq_parse(string block) {
     }
   } : {
     if (block == nil) {
-      LOGD->write_syslog("Error: no block passed to basic_unq_parse");
+      LOGD->write_syslog("Error: no block passed to basic_unq_parse",
+			 LOG_WARN);
     } else {
-      LOGD->write_syslog("Error parsing block: " + block);
+      LOGD->write_syslog("Error parsing block: " + block, LOG_WARN);
     }
     return nil;
   }
