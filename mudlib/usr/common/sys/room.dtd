@@ -1,6 +1,6 @@
 ~DTD{
-  ~obj{obj_type?,number?,location?,detail?,bdesc,gdesc,ldesc,edesc?,
-       article,parent?,
+  ~obj{obj_type?,number?,location?,detail?,bdesc,gdesc?,ldesc,edesc?,
+       article?,parent?,
        nouns,rem_nouns?,adjectives?,rem_adjectives?,
        exit*,newexit*,flags?,weight?,volume?,length?,
        weight_capacity?,volume_capacity?,length_capacity?,removed_details?,
