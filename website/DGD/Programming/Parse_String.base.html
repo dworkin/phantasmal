@@ -224,8 +224,7 @@
   <h3> More Messages About Using parse_string() </h3>
 
   <pre>
-From: Par Winzell <zell@skotos.net>
-Message-ID: <15077.44945.803778.78438@alyx.skotos.net>
+From: Par Winzell
 Date: Tue, 24 Apr 2001 09:53:37 -0700
 To: DGD Mailing List
 Subject: Re: [DGD]parse_string
@@ -346,9 +345,8 @@ Zell
 <pre>
 Date: Thu Sep 27 11:59:00 2001
 Subject: [DGD] 1.2.31
-Message-ID: <200109271654.SAA01683@dworkin.nl>
 
-Mikael Lind <z94lind@mtek.chalmers.se> wrote:
+Mikael Lind wrote:
 
 > Quoting Felix A. Croes from 20:39, 2001-09-26:
 >
@@ -373,8 +371,6 @@ Dworkin
 <pre>
 Date: Thu Sep 27 12:50:01 2001
 Subject: [DGD] string parsing..
-In-Reply-To: <00db01c14779$83c8bbb0$0100a8c0@cc84920a>
-Message-ID: <20010927124538.F1113@kansas.is-here.com>
 
 On Thu, Sep 27, 2001 at 07:26:15PM +0200, Nico Lammers wrote:
 [...]
@@ -404,7 +400,7 @@ the token with the substitute text.
 
 Erwin.
 -- 
-Erwin Harte <harte@xs4all.nl>
+Erwin Harte
 </pre>
 
 <hr />
@@ -414,7 +410,7 @@ From DGD Mailing List  Thu Sep 27 13:06:01 2001
 From: DGD Mailing List (Erwin Harte)
 Date: Thu Sep 27 13:06:01 2001
 Subject: [DGD] parse_string() example
-Message-ID: <20010927130157.G1113@kansas.is-here.com>
+
 
 This one I wrote in May '98, to parse config-files of something:
 
@@ -441,7 +437,7 @@ What the pp_[a-f] functions did I leave up to your own imagination.
 
 Erwin.
 -- 
-Erwin Harte <harte@xs4all.nl>
+Erwin Harte
 </pre>
 
 <hr />
@@ -451,9 +447,8 @@ From DGD Mailing List  Mon Dec 10 14:36:00 2001
 From: DGD Mailing List (Felix A. Croes)
 Date: Mon Dec 10 14:36:00 2001
 Subject: [DGD] Re: Parse String and Virtual Objects
-Message-ID: <200112102021.VAA05902@dworkin.nl>
 
-Par Winzell <zell@skotos.net> wrote:
+Par Winzell wrote:
 
 >[...]
 > The if if else ambiguity isn't so bad, but there are examples
@@ -481,8 +476,6 @@ From DGD Mailing List  Mon Dec  2 08:47:01 2002
 From: DGD Mailing List (Jay Shaffstall)
 Date: Mon Dec  2 08:47:01 2002
 Subject: [DGD] Debugging a parse_string() grammar.
-In-Reply-To: <20021202052456.63525.qmail@web20206.mail.yahoo.com>
-Message-ID: <5.1.0.14.0.20021202094904.00b07990@mail.netwalk.com>
 
 Keith,
 
@@ -505,8 +498,6 @@ Jay
 From: DGD Mailing List (Erwin Harte)
 Date: Thu Mar 20 22:47:01 2003
 Subject: [DGD] parse_string() wierdness???
-In-Reply-To: <20030321043652.93433.qmail@web20206.mail.yahoo.com>
-Message-ID: <20030321044656.GR13089@sleepy.dwarf>
 
 On Thu, Mar 20, 2003 at 08:36:52PM -0800, Keith Dunwoody wrote:
 [...]
@@ -538,7 +529,7 @@ Hope that helps,
 
 Erwin.
 -- 
-Erwin Harte <harte@xs4all.nl>
+Erwin Harte
 </pre>
 
 <hr />
@@ -548,8 +539,6 @@ From DGD Mailing List  Thu Mar 20 22:50:02 2003
 From: DGD Mailing List (Jay Shaffstall)
 Date: Thu Mar 20 22:50:02 2003
 Subject: [DGD] parse_string() wierdness???
-In-Reply-To: <20030321043652.93433.qmail@web20206.mail.yahoo.com>
-Message-ID: <5.1.0.14.0.20030320235117.02fdf4c0@mail.netwalk.com>
 
 Keith,
 
@@ -581,9 +570,6 @@ From DGD Mailing List  Tue Mar 25 23:24:00 2003
 From: DGD Mailing List (Erwin Harte)
 Date: Tue Mar 25 23:24:00 2003
 Subject: [DGD] comments in parse_string() grammars?
-In-Reply-To: <20030326051019.83604.qmail@web20203.mail.yahoo.com>
-References: <20030326051019.83604.qmail@web20203.mail.yahoo.com>
-Message-ID: <20030326052328.GN27511@sleepy.dwarf>
 
 On Tue, Mar 25, 2003 at 09:10:19PM -0800, Keith Dunwoody wrote:
 > Is there any way of putting a comment in a
@@ -619,7 +605,61 @@ Hope that helps,
 
 Erwin.
 -- 
-Erwin Harte <harte@xs4all.nl>
+Erwin Harte
+</pre>
+
+<hr />
+
+<pre>
+From: dgd at list.imaginary.com (Par Winzell)
+Date: Wed Feb 27 14:09:00 2002
+Subject: [DGD] Question...
+
+Noah,
+
+>   I store rooms, portables and helpfiles in large files with large numbers
+> of entries -- I used to store one help entry per file, and it starts to
+> suck pretty quickly.  The problem with storing one room, portable or
+> (gag) exit per file is the sheer number of files that build up.
+
+We've tinkered with this consideration too; large files of associated 
+objects (which CVS handles well, but absolutely requires O(N) style 
+algorithms) or individual small files, which can get really hairy.
+
+>   But then, I don't use save_object() -- I use an XML-like structured
+> storage language called UNQ with XML-like DTDs.  And it means that certain
+> kinds of bugs *are* just tough to track down.  I may start having to use
+> explode() to cut the file up into sections before doing my current
+> parse_string parsing -- otherwise when a file isn't parsed as valid UNQ
+> parse_string will just return nil and I have no idea where the error is.
+
+Indeed. I wrote two versions of our XML parser; one using parse_string() 
+and one not. We ended up using the non- version. This makes me unhappy, 
+because it is clearly inefficient -- not the recursive descent bit but 
+the tragic low-level fiddling with individual bytes -- that really cries 
+out for native execution. That said, Felix has added some stuff to the 
+parse_string() grammar to allow better error handling. Did you look at 
+that? It does slow down parsing in some way that I have not understood 
+entirely -- and I have not had time to play with it at all really -- but 
+it does let you add 'nomatch' tokens which you can then use in error 
+productions, which should be able to pinpoint your errors much better.
+
+I'd love to hear from somebody who's tried this out in practice.
+
+>   But for bugs after parsing has occurred, I just have a lot of error
+> checking code so if there's a bug I know what entry it's in -- I make sure
+> my error message tells me.  And when doing the DTD structured parsing
+> after the parse_string pass I actually keep a separate parser_error stack
+> of error messages so I can find out exactly what the problem is, and in
+> what entry.  It's a lot of error check code, but I wrote it once and now I
+> use it almost everywhere.
+
+
+I don't really understand this paragraph at all, I'm afraid. :)
+
+
+Zell
+
 </pre>
 
   <p style="text-size: 150%"> <a href="index.html"> Back to DGD &amp; LPC
