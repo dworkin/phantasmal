@@ -285,23 +285,20 @@ private string blurb_for_substate(int substate) {
       + "Example: heavy gray dull\r\n";
 
   case SS_PROMPT_WEIGHT:
-    return "Enter the weight of the object, or hit enter to choose a "
-      + "reasonable default.\r\n"
+    return "Enter the weight of the object.\r\n"
       + "The weight may be in kilograms, or may be followed by a "
       + "unit.\r\n"
       + "Metric: mg   g   kg     Standard: lb   oz   tons\r\n";
 
   case SS_PROMPT_VOLUME:
-    return "Enter the volume of the object, or hit enter to choose a "
-      + "reasonable default.\r\n"
+    return "Enter the volume of the object.\r\n"
       + "The volume may be in liters, or may be followed by a "
       + "unit.\r\n"
       + "Metric: L   mL   cc   cubic m\r\n"
       + "Standard: oz   qt   gal   cubic ft   cubic yd\r\n";
 
   case SS_PROMPT_LENGTH:
-    return "Enter the length of the longest axis of the object, or hit enter"
-      + " to choose a reasonable default.\r\n"
+    return "Enter the length of the longest axis of the object.\r\n"
       + "The length may be in centimeters, or may be followed by a "
       + "unit.\r\n"
       + "Metric: m   mm   cm   dm     Standard: in   ft   yd\r\n";
@@ -537,8 +534,14 @@ static int prompt_obj_number_input(string input) {
     }
   }
 
-  if(obj_type == OT_ROOM) {
-    new_obj = clone_object(SIMPLE_ROOM);
+  /* Rooms, portables and details are now all cloned from the same
+     base. */
+  new_obj = clone_object(SIMPLE_ROOM);
+
+  if(!new_obj) {
+    send_string("Sorry, you seem to be out of objects or memory!\r\n");
+
+    return RET_POP_STATE;
   }
 
   zonenum = -1;
@@ -580,7 +583,7 @@ static int prompt_obj_number_input(string input) {
 	      + " to zone #" + zonenum
 	      + " (" + ZONED->get_name_for_zone(zonenum) + ")" + ".\r\n");
   if(obj_detail_of) {
-    send_string("It is a detail of obj #");
+    send_string("It is a detail of obj ");
   } else {
     send_string("Its location is ");
   }
@@ -786,6 +789,7 @@ private mixed process_words(string input) {
   return phr;
 }
 
+
 static int prompt_nouns_input(string input) {
   string nouns;
 
@@ -819,9 +823,30 @@ static int prompt_adjectives_input(string input) {
   if(obj_type == OT_ROOM) {
     new_obj->set_container(1);
     new_obj->set_open(1);
+
+    new_obj->set_weight(2000.0);    /* 2 metric tons */
+    new_obj->set_volume(1000000.0); /* Equiv of 10m cubic room */
+    new_obj->set_length(1000.0);    /* 10m -- too big to pick up */
+    new_obj->set_weight_capacity(2000000.0);   /* 2000 metric tons */
+    new_obj->set_volume_capacity(27000000.0);  /* Equiv of 30m cubic room */
+    new_obj->set_length_capacity(1500.0);      /* 15m */
+
     send_string("\r\nDone with room #" + new_obj->get_number() + ".\r\n");
     return RET_POP_STATE;
   }
+
+  if(obj_type == OT_PORTABLE) {
+    substate = SS_PROMPT_WEIGHT;
+
+    send_string("Good.  Now we'll get the object's weight.\r\n");
+    send_string(blurb_for_substate(substate));
+    return RET_NORMAL;
+  }
+
+  /* If it's not a portable or a room, it's a detail.  In that case,
+     don't bother with the weight, volume and length for this object.
+     It's part of another.  It *will* have capacities later, though,
+     if it's a container. */
 
   substate = SS_PROMPT_CONTAINER;
 
@@ -837,6 +862,264 @@ static int prompt_adjectives_input(string input) {
 
   return RET_NORMAL;
 }
+
+
+static int prompt_weight_input(string input) {
+  mapping units;
+  string  unitstr;
+  float   value;
+  int     use_parent;
+
+  use_parent = 0;
+
+  if(!input || STRINGD->is_whitespace(input)) {
+    send_string("Let's try that again.\r\n");
+    send_string(blurb_for_substate(substate));
+
+    return RET_NORMAL;
+  }
+
+  input = STRINGD->trim_whitespace(input);
+
+  if(sscanf(input, "%f %s", value, unitstr) == 2) {
+    units = ([ "kg"             : 1.0,
+	       "kilograms"      : 1.0,
+	       "kilogram"       : 1.0,
+	       "g"              : 0.001,
+	       "grams"          : 0.001,
+	       "gram"           : 0.001,
+	       "mg"             : 0.000001,
+	       "milligrams"     : 0.000001,
+	       "milligram"      : 0.000001,
+	       "pounds"         : 0.45,
+	       "pound"          : 0.45,
+	       "lb"             : 0.45,
+	       "ounces"         : 0.028,
+	       "ounce"          : 0.028,
+	       "oz"             : 0.028,
+	       "tons"           : 990.0,
+	       "ton"            : 990.0,
+	       ]);
+
+    unitstr = STRINGD->trim_whitespace(unitstr);
+    if(units[unitstr])
+      value *= units[unitstr];
+    else {
+      send_string("I don't recognize the units '" + unitstr
+		  + "' as units of weight or mass.  Try again.\r\n");
+      send_string(blurb_for_substate(substate));
+
+      return RET_NORMAL;
+    }
+  } else if(!STRINGD->stricmp(input, "none")) {
+    use_parent = 1;
+    value = -1.0;
+  } else if(sscanf(input, "%f", value) != 1) {
+    send_string("Enter the value, optionally with units.  Something like:\r\n"
+		+ "  '4.7 oz' or '3 tons' or '0.5 mg'.  Try again.\r\n");
+    send_string(blurb_for_substate(substate));
+
+    return RET_NORMAL;
+  }
+
+  if(value < 0.0 && !use_parent) {
+    send_string("You'll want to give a number no smaller than zero.  "
+		+ "Try again.\r\n");
+    send_string(blurb_for_substate(substate));
+
+    return RET_NORMAL;
+  }
+
+  new_obj->set_weight(value);
+
+  send_string("Accepted weight.\r\n");
+  substate = SS_PROMPT_VOLUME;
+  send_string(blurb_for_substate(substate));
+
+  return RET_NORMAL;
+}
+
+
+static int prompt_volume_input(string input) {
+  mapping units;
+  string  unitstr;
+  float   value;
+  int     use_parent;
+
+  use_parent = 0;
+
+  if(!input || STRINGD->is_whitespace(input)) {
+    send_string("Let's try that again.\r\n");
+    send_string(blurb_for_substate(substate));
+
+    return RET_NORMAL;
+  }
+
+  input = STRINGD->trim_whitespace(input);
+
+  if(sscanf(input, "%f %s", value, unitstr) == 2) {
+    units = ([ "liter"             : 1.0,
+               "liters"            : 1.0,
+               "l"                 : 1.0,
+               "L"                 : 1.0,
+               "milliliter"        : 0.001,
+               "milliliters"       : 0.001,
+               "ml"                : 0.001,
+               "mL"                : 0.001,
+               "cubic centimeters" : 0.001,
+               "cubic centimeter"  : 0.001,
+	       "cc"                : 0.001,
+	       "cubic cm"          : 0.001,
+	       "cu cm"             : 0.001,
+	       "cubic meters"      : 1000.0,
+	       "cubic meter"       : 1000.0,
+	       "cubic m"           : 1000.0,
+	       "cu m"              : 1000.0,
+
+	       "ounces"            : 0.0296,
+	       "ounce"             : 0.0296,
+	       "oz"                : 0.0296,
+	       "pints"             : 0.473,
+	       "pint"              : 0.473,
+	       "pt"                : 0.473,
+	       "quarts"            : 0.946,
+	       "quart"             : 0.946,
+	       "qt"                : 0.946,
+	       "gallons"           : 3.784,
+	       "gallon"            : 3.784,
+	       "gal"               : 3.784,
+	       "cubic foot"        : 28.3,
+	       "cubic feet"        : 28.3,
+	       "cubic ft"          : 28.3,
+	       "cu ft"             : 28.3,
+	       "cubic yards"       : 765.0,
+	       "cubic yard"        : 765.0,
+	       "cubic yd"          : 765.0,
+	       ]);
+
+    unitstr = STRINGD->trim_whitespace(unitstr);
+    if(units[unitstr])
+      value *= units[unitstr];
+    else {
+      send_string("I don't recognize the units '" + unitstr
+		  + "' as units of volume.  Try again.\r\n");
+      send_string(blurb_for_substate(substate));
+
+      return RET_NORMAL;
+    }
+  } else if(!STRINGD->stricmp(input, "none")) {
+    use_parent = 1;
+    value = -1.0;
+  } else if(sscanf(input, "%f", value) != 1) {
+    send_string("Enter the value, optionally with units.  Something like:\r\n"
+		+ "  '1.2 liters' or '250 cc' or '35 cu dm'.  Try again.\r\n");
+    send_string(blurb_for_substate(substate));
+
+    return RET_NORMAL;
+  }
+
+  if(value < 0.0 && !use_parent) {
+    send_string("You'll want to give a number no smaller than zero.  "
+		+ "Try again.\r\n");
+    send_string(blurb_for_substate(substate));
+
+    return RET_NORMAL;
+  }
+
+  new_obj->set_volume(value);
+
+  send_string("Accepted volume.\r\n");
+  substate = SS_PROMPT_LENGTH;
+  send_string(blurb_for_substate(substate));
+
+  return RET_NORMAL;
+}
+
+
+static int prompt_length_input(string input) {
+  mapping units;
+  string  unitstr;
+  object  edit_state;
+  float   value;
+  int     use_parent;
+
+  use_parent = 0;
+
+  if(!input || STRINGD->is_whitespace(input)) {
+    send_string("Let's try that again.\r\n");
+    send_string(blurb_for_substate(substate));
+
+    return RET_NORMAL;
+  }
+
+  input = STRINGD->trim_whitespace(input);
+
+  if(sscanf(input, "%f %s", value, unitstr) == 2) {
+    units = ([ "centimeters"    : 1.0,
+	       "centimeter"     : 1.0,
+	       "cm"             : 1.0,
+	       "millimeters"    : 0.1,
+	       "millimeter"     : 0.1,
+	       "mm"             : 0.1,
+	       "decimeters"     : 10.0,
+	       "decimeter"      : 10.0,
+	       "dm"             : 10.0,
+	       "meters"         : 100.0,
+	       "meter"          : 100.0,
+	       "m"              : 100.0,
+
+	       "inches"         : 2.54,
+	       "inch"           : 2.54,
+	       "in"             : 2.54,
+	       ]);
+
+    unitstr = STRINGD->trim_whitespace(unitstr);
+    if(units[unitstr])
+      value *= units[unitstr];
+    else {
+      send_string("I don't recognize the units '" + unitstr
+		  + "' as units of length.  Try again.\r\n");
+      send_string(blurb_for_substate(substate));
+
+      return RET_NORMAL;
+    }
+  } else if(!STRINGD->stricmp(input, "none")) {
+    use_parent = 1;
+    value = -1.0;
+  } else if(sscanf(input, "%f", value) != 1) {
+    send_string("Enter the value, optionally with units.  Something like:\r\n"
+		+ "  '4.7 oz' or '3 tons' or '0.5 mg'.  Try again.\r\n");
+    send_string(blurb_for_substate(substate));
+
+    return RET_NORMAL;
+  }
+
+  if(value < 0.0 && !use_parent) {
+    send_string("You'll want to give a number no smaller than zero.  "
+		+ "Try again.\r\n");
+    send_string(blurb_for_substate(substate));
+
+    return RET_NORMAL;
+  }
+
+  new_obj->set_weight(value);
+
+  send_string("Accepted length.\r\n");
+  substate = SS_PROMPT_CONTAINER;
+
+  edit_state = clone_object(US_ENTER_YN);
+  if(edit_state) {
+    edit_state->set_prompt("Is the object a container? ");
+    push_state(edit_state);
+  } else {
+    LOGD->write_syslog("Couldn't clone US_ENTER_YN state object!",
+		       LOG_ERROR);
+    return RET_POP_STATE;
+  }
+
+  return RET_NORMAL;
+}
+
 
 static void prompt_container_data(mixed data) {
   object edit_state;
