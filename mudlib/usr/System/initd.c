@@ -182,9 +182,10 @@ static void create(varargs int clone)
     LOGD->write_syslog("Can't read zone file!  Starting blank!\n", LOG_WARN);
   } 
 
-  /* Start up ChannelD and ConfigD */
+  /* Start up ChannelD, ConfigD and SoulD */
   if(!find_object(CHANNELD)) compile_object(CHANNELD);
   if(!find_object(CONFIGD)) compile_object(CONFIGD);
+  if(!find_object(SOULD)) compile_object(SOULD);
 }
 
 void save_mud_data(object user, string room_filename, string mob_filename,
