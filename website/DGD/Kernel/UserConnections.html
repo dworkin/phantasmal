@@ -1,0 +1,217 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+                      "http://www.w3.org/TR/xhtml1/DTD/strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<title>The Kernel Library for DGD: Users and Connections</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<link href="../../phantasmal.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<table width="95%" border="0" cellspacing="0" cellpadding="4">
+  <tr>
+    <td colspan="2"> <table width="100%" border="0" cellspacing="1"
+        cellpadding="0" class="main">
+        <tr>
+          <td class="banner">The DGD Kernel Library</td>
+        </tr>
+      </table></td>
+  </tr>
+  <tr>
+    <td valign="top">
+      <table width="25%"  border="0" cellspacing="1"
+             cellpadding="0"  class="main">
+        <tr>
+          <td class="content" style="font-size: 120%">
+
+          <ul style="margin: 0; padding-left: 10%">
+            <li> <a href="../index.html">DGD &amp; LPC Page</a> </li>
+	    <li> <a href="../LPC">LPC Textbook</a> </li>
+	    <li> <a href="http://www.sf.net/projects/phantasmal">Phantasmal
+	      SourceForge</a> </li>
+          </ul>
+
+        </td>
+        </tr>
+        <tr>
+          <td class="content" align="center">
+            <a href="http://validator.w3.org/check/referer">
+            <img src="../../images/valid-xhtml10.gif" alt="Valid XHTML 1.0!"
+             style="border:0;width:88px;height:31px" /></a><br />
+            <img src="../../images/pixel.gif"
+             style="border:0;width:88px;height:1px" alt="" /><br />
+            <a href="http://jigsaw.w3.org/css-validator/check/referer">
+            <img src="http://jigsaw.w3.org/css-validator/images/vcss"
+             alt="Valid CSS!" style="border:0;width:88px;height:31px" />
+            </a><br /><br /><br />
+            <a href="http://sourceforge.net">
+            <img src="http://sourceforge.net/sflogo.php?group_id=48659&amp;type=2"
+             style="border: 0; width: 125; height: 37;"
+	     alt="SourceForge.net Logo" /></a>
+          </td>
+        </tr>
+      </table></td>
+    <td> <table width="100%"  border="0" cellspacing="1" cellpadding="0" 
+          class="main">
+        <tr>
+          <td class="heading">&nbsp;&nbsp;&middot;&nbsp;
+	    <a href="http://phantasmal.sf.net/DGD">DGD Page</a> &gt;
+            <a href="index.html">Kernel Library</a> &gt;
+            <a href="">Users and Connections</a>
+          </td>
+        </tr>
+        <tr>
+          <td class="content">
+  
+
+  <h2> Users and Connections in the Kernel </h2>
+
+  <p>
+    The Kernel Library has a number of related objects that determine
+    how user logins work.  They can be quite confusing if you're not
+    used to them.
+  </p>
+
+  <p>
+    This is all about using TCP, in both telnet and binary modes, with
+    the Kernel Library.  There's also UDP (datagram) stuff, which this
+    page doesn't bother with.
+  </p>
+
+  <h3> Telnet Ports and Binary Ports </h3>
+
+  <p>
+    DGD, at a very low level, supports telnet-protocol ports and
+    binary-protocol ports.  Its telnet protocol ports support only
+    line-mode telnet (as opposed to character-mode), and no
+    international characters, ANSI color codes or VT100 control codes.
+    So telnet ports are very vanilla, while binary-mode ports are what
+    you'd expect from a standard network library.
+  </p>
+
+  <p>
+    You'll need to set handlers for any telnet or binary ports you
+    want to use, or DGD will do it for you by default.  However, for
+    any nontrivial protocol you'll need to do it yourself.  You use
+    two functions in the USERD, &quot;set_telnet_manager&quot; and
+    &quot;set_binary_manager&quot;, to do so.  The first argument is
+    what port number the manager is for.  This is an offset in the
+    array of ports, so pass '0' for the first port, '1' for the second
+    port, and so on.  The second and final argument is the object that
+    should be the handler for the port.
+  </p>
+
+  <p>
+    A port handler needs to define some functions.  One function is
+    query_timeout.  The function is passed a connection object and
+    must return a timeout in seconds.  A new connection has been
+    established, and the timeout returned by query_timeout is how long
+    the connection may remain open before it is closed for inactivity.
+    You can return a negative number for the timeout if you'd like the
+    connection to be immediately closed.
+  </p>
+
+  <p>
+    The function query_banner is similar: a new connection has been
+    established and the string returned by query_banner is sent out
+    immediately.  If nil is returned, no banner is sent until the
+    client has sent something first.  Usually these functions,
+    together, give text for your login message, and tell the MUD how
+    long the new client has to send you a login before you get rid of
+    them for inactivity.
+  </p>
+
+  <p>
+    The final function a handler must define is called 'select'.  If
+    the new connection sends a line before the timeout period expires,
+    the select() function is called with that line so that you can
+    return a user object for that connection.  Telnet connections in
+    DGD are line-mode only.  Binary connections in line-mode also act
+    as if they are line-mode only.  So if you can't wait for a newline
+    in your protocol, you should set the connection object to MODE_RAW
+    as quickly as possible with the set_mode() call.  I think you can
+    do this in query_banner() or query_timeout() with good results.
+  </p>
+
+  <h3> Connection Modes </h3>
+
+  <p>
+    A number of functions return the mode that you'd like the
+    connection to be in after the function is called.  A common mode
+    to return from those functions would be MODE_NOCHANGE, meaning no
+    change in mode.  Otherwise, a telnet connection can return
+    MODE_ECHO (the usual) or MODE_NOECHO (for passwords, usually).  A
+    binary connection can return MODE_LINE (for simulating line-mode
+    telnet) or MODE_RAW (for pure binary).  There's also the 'virtual'
+    mode MODE_DISCONNECT, which means to disconnect the user and
+    destruct the connection object.  There are also MODE_BLOCK and
+    MODE_UNBLOCK, also virtual modes related to blocking input.  Input
+    blocking is a more advanced topic than we'll cover here, but
+    usually it's done when upgrading objects or otherwise performing
+    relatively unstable operations &mdash; at those times, you'd
+    rather the user couldn't do anything until your server has settled
+    back down.
+  </p>
+
+  <h3> How Connections Really Work Underneath </h3>
+
+  <p>
+    If you look at DGD's documentation and then the steps above,
+    you'll get some idea of how the Kernel Library does what it does.
+  </p>
+
+  <p>
+    When DGD calls the Kernel's Driver object with a telnet_connect()
+    or binary_connect() request, the Kernel returns a telnet
+    connection or binary connection object.  DGD then calls open() on
+    that connection object.
+  </p>
+
+  <p>
+    The connection object, when open()'d, will then query the banner
+    and timeout via the UserD.  The UserD will, in turn, call your
+    handler if you've registered one, or will default to its own
+    handler if you haven't.  The connection then registers a timeout
+    in case the connection goes idle for longer than the acceptable
+    timeout.
+  </p>
+
+  <p>
+    At some point the connection is likely to receive data from the
+    non-MUD side.  When that happens, receive_message() is called on
+    the connection.  For a telnet connection or a binary connection in
+    MODE_LINE, the binary or telnet connection's receive_message will
+    wait to get a full line before calling receive_message() in its
+    parent class.  For a binary connection in MODE_RAW, it will call
+    the parent immediately, without waiting for a full line.  When
+    that happens for the very first time, the connection object will
+    query UserD for a user object, which will in turn call select() on
+    your handler, if you have set one.  The select call will pass in
+    the data that it was handed.  Note that DGD strips newlines off
+    line-mode telnet data, and the Kernel's binary MODE_LINE handler
+    mimicks that behavior.  So you won't actually see the newline
+    passed to select.
+  </p>
+
+  <p>
+    The user object doesn't (yet?) have to inherit from any specific
+    object type.  Currently its only restriction is that it should
+    define login(), logout(), receive_message(), message_done(),
+    open_datagram() and receive_datagram() in some approximately
+    reasonable way.
+  </p>
+
+  <p>
+    Because the user object doesn't have to be any specific type, the
+    SSH package for the kernel library cheerfully exploits this to
+    define another connection object (similar to the Kernel's telnet and
+    binary connection objects) as the user object.
+  </p>
+            <address>
+            <span><a href="mailto:angelbob-remove-spamfree@spamfree.users.sf.net">Noah Gibbs</a></span>
+            </address></td>
+        </tr>
+      </table></td>
+  </tr>
+</table>
+</body>
+</html>
