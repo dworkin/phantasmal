@@ -39,8 +39,9 @@
 
     <pre>
 &lt;code&gt; // This is a comment stretching to the end of the line.
+       // NOT SUPPORTED BY DGD!
 
-&lt;code&gt; /* This is an enclosed comment */ &lt;code&gt;
+&lt;code&gt; /* This is an enclosed comment */ &lt;more code&gt;
     </pre>
 
     The first type of comment starts off with the <code>//</code>
@@ -112,161 +113,155 @@
       <dt><tt>void</tt>
       <dd>
 	<a name="IDX1"></a>
-	<tt>Nothing</tt> 
 
-	This data type is used exclusively for functions that
-	don't return any data at all.
+	This data type is used exclusively as the return type of
+	functions that don't return any data at all.
+      </dd>
 
       <dt><tt>int</tt>
       <dd>
 	<a name="IDX2"></a>
-	<tt>Integers</tt> 
 
-	Whole numbers in the range -2147483648 to 2147483647.  e.g. <code>3, 17,
-	  -32, 999</code>.
+	Whole numbers, normally between -2147483648 and 2147483647. 
+	e.g. <code>3, 17, -32, 999</code>.
+      </dd>
 
       <dt><tt>float</tt>
       <dd>
 	<a name="IDX3"></a>
-	<tt>Floating point numbers</tt> 
 
-	Decimal numbers of any kind in the approximate range 1.17549435e-38 to
-	3.40282347e+38. e.g. <code>1.3, -348.4, 4.53e+4</code>. The range values are
-	approximate since this might vary from mud to mud as it's platform
-	dependant.
+	Decimal numbers of any kind, usually approximately between
+	1.17549435e-38 and 3.40282347e+38. e.g. <code>1.3, -348.4,
+	4.53e+4</code>.
 
-	If there are any FORTRAN fossiles around there, beware that numbers like
-	<code>1.</code> or <code>.4711</code> are <i>not</i> recognized as floats, you have
-	to specify both an integer and a decimal part, even if they only are 0.
+	Please note that numbers like <code>1.</code> or
+	<code>.4711</code> are <i>not</i> recognized as floats.  You
+	have to specify both an integer and a decimal part for every
+	number, even if they're zero for the number you're typing.
+      </dd>
 
       <dt><tt>string</tt>
       <dd>
 	<a name="IDX4"></a>
-	<tt>`Character strings'</tt> 
 
-	Strings are simply a series of printable characters within quotes,
-	e.g. <code>"x", "the string", "Another long string with the number 5 in
-	  it"</code>. Strings can contain special characters like newline (<code>"\n"</code>)
-	to end a line. A lot of LPC expressions can handle strings directly,
-	unlike usual C. This makes strings very handy and easy to use.
+	Strings are simply a series of printable characters.  They're
+	written with the characters in quotes, e.g. <code>"x", "the
+	string", "Another long string with the number 5 in
+	it"</code>. Strings can contain special characters like
+	newline (written as <code>"\n"</code>) to end a line. A lot of
+	LPC expressions can handle strings directly, unlike in C. This
+	makes strings much easier to use.
+      </dd>
 
-      <dt><tt>`mapping'</tt>
+      <dt><tt>mapping</tt>
       <dd>
 	<a name="IDX5"></a>
-	<tt>`Associated list'</tt>
 
-	Mappings are another handy LPC invention (memory expensive, use with
-	care!). A mapping is simply a list of associated values. Assume you want
-	to remember the ages of people, like Olle is 23, Peter is 54 and Anna is
-	15. In LPC you can write this as <code>([ "Olle":23, "Peter":54,
-	  "Anna":15 ])</code>. As you can see the value to the right has been associated
-	to the value to the left. You can then extract the associated value
-	through a simple indexing operation using the left hand value as index.
+	Mappings are another handy LPC invention.  A mapping is simply
+	a list of associated values. Assume you want to remember the
+	ages of people.  Say that Olle is 23, Peter is 54 and Anna is
+	15.  In LPC you can turn this into the mapping <code>([
+	"Olle":23, "Peter":54, "Anna":15 ])</code>.  The value to the
+	right has been associated to the value to the left. You can
+	then extract the associated value through a simple indexing
+	operation using the left hand value as index.
+      </dd>
 
-      <dt><tt>`object'</tt>
+      <dt><tt>object</tt>
       <dd>
 	<a name="IDX6"></a>
-	<tt>`Object pointer'</tt>
 
-	They are references to LPC programs that has been loaded into memory.
+	Object pointers are references to LPC programs that have been
+	loaded into memory.  The object pointer may point to an original
+	object, or to a clone.
+      </dd>
 
-      <dt><tt>`Array'</tt>
+      <dt><tt>Array</tt>
       <dd>
 	<a name="IDX8"></a>
-	All of the above can appear in arrays, indicated by a <code>*</code> in front of
-	the variable name in the declaration.
 
-	Arrays in LPC are more like lists than proper arrays. A number of functions
-	and operator facilites exist to make them easy and quick to use.
+	All of the above can appear in arrays, indicated by a
+	<code>*</code> in front of the variable name in the
+	declaration.
 
-      <dt><tt>`mixed'</tt>
+	Arrays in LPC are more like lists than arrays in C.  A number
+	of functions and operator facilites exist to make them easy
+	and quick to use.
+      </dd>
+
+      <dt><tt>mixed</tt>
       <dd>
 	<a name="IDX9"></a>
-	This, finally, is a general descriptor covering all the other, a sort of
-	jack-of-all-trades type. Again, let me stress the fact that using it
-	except when <i>absolutely</i> necessary only provokes mistakes.
 
-	Hm, as pointed out to me this might sound a bit too strict. The mixed
-	type is used for good reasons fairly often. What I mean is that when
-	a regular type can be used, it should. Don't substitute it for mixed just
-	because you feel lazy.
+	Type mixed is a general descriptor covering all the others, a
+	sort of jack-of-all-trades type.  An object of any other type
+	may be stored within a mixed type.  Again, let me stress the
+	fact that using it except when <i>absolutely</i> necessary
+	only provokes mistakes.
 
-</DL>
+	When a regular type can be used, it should. Don't use mixed
+	just because you don't want to remember the type's name.  The
+	type system is there to catch errors for you.  Let it.
+      </dd>
+    </dl>
 
 
+    <h3><a name="SEC3.2.3" href="index.html#SEC3.2.3">
+	Variable declarations</a></h3>
 
-<h3><a name="SEC3.2.3" href="index.html#SEC3.2.3">Variable declarations</a></h3>
+    <p>
+      A variable is a string of letters identifying an information
+      container, a place to store data. The container is given a name
+      consisting of 32 characters or less, starting with a letter.  No
+      special character other than the '_' used to separate words is
+      ever used. Variables should always be given names that reflect
+      how they are used. You declare variables like this:
 
-<p>
-A variable is a string of letters identifying an information 'box', a place
-to store data. The box is given a name consisting of &lt; 32 characers,
-starting with an alphabetic letter. Custom and common sense dictate that
-all variables used inside a function consist of lowercase letters
-only. Global variables have the first letter in uppercase, the rest
-lowercase. No special character other than the '_' used to separate words
-is ever used. Variables should <i>always</i> be given names that reflect
-on their use. You declare variables like this:
-
-</p>
-
-<pre>
+    <pre>
 &lt;data type&gt; &lt;variable name&gt;, &lt;another variable&gt;, ..., &lt;last variable&gt;;
 e.g.
     int        counter;
     float      height, weight;
     mapping    age_map;
-</pre>
+    </pre>
+    </p>
 
-<p>
-Variables must be declared at the beginning of a block (right after the
-first '{') and before any code statements. Global variables, variables that
-are available in all functions througout the program, should be declared at
-the top of the file.
+    <p>
+      Variables must be declared at the beginning of a block,
+      immediately after the first <code>{</code> and before any other
+      statements. Global variables, variables that are available in
+      all functions througout the program, should be declared at the
+      top of the file.
+    </p>
 
-</p>
-<p>
-When the declarations are executed as the program runs, they are initially
-set to 0, <b>NOT</b> to their 'null-state' values. In other words for
-example mappings, arrays and strings will all be set to 0 and not to
-<code>([])</code>, <code>({})</code> and <code>""</code> as you might believe. It is possible
-to initialize variables in the declaration statement, and it's even a very
-good habit always to initialize arrays and mappings there:
+    <p>
+      Variables are initially set to 0 or to nil, and not necessarily
+      to the obvious 'empty' values.  Mappings, arrays and strings
+      will all be set to nil and not to <code>([])</code>,
+      <code>({})</code> or <code>""</code> as you might expect.
+    </p>
 
-</p>
-
-<pre>
-&lt;data type&gt; &lt;variable name&gt; = &lt;value&gt;, etc.
-e.g.
-    int        counter = 8;
-    float      height = 3.0, weight = 1.2;
-    mapping    age_map = ([]);
-    object     *monsters = ({});
-</pre>
-
-<p>
-The reason why arrays and mappings should be initalized in the
-declaration statement to their 'NULL' values (<code>({})</code> and
-<code>([])</code> respectively) is that otherwise they are initialized to 0,
-which is incompatible with the proper type of the variable and might
-cause problems later.
-
-</p>
+    <p>
+      Arrays and mappings should be initalized to their empty values
+      (<code>({})</code> and <code>([])</code> respectively) before
+      being used.  You can't add a value to a mapping that's set to
+      nil, for instance, and you'll get a runtime error if you try.
+    </p>
 
 
-<h3><a name="SEC3.2.4" href="index.html#SEC3.2.4">Function declarations</a></h3>
+    <h3><a name="SEC3.2.4" href="index.html#SEC3.2.4">
+	Function declarations</a></h3>
 
-<p>
-A function must give proper notification of what kind of data type it
-returns, if any. A function is a label much like a variable name,
-consisting of &lt; 32 characters, starting with a letter. Custom
-and common sense dictate that all function names should be lowercase and
-only contain the special character '_' to separate words. Use function
-names that clearly reflect on what they do. A function declaration looks
-like this:
+    <p>
+      A function's declaration must state what kind of data type it
+      returns, if any.  A function name is a label much like a
+      variable name, consisting of 32 characters or less and starting
+      with a letter.  No special characters other than <code>_</code>
+      should be used to separate words. Use function names that
+      clearly reflect on what they do. A function declaration looks
+      like this:
 
-</p>
-
-<pre>
+    <pre>
 /*
  * Function name: &lt;Function name&gt;
  * Description:   &lt;What it does &gt;
@@ -278,177 +273,191 @@ like this:
 {
    &lt;code expressions&gt;
 }
-</pre>
-
-
-<pre>
+    </pre>
+    The beginning comment, while optional, is highly recommended.
+    Even if you don't use precisely this form of comment, you should
+    state what the function does and what it expects to be given as
+    input.  Here is an example function:
+    <pre>
 /*
  * Function name: compute_diam
  * Description:   Compute the diameter of a circle given the 
  *                circumference.
- * Variables:     surf_area - the surface area
- *                name - the name given the circle
- * Returns:       The circumference.
+ * Variables:     circumference - the circle's circumference
+ *                pi - a famous irrational constant
+ * Returns:       The circle's diameter
  */
-float
-compute_diam(float surf_area, string name)
+float compute_diam(float circumference, float pi)
 {
     float rval;
-	    
-    // Circumference = pie * diameter
-    rval = surf_area / 3.141592643;
-    write("The diameter of " + name + " is " + ftoa(rval) + "\n");
+
+    /* Circumference = pi * diameter, so
+       diameter = circumference / pi */
+
+    rval = circumference / pi;
 
     return rval;
 }
 </pre>
+  </p>
 
-<p>
-The argument list is a comma-separated list of data types, much like a
-variable declaration where you specify what kind of data will be sent to
-the function and assign names to this data for later use in the function.
-The data recieved will <b>only</b> be usable inside the function, unless you
-explicitly send it out through a function call.
+    <p>
+      The argument list is a comma-separated list of data types.  It
+      specifies what kinds of data will be sent to the function and
+      assigns names to this data for later use.  The data recieved
+      will <i>only</i> be usable inside the function, unless you
+      explicitly send it elsewhere.  The function's argument names are
+      valid only within that function itself.
+    </p>
 
-</p>
-<p>
-(In order to save space and improve on legibility in the manual I won't
-put a header to all my short example functions).
+    <p>
+      (In order to save space and improve on legibility in the text,
+      I won't put a header on every example function).
+    </p>
 
-</p>
-<p>
-A function that doesn't return anything should be declared as <code>void</code>.
-
-</p>
-
-<pre>
-void
-write_all(string mess)
+    <p>
+      A function that doesn't return anything should be declared as
+      <code>void</code>.  For instance:
+    <pre>
+void write_stuff(string mess)
 {
-    users()-&gt;catch_msg(mess);
+    write_file("/usr/Bob/myfile.txt", mess);
 }
-</pre>
+    </pre>
+  </p>
+
+    <h3><a name="SEC3.2.5" href="index.html#SEC3.2.5">
+	Statements and Expressions</a></h3>
+
+    <p>
+      We need to define what a <b>statement</b> and what an
+      <b>expression</b> are in order to proceed.
+    </p>
 
 
+    <h4><a name="SEC3.2.5.1" href="index.html#SEC3.2.5.1">
+	Statements</a></h4>
 
-<h3><a name="SEC3.2.5" href="index.html#SEC3.2.5">Statements and Expressions</a></h3>
+    <p>
+      <a name="IDX10"></a>
+      <a name="IDX11"></a>
 
-<p>
-We need to define what a <b>statement</b> and what an <b>expression</b> is
-in order to be able to proceed.
+      A statement is sort of a full sentence of instructions, made up
+      from one or more expressions. Statements usually cover no more
+      than a single line of code. Sometimes it's necessary to break it
+      up though if it becomes too long simply to improve on legibility
+      -- a little like avoiding long run-on sentences.  For most
+      statements you simply break the line between two words, but if
+      you are in the middle of a string you need to add a backslash
+      (<code>\</code>) at the end of the line in order for the
+      gamedriver to understand what's going on.
 
-</p>
+    </p>
 
-<ul>
-<li><a href="lpc.html#SEC22">Statements</a>: Definition of statements
-<li><a href="lpc.html#SEC23">Expressions</a>: Definition of expressions
-<li><a href="lpc.html#SEC24">Block statement</a>: The block statement
-</ul>
+    <pre>
+DRIVER->message("This is an example of \
+a broken string.\n");
+    </pre>
 
-
-
-<H4><a name="SEC22" href="index.html#SEC22">Statements</a></H4>
-<p>
-<a name="IDX10"></a>
-<a name="IDX11"></a>
-
-</p>
-<p>
-A statement is sort of a full sentence of instructions, made up from one
-or more expressions. Statements usually cover no more than a single line
-of code. Sometimes it's necessary to break it up though if it becomes too
-long, simply to improve on legibility. For most statements you simply 
-break the line between two words, but if you are in the middle of a 
-string you need to add a backslash (<code>\</code>) at the end of the line 
-in order for the gamedriver to understand what's going on.
-
-</p>
-
-<pre>
-write("This is an example of \
-      a broken string.\n");
-</pre>
-
-<p>
-However, breaking a statement with backslash is extremely ugly and makes
-the code hard to read. In fact, it's usually possible to break the line
-naturally at the end of a string, between two operators of some kind, or
-even just split the string in half and add the two parts together with the
-<code>+</code> operator. The only time the backslash really is necessary is in
-<code>#define</code>-statements, handled later.
-
-</p>
+    <p>
+      However, breaking a statement with backslash is extremely ugly
+      and makes the code hard to read.  It's usually possible to break
+      the line naturally at the end of a string, or between two
+      operators of some kind, or even just split the string in half
+      and add the two parts together with the <code>+</code>
+      operator. The only time the backslash really is necessary is in
+      <code>#define</code>-statements, which we'll mention later.
+    </p>
 
 <pre>
-write("This is a better way of " +
-      "breaking a string.\n");
+DRIVER->message("This is a better way of " +
+                "breaking a string.\n");
 </pre>
 
-<p>
-Statements in LPC are usually ended with a <code>;</code>, which also is a
-good place to end the line. There's nothing stopping you from entering
-another statement right after, other than that it will look awful.
-
-</p>
-
-
-<H4><a name="SEC23" href="index.html#SEC23">Expressions</a></H4>
-
-<p>
-An expression is an instruction or set of instructions that results in a
-value of some kind. Take <code>+</code>, for example. It uses two other
-expressions to make up a result. A variable is an expression since it
-yields its contents as a result. The combination of the following two
-expressions and an operator is a valid expression: <code>a + b</code>,
-<code>a</code> and <code>b</code> being variables (expressions) and <code>+</code> being
-the operator used on them. <code>a = b + c;</code> is a full statement ending
-in a <code>;</code>.
-
-</p>
-<p>
-Function calls are valid expressions. They are written simply as the
-name followed by a set of matched parentheses with the arguments that
-the functions uses listed inside. Take the simple function <code>max()</code> 
-for example, that returns the max of the two arguments. To determine the
-maximum of <code>4</code> and <code>10</code>, you would write <code>max(4, 10)</code> as
-the expression. Naturally the result must be either stored or used.
-
-</p>
+    <p>
+      Statements in LPC usually end with <code>;</code>.  It's
+      considered good practice to put a newline there as well rather
+      than putting multiple statements on the same line of text.
+    </p>
 
 
-<H4><a name="SEC24" href="index.html#SEC24">The block statement</a></H4>
-<p>
-<a name="IDX12"></a>
+    <h4><a name="SEC3.2.5.2" href="index.html#SEC3.2.5.2">
+	Expressions</a></h4>
 
-</p>
-<p>
-There are a lot of statements, for example conditional statements, that
-in certain circumstances execute <i>one</i> specified statement and
-never else. Suppose you want to have several statements executed 
-and not just one? Well, there's a special statement called <b>block</b>
-statement that will allow you to do that. A block is defined as starting
-with a <code>{</code> and ending with a <code>}</code>. Within that block you may
-have as many statements of any kind (including variable definitions) as
-you like. The block statement is not ending with a <code>;</code>, even though
-it doesn't matter if you accidentally put one there.
+    <p>
+      An expression is an instruction or set of instructions that
+      results in a value.  Take <code>+</code>, for example. It uses
+      two other expressions to make up a result. A variable is an
+      expression since it yields its contents as a result.  <code>a +
+      b</code> is a valid expression, because <code>a</code> and
+      <code>b</code> are variables (expressions) and <code>+</code> is
+      an operator that takes two expressions to make another
+      expression.  <code>a = b + c;</code> is a full statement ending
+      in a <code>;</code>.  Because the <code>=</code> operator
+      returns a value, <code>a = b + c</code> is an expression, but
+      when you add a <code>;</code>, it becomes a statement.  It's
+      like when you add a period to the end of a bunch of words and
+      suddenly you have a sentence.
+    </p>
 
-</p>
+    <p>
+      Function calls are valid expressions. They are written simply as
+      the name followed by a set of parentheses with the arguments
+      that the functions uses listed inside.  Take the simple function
+      <code>max()</code> for example, that returns the maximum of the
+      two floating-point arguments.  To determine the maximum of
+      <code>4.0</code> and <code>10.0</code>, you would write
+      <code>max(4.0, 10.0)</code> as the expression.  The result of
+      the function call must be stored or used in an expression, or it
+      is lost.  That's fine if you're calling the function because of
+      some other effect it has, such as <code>write_file()</code>.
+    </p>
 
 
-<H4><a name="SEC25" href="index.html#SEC25">The ';' statement</a></H4>
+    <h4><a name="SEC3.2.5.3" href="index.html#SEC3.2.5.3">
+	The block statement</a></h4>
+    <p>
+      <a name="IDX12"></a>
 
-<p>
-As stated <code>;</code> is mostly used to terminate statements, however it's
-also a statement in its own right.
+      There are a lot of statements such as conditional statements
+      that in certain circumstances execute only <i>one</i> specified
+      statement and no more.  Suppose you want to have several
+      statements executed and not just one? Well, there's a special
+      statement called <b>block</b> statement that will allow you to
+      do that. A block is defined as starting with a <code>{</code>
+      and ending with a <code>}</code>. Within that block you may have
+      as many statements of any kind (including variable definitions)
+      as you like.  The block statement shouldn't end with a
+      <code>;</code>, though usually it doesn't matter if you
+      accidentally put one there.  Example:
+    <pre>
+if(my_var < 3)
+{
+  statement_one();
+  statement_two();
+  statement_three();
+}
+    </pre>
+  </p>
 
-</p>
-<p>
-The <code>;</code> on it's own will simply be a null-statement causing nothing
-to happen. This is useful when you have test-clauses and loops (described
-later) that perform their intended purpose within the test or loop clause
-and aren't actually intended to do anything else.
 
-</p>
+    <h4><a name="SEC3.2.5.4" href="index.html#SEC3.2.5.4">
+	The ';' statement</a></h4>
+
+    <p>
+      As stated <code>;</code> is mostly used to terminate statements.
+      However it's also a statement in its own right.
+    </p>
+
+    <p>
+      The <code>;</code> on it's own will simply be a null statement
+      causing nothing to happen. This is useful when you have
+      test-clauses and loops (described later) that perform their
+      intended purpose within the test or loop clause and aren't
+      actually intended to do anything else.  Just remember that
+      anywhere you're allowed to have a statement, you can just
+      put a <code>;</code> as a statement that does nothing.
+    </p>
 
 
     <hr>
@@ -459,7 +468,7 @@ and aren't actually intended to do anything else.
     </address>
     <!-- Created: Mon Jun 11 21:50:30 PDT 2001 -->
     <!-- hhmts start -->
-Last modified: Tue Apr  8 18:49:06 PDT 2003
+Last modified: Tue Apr  8 19:48:48 PDT 2003
 <!-- hhmts end -->
   </body>
 </html>
