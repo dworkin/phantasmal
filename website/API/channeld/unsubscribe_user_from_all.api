@@ -1,5 +1,5 @@
 FILE
-	/usr/common/sys/configd.c
+	/usr/common/sys/channeld.c
 
 NAME
 	unsubscribe_user_from_all - unsubscribe a user from all channels

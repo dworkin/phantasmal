@@ -1,5 +1,5 @@
 FILE
-	/usr/common/sys/configd.c
+	/usr/common/sys/channeld.c
 
 NAME
 	is_subscribed - return whether a user is subscribed to a channel

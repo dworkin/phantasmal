@@ -1,5 +1,5 @@
 FILE
-	/usr/common/sys/configd.c
+	/usr/common/sys/channeld.c
 
 NAME
 	string_to_channel - send a string to a channel

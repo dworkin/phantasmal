@@ -1,5 +1,5 @@
 FILE
-	/usr/common/sys/configd.c
+	/usr/common/sys/channeld.c
 
 NAME
 	unsubscribe_user - remove a user's subscription to a channel

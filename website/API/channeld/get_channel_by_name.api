@@ -1,5 +1,5 @@
 FILE
-	/usr/common/sys/configd.c
+	/usr/common/sys/channeld.c
 
 NAME
 	get_channel_by_name - get a channel index by name
