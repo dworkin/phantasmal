@@ -25,7 +25,7 @@ void runtime_error(string error, int caught, mixed** trace)
   object obj;
 
   if(reset_comp_err) {
-    log->write_syslog("Clearing comp_err in runtime_error!", LOG_NORMAL);
+    log->write_syslog("Clearing comp_err in runtime_error!", LOG_VERBOSE);
     comp_err = nil;
     reset_comp_err = 0;
   } else {
@@ -127,19 +127,6 @@ void atomic_error(string error, int atom, mixed** trace)
 
   in_atomic_error = 1;
 
-
-  /* commented out -- can't write to log within an atomic, 
-   * and I think runtime_error() should be called right after this anyway
-   * (kdunwoody)
-  if(reset_comp_err) {
-    log->write_syslog("Clearing comp_err in atomic_error!", LOG_NORMAL);
-    comp_err = nil;
-    reset_comp_err = 0;
-  } else {
-    reset_comp_err = 1;
-  }
-  */
-
   /* if the first character of the error message is '$', this is a silent
    * error -- do not record it */
   if (error[0] == '$') {
@@ -214,7 +201,7 @@ void atomic_error(string error, int atom, mixed** trace)
 void compile_error(string file, int line, string error)
 {
   if(reset_comp_err) {
-    log->write_syslog("Clearing comp_err in compile_error!", LOG_NORMAL);
+    log->write_syslog("Clearing comp_err in compile_error!", LOG_VERBOSE);
     reset_comp_err = 0;
     comp_err = "";
   }
