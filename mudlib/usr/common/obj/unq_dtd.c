@@ -11,6 +11,12 @@ private mapping dtd;
 private int     is_clone;
 private mapping builtins;
 private string  accum_error;
+/* base type of a type -- for inheritance */
+private mapping base_type;
+/* list of files that has already been loaded -- automatic double
+   inclusion protection */
+private int *loaded;
+
 
 /* #define USE_LOG to write to a log file */
 
@@ -26,6 +32,9 @@ static int create(varargs int clone) {
     compile_object(UNQ_PARSER);
 
   dtd = ([ ]);
+
+  loaded = ({ });
+  base_type = ([ ]);
 
   if(!is_clone) {
     /* Note: may eventually allow additions to the builtins array
@@ -59,7 +68,7 @@ private mixed* dtd_struct(string* array);
 private mixed* dtd_string_with_mods(string str);
 
 /* Random helper funcs */
-private void set_up_fields_mapping(mapping fields, mixed* type);
+private int     set_up_fields_mapping(mapping fields, string label);
 
 
 
@@ -269,7 +278,7 @@ private string serialize_to_dtd_struct(string label, mixed unq,
      new functionality. */
 
   fields = ([ ]);
-  set_up_fields_mapping(fields, type);
+  set_up_fields_mapping(fields, label);
 
   if(typeof(unq) != T_ARRAY) {
     string tmp;
@@ -599,11 +608,12 @@ private mixed parse_to_builtin(string type, mixed unq) {
    of labelled fields.
 */
 private mixed* parse_to_dtd_struct(string t_label, mixed unq) {
-  mixed*  type, *instance_tracker, *ret;
+  mixed*  type, *instance_tracker, *ret, *vals;
   mixed   tmp;
   int     ctr;
   mapping fields;
   string  label;
+  int     buck_cnt;
   int repmin, repmax;
 
   write_log("Parsing to dtd struct '" + t_label + "', arg: '"
@@ -638,32 +648,36 @@ private mixed* parse_to_dtd_struct(string t_label, mixed unq) {
     return ({ t_label, tmp });
   }
 
-  /* We need to track how many of each tag in the structure are parsed
-     so we can check to make sure they match our modifiers or lack
-     thereof.  We have one bucket for each type in the struct.  We
-     leave in the spare bucket for the word "struct" to simplify
-     indexing. */
-  instance_tracker = allocate(sizeof(type));
-
-  for(ctr = 0; ctr < sizeof(instance_tracker); ctr++) {
-    instance_tracker[ctr] = ({ });
-  }
-
   /* Set up fields array to know what bucket of instance_tracker
      different labelled fields belong in */ 
   fields = ([ ]);
-  set_up_fields_mapping(fields, type);
+  buck_cnt = set_up_fields_mapping(fields, t_label);
+
+  /* We need to track how many of each tag in the structure are parsed
+     so we can check to make sure they match our modifiers or lack
+     thereof.  We have one bucket for each type in the struct, and its
+     base classes. */
+  instance_tracker = allocate(buck_cnt);
+
+  for (ctr = 0; ctr < buck_cnt; ++ctr) {
+    instance_tracker[ctr] = ({ });
+  }
 
   for(ctr = 0; ctr < sizeof(unq); ctr += 2) {
     int   index;
     mixed tmp;
+    string match_label;
 
-    label = STRINGD->trim_whitespace(unq[ctr]);
-    if(fields[label] == nil) {
+    match_label = label = STRINGD->trim_whitespace(unq[ctr]);
+    while (match_label != nil && fields[match_label][0] == nil) {
+      match_label = base_type[match_label];
+    }
+
+    if (match_label == nil) {
       accum_error += "Unrecognized field " + label + " in structure\n";
       return nil;
     }
-    index = fields[label];
+    index = fields[match_label][0];
 
     tmp = parse_to_dtd_type(label, unq[ctr + 1]);
     if(tmp == nil) {
@@ -676,47 +690,51 @@ private mixed* parse_to_dtd_struct(string t_label, mixed unq) {
 
   }
 
-  /* Verify we match the modifiers */
-  for(ctr = 1; ctr < sizeof(type); ctr++) {
-    int num;
+  vals = map_values(fields);
 
-    /* If no modifier... */
-    if(typeof(type[ctr]) == T_STRING
-       || sizeof(type[ctr]) == 1) {
-      if(sizeof(instance_tracker[ctr]) != 1) {
-	accum_error += "Wrong # of instances of " + type[ctr] + " (" + ctr + ").  1 needed, " + sizeof(instance_tracker[ctr]) + " found.\n";
-	return nil;
-      }
-      continue;
-    }
+  /* Verify we match the modifiers */
+  for(ctr = 0; ctr < sizeof(vals); ctr++) {
+    int num;
 
     repmin = 0;
     repmax = INT_MAX;
-    if(type[ctr][1] == "?") {
+    if (vals[ctr][1] == "?") {
       repmax = 1;
-    } else if (type[ctr][1] == "+") {
+    } else if (vals[ctr][1] == "+") {
       repmin = 1;
-    } else if (type[ctr][1] == "*") {
+    } else if (vals[ctr][1] == "*") {
       /* do nothing, any value is acceptable */
-    } else if (sscanf(type[ctr][1], "<%d..%d>", repmin, repmax) == 2 || sscanf(type[ctr][1], "<..%d>", repmax) == 1 || sscanf(type[ctr][1], "<%d..>", repmin) == 1) {
+    } else if (sscanf(vals[ctr][1], "<%d..%d>", repmin, repmax) == 2 || sscanf(vals[ctr][1], "<..%d>", repmax) == 1 || sscanf(vals[ctr][1], "<%d..>", repmin) == 1) {
       /* do nothing, all values already entered */
-    } else if (sscanf(type[ctr][1], "<%d>", repmin) == 1) {
+    } else if (sscanf(vals[ctr][1], "<%d>", repmin) == 1) {
       repmax = repmin;
     } else {
-      accum_error += "Unrecognized type modifier " + type[ctr][1] + "!\n";
+      accum_error += "Unrecognized type modifier " + vals[ctr][1] + "!\n";
       return nil;
     }
     
-    num = sizeof(instance_tracker[ctr]);
+    num = sizeof(instance_tracker[vals[ctr][0]]);
     if (num < repmin || num > repmax) {
-      accum_error += "Wrong # of fields of type " + type[ctr][0] + " in struct.  " + num + " given, between " + repmin + " and " + repmax + " required.\n";
-      return nil;
+      int ctr2;
+      mixed *types;
+
+      types = map_indices(fields);
+
+      for (ctr2 = 0; ctr2 < sizeof(types); ctr2++) {
+	if (types[ctr2][0] == vals[ctr][0]) {
+	  accum_error += "Wrong # of fields of type " + types[ctr2][0] + " in struct.  " + num + " given, between " + repmin + " and " + repmax + " required.\n";
+	  return nil;
+	}
+      }
+
+      accum_error += "Wrong # of fields of type (unknown) in struct.  " + num + " given, between " + repmin + " and " + repmax + " required.\n";
+	  return nil;
     }
   }
 
   /* Reassemble instances into single array to return */
   ret = ({ });
-  for(ctr = 1; ctr < sizeof(instance_tracker); ctr++) {
+  for(ctr = 0; ctr < sizeof(instance_tracker); ctr++) {
     ret += instance_tracker[ctr];
   }
   return ({ t_label, ret });
@@ -726,9 +744,17 @@ private mixed* parse_to_dtd_struct(string t_label, mixed unq) {
 /*** To load in the DTD: ***/
 
 void load(string new_dtd) {
-  int    ctr;
+  int    ctr, ctr2;
   string str;
   mixed* new_unq;
+  string import;
+
+  if (sizeof(loaded & ({ new_dtd }) )) {
+    /* this file already loaded */
+    /* log & return */
+    LOGD->write_syslog("File already loaded into dtd");
+    return;
+  }
 
   if(!is_clone)
     error("Can't use non-clone UNQ DTD!  Stop it!");
@@ -740,24 +766,33 @@ void load(string new_dtd) {
 
   new_unq = UNQ_PARSER->trim_empty_tags(new_unq);
 
-  str = STRINGD->trim_whitespace(new_unq[0]);
-  if(STRINGD->stricmp(str, "dtd")) {
-    error("Can't load file as DTD -- not tagged as DTD!");
+  for (ctr2 = 0; ctr2 < sizeof(new_unq); ctr2 += 2) {
+    str = STRINGD->trim_whitespace(new_unq[ctr2]);
+    if (STRINGD->stricmp(str, "dtd") == 0) {
+      /* parse DTD */
+      if (typeof(new_unq[ctr2 + 1]) != T_ARRAY) {
+	error("This doesn't look complex enough to be a real DTD!");
+      }
+
+      new_unq[ctr2+1] = UNQ_PARSER->trim_empty_tags(new_unq[ctr2+1]);
+      for(ctr = 0; ctr < sizeof(new_unq[ctr2+1]); ctr+=2) {
+	new_dtd_element(new_unq[ctr2+1][ctr], new_unq[ctr2+1][ctr + 1]);
+      }
+	  
+    } else if (STRINGD->stricmp(str, "import") == 0) {
+      /* import another file */
+      if (typeof(new_unq[ctr2 + 1]) != T_STRING) {
+	error ("Filename must be a string in import!");
+      }
+
+      import = read_file(new_unq[ctr2 + 1]);
+
+      /* recusively call load */
+      load(import);
+    } else {
+      error("Unknown tag type: " + new_unq[ctr2]);
+    }
   }
-
-  if(typeof(new_unq[1]) != T_ARRAY)
-    error("This doesn't look complex enough to be a real DTD!");
-
-  if(sizeof(new_unq) > 2) {
-    error("Don't yet support multiple DTDs per file: "
-	  + STRINGD->mixed_sprint(new_unq));
-  }
-
-  new_unq[1] = UNQ_PARSER->trim_empty_tags(new_unq[1]);
-  for(ctr = 0; ctr < sizeof(new_unq[1]); ctr+=2) {
-    new_dtd_element(new_unq[1][ctr], new_unq[1][ctr + 1]);
-  }
-
 }
 
 private void new_dtd_element(string label, mixed data) {
@@ -780,9 +815,8 @@ private void new_dtd_element(string label, mixed data) {
 
     if (inh != nil) {
       if (dtd[inh] != nil) {
-	/* add all types allowed for the base type to the derived type */
-	/* trimming initial struct */
-	dtd[label] = dtd[inh] + dtd[label][1..];
+	/* Mark down the inheritance relationship */
+	base_type[label] = inh;
       } else {
 	error("Base type " + inh + " not defined when parsing " + label);
       }
@@ -866,17 +900,43 @@ void clear(void) {
 
 /****************** Helper funcs ***************************/
 
-private void set_up_fields_mapping(mapping fields, mixed* type) {
+/* Returns the number of buckets used. */
+private int set_up_fields_mapping(mapping fields, string label) {
   int ctr;
+  int count;
+  mixed *type;
+
+  type = dtd[label];
+
+  /* if there's a base class, add the base class' types */
+  if (base_type[label]) {
+    count = set_up_fields_mapping(fields, base_type[label]);
+  } else {
+    count = 0;
+  }
 
   /* Set up fields array to know what bucket of instance_tracker
      different labels belong in */
-  for(ctr = 1; ctr < sizeof(type); ctr++) {
+  for(ctr = 1; ctr < sizeof(type); ++ctr) {
     if(typeof(type[ctr]) == T_STRING) {
-      fields[type[ctr]] = ctr;
+      if (fields[type[ctr]] == nil) {
+	++count;
+      }
+      /* <1> in second element says there must be exaclty one of these */
+      fields[type[ctr]] = ({ count - 1, "<1>" });
     } else if(typeof(type[ctr]) == T_ARRAY) {
-      fields[type[ctr][0]] = ctr;
-    } else
+      if (fields[type[ctr][0]] == nil) {
+	++count;
+      }
+      if (sizeof(type[ctr]) == 1) {
+	fields[type[ctr][0]] = ({ count - 1, "<1>" });
+      } else {
+	fields[type[ctr][0]] = ({ count - 1, type[ctr][1] });
+      }
+    } else {
       error("Unknown type in DTD struct type!");
+    }
   }
+
+  return count;
 }
