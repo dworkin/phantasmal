@@ -168,13 +168,12 @@ void new_help_directory(string path) {
   }
 }
 
-/* Note:  mapping handles uniqueness per description by hashing
-   the Phrase LWOs and taking the map_values.  The if/for combo
-   actually checks for match on keywords.  If kw is nil or empty
-   then help entries with no keywords match, otherwise entries
-   containing one or more of the specified keywords match.  We
-   might want to change it to require all specified keywords --
-   hard to tell what the "best" behavior is. */
+
+/* Note: The mapping (tmp) handles uniqueness of description by
+   hashing the descriptions (Phrase LWOs) and taking the map_values.
+   The if/for combo actually checks for a match on keywords.  An entry
+   matches if all of its keywords are also in kw.  If it has no
+   keywords, it matches no matter what kw is. */
 private mixed* filter_for_keywords(mixed* entries, mixed* kw) {
   mixed*  ret;
   int     ctr;
@@ -183,17 +182,17 @@ private mixed* filter_for_keywords(mixed* entries, mixed* kw) {
   if(!entries) return nil;
 
   tmp = ([ ]);
-  if(kw && sizeof(kw)) {
-    for(ctr = 0; ctr < sizeof(entries); ctr++) {
-      if(!tmp[entries[ctr][1]]
-	 && sizeof(kw & entries[ctr][4])) {
-	tmp[entries[ctr][1]] = entries[ctr];
-      }
-    }
-  } else {
-    for(ctr = 0; ctr < sizeof(entries); ctr++) {
-      if(!tmp[entries[ctr][1]]
-	 && sizeof(entries[ctr][4]) == 0) {
+
+  /* To make later checking easier */
+  if(!kw) kw = ({ });
+
+  for(ctr = 0; ctr < sizeof(entries); ctr++) {
+    if(!tmp[entries[ctr][1]]) {
+      /* Not a repeat of an existing entry */
+
+      if(sizeof(kw & entries[ctr][4]) == sizeof(entries[ctr][4])) {
+	/* If all keywords in the entry are also in kw, we'll
+	   put it into tmp. */
 	tmp[entries[ctr][1]] = entries[ctr];
       }
     }
