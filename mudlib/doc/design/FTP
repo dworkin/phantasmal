@@ -1,0 +1,27 @@
+ABOR: abort previous FTP command
+
+LIST and NLST: list file and directories
+
+DELE: delete a file
+
+RMD: remove a directory
+
+MKD: create a directory
+
+PWD: print current working directory ( show you which dir. your at)
+
+PASS: send password
+
+PORT: request open port number on specific IP address/port number
+
+QUIT: log off from server
+
+RETR: retrieve file
+
+STOR: send or put file
+
+SYST: identity system type
+
+TYPE: specify type (A for ASCII, I for binary)
+
+USER: send username
