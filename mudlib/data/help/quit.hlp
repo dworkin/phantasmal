@@ -1,5 +1,0 @@
-~name{~enUS{quit,%quit}}
-~desc{~enUS{
-Logs out the current net connection, and if you have no more connections
-open, logs out your entire account.
-}}
