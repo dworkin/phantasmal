@@ -1,4 +1,4 @@
-/* $Header: /cvsroot/phantasmal/mudlib/usr/System/obj/user.c,v 1.54 2003/03/24 19:58:53 dbd22 Exp $ */
+/* $Header: /cvsroot/phantasmal/mudlib/usr/System/obj/user.c,v 1.55 2003/03/25 21:52:18 dbd22 Exp $ */
 
 #include <kernel/kernel.h>
 #include <kernel/user.h>
@@ -380,12 +380,16 @@ private object* search_contained_objects(object* objs, string str,
 					 varargs int only_details) {
   object *ret, *contents, *details, temp;
   string *words, err;
-  int ctr;
+  int ctr, temp2;
 
   words = string_to_words(str);
+  temp2 = 0;
 
   ret = ({ });
-  temp = objs[0];
+  if (sizeof(objs)) {
+    temp = objs[0];
+    temp2 = 1;
+  }
 
   while(sizeof(objs)) {
     if(objs[0] == location
@@ -409,14 +413,15 @@ private object* search_contained_objects(object* objs, string str,
   }
 
   /* now, if it is a room, check the exits */
-  if (temp == location) {
-    if(function_object("num_exits", location)) {
-      for(ctr = 0; ctr < location->num_exits(); ctr++) {
-        object exit;
-
-        exit = location->get_exit_num(ctr);
-	if(exit->match_words(this_object(), words)) {
-          ret += ({ exit });
+  if (temp2 == 1) {
+    if (temp == location) {
+      if(function_object("num_exits", location)) {
+        for(ctr = 0; ctr < location->num_exits(); ctr++) {
+          object exit;
+          exit = location->get_exit_num(ctr);
+          if(exit->match_words(this_object(), words)) {
+            ret += ({ exit });
+          }
         }
       }
     }
