@@ -1,3 +1,4 @@
+#include <kernel/kernel.h>
 #include <config.h>
 #include <phrase.h>
 #include <type.h>
@@ -13,9 +14,16 @@ inherit rep PHRASE_REPOSITORY;
    Phrase objects within the Phrased.
 */
 
+/* Security notes: most functions in this object are unprotected.
+   That's because most of them are basically standard library
+   functions with no security implications.
+*/
 
-/* For the moment, this is static.  Later it'll become
-   hot-upgradable */
+
+/* This is upgradable with a recompile, mostly.  I'd test that feature
+   more before you assume it works, though.  Removing languages is
+   possible, but much harder and you'll probably have to add a lot of
+   code to Phantasmal. */
 #define INTL_NUM_LANG 5
 
 /**************** Dealing with locales ****************************/
@@ -68,8 +76,10 @@ static void create(varargs int clone)
 }
 
 void upgraded(varargs int clone) {
-  rlimits ( status()[ST_STACKDEPTH]; -1 ) {
-    rep::upgraded();
+  if(SYSTEM()) {
+    rlimits ( status()[ST_STACKDEPTH]; -1 ) {
+      rep::upgraded();
+    }
   }
 }
 

@@ -1,4 +1,5 @@
 #include <kernel/user.h>
+#include <kernel/kernel.h>
 #include <config.h>
 #include <log.h>
 
@@ -17,6 +18,9 @@ static void create(varargs int clone) {
 }
 
 void upgraded(varargs int clone) {
+  if(!SYSTEM())
+    return;
+
   if(!find_object(SYSTEM_USER)) { compile_object(SYSTEM_USER); }
 
   logd = find_object(LOGD);
@@ -32,6 +36,9 @@ void upgraded(varargs int clone) {
 }
 
 void suspend_input(int shutdownp) {
+  if(!SYSTEM() && !KERNEL())
+    return;
+
   if(suspended)
     LOGD->write_syslog("Suspended again without release!", LOG_ERR);
 
@@ -41,6 +48,9 @@ void suspend_input(int shutdownp) {
 }
 
 void release_input(void) {
+  if(!SYSTEM() && !KERNEL())
+    return;
+
   if(!suspended)
     LOGD->write_syslog("Released without suspend!", LOG_ERR);
 
@@ -49,11 +59,17 @@ void release_input(void) {
 
 object select(string str)
 {
+  if(!SYSTEM() && !KERNEL())
+    return nil;
+
   return clone_object(SYSTEM_USER);
 }
 
 int query_timeout(object connection)
 {
+  if(!SYSTEM() && !KERNEL())
+    return -1;
+
   if(suspended || shutdown)
     return -1;
 
@@ -62,6 +78,9 @@ int query_timeout(object connection)
 
 string query_banner(object connection)
 {
+  if(!SYSTEM() && !KERNEL())
+     return nil;
+
   if(shutdown)
     return shutdown_banner;
 

@@ -65,17 +65,19 @@ static void create(varargs int clone) {
 }
 
 void destructed(int clone) {
-  if(help_dtd)
+  if(SYSTEM() && help_dtd)
     destruct_object(help_dtd);
 }
 
 void upgraded(varargs int clone) {
-  files_to_load = ({ });
-  load_callout = -1;
+  if(SYSTEM()) {
+    files_to_load = ({ });
+    load_callout = -1;
 
-  clear_help_entries();
-  rlimits(status()[ST_STACKDEPTH];-1) {
-    reread_help_files();
+    clear_help_entries();
+    rlimits(status()[ST_STACKDEPTH];-1) {
+      reread_help_files();
+    }
   }
 }
 
@@ -140,23 +142,28 @@ private string normalize_help_query(string query) {
 void clear_help_entries(void) {
   int iter;
 
-  num_loc = PHRASED->num_locales();
+  if(GAME() || COMMON() || SYSTEM()) {
+    num_loc = PHRASED->num_locales();
 
-  exact_entries = allocate(num_loc);
-  for(iter = 0; iter < num_loc; iter++) {
-    exact_entries[iter] = ([ ]);
+    exact_entries = allocate(num_loc);
+    for(iter = 0; iter < num_loc; iter++) {
+      exact_entries[iter] = ([ ]);
+    }
+    sdx_entries = ([ ]);
   }
-  sdx_entries = ([ ]);
 }
 
 void reread_help_files(void) {
   int iter;
   int ret;
 
-  for(iter = 0; iter < sizeof(path_stack); iter++) {
-    new_help_directory(path_stack[iter]);
-    if(iter > 10) {
-      error("Error in iteration...\n");
+  if(GAME() || COMMON() || SYSTEM()) {
+
+    for(iter = 0; iter < sizeof(path_stack); iter++) {
+      new_help_directory(path_stack[iter]);
+      if(iter > 10) {
+	error("Error in iteration...\n");
+      }
     }
   }
 }
@@ -180,11 +187,13 @@ private int exclude_path(string path) {
 }
 
 void load_help_dtd(string dtd) {
-  if(help_dtd)
-    error("Help DTD already exists!");
+  if(SYSTEM()) {
+    if(help_dtd)
+      error("Help DTD already exists!");
 
-  help_dtd = clone_object(UNQ_DTD);
-  help_dtd->load(dtd);
+    help_dtd = clone_object(UNQ_DTD);
+    help_dtd->load(dtd);
+  }
 }
 
 void new_help_file(string path) {
@@ -197,29 +206,32 @@ void new_help_file(string path) {
   mixed*  unq_data;
   string err;
 
-  contents = read_file(path);
-  if(strlen(contents) > MAX_STRING_SIZE - 3) {
-    error("Helpfile " + path + " too long!");
+  if(GAME() || COMMON() || SYSTEM()) {
+
+    contents = read_file(path);
+    if(strlen(contents) > MAX_STRING_SIZE - 3) {
+      error("Helpfile " + path + " too long!");
+    }
+
+    err = catch (unq_data
+		 = UNQ_PARSER->unq_parse_with_dtd(contents, help_dtd, path));
+
+    if (err != nil) {
+      LOGD->write_syslog("Helpd got parse error parsing " + path,
+			 LOG_ERR);
+      error(err);
+    }
+    if(!unq_data || !typeof(unq_data) == T_ARRAY)
+      error("Couldn't load file " + path + " as UNQ helpfile!");
+
+    if(unq_data && typeof(unq_data) == T_ARRAY && unq_data[0] &&
+       unq_data[0] != "") {
+      load_unq_help(path, unq_data);
+      return;
+    }
+
+    error("Couldn't load UNQ file " + path);
   }
-
-  err = catch (unq_data
-	       = UNQ_PARSER->unq_parse_with_dtd(contents, help_dtd, path));
-
-  if (err != nil) {
-    LOGD->write_syslog("Helpd got parse error parsing " + path,
-		       LOG_ERR);
-    error(err);
-  }
-  if(!unq_data || !typeof(unq_data) == T_ARRAY)
-    error("Couldn't load file " + path + " as UNQ helpfile!");
-
-  if(unq_data && typeof(unq_data) == T_ARRAY && unq_data[0] &&
-     unq_data[0] != "") {
-    load_unq_help(path, unq_data);
-    return;
-  }
-
-  error("Couldn't load UNQ file " + path);
 }
 
 void new_help_directory(string path) {
@@ -227,30 +239,33 @@ void new_help_directory(string path) {
   int     ctr;
   string left;
 
-  if(previous_program() != HELPD) {
-    path_stack += ({ path });
-  }
+  if(GAME() || COMMON() || SYSTEM()) {
 
-  dir = get_dir(path + "/*");
-  left = "";
-  for(ctr = 0; ctr < sizeof(dir[0]); ctr++) {
-    if(dir[1][ctr] == -2) {
-      if(!exclude_path(path + "/" + dir[0][ctr])) {
-	new_help_directory(path + "/" + dir[0][ctr]);
-      }
-    } else if(sscanf(dir[0][ctr], "%*s.hlp%s", left) == 2) {
-      if(left == "") {
-	files_to_load += ({ path + "/" + dir[0][ctr] });
+    if(previous_program() != HELPD) {
+      path_stack += ({ path });
+    }
 
-	if(load_callout < 0) {
+    dir = get_dir(path + "/*");
+    left = "";
+    for(ctr = 0; ctr < sizeof(dir[0]); ctr++) {
+      if(dir[1][ctr] == -2) {
+	if(!exclude_path(path + "/" + dir[0][ctr])) {
+	  new_help_directory(path + "/" + dir[0][ctr]);
+	}
+      } else if(sscanf(dir[0][ctr], "%*s.hlp%s", left) == 2) {
+	if(left == "") {
+	  files_to_load += ({ path + "/" + dir[0][ctr] });
+
+	  if(load_callout < 0) {
 #if 0
-	  load_callout = call_out("load_helpfiles", 0);
-	  if(load_callout < 0)
-	    LOGD->write_syslog("Couldn't load all helpfiles?", LOG_ERR);
+	    load_callout = call_out("load_helpfiles", 0);
+	    if(load_callout < 0)
+	      LOGD->write_syslog("Couldn't load all helpfiles?", LOG_ERR);
 #else
-	  /* Temporary hack to keep from using the call_out loading */
-	  load_helpfiles();
+	    /* Temporary hack to keep from using the call_out loading */
+	    load_helpfiles();
 #endif
+	  }
 	}
       }
     }
@@ -295,37 +310,51 @@ mixed* query_exact(string key, object user) {
   int locale;
   mixed* ent;
 
-  locale = user->get_locale();
+  if(GAME() || COMMON() || SYSTEM()) {
 
-  key = normalize_help_query(key);
+    locale = user->get_locale();
 
-  ent = exact_entries[locale][key];
-  if(!ent) {
-    ent = exact_entries[LANG_englishUS][key];
-  }
+    key = normalize_help_query(key);
 
-  return ent;
+    ent = exact_entries[locale][key];
+    if(!ent) {
+      ent = exact_entries[LANG_englishUS][key];
+    }
+
+    return ent;
+  } else
+    return nil;
 }
 
 mixed* query_exact_with_keywords(string key, object user, string* kw) {
-  return filter_for_keywords(query_exact(key, user), kw);
+  if(GAME() || COMMON() || SYSTEM()) {
+    return filter_for_keywords(query_exact(key, user), kw);
+  } else
+    return nil;
 }
 
 mixed* query_soundex(string sdx_key, object user) {
   int locale;
   locale = user->get_locale();
 
-  if(locale != LANG_englishUS)
-    return nil;
+  if(GAME() || COMMON() || SYSTEM()) {
 
-  return sdx_entries[sdx_key];
+    if(locale != LANG_englishUS)
+      return nil;
+
+    return sdx_entries[sdx_key];
+  } else
+    return nil;
 }
 
 mixed* query_soundex_with_keywords(string sdx_key, object user, string* kw) {
   mixed* entries;
 
-  entries = query_soundex(sdx_key, user);
-  return filter_for_keywords(entries, kw);
+  if(GAME() || COMMON() || SYSTEM()) {
+    entries = query_soundex(sdx_key, user);
+    return filter_for_keywords(entries, kw);
+  } else
+    return nil;
 }
 
 private void new_unq_entry(string path, object names, object desc,
@@ -334,6 +363,9 @@ private void new_unq_entry(string path, object names, object desc,
   mixed* keys, arr, kw_arr;
   string sdx;
   object phr;
+
+  if(!GAME() && !COMMON() && !SYSTEM())
+    return;
 
   if(!names || !desc) {
     error("Required help component(s) missing in file: " + path);
@@ -407,6 +439,9 @@ void load_unq_help(string path, mixed* data) {
   string keywords;
   object names, desc;
 
+  if(!GAME() && !COMMON() && !SYSTEM())
+    return;
+
   len = sizeof(data);
   if(len % 2)
     error("Odd-sized array passed to load_unq_help (" + path + ")!");
@@ -450,6 +485,9 @@ void load_unq_help(string path, mixed* data) {
 static void load_helpfiles(void) {
   int     ctr;
   string* files_this_time;
+
+  if(!GAME() && !COMMON() && !SYSTEM())
+    return;
 
   files_this_time = files_to_load[..(FILES_PER_ITER-1)];
   files_to_load = files_to_load[FILES_PER_ITER..];

@@ -24,6 +24,9 @@ void runtime_error(string error, int caught, mixed** trace)
   string line, progname, function, str, objname, err_str;
   object obj;
 
+  if(!SYSTEM() && !KERNEL())
+    return;
+
   if(reset_comp_err) {
     log->write_syslog("Clearing comp_err in runtime_error!", LOG_VERBOSE);
     comp_err = nil;
@@ -111,6 +114,9 @@ void atomic_error(string error, int atom, mixed** trace)
   int size, i, len;
   string line, progname, function, str, objname, err_str;
   object obj;
+
+  if(!SYSTEM() && !KERNEL())
+    return;
   
   /* prevents recursion into atomic_error().  Without this the driver
    * will crash if an error occures within atomic_error().
@@ -204,6 +210,9 @@ void atomic_error(string error, int atom, mixed** trace)
 
 void compile_error(string file, int line, string error)
 {
+  if(!SYSTEM() && !KERNEL())
+    return;
+
   if(reset_comp_err) {
     log->write_syslog("Clearing comp_err in compile_error!", LOG_VERBOSE);
     reset_comp_err = 0;
@@ -218,15 +227,24 @@ void compile_error(string file, int line, string error)
 }
 
 string last_compile_errors(void) {
-  return comp_err;
+  if(SYSTEM())
+    return comp_err;
+
+  return nil;
 }
 
 string last_runtime_error(void) {
-  return last_rt_err;
+  if(SYSTEM())
+    return last_rt_err;
+
+  return nil;
 }
 
 string last_stack_trace(void) {
-  return last_st;
+  if(SYSTEM())
+    return last_st;
+
+  return nil;
 }
 
 void clear_errors(void) {
