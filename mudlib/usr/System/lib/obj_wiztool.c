@@ -261,8 +261,9 @@ static void cmd_stat(object user, string cmd, string str) {
     }
   }
 
-  if(obj->get_parent()) {
-    user->message("Inherits data from #" + obj->get_parent()->get_number()
+  if(obj->get_archetype()) {
+    user->message("Instance of archetype #"
+		  + obj->get_archetype()->get_number()
 		  + ".\r\n");
   }
   if(room) {
@@ -504,6 +505,6 @@ static void cmd_set_obj_parent(object user, string cmd, string str) {
     return;
   }
 
-  obj->set_parent(parent);
+  obj->set_archetype(parent);
   user->message("Done.\r\n");
 }
