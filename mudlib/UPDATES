@@ -16,7 +16,8 @@ usr/System/initd.c
   Check for Kernel MUDLib version
 
 data/object/roomfile, data/object/mobfile, data/object/zonefile
-  Remove player data
+  Remove player data, remove .old and safe_* files.  Remove *~ files
+  again after editing.
 
 data/user/*.pwd
   Remove all .pwd files
