@@ -458,6 +458,37 @@ static void cmd_new_portable(object user, string cmd, string str) {
   user->message("Added portable #" + port->get_number() + ".\r\n");
 }
 
+
+static void cmd_list_mobiles(object user, string cmd, string str) {
+  int*   mobiles;
+  int    ctr;
+  object mob, phr;
+  string tmp;
+
+  if(str && !STRINGD->is_whitespace(str)) {
+    user->message("Usage: " + cmd + "\r\n");
+    return;
+  }
+
+  mobiles = MOBILED->all_mobiles();
+
+  for(ctr = 0; ctr < sizeof(mobiles); ctr++) {
+    mob = MOBILED->get_mobile_by_num(mobiles[ctr]);
+    tmp = ralign("" + mobiles[ctr], 8);
+    tmp += "      ";
+    if(mob->get_body()) {
+      phr = mob->get_body()->get_glance();
+      tmp += phr->to_string(user);
+    } else {
+      tmp += "<bodiless mob>";
+    }
+    tmp += "\r\n";
+    user->message(tmp);
+  }
+  user->message("-----\r\n");
+}
+
+
 static void cmd_segment_map(object user, string cmd, string str) {
   int hs, ctr;
 

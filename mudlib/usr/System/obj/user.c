@@ -1,4 +1,4 @@
-/* $Header: /cvsroot/phantasmal/mudlib/usr/System/obj/user.c,v 1.25 2002/11/18 06:47:31 angelbob Exp $ */
+/* $Header: /cvsroot/phantasmal/mudlib/usr/System/obj/user.c,v 1.26 2002/11/19 05:28:52 angelbob Exp $ */
 
 #include <kernel/kernel.h>
 #include <kernel/user.h>
@@ -763,6 +763,7 @@ private void player_login(void)
     body->add_noun(NEW_PHRASE(STRINGD->to_lower(name)));
 
     mobile = clone_object(USER_MOBILE);
+    MOBILED->add_mobile_number(mobile, -1);
     mobile->assign_body(body);
     mobile->set_user(this_object());
 
@@ -776,6 +777,7 @@ private void player_login(void)
     mobile = body->get_mobile();
     if(!mobile) {
       mobile = clone_object(USER_MOBILE);
+      MOBILED->add_mobile_number(mobile, -1);
       mobile->assign_body(body);
     }
     mobile->set_user(this_object());

@@ -98,6 +98,10 @@ void upgraded(void) {
 	"@new_port"            : ({ "cmd_new_portable" }),
 	"@new_portable"        : ({ "cmd_new_portable" }),
 
+	"@list_mob"            : ({ "cmd_list_mobiles" }),
+	"@list_mobile"         : ({ "cmd_list_mobiles" }),
+	"@list_mobiles"        : ({ "cmd_list_mobiles" }),
+
 	"@segment_map"         : ({ "cmd_segment_map" }),
 	"@seg_map"             : ({ "cmd_segment_map" }),
 	"@segmap"              : ({ "cmd_segment_map" }),
@@ -105,8 +109,6 @@ void upgraded(void) {
 	"@set_seg_zone"        : ({ "cmd_set_segment_zone" }),
 	"@zone_map"            : ({ "cmd_zone_map" }),
 	"@zonemap"             : ({ "cmd_zone_map" }),
-
-	"@add_detail"          : ({ "cmd_add_detail" }),
 
 	"%od_report"           : ({ "cmd_od_report" }),
 	"%list_dest"           : ({ "cmd_list_dest" }),

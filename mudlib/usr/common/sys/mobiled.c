@@ -33,13 +33,17 @@ void destructed(int clone) {
 }
 
 
-void add_mobile_number(object mobile, int num) {
+int add_mobile_number(object mobile, int num) {
   int newnum;
 
   newnum = allocate_mobile_obj(num, mobile);
   if(newnum <= 0) {
     error("Can't allocate mobile number!");
   }
+
+  LOGD->write_syslog("Allocating mobile number: " + newnum);
+
+  return newnum;
 }
 
 private int allocate_mobile_obj(int num, object obj) {
@@ -49,13 +53,14 @@ private int allocate_mobile_obj(int num, object obj) {
     error("Object already exists with number " + num);
 
   if(num != -1) {
+    OBJNUMD->allocate_in_segment(num / 100, num, obj);
+
     if(!(sizeof( ({ num / 100 }) & mobile_segments ))) {
       string tmp;
 
       mobile_segments |= ({ num / 100 });
     }
 
-    OBJNUMD->allocate_in_segment(num / 100, num, obj);
     return num;
   }
 
@@ -67,6 +72,7 @@ private int allocate_mobile_obj(int num, object obj) {
   }
 
   segment = OBJNUMD->allocate_new_segment();
+  LOGD->write_syslog("Allocating segment " + segment + " to MOBILED.");
 
   mobile_segments += ({ segment });
   num = OBJNUMD->new_in_segment(segment, obj);
@@ -76,4 +82,34 @@ private int allocate_mobile_obj(int num, object obj) {
 
 void remove_mobile(object mobile) {
   destruct_object(mobile);
+}
+
+object get_mobile_by_num(int num) {
+  if(num < 0) return nil;
+
+  return OBJNUMD->get_object(num);
+}
+
+int* mobiles_in_segment(int seg) {
+  int* tmp;
+
+  tmp = OBJNUMD->objects_in_segment(seg);
+  if(!tmp)
+    tmp = ({ });
+
+  return tmp;
+}
+
+int* all_mobiles(void) {
+  int  iter;
+  int* ret, *tmp;
+
+  ret = ({ });
+  for(iter = 0; iter < sizeof(mobile_segments); iter++) {
+    tmp = OBJNUMD->objects_in_segment(mobile_segments[iter]);
+    if(tmp)
+      ret += tmp;
+  }
+
+  return ret;
 }

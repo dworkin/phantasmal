@@ -3,9 +3,9 @@
 #include <kernel/kernel.h>
 #include <phrase.h>
 
-/* Mobile:  structure for a sentient, not-necessarily-player critter's
-   mind.  The mobile will also be attached to a body under any
-   normal circumstances.
+/* Mobile: structure for a sentient, not-necessarily-player critter's
+   mind.  The mobile will also be attached to a body under any normal
+   circumstances.
 */
 
 /*
@@ -46,6 +46,10 @@ void assign_body(object new_body) {
   location = body->get_location();
 }
 
+object get_body(void) {
+  return body;
+}
+
 object get_user(void) {
   /* return nil, the default mobile doesn't have a user */
   return nil;
@@ -62,8 +66,8 @@ void notify_moved(object obj) {
 /*
  * Action functions
  * 
- * Functions called by the user object or inherited objects to do stuff through
- * mobile's body
+ * Functions called by the user object or inherited objects to do
+ * stuff through mobile's body
  */
 
 /*
@@ -180,7 +184,7 @@ private atomic void path_place(object *rem_path, object *add_path, object obj) {
 
   /* assume the full move can be performed.  If it can't we'll throw an error,
      which will cause this function to be completely undone when the error
-     passes out of the function.  Hourray for atomics!
+     passes out of the function.  Hurray for atomics!
   */
 
   for (i = 0; i < sizeof(rem_path); ++i) {
@@ -219,9 +223,9 @@ private atomic void path_place(object *rem_path, object *add_path, object obj) {
 /* 
  * place()
  *
- * move the object obj from its current position into the object to.  
- * obj and to must both be descendents (not necessarily just
- * chlidern though) of the current room.
+ * move the object obj from its current position into the object to.
+ * obj and to must both be descendents (but not necessarily children)
+ * of the current room.
  *
  * returns nil on success, a reason for the failure on failure
  */
@@ -356,12 +360,12 @@ nomask string move(int dir) {
 /*
  * int teleport()
  *
- * teleport's the mobile's body through the given exit.
+ * teleport's the mobile's body to the given destination.
  * 
  * parameters:
- * force -- forces the teleport to always succeed.
+ * force -- if true, forces the teleport to always succeed.
  *
- * return -- the reason why the teleport didn't succeed, or nil if it suceeded
+ * return -- the reason why the teleport didn't succeed, or nil on success
  */
 
 nomask string teleport(object dest, int force) {
@@ -395,10 +399,10 @@ nomask string teleport(object dest, int force) {
  * Hook functions
  *
  * Functions which can be overridden in a derived class to respond to external
- * events.  In the standard mobile object, these have empty definitons
+ * events.  In the standard mobile object, these have empty definitions
  *
  * Don't bother calling these base functions, as they will never do anyting.
- * they're here as documenatation, nothing else.
+ * they're here as documentation, nothing else.
  */
 
 /*
