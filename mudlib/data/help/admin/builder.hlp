@@ -138,24 +138,6 @@ destination room has been loaded.
 }}
 
 
-~name{~enUS{mobile,mobiles,mob,mobs,creature,creatures,npc,npcs,NPC,NPCs,NPCS,
-            monster,monsters}}
-~keywords{admin}
-~desc{
-  ~enUS{
-
-Mobiles are the "minds" of anything with its own volition, such as
-players or monsters.  The body is a standard object (see "help rooms")
-with the mobile attached to it.
-
-Some commands to play with mobiles:
-@list_mobile              Lists mobiles with numbers
-@delete_mobile            Deletes mobiles by number
-@stat                     View a mobile (or its body) by number
-
-}}
-
-
 ~name{~enUS{wiz,wiztool,wizzes,wizards,immort,immortals}}
 ~keywords{admin}
 ~desc{
