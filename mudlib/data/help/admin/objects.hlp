@@ -62,6 +62,8 @@ In this case, #0-#99 would be rooms managed by MAPD, #100-#199 would be
 exits managed by ExitD, and #200-#299 would be portables managed by
 PortableD.
 
+See also:  MAPD, EXITD, PORTABLED, MOBILED, @set_seg_zone
+
 }}
 
 
@@ -298,7 +300,10 @@ See also @goto
 The @stat command gives a reasonably complete summary of everything about
 a particular object number.  For instance you can type "@stat #0" and
 find out the Void's various descriptions, what rooms it contains, that
-it is registered with MAPD, and so on.
+it is registered with MAPD, and so on.  @stat works on rooms, portables,
+exits and mobiles.
+
+See Also:  MAPD, OBJREGD, MOBILED, EXITD, room, portable, mobile, exit
 
 }}
 

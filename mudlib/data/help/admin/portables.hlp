@@ -9,6 +9,7 @@ commands.  The only commands specific to portables are the following:
 
 @new_portable             Create a new portable
 
+See also:  rooms, MAPD
 }}
 
 
@@ -27,5 +28,8 @@ an optional number as an argument.  For instance:
 
 @new_portable #571
 @set_glance #571 'a bottle of rum'
+
+If typed with no argument, the new portable will be in the same zone as
+your current location.
 
 }}

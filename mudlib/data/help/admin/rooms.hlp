@@ -103,6 +103,11 @@ room commands will work perfectly well on it.  It should immediately
 be visible with @list_rooms, and @goto should take you to it if you
 wish.
 
+If no number is supplied, the new room will be in the same zone as
+your current location.
+
+See also:  @new_portable, MAPD
+
 }}
 
 
