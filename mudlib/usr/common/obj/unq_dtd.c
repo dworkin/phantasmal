@@ -6,7 +6,7 @@
 #include <limits.h>
 
 #define INDENT_LEVEL 4
-#define LOG_FILE ("/log/unq_dtd_log.txt")
+#define LOG_FILE ("/usr/common/unq_dtd_log.txt")
 
 private mapping dtd;
 private int     is_clone;
@@ -661,8 +661,8 @@ private mixed* parse_to_dtd_struct(string t_label, mixed unq) {
   int     ctr;
   mapping fields;
   string  label;
-  int     buck_cnt;
-  int repmin, repmax;
+  int     bucket_count;
+  int     repmin, repmax;
 
   write_log("Parsing to dtd struct '" + t_label + "', arg: '"
 	    + STRINGD->mixed_sprint(unq) + "'");
@@ -699,15 +699,26 @@ private mixed* parse_to_dtd_struct(string t_label, mixed unq) {
   /* Set up fields array to know what bucket of instance_tracker
      different labelled fields belong in */ 
   fields = ([ ]);
-  buck_cnt = set_up_fields_mapping(fields, t_label);
+  bucket_count = set_up_fields_mapping(fields, t_label);
+
+  /* Write fields mapping to log file */
+  /* Re-use instance tracker variable for this */
+  instance_tracker = map_indices(fields);
+  write_log("Fields array for " + t_label + " struct, " + bucket_count
+	    + " buckets.");
+  for(ctr = 0; ctr < sizeof(instance_tracker); ++ctr) {
+    write_log(fields[instance_tracker[ctr]][0] + " - "
+	      + instance_tracker[ctr]);
+  }
+  write_log("-------");
 
   /* We need to track how many of each tag in the structure are parsed
      so we can check to make sure they match our modifiers or lack
      thereof.  We have one bucket for each type in the struct, and its
      base classes. */
-  instance_tracker = allocate(buck_cnt);
+  instance_tracker = allocate(bucket_count);
 
-  for (ctr = 0; ctr < buck_cnt; ++ctr) {
+  for (ctr = 0; ctr < bucket_count; ++ctr) {
     instance_tracker[ctr] = ({ });
   }
 
@@ -736,7 +747,8 @@ private mixed* parse_to_dtd_struct(string t_label, mixed unq) {
 
     tmp = parse_to_dtd_type(label, unq[ctr + 1]);
     if(tmp == nil) {
-      accum_error += "Error parsing label '" + label + "' of structure.\n";
+      accum_error += "Error parsing label '" + label
+	+ "' of structure '" + t_label + "'.\n";
       return nil;
     }
     instance_tracker[index] += ({ tmp });
@@ -759,7 +771,9 @@ private mixed* parse_to_dtd_struct(string t_label, mixed unq) {
       repmin = 1;
     } else if (vals[ctr][1] == "*") {
       /* do nothing, any value is acceptable */
-    } else if (sscanf(vals[ctr][1], "<%d..%d>", repmin, repmax) == 2 || sscanf(vals[ctr][1], "<..%d>", repmax) == 1 || sscanf(vals[ctr][1], "<%d..>", repmin) == 1) {
+    } else if (sscanf(vals[ctr][1], "<%d..%d>", repmin, repmax) == 2
+	       || sscanf(vals[ctr][1], "<..%d>", repmax) == 1
+	       || sscanf(vals[ctr][1], "<%d..>", repmin) == 1) {
       /* do nothing, all values already entered */
     } else if (sscanf(vals[ctr][1], "<%d>", repmin) == 1) {
       repmax = repmin;
@@ -767,7 +781,7 @@ private mixed* parse_to_dtd_struct(string t_label, mixed unq) {
       accum_error += "Unrecognized type modifier " + vals[ctr][1] + "!\n";
       return nil;
     }
-    
+
     num = sizeof(instance_tracker[vals[ctr][0]]);
     if (num < repmin || num > repmax) {
       int ctr2;
@@ -776,13 +790,23 @@ private mixed* parse_to_dtd_struct(string t_label, mixed unq) {
       types = map_indices(fields);
 
       for (ctr2 = 0; ctr2 < sizeof(types); ctr2++) {
-	if (types[ctr2][0] == vals[ctr][0]) {
-	  accum_error += "Wrong # of fields of type " + types[ctr2][0] + " in struct.  " + num + " given, between " + repmin + " and " + repmax + " required.\n";
+	/* Compare instance-tracker bucket numbers */
+	if (fields[types[ctr2]][0] == vals[ctr][0]) {
+	  accum_error += "Wrong # of fields of type '"
+	    + types[ctr2] + "' in struct '" + t_label + "'.  " + num
+	    + " given, between " + repmin + " and "
+	    + (repmax == INT_MAX ? "an infinite number": repmax)
+	    + " required.\n";
 	  return nil;
 	}
       }
 
-      accum_error += "Wrong # of fields of type (unknown) in struct.  " + num + " given, between " + repmin + " and " + repmax + " required.\n";
+      accum_error += "Wrong # of fields in instance bucket #"
+	+ STRINGD->mixed_sprint(vals[ctr][0])
+	+ "(unknown) in struct '" + t_label + "'.  "
+	+ num + " given, between " + repmin + " and "
+	+ (repmax == INT_MAX ? "an infinite number": repmax)
+	+ " required.\n";
 	  return nil;
     }
   }
@@ -959,7 +983,7 @@ private int set_up_fields_mapping(mapping fields, string label) {
       if (fields[type[ctr]] == nil) {
 	++count;
       }
-      /* <1> in second element says there must be exaclty one of these */
+      /* <1> in second element says there must be exactly one of these */
       fields[type[ctr]] = ({ count - 1, "<1>" });
     } else if(typeof(type[ctr]) == T_ARRAY) {
       if (fields[type[ctr][0]] == nil) {
