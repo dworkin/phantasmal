@@ -671,6 +671,8 @@ static void cmd_make_obj(object user, string cmd, string str) {
     typename = "room";
   } else if (cmd == "@make_port" || cmd == "@make_portable") {
     typename = "portable";
+  } else if (cmd == "@make_det" || cmd == "@make_detail") {
+    typename = "detail";
   } else {
     user->message("I don't recognize the kind of object "
 		  + "you're trying to make.\r\n");
