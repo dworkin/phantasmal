@@ -24,24 +24,28 @@ my $outdir = "phantest";
 
 print "Current dir is $builderdir.\n";
 
-# Change dir to .../phantasmal/... (we hope)
-chdir "..";
+# Change dir to parent, where (we hope) other Phantasmal modules will also
+# have been checked out.
+chdir ".." || die "Can't change to parent dir!";
 
 sub check_directory {
-    my ($firstdir, $filename, $en_name) = @_;
-    my $cpath;
+    my ($dirlistref, $filename, $en_name) = @_;
+    my ($cpath, $dirname);
+    my @dirnames = @$dirlistref;
 
-    if(-f $firstdir . "/" . $filename) {
-	do {
-	    $cpath = cwd() . "/" . $firstdir;
-	    print "Use $cpath as the $en_name directory (y/n)? ";
-	    $input = <STDIN>;
-	    chomp $input;
-	    $input = lcfirst(substr($input, 0, 1));
-	} while ($input ne 'n' and $input ne 'y');
+    foreach $dirname (@dirnames) {
+	if(-f $dirname . "/" . $filename) {
+	    do {
+		$cpath = cwd() . "/" . $dirname;
+		print "Use $cpath as the $en_name directory (y/n)? ";
+		$input = <STDIN>;
+		chomp $input;
+		$input = lcfirst(substr($input, 0, 1));
+	    } while ($input ne 'n' and $input ne 'y');
 
-	if(substr($input, 0) eq 'y') {
-	    return $cpath;
+	    if(substr($input, 0) eq 'y') {
+		return $cpath;
+	    }
 	}
     }
 
@@ -61,16 +65,14 @@ sub check_directory {
     }
 }
 
-$phantasmaldir = check_directory("mudlib", "phantasmal.dgd",
+$phantasmaldir = check_directory(["mudlib"], "phantasmal.dgd",
 				 "Phantasmal MUDLib");
 
-$testgamedir = check_directory("testgame", "testgame.dgd",
+$testgamedir = check_directory(["testgame"], "testgame.dgd",
 			       "Test Game");
 
-chdir("..");
-$driverdir = check_directory("dgd", "src/dgd.c",
+$driverdir = check_directory(["dgd", "../dgd", "~/dgd"], "src/dgd.c",
 			     "DGD Driver");
-chdir("phantasmal");
 
 
 my $kerneldir = $driverdir . "/mud";
@@ -158,3 +160,4 @@ system("cp -r $testgamedir/bundled/* $outdir/");
 system("rm -rf $outdir/CVS");
 
 print "*** Finished! ***\n";
+print "New bundled Phantasmal should be available in '../$outdir'.\n";
