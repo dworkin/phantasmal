@@ -257,6 +257,8 @@ static void create(varargs int clone)
 	compile_object(GAME_INIT);
 
       call_other(find_object(GAME_INIT), "???");
+    } : {
+      error("Error in /usr/game/initd.c:create()!");
     }
   }
 }

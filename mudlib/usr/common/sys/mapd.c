@@ -1,8 +1,7 @@
+#include <kernel/kernel.h>
 #include <config.h>
 #include <type.h>
 #include <log.h>
-
-#include <kernel/kernel.h>
 
 #include <map.h>
 
@@ -38,9 +37,6 @@ void upgraded(varargs int clone);
 
 
 static void create(varargs int clone) {
-  if(clone)
-    error("Cloning mapd is not allowed!");
-
   room_objects = ([ ]);
   tag_code = ([ ]);
 
@@ -52,6 +48,9 @@ static void create(varargs int clone) {
 
 void upgraded(varargs int clone) {
   int numzones, size, ctr;
+
+  if(!SYSTEM() && previous_program() != MAPD)
+    return;
 
   if(!find_object(UNQ_PARSER))
     compile_object(UNQ_PARSER);
@@ -79,6 +78,9 @@ void init(string room_dtd_str, string bind_dtd_str) {
   int    ctr, numzones;
   mixed *unq_data;
   string bind_file, tag, file;
+
+  if(!SYSTEM())
+    return;
 
   if(!initialized) {
     room_dtd = clone_object(UNQ_DTD);
@@ -134,6 +136,9 @@ void init(string room_dtd_str, string bind_dtd_str) {
 void destructed(int clone) {
   mixed* rooms;
   int    numzones, riter, ziter;
+
+  if(!SYSTEM())
+    return;
 
   if(room_dtd)
     destruct_object(room_dtd);

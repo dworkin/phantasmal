@@ -1,6 +1,4 @@
 #define USR                 "/usr"
-#define SECOND_AUTO_HEADER  "/usr/System/open/include/auto.h"
-#define SECOND_AUTO         "/usr/System/open/lib/auto.c"
 
 
 /* System managers and daemons */
@@ -122,6 +120,7 @@
 
 
 # define COMMON()	(sscanf(previous_program(), USR + "/common/%*s") != 0)
+# define GAME()	        (sscanf(previous_program(), USR + "/game/%*s") != 0)
 
 
 # define SYS_PERSISTENT
