@@ -1,0 +1,17 @@
+  <titledef text="Misc Issues" />
+
+  <h2> Miscellaneous Issues in MUD Library Authoring </h2>
+
+  <p>
+    Never keep the config file (the one ending in .dgd) or the
+    swapfile inside the MUD code tree.  If you must do so, make sure
+    there are access restrictions to keep hackers from being able to
+    overwrite the files.  Changing either one can allow your MUD to
+    masquerade as a different service, and potentially open different
+    incoming ports.  If you're using the network package, it can
+    easily cause your MUD to be usable as a relay or a zombie for a
+    distributed attack on other systems.
+  </p>
+
+  <p style="text-size: 150%"> <a href="../index.html"> Back to top level
+    </a> </p>
