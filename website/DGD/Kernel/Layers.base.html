@@ -173,14 +173,13 @@ clone_object          find_object            status
 
     <p> The other ones are all new. </p>
 
-    <a name="hooks">
-      <p> There are also special interfaces called hooks.  Certain
-	methods, such as set_object_manager, can be called on particular
-	objects and later on, that object will call functions within the
-	object manager you provided it.  That means it needs to call
-	functions it knows all about, so you'll need to have given it
-	an object manager with all the functions it needs.  That's how
-	hooks work.  Luckily, the Kernel MUDLib documents the different
-	hooks and what kind of object you'll need to give them pretty well.
-	You can find the documentation in mud/doc/kernel/hook. </p>
-    </a>
+    <p> There are also special interfaces called hooks.  Certain
+      methods, such as set_object_manager, can be called on particular
+      objects and later on, that object will call functions within the
+      object manager you provided it.  That means it needs to call
+      functions it knows all about, so you'll need to have given it an
+      object manager with all the functions it needs.  That's how
+      hooks work.  Luckily, the Kernel MUDLib documents the different
+      hooks and what kind of object you'll need to give them pretty
+      well.  You can find the documentation in
+      mud/doc/kernel/hook. </p>
