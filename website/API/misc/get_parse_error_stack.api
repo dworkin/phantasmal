@@ -1,0 +1,25 @@
+FILE
+	/usr/common/obj/unq_dtd.c
+
+NAME
+	get_parse_error_stack - return the error(s) that stopped a parse
+
+PROTOTYPE
+	string get_parse_error_stack(void)
+
+CALLED BY
+	Anybody
+
+DESCRIPTION
+	Returns the most recent parsing errors that occurred when doing
+	a parse_to_dtd().
+
+RETURN VALUE
+	The error stack, as a string.  Entries in the stack are
+	separated by newlines for easy display to human readers.
+
+ERRORS
+	Normally none.
+
+SEE ALSO
+	unq_parse_with_dtd, parse_to_dtd

@@ -1,0 +1,53 @@
+FILE
+	/usr/common/obj/unq_dtd.c
+
+NAME
+	parse_to_dtd - parse UNQ data to a DTD format
+
+PROTOTYPE
+	mixed *parse_to_dtd(mixed *unq_data)
+
+CALLED BY
+	Anybody
+
+DESCRIPTION
+	Parses UNQ data to a DTD's specification, and returns an appropriate
+	structure of parsed data.  The structure consists of label/value
+	pairs like standard UNQ data, but the values are different.
+	The value of each depends on the type that the DTD claims the
+	field will have.
+
+	A DTD 'int', 'float' or 'string' will have the corresponding
+	value type in DGD.  A DTD 'phrase' will have a DGD phrase object
+	as its value.  A DTD 'unq' entry will simply pass that piece
+	of preparsed UNQ through to its value slot.  The DTD 'unq' type
+	is useful for passing data through to be parsed later.
+
+	A DTD type followed by a modifier like '?', '*' or '<3..7>'
+	will match some number of entries of that type.  The values will
+	be returned as an array, even if only one (or none at all)
+	are parsed.  Each element of the array will be a value like
+	the DTD type would generate if the field were by itself.  For
+	instance, type 'int<4>' would yield an array of four integers.
+
+	A DTD structure such as '{int, string*, unq}' will have an array
+	of tag/value pairs as its value.  Within that array of tag/value
+	pairs, the tags are field names, and the values are as described
+	throughout this section.  For instance, if '~nums{float+}' is a field
+	of that structure, the tag will be the string 'nums' and the
+	value might be an array of seven DGD floating-point numbers.
+
+	A named field in a sequence, such as '{int, nums, unq}', will
+	appear as a tag/value pair as well.
+
+	Parse_to_dtd clears the parse error stack every time it gets
+	called.  Don't rely on that stack to persist across calls.
+
+RETURN VALUE
+	The DTD data described above.
+
+ERRORS
+	Errors will occur if malformed UNQ is passed in.
+
+SEE ALSO
+	basic_unq_parse, get_parse_error_stack

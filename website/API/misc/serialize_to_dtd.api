@@ -1,0 +1,25 @@
+FILE
+	/usr/common/obj/unq_dtd.c
+
+NAME
+	serialize_to_dtd - take DTD-parsed data and convert it to UNQ text
+
+PROTOTYPE
+	string serialize_to_dtd(mixed *unq_dtd_data)
+
+CALLED BY
+	Anybody
+
+DESCRIPTION
+	Reverses the process of parse_to_dtd and converts the structure
+	described in that help entry to UNQ text.  The UNQ text could
+	then be parsed again to get the DTD data back, if one wished.
+
+RETURN VALUE
+	The UNQ text data, in string form.
+
+ERRORS
+	Errors occur only if malformed DTD data is passed in.
+
+SEE ALSO
+	parse_to_dtd
