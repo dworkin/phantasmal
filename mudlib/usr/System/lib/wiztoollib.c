@@ -483,7 +483,11 @@ static void cmd_list_mobiles(object user, string cmd, string str) {
   for(ctr = 0; ctr < sizeof(mobiles); ctr++) {
     mob = MOBILED->get_mobile_by_num(mobiles[ctr]);
     tmp = ralign("" + mobiles[ctr], 8);
-    tmp += "      ";
+    tmp += "   ";
+
+    tmp += ralign(mob->get_type(), 8);
+    tmp += "     ";
+
     if(mob->get_body()) {
       phr = mob->get_body()->get_glance();
       tmp += phr->to_string(user);
@@ -522,15 +526,7 @@ static void cmd_delete_mobile(object user, string cmd, string str) {
   }
 
   /* Need to remove mobile from any room lists it currently occupies. */
-  body = mob->get_body();
-  if(body) {
-    location = body->get_location();
-    if(location) {
-      location->remove_from_container(body);
-      destruct_object(mob);
-      location->add_to_container(body);
-    }
-  }
+  MOBILED->remove_mobile(mob);
 
   user->message("Mobile #" + mobnum + " successfully destructed.\r\n");
 }
@@ -599,7 +595,6 @@ static void cmd_zone_map(object user, string cmd, string str) {
   for(ctr = 0; ctr < num_zones; ctr++) {
     user->message(ralign(ctr + "", 3) + ": " + ZONED->get_name_for_zone(ctr)
 		  + "\r\n");
-    /* user->message("  1:   Miskatonic University\r\n"); */
   }
   user->message("-----\r\n");
 }
@@ -621,20 +616,23 @@ static void cmd_new_mobile(object user, string cmd, string str) {
   string mobtype, segown;
   object mobile, body;
 
+  mobnum = -1;
   if(!str || sscanf(str, "%*s %*s %*s %*s") == 4
-     || sscanf(str, "#%d #%d %s", mobnum, bodynum, mobtype) != 3) {
+     || ((sscanf(str, "#%d %s", bodynum, mobtype) != 2)
+	 && (sscanf(str, "#%d #%d %s", mobnum, bodynum, mobtype) != 3))) {
     user->message("Usage: " + cmd
 		  + " #<new mob num> #<body num> <mobile type>\r\n");
+    user->message("    or " + cmd
+		  + " #<body num> <mobile type>\r\n");
     return;
   }
 
-  if(mobtype != "wander") {
-    user->message("Currently, @new_mobile only accepts the 'wander' mobile "
-		  + "type specifier.\r\n");
-    user->message("Please replace '" + mobtype
-		  + "' with 'wander' in your command,"
-		  + " or implement the new\r\n");
-    user->message("functionality.\r\n");
+  mobtype = STRINGD->to_lower(mobtype);
+
+  if(mobtype == "user") {
+    user->message("I know you're an administrator, but it's a bad idea "
+		  + "to create random\r\n"
+		  + "  user mobiles.  I'm stopping you.\r\n");
     return;
   }
 
@@ -660,9 +658,18 @@ static void cmd_new_mobile(object user, string cmd, string str) {
     }
   }
 
-  mobile = clone_object("/usr/common/obj/wander_mobile");
+  if(!MOBILED->get_file_by_mobile_type(mobtype)) {
+    user->message("MOBILED doesn't recognize type '" + mobtype
+		  + "',\r\n  so you can't create one.\r\n");
+    user->message("  Maybe you need to add it to the binder?\r\n");
+    return;
+  }
+
+  mobile = MOBILED->clone_mobile_by_type(mobtype);
   if(!mobile)
-    error("Can't clone wandering mobile!");
+    error("Can't clone mobile of type '" + mobtype + "'!");
+
+  mobile->assign_body(body);
 
   MOBILED->add_mobile_number(mobile, mobnum);
   user->message("Added mobile #" + mobile->get_number() + ".\r\n");
