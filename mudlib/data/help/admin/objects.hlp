@@ -236,7 +236,7 @@ instance:
 
   @set_obj_flag #237 cont true
   @set_obj_flag #294 open 0
-  @set_object_flags #748 container
+  @set_object_flags #901 openable 1
   @set_object_flags #748 nodesc yes
 
 The values, if present, should indicate true or false -- like "true",
@@ -244,8 +244,9 @@ The values, if present, should indicate true or false -- like "true",
 The first argument is the object number of a room or portable.  The
 middle argument is a flag name, and can be "cont" or "container" to
 set whether the object is a container, "open" to set whether it is
-currently open, "nodesc" for scenery objects, or possibly other flag
-names.  To get a list of flag names, type "@set_obj_flag flagnames".
+currently open, "openable" to say whether it can be easily opened or
+closed, "nodesc" for scenery objects, or possibly other flag names.
+To get a list of flag names, type "@set_obj_flag flagnames".
 
 Note: the "nodesc" flag will be retired soon in favor of actual object
 details.  We hope to have details in usable shape for release 0.11 of
