@@ -94,28 +94,29 @@ private void set_flags(int flags, int value) {
 }
 
 void set_nodesc(int value) {
-  if(!SYSTEM())
+  if(!SYSTEM() && previous_program() != US_MAKE_ROOM)
     error("Only SYSTEM code can currently set an object nodesc!");
 
   set_flags(OF_NODESC, value);
 }
 
 void set_container(int value) {
-  if(!SYSTEM())
+  if(!SYSTEM() && previous_program() != US_MAKE_ROOM)
     error("Only SYSTEM code can currently set an object as a container!");
 
   set_flags(OF_CONTAINER, value);
 }
 
 void set_open(int value) {
-  if(!SYSTEM() && previous_program() != MOBILE)
+  if(!SYSTEM() && previous_program() != MOBILE
+      && previous_program() != US_MAKE_ROOM)
     error("Only SYSTEM code can currently set an object as open!");
 
   set_flags(OF_OPEN, value);
 }
 
 void set_openable(int value) {
-  if(!SYSTEM())
+  if(!SYSTEM() && previous_program() != US_MAKE_ROOM)
     error("Only SYSTEM code can currently set an object as openable!");
 
   set_flags(OF_OPENABLE, value);
