@@ -13,8 +13,8 @@ static void create(varargs int clone) {
   ext::create(clone);
   unq::create(clone);
   if(clone) {
-    bdesc = PHR("exit");
-    ldesc = PHR("You see an exit here.");
+    bdesc = nil;
+    ldesc = nil;
     edesc = nil;
   }
 }
@@ -61,4 +61,36 @@ private string is_open_cont() {
     return "That object isn't open!";
   }
   return nil;
+}
+
+/*
+ * Overrides of OBJECT stuff
+ */
+object get_brief(void) {
+  object desc;
+
+  desc = ::get_brief();
+  if(!desc)
+    return PHRASED->new_simple_english_phrase("exit");
+
+  return desc;
+}
+
+object get_look(void) {
+  object desc;
+
+  desc = ::get_brief();
+  if(!desc)
+    return EXITD->get_name_for_dir(direction);
+
+  return desc;
+}
+
+string *get_nouns(int locale) {
+  string *tmp;
+  object  dir;
+
+  dir = EXITD->get_name_for_dir(direction);
+  tmp = ::get_nouns(locale);
+  return (tmp ? tmp : ({ })) + ({ dir->get_content_by_lang(locale) });
 }

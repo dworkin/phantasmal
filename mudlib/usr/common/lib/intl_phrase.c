@@ -48,6 +48,21 @@ void set_content_by_lang(int lang, mixed cont) {
     error("Invalid lang passed to content_by_lang!");
 }
 
+/* This phrase is a blatant nod to how we've been failing to
+   internationalize.  If this is true, there is a nontrivial
+   non-English translation for this phrase.  If false, there isn't. */
+
+int not_english(void) {
+  int ctr;
+
+  for(ctr = 0; ctr < PHRASED->num_locale(); ctr++) {
+    if(ctr == LANG_englishUS) ctr++;
+    if(content[ctr] && content[ctr] != content[LANG_englishUS]) return TRUE;
+  }
+
+  return FALSE;
+}
+
 void trim_whitespace(void) {
   int iter;
 

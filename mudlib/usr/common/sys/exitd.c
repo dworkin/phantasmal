@@ -305,7 +305,7 @@ void add_twoway_exit_between(object room1, object room2, int direction,
     return;
 
   if (direction <= 0) {
-    error("Can't add an exit in a special direction!");
+    error("Can't add two-way exit in a nonstandard direction!");
   }
 
   dir = get_name_for_dir(direction);
@@ -320,9 +320,6 @@ void add_twoway_exit_between(object room1, object room2, int direction,
   exit1->set_exit_type(ET_TWOWAY);
   exit1->set_open(TRUE);
   exit1->set_container(TRUE);
-  /* exit1->set_glance(dir); */
-  exit1->set_look(dir);
-  exit1->add_noun(dir);
 
   exit2->set_destination(room1);
   exit2->set_from_location(room2);
@@ -331,10 +328,6 @@ void add_twoway_exit_between(object room1, object room2, int direction,
 
   exit2->set_open(TRUE);
   exit2->set_container(TRUE);
-
-  /* exit2->set_glance(opp_dir); */
-  exit2->set_look(opp_dir);
-  exit2->add_noun(opp_dir);
 
   room1->add_exit(direction, exit1);
   room2->add_exit(opposite_direction(direction), exit2);
@@ -352,8 +345,11 @@ void add_twoway_exit_between(object room1, object room2, int direction,
   exit2->set_link(num1);
 
   if(exit1->get_number() < 0
-     || exit2->get_number() < 0)
+     || exit2->get_number() < 0) {
+    destruct_object(exit1);
+    destruct_object(exit2);
     error("Exit numbers not assigned successfully!");
+  }
 
   exit1->set_brief(PHRASED->new_simple_english_phrase("exit"));
   exit2->set_brief(PHRASED->new_simple_english_phrase("exit"));
@@ -363,7 +359,7 @@ void add_twoway_exit_between(object room1, object room2, int direction,
 void add_oneway_exit_between(object room1, object room2, int direction,
 			     int num1) {
   object exit1, dir;
- 
+
   if(!SYSTEM() && !COMMON() && !GAME())
     return;
 
@@ -380,9 +376,6 @@ void add_oneway_exit_between(object room1, object room2, int direction,
   exit1->set_exit_type(ET_ONEWAY);
   exit1->set_open(TRUE);
   exit1->set_container(TRUE);
-  /* exit1->set_glance(dir); */
-  exit1->set_look(dir);
-  exit1->add_noun(dir);
 
   room1->add_exit(direction, exit1);
 
@@ -395,10 +388,10 @@ void add_oneway_exit_between(object room1, object room2, int direction,
   exit1->set_number(num1);
   exit1->set_link(-1);
 
-  if(exit1->get_number() < 0)
+  if(exit1->get_number() < 0) {
     error("Exit number not assigned successfully!");
-
-  exit1->set_brief(PHRASED->new_simple_english_phrase("exit"));
+    destruct_object(exit1);
+  }
 }
 
 void remove_exit(object room, object exit) {

@@ -194,9 +194,7 @@ static void from_dtd_tag(string tag, mixed value) {
   } else if (tag=="type") {
     type = value;
   } else if (tag=="rbdesc") {
-     bdesc = value;
-  } else if (tag=="rgdesc") {
-    /* gdesc = value */;
+    bdesc = value;
   } else if (tag=="rldesc") {
     ldesc = value;
   } else if (tag=="redesc") {
