@@ -11,13 +11,13 @@ string path_special(string file) {
     if(sscanf(file, "/usr/%s/script/%*s", username)) {
       if(sscanf(username, "System")
 	 || sscanf(username, "common"))
-	return nil;
+	return "";
 
       return INHERIT_SCRIPT_AUTO;
     } else {
-      return nil;
+      return "";
     }
   } else {
-    return nil;
+    return "";
   }
 }
