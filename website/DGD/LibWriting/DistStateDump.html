@@ -2,7 +2,7 @@
                       "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
-<title>DGD and LPC: Writing a Library</title>
+<title>DGD and LPC: Distribute a State Dump?</title>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
 <link href="../../phantasmal.css" rel="stylesheet" type="text/css" />
 </head>
@@ -54,61 +54,64 @@
         <tr>
           <td class="heading">&nbsp;&nbsp;&middot;&nbsp;
 	    <a href="http://phantasmal.sf.net/DGD">DGD Page</a> &gt;
-            <a href="">Writing a Library</a>
+            <a href="">Distribute a State Dump?</a>
           </td>
         </tr>
         <tr>
           <td class="content">
   
 
-  <h1> Writing a MUD Library DGD </h1>
+  <h2> Can I Distribute my MUD Library as a State Dump? </h2>
 
   <p>
-    Actually, all advice here applies just fine to writing general
-    DGD applications, but there's certainly a focus on writing a
-    MUD-type networked game.
+    In DGD, you can restore from a State Dump, so a MUD Library author
+    could conceivably get his MUD running, then dump state, and
+    distribute the state dump rather than packaging up his source
+    files.  (Note: this is mostly a thought exercise, though you may
+    be able to find a use for it).
   </p>
-
-  <h3> Tutorials and Simple Issues </h3>
-
-  <ul>
-    <li> <a href="../Kernel">Getting Started with the Kernel Library</a> </li>
-    <li> <a href="LittleIssues.html">Miscellaneous Issues</a> </li>
-    <li> <a href="CondInherit.html">Conditional Inheritance</a> </li>
-    <li> <a href="InterruptCall.html">Dealing with driver-&gt;interrupt</a>
-      </li>
-  </ul>
-
-  <h3> Major Design Issues </h3>
-
-  <ul>
-    <li> <a href="ObjectManagement.html">Managing and Upgrading Objects</a>
-      </li>
-    <li> <a href="Persistence.html">Persistent MUD Libraries</a> </li>
-    <li> <a href="LargeAuto.html">Tradeoffs for Large AUTO Objects</a> </li>
-    <li> <a href="Database.html">Using an Object Database</a> </li>
-  </ul>
-
-  <h3> Subtle Driver Issues </h3>
 
   <p>
-    Things in this category require significant understanding of how
-    DGD does things.  They're either subtle issues that you can
-    (usually, mostly) ignore, or they're interesting ideas that
-    require significant understanding to implement.
+    Obviously, such a distribution would require very good
+    documentation (and&frasl;or a copy of the source files) so that
+    the consumers of the library would know how to use it.
   </p>
 
-  <ul>
-    <li> <a href="LWOCache.html">Light-Weight Objects and Swapping</a> </li>
-    <li> <a href="DistStateDump.html">Can I Distribute a MUD Library as
-	a State Dump?</a> </li>
-  </ul>
+  <p>
+    There are obvious issues &mdash; without source, it would be
+    difficult for consumers of the MUD Library to upgrade objects,
+    since they would have to replace them entirely.  Only a very
+    stable library could reasonably do this.  Further, the library
+    would have to allow essentially any functionality to be possible
+    so that it didn't prevent later development.  Thus, a design
+    similar to the Kernel Library would be useful in making this
+    possible.
+  </p>
 
-  <h3> Philosophical Issues </h3>
+  <p>
+    Since destructing the MUD Library's objects could potentially be
+    disastrous (remember, no source means that you can't upgrade a
+    library when an object that inherits it wants to be upgraded),
+    you'd want to strongly restrict such activities.
+  </p>
 
-  <ul>
-    <li> <a href="Releasing.html">Should You Release Your Code?</a></li>
-  </ul>
+  <p>
+    Since the consumer of the MUD Library has only the running copy of
+    his data, presumably he would need to do a state dump as well
+    rather than saving in any form.  By definition, a MUD Library that
+    is distributed by statedump would need to be <a
+    href="Persistence.html">persistent</a>.
+  </p>
+
+  <p>
+    An alternative to the no-source method would be to distribute a
+    MUD Library which has the source embedded in an in-game database
+    of source code.  This would allow files to exist on disk only long
+    enough to edit them, and potentially not even that long since DGD
+    can compile an object from string data.  MOO and Cold have similar
+    functionality, but this way, being fully text-based, would save
+    the details of indentation and whatnot that those servers don't.
+  </p>
 
   <p style="text-size: 150%"> <a href="../index.html"> Back to top level
     </a> </p>

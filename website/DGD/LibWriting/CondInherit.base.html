@@ -1,0 +1,35 @@
+  <titledef text="Conditional Inheritance" />
+
+  <h2> How Can I Conditionally Inherit a File? </h2>
+
+  <p>
+    When a program includes a file, the path_include function is
+    called in the driver object.  By returning a different file name,
+    you can change what file is included.  You can then choose between
+    including an empty file and one that inherits the program you'd
+    like inherited.
+  </p>
+
+  <p>
+    The file must be valid either way, which is why you can't just
+    have path_include return (nil) and include nothing at all.
+  </p>
+
+  <p>
+    Note that the standard include file (usually
+    &frasl;include&frasl;std.h) does not have path_include() called
+    for it, so you can't redirect that one.  However, you can #include
+    a file <i>from</i> the standard include file, and redirect that
+    one.
+  </p>
+
+  <p>
+    The Kernel Library does this in a <a
+    href="../Kernel/SecondAuto.html">slightly different way</a>, but
+    underneath it's doing the same thing.  It uses AUTO as the name of
+    the file included by the standard include file, which is why you
+    need an empty file called AUTO to use this method.
+  </p>
+
+  <p style="text-size: 150%"> <a href="../index.html"> Back to top level
+    </a> </p>

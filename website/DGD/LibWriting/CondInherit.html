@@ -2,7 +2,7 @@
                       "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
-<title>DGD and LPC: Writing a Library</title>
+<title>DGD and LPC: Conditional Inheritance</title>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
 <link href="../../phantasmal.css" rel="stylesheet" type="text/css" />
 </head>
@@ -54,61 +54,43 @@
         <tr>
           <td class="heading">&nbsp;&nbsp;&middot;&nbsp;
 	    <a href="http://phantasmal.sf.net/DGD">DGD Page</a> &gt;
-            <a href="">Writing a Library</a>
+            <a href="">Conditional Inheritance</a>
           </td>
         </tr>
         <tr>
           <td class="content">
   
 
-  <h1> Writing a MUD Library DGD </h1>
+  <h2> How Can I Conditionally Inherit a File? </h2>
 
   <p>
-    Actually, all advice here applies just fine to writing general
-    DGD applications, but there's certainly a focus on writing a
-    MUD-type networked game.
+    When a program includes a file, the path_include function is
+    called in the driver object.  By returning a different file name,
+    you can change what file is included.  You can then choose between
+    including an empty file and one that inherits the program you'd
+    like inherited.
   </p>
-
-  <h3> Tutorials and Simple Issues </h3>
-
-  <ul>
-    <li> <a href="../Kernel">Getting Started with the Kernel Library</a> </li>
-    <li> <a href="LittleIssues.html">Miscellaneous Issues</a> </li>
-    <li> <a href="CondInherit.html">Conditional Inheritance</a> </li>
-    <li> <a href="InterruptCall.html">Dealing with driver-&gt;interrupt</a>
-      </li>
-  </ul>
-
-  <h3> Major Design Issues </h3>
-
-  <ul>
-    <li> <a href="ObjectManagement.html">Managing and Upgrading Objects</a>
-      </li>
-    <li> <a href="Persistence.html">Persistent MUD Libraries</a> </li>
-    <li> <a href="LargeAuto.html">Tradeoffs for Large AUTO Objects</a> </li>
-    <li> <a href="Database.html">Using an Object Database</a> </li>
-  </ul>
-
-  <h3> Subtle Driver Issues </h3>
 
   <p>
-    Things in this category require significant understanding of how
-    DGD does things.  They're either subtle issues that you can
-    (usually, mostly) ignore, or they're interesting ideas that
-    require significant understanding to implement.
+    The file must be valid either way, which is why you can't just
+    have path_include return (nil) and include nothing at all.
   </p>
 
-  <ul>
-    <li> <a href="LWOCache.html">Light-Weight Objects and Swapping</a> </li>
-    <li> <a href="DistStateDump.html">Can I Distribute a MUD Library as
-	a State Dump?</a> </li>
-  </ul>
+  <p>
+    Note that the standard include file (usually
+    &frasl;include&frasl;std.h) does not have path_include() called
+    for it, so you can't redirect that one.  However, you can #include
+    a file <i>from</i> the standard include file, and redirect that
+    one.
+  </p>
 
-  <h3> Philosophical Issues </h3>
-
-  <ul>
-    <li> <a href="Releasing.html">Should You Release Your Code?</a></li>
-  </ul>
+  <p>
+    The Kernel Library does this in a <a
+    href="../Kernel/SecondAuto.html">slightly different way</a>, but
+    underneath it's doing the same thing.  It uses AUTO as the name of
+    the file included by the standard include file, which is why you
+    need an empty file called AUTO to use this method.
+  </p>
 
   <p style="text-size: 150%"> <a href="../index.html"> Back to top level
     </a> </p>
