@@ -628,17 +628,21 @@ private object add_lib(string owner, string path, string* inherited) {
 }
 
 private void call_upgraded(object obj) {
-  if(function_object("upgraded", obj)) {
-    upgrade_clonables += ({ obj });
 
-    if(!upgrade_callout) {
-      suspend_system();
-      upgrade_callout = call_out("do_upgrade", 0.0, obj);
-      if(upgrade_callout <= 0) {
-	release_system();
-	LOGD->write_syslog("Error scheduling upgrade call_out for "
-			   + object_name(obj) + "!");
-      }
+  /* Originally we checked to see if the object had an "upgraded"
+     function and if so, we scheduled a callout.  That doesn't work
+     because the object hasn't been recompiled yet so it may have just
+     gotten or lost an "upgraded" function.  So we just schedule the
+     callout and *then* see if it has that function. */
+  upgrade_clonables += ({ obj });
+
+  if(!upgrade_callout) {
+    suspend_system();
+    upgrade_callout = call_out("do_upgrade", 0.0, obj);
+    if(upgrade_callout <= 0) {
+      release_system();
+      LOGD->write_syslog("Error scheduling upgrade call_out for "
+			 + object_name(obj) + "!");
     }
   }
 }
@@ -650,14 +654,16 @@ static void do_upgrade(object obj) {
   upgrade_callout = 0;
 
   for(ctr = 0; ctr < sizeof(upgrade_clonables); ctr++) {
-    catch {
-      rlimits(status()[ST_STACKDEPTH]; -1) {
-	upgrade_clonables[ctr]->upgraded();
+    if(function_object("upgraded", upgrade_clonables[ctr])) {
+      catch {
+	rlimits(status()[ST_STACKDEPTH]; -1) {
+	  upgrade_clonables[ctr]->upgraded();
+	}
+      } : {
+	LOGD->write_syslog("Error in " + object_name(upgrade_clonables[ctr])
+			   + "->upgraded()!",
+			   LOG_ERR);
       }
-    } : {
-      LOGD->write_syslog("Error in " + object_name(upgrade_clonables[ctr])
-			 + "->upgraded()!",
-			 LOG_ERR);
     }
   }
 
