@@ -20,6 +20,9 @@ Release 0.013:
 	* Basic data inheritance of details works and is tested.
 	* Removed gossip channel and gossip command.  Updated help.
 	* Removed all "nodesc" functionality.  Replaced by details.
+	* Merged MOBILE_PORTABLE into SIMPLE_PORTABLE
+	* Merged SIMPLE_PORTABLE into SIMPLE_ROOM
+	* Made mobiles able to accept an optional name field as a comment
 
 Release 0.012:
 	* More logging and stuff in ObjectD.  And fixed a bug that
