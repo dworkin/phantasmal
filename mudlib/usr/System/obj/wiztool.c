@@ -236,7 +236,7 @@ void upgraded(varargs int clone) {
   if(room_dtd)
     room_dtd->clear();
   else
-    room_dtd = clone_object(UNQ_DTD);
+    room_dtd = ::clone_object(UNQ_DTD);
 
   dtd_file = read_entire_file(MAPD_ROOM_DTD);
   room_dtd->load(dtd_file);
