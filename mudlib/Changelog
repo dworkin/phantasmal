@@ -4,6 +4,11 @@ Release 0.011:
 	* Social verbs are now usable like regular commands.
 	* Removed old obsolete detail code
 	* Added @set_obj_flag back.  Previously didn't work.
+	* Now the MobileD reloads the binder file when recompiled.  So
+	  now we can add new mobile types at runtime.
+	* Added new "animal" mobile type.  Mobiles can now have extra
+	  data embedded in their mobfile entries, which is a pretty
+	  mandatory thing for more complex mobiles.
 	
 Release 0.010:
 
