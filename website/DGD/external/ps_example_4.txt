@@ -1,10 +1,9 @@
 Date: Sun, 23 May 1999 18:44:36 +0200 (CEST)
-From: "Felix A. Croes" <felix@dworkin.nl>
-Message-Id: <199905231644.SAA28679@pattern.dworkin.nl>
+From: "Felix A. Croes"
 To: dgd@list.imaginary.com
 Subject: Re: [DGD]parse_string() problems
 
-Geir Harald Hansen <geirhans@ifi.uio.no> wrote:
+Geir Harald Hansen wrote:
 
 > finally I'm starting to work on my command parser.  And being a
 > parse_string() newbie, I'm running into some problems.  I include

@@ -92,5 +92,31 @@
     its problems.
   </p>
 
+<pre>
+From: DGD Mailing List (Stephen Schmidt)
+Date: Mon Mar  8 19:24:00 2004
+Subject: [DGD] Couple of questions
+
+On Mon, 8 Mar 2004, William Bryan wrote:
+> 1)       Is there a benefit to keeping all commands in the wiztool vice
+> breaking them out into a typical /cmd directory structure.
+
+As Noah said, both have advantages, and it is about even. It depends
+mostly on what you're used to. I like /cmd because I'm used to it,
+but also because when commands go through master objects rather
+than wiztool clones, it's a little easier to update one command
+at a time. Also, if you're like me and you make a lot of errors,
+then it might be better to have only one command go casters-up
+when you screw up than to break the wiztool. Security can be a
+little chancy with command bins because commands like "delete"
+and "nuke" typically have fairly high privilege levels and you
+have to protect them against inappropiate calls. Wiztools have
+the same problem in concept but becaue each wiztool is associated
+with one wizards (assuing you do it that way) it's a bit easier
+to protect them. Or so I'm told - I haven't used wiztools.
+
+Steve
+</pre>
+
   <p style="text-size: 150%"> <a href="../index.html"> Back to top level
     </a> </p>

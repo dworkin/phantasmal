@@ -115,6 +115,32 @@
     the appropriate times.
   </p>
 
+  <pre>
+From: DGD Mailing List (Felix A. Croes)
+Date: Fri Nov  1 15:43:01 2002
+Subject: [DGD] Mexican Characters
+
+Lord Lerkista wrote:
+
+> When in a Mud i type the n-tilde character in a Unix-like terminal i 
+> get a "q" as output,
+> It's something of the telnet protocol that uses DGD??
+
+It's because you are using a Mac.  DGD uses line mode for telnet clients,
+and binary mode is not well-defined for line mode in the telnet protocol.
+DGD uses a hack to enable it on many clients, but apparently it fails on
+the Mac.
+
+I am not planning any changes in DGD's telnet support, since even minor
+changes are bound to break clients on some other platform.  Instead I am
+thinking about a standard protocol for a new mud client, a version of
+which I will probably release in Java.  Oh, and it will connect to the
+binary port, with the protocol level on the server side handled by LPC.
+
+Regards,
+Dworkin
+  </pre>
+
   <p style="text-size: 150%"> <a href="../index.html"> Back to top level
     </a> </p>
             <address>

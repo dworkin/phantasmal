@@ -147,6 +147,52 @@
     outgoing connections must be made from the DGD server.
   </p>
 
+<pre>
+From: DGD Mailing List (Noah Gibbs)
+Date: Wed Nov 20 10:01:01 2002
+Subject: Speculative Execution -- WAS:[DGD] Using MySQL C++ API
+
+On Wed, 20 Nov 2002, Erwin Harte wrote:
+> It's only right out with MySQL if you use auto-commit features or use
+> tables that lack a rollback feature, I would think?
+
+  Correct, assuming there are no side-effects and you can break out
+interruptibly on command.  However, you can't just use the existing C++
+API unless you integrate it pretty closely into DGD -- just doing callout
+won't work.  Even if MySQL can support those features, they have to be
+integrated very carefully and very specifically in a way that currently
+requires putting them into a new, modified DGD server.
+
+  Conceivably, DGD could allow a callout interface where DGD code can call
+into other code, and the other code would just have to supply all kinds of
+hooks for interruptability and atomicity.  In practice, so few other
+pieces of code of any kind allow this that there's no reason for it --
+it's less work to just integrate MySQL into DGD once (and possibly add
+more layers of rollback, which you'd have to either way) than to build a
+general interface like this and then only use it for MySQL.  I can't think
+of very many other pieces of code you can do those things with, and
+adding them pretty much eliminates the other code's speed advantage over
+DGD.  Plus you've gotta deal with things like tick counts for non-DGD
+code.  It all gets to be a mess.
+
+  Granted, it'd be cool to be able to write in Perl and do the atomicity,
+interruptability and CPU usage stuff.  But then why get DGD involved?
+
+> I would describe speculative executation as "Let's start executing
+> this thread, keeping track of the changes we've made so far, and just
+> see where we run into trouble".  Trouble is defined as two threads
+> modifying the same thing, since only one should be able to succeed in
+> doing so.  If this happens, the one detecting the conflict will be
+> rolled back and reattempted from the start.
+> 
+> At least, I hope I described that accurately. :)
+
+  That's my understanding.  In case I haven't said before:  I think that's
+a *really* cool approach to multithreading!
+
+- Noah Gibbs
+</pre>
+
   <p style="text-size: 150%"> <a href="../index.html"> Back to top level
     </a> </p>
             <address>

@@ -154,6 +154,33 @@
     called swapout() which will swap <i>every</i> object out.
   </p>
 
+<pre>
+From: DGD Mailing List (Felix A. Croes)
+Date: Tue Jan 14 06:38:01 2003
+Subject: [DGD] Object swap-in
+
+Birgit Schulte wrote:
+
+> While overhauling my object-daemon, I stumbled upon a basic question:
+>
+> When exactly does an object which is swapped out get swapped in again?
+> Does it happen if I do a find_object(obj) or status(obj)?
+>
+> Or only if the object is either compiled or a function called within it?
+
+find_object() does not swap in an object; status() does, because some of
+the information needed by that function is swapped out.  However,
+status() only swaps in the first sector of an object's dataspace.
+Calling a function in an object would cause much more of the object
+to be loaded in memory.
+
+If you want to avoid any disk access, you may want to cache some of the
+information from status(obj) in your object daemon.
+
+Regards,
+Dworkin
+</pre>
+
   <p style="text-size: 150%"> <a href="../index.html"> Back to top level
     </a> </p>
             <address>

@@ -48,5 +48,45 @@
     that need.
   </p>
 
+<pre>
+From: DGD Mailing List (Par Winzell)
+Date: Tue Mar 19 15:01:00 2002
+Subject: [DGD] Memory management
+
+>>I probably just need a pointer in the right direction, but I'm getting a 
+>>bit confused on DGD's memory  management.
+>>
+>>My impression was that DGD used a reference counting scheme to free up 
+>>objects that no longer had references, similar to Java's garbage collection.
+>>
+> 
+> [...]
+> 
+>>What am I missing?
+> 
+> There are two types of objects, persistent (regular) objects, and the
+> so-called lightweight objects a.k.a LWOs.  LWOs are created using the
+> new_object() kfun and will disappear automatically, whereas regular
+> objects are created using compile_object() for standalone objects and
+> clone base-objects, clone_object() for clones, and zapped into
+> oblivion using destruct_object().
+
+To expand on this: for persistent objects (which is all you'll see in 
+the kernel library) the references to the object are of no consequence; 
+when the object is destructed, any existing reference to the object will 
+evaluate to 'nil'. In a multi-programmer environment like your average 
+LPMud, this is more than practical, it is more or less a requirement -- 
+if every sloppy left-over reference could keep an object alive, there 
+would be accrue vast unfreed and unused object structures in memory over 
+the years.
+
+As it is, this 'destruction' scheme allows you to go occasionally slowly 
+sift through all the potentially millions of objects and crudely put the 
+obsolete ones to death, automatically castrating any existing references 
+to them.
+
+Zell
+</pre>
+
   <p style="text-size: 150%"> <a href="../index.html"> Back to top level
     </a> </p>

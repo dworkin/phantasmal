@@ -1,11 +1,6 @@
-From dgd at list.imaginary.com  Sun Dec  9 16:28:00 2001
-From: dgd at list.imaginary.com (Par Winzell)
+From: DGD Mailing List (Par Winzell)
 Date: Sun Dec  9 16:28:00 2001
 Subject: [DGD] Desperately Wanted
-In-Reply-To: <5.1.0.14.0.20011209151141.023b53f0@mail>
-References: <200112091446.PAA04114@dworkin.nl>
- <5.1.0.14.0.20011209151141.023b53f0@mail>
-Message-ID: <15379.57885.573752.149699@troll.skotos.net>
 
 but it's not cheap. You can get the basic idea from various web
 pages, but any non-trivial use of parse_string gets into subtle

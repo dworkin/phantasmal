@@ -41,5 +41,151 @@
     saving them to outside-the-MUD storage.
   </p>
 
+<pre>
+From: DGD Mailing List (Erwin Harte)
+Date: Tue Jan  6 11:00:01 2004
+Subject: [DGD] Re: A simple lib
+
+On Tue, Jan 06, 2004 at 04:44:54PM +0000, Robert Forshaw wrote:
+> I originally began coding my mudlib in MudOS, then I realised it lacked 
+> certain features I wanted and moved to LDMUD. Now I've discovered DGD and 
+> I've decided to build a mudlib from scratch.
+[...]
+> Incidently, is there any way to transfer 'interactivity' to a different 
+> object and destruct the old one? Right now the only way I can see to do it 
+> is to pass messages from the object returned by telnet_connect() to 
+> whatever object you want, but it still requires the first object to exist 
+> and is where the messages first go to. MUDOS and LDMUD both have this 
+> feature, so it would appear that DGD should also?
+
+In DGD you 'do it yourself' by having a generic connection object
+which passes messages back and forth to the object that's actually in
+charge.  In a mud that could be a player body, but it could just as
+easily be something more abstract.  The kernel-lib implements such a
+mechanism.
+
+Of course depending on how you set things up, you may not need to
+switch at all.
+
+Good luck and enjoy,
+
+Erwin.
+-- 
+Erwin Harte
+</pre>
+
+<hr />
+
+<pre>
+From: DGD Mailing List (Erwin Harte)
+Date: Tue Jan  6 11:43:01 2004
+Subject: [DGD] Re: A simple lib
+
+On Tue, Jan 06, 2004 at 05:31:00PM +0000, Robert Forshaw wrote:
+> >From: Erwin Harte
+[...]
+> >In DGD you 'do it yourself' by having a generic connection object
+> >which passes messages back and forth to the object that's actually in
+> >charge.  In a mud that could be a player body, but it could just as
+> >easily be something more abstract.  The kernel-lib implements such a
+> >mechanism.
+> 
+> That's basically what I had figured. Why is this feature not catered for 
+> better? It means having an additional object for every user. Seems a bit of 
+> a waste to me.
+
+I would describe the philosophy here as "why, if you can easily do
+this in LPC and thereby keep the basis simpler?" plus realizing that
+the G in DGD stands for Generic, it's intended to be more than just a
+platform on which to build text-based.
+
+[...]
+> I thought the reason is obvious; it makes it much easier to comment out 
+> single lines. I'll probably add this feature to the driver when I 
+> understand what I'm doing with the mudlib first. :)
+
+I would dispute the 'much' in 'much easier', but hey, go right ahead,
+you might make some others happy along the way. :-)
+
+Erwin.
+-- 
+Erwin Harte
+</pre>
+
+<hr />
+
+<pre>
+From: DGD Mailing List (Stephen Schmidt)
+Date: Tue Jan  6 11:45:02 2004
+Subject: [DGD] Re: A simple lib
+
+On Tue, 6 Jan 2004, Robert Forshaw wrote:
+> That's basically what I had figured. Why is this feature not catered for
+> better? It means having an additional object for every user. Seems a bit of
+> a waste to me.
+
+I'll field that, not so much as the Melville coder (Melville has
+this feature too) but as one of the people who did the first
+MudOS implementation of that system back around 1991.
+
+Two reasons to have separate objects:
+
+1) It allows you to switch the player's game representation from
+one object to another. This has all sorts of uses. We used it to
+handle death. When a player died, their human body object was
+dested and they were transferred to a ghost body object. The
+ghost body object could be completely different from the human
+body object. For example, the ghost body object didn't check
+for doors in movement, so a ghost body could pass through locked
+doors when a human body could not. It can also be used to allow
+wizards to take over NPCs, which has role-playing uses. It also
+allows you to update the user object, clone a new one, and switch
+the connection to the new one automatically. You can also do
+dopplegangers this way. There are many cool uses for the ability
+to switch control from one living object to another on the fly.
+
+2) It's better design. There is a distinction (or should be) between
+the real-world human playing the game, and their game character.
+In the two-object system, the connection object is identified with
+the real-world human and the user object is identified with the
+game character. (Last I looked, maybe five years ago, the kernel
+lib didn't strictly follow this distinction. Melville does.)
+Keeping this design distinction in the fundamentals of the code
+makes it easier to do good game design later on. I presume the
+same point is true of non-game applications, but games is what
+I've used MUDs for.
+
+Steve
+</pre>
+
+<hr />
+
+<pre>
+From: DGD Mailing List (Josh Dady)
+Date: Tue Jan  6 11:48:02 2004
+Subject: [DGD] Re: A simple lib
+
+On Jan 6, 2004, at 12:31 PM, Robert Forshaw wrote:
+
+>> In DGD you 'do it yourself' by having a generic connection object
+>> which passes messages back and forth to the object that's actually in
+>> charge.  In a mud that could be a player body, but it could just as
+>> easily be something more abstract.  The kernel-lib implements such a
+>> mechanism.
+>
+> That's basically what I had figured. Why is this feature not catered 
+> for better? It means having an additional object for every user. Seems 
+> a bit of a waste to me.
+
+Essentially for the same reason that DGD doesn't implement object 
+inventories either -- neither needs to be done in the driver.  Both are 
+simple to implement in LPC, and neither would be of much use to someone 
+who chose to implement their HTTP server instead of their text-based 
+multi-user game in it.
+
+--
+Joshua P. Dady
+</pre>
+
   <p style="text-size: 150%"> <a href="../index.html"> Back to top level
     </a> </p>

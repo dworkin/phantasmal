@@ -89,5 +89,107 @@
     remove the largest objects.
   </p>
 
+<pre>
+From: DGD Mailing List (Felix A. Croes)
+Date: Mon Oct 20 14:42:00 2003
+Subject: [DGD] Some basics
+
+Stephen Schmidt wrote:
+
+>[...]
+> This raises a general question. When there are circular
+> references in a data structure (A refers to B which refers
+> to C which refers to A) then nothing can be destructed -
+> A can't be destructed because C refers to it, but C can't
+> be destructed because B refers to it and B can't be destructed
+> because A refers to it. But circular inheritance isn't (had
+> better not be!) possible.
+>
+> Question 1: Can this kind of problem arise in ObjectD?
+>
+> Question 2: I have a dim memory that LPMud, and maybe MudOS
+> also, suffered from something called a "lifetime lvalue bug"
+> which was never explained to me, but which was some kind of
+> circular-reference garbage-collection problem. Does DGD have
+> this problem as well? If so, what the heck is it? Or is my
+> memory just wrong in this case?
+
+Answering both questions together: DGD takes care of this.  Don't worry
+about it.  The latest version in the experimental line does so
+automatically, and the 1.2pX line does it when a swapout() call is made.
+
+Regards,
+Dworkin
+</pre>
+
+<hr />
+
+<pre>
+From: DGD Mailing List (Felix A. Croes)
+Date: Thu Aug 19 19:57:01 2004
+Subject: [DGD] Object house-keeping and persistance
+
+Birgit Schulte wrote:
+
+> I am wondering about ways to make sure the number of unused / discarded
+> objects in
+> a persistant mud doesn't go through the roof.
+
+It may not be what you want, but this is one of the things I designed
+the resource management subsystem for, and I'll explain my reasons.
+
+Object cleanup as it exists in the original LPmud is very limited.  It
+only works for rooms, and only under specific circumstances.  Rooms
+are precisely the objects that in DGD you do not want to destruct, and
+that you do not have to destruct.  So the whole idea of object cleanup
+as it exists in LPmud doesn't apply to DGD.
+
+How can the mudlib of a persistent mud determine that an object is
+unused, and can be destructed?  The answer is that in the general case,
+it can't, because it is impossible to second-guess the LPC programmer.
+What you could do is let objects voluntarily register for a "cleanup
+list", destruct them when certain conditions specific to that cleanup
+list have been met, and recreate them if you should need them again.
+Objects that don't have to be recreated at all will then eventually
+be cleaned up, and gone forever.  But you will also be doing a lot
+of destructing and recreating, because objects that <are> still in
+use will also be in that list.  It would be even better if those
+objects were never destructed at all.  And of course it is possible
+that some rogue objects never register for any cleanup list in the
+first place.
+
+Therefore I decided to leave the selection of objects to destruct
+to the programmer.  To inspire the programmer to actually do that,
+I made an object quota.  Let's say that everyone starts out with
+space for 100 objects.  How you use that is entirely your business.
+>From the mud admin's point of view, all of these objects will be
+"in use".  But the programmer who runs out of free objects will be
+motivated to recycle some old ones (provided of course that the
+tools to do that are available), or else will have to answer the
+question, "why do you need more than 100 objects?"
+
+Regards,
+Dworkin
+</pre>
+
+<hr />
+
+<pre>
+From: dgd at list.imaginary.com (Michael McKiel)
+Date: Fri Aug 20 01:00:02 2004
+Subject: [DGD] Object house-keeping and persistance
+
+The way we intend it, will be wizard's whose areas haven't gone thru QC yet
+will not have a "in game" flag, or will have a "testing" flag. Any such
+object with a "testing" flag if it ever enters an environment that is not
+flagged testing then it destructs itself. As well as any item that is flagged
+as a test item when a *player* enters a non-testing room -- perhaps such test
+items when just carried by wizards wouldn't destruct. 
+
+And you may wonder how a player might obtain these "test" objects, well a
+wizard might give it out illegally, or players might be requested to play
+test an area before it goes live.
+</pre>
+
   <p style="text-size: 150%"> <a href="../index.html"> Back to top level
     </a> </p>
