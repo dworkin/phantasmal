@@ -3,6 +3,10 @@
 #define INHERIT_SCRIPT_AUTO "/include/phantasmal/inherit_script_auto.h"
 
 
+/* Checking to see if the caller is authorized */
+# define COMMON() (sscanf(previous_program(), USR_DIR + "/common/%*s") != 0)
+# define GAME()	  (sscanf(previous_program(), USR_DIR + "/game/%*s") != 0)
+
 /* System managers and daemons */
 #define TELNETD     "/usr/System/sys/telnetd"
 #define OBJECTD     "/usr/System/sys/objectd"

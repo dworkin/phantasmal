@@ -1,4 +1,4 @@
-/* $Header: /cvsroot/phantasmal/mudlib/usr/System/open/lib/userlib.c,v 1.6 2004/01/09 08:53:57 angelbob Exp $ */
+/* $Header: /cvsroot/phantasmal/mudlib/usr/System/open/lib/userlib.c,v 1.7 2004/09/05 01:53:03 angelbob Exp $ */
 
 #include <kernel/kernel.h>
 #include <kernel/user.h>
@@ -24,6 +24,9 @@ inherit io   SYSTEM_USER_IO;
 #define STATE_OLDPASSWD         2
 #define STATE_NEWPASSWD1        3
 #define STATE_NEWPASSWD2        4
+
+/* Directory to store user passwords in */
+#define SYSTEM_USER_DIR     "/usr/game/users"
 
 /* Saved by save_object */
 string name;	                /* user name */

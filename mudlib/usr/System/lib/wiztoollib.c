@@ -55,7 +55,7 @@ static void create(varargs int clone)
 
   if(clone) {
     owner = query_owner();
-    directory = USR + "/" + owner;
+    directory = USR_DIR + "/" + owner;
   } else {
     if(!find_object(US_OBJ_DESC))
       auto::compile_object(US_OBJ_DESC);
@@ -204,13 +204,13 @@ static mixed evaluate_lpc_code(object user, string lpc_code)
   if (!parsed) {
     error("Couldn't parse code!");
   }
-  name = USR + "/" + owner + "/_code";
+  name = USR_DIR + "/" + owner + "/_code";
   obj = find_object(name);
   if (obj) {
     destruct_object(obj);
   }
 
-  str = USR + "/" + owner + "/include/code.h";
+  str = USR_DIR + "/" + owner + "/include/code.h";
   if (file_info(str)) {
     str = "# include \"~/include/code.h\"\n";
   } else {

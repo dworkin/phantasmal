@@ -1,4 +1,4 @@
-/* $Header: /cvsroot/phantasmal/mudlib/usr/game/obj/user.c,v 1.8 2004/01/23 14:50:22 angelbob Exp $ */
+/* $Header: /cvsroot/phantasmal/mudlib/usr/game/obj/user.c,v 1.9 2004/09/05 01:53:03 angelbob Exp $ */
 
 #include <kernel/kernel.h>
 #include <kernel/user.h>
@@ -695,7 +695,7 @@ static void cmd_look(object user, string cmd, string str) {
 		  + "You check the first one.\r\n\r\n");
   }
 
-  } if(cmd[0] == 'e' && tmp[0]->get_examine()) {
+  if(cmd[0] == 'e' && tmp[0]->get_examine()) {
     user->send_phrase(tmp[0]->get_examine());
   } else {
     user->send_phrase(tmp[0]->get_look());
