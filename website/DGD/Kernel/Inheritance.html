@@ -319,6 +319,112 @@ destructed object.
 </p>
 
 </span>
+
+<pre>
+Date: Thu, 15 Feb 2001 17:26:32 +0100 (CET)
+From: "Felix A. Croes"
+Subject: Re: [DGD]kernel cloning and inheriting
+
+Stephen Schmidt wrote:
+
+>[...]
+> Let me see if I have this straight; I'm pretty sure at
+> some level I don't. Consider three objects, A, Ac, and B.
+> Ac is a clone of A; B inherits A.
+
+In the kernel library, inheritables are not clonable, but I
+assume that you are talking about the general case.
+
+
+> 1. You can recompile B because nothing inherits it.
+> 2. You cannot recompile Ac because it is a clone; to recompile
+>    Ac is basically to recompile A.
+
+Yes.  Recompiling Ac is impossible, but if you could recompile A,
+all clones would be upgraded as well.
+
+
+> 3. You cannot recompile A because B inherits it.
+> 4. You could recompile A if you first destructed B, but then
+>    object B would be lost. In a persistant world, the loss of
+>    B during the recompilation of A could be problematic.
+> 5. You could recompile both B and A if Ac did not exist. (?)
+>    The root problem is that if you try to recompile A in
+>    the presence of Ac, then Ac is forced to change along
+>    with B, and Ac might not want to do that.
+
+If Ac did not exist, and A was a pure inheritable object, you could
+have upgraded A and B with the following sequence:
+
+    destruct A
+    recompile B (will automatically compile A also)
+
+As it is, you can still do this, but of course the state of A will
+be lost thereby.  If A was a pure inheritable/clonable without its
+own state, you can do this without negative effects on A and B.
+Ac, however, will continue to use the old program of A, since A
+was destructed before it was recompiled.  Only if A had been
+recompiled without deing destructed first -- impossible because of
+B -- would ac have been upgraded also.
+
+Regards,
+Dworkin
+</pre>
+
+<hr />
+
+<pre>
+Date: Thu, 15 Feb 2001 18:47:04 +0100 (CET)
+From: "Felix A. Croes"
+Subject: Re: [DGD]kernel cloning and inheriting
+
+Stephen Schmidt wrote:
+
+>[...]
+> > If Ac did not exist, and A was a pure inheritable object, you could
+> > have upgraded A and B with the following sequence:
+> > 
+> >     destruct A
+> >     recompile B (will automatically compile A also)
+>
+> If Ac did not exist, and you recompiled B without first
+> destructing A, then A would not be recompiled? I'm pretty
+> sure that's right.
+
+Normally, it wouldn't be.  However, A may be out of date as well, in
+the sense that it inherits yet another object -- let's call it C --
+which has been destructed.  In that case, the recompilation of B
+could in itself trigger the destruction of A from the recompile()
+function in the driver object; the immediately following recompilation
+of B would then also trigger the recompilation of A.
+
+
+>[...]
+> Just out of pure curiosity, why is it not possible to
+> have changes in A reflected in both Ac and B? Is it
+> because A doesn't keep track of a list of all objects
+> that inherit it, so it doesn't know that when it updates
+> its own code, it has to update B also? Or is it that when
+> A is recompiled, you want B to keep the old behavior? Or
+> is there something deeper going on?
+
+Suppose that A is inherited by a further N objects.  If we want
+to recompile A, and the changes must be automatically reflected
+in those other, inheriting objects, than all of those objects
+will have to be automatically upgraded.  I could have made it
+that way, and in fact I originally intended to do so.  However,
+if N becomes large, recompiling A is going to take a <very> long
+time -- minutes in some existing DGD mudlibs.  I wanted to be
+able to upgrade A without such a huge delay, so I decided to
+divide the upgrade process into many smaller steps, each of which
+could be done from LPC, perhaps with a series of callouts.  Since
+this was completely new functionality and there was no backward
+compatibility to take into account, I decided on the current
+limitations.
+
+Regards,
+Dworkin
+</pre>
             <address>
             <span><a href="mailto:angelbob-remove-spamfree@spamfree.users.sf.net">Noah Gibbs</a></span>
             </address></td>

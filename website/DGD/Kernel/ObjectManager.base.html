@@ -1478,3 +1478,41 @@ them.
 Regards,
 Dworkin
 </pre>
+
+<hr />
+
+<pre>
+From: Par Winzell
+Date: Sat, 19 May 2001 08:06:46 -0700
+Subject: Re: [DGD]inherit_list
+
+ > The other thing I could do is hook into inherit_program in the driver
+ > and keep my own inherit list, but that seems like a bit of a mess.
+
+That is precisely the thing to do. It's not a "mess" at all, it is
+a very elegant solution, but it -is- a bit of an undertaking to get
+all the kinks worked out.
+
+ > I see in an old mail from Dworkin that he recommended keeping an
+ > inherit list database in the mudlib.
+ > Is that still recommended?
+
+Yes.
+
+
+ > I would expect that DGD knows the inherit chain already - wouldn't it
+ > be more efficient to be able to ask the driver, rather than track it
+ > yourself?
+
+Probably, but DGD is still a minimalist design. If it can be done
+quickly and well in LPC, why clutter up the driver?
+
+
+ > And on a separate issue, why does the kernel lib require that you have
+ > write access to an object to compile it? 
+ > It would appear to be a read operation? Why write? 
+
+It "reads" the source file, but it certainly modifies the object. :-)
+
+Zell
+</pre>
