@@ -153,10 +153,26 @@ static void cmd_stat(object user, string cmd, string str) {
   string  tmp;
   mixed*  objs, *art_desc;
 
-  if(!str || STRINGD->is_whitespace(str) || sscanf(str, "%*s %*s") == 2
-     || !sscanf(str, "#%d", objnum)) {
+  if(!str || STRINGD->is_whitespace(str)) {
     user->message("Usage: " + cmd + " #<obj num>\r\n");
     return;
+  }
+
+  if(sscanf(str, "#%d", objnum) != 1) {
+    objs = user->get_location()->find_contained_objects(user, str);
+    if(!objs)
+      objs = user->get_body()->find_contained_objects(user, str);
+    if(!objs) {
+      user->message("You don't find any object matching '"
+		    + str + "' here.\r\n");
+      return;
+    }
+
+    if(sizeof(objs) > 1) {
+      user->message("More than one object matches.  You choose one.\r\n");
+    }
+
+    objnum = objs[0]->get_number();
   }
 
   room = MAPD->get_room_by_num(objnum);
@@ -267,6 +283,11 @@ static void cmd_stat(object user, string cmd, string str) {
 	tmp += "The object is an open container.\r\n";
       } else {
 	tmp += "The object is a closed container.\r\n";
+      }
+      if(obj->is_openable()) {
+	tmp += "The object may be freely opened and closed.\r\n";
+      } else {
+	tmp += "The object may not be freely opened and closed.\r\n";
       }
     } else {
       tmp += "The object is not a container.\r\n";
@@ -561,7 +582,7 @@ static void cmd_set_obj_flag(object user, string cmd, string str) {
 
   if(str) str = STRINGD->trim_whitespace(str);
   if(str && !STRINGD->stricmp(str, "flagnames")) {
-    user->message("Flag names:  cont container nodesc open\r\n");
+    user->message("Flag names:  cont container nodesc open openable\r\n");
     return;
   }
 
@@ -570,6 +591,12 @@ static void cmd_set_obj_flag(object user, string cmd, string str) {
 	 && sscanf(str, "#%d %s", objnum, flagname) != 2)) {
     user->message("Usage: " + cmd + " #<obj> flagname [flagvalue]\r\n");
     user->message("       " + cmd + " flagnames\r\n");
+    return;
+  }
+
+  obj = MAPD->get_room_by_num(objnum);
+  if(!obj) {
+    user->message("Can't find room or portable #" + objnum + "!\r\n");
     return;
   }
 
@@ -591,6 +618,17 @@ static void cmd_set_obj_flag(object user, string cmd, string str) {
     }
   } else {
     flagval = 1;
+  }
+
+  if(!STRINGD->stricmp(flagname, "cont")
+     || !STRINGD->stricmp(flagname, "container")) {
+    obj->set_container(flagval);
+  } else if(!STRINGD->stricmp(flagname, "open")) {
+    obj->set_open(flagval);
+  } else if(!STRINGD->stricmp(flagname, "nodesc")) {
+    obj->set_nodesc(flagval);
+  } else if(!STRINGD->stricmp(flagname, "openable")) {
+    obj->set_openable(flagval);
   }
 
   user->message("Done.\r\n");
