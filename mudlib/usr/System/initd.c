@@ -1,7 +1,9 @@
+
 #include <kernel/kernel.h>
 #include <kernel/access.h>
 #include <kernel/rsrc.h>
 #include <kernel/version.h>
+#include <status.h>
 #include <type.h>
 #include <config.h>
 #include <log.h>
@@ -38,20 +40,21 @@ static void create(varargs int clone)
 
   /* First things first -- this release needs one of the
      latest versions of DGD, so let's make sure. */
-  if(!sscanf(KERNEL_LIB_VERSION, "%d.%d.%d", major, minor, patch)) {
-    error("Don't recognize Kernel Library version as being of the"
-	  + " form X.Y.ZZ!");
+  
+  if(!sscanf(status()[ST_VERSION], "DGD %d.%d.%d", major, minor, patch)) {
+    error("Don't recognize DGD driver version as being of the"
+	  + " form DGD X.Y.ZZ!");
   }
   if((major == 1 && minor < 2)
-     || (major == 1 && minor == 2 && patch < 15)) {
-    error("Need to upgrade to DGD version 1.2.55 or higher!");
-  } else if (major == 1 && minor == 2 && patch > 16) {
-    DRIVER->message("This is a very new Kernel Library version, or at\n");
+     || (major == 1 && minor == 2 && patch < 57)) {
+    error("Need to upgrade to DGD version 1.2.57 or higher!");
+  } else if (major == 1 && minor == 2 && patch > 57) {
+    DRIVER->message("This is a very new DGD version, or at\n");
     DRIVER->message("  least newer than this version of Phantasmal.  If\n");
-    DRIVER->message("  you have problems, please upgrade!\n");
+    DRIVER->message("  you have problems, please upgrade Phantasmal!\n");
   } else if (major > 1 || (major == 1 && minor > 2)) {
     DRIVER->message("This version of Phantasmal is not tested\n");
-    DRIVER->message("with DGD beyond 1.2.XX.  Please upgrade!\n");
+    DRIVER->message("with DGD beyond 1.2.XX.  Please upgrade Phantasmal!\n");
   }
 
   access::create();
