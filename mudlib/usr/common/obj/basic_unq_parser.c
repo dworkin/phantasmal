@@ -7,7 +7,7 @@
 string parser;
 
 static void create(varargs int clone) {
-  parser = read_file("/data/parser/unq_parser.dpd", 0, MAX_STRING_SIZE - 1);
+  parser = read_file("/usr/common/obj/unq_parser.dpd", 0, MAX_STRING_SIZE - 1);
   if(strlen(parser) > MAX_STRING_SIZE - 3) {
     error("Parser description too big loading file in unq_parser::create!");
   }

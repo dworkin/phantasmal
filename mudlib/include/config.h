@@ -124,7 +124,7 @@
 # define COMMON()	(sscanf(previous_program(), USR + "/common/%*s") != 0)
 
 
-# undef SYS_PERSISTENT
+# define SYS_PERSISTENT
 # undef SYS_DATAGRAMS	    /* off by default */
 
 
