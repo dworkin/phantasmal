@@ -407,12 +407,13 @@ EOF
     ;
 
     my ($user, $newuser);
+    $user = undef;
     for $obj_name (sort keys %obj_filenames) {
 	if($obj_name =~ /^\/usr\/[A-Za-z0-9_]+\//) {
 	    $newuser = $1;
 	}
 
-	if($user ne $newuser) {
+	if(defined($user) and $user ne $newuser) {
 	    print FILE "    </ul>\nBlorp    <ul>\n";
 	}
 
