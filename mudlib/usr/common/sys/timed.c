@@ -135,8 +135,13 @@ private void priv_start_call_out(int how_often) {
 		       LOG_WARNING);
     return;
   }
-  per_call_out[how_often] = call_out("__priv_co_hook", delay_tab[how_often],
-				     how_often);
+  if(delay_tab[how_often] && delay_tab[how_often] > 0) {
+    per_call_out[how_often] = call_out("__priv_co_hook", delay_tab[how_often],
+				       how_often);
+  } else {
+    LOGD->write_syslog("Trying to schedule zero-time callout!", LOG_ERR);
+  }
+
   if(per_call_out[how_often] <= 0) {
     LOGD->write_syslog("Can't schedule call_out # " + how_often
 		       + " in TIMED::priv_start_call_out!", LOG_ERROR);
