@@ -10,7 +10,7 @@
 down from the ceiling almost everywhere, and hanging carcasses and
 intervening walls block your view.  You're not sure how far away the
 walls are.}}
-  ~flags{0}
+  ~flags{3}
   ~article{0}
   ~nouns{{~enUS{locker}}}
   ~adjectives{{~enUS{meat}}}
@@ -33,7 +33,7 @@ of times.  The walls are entirely dirt, and the floor has tufts of fur
 from rabbits sleeping here at one time and another.
 It looks very cozy.
 }}
-  ~flags{0}
+  ~flags{3}
   ~article{0}
   ~nouns{{}}
   ~adjectives{{}}
@@ -51,7 +51,7 @@ It looks very cozy.
 here you can see a larger tunnel leading away.  The smell is warm and
 cozy.  An old root pokes out through the west wall.  You can see bits of
 fur here and there in different colors.}}
-  ~flags{0}
+  ~flags{3}
   ~article{0}
   ~nouns{{}}
   ~adjectives{{}}
@@ -68,7 +68,7 @@ fur here and there in different colors.}}
     ~enUS{This tunnel runs north-south between an old burrow system north and larger,
 newer digging to the south.  Bits of multicolored fur and small root tips
 can be found in the east and west walls.}}
-  ~flags{0}
+  ~flags{3}
   ~article{0}
   ~nouns{{}}
   ~adjectives{{}}
@@ -90,7 +90,7 @@ slightly crumbly with disuse.}}
 time.  At the moment, though, the grey-brown walls are quite dry and
 slightly crumbly with disuse.  It's surprising there isn't more dirt and
 dust from the walls settled on the floor -- it's quite clean here.}}
-  ~flags{0}
+  ~flags{3}
   ~article{0}
   ~nouns{{}}
   ~adjectives{{}}
@@ -109,7 +109,7 @@ Sits, more.  Still.  Peaceful, even.  At least.  Well.  Y'know.  Still.
 
 There's also a large sarcopha- sarca --  a coffin.  And a statue of Ghak'La.
 Rumor has it that he's Messy-In-A-Hideous-Way.}}
-  ~flags{0}
+  ~flags{3}
   ~article{0}
   ~nouns{{~enUS{tomb}}}
   ~adjectives{{~enUS{peaceful}}}
@@ -131,12 +131,12 @@ be seen.
 In the center of the mess sits an operating table, connected
 to the rest by thick braided cables.  On the table lies
 an incomplete droid, facing the ceiling.  Its head is open.}}
-  ~flags{0}
+  ~flags{3}
   ~article{0}
   ~nouns{{}}
   ~adjectives{{}}
 }
-~portable{
+~room{
   ~number{8}
   ~location{6}
   ~bdesc{
@@ -152,7 +152,7 @@ Ghak'La must have been Messy-In-A-Hideous-Way.}}
   ~nouns{{~enUS{ghakla,ghak'la,statue}}}
   ~adjectives{{~enUS{messy,hideous}}}
 }
-~portable{
+~room{
   ~number{9}
   ~location{300}
   ~bdesc{
@@ -182,7 +182,7 @@ see opalescent light filtering in through the petals.
 }}
   ~edesc{
     ~enUS{You see some bits!}}
-  ~flags{0}
+  ~flags{3}
   ~article{0}
   ~nouns{{~enUS{room,test}}}
   ~adjectives{{~enUS{test}}}
@@ -205,7 +205,7 @@ see opalescent light filtering in through the petals.
 }}
   ~edesc{
     ~enUS{You see some bits!}}
-  ~flags{0}
+  ~flags{3}
   ~article{0}
   ~nouns{{~enUS{room,test}}}
   ~adjectives{{~enUS{test}}}
@@ -228,13 +228,13 @@ see opalescent light filtering in through the petals.
 }}
   ~edesc{
     ~enUS{You see some bits!}}
-  ~flags{0}
+  ~flags{3}
   ~article{0}
   ~nouns{{~enUS{room,test}}}
   ~adjectives{{~enUS{test}}}
   ~exit{n: #79 102 103}
 }
-~portable{
+~room{
   ~number{200}
   ~location{202}
   ~bdesc{
@@ -248,7 +248,7 @@ see opalescent light filtering in through the petals.
   ~nouns{{~enUS{turnip}}}
   ~adjectives{{~enUS{juicy,plump,large}}}
 }
-~portable{
+~room{
   ~number{201}
   ~location{6}
   ~bdesc{
@@ -265,7 +265,7 @@ doesn't give you any clues.}}
   ~nouns{{~enUS{weasel}}}
   ~adjectives{{~enUS{lifeless,limp}}}
 }
-~portable{
+~room{
   ~number{202}
   ~location{300}
   ~bdesc{
@@ -280,7 +280,7 @@ on the side may once have advertised the box's maker.}}
   ~nouns{{~enUS{breadbox,box}}}
   ~adjectives{{~enUS{bread,large,largish}}}
 }
-~portable{
+~room{
   ~number{203}
   ~location{0}
   ~bdesc{
@@ -296,7 +296,7 @@ cutting.}}
   ~nouns{{~enUS{knife,dagger}}}
   ~adjectives{{~enUS{ceremonial,curved,jagged}}}
 }
-~portable{
+~room{
   ~number{204}
   ~location{6}
   ~bdesc{
@@ -316,7 +316,7 @@ Wombat fumes.  About the usual, you hope.}}
   ~nouns{{~enUS{wombat,mouth}}}
   ~adjectives{{~enUS{stuffed,immobile}}}
 }
-~portable{
+~room{
   ~number{205}
   ~location{6}
   ~bdesc{
@@ -330,7 +330,7 @@ Wombat fumes.  About the usual, you hope.}}
   ~nouns{{~enUS{sarcophagus,coffin}}}
   ~adjectives{{}}
 }
-~portable{
+~room{
   ~number{206}
   ~location{204}
   ~bdesc{
@@ -354,9 +354,9 @@ Wombat fumes.  About the usual, you hope.}}
   ~ldesc{
     ~enUS{This room has several old, large couches here and there.  A table in
 the middle of the room seems to be built directly into the floor somehow.}}
-  ~flags{0}
+  ~flags{3}
   ~article{1}
-  ~nouns{{}}
+  ~nouns{{~enUS{lounge}}}
   ~adjectives{{}}
   ~exit{s: #301 112 113}
 }
@@ -373,7 +373,7 @@ reminds you of cheap cafeterias.  A large hardwood door is permanently
 stuck open to the north, leading to the student lounge.  To the west
 is the front of the building.  Closed, long-locked doors line the south
 and east.}}
-  ~flags{0}
+  ~flags{3}
   ~article{0}
   ~nouns{{}}
   ~adjectives{{}}
@@ -391,7 +391,7 @@ Through a door, you can see the front hallway of Peabody to the east,
 and the M.U. campus stretches all around you.  Several other academic
 halls can be seen to the north and south.  The Tower is visible to
 the west.}}
-  ~flags{0}
+  ~flags{3}
   ~parent{303}
   ~article{0}
   ~nouns{{}}
@@ -410,7 +410,7 @@ the west.}}
   ~ldesc{
     ~enUS{This room should never be seen directly.  It is meant only as a parent
 room for outdoor rooms on the Miskatonic University campus.}}
-  ~flags{0}
+  ~flags{3}
   ~article{0}
   ~nouns{{}}
   ~adjectives{{}}
@@ -427,7 +427,7 @@ room for outdoor rooms on the Miskatonic University campus.}}
 the home of the Modern History and Modern Languages departments.  You
 can see academic halls in various directions, and the Block and the
 Tower off to the southwest.  A defunct lamp stands beside you.}}
-  ~flags{0}
+  ~flags{3}
   ~parent{303}
   ~article{0}
   ~nouns{{}}
@@ -446,7 +446,7 @@ Tower off to the southwest.  A defunct lamp stands beside you.}}
 the entrance to Telman Hall.  An ugly sculpture is at the top of the
 steps.  You can see Peabody Hall to the north, and several more
 academic halls beyond.  The rest of campus stretches out around you.}}
-  ~flags{0}
+  ~flags{3}
   ~parent{303}
   ~article{0}
   ~nouns{{}}
@@ -465,7 +465,7 @@ academic halls beyond.  The rest of campus stretches out around you.}}
 of windows on the first and second floor are painted over and presumably
 painted shut.  You can see the oddly-angled side of Telman Hall to the
 south.}}
-  ~flags{0}
+  ~flags{3}
   ~parent{303}
   ~article{0}
   ~nouns{{}}
@@ -484,7 +484,7 @@ south.}}
 odd, angular building.  The wall to the south of you contains no windows,
 at least on this side of the building.  The grass here is long but
 dry and tufted.}}
-  ~flags{0}
+  ~flags{3}
   ~parent{303}
   ~article{0}
   ~nouns{{}}
@@ -501,27 +501,27 @@ dry and tufted.}}
     ~enUS{You're standing just north of Peabody Economics Hall in the long grass.
 Marsh Hall stands just northwest of you and you can see the city of
 Arkham through the trees to the north and east.}}
-  ~flags{0}
+  ~flags{3}
   ~parent{303}
   ~article{0}
   ~nouns{{}}
   ~adjectives{{}}
 }
-~body{
+~room{
   ~number{309}
-  ~location{308}
+  ~location{300}
   ~bdesc{
     ~enUS{Angelbob}}
   ~gdesc{
     ~enUS{Angelbob}}
   ~ldesc{
     ~enUS{Angelbob has obviously set his own description.  How odd!}}
-  ~flags{0}
+  ~flags{3}
   ~article{0}
   ~nouns{{~enUS{angelbob}}}
   ~adjectives{{}}
 }
-~body{
+~room{
   ~number{310}
   ~location{1}
   ~bdesc{
@@ -530,42 +530,14 @@ Arkham through the trees to the north and east.}}
     ~enUS{Noah}}
   ~ldesc{
     ~enUS{Noah wanders the MUD.}}
-  ~flags{0}
+  ~flags{3}
   ~article{0}
   ~nouns{{~enUS{noah}}}
   ~adjectives{{}}
 }
-~body{
-  ~number{311}
-  ~location{1}
-  ~bdesc{
-    ~enUS{Bob}}
-  ~gdesc{
-    ~enUS{Bob}}
-  ~ldesc{
-    ~enUS{Bob wanders the MUD.}}
-  ~flags{0}
-  ~article{0}
-  ~nouns{{~enUS{bob}}}
-  ~adjectives{{}}
-}
-~body{
-  ~number{312}
-  ~location{1}
-  ~bdesc{
-    ~enUS{TestBoy}}
-  ~gdesc{
-    ~enUS{TestBoy}}
-  ~ldesc{
-    ~enUS{TestBoy wanders the MUD.}}
-  ~flags{0}
-  ~article{0}
-  ~nouns{{~enUS{testboy}}}
-  ~adjectives{{}}
-}
 ~room{
   ~number{313}
-  ~location{306}
+  ~location{301}
   ~bdesc{
     ~enUS{a mobile turnip}}
   ~gdesc{
@@ -574,12 +546,12 @@ Arkham through the trees to the north and east.}}
     ~enUS{This turnip is vibrating slightly, and that motion is moving it around
 the floor.  You wonder if it'd be able to win a race with your old
 washing machine back home.}}
-  ~flags{0}
+  ~flags{3}
   ~article{0}
   ~nouns{{~enUS{turnip,vegetable}}}
   ~adjectives{{~enUS{mobile,vibrating,gently,gently-vibrating,moving}}}
 }
-~portable{
+~room{
   ~number{314}
   ~location{302}
   ~bdesc{
@@ -593,7 +565,7 @@ washing machine back home.}}
   ~nouns{{~enUS{dog}}}
   ~adjectives{{}}
 }
-~body{
+~room{
   ~number{315}
   ~location{1}
   ~bdesc{
@@ -607,7 +579,7 @@ washing machine back home.}}
   ~nouns{{~enUS{thedarque}}}
   ~adjectives{{}}
 }
-~body{
+~room{
   ~number{316}
   ~location{1}
   ~bdesc{
@@ -621,7 +593,7 @@ washing machine back home.}}
   ~nouns{{~enUS{tangent}}}
   ~adjectives{{}}
 }
-~portable{
+~room{
   ~number{317}
   ~detail{9}
   ~bdesc{
@@ -636,7 +608,7 @@ guess it's some form of manufacturing artifact.}}
   ~nouns{{~enUS{blemish,spot}}}
   ~adjectives{{~enUS{small,swirly}}}
 }
-~portable{
+~room{
   ~number{318}
   ~detail{202}
   ~bdesc{
@@ -654,7 +626,7 @@ out what looks like a picture of a pineapple.  Why a pineapple?}}
   ~nouns{{~enUS{logo,label,insignia}}}
   ~adjectives{{~enUS{old,faded}}}
 }
-~portable{
+~room{
   ~number{319}
   ~detail{318}
   ~bdesc{
@@ -671,7 +643,7 @@ pineapple.}}
   ~nouns{{~enUS{pineapple,outline,picture}}}
   ~adjectives{{~enUS{faint,faded}}}
 }
-~portable{
+~room{
   ~number{320}
   ~detail{303}
   ~bdesc{
@@ -688,7 +660,7 @@ even from here.}}
   ~nouns{{~enUS{street,streets,road,city}}}
   ~adjectives{{~enUS{city,surrounding,arkham}}}
 }
-~portable{
+~room{
   ~number{400}
   ~detail{300}
   ~bdesc{
@@ -705,7 +677,7 @@ are quite dirty and worn.  The carpet looks like it was once red or orange.}}
   ~nouns{{~enUS{carpet,threads,floor,rug}}}
   ~adjectives{{~enUS{old,worn,heavy,threadbare,carpeted,red,orange,stained,frayed,fraying}}}
 }
-~portable{
+~room{
   ~number{401}
   ~detail{300}
   ~bdesc{
@@ -723,7 +695,7 @@ scratched and generally what you'd expect in a student lounge.}}
   ~nouns{{~enUS{couch,couches,sofa,sofas,chair,chairs}}}
   ~adjectives{{~enUS{old,large,stained,red,green,faded,nicked,scratched,worn}}}
 }
-~portable{
+~room{
   ~number{402}
   ~detail{300}
   ~bdesc{
@@ -740,7 +712,7 @@ sort of furniture you'd expect to find in a student lounge.}}
   ~nouns{{~enUS{table}}}
   ~adjectives{{~enUS{nicked,scratched,old,worn,stained,faded,large,gouged}}}
 }
-~portable{
+~room{
   ~number{403}
   ~detail{301}
   ~bdesc{
@@ -756,7 +728,7 @@ reminds you of other educational institutions.}}
   ~nouns{{~enUS{floor,tiles,checkerboard,tile,checker,checkers,dust,grime,polish}}}
   ~adjectives{{~enUS{tile,tiled,checker,checkered,checkerboard,dusty,grimy,polished,floor,sticky,decaying,decayed}}}
 }
-~portable{
+~room{
   ~number{404}
   ~detail{302}
   ~bdesc{
@@ -773,7 +745,7 @@ of Mathematics and Science.}}
   ~nouns{{~enUS{hall,halls}}}
   ~adjectives{{~enUS{peabody,telman,math,science,mathematics,sciences,history,languages,humanities,academic}}}
 }
-~portable{
+~room{
   ~number{405}
   ~detail{302}
   ~bdesc{
@@ -790,7 +762,7 @@ students to socialize out in the fresh air.}}
   ~nouns{{~enUS{tower}}}
   ~adjectives{{}}
 }
-~portable{
+~room{
   ~number{406}
   ~detail{302}
   ~bdesc{
@@ -810,7 +782,7 @@ then a board is replaced as an old one wears out.}}
   ~nouns{{~enUS{steps,step}}}
   ~adjectives{{~enUS{front,old,maintained,well-maintained,wood,wooden}}}
 }
-~portable{
+~room{
   ~number{407}
   ~detail{302}
   ~bdesc{
@@ -825,7 +797,7 @@ directions from its front hallway.}}
   ~nouns{{~enUS{hall,hallway}}}
   ~adjectives{{~enUS{peabody,inside,front}}}
 }
-~portable{
+~room{
   ~number{408}
   ~detail{304}
   ~bdesc{
@@ -842,7 +814,7 @@ Ancient History hall.}}
   ~nouns{{~enUS{lamp,gaslamp,lantern,post,lamppost,lightpost,light}}}
   ~adjectives{{~enUS{light,lamp,lantern,gas}}}
 }
-~portable{
+~room{
   ~number{409}
   ~detail{304}
   ~bdesc{
@@ -858,7 +830,7 @@ building where idle students hang out.}}
   ~nouns{{~enUS{block,tower}}}
   ~adjectives{{}}
 }
-~portable{
+~room{
   ~number{410}
   ~detail{304}
   ~bdesc{
@@ -875,7 +847,7 @@ East is the home of the English and Literature departments, Merritt Hall.}}
   ~nouns{{~enUS{hall,halls}}}
   ~adjectives{{~enUS{academic,telman,peabody,merritt,pickford,engineering,literature,english,humanities,economics,marsh,history,modern,languages}}}
 }
-~portable{
+~room{
   ~number{411}
   ~detail{304}
   ~bdesc{
@@ -891,7 +863,7 @@ Tower.}}
   ~nouns{{~enUS{shed,building}}}
   ~adjectives{{~enUS{old,gardener's,decrepit,tool}}}
 }
-~portable{
+~room{
   ~number{412}
   ~detail{305}
   ~bdesc{
@@ -907,7 +879,7 @@ The pattern makes your head hurt if you look at it too long.}}
   ~nouns{{~enUS{step,steps,stair,stairs}}}
   ~adjectives{{~enUS{spiral,not-quite-spiral,not,quite}}}
 }
-~portable{
+~room{
   ~number{413}
   ~detail{305}
   ~bdesc{
@@ -923,7 +895,7 @@ be.}}
   ~nouns{{~enUS{sculpture,w,doubleyou,dubya,double-u}}}
   ~adjectives{{~enUS{ugly,orange,w,doubleyou,dubya,double-u}}}
 }
-~portable{
+~room{
   ~number{414}
   ~detail{305}
   ~bdesc{
@@ -939,7 +911,7 @@ trees to the northwest.}}
   ~nouns{{~enUS{hall,halls,peabody,marsh,clearing,block}}}
   ~adjectives{{~enUS{academic,peabody,marsh,distant}}}
 }
-~portable{
+~room{
   ~number{415}
   ~detail{306}
   ~bdesc{
@@ -959,7 +931,7 @@ the expected small bugs, dirt and weeds.}}
   ~nouns{{~enUS{ground,grass,green}}}
   ~adjectives{{~enUS{green,grassy,long}}}
 }
-~portable{
+~room{
   ~number{416}
   ~detail{306}
   ~bdesc{
@@ -974,7 +946,7 @@ north and the side of Telman to the south.}}
   ~nouns{{~enUS{halls,dorms}}}
   ~adjectives{{~enUS{academic,school}}}
 }
-~portable{
+~room{
   ~number{417}
   ~detail{306}
   ~bdesc{
@@ -999,7 +971,7 @@ they're twisting in their sockets.  It's not comfortable.}}
   ~nouns{{~enUS{hall,telman}}}
   ~adjectives{{~enUS{telman,engineering,mathematics,science}}}
 }
-~portable{
+~room{
   ~number{418}
   ~detail{306}
   ~bdesc{
@@ -1017,7 +989,7 @@ formed below the windows.}}
   ~nouns{{~enUS{peabody,hall,windows}}}
   ~adjectives{{~enUS{peabody,painted,brick,humanities,economics}}}
 }
-~portable{
+~room{
   ~number{419}
   ~detail{307}
   ~bdesc{
@@ -1035,7 +1007,7 @@ is very unusual in any case.}}
   ~nouns{{~enUS{hall,telman,walls,windows}}}
   ~adjectives{{~enUS{telman,hall,angular,odd,mathematics,science}}}
 }
-~portable{
+~room{
   ~number{420}
   ~detail{307}
   ~bdesc{
@@ -1050,7 +1022,7 @@ The ground underneath is quite hard.}}
   ~nouns{{~enUS{tufts,grasses,clumps,ground}}}
   ~adjectives{{~enUS{grassy,tufts,dry,long,hard,tufted}}}
 }
-~portable{
+~room{
   ~number{421}
   ~detail{308}
   ~bdesc{
@@ -1065,7 +1037,7 @@ of campus.  It looks long and comfortable to walk through or lie in.}}
   ~nouns{{~enUS{grasses}}}
   ~adjectives{{~enUS{green,long}}}
 }
-~portable{
+~room{
   ~number{422}
   ~detail{308}
   ~bdesc{
