@@ -627,7 +627,11 @@ private object add_lib(string owner, string path, string* inherited) {
   return new_issue;
 }
 
+
 private void call_upgraded(object obj) {
+
+  if(!obj)
+    LOGD->write_syslog("Calling call_upgraded on nil!", LOG_ERR);
 
   /* Originally we checked to see if the object had an "upgraded"
      function and if so, we scheduled a callout.  That doesn't work
@@ -656,7 +660,17 @@ static void do_upgrade(object obj) {
   for(ctr = 0; ctr < sizeof(upgrade_clonables); ctr++) {
     if(function_object("upgraded", upgrade_clonables[ctr])) {
       catch {
-	upgrade_clonables[ctr]->call_limited("upgraded", ({ 0 }));
+
+	/* We don't need to call_limited or anything similar here,
+	   because it's already called in a call_out, so there
+	   are already tick limits.  We'll want to change stuff
+	   here if we ever want to "bill" admin characters for
+	   upgrading their objects, but right now we don't
+	   care. */
+
+	/* upgrade_clonables[ctr]->call_limited("upgraded", 0 ); */
+
+	call_other(upgrade_clonables[ctr], "upgraded", 0);
       } : {
 	LOGD->write_syslog("Error in " + object_name(upgrade_clonables[ctr])
 			   + "->upgraded()!",
