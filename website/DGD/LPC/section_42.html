@@ -317,11 +317,11 @@ void my_func()
       Due to the fact that all variables are initialized to 0 or nil,
       and that many functions return 0 or nil when failing, it's
       desirable to be able to determine what value you actually have
-      received.  Also, if you use the <code>mixed</code> type it's
-      essential to be able to test what the variable contains at any
-      specific time. For this purpose there's a special function
-      called <code>typeof()</code>.  It uses constants listed in the
-      header file &lt;type.h&gt;.
+      received.  If you use the <code>mixed</code> type it's even more
+      essential to be able to test what the <b>mixed</b> variable
+      contains at any specific time. For this purpose there's a
+      special function called <code>typeof()</code>.  It uses
+      constants listed in the header file &lt;type.h&gt;.
     </p>
 
     <p>
@@ -329,7 +329,8 @@ void my_func()
       <tt>type.h</tt>, though you may get a type different from the
       one the variable has.  For instance, an uninitialized string,
       array or mapping will return T_NIL rather than T_STRING, T_ARRAY
-      or T_MAPPING.
+      or T_MAPPING.  This is true even if typeof() is called on a
+      variable of type <b>string</b> rather than type <b>mixed</b>.
     </p>
 
     <p>
@@ -688,14 +689,23 @@ copy_arr = arr[..];
 
     <p>
       At the end of a thread of execution, any array that is in a new
-      object will be copied into that object.  So you can't just store
-      references to a single array in a lot of your objects and use
-      them to share data.  At the end of their first thead of
-      execution, they'll all be copied into their new objects.  To
-      share data that way, you should put the array in a single object
-      and make a function that returns it for modification.  You could
-      also have separate &quot;get&quot; and &quot;set&quot;
+      object will be copied into that object.  That means you can't
+      just store references to a single array in a lot of your objects
+      and use those references to share data.  At the end of their
+      first thead of execution, each referenced mapping and array will
+      be copied into all the objects that reference them, and they'll
+      stop being the same as the original.  To share data like that,
+      you should put the array in a single object and make a function
+      that returns the array.  Then any object that wants to modify it
+      can call the function, modify the array and then stop
+      referencing it before the thread of execution is over.  You
+      could also have separate &quot;get&quot; and &quot;set&quot;
       functions, which would be slower but easier to control.
+    </p>
+
+    <p>
+      For details on what threads of execution are and when they
+      end, see section 5.3.1 in chapter 5.
     </p>
 
     <hr>
@@ -706,7 +716,7 @@ copy_arr = arr[..];
     </address>
     <!-- Created: Mon Jun 11 21:50:30 PDT 2001 -->
     <!-- hhmts start -->
-Last modified: Mon Jun 30 18:01:06 PDT 2003
+Last modified: Tue Jul  1 15:01:01 PDT 2003
 <!-- hhmts end -->
   </body>
 </html>
