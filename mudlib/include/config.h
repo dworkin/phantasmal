@@ -32,10 +32,8 @@
 /* Libraries -- inheritable, not clonable */
 #define USER_STATE          "/usr/common/lib/user_state"
 #define ISSUE_LWO           "/usr/common/lib/issue_lwo"
-#define UNQABLE             "/usr/common/lib/unqable"
 #define DTD_UNQABLE         "/usr/common/lib/dtd_unqable"
 #define PHRASE_REPOSITORY   "/usr/common/lib/phrase_repository"
-#define PHRASE              "/usr/common/lib/phrase"
 #define INTL_PHRASE         "/usr/common/lib/intl_phrase"
 #define OBJECT              "/usr/common/lib/object"
 #define ROOM                "/usr/common/lib/room"

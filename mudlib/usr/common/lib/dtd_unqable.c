@@ -2,31 +2,27 @@
 #include <limits.h>
 #include <log.h>
 
-inherit UNQABLE;
-
 private object dtd;
 private string dtd_text;
 private string dtd_filename;
 
 private void update_dtd_vars(void);
 
-mixed* to_dtd_unq  (void);
+mixed* to_dtd_unq(void);
+void   from_unq(mixed* unq);
 void   from_dtd_unq(mixed* unq);
 
 static void create(varargs int clone) {
-  ::create(clone);
+  if(!find_object(UNQ_PARSER)) { compile_object(UNQ_PARSER); }
+  if(!find_object(UNQ_DTD)) { compile_object(UNQ_DTD); }
 }
 
 void destructed(int clone) {
   if(dtd)
     destruct_object(dtd);
-
-  ::destructed(clone);
 }
 
 void upgraded(varargs int clone) {
-  ::upgraded(clone);
-
   if(dtd_filename) {
     update_dtd_vars();
   }
@@ -106,6 +102,12 @@ string get_parse_error_stack(void) {
 mixed* to_dtd_unq(void) {
   error("You must override the default to_dtd_unq method for "
 	+ object_name(this_object()));
+}
+
+/* This method takes a string of UNQ text as loads it into the
+   object. */
+void from_unq_text(string text) {
+  from_unq(UNQ_PARSER->basic_unq_parse(text));
 }
 
 /* This method takes a chunk of parsed UNQ and loads it into the

@@ -8,7 +8,7 @@
    circumstances.
 */
 
-inherit unq UNQABLE;
+inherit unq DTD_UNQABLE;
 
 /*
  * cached vars
