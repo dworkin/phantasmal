@@ -14,7 +14,7 @@
 
     <hr size="4">
 
-    <h1> <a name="SEC5.0" href="index.html#SEC5.0">Chapter 5: LPC/Library
+    <h1> <a name="SEC5.0" href="index.html#SEC5.0">Chapter 5: The Driver
 	Interface</a> </h1>
 
     <p>
@@ -606,6 +606,12 @@ binary_port = ({ 8889, 8890, 9725 })
 	The User Object </a> </h3>
 
     <p>
+      The User object is allocated by the Driver (or another LPC
+      program) and passed to DGD as the return value of
+      telnet_connect() or binary_connect().
+    </p>
+
+    <p>
       The User object, like the Driver, defines specific functions.
       DGD will call those functions to notify the user object that
       certain things have happened.  The User object must be a regular
@@ -620,11 +626,105 @@ binary_port = ({ 8889, 8890, 9725 })
     <dl>
       <dt>int open(void)</dt>
       <dd>
+	A connection has just been opened for this object.  If the user
+	object is for a telnet (not a binary) connection, the return value
+	is ignored.  For a binary connection, if the return value is
+	zero, nothing further happens.  If the return value is nonzero,
+	a UDP connection will be opened, and UDP packets from the same
+	host and port as the TCP connection may be received by this user
+	object.  After the first UDP packet is received, UDP packets may
+	also be sent with the send_datagram() kfun.
+      </dd>
+
+      <dt>void close(int flag)</dt>
+      <dd>
+	The connection for this object has been closed.  The function
+	is called when the network connection goes linkdead (i.e. the
+	connection is severed by the other end, or stops responding)
+	or when the user object is destructed.  If the user object was
+	destructed, the flag parameter will have a value of 1.
+	Otherwise it will have a value of 0.
+      </dd>
+
+      <dt>void receive_message(string message)</dt>
+      <dd>
+	This function is called with data received from the network.
+	DGD's telnet connections are always line-mode rather than
+	character-mode, and since the newline at the end is implied,
+	they remove it before receive_message() returns the message
+	that was received.  Telnet connections also filter out any
+	non-ASCII or high-ASCII characters such as international
+	character sets, special terminal codes and ANSI color codes.
+	Binary connections do no filtering, and simply return data as
+	it was received.
+      </dd>
+
+      <dt>void message_done(void)</dt>
+      <dd>
+	This function is called when a buffered string that couldn't
+	be sent immediately and entirely is fully transmitted.
+	Sometimes when send_message is called, only some of the bytes
+	can be immediately accepted.  This function is called on the
+	User object to indicate that more can now be accepted.
       </dd>
     </dl>
 
     <h3> <a name="SEC5.2.4" href="index.html#SEC5.2.4">
 	Object Creation and Initialization </a> </h3>
+
+    <p>
+      When an object is initialized, its create function is called.
+      The create function is called &quot;create&quot; by default.
+      It takes no arguments and returns none.  The name of the
+      function that gets called can be changed by the DGD Configuration
+      File (see section 5.1.4).
+    </p>
+
+    <p>
+      When an LPC object is cloned, it gets initialized.  This means
+      its create function is called.  Therefore, every cloned object
+      is initialized by the time it is first used.
+    </p>
+
+    <p>
+      An LPC master object isn't initialized when it is compiled.
+      Instead, it is initialized the first time one of its functions
+      is called.  This means that, for instance, if you have a master
+      object that registers itself with another object in its create
+      function, you must call a function on the master object (whether
+      or not the function is defined by the object) to have DGD call
+      its create function.  If you call a function that doesn't exist,
+      it won't do anything and nil will be returned, just as usual.
+      However, the create function will still be called if the object
+      was not previously initialized.
+    </p>
+
+    <h2> <a name="SEC5.3" href="index.html#SEC5.3">
+	5.3 DGD Memory Management </a> </h2>
+
+    <p>
+    </p>
+
+    <h3> <a name="SEC5.3.1" href="index.html#SEC5.3.1">
+	5.3.1 Threads of Execution </a> </h3>
+
+    <p>
+    </p>
+
+    <h3> <a name="SEC5.3.2" href="index.html#SEC5.3.2">
+	5.3.2 Objects and Swapping </a> </h3>
+
+    <p>
+    </p>
+
+    <h4> <a name="SEC5.3.2.1" href="index.html#SEC5.3.2.1">
+	5.3.2.1 Lightweight Objects </a> </h4>
+
+    <p>
+    </p>
+
+    <h3> <a name="SEC5.3.3" href="index.html#SEC5.3.3">
+	5.3.3 Dynamic and Static Memory </a> </h3>
 
     <p>
     </p>
@@ -637,7 +737,7 @@ binary_port = ({ 8889, 8890, 9725 })
     </address>
     <!-- Created: Mon Jun 11 21:50:30 PDT 2001 -->
     <!-- hhmts start -->
-Last modified: Wed Jun 18 00:49:12 PDT 2003
+Last modified: Tue Jul  1 15:52:54 PDT 2003
 <!-- hhmts end -->
   </body>
 </html>
