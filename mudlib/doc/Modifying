@@ -27,13 +27,14 @@ puts its libraries in /usr/XXX/lib, its clonable objects in
 /usr/XXX/obj, and its daemons (objects that are instantiable, but that
 keep only a single copy of their data and provide services) in
 /usr/common/sys/ or /usr/System/sys.  All current lightweight objects
-are in /usr/common/data.
+are in /usr/common/data, though that's not as fully spelled out by
+the Kernel Library.
 
 Code security is established by checking the previous_program(), among
 other ways.  Security against non-admin players is quite good even
 now, and we hope to keep it that way.  Scripts are in their infancy,
 but they'll be a fine way to allow builders to do some coding without
-letting them mess anything up.
+letting them mess too much up.
 
 
                     SPECIFIC TASKS
@@ -41,14 +42,16 @@ letting them mess anything up.
 To add a new locale (for instance Polish, Hungarian or Tengwar) you'll
 want to change at least /include/phrase.h, /usr/System/sys/phrased.c
 and the cmd_locales function in /usr/System/obj/user.c.  Phrased's
-create function sets up a lot of data structures -- make sure you
+create() function sets up a lot of data structures -- make sure you
 understand them and how to change them.  Eventually we may alter these
-structures to be more dynamic, which should make adding locales
+structures to be more dynamic.  That should make adding locales
 easier.  But that will involve many objects (phrases, helpd, phrase
-repositories, rooms, etc) being notified of a change in locales.  In
-any case, unicode is not yet supported so beware.  Planned Phantasmal
-changes, when completed, should allow better terminal support, which
-will allow unicode support for some terminal types.
+repositories, rooms, etc) being notified of a change in locales or
+detecting it lazily.  In any case, unicode is not yet supported so
+beware if you're dealing with a non-ASCII language like Chinese.
+Planned Phantasmal changes, when completed, should allow better
+terminal support, which will allow unicode support for some terminal
+types.
 
 You may want to have a look at /usr/common/sys/helpd.c and change the
 exclude_path function.  It determines what directories will not be
@@ -68,7 +71,7 @@ of wiztoollib, also in "/usr/System/lib/".  Some commands are better
 added there.  Obviously, you can also add the commands to
 /usr/game/obj/user.c or its equivalent.
 
-You'll also need to add a name for the commands which can be done in
+You'll also need to add a user-visible name for the commands in
 /usr/System/obj/wiztool.c for admin commands and in the user object
 for player commands.
 
@@ -76,14 +79,14 @@ for player commands.
                    SPECIFIC LOCATIONS
 
 If you're serious about making a real MUD happen, look through and
-change (when necessary) absolutely every helpfile entry -- they're all
-found under "/usr/game/help" and "/usr/game/help/admin" if you work
-based on testgame.  Nothing says "unprofessional" (plus "lame",
-"sloppy", and so on) like leaving stock MUDLib stuff unchanged in your
-MUD, especially when it's wrong.  The help files contain a lot of
-contact information, MUD policies and other stuff that's quite
-specific to my personal server.  Look through and change it or you'll
-be unpleasantly surprised by the contents.  And I mean it -- look
+change absolutely every helpfile entry -- they're all found under
+"/usr/game/help" and "/usr/game/help/admin" if you work based on
+testgame.  Nothing says "unprofessional" (plus "lame", "sloppy",
+and so on) like leaving stock MUDLib stuff unchanged in your MUD,
+especially when it's wrong.  The help files contain a lot of contact
+information, MUD policies and other stuff that's quite specific to
+my personal server.  Look through and change it or you'll be
+unpleasantly surprised by the contents.  And I mean it -- look
 through and change *every* help file.  Add new ones as you add stuff,
 too.  This is very, very important.  Have I said it enough times yet?
 
@@ -91,7 +94,7 @@ There's a system log under the "/log/" directory.  Make sure you know
 what it is, how to use it, and what goes into it.  If you're not sure
 where a particular entry comes from, find it in the code.  Grep is
 your friend, or your editor's "find" feature if you're not using a
-Unix variant.  You can alter what gets logged with
+Unix variant or Cygwin.  You can alter what gets logged with
 "/data/system/logd_channels.unq".  Figure out how it works.
 
 Managers such as stringd.c, phrased.c, logd.c, userd.c and so on live
@@ -115,7 +118,7 @@ You can take advantage of this.  Make sure that all your descriptions,
 help files and all other text are localized to multiple languages.
 Make sure that anything you add to the MUD is too.  Using the UNQ
 parser and the UNQ phrase format is the easiest way to do this.  See
-the help files in "/data/help/" for examples.  More messages will
+the help files in "/usr/game/help/" for examples.  More messages will
 become localizable as time goes on.
 
 Phantasmal provides an excellent help system -- at least by those same

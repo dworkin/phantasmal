@@ -1,4 +1,4 @@
-/* $Header: /cvsroot/phantasmal/mudlib/usr/game/obj/user.c,v 1.13 2004/09/30 06:48:42 angelbob Exp $ */
+/* $Header: /cvsroot/phantasmal/mudlib/usr/game/obj/user.c,v 1.14 2005/03/23 23:45:22 angelbob Exp $ */
 
 #include <kernel/kernel.h>
 #include <kernel/user.h>
@@ -164,7 +164,7 @@ void player_login(int first_time)
   object start_room, other_user;
 
   if(previous_program() != PHANTASMAL_USER)
-    return;
+    error("Wrong program calling player_login!");
 
   body = nil;
 
@@ -294,7 +294,7 @@ void player_login(int first_time)
 static void player_logout(void)
 {
   if(previous_program() != PHANTASMAL_USER)
-    return;
+    error("Wrong program calling player_logout!");
 
   /* Teleport body to meat locker */
   if(body) {
