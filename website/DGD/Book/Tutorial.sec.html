@@ -1,0 +1,271 @@
+@@SECTION Tutorial A Quick LPC Tutorial
+
+<p>
+  LPC is a powerful, extensive and subtle language.  Yet it's pretty
+  easy to learn the basics, at least enough to get by.  This tutorial
+  will show you the basics without getting bogged down in the details.
+  There's plenty of time for <em>that</em> later on.
+</p>
+
+@@SECTION Tutorial.GettingStarted Getting Started
+
+<p>
+  Now that you have the Kernel Library running, it's time to start
+  learning some simple LPC code.  There are two ways to test your LPC
+  code with the Kernel Library.  We'll start with the simpler of the
+  two, which is called the &quot;code&quot; command.
+</p>
+
+<p>
+  Log in as admin, if you haven't already.  Type <tt>code 7+4</tt>.
+  You should see a response like <tt>$0 = 11</tt>.  The $0 is a value
+  that DGD will store for you.  You can refer to it later whenever you
+  like.  For instance, if you typed <tt>code $0+9</tt>, you'd see a
+  result like <tt>$1 = 20</tt>.  Note that this time the history value
+  is $1, not $0.  $0 keeps its old value, and a new history item, $1,
+  gets the new value.  The history number will keep increasing as you
+  perform commands that place values into the history list.
+</p>
+
+<p>
+  Next try typing <tt>code status()[ST_VERSION]</tt>.  Note the
+  opening and closing parentheses go <i>before</i>
+  &quot;ST_VERSION&quot; in square brackets.  If you do it right,
+  you'll get the current version of DGD, such as &quot;DGD
+  1.2.70&quot;, returned between quotation marks, and of course
+  assigned to a history number like $2.
+</p>
+
+<p>
+  The parentheses after a name mean to call a function by that name.
+  Anything between the parentheses are the <i>arguments</i> of the
+  function, also called parameters.  For instance, try typing <tt>code
+  sin(2.0 * 3.14159)</tt>.  You should get a result like <tt>$3 =
+  -5.3071519e-6</tt>.  Whatever result you get, it should be a very
+  small number, like the above.  That's because you're calculating the
+  sine of two pi, which (if calculated absolutely perfectly) is zero.
+  Now try typing the same thing, but with 2 instead of 2.0.  If you're
+  used to programming in C, the result may surprise you!
+</p>
+
+<p>
+  It turns out that ST_VERSION, in the example with status(), is
+  actually a number.  The code command defines certain constant values
+  for you, and assigns names to them.  So if you type simply <tt>code
+  ST_VERSION</tt>, you should see the numerical value of ST_VERSION,
+  0, printed out.  That's because underneath, ST_VERSION is just the
+  number 0.  We've assigned a value to it using the C Preprocessor, a
+  very powerful part of the language that will be described in a later
+  chapter.
+</p>
+
+<p>
+  The code command is very powerful, but very limited.  It's very
+  powerful because you can use it to evaluate any valid LPC code.
+  It's very limited because you have to put all the code on a single
+  line, and because it's hard to save old code commands to use again.
+  This tutorial will use it to teach you the basics of LPC.  Later,
+  you'll find out how to put LPC code into files and compile those
+  files into programs and objects.
+</p>
+
+
+@@SECTION Tutorial.VarsAndExprs Variables and Arithmetic Expressions
+
+<p>
+  The code command gives you constants like ST_VERSION.  It also gives
+  you several other things, including a set of one-letter variables
+  which it defines for you.
+</p>
+
+<p>
+  A <i>variable</i> is a named piece of storage space.  A variable can
+  hold a <i>value</i>, such as the integer 94 or the character string
+  &quot;Bob's your uncle!&quot;.  The variable has a name that you use
+  to refer to that storage.  The value of the variable may change over
+  time.  For instance, you may add 2 to the variable, giving 96
+  instead of 94.  But the variable name will not.
+</p>
+
+<p>
+  For instance, type <tt>code a = 94, a = a + 7, a</tt>.  Make sure to
+  type it as written, with the commas.  You should see a result like
+  <tt>$7 = 101</tt>.  The commas are a special operator that means
+  &quot;do the things in order, but only worry about the value of the
+  <i>last</i> one&quot;.  So we did three things with that code
+  statement.  We set the variable a to have the value 94.  Then we
+  changed what a was equal to by setting it to its old value plus 7.
+  Then, the very last part of the command, after the last comma, was
+  a.  Since comma means &quot; only pay attention to the last one
+  &quot;, the value returned was a's new value of 94 + 7, or 101.
+</p>
+
+<p>
+  You can also separate statements with the semicolon.  Due to
+  strangeness in the way the code command works, if you use the
+  semicolon operator with the code command at all, you <i>must</i>
+  finish your code with a semicolon or an end-curly-brace.  Otherwise
+  you'll get very strange behavior indeed.  Try typing <tt>code a =
+  94; a = a + 7; return a;</tt>.  You should get 101, the same result
+  as above.  If you just get 94, you forgot the ending semicolon
+  &mdash; try it again.  Note the 'return' statement at the end.  When
+  you don't use a semicolon at the end of your code command, the
+  Kernel Library assumes you're just writing a little expression and
+  you want its value.  That's what you've been doing so far.  If you
+  end your code command with a semicolon or an end-curly-brace,
+  though, you'll need to include your own return statement if you want
+  anything returned.  The return statement does roughly what the last
+  statement after the comma did last paragraph.  Its value is what
+  gets returned, and so that value is what gets assigned to a history
+  variable like $9 or $26.
+</p>
+
+<p>
+  Note that a variable in LPC isn't like a mathematical variable, and
+  the equals sign above doesn't really mean equality in a mathematical
+  sense.  Instead, the equals is often called <i>assignment</i> to
+  indicate that it is setting the variable to have a value.  But
+  unlike in mathematics, the variable can be repeatedly assigned,
+  changing its value throughout your code.
+</p>
+
+<p>
+  You've already seen the plus operator.  There's also a minus, which
+  works the way you'd expect, and can be used to make a number or
+  variable negative as well as subtract.  The asterisk <i>*</i> means
+  multiplication, and the forward-slash, <i>/</i> represents division.
+  Remember that you can only add, multiply, subtract or divide
+  integers with integers and decimal numbers (also called floating
+  point) with other floating point numbers.  If you try to do
+  otherwise, such as by typing <tt>code 7 + 4.1</tt>, you'll get an
+  error.  Try it and see.
+</p>
+
+<p>
+  Most of the operations are exact, but division of integers is not.
+  If you divide, say, five by two, you'll find that DGD automatically
+  rounds down to 2.  DGD will always round toward zero when you divide
+  integers.  Test with the code command and see.
+</p>
+
+<p>
+  Integers (and even floating point numbers) are limited in size.  If
+  you try typing <tt>code 10000 * 10000 * 10000</tt>, you'll see a
+  strange result &mdash; it's negative!  That's because integers have
+  a maximum value of a little more than four billion, and if your
+  numbers get larger than that, they'll wrap back around.  Unsigned
+  number variables (we'll talk about them later) will wrap back to
+  zero, while signed number variables will wrap to negative numbers.
+  Similarly, if your integer variable gets smaller than the smallest
+  allowed number, which may be large and negative, it will wrap back
+  into being positive.  This wrapping is because DGD's basic numbers
+  are of a fixed size, and there are only so many possible numbers
+  that a single variable can represent.  If you need larger or smaller
+  integers than that, you'll find that DGD's Arbitrary-Precision
+  Signed Numbers (called ASNs) are the way to go.  They're explained in
+  a later chapter.
+</p>
+
+<p>
+  You can declare your own variables rather than using the ones that
+  the code command gives you by default.  Integer (that means whole
+  numbers, not decimals or fractions) variables are declared to be of
+  type <i>int</i>.  So you might type <tt>code int sam; sam = 7; sam =
+  sam + 4; return sam;</tt>.  Note that you must declare the variables
+  at the very beginning.  If you try typing <tt>code a = 4; int sam;
+  sam = 7;</tt>, you'll get an error.  Variables can only be declared
+  at the beginning of a block scope.  What that means to you right now
+  is that if you use variables in your code statements, put them right
+  up front.
+</p>
+
+<p>
+  Not every value or variable is an integer, so not every variable is
+  declared using <i>int</i>.  You can also have unsigned variables,
+  which can't hold negative values.  You can declare an unsigned
+  variable called bruno by typing <tt>unsigned int bruno;</tt>, or
+  just <tt>unsigned bruno;</tt> Try subtracting a larger unsigned
+  number from a smaller one and see what happens!  The wraparound can
+  be hard to understand if you're not used to it.
+</p>
+
+<p>
+  Remember that decimal numbers or fractional numbers are called
+  floating point numbers.  A floating point variable called
+  temperature would be declared as <tt>float temperature;</tt>.
+  Remember that you can only add, subtract, multiply and divide
+  floating point numbers with other floating point numbers, not with
+  integers.  That means that to double a floating point number, you'd
+  need to multiply it by 2.0 rather than just 2.
+</p>
+
+
+@@SECTION Tutorial.Loops Looping and Iteration
+
+<p>
+  The LPC language is well-suited to math-intensive tasks, as you'd
+  guess from the previous section.  For instance, let's say you wanted
+  to find out how many times you'd have to double the number two
+  before you got to some very high number.  That's something you could
+  probably do in your head or on paper for reasonable numbers, but for
+  a number like ten million, you're probably better off letting the
+  computer do it.
+</p>
+
+<p>
+  Try typing <tt> code int times; int count; times = 0; count = 2;
+  while(count < 10000000) { count = count * 2; times = times + 1; }
+  return times;</tt>  Note that you must <i>not</i> hit return at
+  any point, you have to type it all on one line.  If you do it right,
+  you should get 23 as the answer.
+</p>
+
+<p>
+  But is 23 the right answer?  Hard to tell.  So we should start with
+  2 and double it 23 times, just to be sure.  Go ahead and type
+  <tt>code int times; int count; times = 0; count = 2; while(times <
+  20) { count = count * 2; times = times + 1; } return count;</tt>.
+  You should get the value 16777216 returned.  And yes, that's more than
+  ten million.  So our code works!  Now, <i>how</i> does it work?
+</p>
+
+<p>
+  You know about declaring variables and setting values, but
+  <i>while</i> is a new one.  While takes a condition in parentheses,
+  and then a bunch of stuff between curly braces.  The stuff in curly
+  braces is done over and over again until the condition in
+  parentheses is false.  So in the first example above, the code will
+  keep doubling the count variable and adding one to the times
+  variable until count is no longer less than ten million.  Then it
+  will return the count, which is how many times it had to double.
+</p>
+
+<p>
+  Knowing that much, you should be able to figure out the second
+  example on your own.
+</p>
+
+<p>
+  There's another kind of loop called a <i>for</i> loop, which is very
+  similar.  The first example, written as a foor loop, looks like
+  this: <tt> code int times; int count; for(times = 0, count = 2;
+  count < 10000000; count = count * 2, times = times + 1) { } return
+  times;</tt> A for loop is a lot like a while loop, but the syntax is
+  funny.  Note that after the word &quot;for&quot;, you have three
+  different pieces of code in the parentheses, each separated by a
+  semicolon.  The first piece of the code is done before the loop
+  begins &mdash; in this case, setting times to 0 and count to 2.  The
+  second part is checked every time through the loop.  In this case
+  it's checking whether count is more than ten million, just like the
+  while loop did.
+</p>
+
+<p>
+  And the last section is done at the end of every time through the
+  loop.  So the things that were inside the while loop have moved to
+  the third section of code in the for loop's parentheses.  You can
+  decide where to put which code since putting it in the third section
+  of the parentheses is the same as putting it in the body, so
+  technically any for loop can be rewritten with an empty body &mdash;
+  just put everything inside the parentheses.
+</p>

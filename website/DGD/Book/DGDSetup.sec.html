@@ -145,8 +145,15 @@ GENERIC_SYSV    SYSV Unix.  Copy src/host/Makefile.sysv to src/host/Makefile.
   and do nothing.  If you're not used to running your own MUD server,
   this can be a bit disconcerting.  Don't worry, it's normal.  In
   fact, if DGD stops and goes back to the command line (normally with
-  an error message), <em>that</em> would be abnormal.
+  an error message), <em>that</em> would be abnormal.  The messages
+  you should expect will look something like this:
 </p>
+
+<pre>
+Jan 29 16:09:52 ** DGD 1.2.73
+Jan 29 16:09:52 ** Initializing...
+Jan 29 16:09:53 ** Initialization complete.
+</pre>
 
 <p>
   Once you're running the server, you'll need to telnet to your MUD.
@@ -183,7 +190,7 @@ GENERIC_SYSV    SYSV Unix.  Copy src/host/Makefile.sysv to src/host/Makefile.
 </p>
 
 
-@@SECTION Setup.KernelOverview
+@@SECTION Setup.KernelOverview An Overview of the Kernel Library
 
 <p>
   To use the Kernel Library, you'll need a quick overview of what you
@@ -196,8 +203,8 @@ GENERIC_SYSV    SYSV Unix.  Copy src/host/Makefile.sysv to src/host/Makefile.
   You can quit by typing &quot;quit&quot;, which is useful to know.
   You can chat with others on the server by typing &quot;say&quot;, a
   space, and what you want to say.  This will send the message to
-  everyone else currently logged in.  You can type &quot;who&quot; to
-  see who is currently logged in.  All of these operations can be
+  everyone else currently logged in.  You can type &quot;people&quot;
+  to see who is currently logged in.  All of these operations can be
   performed by any user.
 </p>
 
