@@ -209,6 +209,12 @@ void init(string mobfile_dtd_string, string binder_dtd_string) {
   initialized = 1;
 }
 
+string get_file_by_mobile_type(string mobtype) {
+  if(!SYSTEM())
+    error("Only SYSTEM code can query the MOBILED for mobile types!");
+  return tag_code[mobtype];
+}
+
 void add_unq_text_mobiles(string unq_text, string filename) {
   mixed *unq_data;
 
