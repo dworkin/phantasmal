@@ -1,0 +1,47 @@
+~name{~enUS{set_object_detail, set_object_det,
+            set_obj_detail, set_obj_det, set_detail, set_det}}
+~keywords{admin}
+~desc{
+  ~enUS{
+
+The @set_obj_detail command is the low-level way to specify object
+details.  It's also the most flexible.
+
+To use it, simply create the detail object as a regular room or
+portable object in any normal way.  Choose the base object to
+receive that detail.  If your base object was #37 and your
+detail was #112, you'd type "@set_obj_detail #37 #112".  Voila!
+
+
+
+See also: objects, details
+
+}}
+
+
+~name{~enUS{detail, details}}
+~keywords{admin}
+~desc{
+  ~enUS{
+
+Details are what Phantasmal uses to represent individual but
+inseparable parts of objects.  The hilt of a sword, the scratches on a
+tabletop, the grass on the ground, and the ear of a dog are all fine
+examples of potential detail objects.
+
+Phantasmal implements details as regular objects, but those objects
+are made details of other objects at their creation or afterward.
+Thus, a detail may also be a container, may contain exits and may
+otherwise act in every way as a normal object.
+
+Details cannot ordinarily be removed from the object they are part of.
+
+The following commands directly affect details:
+
+@make_detail              Create a new detail on an existing object
+@set_obj_detail           Make one object a detail of another
+
+See also: objects
+
+}}
+
