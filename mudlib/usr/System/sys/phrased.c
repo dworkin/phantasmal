@@ -137,14 +137,12 @@ object unq_to_phrase(mixed unq) {
 
   iter = 0;
   while(iter < sizeof(unq)) {
-    if(typeof(unq[iter + 1]) != T_STRING) {
-      error("Don't yet support rich UNQ text in phrases!");
-    }
     lang = PHRASED->language_by_name(unq[iter]);
     if(lang == -1) {
       error("Unknown locale/lang '" + unq[iter] + "' in unq_to_phrase!");
     }
     phrase->set_content_by_lang(lang, unq[iter + 1]);
+
     iter += 2;
   }
 

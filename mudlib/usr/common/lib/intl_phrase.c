@@ -29,14 +29,14 @@ string to_string(object user) {
   return "(Illegal locale)";
 }
 
-string get_content_by_lang(int lang) {
+mixed get_content_by_lang(int lang) {
   if(lang < 0 || lang >= sizeof(content))
     return nil;
 
   return content[lang];
 }
 
-void set_content_by_lang(int lang, string cont) {
+void set_content_by_lang(int lang, mixed cont) {
   if(lang >= 0 && lang < sizeof(content))
     content[lang] = cont;
   else if (lang < PHRASED->num_locale()) {
@@ -52,7 +52,13 @@ void trim_whitespace(void) {
 
   for(iter = 0; iter < sizeof(content); iter++) {
     if(content[iter]) {
-      content[iter] = STRINGD->trim_whitespace(content[iter]);
+      if(typeof(content[iter]) == T_STRING)
+	content[iter] = STRINGD->trim_whitespace(content[iter]);
+      else {
+	/* Just trim the beginning of the first string, and the
+	   end of the last one. */
+	error("Trim_whitespace not yet implemented for all phrases!");
+      }
     }
   }
 }
