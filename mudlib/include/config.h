@@ -41,7 +41,6 @@
 #define MOBILE              "/usr/common/lib/mobile"
 
 /* Instantiable (clonable) MUD structures */
-#define ACCOUNT             "/usr/common/obj/account"
 #define SIMPLE_PHRASE       "/usr/common/obj/simple_phrase"
 #define SIMPLE_EXIT         "/usr/common/obj/simple_exit"
 #define USER_MOBILE         "/usr/common/obj/user_mobile"
