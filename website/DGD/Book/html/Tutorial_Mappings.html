@@ -82,7 +82,7 @@ string *unique(string *array) {
   int     ctr;
 
   elements = ([ ]);
-  for(ctr = 0; ctr < sizeof(array); ctr++) {
+  for(ctr = 0; ctr &lt; sizeof(array); ctr++) {
     elements[array[ctr]] = 1;
   }
 
@@ -125,7 +125,13 @@ string *unique(string *array) {
 </p>
 
 <p>
-  
+  The function first makes a new, empty mapping, and then puts each
+  element of the array into it as a <dfn>key</dfn>, also called an
+  <dfn>index</dfn>.  It assigns the value 1 to each key, though the
+  value won't actually be used.  Any repeated array elements will just
+  assign 1 to the same key that's already in the array.  Then, at the
+  end, we call a function called map_indices which returns an array of
+  the indices (keys) of the mapping, in alphabetical order.
 </p>
 
 

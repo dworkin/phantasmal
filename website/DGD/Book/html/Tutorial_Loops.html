@@ -73,7 +73,7 @@
 
 <p>
   Try typing <kbd> code int times; int count; times = 0; count = 2;
-  while(count < 10000000) { count = count * 2; times = times + 1; }
+  while(count &lt; 10000000) { count = count * 2; times = times + 1; }
   return times;</kbd> Note that you must <em>not</em> hit return until
   the very end &mdash; you have to type the whole thing on one line.
   If you do it right, you should get 23 as the answer.
@@ -82,11 +82,11 @@
 <p>
   But is 23 the right answer?  Hard to tell.  So we should start with
   2 and double it 23 times, just to be sure.  Go ahead and type
-  <kbd>code int times; int count; times = 0; count = 2; while(times <
-  20) { count = count * 2; times = times + 1; } return count;</kbd>.
-  You should get the value 16777216 returned.  And yes, that's more
-  than ten million.  So our code works!  Now, <em>how</em> does it
-  work?
+  <kbd>code int times; int count; times = 0; count = 2; while(times
+  &lt; 20) { count = count * 2; times = times + 1; } return
+  count;</kbd>.  You should get the value 16777216 returned.  And yes,
+  that's more than ten million.  So our code works!  Now, <em>how</em>
+  does it work?
 </p>
 
 <p>
@@ -110,13 +110,13 @@
   There's another kind of loop called a <dfn>for</dfn> loop, which is
   very similar.  The first example, written as a for loop, looks like
   this: <kbd> code int times; int count; for(times = 0, count = 2;
-  count < 10000000; count = count * 2, times = times + 1) { } return
-  times;</kbd> A for loop is a lot like a while loop, but the syntax
-  is funny.  Note that after the word &quot;for&quot;, you have three
-  different pieces of code in the parentheses, each separated by a
-  semicolon.  The first piece of the code is done before the loop
+  count &lt; 10000000; count = count * 2, times = times + 1) { }
+  return times;</kbd> A for loop is a lot like a while loop, but the
+  syntax is funny.  Note that after the word &quot;for&quot;, you have
+  three different pieces of code in the parentheses, each separated by
+  a semicolon.  The first piece of the code is done before the loop
   begins.  In this case, it sets <var>times</var> to 0 and
-  <var>count</var> to 2.  The second piece of code, <code>count <
+  <var>count</var> to 2.  The second piece of code, <code>count &lt;
   10000000</code> is checked every time through the loop.  In this
   case it's checking whether count is more than ten million, just like
   the while loop did.
