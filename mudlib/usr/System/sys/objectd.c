@@ -379,7 +379,8 @@ private void unregister_inherit_data(object issue) {
     } else {
       inh_issue = obj_issues->index(parents[ctr]);
       if(!inh_issue) {
-	LOGD->write_syslog("Internal error, Parent: " + parents[ctr]
+	LOGD->write_syslog("Internal error (" + issue->get_name()
+			   + "), Parent: " + parents[ctr]
 			   + ", Child: " + index, LOG_ERR_FATAL);
 	error("Internal error!");
       }
@@ -663,7 +664,8 @@ void compile_lib(string owner, string path, string source,
 		 string inherited...)
 {
   if(previous_program() == DRIVER) {
-    LOGD->write_syslog("compile_lib: " + path, LOG_VERBOSE);
+    LOGD->write_syslog("compile_lib: " + path + " ("
+		       + status(path)[O_INDEX] + ")", LOG_VERBOSE);
 
     add_lib(owner, path, inherited);
   }
@@ -750,10 +752,11 @@ void destruct_lib(string owner, string path)
     object issue;
     int    index;
 
-    LOGD->write_syslog("destruct_lib: " + path, LOG_VERBOSE);
-
     index = status(path)[O_INDEX];
     issue = obj_issues->index(index);
+
+    LOGD->write_syslog("destruct_lib: " + path + " (" + index + ")",
+		       LOG_VERBOSE);
 
     if(!status(path)) {
       all_libs[path] = nil;
@@ -819,7 +822,7 @@ void remove_program(string owner, string path, int timestamp, int index)
       unregister_inherit_data(issue);
 
       /* For libraries only, clear child data */
-      if(function_object("clear_child_data", issue))
+      if(function_object("get_children", issue))
 	clear_child_data(issue);
     } else if(aggro_recompile > 1) {
       LOGD->write_syslog("Removing unregistered issue of " + path, LOG_WARN);
@@ -869,7 +872,8 @@ void include(string from, string path)
   if(previous_program() == DRIVER && aggro_recompile > 0) {
     string trimmed_from;
 
-    LOGD->write_syslog("include " + path + " from " + from, LOG_VERBOSE);
+    LOGD->write_syslog("include " + path + " from " + from,
+		       LOG_ULTRA_VERBOSE);
 
     if(path != "AUTO" && path != "/include/AUTO"
        && sscanf(path, "%*s\.h") == 0)
@@ -912,10 +916,10 @@ int forbid_inherit(string from, string path, int priv)
 {
   if(previous_program() == DRIVER) {
     LOGD->write_syslog("forbid_inherit: " + path + " from " + from,
-		       LOG_VERBOSE);
+		       LOG_ULTRA_VERBOSE);
 
     /* If we *did* actually forbid something, that would be logged with
-       something other than LOG_VERBOSE probably... */
+       something other than LOG_ULTRA_VERBOSE... */
   }
   return 0;
 }
@@ -1166,7 +1170,7 @@ void recompile_auto_object(object output) {
   mixed* keys;
 
   /* This will always be logged at this level */
-  LOGD->write_syslog("Doing full rebuild...");
+  LOGD->write_syslog("Doing full rebuild...", LOG_NORMAL);
 
   if(!SYSTEM())
     error("Can't call recompile_auto_object unprivileged!");
