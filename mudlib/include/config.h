@@ -51,7 +51,6 @@
 #define USER_MOBILE         "/usr/common/obj/user_mobile"
 #define SIMPLE_ROOM         "/usr/common/obj/simple_room"
 #define SIMPLE_PORTABLE     "/usr/common/obj/simple_portable"
-#define MOBILE_PORTABLE     "/usr/common/obj/mobile_portable"
 #define UNQ_PARSER          "/usr/common/obj/basic_unq_parser"
 #define UNQ_DTD             "/usr/common/obj/unq_dtd"
 #define HEAVY_ARRAY         "/usr/common/obj/heavy_array"
