@@ -18,6 +18,7 @@ Release 0.013:
 	  parent.
 	* You can now remove details with @set_obj_detail.
 	* Basic data inheritance of details works and is tested.
+	* Removed gossip channel and gossip command.  Updated help.
 
 Release 0.012:
 	* More logging and stuff in ObjectD.  And fixed a bug that

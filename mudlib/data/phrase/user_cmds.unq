@@ -46,8 +46,6 @@ set_lines / cmd_set_lines,
 
 channel   / cmd_channels,
 channels  / cmd_channels,
-gossip    / cmd_gossip,
-gos       / cmd_gossip,
 
 g         / cmd_look,
 gl        / cmd_look,
@@ -118,8 +116,6 @@ set_lines / cmd_set_lines,
 
 channel   / cmd_channels,
 channels  / cmd_channels,
-gossip    / cmd_gossip,
-gos       / cmd_gossip,
 
 g         / cmd_look,
 gl        / cmd_look,
