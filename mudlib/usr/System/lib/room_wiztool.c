@@ -61,20 +61,18 @@ static void cmd_list_room(object user, string cmd, string str) {
     for(zone = 0; zone < ZONED->num_zones(); zone++) {
       rooms += MAPD->rooms_in_zone(zone);
     }
+    tmp = "";
     for(ctr = 0; ctr < sizeof(rooms); ctr++) {
       object room, phr;
- 
-      tmp = "";
+
       room = MAPD->get_room_by_num(rooms[ctr]);
       phr = room->get_glance();
       tmp += "  " + rooms[ctr] + "   ";
       tmp += phr->to_string(user);
       tmp += "\r\n";
-
-      /* Output as each line finishes for debugging */
-      user->message(tmp);
     }
-    user->message("-----\r\n");
+    tmp += "-----\r\n";
+    user->message_scroll(tmp);
 
     return;
   }
@@ -91,22 +89,20 @@ static void cmd_list_room(object user, string cmd, string str) {
     if(zone == -1)
       zone = 0;  /* Unzoned rooms */
 
+    tmp = "";
     rooms = MAPD->rooms_in_zone(zone);
     for(ctr = 0; ctr < sizeof(rooms); ctr++) {
       object room, phr;
 
-      tmp = "";
       room = MAPD->get_room_by_num(rooms[ctr]);
       phr = room->get_glance();
       tmp += "  " + rooms[ctr] + "   ";
       tmp += phr->to_string(user);
       tmp += "\r\n";
-
-      /* Output as each line finishes for debugging */
-      user->message(tmp);
     }
 
-    user->message("-----\r\n");
+    tmp += "-----\r\n";
+    user->message_scroll(tmp);
     return;
   }
 
