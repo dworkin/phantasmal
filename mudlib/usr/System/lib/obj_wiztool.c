@@ -171,7 +171,7 @@ static void cmd_stat(object user, string cmd, string str) {
   string* words;
   string  tmp;
   mixed*  objs, *art_desc, *tags;
-  object *details;
+  object *details, *archetypes;
 
   if(!str || STRINGD->is_whitespace(str)) {
     user->message("Usage: " + cmd + " #<obj num>\r\n");
@@ -377,7 +377,8 @@ static void cmd_stat(object user, string cmd, string str) {
     tmp += "\r\n";
   }
   details = obj->get_details();
-  if(obj->get_archetype() && details && sizeof(details)) {
+  archetypes = obj->get_archetypes();
+  if(sizeof(archetypes) && sizeof(details)) {
     object detail;
 
     tmp += "Has complete details [" + sizeof(details) + "]: ";
@@ -413,11 +414,14 @@ static void cmd_stat(object user, string cmd, string str) {
     }
   }
 
-  if(obj->get_archetype()) {
-    tmp += "Instance of archetype #"
-      + obj->get_archetype()->get_number()
-      + " (" + obj->get_archetype()->get_glance()->to_string(user)
-      + ").\r\n";
+  if(sizeof(archetypes)) {
+    tmp += "Instance of archetype(s): ";
+    for(ctr = 0; ctr < sizeof(archetypes); ctr++) {
+      tmp += "#" + archetypes[ctr]->get_number()
+	+ " (" + archetypes[ctr]->get_glance()->to_string(user)
+	+ ")";
+    }
+    tmp += ".\r\n";
   }
   if(room) {
     tmp += "Registered with MAPD as a room or portable.\r\n";
@@ -640,26 +644,20 @@ static void cmd_move_obj(object user, string cmd, string str) {
 
 
 static void cmd_set_obj_parent(object user, string cmd, string str) {
-  object obj, parent;
-  string parentstr;
-  int    objnum, parentnum;
+  object  obj, parent;
+  string  parentstr, *par_entries;
+  object *parents;
+  int     objnum;
+  mapping par_kw;
 
-  if(!str || sscanf(str, "%*s %*s %*s") == 3
+  if(!str
      || (sscanf(str, "#%d %s", objnum, parentstr) != 2)) {
-    user->message("Usage: " + cmd + " #<obj> #<parent>\r\n");
+    user->message("Usage: " + cmd + " #<obj> #<parent> [#<parent2>...]\r\n");
     user->message("       " + cmd + " #<obj> none\r\n");
     return;
   }
 
   parentstr = STRINGD->trim_whitespace(parentstr);
-
-  if(!STRINGD->stricmp(parentstr, "none")) {
-    parentnum = -1;
-  } else if(!sscanf(parentstr, "#%d", parentnum)) {
-    user->message("The second argument must be a parent object number, "
-		  + "or #-1, or 'none'.\r\n");
-    return;
-  }
 
   obj = MAPD->get_room_by_num(objnum);
   if(!obj) {
@@ -668,21 +666,76 @@ static void cmd_set_obj_parent(object user, string cmd, string str) {
     return;
   }
 
-  if(parentnum == -1) {
-    parent = nil;
-  } else {
+  parentstr = STRINGD->trim_whitespace(STRINGD->to_lower(parentstr));
+
+  if(!STRINGD->stricmp(parentstr, "none")) {
+    obj->set_archetypes( ({ }) );
+    user->message("Object is now unparented.\r\n");
+    return;
+  }
+
+  par_entries = explode(parentstr, " ");
+  parents = ({ });
+
+  par_kw = ([ "none" : 1,
+	    "add" : 1,
+	    "remove" : 1 ]);
+
+  if(!par_kw[par_entries[0]]) {
+    user->message("The operation keyword must be one of 'none', 'add' or "
+		  + "remove.\r\n  Your keyword, '" + par_entries[0]
+		  + "', was not.\r\n  See help entry.\r\n");
+    return;
+  }
+
+  for(objnum = 1; objnum < sizeof(par_entries); objnum++) {
+    int parentnum;
+
+    par_entries[objnum] = STRINGD->trim_whitespace(par_entries[objnum]);
+    if(!par_entries[objnum] || par_entries[objnum] == "")
+      continue;
+
+    if(!sscanf(par_entries[objnum], "#%d", parentnum)) {
+      user->message("Post-keyword arguments must be parent object numbers ("
+		    + "#<num>).\r\n"
+		    + "  Your argument, '" + par_entries[objnum]
+		    + "', was not.\r\n");
+      return;
+    }
+
     parent = MAPD->get_room_by_num(parentnum);
 
     if(!parent) {
       user->message("The parent must be a room or portable.  Obj #"
 		    + parentnum
-		    + " is not.\r\nUse 'none' for no parent.\r\n");
+		    + " is not.\r\n");
       return;
     }
+
+    parents += ({ parent });
   }
 
-  obj->set_archetype(parent);
-  user->message("Done.\r\n");
+  switch(par_entries[0]) {
+  case "none":
+    /* Should never get this far */
+    user->message("Don't include any object numbers with the keyword 'none'."
+		  + "\r\n");
+    return;
+
+  case "add":
+    parents = obj->get_archetypes() + parents;
+    /* Fall through to next case */
+
+  case "set":
+    obj->set_archetypes(parents);
+    break;
+  default:
+    user->message("Internal error based on keyword name.  "
+		  + "Throwing an exception.\r\n");
+    error("Internal error!  Should never get here!");
+  }
+
+  user->message("Done setting parents.\r\n");
 }
 
 

@@ -15,8 +15,10 @@
   ~edesc{phrase}
   ~article{int}
   ~parent{int}
-  ~nouns{phrase+}
+  ~nouns{phrase*}
+  ~rem_nouns{phrase*}
   ~adjectives{phrase*}
+  ~rem_adjectives{phrase*}
   ~exit{string}
   ~flags{int}
   ~weight{float}

@@ -231,10 +231,12 @@ void to_user(string output) {
    in, and the prompt is assumed to be prior to input (or prior
    to re-entering input after unacceptable input). */
 private string blurb_for_substate(int substate) {
+  string tmp;
+
   switch(substate) {
 
   case SS_PROMPT_OBJ_TYPE:
-    return "Please enter an object type.\r\n"
+    return "Please enter an object type or 'quit' to quit.\r\n"
       + "Valid values are:  room, portable, detail (r/p/d)\r\n";
 
   case SS_PROMPT_OBJ_NUMBER:
@@ -246,9 +248,9 @@ private string blurb_for_substate(int substate) {
       + "That's the existing object that this is a detail of.\r\n";
 
   case SS_PROMPT_OBJ_PARENT:
-    return "Enter the object's parent for data inheritance.\r\n"
-      + "You can also hit enter for no parent, or type 'quit' to quit.\r\n"
-      + "That's like Skotos ur-objects (see help @set_obj_parent).\r\n";
+    return "Enter the object's parents for data inheritance.\r\n"
+      + "You can also hit enter for no parents, or type 'quit' to quit.\r\n"
+      + "Parents are like Skotos ur-objects (see help @set_obj_parent).\r\n";
 
   case SS_PROMPT_BRIEF_DESC:
     return "Next, please enter a one-line brief description.\r\n"
@@ -274,21 +276,39 @@ private string blurb_for_substate(int substate) {
       + "description.\r\n";
 
   case SS_PROMPT_NOUNS:
-    return "Brief:  " + new_obj->get_brief()->to_string(get_user()) + "\r\n"
-      + "Glance: " + new_obj->get_glance()->to_string(get_user()) + "\r\n"
-      + "\r\nGive a space-separated list of nouns to refer to this"
+    tmp = "Brief:  " + new_obj->get_brief()->to_string(get_user()) + "\r\n"
+      + "Glance: " + new_obj->get_glance()->to_string(get_user()) + "\r\n";
+
+    if(sizeof(new_obj->get_archetypes())) {
+      tmp += "Parent nouns: ";
+      tmp += implode(new_obj->get_nouns(get_user()->get_locale()), ", ");
+      tmp += "\r\n";
+    }
+
+    tmp += "\r\nGive a space-separated list of new nouns to refer to this"
       + " object.\r\n"
       + "Example: sword blade hilt weapon pommel\r\n\r\n";
 
+    return tmp;
+
   case SS_PROMPT_ADJECTIVES:
-    return "Brief:  " + new_obj->get_brief()->to_string(get_user()) + "\r\n"
-      + "Glance: " + new_obj->get_glance()->to_string(get_user()) + "\r\n"
-      + "Enter a space-separate list of adjectives to refer to this"
+    tmp = "Brief:  " + new_obj->get_brief()->to_string(get_user()) + "\r\n"
+      + "Glance: " + new_obj->get_glance()->to_string(get_user()) + "\r\n";
+
+    if(sizeof(new_obj->get_archetypes())) {
+      tmp += "Parent adjectives: ";
+      tmp += implode(new_obj->get_adjectives(get_user()->get_locale()), ", ");
+      tmp += "\r\n";
+    }
+
+    tmp += "Enter a space-separate list of new adjectives to refer to this"
       + " object.\r\n"
-      + "Example: heavy gray dull\r\n";
+      + "Example: heavy metallic red\r\n";
+
+    return tmp;
 
   case SS_PROMPT_WEIGHT:
-    if(new_obj && new_obj->get_archetype())
+    if(new_obj && sizeof(new_obj->get_archetypes()))
       return "Enter the weight of the object or type 'none' to default to"
 	+ " the parent value.\r\n"
 	+ "The weight may be in kilograms, or may be followed by a "
@@ -300,7 +320,7 @@ private string blurb_for_substate(int substate) {
       + "Metric: mg   g   kg     Standard: lb   oz   tons\r\n";
 
   case SS_PROMPT_VOLUME:
-    if(new_obj && new_obj->get_archetype())
+    if(new_obj && sizeof(new_obj->get_archetypes()))
       return "Enter the volume of the object or 'none' to default to"
 	+ "\r\n  the parent value.\r\n"
 	+ "The volume may be in liters, or may be followed by a "
@@ -314,7 +334,7 @@ private string blurb_for_substate(int substate) {
       + "Standard: oz   qt   gal   cubic ft   cubic yd\r\n";
 
   case SS_PROMPT_LENGTH:
-    if(new_obj && new_obj->get_archetype())
+    if(new_obj && sizeof(new_obj->get_archetypes()))
       return "Enter the length of the longest axis of the object, or type\r\n"
 	+ "  'none' to default to the parent value.\r\n"
 	+ "The length may be in centimeters, or may be followed by a "
@@ -332,7 +352,7 @@ private string blurb_for_substate(int substate) {
   case SS_PROMPT_OPENABLE:
 
   case SS_PROMPT_WEIGHT_CAPACITY:
-    if(new_obj && new_obj->get_archetype())
+    if(new_obj && sizeof(new_obj->get_archetypes()))
       return "Enter the weight capacity of the object or 'none' to default"
 	+ " to\r\n  the parent's value.\r\n"
 	+ "The capacity may be in kilograms, or may be followed by a "
@@ -344,7 +364,7 @@ private string blurb_for_substate(int substate) {
       + "Metric: mg   g   kg     Standard: lb   oz   tons\r\n";
 
   case SS_PROMPT_VOLUME_CAPACITY:
-    if(new_obj && new_obj->get_archetype())
+    if(new_obj && sizeof(new_obj->get_archetypes()))
       return "Enter the volume capacity of the object, or type 'none' to "
 	+ " default\r\n  to the parent's value.\r\n"
 	+ "The capacity may be in liters, or may be followed by a "
@@ -358,7 +378,7 @@ private string blurb_for_substate(int substate) {
       + "Standard: oz   qt   gal   cubic ft   cubic yd\r\n";
 
   case SS_PROMPT_LENGTH_CAPACITY:
-    if(new_obj && new_obj->get_archetype())
+    if(new_obj && sizeof(new_obj->get_archetypes()))
       return "Enter the length of the longest axis of the container, or type "
 	+ " 'none' to\r\n  default to the parent value.\r\n"
 	+ "The length may be in centimeters, or may be followed by a "
@@ -648,29 +668,50 @@ static int prompt_obj_number_input(string input) {
 }
 
 static int prompt_obj_parent_input(string input) {
-  int    parnum;
-  object obj_parent;
+  int     parnum, ctr;
+  object *obj_parents;
+  object  obj_parent;
+  string *parent_strings;
 
   if(!input || STRINGD->is_whitespace(input)) {
     /* No parent -- that works. */
-    parnum = -1;
-    obj_parent = nil;
-  } else if(sscanf(input, "%*s %*d") == 2
-	    || sscanf(input, "%*d %*s") == 2
-	    || sscanf(input, "%d", parnum) != 1
-	    || parnum <= 0) {
-    send_string("Please enter a single positive valid object number, and only"
-		+ "\r\n  an object number.\r\n");
+
+    substate = SS_PROMPT_BRIEF_DESC;
     send_string(blurb_for_substate(substate));
-    return RET_NORMAL;
-  } else if(!(obj_parent = MAPD->get_room_by_num(parnum))) {
-    send_string("There is no object #" + parnum + ".\r\n");
-    send_string(blurb_for_substate(substate));
+
     return RET_NORMAL;
   }
 
-  if(obj_parent) {
-    new_obj->set_archetype(obj_parent);
+  parent_strings = explode(input, " ");
+  for(ctr = 0; ctr < sizeof(parent_strings); ctr++) {
+    if(parent_strings[ctr] == "#")
+      continue;
+
+    if((!sscanf(parent_strings[ctr], "#%d", parnum)
+	&& !sscanf(parent_strings[ctr], "%d", parnum))
+       || (parnum < 0)) {
+      send_string("Each parent must be a valid positive integer, or a"
+		  + " positive integer\r\n  following a # sign.\r\n");
+      send_string("'" + parent_strings[ctr] + "' is not.\r\n");
+      send_string(blurb_for_substate(substate));
+      return RET_NORMAL;
+    }
+
+    if(!(obj_parent = MAPD->get_room_by_num(parnum))) {
+      send_string("There is no valid object #" + parnum + ".\r\n");
+      send_string(blurb_for_substate(substate));
+      return RET_NORMAL;
+    }
+
+    obj_parents += ({ obj_parent });
+  }
+
+  if(obj_parents && sizeof(obj_parents)) {
+    new_obj->set_archetypes(obj_parents);
+  } else {
+    send_string("Internal error.  Weird.  Try again.\r\n");
+    send_string(blurb_for_substate(substate));
+    return RET_NORMAL;
   }
 
   substate = SS_PROMPT_BRIEF_DESC;

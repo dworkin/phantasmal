@@ -395,20 +395,40 @@ private object add_struct_for_room(mixed* unq) {
 
 
 private int resolve_parent(object room) {
-  int    pending_parent;
-  object parent;
+  int*    pending_parents;
+  int     ctr;
+  object* parents, *pending_phr;
+  object  parent;
 
-  pending_parent = room->get_pending_parent();
-  if(pending_parent != -1) {
-    parent = MAPD->get_room_by_num(pending_parent);
-    if(!parent) {
-      return 0;
+  pending_parents = room->get_pending_parents();
+  parents = ({ });
+  if(pending_parents && sizeof(pending_parents)) {
+    for(ctr = 0; ctr < sizeof(pending_parents); ctr++) {
+      parent = MAPD->get_room_by_num(pending_parents[ctr]);
+      if(!parent) {
+	return 0;
+      }
+      parents += ({ parent });
     }
 
-    room->set_archetype(parent);
+    room->set_archetypes(parents);
+
+    /* Remove nouns in pending_removed_nouns */
+    pending_phr = room->get_pending_removed_nouns();
+    for(ctr = 0; ctr < sizeof(pending_phr); ctr++) {
+      room->remove_noun(pending_phr[ctr]);
+    }
+
+    /* Removed adjectives in pending_removed_adjectives */
+    pending_phr = room->get_pending_removed_adjectives();
+    for(ctr = 0; ctr < sizeof(pending_phr); ctr++) {
+      room->remove_adjective(pending_phr[ctr]);
+    }
     return 1;
   }
 
+  /* Don't need to set removed_nouns and removed_adjectives if there
+     are no parents... */
   return 1;
 }
 

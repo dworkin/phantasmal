@@ -18,9 +18,11 @@ inherit obj OBJECT;
 private mixed* exits;
 
 private int  pending_location;
-private int  pending_parent;
+private int* pending_parents;
 private int  pending_detail_of;
 private int* pending_removed_details;
+private object* pending_removed_nouns;
+private object* pending_removed_adjectives;
 
 /* Flags */
 /* The objflags field contains a set of boolean object flags */
@@ -60,10 +62,12 @@ static void create(varargs int clone) {
     current_weight = 0.0;
     current_volume = 0.0;
 
-    pending_parent = -1;
+    pending_parents = nil;
     pending_location = -1;
     pending_detail_of = -1;
     pending_removed_details = ({ });
+    pending_removed_nouns = ({ });
+    pending_removed_adjectives = ({ });
   }
 }
 
@@ -126,43 +130,43 @@ void enum_room_mobiles(string cmd, object *except, mixed args...) {
 }
 
 float get_weight(void) {
-  if(weight < 0.0 && obj::get_archetype())
-    return obj::get_archetype()->get_weight();
+  if(weight < 0.0 && sizeof(obj::get_archetypes()))
+    return obj::get_archetypes()[0]->get_weight();
 
   return weight < 0.0 ? 0.0 : weight;
 }
 
 float get_volume(void) {
-  if(volume < 0.0 && obj::get_archetype())
-    return obj::get_archetype()->get_volume();
+  if(volume < 0.0 && sizeof(obj::get_archetypes()))
+    return obj::get_archetypes()[0]->get_volume();
 
   return volume < 0.0 ? 0.0 : volume;
 }
 
 float get_length(void) {
-  if(length < 0.0 && obj::get_archetype())
-    return obj::get_archetype()->get_length();
+  if(length < 0.0 && sizeof(obj::get_archetypes()))
+    return obj::get_archetypes()[0]->get_length();
 
   return length < 0.0 ? 0.0 : length;
 }
 
 float get_weight_capacity(void) {
-  if(weight_capacity < 0.0 && obj::get_archetype())
-    return obj::get_archetype()->get_weight_capacity();
+  if(weight_capacity < 0.0 && sizeof(obj::get_archetypes()))
+    return obj::get_archetypes()[0]->get_weight_capacity();
 
   return weight_capacity;
 }
 
 float get_volume_capacity(void) {
-  if(volume_capacity < 0.0 && obj::get_archetype())
-    return obj::get_archetype()->get_volume_capacity();
+  if(volume_capacity < 0.0 && sizeof(obj::get_archetypes()))
+    return obj::get_archetypes()[0]->get_volume_capacity();
 
   return volume_capacity;
 }
 
 float get_length_capacity(void) {
-  if(length_capacity < 0.0 && obj::get_archetype())
-    return obj::get_archetype()->get_length_capacity();
+  if(length_capacity < 0.0 && sizeof(obj::get_archetypes()))
+    return obj::get_archetypes()[0]->get_length_capacity();
 
   return length_capacity;
 }
@@ -671,16 +675,16 @@ int get_pending_location(void) {
 /* Can't override set_location, we don't have the necessary
    privilege to call it! */
 
-int get_pending_parent(void) {
-  return pending_parent;
+int* get_pending_parents(void) {
+  return pending_parents;
 }
 
-void set_archetype(object new_arch) {
+void set_archetypes(object* new_arch) {
   if(!SYSTEM() && !COMMON() && !GAME())
     error("Only SYSTEM and COMMON objects may set archetypes!");
 
-  ::set_archetype(new_arch);
-  pending_parent = -1;
+  ::set_archetypes(new_arch);
+  pending_parents = nil;
 }
 
 int get_pending_detail_of(void) {
@@ -689,6 +693,14 @@ int get_pending_detail_of(void) {
 
 int* get_pending_removed_details(void) {
   return pending_removed_details;
+}
+
+object* get_pending_removed_nouns(void) {
+  return pending_removed_nouns;
+}
+
+object* get_pending_removed_adjectives(void) {
+  return pending_removed_adjectives;
 }
 
 void set_removed_details(object *new_removed_details) {
@@ -700,8 +712,11 @@ void set_removed_details(object *new_removed_details) {
 }
 
 void clear_pending(void) {
-  pending_location = pending_parent = pending_detail_of = -1;
+  pending_location = pending_detail_of = -1;
   pending_removed_details = ({ });
+  pending_parents = ({ });
+  pending_removed_nouns = ({ });
+  pending_removed_adjectives = ({ });
 }
 
 
@@ -782,6 +797,48 @@ private string all_tags_to_unq(void) {
 }
 
 
+/* This is used to take a string** array, indexed first by locale
+   and then by individual item, into a phrase double-array which
+   can be parsed as UNQ. */
+private string serialize_wordlist(string **wlist) {
+  string tmp;
+  int    locale;
+
+  /* Skip debug locale */
+  tmp = "";
+  for(locale = 1; locale < sizeof(wlist); locale++) {
+    if(wlist[locale] && sizeof(wlist[locale])) {
+      tmp += "~" + PHRASED->locale_name_for_language(locale) + "{"
+	+ implode(wlist[locale], ", ") + "}";
+    }
+  }
+
+  return tmp;
+}
+
+/* This is used to serialize a list of numbers or objects into
+   a comma-separated list of integers. */
+private string serialize_list(mixed *list) {
+  string *str_list;
+  int     ctr;
+
+  str_list = ({ });
+  for(ctr = 0; ctr < sizeof(list); ctr++) {
+    switch(typeof(list[ctr])) {
+    case T_INT:
+      str_list += ({ "" + list[ctr] });
+    case T_OBJECT:
+      str_list += ({ list[ctr]->get_number() + "" });
+    case T_STRING:
+      str_list += ({ list[ctr] });
+    default:
+      error("Error in stringifying list -- unacceptable type");
+    }
+  }
+
+  return implode(str_list, ", ");
+}
+
 /*
  * string to_unq_flags(void)
  *
@@ -789,8 +846,8 @@ private string all_tags_to_unq(void) {
  */
 
 string to_unq_flags(void) {
-  string  ret, tmp_n, tmp_a;
-  object *rem;
+  string  ret;
+  object *rem, *arch;
   int     locale, ctr;
 
   ret = "  ~number{" + tr_num + "}\n";
@@ -807,29 +864,24 @@ string to_unq_flags(void) {
   }
   ret += "  ~flags{" + objflags + "}\n";
 
-  if(obj::get_archetype()) {
-    ret += "  ~parent{" + obj::get_archetype()->get_number() + "}\n";
+  arch = obj::get_archetypes();
+  if(arch && sizeof(arch)) {
+    ret += "  ~parent{" + serialize_list(arch) + "}\n";
   }
   ret += "  ~article{" + desc_article + "}\n";
 
-  /* Skip debug locale */
-  tmp_n = tmp_a = "";
-  for(locale = 1; locale < sizeof(nouns); locale++) {
-    if(sizeof(nouns[locale])) {
-      tmp_n += "~" + PHRASED->locale_name_for_language(locale) + "{"
-	+ implode(nouns[locale], ",") + "}";
-    }
-    if(sizeof(adjectives[locale])) {
-      tmp_a += "~" + PHRASED->locale_name_for_language(locale) + "{"
-	+ implode(adjectives[locale], ",") + "}";
-    }
-  }
-
   /* The double-braces are intentional -- this uses the efficient
      method of specifying nouns and adjectives rather than the human-
-     friendly one. */
-  ret += "  ~nouns{{" + tmp_n + "}}\n";
-  ret += "  ~adjectives{{" + tmp_a + "}}\n";
+     friendly one.  Both are parseable, naturally. */
+  ret += "  ~nouns{{" + serialize_wordlist(nouns) + "}}\n";
+  ret += "  ~adjectives{{" + serialize_wordlist(adjectives) + "}}\n";
+
+  arch = get_archetypes();
+  if(arch && sizeof(arch)) {
+    ret += "  ~rem_nouns{{" + serialize_wordlist(removed_nouns) + "}}\n";
+    ret += "  ~rem_adjectives{{" + serialize_wordlist(removed_adjectives)
+      + "}}\n";
+  }
 
   ret += exits_to_unq();
 
@@ -842,18 +894,9 @@ string to_unq_flags(void) {
     ret += "  ~length_capacity{" + length_capacity + "}\n";
   }
 
-  if(get_removed_details()) {
-    rem = get_removed_details();
-
-    ret += "  ~removed_details{";
-    for(ctr = 0; ctr < sizeof(rem) - 1; ctr++) {
-      ret += rem[ctr]->get_number() + ", ";
-    }
-    /* Add final element, no comma */
-    if(sizeof(rem))
-      ret += rem[sizeof(rem) - 1]->get_number();
-
-    ret += "}\n";
+  rem = get_removed_details();
+  if(rem && sizeof(rem)) {
+    ret += "  ~removed_details{" + serialize_list(rem) + "}\n";
   }
 
   ret += "  ~tags{" + all_tags_to_unq() + "}\n";
@@ -958,7 +1001,7 @@ void from_dtd_tag(string tag, mixed value) {
   else if(tag == "flags")
     objflags = value;
   else if(tag == "parent")
-    pending_parent = value;
+    pending_parents = ({ value });
   else if(tag == "nouns") {
     for(ctr2 = 0; ctr2 < sizeof(value); ctr2++) {
       add_noun(value[ctr2]);
@@ -966,6 +1009,14 @@ void from_dtd_tag(string tag, mixed value) {
   } else if(tag == "adjectives") {
     for(ctr2 = 0; ctr2 < sizeof(value); ctr2++) {
       add_adjective(value[ctr2]);
+    }
+  } else if(tag == "rem_nouns") {
+    for(ctr2 = 0; ctr2 < sizeof(value); ctr2++) {
+      pending_removed_nouns += ({ value[ctr2] });
+    }
+  } else if(tag == "rem_adjectives") {
+    for(ctr2 = 0; ctr2 < sizeof(value); ctr2++) {
+      pending_removed_adjectives += ({ value[ctr2] });
     }
   } else if(tag == "exit") {
     string dirname;

@@ -31,13 +31,17 @@ object ldesc;  /* A longer standard "look" description */
 object edesc;  /* An "examine" description, meant to convey details only
 		  available when searched for.  Defaults to ldesc. */
 
-/* Specifiers, determining how the player may refer to the object.
-   These replace the name field (obsolete) with something complex and
-   localized. */
-mixed** nouns;   /* An array of phrases for the various nouns which can
-		    specify this object */
-mixed** adjectives;  /* An array of phrases for allowable adjectives that
-			specify this object */
+/* Specifiers, determining how the player may refer to the object. */
+string** nouns;   /* An array (by locale) of arrays of phrases for the
+		     various nouns which can specify this object */
+string** adjectives;  /* An array (by locale) of arrays of phrases for
+			 allowable adjectives that specify this object */
+
+/* These are arrays of removed nouns and verbs from parent objects.
+   Usually a parent's nouns and verbs are inherited automatically by
+   each child object type, but these are specifically excepted. */
+string **removed_nouns;
+string **removed_adjectives;
 
 int     desc_article; /* This is the article type which may be optionally
 			 prepended to brief and glance descriptions */
@@ -49,7 +53,7 @@ static int    tr_num;
 private object mobile;
 
 /* Parent/archetype for data inheritance */
-private object archetype;
+private object* archetypes;
 
 /* Details -- sub-objects that are part of this one */
 
@@ -72,6 +76,8 @@ void prepend_to_container(object obj);
 void append_to_container(object obj);
 void clear_nouns(void);
 void clear_adjectives(void);
+string* get_nouns(int locale);
+string* get_adjectives(int locale);
 
 
 static void create(varargs int clone) {
@@ -87,6 +93,9 @@ static void create(varargs int clone) {
     details = ({ });
     objects = ({ });
     mobiles = ({ });
+    archetypes = ({ });
+
+    removed_details = ({ });
   }
 }
 
@@ -167,6 +176,9 @@ object get_mobile(void) {
 /**** Get and Set textual descriptions of the object ****/
 
 object get_brief(void) {
+  if(!bdesc && sizeof(archetypes))
+    return archetypes[0]->get_brief();
+
   return bdesc;
 }
 
@@ -175,6 +187,9 @@ void set_brief(object brief) {
 }
 
 object get_glance(void) {
+  if(!gdesc && sizeof(archetypes))
+    return archetypes[0]->get_glance();
+
   return gdesc;
 }
 
@@ -183,6 +198,9 @@ void set_glance(object glance) {
 }
 
 object get_look(void) {
+  if(!ldesc && sizeof(archetypes))
+    return archetypes[0]->get_look();
+
   return ldesc;
 }
 
@@ -191,7 +209,10 @@ void set_look(object look) {
 }
 
 object get_examine(void) {
-  if(!edesc) return ldesc;
+  if(!edesc && !ldesc && sizeof(archetypes))
+    return archetypes[0]->get_look();
+
+  if(!edesc) return get_look();
   return edesc;
 }
 
@@ -208,19 +229,46 @@ int get_number(void) {
   return tr_num;
 }
 
-object get_archetype(void) {
-  return archetype;
+object* get_archetypes(void) {
+  return archetypes[..];
 }
 
-void set_archetype(object new_arch) {
+/* This function is called with a new set of archetypes to use as
+   the list of the object's parents.  The list is ordered, with the
+   primary archetype listed first and later archetypes listed in
+   descending order of priority.  The primary archetype is used
+   for purposes such as inheriting a primary description. */
+void set_archetypes(object* new_archetypes) {
   if(!SYSTEM() && !COMMON())
     error("Only SYSTEM and COMMON objects may set archetypes!");
 
-  archetype = new_arch;
-  removed_details = nil;
+  if(!new_archetypes)
+    new_archetypes = ({ });
+
+  /* If the two lists contain the same elements, the xor of them
+     will be empty.  Otherwise, it won't, and the list of parents
+     has changed, not just in order but in content. */
+  if(sizeof(new_archetypes ^ archetypes)) {
+    removed_details = ({ });
+    removed_nouns = ({ });
+    removed_adjectives = ({ });
+  }
+
+  archetypes = new_archetypes[..];
 }
 
-void add_noun(object phr) {
+void add_archetype(object new_arch) {
+  if(!SYSTEM() && !COMMON())
+    error("Only SYSTEM and COMMON objects may set archetypes!");
+
+  archetypes += ({ new_arch });
+}
+
+void remove_archetype(object arch_to_remove) {
+  error("Not yet implemented!");
+}
+
+private void add_remove_noun(object phr, int do_add) {
   int    locale, ctr2;
   string tmp;
   mixed* words;
@@ -230,17 +278,45 @@ void add_noun(object phr) {
   }
 
   for(locale = 0; locale < PHRASED->num_locales(); locale++) {
+    string *cur_nouns;
+
     tmp = phr->get_content_by_lang(locale);
+    cur_nouns = get_nouns(locale);
 
     if(tmp) {
       words = explode(tmp, ",");
       for(ctr2 = 0; ctr2 < sizeof(words); ctr2++) {
 	words[ctr2] = STRINGD->trim_whitespace(words[ctr2]);
-	if(words[ctr2] && words[ctr2] != "")
-	  nouns[locale] += ({ words[ctr2] });
+
+	if(words[ctr2] && words[ctr2] != "") {
+	  if(do_add) {
+	    removed_nouns[locale] -= ({ words[ctr2] });
+
+	    /* If no parent defines this already, add it to this
+	       object */
+	    if(!sizeof(cur_nouns & ({ words[ctr2] }))) {
+	      nouns[locale] += ({ words[ctr2] });
+	    }
+	  } else {
+	    nouns[locale] -= ({ words[ctr2] });
+
+	    /* If a parent defines this, put it into the 'removed' list */
+	    if(sizeof(cur_nouns & ({ words[ctr2] }))) {
+	      removed_nouns[locale] += ({ words[ctr2] });
+	    }
+	  }
+	}
       }
     }
   }
+}
+
+void add_noun(object phr) {
+  add_remove_noun(phr, 1);
+}
+
+void remove_noun(object phr) {
+  add_remove_noun(phr, 0);
 }
 
 
@@ -249,29 +325,59 @@ void clear_nouns(void) {
 
   num_loc = PHRASED->num_locales();
   nouns = allocate(num_loc);
+  removed_nouns = allocate(num_loc);
 
   for(ctr = 0; ctr < num_loc; ctr++) {
     nouns[ctr] = ({ });
+    removed_nouns[ctr] = ({ });
   }
 }
 
 
-mixed* get_nouns(int locale) {
+string* get_nouns(int locale) {
+  string *ret;
+  int     ctr;
+
   if(locale < 0 || locale >= sizeof(nouns))
     return nil;
 
-  return nouns[locale][..];
+  ret = ({ });
+  if(sizeof(archetypes)) {
+    for(ctr = 0; ctr < sizeof(archetypes); ctr++) {
+      ret += archetypes[ctr]->get_nouns(locale);
+    }
+  }
+
+  return nouns[locale] + ret;
 }
 
-mixed* get_adjectives(int locale) {
+string* get_removed_nouns(int locale) {
+  return removed_nouns[locale][..];
+}
+
+string* get_removed_adjectives(int locale) {
+  return removed_adjectives[locale][..];
+}
+
+string* get_adjectives(int locale) {
+  string *ret;
+  int     ctr;
+
   if(locale < 0 || locale >= sizeof(adjectives))
     return nil;
 
-  return adjectives[locale][..];
+  ret = ({ });
+  if(sizeof(archetypes)) {
+    for(ctr = 0; ctr < sizeof(archetypes); ctr++) {
+      ret += archetypes[ctr]->get_adjectives(locale);
+    }
+  }
+
+  return adjectives[locale] + ret;
 }
 
 
-void add_adjective(object phr) {
+private void add_remove_adjective(object phr, int do_add) {
   int    locale, ctr2;
   string tmp;
   mixed* words;
@@ -281,17 +387,44 @@ void add_adjective(object phr) {
   }
 
   for(locale = 0; locale < PHRASED->num_locales(); locale++) {
+    string *cur_adjectives;
+
     tmp = phr->get_content_by_lang(locale);
+    cur_adjectives = get_adjectives(locale);
 
     if(tmp) {
       words = explode(tmp, ",");
       for(ctr2 = 0; ctr2 < sizeof(words); ctr2++) {
 	words[ctr2] = STRINGD->trim_whitespace(words[ctr2]);
-	if(words[ctr2] != "")
-	  adjectives[locale] += ({ words[ctr2] });
+	if(words[ctr2] && words[ctr2] != "") {
+	  if(do_add) {
+	    removed_adjectives[locale] -= ({ words[ctr2] });
+
+	    /* If no parent defines this already, add it to this
+	       object */
+	    if(!sizeof(cur_adjectives & ({ words[ctr2] }))) {
+	      adjectives[locale] += ({ words[ctr2] });
+	    }
+	  } else {
+	    adjectives[locale] -= ({ words[ctr2] });
+
+	    /* If a parent defines this, put it into the 'removed' list */
+	    if(sizeof(cur_adjectives & ({ words[ctr2] }))) {
+	      removed_adjectives[locale] += ({ words[ctr2] });
+	    }
+	  }
+	}
       }
     }
   }
+}
+
+void add_adjective(object phr) {
+  add_remove_adjective(phr, 1);
+}
+
+void remove_adjective(object phr) {
+  add_remove_adjective(phr, 0);
 }
 
 
@@ -300,13 +433,22 @@ void clear_adjectives(void) {
 
   num_loc = PHRASED->num_locales();
   adjectives = allocate(num_loc);
+  removed_adjectives = allocate(num_loc);
 
   for(ctr = 0; ctr < num_loc; ctr++) {
     adjectives[ctr] = ({ });
+    removed_adjectives[ctr] = ({ });
   }
 }
 
 
+/* This function takes two string arrays.  The first, called words,
+   usually corresponds to user input.  The second, array, usually
+   corresponds to nouns or adjectives of an object, or other set
+   of words to be matched.  This function returns true if every
+   string in "words" is a prefix of a string in "array".  The same
+   word in "array" may be matched by multiple entries of "words"
+   with no problems, and potentially vice-versa. */
 private int match_str_array(string* words, string* array) {
   int ctr, ctr2, match;
 
@@ -328,6 +470,13 @@ private int match_str_array(string* words, string* array) {
   return 1;
 }
 
+
+/* This function takes a user object, a list of adjectives and a
+   list of nouns.  The user object is used to get the locale for
+   the word matching.  The function returns true if the given list
+   of nouns matches nouns from this object, and the same is true of
+   the adjectives.  The matching criteria are according to
+   match_str_array, documented above. */
 private int match_adj_and_nouns(object user, string *cmp_adjectives,
 				string* cmp_nouns) {
   int locale, match;
@@ -349,6 +498,10 @@ private int match_adj_and_nouns(object user, string *cmp_adjectives,
   return match;
 }
 
+/* Match_words takes a user object (used to get the locale for word
+   matching) and a list of words.  All words before the last one are
+   assumed to be adjectives, and the last is assumed to be a noun.
+   Then the matching is checked with match_adj_and_nouns, above. */
 int match_words(object user, string *words) {
   string noun;
 
@@ -357,6 +510,9 @@ int match_words(object user, string *words) {
   return match_adj_and_nouns(user, words[..sizeof(words) - 2], ({ noun }));
 }
 
+/* Match_string separates the given string into words, trims
+   appropriately, makes all the words lowercase, and passes the
+   results to match_words, above. */
 int match_string(object user, string name) {
   string* words;
   int     ctr;
@@ -409,7 +565,35 @@ object* find_contained_objects(object user, string namestr) {
 }
 
 
-/* Access-protected functions */
+/**** Object Description Functions ****/
+
+/* Returns true if the given string describes a single instance of this
+   object type. */
+int doesDescribeOne(object user, string desc) {
+  return match_string(user, desc);
+}
+
+/* Returns true if the given string describes several instances of this
+   object type. */
+int doesDescribeMany(object user, string desc) {
+
+}
+
+/* Returns a phrase describing one instance of this object type, not
+   including any articles. */
+object describeOne() {
+
+}
+
+/* Returns a phrase describing several instances of this object type.
+   The function may choose whether to prepend the exact number or a
+   more general quantifier like "several". */
+object describeMany(object obj, int num) {
+
+}
+
+
+/**** Access-Protected Functions ****/
 
 
 /* Container Functions */
@@ -540,27 +724,27 @@ nomask void set_mobile(object new_mob) {
 
 object* get_details(void) {
   object* parent_details;
+  int     ctr;
 
-  if(archetype) {
-    parent_details = archetype->get_details();
-  }
-  if(!parent_details)
-    parent_details = ({ });
+  parent_details = ({ });
 
-  if(removed_details) {
-    parent_details -= removed_details;
+  if(archetypes) {
+    for(ctr = 0; ctr < sizeof(archetypes); ctr++) {
+      parent_details += archetypes[ctr]->get_details();
+    }
   }
 
-  if(details && sizeof(details)) {
-    return parent_details + details;
-  } else {
-    return sizeof(parent_details) ? parent_details : nil;
-  }
+  parent_details -= removed_details;
+
+  return parent_details + details;
 }
 
 /* This returns only the details that are specific to this
    object, not any that are inherited. */
 object* get_immediate_details(void) {
+  if(!COMMON() && !SYSTEM() && !GAME())
+    error("Only privileged code can see immediate_details for an object!");
+
   if(details && sizeof(details)) {
     return details[..];
   } else {
@@ -570,7 +754,7 @@ object* get_immediate_details(void) {
 
 object *get_removed_details(void) {
   if(removed_details && sizeof(removed_details)) {
-    return removed_details;
+    return removed_details[..];
   } else {
     return nil;
   }
@@ -579,6 +763,9 @@ object *get_removed_details(void) {
 void set_removed_details(object *new_removed_details) {
   if(!SYSTEM() && !COMMON())
     error("Only SYSTEM or COMMON objects can set removed_details!");
+
+  if(!new_removed_details)
+    new_removed_details = ({ });
 
   removed_details = new_removed_details[..];
 }
@@ -604,7 +791,7 @@ void add_detail(object obj) {
   if(!SYSTEM() && !COMMON())
     error("Only SYSTEM and COMMON objects may add details!");
 
-  if(removed_details && sizeof(removed_details & ({ obj }))) {
+  if(sizeof(removed_details & ({ obj }))) {
     /* Our parent has this detail and we overrode it.  So we'll
        remove the override. */
     removed_details -= ({ obj });
@@ -631,15 +818,15 @@ void remove_detail(object obj) {
      remove this detail from their removed_detail lists? */
 
   if( !sizeof(details & ({ obj })) ) {
-    object *parent_details;
+    object *full_details;
 
     /* This isn't one of our immediate details.  Check to see if
        we should add it to the removed_details array. */
 
-    if(archetype)
-      parent_details = archetype->get_details();
+    if(sizeof(archetypes))
+      full_details = get_details();
 
-    if(parent_details && sizeof(parent_details & ({ obj })) > 0) {
+    if(full_details && sizeof(full_details & ({ obj })) > 0) {
       removed_details += ({ obj });
       return;
     }

@@ -1,4 +1,10 @@
 Release 0.016:
+	* Removed old %get_config command
+	* Made objects able to specifically remove nouns/adjs for
+	  multiple inheritance
+	* Made load/save files use multiple parents
+	* Made object nouns, adjectives and descs use inheritance
+	* Made objects use multiple inheritance, not just single
 	* Added wiztool commands to manipulate tags, and help for them
 	* Added a number of new Tag-related APIs
 	* Made rooms and zonefiles include tag data in the save files
