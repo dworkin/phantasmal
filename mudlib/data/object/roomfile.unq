@@ -146,8 +146,34 @@ Ghak'La must have been Messy-In-A-Hideous-Way.}}
 ~flags{4}
 }
 ~body{
+  ~number{9}
+  ~location{1}
+  ~bdesc{
+    ~enUS{Angelbob}}
+  ~gdesc{
+    ~enUS{Angelbob}}
+  ~ldesc{
+    ~enUS{Angelbob wanders the MUD.}}
+  ~article{0}
+  ~nouns{{~enUS{angelbob}}}
+  ~adjectives{{}}
+}
+~body{
   ~number{10}
   ~location{308}
+  ~bdesc{
+    ~enUS{Admin}}
+  ~gdesc{
+    ~enUS{Admin}}
+  ~ldesc{
+    ~enUS{Admin wanders the MUD.}}
+  ~article{0}
+  ~nouns{{~enUS{admin}}}
+  ~adjectives{{}}
+}
+~body{
+  ~number{11}
+  ~location{301}
   ~bdesc{
     ~enUS{Admin}}
   ~gdesc{
