@@ -311,9 +311,11 @@ static void cmd_stat(object user, string cmd, string str) {
 	tmp += "The object may not be freely opened and closed.\r\n";
       }
       if(function_object("get_weight_capacity", obj)) {
-	tmp += "Its weight capacity is " + obj->get_weight_capacity()
+	tmp += "It contains " + obj->get_current_weight()
+	  + " of a max of " + obj->get_weight_capacity()
 	  + " kilograms.\r\n";
-	tmp += "Its volume capacity is " + obj->get_volume_capacity()
+	tmp += "It contains " + obj->get_current_volume()
+	  + " of a max of " + obj->get_volume_capacity()
 	  + " liters.\r\n";
 	tmp += "Its maximum height/length is " + obj->get_length_capacity()
 	  + " centimeters.\r\n";
