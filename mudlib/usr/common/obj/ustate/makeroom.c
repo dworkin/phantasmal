@@ -30,6 +30,7 @@ private string adjectives;
 /* Input function return values */
 #define RET_NORMAL            1
 #define RET_POP_STATE         2
+#define RET_NO_PROMPT         3
 
 
 /* Prototypes */
@@ -103,6 +104,8 @@ int from_user(string input) {
   case RET_POP_STATE:
     pop_state();
     break;
+  case RET_NO_PROMPT:
+    break;
   default:
     send_string("Unrecognized return value!  Cancelling OLC!\r\n");
     pop_state();
@@ -134,7 +137,11 @@ void switch_to(int pushp) {
   } else if (substate == SS_PROMPT_LOOK_DESC) {
 
   } else if (substate == SS_PROMPT_EXAMINE_DESC) {
+    /* This probably means we just got back from getting the Look desc */
 
+  } else if (substate == SS_PROMPT_NOUNS) {
+    /* This means we just got back from getting the Examine desc */
+    send_string(" > ");
   } else {
     /* Somebody else pushed and then popped a state, so we're just
        getting back to ourselves. */
@@ -145,15 +152,16 @@ void switch_to(int pushp) {
 
 void switch_from(int popp) {
   if(!popp) {
-    send_string("(Creating object -- suspending)\r\n");
+    if(substate != SS_PROMPT_LOOK_DESC
+       && substate != SS_PROMPT_EXAMINE_DESC) {
+      send_string("(Creating object -- suspending)\r\n");
+    }
   }
 }
 
 /* Some other state has passed us data, probably when it was
    popped. */
 void pass_data(mixed data) {
-  send_string("(data passed in)\r\n");
-
   switch(substate) {
   case SS_PROMPT_LOOK_DESC:
     prompt_look_desc_data(data);
@@ -213,6 +221,8 @@ static int prompt_room_number_input(string input) {
 
   substate = SS_PROMPT_BRIEF_DESC;
 
+  /* The editor is going to print its own prompt, so don't bother
+     with ours. */
   return RET_NORMAL;
 }
 
@@ -267,7 +277,7 @@ static int prompt_glance_desc_input(string input) {
     return RET_POP_STATE;
   }
 
-  return RET_NORMAL;
+  return RET_NO_PROMPT;
 }
 
 static void prompt_look_desc_data(mixed data) {
@@ -337,7 +347,7 @@ static void prompt_examine_desc_data(mixed data) {
   send_string("\r\nOkay, now let's get a list of the nouns and adjectives "
 	      + "you can\r\n");
   send_string("use to refer to the object.  For reference, we'll also let you"
-	      + " see");
+	      + " see\r\n");
   send_string("the short descriptions you supplied.\r\n");
   send_string("Brief:  " + brief_desc + "\r\n");
   send_string("Glance: " + glance_desc + "\r\n");
@@ -369,7 +379,7 @@ static int prompt_nouns_input(string input) {
 }
 
 private mixed process_words(string input) {
-  object  phr;
+  object  phr, location;
   string* words;
   int     ctr;
 
@@ -388,7 +398,7 @@ private mixed process_words(string input) {
 
 static int prompt_adjectives_input(string input) {
   string segown;
-  object room, phr;
+  object room, location, phr;
   int    zonenum;
 
   send_string("\r\nGood.  Creating object...\r\n");
@@ -406,10 +416,21 @@ static int prompt_adjectives_input(string input) {
     return RET_POP_STATE;
   }
 
+  location = get_user()->get_location();
+  if(location) {
+    /* The new room should be put into the same place as the room
+       the user is currently standing in.  Makes a good default. */
+    location = location->get_location();
+  }
+
   room = clone_object(SIMPLE_ROOM);
   zonenum = -1;
   if(room_number < 0) {
-    zonenum = ZONED->get_zone_for_room(get_user()->get_location());
+    if(location) {
+      zonenum = ZONED->get_zone_for_room(location);
+    } else {
+      zonenum = 0;
+    }
     if(zonenum < 0) {
       LOGD->write_syslog("Odd, zone is less than 0 in @make_room...",
 			 LOG_WARN);
@@ -439,6 +460,10 @@ static int prompt_adjectives_input(string input) {
   /* Set nouns and adjectives */
   room->add_noun(process_words(nouns));
   room->add_adjective(process_words(adjectives));
+
+  if(location) {
+    location->add_to_container(room);
+  }
 
   return RET_POP_STATE;
 }
