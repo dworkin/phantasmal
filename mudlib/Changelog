@@ -9,6 +9,9 @@ Release 0.011:
 	* Added new "animal" mobile type.  Mobiles can now have extra
 	  data embedded in their mobfile entries, which is a pretty
 	  mandatory thing for more complex mobiles.
+	* Added "idea" command, like bug and typo.  Made sure more
+	  information was included in the reports like where the report
+	  takes place and who reported it.
 	
 Release 0.010:
 
