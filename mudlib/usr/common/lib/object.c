@@ -419,8 +419,16 @@ int num_objects_in_container(void) {
 /* Functions for MOBILE use */
 
 void set_mobile(object new_mob) {
-  if(previous_program() == MOBILE) {
+  if(previous_program() == MOBILE || previous_program() == MOBILED) {
+    if(mobile && location) {
+      /* Remove the mobile from its container, if any */
+      location->remove_mobile(mobile);
+    }
     mobile = new_mob;
+    if(new_mob && location) {
+      /* Add the mobile to its container, if any */
+      location->add_mobile(new_mob);
+    }
   } else {
     error("You can't set that from there!");
   }
@@ -430,5 +438,33 @@ void set_mobile(object new_mob) {
 /* Functions for MAPD, EXITD, etc use - overridden in child classes */
 
 void set_number(int num) {
-  tr_num = num;
+  string prog;
+
+  prog = previous_program();
+  if(prog == MAPD || prog == EXITD) {
+    tr_num = num;
+  } else {
+    error("Program " + prog + " not authorized to set object numbers!");
+  }
+}
+
+
+/* Function for use by other OBJECTs */
+
+void remove_mobile(object rem_mob) {
+  if(previous_program() == OBJECT) {
+    if(mobiles & ({ rem_mob }) ) {
+      mobiles -= ({ rem_mob });
+    }
+  } else {
+    error("Only another OBJECT may remove mobiles directly!");
+  }
+}
+
+void add_mobile(object add_mob) {
+  if(previous_program() == OBJECT) {
+    mobiles += ({ add_mob });
+  } else {
+    error("Only another OBJECT may remove mobiles directly!");
+  }
 }
