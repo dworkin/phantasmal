@@ -2,7 +2,7 @@ FILE
 	/usr/common/sys/stringd.c
 
 NAME
-	is_alphanum - return whether a string is a valid LPC identifier
+	is_ident - return whether a string is a valid LPC identifier
 
 PROTOTYPE
 	int is_ident(string str)
