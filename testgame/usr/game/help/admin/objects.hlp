@@ -234,7 +234,6 @@ instance:
   @set_obj_flag #237 cont true
   @set_obj_flag #294 open 0
   @set_object_flags #901 openable 1
-  @set_object_flags #748 nodesc yes
 
 The values, if present, should indicate true or false -- like "true",
 "false", "yes", "no", 1, 0.  If absent, the values default to true.
@@ -243,13 +242,9 @@ middle argument is a flag name, and can be "cont" or "container" to
 set whether the object is a container, "open" to set whether it is
 currently open, "openable" to say whether it can be easily opened or
 closed, "locked" to say whether it is locked or not, "lockable" to
-say whether it can be locked or not, "nodesc" for scenery objects,
-or possibly other flag names.
-To get a list of flag names, type "@set_obj_flag flagnames".
+say whether it can be locked or not, or possibly other flag names.
 
-Note: the "nodesc" flag will be retired soon in favor of actual object
-details.  We hope to have details in usable shape for release 0.11 of
-Phantasmal.
+To get a list of flag names, type "@set_obj_flag flagnames".
 
 }}
 
@@ -363,6 +358,34 @@ See Also:  MAPD, OBJREGD, MOBILED, EXITD, room, portable, mobile, exit
 
 }}
 
+
+~name{~enUS{noun, nouns, adj, adjective, adjectives}}
+~keywords{admin}
+~desc{
+  ~enUS{
+
+Nouns are the names which a player may call an object.  For instance,
+a sword might have "sword" and "blade" as nouns.
+
+Adjectives are descriptors for those names.  A player may refer to an
+object by any adjectives it has in any order followed by exactly one
+of its nouns.  So if the sword had "heavy", "metal", "tarnished",
+"rusted" and "pitted" as adjectives, it could be called a "heavy metal
+tarnished blade" or a "rusted pitted sword" or a "blade" or a
+"tarnished rusted pitted tarnished rusted metal heavy heavy sword".
+However, it could not be called a "tarnished" or a "pitted rusted",
+for instance.
+
+Nouns are added with the @add_nouns command, or in @make_room or the
+equivalent.  The @clear_nouns command will remove all nouns an object
+has.  Similarly, adjectives are added with @add_adj and cleared with
+@clear_adj.
+
+Nouns and adjectives are inherited from parent objects.
+
+See also: @add_nouns, @clear_nouns, @add_adj, @clear_adj
+
+}}
 
 ~name{~enUS{addnoun,add_noun}}
 ~keywords{admin}
