@@ -19,8 +19,9 @@ one, the help system will tell you so.  You'll see it when you ask for help
 without specifying a number, for instance "help linkded".
 
 If that went too fast and you can't read it, try setting your rows
-lower with set_num_lines 10.  Then get help on the set_num_lines
-function to figure out how you want to set it eventually.
+lower by typing "set_num_lines 10".  Then get help on the
+set_num_lines function to figure out how you want to set it for later,
+because 10 is an irritating setting for most screens.
 
 }}
 
@@ -51,4 +52,5 @@ typing one of those.  Which one depends entirely on what you want help
 about.  Similarly, if there was a vertical list of words there, you
 could try getting help by typing "help" and a space and one of those
 words.
+
 }}

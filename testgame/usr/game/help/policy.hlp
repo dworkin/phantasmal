@@ -45,6 +45,7 @@ you can duck out on stuff that they have to be hurt by.
 
 ~name{~enUS{dead,death,dying,die}}
 ~desc{~enUS{
+
 In the MUD, death of a character can be permanent.  That character,
 once permanently dead, cannot pass on money, knowledge, skills or
 other in-game benefits to any of your later characters, heirs,
@@ -69,15 +70,18 @@ implemented.
 Dying due to lag doesn't entitle you to any benefits in return.
 None.  You remain exactly as dead as if you died any other way.  See
 "help linkdeath".
+
 }}
+
 
 ~name{~enUS{pk,pking,pkill,pkilling,playerkill,playerkilling,
             pthief,pthieving,playerthief,playerthieving,pvp,
             pkp}}
 ~desc{~enUS{
+
 In the current pre-Beta stages of the game, killing or stealing from
 other players is frowned upon.  While it could be outright banned, it
-won't be unless some idiot tees people off by doing it.  Don't be
+won't be unless some idiot angers people off by doing it.  Don't be
 that guy.
 
 Plans for later in the MUD's evolution including allowing killing
@@ -135,7 +139,7 @@ beyond that.  Kids may read this trash.
 
 Multiplaying is when a single (human) player controls multiple
 accounts or multiple human players sharing one account.  Note that
-multiplay on this MUD is more interesting to define since one kind of
+multiplay on this MUD is more difficult to define since one kind of
 multiplay (one account, multiple characters) is a standard and
 encouraged part of the game.  However, account sharing or keeping
 multiple accounts will be treated harshly even if the extras are guest
@@ -145,16 +149,18 @@ whiny voice, "Aw, come on man!" and then an excuse.
 
 We, the administrators, would prefer that each human player control
 only one account and each account have only one human player.  We
-understand that this can be inconvenient, however the temptation to
+understand that this can be inconvenient.  However the temptation to
 misuse multiple accounts appears to be beyond the resistance of mortal
 man.  That being the case we'll watch for cases of multiplay and
 should any abuse of that kind be detected, we'll cancel all of your
 accounts (yes, even if they're not yours) and maybe even site-ban
 you. (see "help siteban")
+
 }}
 
 ~name{~enUS{siteban,ban,site ban,site-ban}}
 ~desc{~enUS{
+
 When you are on a site that has been site-banned on this MUD, it
 means that no characters may log in from that site.  For example, if
 we have severe problems with players from dartmouth.edu, we might ban
@@ -162,5 +168,7 @@ dartmouth.edu entirely so that nobody logging on from Dartmouth
 University would be able to create a player.
 
 Dartmouth is used only as an example here; we've had no players from
-there as yet, good or bad.
+there as yet, good or bad.  But instead of Dartmouth, it could be your
+ISP that we ban.
+
 }}
