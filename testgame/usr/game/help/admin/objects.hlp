@@ -308,6 +308,8 @@ find out the Void's various descriptions, what rooms it contains, that
 it is registered with MAPD, and so on.  @stat works on rooms, portables,
 exits and mobiles.
 
+It shows inheritance and tag values, among other information.
+
 See Also:  MAPD, OBJREGD, MOBILED, EXITD, room, portable, mobile, exit
 
 }}
