@@ -149,7 +149,8 @@ static void create(varargs int clone)
   MAPD->set_room_alias("start room", the_void);
 }
 
-void save_mud_data(object user, string callback) {
+void save_mud_data(object user, string room_filename, string port_filename,
+		   string callback) {
   int*   objects;
   int    cohandle;
 
@@ -165,20 +166,20 @@ void save_mud_data(object user, string callback) {
 
   LOGD->write_syslog("Writing World Data to files...", LOG_NORMAL);
 
-  remove_file(ROOM_FILE + ".old");
-  rename_file(ROOM_FILE, ROOM_FILE + ".old");
-  remove_file(ROOM_FILE);
+  remove_file(room_filename + ".old");
+  rename_file(room_filename, room_filename + ".old");
+  remove_file(room_filename);
 
-  remove_file(PORT_FILE + ".old");
-  rename_file(PORT_FILE, PORT_FILE + ".old");
-  remove_file(PORT_FILE);
+  remove_file(port_filename + ".old");
+  rename_file(port_filename, port_filename + ".old");
+  remove_file(port_filename);
 
-  if(sizeof(get_dir(ROOM_FILE)[0])) {
+  if(sizeof(get_dir(room_filename)[0])) {
     LOGD->write_syslog("Can't remove old roomfile -- trying to append!",
 		       LOG_FATAL);
   }
 
-  if(sizeof(get_dir(PORT_FILE)[0])) {
+  if(sizeof(get_dir(port_filename)[0])) {
     LOGD->write_syslog("Can't remove old portablefile -- trying to append!",
 		       LOG_FATAL);
   }
@@ -186,8 +187,8 @@ void save_mud_data(object user, string callback) {
   LOGD->write_syslog("Writing rooms to file", LOG_VERBOSE);
   objects = MAPD->rooms_in_zone(0) - ({ 0 });
 
-  cohandle = call_out("__co_write_rooms", 0, user, objects, 0, ROOM_FILE,
-		      PORT_FILE);
+  cohandle = call_out("__co_write_rooms", 0, user, objects, 0,
+		      room_filename, port_filename);
   if(cohandle < 1) {
     error("Can't schedule call_out to save objects!");
   } else {
@@ -205,7 +206,7 @@ void prepare_reboot(void)
     LOGD->write_syslog("Preparing to reboot MUD...", LOG_NORMAL);
   }
 
-  save_mud_data(nil, "__reboot_callback");
+  /* save_mud_data(nil, "__reboot_callback"); */
 }
 
 void prepare_shutdown(void)
@@ -218,7 +219,7 @@ void prepare_shutdown(void)
     LOGD->write_syslog("Shutting down MUD...", LOG_NORMAL);
   }
 
-  save_mud_data(this_user(), "__shutdown_callback");
+  save_mud_data(this_user(), ROOM_FILE, PORT_FILE, "__shutdown_callback");
 }
 
 void reboot(void)
