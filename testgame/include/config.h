@@ -20,6 +20,7 @@
 #define TIMED       "/usr/common/sys/timed"
 #define SOULD       "/usr/common/sys/sould"
 #define PARSED      "/usr/common/sys/parsed"
+#define TAGD        "/usr/common/sys/tagd"
 
 
 /* Kernel lib tie-in objects -- must be in these dirs to be recognized
@@ -37,6 +38,7 @@
 #define USER_STATE          "/usr/common/lib/user_state"
 #define ISSUE_LWO           "/usr/common/lib/issue_lwo"
 #define DTD_UNQABLE         "/usr/common/lib/dtd_unqable"
+#define TAGGED              "/usr/common/lib/tagged"
 #define PHRASE_REPOSITORY   "/usr/common/lib/phrase_repository"
 #define INTL_PHRASE         "/usr/common/lib/intl_phrase"
 #define OBJECT              "/usr/common/lib/object"

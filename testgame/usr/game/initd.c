@@ -11,6 +11,9 @@ static void set_up_heart_beat(void);
 static void load_sould(void);
 
 static void create(void) {
+  LOGD->write_syslog("**** Starting Seas of Night, version "
+		     + GAME_VERSION + " ****");
+
   /* Build game driver and set it */
   if(!find_object(GAME_DRIVER))
     compile_object(GAME_DRIVER);
@@ -37,14 +40,6 @@ static void create(void) {
 }
 
 static void set_up_scripting(void) {
-  /* Set up special AUTO paths for scripts */
-  if(!find_object(PATHAUTOD))
-    compile_object(PATHAUTOD);
-
-  compile_object(SCRIPT_AUTO_OBJECT);
-
-  CONFIGD->set_path_special_object(find_object(PATHAUTOD));
-
   /* Test script obj */
   compile_object("/usr/game/script/test_script");
   call_other("/usr/game/script/test_script", "???");
