@@ -1,18 +1,22 @@
 ~zones{
      ~segment{
          ~segnum{0}
-         ~zonenum{-1}
+         ~zonenum{0}
      }
      ~segment{
          ~segnum{1}
-         ~zonenum{-1}
+         ~zonenum{0}
      }
      ~segment{
          ~segnum{2}
-         ~zonenum{-1}
+         ~zonenum{0}
      }
      ~segment{
          ~segnum{3}
-         ~zonenum{-1}
+         ~zonenum{0}
+     }
+     ~segment{
+         ~segnum{4}
+         ~zonenum{0}
      }
 }
