@@ -1,0 +1,91 @@
+USER_STATE Developer Documentation
+
+The USER_STATE object, /usr/common/lib/user_state, implements an
+abstraction to deal with text passing to and from the user via the
+/usr/System/obj/user object.  A given user object will keep a stack of
+zero or more states to filter input through.
+
+User States may implement scriptlike functionality, such as the
+set_obj_desc User State which will set the description of a given
+object when input is passed to it.  By pushing it as well as an
+enter_data User State, the enter_data state will allow text editing
+and only when the user finishes and commits the changes will the
+set_obj_desc operation occur.
+
+Because the states stack on each other, you could have, for instance,
+a text editing session (enter_data) interrupted by incoming input
+which pushed a scroll_text operation -- requiring the user to scroll
+through that text before returning to the enter_data operation.
+
+Since states can be pushed and popped without prior notice, it's
+important for them to be able to summarize the user's state when they
+get switched back to.  It's also important for them to know when they
+are switched away from so that they can, for instance, ask the user to
+confirm when forcibly switched away from, or save his or her draft for
+later editing.
+
+Any function in the new User State may call pop_state(), which removes
+the current state from the stack of the associated user object.  Such
+a call is primarily a way to terminate the functionality of this state
+when it has finished.
+
+The send_string function will send information directly to the user's
+network connection without passing it through the stack of User States
+first.  Any User State may call it, but should be careful in doing so
+to avoid altering the functionality of other User States.
+
+A state may call pass_data to pass data through to the next state in
+sequence.  A call to pass_data with nil as the argument means that the
+previous state has finished and wishes the user object to print and
+appropriate prompt.  See also below.
+
+The overridable functions inherited from the USER_STATE object are as
+follows:
+
+* int from_user(string input)
+
+The from_user function receives an input string, supplied by the user
+or a prior USER_STATE, and does what it likes with it.  It may call
+pass_data with a string as an argument to pass the data on to the next
+user state in sequence.  The function should return a MODE constant
+such as MODE_ECHO -- this allows it to do such things as disconnect
+the user, if it so chooses.
+
+* void to_user(string output)
+
+This function is called when data is flowing toward the user.  The
+state may intercept it, alter it, or just pass it along unchanged.  If
+switch_to has been called more recently than switch_from then this
+state is the top state and the information has come directly from the
+user object's network connection.
+
+* void switch_to(int pushp)
+
+The switch_to function is called on the object when it becomes the
+active (top) state.  The argument, pushp, is true when the state has
+just been pushed rather than another state being popped in order to
+make the called state active.  This argument can frequently be
+ignored.
+
+* void switch_from(int popp)
+
+The switch_from function is called on the object when it stops being
+the active (top) state.  The argument, popp, is true when a state has
+just been popped to make this state active, rather than a new state
+being pushed above it on the stack.  The argument can frequently be
+ignored.
+
+* static void pass_data(string data)
+
+If defined, this function overrides the default functionality of
+pass_data.  Normally pass_data will send this data as input to the
+next state in the queue.  The new pass_data may wish to override this
+behavior.  Be sure to handle the special case pass_data(nil)
+correctly.
+
+* void init(object new_user, object new_next_state)
+
+This function is called once when the state is initialized.  It
+supplies the user object and next state object to the newly-created
+state.  Normally it should be overridden only by those with an
+exceptionally firm understanding of the entire USER_STATE subsystem.
