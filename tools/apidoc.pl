@@ -10,9 +10,9 @@ my %priv_objs;   # Privileged LPC objects that define API funcs
 my %all_api_files;
 my @the_api_files = `find . -name "*.api"`;
 
-# Yet unused
-my %func_names;     # Function names defined in various places
 my %obj_filenames;  # Output files for particular object names
+
+my %func_names;     # Function names defined in various places
 
 #################################################
 # Impromptu 'main'-type code
@@ -27,16 +27,28 @@ unless(-d $output_path) {
     mkdir($output_path);
 }
 
-# For each /usr/XXX/blah/foo.c object, output its files
+# Tmp variables and an object list
 my ($obj, $obj_index, @objs, $fileref, $file_index);
+@objs = sort keys %priv_objs;
+
+# For each API entry, index it
 $obj_index = 1;
 $file_index = 1;
-@objs = sort keys %priv_objs;
+foreach $obj (@objs) {
+    foreach $fileref (@{$priv_objs{$obj}}) {
+	$fileref->{output_html} = "file_idx_${obj_index}_$file_index.html";
+	$file_index++;
+    }
+
+    $obj_filenames{$obj} = "obj_idx$obj_index.html";
+    $obj_index++;
+}
+
+# For each /usr/XXX/blah/foo.c object, output its files
 foreach $obj (@objs) {
     print "Object $obj APIs:\n";
 
     html_for_object($obj, @{$priv_objs{$obj}});
-    $obj_index++;
 }
 
 html_for_index();
@@ -209,11 +221,10 @@ sub html_for_object {
 # HTML for specific API file entries
 sub html_for_file {
     my $fileref = shift;
-    my $tmpname = ">$output_path/file_idx_${obj_index}_$file_index.html";
+
+    my $tmpname = ">$output_path/$fileref->{output_html}";
 
     open(FILE, $tmpname) or die "Can't open file $tmpname: $!";
-
-    $fileref->{output_html} = "file_idx_${obj_index}_$file_index.html";
 
     print FILE <<"EOF";
 
@@ -226,6 +237,8 @@ sub html_for_file {
       p {font-family: serif, font-weight: normal; color: black;
          font-size: 12pt }
       h3 {font-family: serif; font-weight: bold; color: #FF20FF;
+          font-size: 18pt}
+      h4 {font-family: serif; font-weight: bold; color: #0000FF;
           font-size: 16pt}
      -->
     </style>
@@ -236,12 +249,35 @@ sub html_for_file {
 
     <h3 align="center"> API Function: $fileref->{func_name} </h3>
 
+    <dl>
+      <dt> Summary: </dt>
+      <dd> $fileref->{func_desc} <br/> <br/> </dd>
+
+      <dt> Defined In LPC Object: </dt>
+      <dd> $fileref->{def_file} <br/> <br/> </dd>
+
+      <dt> Prototype: </dt>
+      <dd> $fileref->{prototype} <br/> <br/> </dd>
+
+      <dt> Can Be Called By: </dt>
+      <dd> $fileref->{called_by} <br/> <br/> </dd>
+
+      <dt> Description: </dt>
+      <dd> <p> $fileref->{desc} </p> </dd>
+
+      <dt> Return Value:</dt>
+      <dd> $fileref->{return} <br/> <br/> </dd>
+
+      <dt> Errors:</dt>
+      <dd> $fileref->{errors} <br/> <br/> </dd>
+
+      <dt> See Also:</dt>
+      <dd> $fileref->{see_also} </dd>
 EOF
     ;
 
-
-
     print FILE <<"EOF";
+    </dl>
 
     <a href="http://sourceforge.net">
       <img src="http://sourceforge.net/sflogo.php?group_id=48659&type=6"
@@ -253,7 +289,6 @@ EOF
 EOF
     ;
     close(FILE);
-    $file_index++;
 }
 
 ################################# html_for_obj ####################
@@ -266,10 +301,9 @@ sub html_for_obj {
     my ($obj_name, @filerefs) = @_;
     my ($tmpname, $fileref);
 
-    $tmpname = ">$output_path/obj_idx$obj_index.html";
+    $tmpname = ">$output_path/$obj_filenames{$obj_name}";
     open(FILE, $tmpname)
 	or die "Can't open obj index file $tmpname: $!";
-    $obj_filenames{$obj_name} = "obj_idx$obj_index.html";
 
     print FILE <<"EOF";
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
@@ -295,7 +329,11 @@ sub html_for_obj {
 EOF
     ;
 
-    foreach $fileref (@filerefs) {
+    my @tmprefs = sort {
+	$a->{func_name} cmp $b->{func_name};
+    } @filerefs;
+
+    foreach $fileref (@tmprefs) {
 	print FILE "      <li><a href=\"$fileref->{output_html}\">"
 	    . $fileref->{prototype} . "</a></li>\n";
     }
