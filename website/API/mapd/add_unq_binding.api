@@ -1,0 +1,32 @@
+FILE
+	/usr/common/sys/mapd.c
+
+NAME
+	add_unq_binding - register an object type with the MapD
+
+PROTOTYPE
+	void add_unq_binding(string tag_name, string tag_path)
+
+CALLED BY
+	System, Common, Game
+
+DESCRIPTION
+	Registers an object type with MapD.  This is how the room
+	binder file works as well.  From the time of this registration,
+	an object added with add_unq_text_rooms may use the name given
+	by tag_name as a valid object type.
+
+	This is currently of limited use for the current file format, since
+	the bindings are hardcoded into the DTD files.  By either changing
+	the DTDs are changing the way parsing works, you can alter this.
+	Phantasmal will do so in the near future.
+
+RETURN VALUE
+	None.
+
+ERRORS
+	Registering an already-registered tag will cause an error.  So will
+	giving a tag_path to an object that doesn't exist or won't compile.
+
+SEE ALSO
+	add_unq_text_rooms
