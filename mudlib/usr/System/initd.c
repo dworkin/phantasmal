@@ -117,6 +117,8 @@ static void create(varargs int clone)
   rsrc::add_owner("common");
   rsrc::add_owner("game");
 
+  access::set_global_access("common", READ_ACCESS);
+
   driver = find_object(DRIVER);
 
   /* driver->message("Loading system objects...\n"); */
