@@ -1,4 +1,4 @@
-/* $Header: /cvsroot/phantasmal/testgame/usr/game/obj/user.c,v 1.9 2005/03/16 00:05:16 angelbob Exp $ */
+/* $Header: /cvsroot/phantasmal/testgame/usr/game/obj/user.c,v 1.10 2005/03/23 23:45:46 angelbob Exp $ */
 
 #include <kernel/kernel.h>
 #include <kernel/user.h>
@@ -176,7 +176,7 @@ int name_is_forbidden(string name) {
   string filename;
 
   if(previous_program() != PHANTASMAL_USER)
-    return 1;
+    error("Wrong program calling name_is_forbidden!");
 
   /* No trailing spaces or slashes in names allowed */
   if (!name || strlen(name) == 0 || sscanf(name, "%*s ") != 0 ||
@@ -402,7 +402,7 @@ void player_login(int first_login)
 static void player_logout(void)
 {
   if(previous_program() != PHANTASMAL_USER)
-    return;
+    error("Wrong program calling player_logout!");
 
   /* Teleport body to meat locker */
   if(body) {
