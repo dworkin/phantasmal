@@ -78,8 +78,9 @@ GENERIC_SYSV    SYSV Unix.  Copy src/host/Makefile.sysv to src/host/Makefile.
   <tt>dgd/src/host/Makefile.sysv</tt> to
   <tt>dgd/src/host/Makefile</tt>.  For Macintosh or Windows you'd want
   to read the appropriate README file and follow its instructions.
-  Those files should be self-explanatory, and should tell you how to
-  compile the server.
+  It'll tell you where to find a project file for DGD for your
+  compiler.  Normally those files ship with DGD, so the README file
+  will just tell you the right subdirectory to look in.
 </p>
 
 <p>
@@ -88,47 +89,58 @@ GENERIC_SYSV    SYSV Unix.  Copy src/host/Makefile.sysv to src/host/Makefile.
   if your problem is already known, and if it's in the DGD mailing
   list archives.  You'll always look better asking questions on the
   list if you've obviously made an effort on your own behalf first.
-  It makes people more likely to help you.
+  It makes people more likely to help you.  The DGD mailing list is a
+  very powerful tool, and has many of the most competent DGD users in
+  the world reading it regularly.  Try to be respectful of it, so that
+  its readers will, in turn, respect <em>you</em>.
+</p>
+
+<p>
+  To find the DGD mailing list, try doing a Google search for
+  &quot;DGD Mailing List&quot;.  You should be able to find a page
+  that will tell you how to sign up for that list, and how to find the
+  old archived messages from the list.
 </p>
 
 
 @@SECTION Setup.RunKernel Running the Kernel Library
 
 <p>
-  To do most of the exercises in this book, you'll need to be able to
-  run the Kernel Library.  Luckily, a copy comes with every copy of
-  DGD.  So if you've already installed DGD, you've already installed
-  the Kernel.
+  You'll need to run the Kernel Library to do most of the exercises in
+  this book.  A copy comes with every copy of DGD.  So if you've
+  already installed DGD, you've already installed the Kernel.
 </p>
 
 <p>
-  Your copy of DGD came with a file called &quot;mud.dgd&quot;.  Look
-  in DGD's directory and you should find it pretty quickly.  You'll
-  need to edit that file before you can use it.
+  Your copy of DGD came with a file called <tt>mud.dgd</tt>.  Look in
+  DGD's directory and you should find it pretty quickly.  You'll need
+  to edit that file before you can use it.
 </p>
 
 <p>
-  In that file, you'll see various lines assigning values to various
-  words.  One of them will say something like <code>directory =
+  In <tt>mud.dgd</tt>, you'll see various lines assigning values to
+  various names.  One line will say something like <code>directory =
   &quot;/home/dworkin/dgd/mud&quot;</code>.  You'll need to change
-  that path to the <tt>mud</tt> subdirectory of the absolute path of
-  the directory where you installed DGD.  For instance, if you
-  installed DGD into <tt>~alan/dgd</tt> on your Unix system, you'd
-  change the filename in quotes to <tt>/home/alan/dgd/mud</tt>.  If
-  you installed DGD into <tt>C:\Programs\DGD</tt> on your Windows
-  machine, you'd change the line to <code>directory =
-  &quot;C:\Programs\DGD\mud&quot;</code>.  The end of the line, the
-  part surrounded by stars and slashes, is a comment.  You can ignore
-  it.
+  that path to the absolute path for the directory where you installed
+  the Kernel Library.  That's the <tt>mud</tt> subdirectory of DGD.
+  For instance, if you installed DGD into <tt>~alan/dgd</tt> on your
+  Unix system, you'd change the filename in quotes to
+  <tt>/home/alan/dgd/mud</tt>.  If your DGD directory wound up in
+  <tt>C:\Programs</tt> on your Windows machine, you'd change the line
+  to <code>directory = &quot;C:\Programs\DGD\mud&quot;</code>.  The
+  end of the line, the part surrounded by stars and slashes, is a
+  comment.  You can ignore it or remove it entirely (including all the
+  stars and slashes).
 </p>
 
 <p>
   Note that the path has to be an <em>absolute</em> path.  That means
-  you have to start it with a slash or a backslash or a tilde or a
-  drive specifier, depending on your platform.  But you <em>can't</em>
-  just start it with a subdirectory of the directory where you
-  installed DGD, that won't work.  No relative paths.  So
-  <tt>/home/bob/dgd</tt> is fine, but <tt>DGD\MUD</tt> isn't.
+  you have to start it with a slash on Unix.  You'd use a backslash or
+  a drive letter on Windows.  But you <em>can't</em> just start it
+  with the name of the directory where you installed DGD and leave out
+  where on the drive that directory is, that won't work.  No relative
+  paths.  So <tt>/home/bob/dgd/mud</tt> and
+  <tt>C:\Programs\DGD\MUD</tt> are fine, but <tt>DGD\MUD</tt> isn't.
 </p>
 
 <p>
