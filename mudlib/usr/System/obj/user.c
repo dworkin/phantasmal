@@ -1,4 +1,4 @@
-/* $Header: /cvsroot/phantasmal/mudlib/usr/System/obj/user.c,v 1.48 2003/03/19 21:44:50 angelbob Exp $ */
+/* $Header: /cvsroot/phantasmal/mudlib/usr/System/obj/user.c,v 1.49 2003/03/19 22:02:07 angelbob Exp $ */
 
 #include <kernel/kernel.h>
 #include <kernel/user.h>
@@ -1629,6 +1629,11 @@ static void cmd_get(object user, string cmd, string str) {
     message("You choose ");
     send_phrase(tmp[0]->get_glance());
     message(".\r\n");
+  }
+
+  if(tmp[0] == location) {
+    message("You can't get that.  You're standing inside it.\r\n");
+    return;
   }
 
   if(tmp[0]->get_detail_of()) {
