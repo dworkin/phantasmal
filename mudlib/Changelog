@@ -1,4 +1,4 @@
-| Release 0.014:
+Release 0.014:
 	* Bugfix to @make_room to deal with rooms whose location is nil
 	* Added floating-point support to UNQ load/save
 	* More exit stuff, including load/save
@@ -13,6 +13,10 @@
 	* HelpD now specifically calls rlimits{...;-1} to upgrade
 	* HelpD now alphabetizes the words in a help query to avoid needing
 	  multiple orders
+	* Objects now save in multiple files by zone
+	* There's now a system for unresolved rooms - this is needed to
+	  deal with zone loading and unloading properly if it's not all
+	  done in one large chunk.
 
 Release 0.013:
 	* Added @list, an alias for @list_rooms.
