@@ -15,6 +15,16 @@ inherit access API_ACCESS;
 /* prototypes */
 static void cmd_list_exit(object user, string cmd, string str);
 
+#define SPACE10 "          "
+#define SPACE40 (SPACE10 + SPACE10 + SPACE10 + SPACE10)
+
+private string ralign10(string str, int alignment) {
+  return (str + SPACE10)[..(alignment-1)];
+}
+
+private string ralign40(string str, int alignment) {
+  return (str + SPACE40)[..(alignment-1)];
+}
 
 static string read_entire_file(string file) {
   string ret;
@@ -52,47 +62,23 @@ static void cmd_list_room(object user, string cmd, string str) {
   mixed*  rooms;
   int     ctr, zone;
   string  tmp;
+  object  room, phr;
 
   if(str) {
     str = STRINGD->trim_whitespace(str);
     str = STRINGD->to_lower(str);
+  } else {
+    str = "";
   }
 
-  /* Just @list_rooms with no argument */
-  if(str && (str == "all" || str == "world" || str == "mud")) {
+  if(str == "all" || str == "world" || str == "mud") {
     user->message("Rooms in MUD (" + ZONED->num_zones() + " zones):\r\n");
 
     rooms = ({ });
     for(zone = 0; zone < ZONED->num_zones(); zone++) {
       rooms += MAPD->rooms_in_zone(zone);
     }
-    tmp = "";
-    for(ctr = 0; ctr < sizeof(rooms); ctr++) {
-      object room, phr;
-
-      room = MAPD->get_room_by_num(rooms[ctr]);
-      phr = room->get_glance();
-      tmp += "  " + rooms[ctr] + "  ";
-      if (room->get_mobile()) {
-        tmp += "(mob)  ";
-      } else if (room->get_detail_of()) {
-        tmp += "(det)  ";
-      } else if (room->get_location() && room->get_location()!=MAPD->get_room_by_num(0)) {
-        tmp += "(obj)  ";
-      } else {
-        tmp += "(room) ";
-      }
-      tmp += phr->to_string(user);
-      tmp += "\r\n";
-    }
-    tmp += "-----\r\n";
-    user->message_scroll(tmp);
-
-    return;
-  }
-
-  if(!str || str == "" || str == "zone") {
-    object room;
+  } else if(str == "" || str == "zone") {
     int    zone;
     int*   rooms;
 
@@ -103,33 +89,36 @@ static void cmd_list_room(object user, string cmd, string str) {
     if(zone == -1)
       zone = 0;  /* Unzoned rooms */
 
-    tmp = "";
     rooms = MAPD->rooms_in_zone(zone);
-    for(ctr = 0; ctr < sizeof(rooms); ctr++) {
-      object room, phr;
+  }
 
-      room = MAPD->get_room_by_num(rooms[ctr]);
-      phr = room->get_glance();
-      tmp += "  " + rooms[ctr] + "  ";
-      if (room->get_mobile()) {
-        tmp += "(mob)  ";
-      } else if (room->get_detail_of()) {
-        tmp += "(det)  ";
-      } else if (room->get_location() && room->get_location()!=MAPD->get_room_by_num(0)) {
-        tmp += "(obj)  ";
-      } else {
-        tmp += "(room) ";
-      }
-      tmp += phr->to_string(user);
-      tmp += "\r\n";
-    }
-
-    tmp += "-----\r\n";
-    user->message_scroll(tmp);
+  if(!rooms) {
+    user->message("Usage: " + cmd + "\r\n"
+		  + "       " + cmd + " world\r\n");
     return;
   }
 
-  user->message("Usage: " + cmd + "\r\n");
+  tmp = "";
+  for(ctr = 0; ctr < sizeof(rooms); ctr++) {
+    room = MAPD->get_room_by_num(rooms[ctr]);
+    phr = room->get_glance();
+    tmp += ralign10(rooms[ctr], 6) + "  ";
+    if (room->get_mobile()) {
+      tmp += "(body) ";
+    } else if (room->get_detail_of()) {
+      tmp += "(det)  ";
+    } else if (room->get_location()
+	       && room->get_location()!=MAPD->get_room_by_num(0)) {
+      tmp += "(port) ";
+    } else {
+      tmp += "(room) ";
+    }
+    tmp += phr->to_string(user);
+    tmp += "\r\n";
+  }
+
+  tmp += "-----\r\n";
+  user->message_scroll(tmp);
 }
 
 
