@@ -2,7 +2,7 @@
                       "http://www.w3.org/TR/xhtml1/DTD/strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
-<title>Modifying Phantasmal Tutorials: Modifying Phantasmal</title>
+<title>Modifying Phantasmal Tutorials: UNQ Files</title>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
 <link href="http://phantasmal.sf.net/phantasmal.css"
       rel="stylesheet" type="text/css" />
@@ -60,21 +60,59 @@
 	    <a href="../../index.html">Phantasmal</a> &gt;
             <a href="../index.html">Tutorials</a> &gt;
             <a href="index.html">Modifying</a> &gt;
-            <a href="">Modifying Phantasmal</a>
+            <a href="">UNQ Files</a>
           </td>
         </tr>
         <tr>
           <td class="content">
     
 
-    <h3 style="text-align: center"> Modifying Phantasmal </h3>
+  <h3 style="text-align: center"> UNQ Files:  What Are They? </h3>
 
-    <ul>
-      <li> <a href="UNQ.html">UNQ Files</a> </li>
-      <li> The UNQable type </li>
-      <li> <a href="HelpEntries.html">Making new Help entries</a> </li>
-      <li> <a href="UserStates.html">Making new USER_STATEs</a> </li>
-    </ul>
+  <p>
+    UNQ is a format for structured data storage.  It's a lot like XML,
+    though it's got some advantages for our use that XML doesn't.
+    Specifically, there are some features that XML has that makes it
+    difficult to use and to parse.  <a
+    href="http://www.skotos.net">Skotos</a> solves this problem by
+    just not implementing most of the problem features in their XML
+    parser.  Phantasmal solves it by using something other than XML.
+    That something is called <a
+    href="http://plunq.sourceforge.net/name.html">UNQ</a>, which was
+    invented by Tom Lokovic as the basis of a language called PLUNQ.
+    We don't use PLUNQ in Phantasmal, but we <i>do</i> use UNQ.  Clear
+    as mud?
+  </p>
+
+  <p>
+    So what's different from XML?  First off, UNQ has none of the
+    extra little quoted things inside tags.  Non-tagged stuff
+    translates fine.  So an XML/HTML fragment like <tt>What's
+    &lt;i&gt;up&lt;/i&gt;, doc?</tt> would become <tt>What's ~i{up},
+    doc?</tt> in UNQ.  Note that a tagged fragment starts with a
+    tilde, then what the tag is (in this case, &quot;i&quot;), and then has the
+    content in curly braces.
+  </p>
+
+    <p>
+      Like HTML and XML, UNQ embeds nicely in itself.  So an HTML
+      expression like <tt>&lt;body&gt; Content goes
+      &lt;b&gt;here&lt;/b&gt; &lt;/body&gt;</tt> would become
+      <tt>~body{ Content goes ~b{here} }</tt> in UNQ.
+    </p>
+
+    <p>
+      Unlike in HTML, you can just skip the label.  So, for instance,
+      <tt>{{Fred}{25}}{{Ethel}{39}}</tt> is a perfectly good UNQ
+      expression.  The equivalent XML would have a lot of empty tags
+      (like, tags that had no name, written something like &lt;&gt;)
+      and look awful.
+    </p>
+
+    <p>
+      UNQ pays attention to whitespace, so <tt>~bob{spam}</tt> and
+      <tt>~bob { spam }</tt> are quite different from each other.
+    </p>
             <address> 
             <span><a href="mailto:angelbob-remove-spamfree@spamfree.users.sf.net">Noah Gibbs</a></span> 
             </address></td> 
