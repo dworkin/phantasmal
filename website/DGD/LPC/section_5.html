@@ -140,12 +140,12 @@ binary_port = ({ 8889, 8890, 9725 })
     </p>
 
     <p>
-      Swap_file is the name of the swap_file that DGD will use for
+      Swap_file is the name of the swap file that DGD will use for
       your objects when they're not in the active set in RAM (if you
-      don't know what this means, don't worry).  While it can get big
-      for a running game, you can control just <i>how</i> big with
-      some entries in this file.  Usually it stays pretty small for a
-      test program.
+      don't know what this means, don't worry).  The swap file of a
+      running game can get big.  You can control just <i>how</i> big
+      with the swap_sectors and sector_size entries in this file.
+      Usually it stays pretty small for a test program.
     </p>
 
     <p>
@@ -181,44 +181,58 @@ binary_port = ({ 8889, 8890, 9725 })
     <p>
       Swap_size is the total number of sectors in the swap file, and
       sector_size is how big one of those sectors is.  Every object
-      (excepts Light-Weight Objects, LWOs, which we talk about later)
-      in LPC takes some number of sectors.  If it takes less than
-      some whole number of sectors, it gets rounded up -- so if an
+      (except Light-Weight Objects, LWOs, which we talk about later)
+      in LPC takes some number of sectors.  If it takes less than some
+      whole number of sectors, the number gets rounded up.  So if an
       LPC object requires 2 sectors plus five bytes, it'll get rounded
-      up to three sectors.  If your sector_size is small, you won't
-      get much memory wasted.  If it's large, you'll find that DGD
-      swaps things to and from the disk faster.  The usual default
-      sector_size is 512 bytes, and it works pretty well for most
-      simple applications.  The swap_size is more variable, and you'll
-      probably find yourself having to increase it periodically as
-      your game gets bigger and you start running out of memory or
-      sectors.
+      up to three sectors.  If your sector_size is very small, you
+      won't waste much memory but swapping will be slower.  If the
+      sector_size is large then you'll find that DGD swaps things to
+      and from the disk faster, but you waste more memory.  The usual
+      default sector_size is 512 bytes, and it works pretty well for
+      most simple applications.  Larger applications that swap massive
+      volumes of data should consider increasing the size, though that
+      can actually worsen the problem in some cases.
+    </p>
+
+    <p>
+      The swap_size is simpler to choose than sector_size.  You'll
+      find yourself having to increase it periodically as your game
+      gets bigger and you start running out of memory or sectors.  In
+      some cases, the MUD running very slowly can be a symptom of too
+      small a swap_size, so try increasing it every so often to see if
+      it helps performance.
     </p>
 
     <p>
       The cache_size is how many of those sectors stay in RAM.  The
       bigger this is, the faster your library runs and the more of
-      your memory it takes up.  You'll need to decide how much memory
-      you want to devote to your running game.  Making this bigger
-      than swap_size is pretty pointless.  Making them equal just
-      means that everything runs in memory instead of on disk.  Since
-      DGD understands what it's doing better than your OS's virtual
-      memory system, you should only do this for libraries that can
-      hold everything in memory all at once.
+      your memory (as opposed to disk space) it takes up.  You'll need
+      to decide how much memory you want to devote to your running
+      game.  Making this bigger than swap_size is pretty pointless.
+      Making them equal just means that everything runs in memory
+      instead of on disk, so DGD effectively stops being disk-based.
+      Since DGD understands what it's doing better than your OS's
+      virtual memory system, you should only make DGD fully
+      memory-based for libraries that can hold everything in available
+      RAM all at once.  Do everybody a favor -- don't do this on the
+      same machine you use for your desktop.
     </p>
 
     <p>
       Several (or many) times a second, DGD will swap some objects
-      from memory to disk.  That way, it uses less memory.  It dumps
-      the stuff you haven't been using recently first, and it chooses
-      some fraction to dump out to the disk.  It will only do this
-      if more than cache_size entries are currently in memory.
-      The swap_fragment is the denominator of the fraction.  That
-      means that if swap_fragment is 50, DGD will dump 1/50th of your
-      objects to the disk when it swaps.  So if you had 500 objects
-      in memory and you didn't load any more in, you might have
-      500, then 490, then 481, then 462, and so on, as DGD dumps
-      1/50th of each new number of objects.
+      from memory to disk.  That way, it uses less of your RAM on LPC
+      objects it isn't currently playing with.  It dumps the stuff you
+      haven't been using recently first, and it chooses some fraction
+      to dump out to the disk.  It will only do this if more than
+      cache_size entries are currently in memory.  The swap_fragment
+      is the denominator of the fraction.  That means that if
+      swap_fragment is 50, DGD will dump 1/50th of your objects to the
+      disk when it swaps.  So if you had 500 objects in memory and you
+      didn't load any more in, you might have 500, then 490, then 481,
+      then 462, and so on, as DGD dumps 1/50th of each new number of
+      objects.  DGD swaps objects out at the end of each thread of
+      execution.  We'll cover what that means in a later chapter.
     </p>
 
     <p>
@@ -227,7 +241,8 @@ binary_port = ({ 8889, 8890, 9725 })
       start running out of memory, I wouldn't recommend touching
       these.  Consulting with the author of DGD or the DGD mailing
       list would be appropriate if you're doing a really large
-      application and you need it to be very carefully memory tuned.
+      application and you need the app to be very carefully memory
+      tuned.
     </p>
 
     <h3> <a name="SEC5.1.4" href="index.html#SEC5.1.4">
@@ -235,12 +250,18 @@ binary_port = ({ 8889, 8890, 9725 })
 
     <p>
       The typechecking determines how carefully DGD checks your LPC
-      code for correctness and questionable behavior.  It's highly
-      recommended that you leave the typechecking at 2, which is the
-      strictest.  If you reduce it to 1 then nil and 0 stop being
-      different from each other.  If you reduce it to 0, function
-      typechecking mostly goes away, and nil is still the same thing
-      as 0.
+      code for correctness and questionable behavior.  A typechecking
+      value of 2 is the strictest, and the default for most libraries.
+      It's highly recommended that your library leave it on that
+      setting so DGD can catch more of your bugs for you.
+    </p>
+
+    <p>
+      If you reduce it to 1, the values &quot;nil&quot; and
+      &quot;0&quot; stop being different from each other, just like in
+      many other LPC dialects.  If you reduce typechecking to 0,
+      function typechecking mostly goes away and &quot;nil&quot; is
+      still the same thing as &quot;0&quot;.
     </p>
 
     <p>
@@ -616,7 +637,7 @@ binary_port = ({ 8889, 8890, 9725 })
     </address>
     <!-- Created: Mon Jun 11 21:50:30 PDT 2001 -->
     <!-- hhmts start -->
-Last modified: Tue Jun 17 00:56:46 PDT 2003
+Last modified: Wed Jun 18 00:49:12 PDT 2003
 <!-- hhmts end -->
   </body>
 </html>
