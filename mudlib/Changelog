@@ -1,4 +1,6 @@
 Release 0.011:
+	* Moved command-sets and state-stacks into two separate libraries,
+	each inherited by the main user object (/usr/System/obj/user.c).
 	
 Release 0.010:
 

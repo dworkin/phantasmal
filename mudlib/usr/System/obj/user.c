@@ -1,4 +1,4 @@
-/* $Header: /cvsroot/phantasmal/mudlib/usr/System/obj/user.c,v 1.29 2003/02/05 21:12:19 angelbob Exp $ */
+/* $Header: /cvsroot/phantasmal/mudlib/usr/System/obj/user.c,v 1.30 2003/02/05 22:02:32 angelbob Exp $ */
 
 #include <kernel/kernel.h>
 #include <kernel/user.h>
@@ -14,6 +14,7 @@ inherit LIB_USER;
 inherit user API_USER;
 inherit rsrc API_RSRC;
 inherit cmd  "/usr/System/lib/commandsetlib";
+inherit io   "/usr/System/lib/user_io";
 
 #define STATE_NORMAL            0
 #define STATE_LOGIN             1
@@ -27,17 +28,10 @@ string password;		/* user password */
 int    locale;                  /* chosen output locale */
 int    channel_subs;            /* user channel subscriptions */
 int    body_num;                /* number of body object */
-int    num_lines;               /* how many lines on terminal */
 
-/* User-state processing stack */
-private object* state_stack;
-private mixed   state_data;
-
-private object  scroll_state;
 
 /* Random unsaved */
 static string Name;		/* capitalized user name */
-static mapping state;		/* state for a connection object */
 static string newpasswd;	/* new password */
 static object wiztool;		/* command handler */
 static int nconn;		/* # of connections */
@@ -70,15 +64,10 @@ static void create(int clone)
     user::create();
     rsrc::create();
     cmd::create();
-    state = ([ ]);
-
-    state_stack = ({ });
+    io::create();
 
     /* Default to enUS locale */
     locale = PHRASED->language_by_name("english");
-
-    /* More defaults */
-    num_lines = 20;
   } else {
     upgraded();
   }
@@ -88,9 +77,9 @@ void upgraded(void) {
   if(!find_object(SYSTEM_WIZTOOL)) { compile_object(SYSTEM_WIZTOOL); }
   if(!find_object(USER_MOBILE)) { compile_object(USER_MOBILE); }
   if(!find_object(MOBILE_PORTABLE)) { compile_object(MOBILE_PORTABLE); }
-  if(!find_object(US_SCROLL_TEXT)) { compile_object(US_SCROLL_TEXT); }
 
   cmd::upgraded();
+  io::upgraded();
 }
 
 
@@ -124,10 +113,6 @@ int get_idle_time(void) {
   return time() - timestamp;
 }
 
-int get_num_lines(void) {
-  return num_lines;
-}
-
 int is_admin(void)  {
 
   /* Can't just check wiztool's existence because we need to be able to
@@ -142,127 +127,7 @@ int is_admin(void)  {
   return 0;
 }
 
-
-/****** USER_STATE stack implementation ********/
-
-/* This does a lowest-level, unfiltered send to the connection object
-   itself.  Normally message will be filtered through the user_state
-   object(s) active, if any */
-int send_string(string str) {
-  if(SYSTEM() || previous_program() == USER_STATE) {
-    return ::message(str);
-  } else {
-    error("Can't send_string from object " + previous_program());
-  }
-}
-
-int message(string str) {
-  if(state_stack && sizeof(state_stack)) {
-    state_stack[0]->to_user(str);
-  } else {
-    return send_string(str);
-  }
-}
-
-int message_scroll(string str) {
-  if(scroll_state) {
-    scroll_state->to_user(str);
-  } else {
-    scroll_state = clone_object(US_SCROLL_TEXT);
-    if(scroll_state) {
-      scroll_state->add_text(str);
-      push_state(scroll_state);
-    } else {
-      LOGD->write_syslog("Nil scrolling state trying to send message!",
-			 LOG_ERROR);
-    }
-  }
-}
-
-void notify_done_scrolling(void) {
-  if(previous_object() != scroll_state)
-    error("Only our own scrolling state can notify a user it's done!");
-
-  scroll_state = nil;
-
-}
-
-int send_phrase(object obj) {
-  /* This is how we'll control second, etc choice of locale later on. */
-
-  return message(obj->to_string(this_object()));
-}
-
-int send_system_phrase(string phrname) {
-  object phr;
-
-  phr = PHRASED->file_phrase(SYSTEM_PHRASES, phrname);
-  if(!phr) {
-    LOGD->write_syslog("Can't find system phrase " + phrname + "!", LOG_ERR);
-  }
-  return send_phrase(phr);
-}
-
-void pop_state(object state) {
-  int first_state;
-
-  if(!state_stack || !sizeof(state_stack)) {
-    destruct_object(state);
-    error("Popping empty stack!");
-  }
-
-  if(!(state_stack && ({ state })))
-    error("Popping state not in stack!");
-
-  if(state_stack[0] == state)
-    first_state = 1;
-  else
-    first_state = 0;
-
-  state_stack = state_stack - ({ state });
-
-  if(first_state) {
-    state->switch_from(1);  /* 1 because popp is true */
-    if(sizeof(state_stack)) {
-      state_stack[0]->switch_to(0);  /* 0 because pushp is false */
-    }
-    /* No longer print prompt here, that's handled in receive_message. */
-  }
-
-  destruct_object(state);
-}
-
-void user_state_data(mixed data) {
-  if(data == nil) {
-    /* Passing nil means "done now, print a prompt". */
-    print_prompt();
-    return;
-  }
-  state_data = data;
-}
-
-void push_state(object state) {
-  if(!state_stack) {
-    state_stack = ({ });
-  }
-
-  if(sizeof(state_stack)) {
-    state->init(this_object(), state_stack[0]);
-    state_stack[0]->switch_from(0);  /* 0 because popp is false */
-  } else {
-    state->init(this_object(), nil);
-  }
-
-  state_stack = ({ state }) + state_stack;
-
-  /* Call switch_to() after adding the new state to the stack --
-     'cause it can pop the state right back off in some cases... */
-  state->switch_to(1); /* 1 because pushp is true */
-}
-
-
 /****************/
-
 
 static string username_to_filename(string str) {
   int iter;
@@ -330,70 +195,73 @@ static void restore_user_from_file(string str) {
 }
 
 
-/*
- * NAME:	message_all_users()
- * DESCRIPTION:	send message to listening users
- */
-private void message_all_users(string str)
-{
-    object *users, user;
-    int i;
-
-    users = users();
-    for (i = sizeof(users); --i >= 0; ) {
-	user = users[i];
-	if (user != this_object() &&
-	    sscanf(object_name(user), SYSTEM_USER + "#%*d") != 0) {
-	    user->message(str);
-	}
-    }
+/* This does a lowest-level, unfiltered send to the connection object
+   itself.  Normally message will be filtered through the user_state
+   object(s) active, if any */
+int send_string(string str) {
+  if(SYSTEM() || previous_program() == USER_STATE) {
+    return ::message(str);
+  } else {
+    error("Can't send_string from object " + previous_program());
+  }
 }
 
-
-/*
- * NAME:	system_phrase_all_users()
- * DESCRIPTION:	send message to listening users
- */
-private void system_phrase_all_users(string str)
-{
-    object *users, user;
-    int i;
-
-    users = users();
-    for (i = sizeof(users); --i >= 0; ) {
-	user = users[i];
-	if (user != this_object() &&
-	    sscanf(object_name(user), SYSTEM_USER + "#%*d") != 0) {
-	    user->send_system_phrase(str);
-	}
-    }
+void user_state_data(mixed data) {
+  if(data == nil) {
+    /* Passing nil means "done now, print a prompt". */
+    print_prompt();
+    return;
+  }
+  set_state_data(data);
 }
 
-/*
-private void system_phrase_room(object room, string str)
-{
+int message(string str) {
+  if(peek_state()) {
+    to_state_stack(str);
+  } else {
+    return send_string(str);
+  }
+}
+
+int send_phrase(object obj) {
+  /* This is how we'll control second, etc choice of locale later on. */
+
+  return message(obj->to_string(this_object()));
+}
+
+int send_system_phrase(string phrname) {
   object phr;
 
-  phr = PHRASED->file_phrase(SYSTEM_PHRASES, str);
-  if(!phr)
-    error("Can't get system phrase " + str);
-
-  tell_room(room, phr);
+  phr = PHRASED->file_phrase(SYSTEM_PHRASES, phrname);
+  if(!phr) {
+    LOGD->write_syslog("Can't find system phrase " + phrname + "!", LOG_ERR);
+  }
+  return send_phrase(phr);
 }
-*/
+
 
 /*
- * NAME:	tell_room()
- * DESCRIPTION:	send message to everybody in specified location
+ * NAME:	receive_message()
+ * DESCRIPTION:	process a message from the user
  */
-/*
-private void tell_room(object room, mixed msg)
+int receive_message(string str)
 {
-// replace these with proper comments if this is ever uncommented.
-// tell everyone in the room except the person themselves
-  room->tell_room(msg, ({ body }) );
+  if (previous_program() == LIB_CONN) {
+    if(peek_state()) {
+      mixed tmp;
+
+      tmp = state_receive_message(str);
+      if(!peek_state()) {
+	/* We started with a user_state active, but it's stopped now. */
+	print_prompt();
+      }
+      return tmp;
+    }
+
+    return process_message(str);
+  }
+  error("receive_message called by illegal sender");
 }
-*/
 
 
 /*
@@ -561,7 +429,7 @@ int login(string str)
       phr = PHRASED->file_phrase(SYSTEM_PHRASES, "Password: ");
       previous_object()->message(phr->to_string(this_object()));
 
-      state[previous_object()] = STATE_LOGIN;
+      set_state(previous_object(), STATE_LOGIN);
     } else {
       /* no password; login immediately */
       connection(previous_object());
@@ -570,7 +438,7 @@ int login(string str)
       message_all_users("\r\n");
 
       send_system_phrase("choose new password");
-      state[previous_object()] = STATE_NEWPASSWD1;
+      set_state(previous_object(), STATE_NEWPASSWD1);
 
       /* Check if an immort */
       if (sizeof(rsrc::query_owners() & ({ str })) == 0) {
@@ -733,30 +601,6 @@ void logout(int quit)
 }
 
 
-
-/*
- * NAME:	receive_message()
- * DESCRIPTION:	process a message from the user
- */
-int receive_message(string str)
-{
-  if (previous_program() == LIB_CONN) {
-    if(state_stack && sizeof(state_stack)) {
-      mixed tmp;
-      tmp = state_stack[0]->from_user(str);
-      if(!state_stack || !sizeof(state_stack)) {
-	/* We started with a user_state active, but it's stopped now. */
-	print_prompt();
-      }
-      return tmp;
-    }
-
-    return process_message(str);
-  }
-  error("receive_message called by illegal sender");
-}
-
-
 static int process_message(string str)
 {
   string cmd;
@@ -766,7 +610,7 @@ static int process_message(string str)
 
   timestamp = time();
 
-  switch (state[previous_object()]) {
+  switch (get_state(previous_object())) {
   case STATE_NORMAL:
     cmd = str;
     if (strlen(str) != 0 && str[0] == '!') {
@@ -816,10 +660,10 @@ static int process_message(string str)
 	case "password":
 	  if (password) {
 	    send_system_phrase("Old password: ");
-	    state[previous_object()] = STATE_OLDPASSWD;
+	    set_state(previous_object(), STATE_OLDPASSWD);
 	  } else {
 	    send_system_phrase("New password: ");
-	    state[previous_object()] = STATE_NEWPASSWD1;
+	    set_state(previous_object(), STATE_NEWPASSWD1);
 	  }
 	  return MODE_NOECHO;
 
@@ -884,7 +728,7 @@ static int process_message(string str)
     }
     message("\r\n");
     send_system_phrase("New password: ");
-    state[previous_object()] = STATE_NEWPASSWD1;
+    set_state(previous_object(), STATE_NEWPASSWD1);
     return MODE_NOECHO;
 
   case STATE_NEWPASSWD1:
@@ -904,7 +748,7 @@ static int process_message(string str)
     newpasswd = str;
     message("\r\n");
     send_system_phrase("Retype new password: ");
-    state[previous_object()] = STATE_NEWPASSWD2;
+    set_state(previous_object(), STATE_NEWPASSWD2);
     return MODE_NOECHO;
 
   case STATE_NEWPASSWD2:
@@ -930,11 +774,11 @@ static int process_message(string str)
 
   /* Don't print a prompt if we've pushed a state_stack -- they
      print their own prompts. */
-  if(!state_stack || !sizeof(state_stack)) {
+  if(!peek_state()) {
     print_prompt();
   }
 
-  state[previous_object()] = STATE_NORMAL;
+  set_state(previous_object(), STATE_NORMAL);
   return MODE_ECHO;
 }
 
@@ -1000,7 +844,7 @@ static void cmd_set_lines(object user, string cmd, string str) {
     return;
   }
 
-  num_lines = new_num_lines;
+  set_num_lines(new_num_lines);
   message("Set number of lines to " + new_num_lines + ".\r\n");
 }
 
