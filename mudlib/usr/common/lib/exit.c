@@ -134,14 +134,15 @@ private void set_flags(int flags, int value) {
 
 /* These may seem a little weird.  The problem is, we need to access
  * a different objects private function.  The recursion takes care
-  * of this for us */
+ * of this for us.  I use get_link()>0 because == -1 for one-way and
+ * ==0 for non-existent link. */
 void set_container(int value) {
   object link_exit;
 
   if(!SYSTEM() && !COMMON())
     error("Only SYSTEM code can currently set an object as a container!");
 
-  if (get_link()!=-1 && previous_program() != EXIT) {
+  if (get_link()>0 && previous_program() != EXIT) {
     link_exit = EXITD->get_exit_by_num(get_link());
     link_exit->set_container(value);
   }
@@ -156,10 +157,9 @@ void set_open(int value) {
   if(!SYSTEM() && !COMMON())
     error("Only SYSTEM code can currently set an object as open!");
 
-  if (get_link()!=-1 && previous_program() != EXIT) {
+  if (get_link()>0 && previous_program() != EXIT) {
     link_exit = EXITD->get_exit_by_num(get_link());
-    /* why is this necessary on boot-up? */
-    err = catch ( link_exit->set_open(value) );
+    link_exit->set_open(value);
   }
 
   set_flags(OF_OPEN, value);
@@ -171,7 +171,7 @@ void set_openable(int value) {
   if(!SYSTEM() && !COMMON())
     error("Only SYSTEM code can currently set an object as openable!");
 
-  if (get_link()!=-1 && previous_program() != EXIT) {
+  if (get_link()>0 && previous_program() != EXIT) {
     link_exit = EXITD->get_exit_by_num(get_link());
     link_exit->set_openable(value);
   }
@@ -185,7 +185,7 @@ void set_locked(int value) {
   if(!SYSTEM() && !COMMON())
     error("Only SYSTEM code can currently set an object as a container!");
 
-  if (get_link()!=-1 && previous_program() != EXIT) {
+  if (get_link()>0 && previous_program() != EXIT) {
     link_exit = EXITD->get_exit_by_num(get_link());
     link_exit->set_locked(value);
   }
@@ -199,7 +199,7 @@ void set_lockable(int value) {
   if(!SYSTEM() && !COMMON())
     error("Only SYSTEM code can currently set an object as open!");
 
-  if (get_link()!=-1 && previous_program() != EXIT) {
+  if (get_link()>0 && previous_program() != EXIT) {
     link_exit = EXITD->get_exit_by_num(get_link());
     link_exit->set_lockable(value);
   }
