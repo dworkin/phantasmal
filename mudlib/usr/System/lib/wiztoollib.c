@@ -61,8 +61,6 @@ static void create(varargs int clone)
       auto::compile_object(SIMPLE_PORTABLE);
     if(!find_object(SIMPLE_ROOM))
       auto::compile_object(SIMPLE_ROOM);
-    if(!find_object(SIMPLE_DETAIL))
-      auto::compile_object(SIMPLE_DETAIL);
   }
 }
 
