@@ -528,6 +528,9 @@ string to_unq_text(void) {
   ret += "  ~type{" + this_object()->get_type() + "}\n";
   ret += "  ~number{" + number + "}\n";
   ret += "  ~body{" + bodynum + "}\n";
+  if(function_object("mobile_unq_fields", this_object())) {
+    ret += this_object()->mobile_unq_fields();
+  }
   ret += "}\n\n";
 
   return ret;
@@ -542,7 +545,7 @@ void from_dtd_unq(mixed* unq) {
    choose to use this.  It extracts the fields it uses, leaving the
    rest.
 */
-mixed* mobile_from_dtd_unq(mixed* unq) {
+static mixed* mobile_from_dtd_unq(mixed* unq) {
   mixed *ret, *ctr;
   int    bodynum;
 
