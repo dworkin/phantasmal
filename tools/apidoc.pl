@@ -402,33 +402,33 @@ sub html_for_index {
 
     <h3 align="center"> Phantasmal API Objects </h3>
 
-    <ul>
 EOF
     ;
 
-    my ($user, $newuser);
-    $user = undef;
+    my (%userbucket, $user);
+    $userbucket{"-"} = ([ ]);
+
     for $obj_name (sort keys %obj_filenames) {
 	if($obj_name =~ /^\/usr\/([A-Za-z0-9_]+)\//) {
-	    $newuser = $1;
+	    $user = $1;
+
+	    # Add to user bucket
+	    if(defined($userbucket{$user})) {
+		$userbucket{$user} = ([ @{$userbucket{$user}}, $obj_name ]);
+	    } else {
+		$userbucket{$user} = ([ $obj_name ]);
+	    }
 	} else {
-	    $newuser = "";
+	    # Add to 'userless' bucket
+	    $userbucket{"-"} = ([ @{$userbucket{"-"}}, $obj_name ]);
 	}
+    }
 
-	if(defined($user) and $user ne $newuser) {
-	    print FILE "    </ul>\n    <ul>\n";
-	    $user = $newuser;
-	}
-	unless(defined($user)) {
-	    $user = $newuser;
-	}
-
-	print FILE "      <li> <a href=\"$obj_filenames{$obj_name}\">"
-	    . "$obj_name </a> </li>\n";
+    foreach $user (keys %userbucket) {
+	print_index_user($user, @{$userbucket{$user}});
     }
 
     print FILE <<"EOF";
-    </ul>
 
     <a href="http://sourceforge.net">
       <img src="http://sourceforge.net/sflogo.php?group_id=48659&type=6"
@@ -440,4 +440,19 @@ EOF
 EOF
 
     close(FILE);
+}
+
+sub print_index_user {
+    my $user = shift;
+    my @filenames = @_;
+
+    my $obj_name;
+
+    print FILE "    <b> Files under /usr/$user </b>\n";
+    print FILE "    <ul>\n";
+    for $obj_name (sort keys %obj_filenames) {
+	print FILE "      <li> <a href=\"$obj_filenames{$obj_name}\">"
+	    . "$obj_name </a> </li>\n";
+    }
+    print FILE "    </ul>\n";
 }
