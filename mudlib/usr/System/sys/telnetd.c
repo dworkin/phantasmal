@@ -3,7 +3,7 @@
 #include <config.h>
 #include <log.h>
 
-static string welcome_banner, suspended_banner, shutdown_banner;
+static string suspended_banner, shutdown_banner;
 static object logd;
 static int    suspended, shutdown;
 
@@ -24,9 +24,6 @@ void upgraded(varargs int clone) {
   if(!find_object(SYSTEM_USER)) { compile_object(SYSTEM_USER); }
 
   logd = find_object(LOGD);
-  welcome_banner = ::read_file(WELCOME_MESSAGE);
-  if(!welcome_banner)
-    error("Can't read 'welcome' message file " + WELCOME_MESSAGE + "!");
   suspended_banner = ::read_file(SUSPENDED_MESSAGE);
   if(!suspended_banner)
     error("Can't read 'suspended' message file " + SUSPENDED_MESSAGE + "!");
@@ -82,10 +79,10 @@ string query_banner(object connection)
      return nil;
 
   if(shutdown)
-    return shutdown_banner;
+    return CONFIGD->get_shutdown_message();
 
   if(suspended)
-    return suspended_banner;
+    return CONFIGD->get_suspended_message();
 
-  return welcome_banner;
+  return CONFIGD->get_welcome_message();
 }

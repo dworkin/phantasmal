@@ -1,14 +1,39 @@
 #include <config.h>
 #include <log.h>
 
-static void configure_from_file(void);
+static void config_unq_file(void);
 static void configure_from_unq(mixed* unq);
+static void load_files(void);
 
-void create(void) {
-  configure_from_file();
+static void create(void) {
+  load_files();
 }
 
-static void configure_from_file(void) {
+static void load_files(void) {
+  string file_tmp;
+
+  /* Read config.unq file and add stuff to ConfigD */
+  config_unq_file();
+
+  file_tmp = read_file("/usr/game/text/welcome.msg");
+  if(!file_tmp)
+    error("Can't read /usr/game/text/welcome.msg!");
+  CONFIGD->set_welcome_message(file_tmp);
+
+  file_tmp = read_file("/usr/game/text/shutdown.msg");
+  if(!file_tmp)
+    error("Can't read /usr/game/text/shutdown.msg!");
+  CONFIGD->set_shutdown_message(file_tmp);
+
+  file_tmp = read_file("/usr/game/text/suspended.msg");
+  if(!file_tmp)
+    error("Can't read /usr/game/text/suspended.msg!");
+  CONFIGD->set_suspended_message(file_tmp);
+
+  LOGD->write_syslog("Configured Phantasmal from /usr/game!");
+}
+
+static void config_unq_file(void) {
   object config_dtd;
   string config_dtd_file, config_file;
   mixed* unq_data;
@@ -25,10 +50,9 @@ static void configure_from_file(void) {
   configure_from_unq(unq_data);
 
   destruct_object(config_dtd);
-
-  LOGD->write_syslog("Configured Phantasmal from /usr/game!");
 }
 
+/* Parse UNQ in config.unq */
 static void configure_from_unq(mixed* unq) {
   int set_sr, set_ml;
 
