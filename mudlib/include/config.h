@@ -9,7 +9,7 @@
 #define ERRORD      "/usr/System/sys/errord"
 #define LOGD        "/usr/System/sys/logd"
 #define PHRASED     "/usr/System/sys/phrased"
-#define HELPD       "/usr/common/sys/helpd"
+#define HELPD       "/usr/System/sys/helpd"
 #define SOUNDEXD    "/usr/common/sys/soundexd"
 #define STRINGD     "/usr/common/sys/stringd"
 #define MAPD        "/usr/common/sys/mapd"
