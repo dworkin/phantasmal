@@ -33,10 +33,12 @@ to stop running and the driver process to exit on the host machine.
 
 If an error occurs during the saving of objects, normally the MUD will
 NOT continue shutting down -- you may correct this error and then shut
-down the MUD again or you may manually kill the driver process on the
-host machine.  Since Phantasmal and DGD allow you to recompile code so
-easily, an error in code to save your objects is insufficient reason
-to give up and die without saving your data.
+down the MUD again.  Since Phantasmal and DGD allow you to recompile
+code so easily, such a small error is usually insufficient reason to
+give up and die without saving your data.
+
+However, if you really need to, you can type "%shutdown force" to shut
+down the MUD *without* saving your data.
 
 See also %reboot.
 
