@@ -6,7 +6,7 @@ Rooms are objects which are registered with MAPD.
 
 Some commands to play with rooms:
 @list_room               Lists existing rooms by number
-@make_room               Make a new room by asking questions
+@make_room               Make a new room by answering questions
 @stat                    View room details by number
 @goto_room               Goes to an existing room by number
 @save_rooms              Save rooms to a file
@@ -45,7 +45,12 @@ in the MUD, type "@list_rooms all".
 
 The @make_room command asks a series of questions about the new room
 to be created, and when the user is finished, creates the room that
-the questions describe.
+the questions describe.  It asks about descriptions, nouns, adjectives
+and so on.
+
+Certain room attributes (including articles and inheritance) aren't
+yet asked or set by this command.  As they become useful and
+mainstream in Phantasmal they'll be added here too.
 
 }}
 
