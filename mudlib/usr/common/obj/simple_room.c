@@ -101,8 +101,8 @@ string to_unq_text(void) {
     ret += "  ~edesc{" + edesc->to_unq_text() + "}\n";
   }
 
-  if(parent) {
-    ret += "  ~parent{" + parent->get_number() + "}\n";
+  if(archetype) {
+    ret += "  ~parent{" + archetype->get_number() + "}\n";
   }
   ret += "  ~article{" + desc_article + "}\n";
 

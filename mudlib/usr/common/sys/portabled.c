@@ -139,7 +139,7 @@ private int resolve_parent(object port) {
     return 0;
   }
 
-  port->set_parent(parent);
+  port->set_archetype(parent);
   return 1;
 }
 

@@ -232,7 +232,7 @@ private void resolve_parent(object room) {
 	    + ") loading rooms!");
     }
 
-    room->set_parent(parent);
+    room->set_archetype(parent);
   }
 
 }

@@ -62,8 +62,8 @@ string to_unq_text(void) {
 
   ret += "  ~article{" + desc_article + "}\n";
   ret += "  ~flags{" + objflags + "}\n";
-  if(parent) {
-    ret += "  ~parent{" + parent->get_number() + "}\n";
+  if(archetype) {
+    ret += "  ~parent{" + archetype->get_number() + "}\n";
   }
 
   /* Skip debug locale */
