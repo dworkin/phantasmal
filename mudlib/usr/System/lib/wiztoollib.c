@@ -604,6 +604,17 @@ static void cmd_zone_map(object user, string cmd, string str) {
   user->message("-----\r\n");
 }
 
+static void cmd_new_zone(object user, string cmd, string str) {
+  int ctr, new_zonenum;
+  if(!str || STRINGD->is_whitespace(str)) {
+    user->message("Usage: " + cmd + " <zone name>\r\n");
+    return;
+  }
+
+  new_zonenum = ZONED->add_new_zone( str );
+
+  user->message("Added zone #"+new_zonenum+"\r\n");
+}
 
 static void cmd_new_mobile(object user, string cmd, string str) {
   int    mobnum, bodynum;

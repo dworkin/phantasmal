@@ -113,7 +113,8 @@ void upgraded(void) {
 	"@set_seg_zone"        : ({ "cmd_set_segment_zone" }),
 	"@zone_map"            : ({ "cmd_zone_map" }),
 	"@zonemap"             : ({ "cmd_zone_map" }),
-
+        "@new_zone"            : ({ "cmd_new_zone" }),
+        
 	"%od_report"           : ({ "cmd_od_report" }),
 	"%list_dest"           : ({ "cmd_list_dest" }),
 	"%full_rebuild"        : ({ "cmd_full_rebuild" }),
