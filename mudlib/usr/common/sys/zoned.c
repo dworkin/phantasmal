@@ -44,7 +44,7 @@ mixed* to_dtd_unq(void) {
 
   highseg = OBJNUMD->get_highest_segment();
   tmp = ({ "zones", ({ }) });
-  for(ctr = 0; ctr < highseg; ctr++) {
+  for(ctr = 0; ctr <= highseg; ctr++) {
     if(!OBJNUMD->get_segment_owner(ctr))
       continue;
 
