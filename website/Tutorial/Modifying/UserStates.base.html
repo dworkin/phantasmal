@@ -1,0 +1,151 @@
+<titledef text="User States" />
+
+<h3 style="text-align: center"> Making New User State Objects </h3>
+
+<p>
+    First of all, what's a User State object?
+</p>
+
+<p>
+    A User object, often found in /usr/game/obj/user.c, interacts with
+    the actual, literal user.  That LPC object sends text to the
+    person typing over telnet (or sends pictures to the person using a
+    custom MUD client, or whatever).  It accepts commands from the
+    user, and turns the commands into something the MUD can
+    understand.  It does all the user interaction that happens.
+</p>
+
+<p>
+      The User object is usually a state machine.  A state machine is
+      an algorithmic construct used often in programming.  What it means
+      is that the User object remembers what it's currently doing (called
+      its &quot;state&quot;), and responds differently depending on the
+      state.
+</p>
+
+<p>
+      There are lots of ways to write a state machine.  If you look at
+      the Phantasmal user parent object,
+      /usr/System/open/lib/userlib.c, you'll see some constants with
+      names like STATE_NORMAL and STATE_LOGIN.  Then in the
+      process_message function, it has a big switch statement on what
+      state it's currently in to figure out how to process the input
+      it just received.  We'll call that the &quot;big switch
+      statement&quot; method of implementing a state machine.  It's
+      very popular and quite efficient, but it makes for very messy
+      code when the object is complicated enough.  As you'd guess, an
+      object that has to handle every action and every command for a
+      MUD can get pretty big, so the code for a Phantasmal User object
+      can get pretty complicated.
+</p>
+
+<p>
+      Another way to implement a state machine is to use a function as
+      a state instead of a costant.  If we were going to implement the
+      STATE_LOGIN state that way instead of with the big switch
+      statement, we'd write a function called something like
+      state_login, and set the state of the object to that instead of
+      a predefined number in a switch statement.  There are a couple of
+      advantages to doing it that way.
+</p>
+
+<p>
+      One advantage is that you don't have to put all the code in one
+      function.  Instead of having process_message() contain a switch
+      statement with all the states, it can just call the function
+      that the state is set to (incidentally &mdash; LPC doesn't have
+      function pointers, but it can call functions by name, so a
+      string works fine.  Just bear with me on this).
+</p>
+
+<p>
+      The upside of that is not having to put all the states in one
+      place.  The downside is not being able to easily find a list of
+      all the states.  Still, sometimes it's really useful to be able
+      to do it that way.  The way Phantasmal does a function-based
+      state machine (but not the big switch statement version) is with
+      User States.
+</p>
+
+<p>
+      You can set the state of a Phantasmal User object to a
+      particular User State object.  The User State you set it to has
+      to inherit from /usr/common/lib/user_state.c.  Let's look at an
+      example.  Specifically, let's look at
+      /usr/common/obj/ustate/enter_yn.c.  It's a simple user state
+      that asks for a yes-or-no answer, and returns the result.
+</p>
+
+<p>
+      Note that it inherits from USER_STATE.  That's important.  There are
+      also some functions that user states can define, and what those
+      functions do determines the state's behavior.
+</p>
+
+<p>
+      You'll see that the enter_yn User State keeps a prompt string
+      around, which will be shown to the user.  Its switch_to()
+      function is called when the state becomes active &mdash; notice
+      that it sends the prompt string to the user.  Usually a new
+      state should send something to the user to show what it expects
+      to receive.  The switch_to() function of your state is called
+      when the state becomes active.
+</p>
+
+<p>
+      When the user types a line, your state will get a call to
+      from_user(), with a single string as a paremeter.  The string is
+      what the user typed.  If you look at enter_yn, its from_user()
+      function tries to tell whether the user typed something that
+      looks like &quot;yes&quot; or &quot;no&quot;.  If so, it calls
+      pass_data(), which gives data back to the user object, and then
+      pop_state(), which means that enter_yn is done now and wants to
+      exit.  Like the original DGD process_message() function, your
+      User State should return one of MODE_ECHO (success), MODE_NOECHO
+      (silent/password mode) or MODE_DISCONNECT (end connection).
+      You'll want to include the header file &lt;kernel/user.c&gt; to
+      make sure those constants are defined.
+</p>
+
+<p>
+      Note that if neither &quot;yes&quot; nor &quot;no&quot; is
+      typed, the User State remains and waits for more data.  It sends
+      a string to the user to remind him or her that it expects
+      something specific.  Debugging User States can be difficult
+      because if you make an error in the from_user() function, you
+      may not be able to call pop_state().  If that happens, your
+      connection is effectively dead.
+</p>
+
+<p>
+      Notice that to send data to the user, enter_yn uses the
+      send_string() function.  That's intentional.  You don't want to
+      use other functions because they may process the data sent
+      through other User States, which can quickly become confusing.
+      The send_string() function bypasses all that and simply gives
+      the string, verbatim, to the user's network connection.
+</p>
+
+<p>
+      User States can process outgoing strings as well, not just
+      incoming.  The to_user() function is like from_user(), but is
+      called with strings being sent to the user from the MUD rather
+      than strings typed by the user and meant for the MUD.
+</p>
+
+<p>
+      User States can be stacked, which is why they're pushed and
+      popped rather than just being set.  However, this tutorial won't
+      cover that.  It's recommended that you not push or pop more than
+      a single User State until you understand the code for them
+      directly.  It's simply too easy to make a connection-killing
+      mistake otherwise, and your players won't thank you for that.
+</p>
+
+<p>
+      To really understand the implementation of User States, read the
+      code for their parent class, and for the Phantasmal User object.
+      For a larger example of using them, check out
+      /usr/common/obj/ustate/makeroom.c, which is used for OLC of
+      various objects.
+</p>
