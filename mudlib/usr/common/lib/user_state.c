@@ -40,7 +40,11 @@ int from_user(string input) {
 }
 
 void to_user(string output) {
-  user->send_string(output);
+  if(next_state) {
+    next_state->to_user(output);
+  } else {
+    user->send_string(output);
+  }
 }
 
 void switch_to(int pushp) {
