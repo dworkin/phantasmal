@@ -1,0 +1,26 @@
+FILE
+	/usr/common/sys/configd.c
+
+NAME
+	get_welcome_message - get the text of the login banner
+
+PROTOTYPE
+	string get_welcome_message(void)
+
+CALLED BY
+	System, Common, Game
+
+DESCRIPTION
+	Get a system welcome message.  This is the banner that is sent
+	to a new connection immediately, as soon as the connection
+	is established.  The TelnetD will call this function to
+	determine the message to send.
+
+RETURN VALUE
+	A string with the welcome message.
+
+ERRORS
+	Normally none.
+
+SEE ALSO
+	set_welcome_message, get_shutdown_message, get_suspended_message

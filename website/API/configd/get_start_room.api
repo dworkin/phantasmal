@@ -1,0 +1,28 @@
+FILE
+	/usr/common/sys/configd.c
+
+NAME
+	get_start_room - get the start room's number
+
+PROTOTYPE
+	int get_start_room(void)
+
+CALLED BY
+	System, Common, Game
+
+DESCRIPTION
+	Get a room number for the starting room.  This information is
+	used by the system user object to start the player's body in
+	an appropriate location.
+
+	This API may change later since we may want a more complex
+	mechanism than a single default starting room.
+
+RETURN VALUE
+	An integer for the starting room.
+
+ERRORS
+	Normally none
+
+SEE ALSO
+	set_start_room

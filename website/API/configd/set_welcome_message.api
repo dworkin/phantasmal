@@ -1,0 +1,29 @@
+FILE
+	/usr/common/sys/configd.c
+
+NAME
+	set_welcome_message - set the text of the login banner
+
+PROTOTYPE
+	void set_welcome_message(string new_message)
+
+CALLED BY
+	System, Common, Game
+
+DESCRIPTION
+	Set the system welcome message.  This is the banner that is sent
+	to a new connection immediately, as soon as the connection
+	is established.  It should end with a message like "login:" or
+	"Name?" or "By what name shall ye be known?".  Note that a
+	carriage return at the end of this file will be treated as
+	a carriage return at the end of the welcome message, so be
+	sure whether or not you want one.
+
+RETURN VALUE
+	None.
+
+ERRORS
+	Normally none.
+
+SEE ALSO
+	get_welcome_message, set_shutdown_message, set_suspended_message

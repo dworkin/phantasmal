@@ -1,0 +1,31 @@
+FILE
+	/usr/common/sys/configd.c
+
+NAME
+	set_meat_locker - set the meat locker's number
+
+PROTOTYPE
+	void set_meat_locker(int room_number)
+
+CALLED BY
+	System, Common, Game
+
+DESCRIPTION
+	Set a room number for the meat locker.  The meat locker is
+	where bodies go when the owning player isn't logged in.
+
+	The number should correspond to a room registered with the
+	MapD.  If the meat locker doesn't exist, Phantasmal's
+	behavior is undefined.
+
+	This API may change later since we may want different behavior
+	for the bodies of logged-out players.
+
+RETURN VALUE
+	An integer for the meat locker's room number.
+
+ERRORS
+	Normally none
+
+SEE ALSO
+	set_start_room, get_meat_locker

@@ -1,0 +1,27 @@
+FILE
+	/usr/common/sys/configd.c
+
+NAME
+	get_meat_locker - get the meat locker's number
+
+PROTOTYPE
+	int get_meat_locker(void)
+
+CALLED BY
+	System, Common, Game
+
+DESCRIPTION
+	Get a room number for the meat locker.  The meat locker is
+	the room where bodies go when the player isn't logged in.
+
+	This API may change later since we may want different
+	behavior for the bodies of players who aren't logged in.
+
+RETURN VALUE
+	An integer for the meat locker's room number.
+
+ERRORS
+	Normally none
+
+SEE ALSO
+	get_start_room, set_meat_locker

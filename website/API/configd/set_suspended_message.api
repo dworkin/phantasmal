@@ -1,0 +1,26 @@
+FILE
+	/usr/common/sys/configd.c
+
+NAME
+	set_suspended_message - set the text of the suspended message
+
+PROTOTYPE
+	void set_suspended_message(string new_message)
+
+CALLED BY
+	System, Common, Game
+
+DESCRIPTION
+	Set the system suspended message.  This message is used by the
+	MUD during on-the-fly recompiles and other times when (briefly)
+	new connections aren't allowed.  Being suspended, unlike shutdown,
+	normally lasts only a few seconds.
+
+RETURN VALUE
+	None.
+
+ERRORS
+	Normally none.
+
+SEE ALSO
+	set_welcome_message, set_shutdown_message, get_suspended_message

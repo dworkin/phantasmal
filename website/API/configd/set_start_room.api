@@ -1,0 +1,32 @@
+FILE
+	/usr/common/sys/configd.c
+
+NAME
+	set_start_room - set the starting room's number
+
+PROTOTYPE
+	void set_start_room(int room_number)
+
+CALLED BY
+	System, Common, Game
+
+DESCRIPTION
+	Set a room number for the starting room.  This information is
+	used by the system user object to start the player's body in
+	an appropriate location.
+
+	The number should correspond to a room registered with the
+	MapD.  If the starting room doesn't exist, Phantasmal's
+	behavior is undefined.
+
+	This API may change later since we may want a more complex
+	mechanism than a single default starting room.
+
+RETURN VALUE
+	An integer for the starting room.
+
+ERRORS
+	Normally none
+
+SEE ALSO
+	get_start_room

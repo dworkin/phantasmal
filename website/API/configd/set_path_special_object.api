@@ -1,0 +1,34 @@
+FILE
+	/usr/common/sys/configd.c
+
+NAME
+	set_path_special_object - set the object that determines the AUTO
+	object for paths under /usr/game and admin directories.
+
+PROTOTYPE
+	void set_path_special_object(object new_obj)
+
+CALLED BY
+	Game
+
+DESCRIPTION
+	Sets the path_special object, which ObjectD will call to query
+	AUTO objects.  The path_special object must define a path_special
+	function which takes a path string, and returns the path of
+	the appropriate AUTO object.  If the path_special object is
+	unset or nil, or if it returns nil, the default AUTO object is
+	used.
+
+	This can be used to set the privilege level of different scripts
+	or otherwise change what functions are available to what objects.
+	Be careful having AUTO objects inherit from each other, as this
+	can break security.
+
+RETURN VALUE
+	None.
+
+ERRORS
+	Normally none.
+
+SEE ALSO
+

@@ -1,0 +1,25 @@
+FILE
+	/usr/common/sys/configd.c
+
+NAME
+	set_shutdown_message - set the text of the shutdown message
+
+PROTOTYPE
+	void set_shutdown_message(string new_message)
+
+CALLED BY
+	System, Common, Game
+
+DESCRIPTION
+	Set the system shutdown message.  This message will be sent to
+	incoming connections when the MUD is in the process of shutting
+	down.
+
+RETURN VALUE
+	None.
+
+ERRORS
+	Normally none.
+
+SEE ALSO
+	set_welcome_message, get_shutdown_message, set_suspended_message

@@ -1,0 +1,26 @@
+FILE
+	/usr/common/sys/configd.c
+
+NAME
+	get_suspended_message - get the text of the suspended message
+
+PROTOTYPE
+	string get_suspended_message(void)
+
+CALLED BY
+	System, Common, Game
+
+DESCRIPTION
+	Get the system suspended message.  This message is used by the
+	MUD during on-the-fly recompiles and other times when (briefly)
+	new connections aren't allowed.  Being suspended, unlike shutdown,
+	normally lasts only a few seconds.
+
+RETURN VALUE
+	A string with the suspended message.
+
+ERRORS
+	Normally none.
+
+SEE ALSO
+	get_welcome_message, get_shutdown_message, set_suspended_message
