@@ -656,9 +656,7 @@ static void do_upgrade(object obj) {
   for(ctr = 0; ctr < sizeof(upgrade_clonables); ctr++) {
     if(function_object("upgraded", upgrade_clonables[ctr])) {
       catch {
-	rlimits(status()[ST_STACKDEPTH]; -1) {
-	  upgrade_clonables[ctr]->upgraded();
-	}
+	upgrade_clonables[ctr]->call_limited("upgraded", ({ 0 }));
       } : {
 	LOGD->write_syslog("Error in " + object_name(upgrade_clonables[ctr])
 			   + "->upgraded()!",
