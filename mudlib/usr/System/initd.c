@@ -9,6 +9,14 @@
 inherit access API_ACCESS;
 inherit rsrc   API_RSRC;
 
+/* How many objects can be saved to file in a single call_out? */
+#define SAVE_CHUNK   10
+
+/* Prototypes */
+private void suspend_system();
+private void release_system();
+
+
 static void create(varargs int clone)
 {
   object driver, obj, the_void;
@@ -117,11 +125,13 @@ static void create(varargs int clone)
   
 }
 
-private void save_mud_data(void) {
+void save_mud_data(object user) {
   int*   objects;
-  object obj;
-  int    ctr;
-  string unq_str;
+
+  if(!SYSTEM()) {
+    error("Only privileged code can call save_mud_data!");
+    return;
+  }
 
   remove_file(ROOM_FILE + ".old");
   rename_file(ROOM_FILE, ROOM_FILE + ".old");
@@ -141,21 +151,112 @@ private void save_mud_data(void) {
 		       LOG_FATAL);
   }
 
-  
-
   LOGD->write_syslog("Writing rooms to file", LOG_NORMAL);
   objects = MAPD->rooms_in_zone(0) - ({ 0 });
-  for(ctr = 0; ctr < sizeof(objects); ctr++) {
+
+  suspend_system();
+
+  if(call_out("__co_write_rooms", 0, user, objects, 0, ROOM_FILE,
+	      PORT_FILE) < 1) {
+    release_system();
+    error("Can't schedule call_out to save objects!");
+  }
+}
+
+void prepare_reboot(void)
+{
+  if(previous_program() != SYSTEM_WIZTOOLLIB
+     && previous_program() != DRIVER)
+    error("Can't call prepare_reboot from there!");
+
+  if(find_object(LOGD)) {
+    LOGD->write_syslog("Preparing to reboot MUD...");
+  }
+
+  save_mud_data(nil);
+}
+
+void prepare_shutdown(void)
+{
+  if(previous_program() != SYSTEM_WIZTOOLLIB
+     && previous_program() != DRIVER)
+    error("Can't call prepare_shutdown from there!");
+
+  if(find_object(LOGD)) {
+    LOGD->write_syslog("Shutting down MUD...");
+  }
+
+  save_mud_data(nil);
+}
+
+void reboot(void)
+{
+  if(previous_program() != SYSTEM_WIZTOOLLIB)
+    error("Can't call reboot from there!");
+
+  if(find_object(LOGD)) {
+    LOGD->write_syslog("Rebooting!");
+  }
+}
+
+
+
+/********* Helper and callout functions ***********************/
+
+/* suspend_system and release_system copied from
+   /usr/System/sys/objectd.c */
+
+/*
+  Suspend_system suspends network input, new logins and callouts
+  except in this object.  (idea stolen from Geir Harald Hansen's
+  ObjectD).  This will need to be copied to any and every object
+  that suspends callouts -- the RSRCD checks previous_object()
+  to find out who *isn't* suspended.  TelnetD only suspends
+  new incoming network activity.
+*/
+private void suspend_system() {
+  RSRCD->suspend_callouts();
+  TELNETD->suspend_input(0);  /* 0 means "not shutdown" */
+}
+
+/*
+  Releases everything that suspend_system suspends.
+*/
+private void release_system() {
+  RSRCD->release_callouts();
+  TELNETD->release_input();
+}
+
+
+static void __co_write_rooms(object user, int* objects, int ctr,
+			     string roomfile, string portfile) {
+  string unq_str;
+  object obj;
+  int    chunk_ctr;
+
+  for(chunk_ctr = 0; ctr < sizeof(objects) && chunk_ctr < SAVE_CHUNK;
+      ctr++, chunk_ctr++) {
     obj = MAPD->get_room_by_num(objects[ctr]);
 
     unq_str = obj->to_unq_text();
 
-    if(!write_file(ROOM_FILE, unq_str)) {
+    if(!write_file(roomfile, unq_str)) {
       DRIVER->message("Couldn't write rooms to file!  Fix or kill driver!");
-      error("Couldn't write rooms to file " + ROOM_FILE + "!");
+      error("Couldn't write rooms to file " + roomfile + "!");
     }
   }
 
+  if(ctr < sizeof(objects)) {
+    /* Still saving rooms... */
+    if(call_out("__co_write_rooms", 0, user, objects, ctr, roomfile,
+		portfile) < 1) {
+      release_system();
+      error("Can't schedule all_out to continue writing rooms!");
+    }
+    return;
+  }
+
+  /* Done with rooms, start on portables */
   LOGD->write_syslog("Writing portables to file", LOG_NORMAL);
 
   /* Assign a list of all portables to "objects" */
@@ -171,52 +272,42 @@ private void save_mud_data(void) {
     }
   }
 
-  for(ctr = 0; ctr < sizeof(objects); ctr++) {
+  if(call_out("__co_write_portables", 0, user, objects, 0, portfile) < 1) {
+    release_system();
+    error("Can't schedule call_out to start writing portables!");
+  }
+}
+
+static void __co_write_portables(object user, int* objects, int ctr,
+				 string portfile) {
+  string unq_str;
+  object obj;
+  int    chunk_ctr;
+
+  for(chunk_ctr = 0; ctr < sizeof(objects) && chunk_ctr < SAVE_CHUNK;
+      ctr++, chunk_ctr++) {
     obj = PORTABLED->get_portable_by_num(objects[ctr]);
 
     unq_str = obj->to_unq_text();
 
-    if(!write_file(PORT_FILE, unq_str)) {
+    if(!write_file(portfile, unq_str)) {
       DRIVER
 	->message("Couldn't write portables to file!  Fix or kill driver!");
-      error("Couldn't write portables to file " + PORT_FILE + "!");
+      error("Couldn't write portables to file " + portfile + "!");
     }
   }
 
-}
-
-void prepare_reboot(void)
-{
-  if(previous_program() != SYSTEM_WIZTOOLLIB
-     && previous_program() != DRIVER)
-    error("Can't call prepare_reboot from there!");
-
-  if(find_object(LOGD)) {
-    LOGD->write_syslog("Preparing to reboot MUD...");
+  if(ctr < sizeof(objects)) {
+    /* Still saving rooms... */
+    if(call_out("__co_write_portables", 0, user, objects, ctr, portfile) < 1) {
+      release_system();
+      error("Can't schedule call_out to continue writing portables!");
+    }
+    return;
   }
 
-  save_mud_data();
-}
-
-void prepare_shutdown(void)
-{
-  if(previous_program() != SYSTEM_WIZTOOLLIB
-     && previous_program() != DRIVER)
-    error("Can't call prepare_shutdown from there!");
-
-  if(find_object(LOGD)) {
-    LOGD->write_syslog("Shutting down MUD...");
-  }
-
-  save_mud_data();
-}
-
-void reboot(void)
-{
-  if(previous_program() != SYSTEM_WIZTOOLLIB)
-    error("Can't call reboot from there!");
-
-  if(find_object(LOGD)) {
-    LOGD->write_syslog("Rebooting!");
-  }
+  release_system();
+  LOGD->write_syslog("Finished writing saved data...", LOG_NORMAL);
+  if(user)
+    user->message("Finished writing data.\n");
 }

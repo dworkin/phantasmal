@@ -10,6 +10,7 @@ require privilege on the caller's part to perform successfully.
 %reboot             Reboot the MUD
 %swapout            Swap out MUD objects
 %statedump          Dump the MUD's full state to a file
+%datadump           Write the objectfiles as on shutdown
 
 %status             Give the status of the MUDLib & server
 
@@ -52,7 +53,7 @@ exits, portables, et cetera.  Then it will attempt to reboot the MUD
 and have it reload the same files.  While this may be useful to do
 occasionally, one goal of a persistent MUD is to *never* require this.
 Please use the upgraded() method on objects and the %full_rebuild
-command instead of %reboot where possible.
+command instead of %reboot wherever possible.
 
 If an error occurs during the saving of objects, normally the MUD will
 NOT continue shutting down -- you may correct this error and then shut
@@ -74,10 +75,10 @@ as they are used, this shouldn't be visible to users or developers
 beyond a possible delay, nor is it especially useful to do in almost
 any case.
 
-Ordinarily you'd be better served by using the %statedump, %shutdown
-or %reboot command.
+Ordinarily you'd be better served by using the %statedump, %shutdown,
+%datadump or %reboot command.
 
-See also: %statedump, %shutdown, %reboot
+See also: %statedump, %datadump, %shutdown, %reboot
 
 }}
 
@@ -94,10 +95,26 @@ and down than the %shutdown mechanism combined with object autoload.
 However, it may exacerbate certain programming errors since it is a
 persistent MUD model.  For details on persistent MUDs and their
 characteristics see the DGD mailing list and/or MUD-Dev.  Such MUDs
-have been discussed very extensively in both forums and probably many
-more.
+have been discussed very extensively in both of those forums and
+probably many others.
 
-See also: %shutdown, %reboot
+See also: %shutdown, %reboot, %datadump
+
+}}
+
+
+~name{~enUS{datadump,%datadump,@datadump,data dump,data_dump,%data_dump}}
+~keywords{admin}
+~desc{
+  ~enUS{
+
+The %datadump command saves objects to a roomfile, a portablefile and
+so on.  It uses the same mechanism as objects being saved on MUD
+shutdown and will be broken in the same ways and at the same times.
+The %statedump command is quite different and uses a different
+mechanism -- see "%statedump".
+
+See also: %shutdown, %reboot, %datadump
 
 }}
 

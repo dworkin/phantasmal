@@ -59,6 +59,11 @@ static void cmd_shutdown(object user, string cmd, string str)
   wiz::cmd_shutdown(user, cmd, str);
 }
 
+static void cmd_datadump(object user, string cmd, string str) {
+  find_object(INITD)->save_mud_data(user);
+  user->message("Data save commenced.\n");
+}
+
 static void cmd_compile(object user, string cmd, string str)
 {
   string objname;

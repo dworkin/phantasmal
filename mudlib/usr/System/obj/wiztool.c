@@ -141,6 +141,7 @@ void upgraded(void) {
 	    "%reboot"              : ({ "cmd_reboot" }),
 	    "%swapout"             : ({ "cmd_swapout" }),
 	    "%statedump"           : ({ "cmd_statedump" }),
+	    "%datadump"            : ({ "cmd_datadump" }),
 
             "%code"                : ({ "cmd_code" }),
             "%history"             : ({ "cmd_history" }),
