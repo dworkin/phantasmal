@@ -1,4 +1,4 @@
-/* $Header: /cvsroot/phantasmal/mudlib/usr/System/obj/user.c,v 1.71 2003/11/29 23:22:53 angelbob Exp $ */
+/* $Header: /cvsroot/phantasmal/mudlib/usr/System/obj/user.c,v 1.72 2003/11/29 23:27:05 angelbob Exp $ */
 
 #include <kernel/kernel.h>
 #include <kernel/user.h>
@@ -9,7 +9,7 @@
 #include <phrase.h>
 #include <channel.h>
 #include <map.h>
-#include <body_loc.h>
+#include <phantasmal/search_locations.h>
 
 inherit LIB_USER;
 inherit user API_USER;

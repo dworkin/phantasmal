@@ -1,4 +1,7 @@
 Release 0.015:
+	* Modified TimeD to use only real-world time
+	* Moved some headers into /include/phantasmal
+	* Removed 'ask' function and all related hooks & docs
 	* Changed hook function signatures and how enum_mobiles works
 	* Full security audit for /usr/common/sys and /usr/common/obj
 	* Full security audit for /usr/System

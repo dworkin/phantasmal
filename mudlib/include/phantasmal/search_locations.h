@@ -1,4 +1,4 @@
-/* body_loc.h
+/* search_locations.h
 
    These constants are used by the SYSTEM_USER::find_objects() and
    SYSTEM_USER::find_first_objects() calls to

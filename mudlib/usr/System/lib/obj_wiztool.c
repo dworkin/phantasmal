@@ -10,7 +10,7 @@
 #include <limits.h>
 #include <log.h>
 #include <grammar.h>
-#include <body_loc.h>
+#include <phantasmal/search_locations.h>
 
 inherit access API_ACCESS;
 

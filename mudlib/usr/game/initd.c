@@ -7,6 +7,7 @@ static void configure_from_unq(mixed* unq);
 static void load_files(void);
 
 static void set_up_scripting(void);
+static void set_up_heart_beat(void);
 
 static void create(void) {
   /* Load in configuration files and set data in the common and System
@@ -14,6 +15,11 @@ static void create(void) {
   load_files();
 
   set_up_scripting();
+
+  if(!find_object(HEART_BEAT))
+    compile_object(HEART_BEAT);
+
+  HEART_BEAT->set_up_heart_beat();
 }
 
 static void set_up_scripting(void) {
