@@ -1,4 +1,4 @@
-/* $Header: /cvsroot/phantasmal/mudlib/usr/System/obj/user.c,v 1.33 2003/02/24 06:27:26 angelbob Exp $ */
+/* $Header: /cvsroot/phantasmal/mudlib/usr/System/obj/user.c,v 1.34 2003/02/25 01:34:14 angelbob Exp $ */
 
 #include <kernel/kernel.h>
 #include <kernel/user.h>
@@ -48,7 +48,6 @@ static object location;         /* Location of body */
 static  int    process_message(string str);
 static  void   print_prompt(void);
 private int    name_is_forbidden(string name);
-        void   push_state(object state);
 
 /* Macros */
 #define NEW_PHRASE(x) PHRASED->new_simple_english_phrase(x)
@@ -212,7 +211,6 @@ void user_state_data(mixed data) {
     print_prompt();
     return;
   }
-  set_state_data(data);
 }
 
 int message(string str) {

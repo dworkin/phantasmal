@@ -5,7 +5,6 @@
 
 /* User-state processing stack */
 private object* state_stack;
-private mixed   state_data;
 
 static  mapping state;		/* state for a connection object */
 private object  scroll_state;
@@ -83,7 +82,9 @@ void notify_done_scrolling(void) {
 }
 
 void pop_state(object state) {
-  int first_state;
+  int    first_state;  /* This is a boolean value */
+  int    ctr;
+  object prev_state, next_state;
 
   if(!state_stack || !sizeof(state_stack)) {
     destruct_object(state);
@@ -95,8 +96,17 @@ void pop_state(object state) {
 
   if(state_stack[0] == state)
     first_state = 1;
-  else
+  else {
     first_state = 0;
+    for(ctr = 1; ; ctr++) {
+      if(state_stack[ctr] == state) {
+	prev_state = state_stack[ctr - 1];
+	if(ctr + 1 < sizeof(state_stack))
+	  next_state = state_stack[ctr + 1];
+	break;
+      }
+    }
+  }
 
   state_stack = state_stack - ({ state });
 
@@ -106,6 +116,9 @@ void pop_state(object state) {
       state_stack[0]->switch_to(0);  /* 0 because pushp is false */
     }
     /* No longer print prompt here, that's handled in receive_message. */
+  } else {
+    /* Make sure that the next_state values are correct in user state. */
+    prev_state->init(this_object(), next_state);
   }
 
   destruct_object(state);
@@ -138,10 +151,6 @@ object peek_state(void) {
     return nil;
 
   return state_stack[0];
-}
-
-static void set_state_data(mixed data) {
-  state_data = data;
 }
 
 
