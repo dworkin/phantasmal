@@ -1,4 +1,4 @@
-/* $Header: /cvsroot/phantasmal/mudlib/usr/System/obj/user.c,v 1.9 2002/05/27 16:28:27 angelbob Exp $ */
+/* $Header: /cvsroot/phantasmal/mudlib/usr/System/obj/user.c,v 1.10 2002/06/04 21:44:42 angelbob Exp $ */
 
 #include <kernel/kernel.h>
 #include <kernel/user.h>
@@ -12,7 +12,6 @@
 inherit LIB_USER;
 inherit user API_USER;
 inherit rsrc API_RSRC;
-inherit unq UNQABLE;
 
 #define STATE_NORMAL            0
 #define STATE_LOGIN             1
@@ -25,6 +24,7 @@ string name;	                /* user name */
 string password;		/* user password */
 int    locale;                  /* chosen output locale */
 int    channel_subs;            /* user channel subscriptions */
+int    body_num;                /* portable number of body */
 
 /* User-state processing stack */
 private object* state_stack;
@@ -56,6 +56,10 @@ private int    name_is_forbidden(string name);
 private void   tell_room(object room, mixed msg);
 private mixed* load_command_sets_file(string filename);
 
+/* Macros */
+#define NEW_PHRASE(x) PHRASED->new_simple_english_phrase(x)
+
+
 /*
  * NAME:	create()
  * DESCRIPTION:	initialize user object
@@ -65,7 +69,6 @@ static void create(int clone)
   if (clone) {
     user::create();
     rsrc::create();
-    unq::create(clone);
     state = ([ ]);
 
     state_stack = ({ });
@@ -74,16 +77,16 @@ static void create(int clone)
     locale = PHRASED->language_by_name("english");
     command_sets = nil;
   } else {
-    unq::create(clone);
     upgraded();
   }
-  if(!find_object(SYSTEM_WIZTOOL)) { compile_object(SYSTEM_WIZTOOL); }
-  if(!find_object(PLAYERBODY)) { compile_object(PLAYERBODY); }
-  if(!find_object(SIMPLE_MOBILE)) { compile_object(SIMPLE_MOBILE); }
 }
 
 void upgraded(void) {
-  unq::upgraded();
+  if(!find_object(SYSTEM_WIZTOOL)) { compile_object(SYSTEM_WIZTOOL); }
+  if(!find_object(PLAYERBODY)) { compile_object(PLAYERBODY); }
+  if(!find_object(SIMPLE_MOBILE)) { compile_object(SIMPLE_MOBILE); }
+  if(!find_object(SIMPLE_PORTABLE)) { compile_object(SIMPLE_PORTABLE); }
+
   command_sets = load_command_sets_file(USER_COMMANDS_FILE);
   if(!command_sets) {
     LOGD->write_syslog("Command_sets is Nil!", LOG_FATAL);
@@ -689,11 +692,32 @@ int login(string str)
  */
 private void player_login(void)
 {
+  body = nil;
+
   /* Set up location, body, etc */
   location = MAPD->get_room("start room");
   if(location) {
-    body = clone_object(PLAYERBODY);
-    body->set_player_name(Name);
+    if(body_num > 0) {
+      body = PORTABLED->get_portable_by_num(body_num);
+    }
+    if(!body) {
+      body = clone_object(SIMPLE_PORTABLE);
+      if(!body)
+	error("Can't clone simple portable!");
+      PORTABLED->add_portable_number(body, -1);
+      if(!PORTABLED->get_portable_by_num(body->get_number())) {
+	LOGD->write_syslog("Error making new body!", LOG_ERR);
+      }
+      body_num = body->get_number();
+
+      /* Set descriptions and add noun for new name */
+      body->set_brief(NEW_PHRASE(Name));
+      body->set_glance(NEW_PHRASE(Name));
+      body->set_look(NEW_PHRASE(Name + " wanders the MUD."));
+      body->set_examine(nil);
+      body->add_noun(NEW_PHRASE(name));
+    }
+
     mobile = clone_object(SIMPLE_MOBILE);
     mobile->assign_body(body);
     mobile->set_user(this_object());
@@ -711,7 +735,7 @@ private void player_login(void)
 
 /*
  * NAME:	player_logout()
- * DESCRIPTION:	Destroy the player body, update the account info and so on...
+ * DESCRIPTION:	Deal with player body, update account info and so on...
  */
 private void player_logout(void)
 {
@@ -791,7 +815,8 @@ static int process_message(string str)
       force_command = 1;
     }
 
-    /* Do this unless we're in the editor */
+    /* Do this unless we're in the editor and didn't start the command
+       with an exclamation mark */
     if (!wiztool || !query_editor(wiztool) || force_command) {
       /* check standard commands */
       cmd = STRINGD->trim_whitespace(cmd);
@@ -862,8 +887,6 @@ static int process_message(string str)
     if (str) {
       if (wiztool) {
 	wiztool->command(cmd, str);
-
-	/* } else if (strlen(str) != 0) { */
       } else {
 	send_system_phrase("No match");
 	message(": " + cmd + " " + str + "\r\n");
@@ -1518,8 +1541,7 @@ static void cmd_gossip(object user, string cmd, string str) {
   }
 
   CHANNELD->string_to_channel(CHANNEL_GOSSIP, Name);
-  CHANNELD->phrase_to_channel(CHANNEL_GOSSIP,
-			      PHRASED->new_simple_english_phrase(" gossips "));
+  CHANNELD->phrase_to_channel(CHANNEL_GOSSIP, NEW_PHRASE(" gossips "));
   CHANNELD->string_to_channel(CHANNEL_GOSSIP, "'" + str + "'.\r\n");
 }
 
