@@ -60,7 +60,9 @@ use strict;
 # pagecreate.pl rather than running pagecreate for you.
 
 
-# Top-level vars
+# Argument-type vars
+
+my $outdir = "html";
 
 my $sectionlist;
 
@@ -86,10 +88,42 @@ if(-e "book.toc") {
 my @sectionfiles;
 @sectionfiles = split /\s+/, $sectionlist;
 
-# Parse $toc_contents in %chapter_list
+# Every entry in %chapter_order is a list reference.  The entries in
+# the list are the subsection names of that section, in the order they
+# should appear in the output.
+
 my %chapter_order;
 
-{
+# Parse $toc_contents into %chapter_order
+parse_toc_contents($toc_contents);
+
+
+############## Top-level loop ####################################
+
+# Parse content from sectionfiles into %chapter_jumble
+# Every entry of %chapter_jumble is a list reference of the
+# form [ $title, $content ].
+my %chapter_jumble;
+
+my $sectionfile;
+foreach $sectionfile (@sectionfiles) {
+    parse_section_file($sectionfile);
+}
+
+# Rearrange %chapter_jumble according to %chapter_order
+sort_chapters();
+
+# Write out content into .base.html files
+write_out_html();
+
+
+############## Supporting functions ##############################
+
+# parse_toc_contents 
+
+sub parse_toc_contents {
+    my $toc_contents = shift;
+
     my @toc_lines = split /\s+/, $toc_contents;
     my ($line, $linenum, $secname, @secorder, $newsecname);
 
@@ -135,48 +169,43 @@ my %chapter_order;
 }
 
 
-############## Top-level loop ####################################
-
-# Parse content from sectionfiles into %chapter_jumble
-my %chapter_jumble;
-
-my $sectionfile;
-foreach $sectionfile (@sectionfiles) {
-    parse_section_file($sectionfile);
-}
-
-# Write out content into .base.html files
-
-
-
-############## Supporting functions ##############################
-
-
 # parse_section_file parses a .sec file and adds the chapter to the
 # %chapter_jumble.  Eventually they'll be sorted and output, but this
 # function doesn't do that.
 
 sub parse_section_file {
     my $sectionfile = shift;
-    my ($contents, @sections, $section);
+    my ($contents, @sections, $section, $secname);
 
     print "Found section file $sectionfile!\n";
     open(FILE, $sectionfile) or die "Can't open file $sectionfile: $!";
     $contents = join("", <FILE>);
     close(FILE);
 
+    # Add empty top-level entry
+    $chapter_jumble{""} = [undef, undef];
+
     @sections = split /^\@\@/m,$contents;
   SECT: foreach $section (@sections) {
       next SECT if $section =~ /^\s*$/;
 
-      if($section =~ /^SECTION\s+(\S+)\s+(.*)/) {
-	  print "Found section $1 \n";
-	  add_jumbled_chapter_name($1, $2);
+      if($section =~ /^SECTION\s+([A-Za-z0-9.\-?!]+)\s+(.*)$/m) {
+	  $secname = $1;
+	  print "Found section $secname\n";
+	  add_jumbled_chapter_name($secname, $2);
       } else {
 	  die "Unknown section: '$section' in file $sectionfile!";
       }
+
+      # Now cut the first line off
+      die "Can't parse SECTION '$section'!"
+	  unless $section =~ /^(.*)$(.*)/m;
+
+    $section = $2;
+
+    # Now add the section's contents to the jumble.
+    $chapter_jumble{$secname}->[1] = $section;
   }
-    
 }
 
 
@@ -197,13 +226,101 @@ sub add_jumbled_chapter_name {
     @subsec_list = split /\./, $fullname;
     $sec = "";
     foreach $ent (@subsec_list) {
+	my $parent = $sec;
 	$sec .= $ent;
-	unless($chapter_jumble{$sec}) {
+	unless(defined($chapter_jumble{$sec})) {
 	    # Put in a placeholder name
-	    $chapter_jumble{$sec} = "";
+	    print "Adding section entry '$sec' to '$parent'.\n";
+	    $chapter_jumble{$sec} = [ undef, undef ];
+	    $chapter_jumble{$parent} = [@{$chapter_jumble{$parent}}, $sec];
 	}
 	$sec .= ".";
     }
 
-    $chapter_jumble{$fullname} = $title;
+    if(defined($chapter_jumble{$fullname}->[0])) {
+	die "Repeated section $fullname in .sec files!";
+    }
+    $chapter_jumble{$fullname}->[0] = $title;
+}
+
+
+# sort_chapters takes no arguments, but uses %chapter_order and
+# %chapter_jumble.  It modifies %chapter_jumble so that each parent
+# entry's children are ordered according to %chapter_order, or
+# alphabetically if there is no corresponding entry in %chapter_order.
+
+# It also inserts extra data that is easier to calculate as a postpass
+# than to insert as the sections are parsed, such as the filenames for
+# section HTML files.
+
+sub sort_chapters {
+    my @sections = sort keys %chapter_jumble;
+
+    my $section;
+    foreach $section (@sections) {
+	my ($title, $cont, @subsections) = @{$chapter_jumble{$section}};
+
+	if(defined($chapter_order{$section})) {
+	    # Some of these may not be defined...
+	    @subsections = @{$chapter_order{$section}};
+	} else {
+	    @subsections = sort @subsections;
+	}
+
+	my $filename = $section;
+	$filename =~ s/\./_/;
+	if($section eq "") {
+	    $filename = "index";
+	}
+
+	$chapter_jumble{$section} = [$title, $cont, $filename,
+				     @subsections];
+    }
+
+}
+
+
+### Functions for .base.html output
+
+# write_out_html iterates through the (now-sorted) %chapter_jumble
+# mapping.  It must output sections appropriately, remembering that
+# the order in the book.toc file may include sections that don't yet
+# exist, and may fail to list sections that *do* exist.  Both cases
+# should work, but generate warnings.
+
+sub write_out_html {
+    my (@chapter_list, $chapter);
+
+    open(FILE, ">$outdir/index.base.html")
+	or die "Can't open index file ($outdir/index.base.html) "
+	    . "for writing\n: $!";
+
+    print FILE "<h1> Title Page </h1>\n";
+    print FILE "<ul>\n";
+
+    ($_, $_, $_, @chapter_list) = @{$chapter_jumble{""}};
+    foreach $chapter (@chapter_list) {
+	print FILE "  <li> <a href=\"" . $chapter_jumble{$chapter}->[2]
+		. ".html\"> "
+		    . " </a> </li>\n";
+    }
+
+    print FILE "</ul>\n";
+    close(FILE);
+
+    write_out_sections("", @chapter_list);
+
+}
+
+
+# write_out_sections takes a list of sections, which must all have the
+# same parent section.  Each will be written into its own section file,
+# with appropriate links back and forth, and appropriate lists of child
+# sections.
+
+sub write_out_sections {
+    my $parent_section = shift;
+    my @sections = @_;
+
+    
 }
