@@ -102,7 +102,6 @@ int from_user(string input) {
   if(input == "q" || input == "quit") {
     call_other(US_SCROLL_TEXT, "set_text", nil);
     pop_state();
-    /* pass_data(nil); */
     return MODE_ECHO;
   }
 
