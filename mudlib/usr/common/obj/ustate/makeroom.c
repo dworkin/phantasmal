@@ -22,6 +22,7 @@ private object obj_detail_of;
 #define OT_PORTABLE                 3
 #define OT_DETAIL                   4
 
+
 /* Valid substate values */
 #define SS_PROMPT_OBJ_TYPE          1
 #define SS_PROMPT_OBJ_DETAIL_OF     2
@@ -33,9 +34,20 @@ private object obj_detail_of;
 #define SS_PROMPT_EXAMINE_DESC      8
 #define SS_PROMPT_NOUNS             9
 #define SS_PROMPT_ADJECTIVES       10
-#define SS_PROMPT_CONTAINER        11
-#define SS_PROMPT_OPEN             12
-#define SS_PROMPT_OPENABLE         13
+#define SS_PROMPT_WEIGHT           11
+#define SS_PROMPT_VOLUME           12
+#define SS_PROMPT_LENGTH           13
+/* Note the gap -- that so that if we add states and recompile, anybody
+   who is mid-object-creation won't find themselves mysteriously being
+   prompted for something else.  Now we only need to renumber *very*
+   rarely. */
+#define SS_PROMPT_CONTAINER        20
+#define SS_PROMPT_OPEN             21
+#define SS_PROMPT_OPENABLE         22
+#define SS_PROMPT_WEIGHT_CAPACITY  23
+#define SS_PROMPT_VOLUME_CAPACITY  24
+#define SS_PROMPT_LENGTH_CAPACITY  25
+
 
 /* Input function return values */
 #define RET_NORMAL                  1
@@ -54,9 +66,15 @@ static void prompt_look_desc_data(mixed data);
 static void prompt_examine_desc_data(mixed data);
 static int  prompt_nouns_input(string input);
 static int  prompt_adjectives_input(string input);
+static int  prompt_weight_input(string input);
+static int  prompt_volume_input(string input);
+static int  prompt_length_input(string input);
 static void prompt_container_data(mixed data);
 static void prompt_open_data(mixed data);
 static void prompt_openable_data(mixed data);
+static int  prompt_weight_capacity_input(string input);
+static int  prompt_volume_capacity_input(string input);
+static int  prompt_length_capacity_input(string input);
 
 private string blurb_for_substate(int substate);
 
@@ -139,6 +157,24 @@ int from_user(string input) {
   case SS_PROMPT_ADJECTIVES:
     ret = prompt_adjectives_input(input);
     break;
+  case SS_PROMPT_WEIGHT:
+    ret = prompt_weight_input(input);
+    break;
+  case SS_PROMPT_VOLUME:
+    ret = prompt_volume_input(input);
+    break;
+  case SS_PROMPT_LENGTH:
+    ret = prompt_length_input(input);
+    break;
+  case SS_PROMPT_WEIGHT_CAPACITY:
+    ret = prompt_weight_capacity_input(input);
+    break;
+  case SS_PROMPT_VOLUME_CAPACITY:
+    ret = prompt_volume_capacity_input(input);
+    break;
+  case SS_PROMPT_LENGTH_CAPACITY:
+    ret = prompt_length_capacity_input(input);
+    break;
 
   case SS_PROMPT_LOOK_DESC:
   case SS_PROMPT_EXAMINE_DESC:
@@ -173,6 +209,7 @@ int from_user(string input) {
 
   return MODE_ECHO;
 }
+
 
 /* This is if somebody (other than us) is sending data to the user.
    This happens if, for instance, somebody moves into or out of the
@@ -247,11 +284,55 @@ private string blurb_for_substate(int substate) {
       + " object.\r\n"
       + "Example: heavy gray dull\r\n";
 
+  case SS_PROMPT_WEIGHT:
+    return "Enter the weight of the object, or hit enter to choose a "
+      + "reasonable default.\r\n"
+      + "The weight may be in kilograms, or may be followed by a "
+      + "unit.\r\n"
+      + "Metric: mg   g   kg     Standard: lb   oz   tons\r\n";
+
+  case SS_PROMPT_VOLUME:
+    return "Enter the volume of the object, or hit enter to choose a "
+      + "reasonable default.\r\n"
+      + "The volume may be in liters, or may be followed by a "
+      + "unit.\r\n"
+      + "Metric: L   mL   cc   cubic m\r\n"
+      + "Standard: oz   qt   gal   cubic ft   cubic yd\r\n";
+
+  case SS_PROMPT_LENGTH:
+    return "Enter the length of the longest axis of the object, or hit enter"
+      + " to choose a reasonable default.\r\n"
+      + "The length may be in centimeters, or may be followed by a "
+      + "unit.\r\n"
+      + "Metric: m   mm   cm   dm     Standard: in   ft   yd\r\n";
+
     /* The following don't have full-on blurbs, just one-line prompts
        for the ENTER_YN user state.  So no blurb. */
   case SS_PROMPT_CONTAINER:
   case SS_PROMPT_OPEN:
   case SS_PROMPT_OPENABLE:
+
+  case SS_PROMPT_WEIGHT_CAPACITY:
+    return "Enter the weight capacity of the object, or hit enter to choose "
+      + "a reasonable default.\r\n"
+      + "The capacity may be in kilograms, or may be followed by a "
+      + "unit.\r\n"
+      + "Metric: mg   g   kg     Standard: lb   oz   tons\r\n";
+
+  case SS_PROMPT_VOLUME_CAPACITY:
+    return "Enter the volume capacity of the object, or hit enter to choose "
+      + "a reasonable default.\r\n"
+      + "The capacity may be in liters, or may be followed by a "
+      + "unit.\r\n"
+      + "Metric: L   mL   cc   cubic m\r\n"
+      + "Standard: oz   qt   gal   cubic ft   cubic yd\r\n";
+
+  case SS_PROMPT_LENGTH_CAPACITY:
+    return "Enter the length of the longest axis of the container, or hit "
+      + " enter to choose a\r\n  reasonable default.\r\n"
+      + "The length may be in centimeters, or may be followed by a "
+      + "unit.\r\n"
+      + "Metric: m   mm   cm   dm     Standard: in   ft   yd\r\n";
 
   default:
     return "<UNDEFINED STATE>\r\n";
