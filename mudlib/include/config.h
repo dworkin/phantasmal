@@ -106,7 +106,7 @@
 #define EXITD_PHRASES       "/usr/common/sys/exitd.phr"
 #define USER_COMMANDS_FILE  "/data/phrase/user_cmds.unq"
 #define SOULD_FILE          "/data/system/sould.unq"
-#define NL_PARSE_FILE       "/data/parser/nl_parser.dpd"
+#define NL_PARSE_FILE       "/usr/common/sys/nl_parser.dpd"
 
 #define WELCOME_MESSAGE     "/data/text/welcome.msg"
 #define SUSPENDED_MESSAGE   "/data/text/suspended.msg"
