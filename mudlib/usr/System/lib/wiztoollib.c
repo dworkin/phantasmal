@@ -177,7 +177,7 @@ static void cmd_people(object user, string cmd, string str)
 static void cmd_writelog(object user, string cmd, string str)
 {
   if(str) {
-    LOGD->write_syslog(str);
+    LOGD->write_syslog(str, LOG_ERR_FATAL);
   } else {
     user->message("Usage: " + cmd + " <string to log>\r\n");
   }
@@ -399,7 +399,7 @@ static void cmd_new_portable(object user, string cmd, string str) {
     error("Can't clone simple portable!");
   PORTABLED->add_portable_number(port, portnum);
   if(!PORTABLED->get_portable_by_num(port->get_number())) {
-    LOGD->write_syslog("Urgh -- error in cmd_new_portable!");
+    LOGD->write_syslog("Urgh -- error in cmd_new_portable!", LOG_ERR);
   }
 
   if(user->get_location()) {
