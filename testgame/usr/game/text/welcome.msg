@@ -4,13 +4,15 @@ The server is public domain and you are welcome
 to redistribute it under certain conditions;
 Type "help copying" for details.
 
-This is a Phantasmal-based MUD.  See
-"http://phantasmal.sf.net" for details.
 
-The owners of this MUD can customize this file.
-It's located in /usr/game/text/welcome.msg.  But
-they haven't done so yet.
+                     The Seas of Night
 
-Enter Account Name or Close Connection Now
+         A Collaborative Story of Postmortem Piracy
+                 Upon the Highest of Seas
 
-Account Login: 
+                    and, simultaneously,
+
+             A Multiplayer Environment Built upon
+                the Phantasmal MUD Library
+
+Your account name: 
