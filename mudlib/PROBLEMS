@@ -9,7 +9,9 @@ Q: I try to run DGD, but I get things that look like this:
 
 A: You probably haven't linked or copied an appropriate Kernel MUDLib
 into the Kernel subdirectory of your installation of Phantasmal.  Make
-sure that's done and try again.
+sure that's done and try again.  Note that you have to do all the
+stuff described in the INSTALL document before anything works.  You
+have already, right?
 
 
 Q: I try to run DGD, but I get things that look like this:
