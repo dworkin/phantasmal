@@ -128,7 +128,7 @@ static void create(varargs int clone)
   objs_file = read_file(PORT_FILE);
   if(!objs_file)
     error("Can't read file " + PORT_FILE + "!");
-  PORTABLED->add_unq_text_portables(objs_file, nil, PORT_FILE);
+  PORTABLED->add_unq_text_portables(objs_file, the_void, PORT_FILE);
 
   if(!find_object(CHANNELD)) compile_object(CHANNELD);
   
