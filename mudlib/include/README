@@ -1,0 +1,6 @@
+You don't want to copy files from the Kernel MUDLib in here.  You
+especially don't want to replace Phantasmal's std.h or config.h with
+the one from the Kernel MUDLib.  It'll cause you problems on startup
+if you do.  However, you *do* want to change into the kernel
+subdirectory of this directory.  Read the README file there, which
+will tell you what to do.
