@@ -12,6 +12,22 @@ int char_is_whitespace(int char) {
   return 0;
 }
 
+int char_to_lower (int char)
+{
+        if ((char <= 'Z' && char >= 'A'))
+                char |= 0x20;
+
+        return char;
+}
+
+int char_to_upper (int char)
+{
+        if ((char <= 'z' && char >= 'a'))
+                char &= ~0x20;
+
+        return char;
+}
+
 int is_whitespace(string str) {
   int len;
   int iter;
@@ -73,7 +89,7 @@ string to_lower(string text) {
   newword = text;
   len = strlen(newword);
   for(ctr=0; ctr<len; ctr++) {
-    newword[ctr] |= 0x20;
+    newword[ctr] = char_to_lower(newword[ctr]);
   }
   return newword;
 }
@@ -86,7 +102,7 @@ string to_upper(string text) {
   newword = text;
   len = strlen(newword);
   for(ctr=0; ctr<len; ctr++) {
-    newword[ctr] &= ~0x20;
+    newword[ctr] = char_to_upper(newword[ctr]);
   }
   return newword;
 }
