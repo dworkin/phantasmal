@@ -37,6 +37,7 @@ $file_index = 1;
 foreach $obj (@objs) {
     foreach $fileref (@{$priv_objs{$obj}}) {
 	$fileref->{output_html} = "file_idx_${obj_index}_$file_index.html";
+	$func_names{$fileref->{func_name}} = $fileref->{output_html};
 	$file_index++;
     }
 
@@ -88,6 +89,7 @@ sub read_all_files {
 	      $entry = "";
 	      $last_line_ws = 0;
 	  } elsif ($line =~ /^\s*$/) {
+	      $entry .= $line;
 	      $last_line_ws = 1;
 	  } elsif ($line =~ /^\s+/) {
 	      $entry .= $line;
@@ -95,9 +97,9 @@ sub read_all_files {
 	  } else {
 	      die "Unrecognized line: '$line'";
 	  }
-	  $filemap{$entname} = $entry;
 
       }
+	$filemap{$entname} = $entry;
 	close(FILE);
 	$filemap{filename} = $file;
 	print "Finished parsing file: '$file'\n";
@@ -176,7 +178,7 @@ sub set_new_fields {
 	$ref = $priv_objs{$filename};
 	$priv_objs{$filename} = ([ @$ref, $fileref ]);
 
-	unless($fileref->{NAME} =~ /^\s*([a-zA-Z0-9_]+)\s*-\s*(.*)$/) {
+	unless($fileref->{NAME} =~ /^\s*([a-zA-Z0-9_]+)\s*-\s*(.*)(\n)*$/) {
 	    die "Unrecognized format for entry NAME, '$fileref->{NAME}'" .
 		", file '$fileref->{filename}'!";
 	}
@@ -188,8 +190,10 @@ sub set_new_fields {
 	$fileref->{called_by} = $fileref->{"CALLED BY"};
 
 	$fileref->{desc} = $fileref->{DESCRIPTION};
+	$fileref->{desc} =~ s/\n\n/<\/p>\n<p>/g;
 
 	$fileref->{return} = $fileref->{"RETURN VALUE"};
+	$fileref->{return} =~ s/\n\n/<\/p>\n<p>/g;
 
 	$fileref->{errors} = $fileref->{ERRORS};
 
@@ -266,15 +270,30 @@ sub html_for_file {
       <dd> <p> $fileref->{desc} </p> </dd>
 
       <dt> Return Value:</dt>
-      <dd> $fileref->{return} <br/> <br/> </dd>
+      <dd> <p>$fileref->{return} </p> </dd>
 
       <dt> Errors:</dt>
       <dd> $fileref->{errors} <br/> <br/> </dd>
 
       <dt> See Also:</dt>
-      <dd> $fileref->{see_also} </dd>
 EOF
     ;
+
+    # "See also" entry
+    print FILE "      <dd> ";
+    my @see_also = split(/,/, $fileref->{see_also});
+
+    @see_also = map {s/^\s+//; $_} map {s/\s+$//; $_} @see_also;
+    @see_also = map {s/\s+/ /; $_} @see_also;
+
+    @see_also = map {
+	if(defined($func_names{$_})) {
+	    "<a href=\"" . $func_names{$_} . "\"> $_ </a>";
+	} else { $_ }
+    } @see_also;
+    print FILE join(",\n      ", @see_also);
+
+    print FILE "</dd>\n";
 
     print FILE <<"EOF";
     </dl>
