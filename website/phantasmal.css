@@ -25,11 +25,20 @@ a:active {
 	text-decoration: none;
 	color: #3366CC;
 }
-tr.heading {background-color: #DFDFF5; font-size: 11pt;}
-td.heading {background-color: #DFDFF5; font-size: 11pt;}
-tr.content {background-color: #FFFFFF; padding: 4px; font-size: 10pt;}
-td.content {background-color: #FFFFFF; padding: 4px; font-size: 10pt;}
-tr.banner {background-color: #FFFFFF; padding: 4px; font-size: 12pt; font-weight: bold;}
-td.banner {background-color: #FFFFFF; padding: 4px; font-size: 12pt; font-weight: bold;}
+
+# Originally 11-pt
+tr.heading {background-color: #DFDFF5; font-size: 110%;}
+td.heading {background-color: #DFDFF5; font-size: 110%;}
+
+# Originally these were 10-pt font
+tr.content {background-color: #FFFFFF; padding: 4px; }
+td.content {background-color: #FFFFFF; padding: 4px; }
+
+# Originally 12-pt
+tr.banner {background-color: #FFFFFF; padding: 4px; font-size: 120%;
+           font-weight: bold;}
+td.banner {background-color: #FFFFFF; padding: 4px; font-size: 120%;
+           font-weight: bold;}
+
 table.main {background-color: #333399;}
 img {border: none;}
