@@ -202,7 +202,9 @@ void allocate_in_segment(int segment, int tr_num, object obj) {
       error("Cannot allocate segment -- why?");
   }
   if(seg[0] != owner)
-    error("Can't allocate in somebody else's segment!");
+    error(owners[owner] + " can't allocate object " + tr_num + " in segment "
+	  + segment + "!\n"
+	  + "That segment is owned by " + owners[seg[0]] + "!");
 
   if(sizeof(segments[segment][1]) <= offs) {
     seg[1] += allocate(offs - sizeof(seg[1]) + 1);
