@@ -28,7 +28,7 @@ mixed*   per_call_out;
 
    Some ways we could deal with it:
      - Keep going forward, running all the call_outs, until we
-       catch up.  That could be really slow at times.
+       catch up.  That could be *really* slow on startup.
      - Cancel all the call_outs, but make some way to subscribe
        for a notification when the time skips to reschedule
        them.  That requires a lot of code on the part of
@@ -99,7 +99,7 @@ void upgraded(varargs int clone) {
   }
 
   /* Hardcode a MUD minute to 20 real seconds right now,
-     just for debugging. */
+     just to test. */
   delay_tab = allocate(TIMED_HIGHEST);
   delay_tab[TIMED_MUD_MINUTE] = 20;
 }
@@ -109,9 +109,10 @@ void periodic_call_out(int how_often, string funcname, mixed args...) {
     error("Illegal value for how_often in TIMED::periodic_call_out!");
   }
 
+  LOGD->write_syslog("Setting up periodic call_out in TIMED");
   per_queue[how_often][object_name(previous_object())]
     = ({ funcname, args });
-  if(!per_call_out[how_often]) {
+  if(per_call_out[how_often] <= 0) {
     priv_start_call_out(how_often);
   }
 }
@@ -167,6 +168,10 @@ void __priv_co_hook(int how_often) {
   }
 
   LOGD->write_syslog("called __priv_co_hook...");
+
+  /* Schedule the next call */
+  per_call_out[how_often] = -1;
+  priv_start_call_out(how_often);
 
   keys = map_indices(per_queue[how_often]);
   for(ctr = 0; ctr < sizeof(keys); ctr++) {
