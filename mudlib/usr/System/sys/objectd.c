@@ -427,6 +427,9 @@ private void register_inherit_data(object issue) {
       if(aggro_recompile > 1) {
 	LOGD->write_syslog("Uncorrected parent string!", LOG_ERR);
       }
+    } else if(typeof(parents[ctr]) == T_NIL) {
+      LOGD->write_syslog("Parents[" + ctr + "] is nil for issue #" + index
+			 + "!", LOG_ERR);
     } else {
       tmp = obj_issues->index(parents[ctr]);
       if(!tmp) {
@@ -625,7 +628,8 @@ private void call_upgraded(object obj) {
 /*** Hook funcs called after this object is set_object_manager'd ***/
 
 /* Non-lib object has just been compiled - called just before create() */
-void compile(string owner, object obj, string inherited...)
+void compile(string owner, object obj, string source,
+	     string inherited...)
 {
   if(previous_program() == DRIVER) {
     LOGD->write_syslog("compile: " + object_name(obj), LOG_NORMAL);
@@ -634,19 +638,9 @@ void compile(string owner, object obj, string inherited...)
   }
 }
 
-/* Non-lib object is about to be compiled from source string */
-void compile_string(string owner, object obj, string source,
-		    string inherited...)
-{
-  if(previous_program() == DRIVER) {
-    LOGD->write_syslog("compile_string: " + object_name(obj), LOG_NORMAL);
-
-    add_clonable(owner, obj, inherited);
-  }
-}
-
 /* Inheritable object has just been compiled */
-void compile_lib(string owner, string path, string inherited...)
+void compile_lib(string owner, string path, string source,
+		 string inherited...)
 {
   if(previous_program() == DRIVER) {
     LOGD->write_syslog("compile_lib: " + path, LOG_NORMAL);
@@ -655,16 +649,6 @@ void compile_lib(string owner, string path, string inherited...)
   }
 }
 
-/* Inheritable object has just been compiled from source string */
-void compile_lib_string(string owner, string path, string source,
-			string inherited...)
-{
-  if(previous_program() == DRIVER) {
-    LOGD->write_syslog("compile_lib_string: " + path, LOG_NORMAL);
-
-    add_lib(owner, path, inherited);
-  }
-}
 
 /* Object has just been cloned - called just before create(1) */
 void clone(string owner, object obj)

@@ -168,3 +168,17 @@ see opalescent light filtering in through the petals.
   ~adjectives{{~enUS{test}}}
   ~exit{n: #79 102 103}
 }
+~room{
+  ~number{300}
+  ~location{0}
+  ~bdesc{
+    ~enUS{student lounge}}
+  ~gdesc{
+    ~enUS{student lounge}}
+  ~ldesc{
+    ~enUS{This room has several old, large couches here and there.  A large table
+in the middle of the room seems to be built straight into the floor
+somehow.}}
+  ~nouns{{}}
+  ~adjectives{{}}
+}

@@ -13,6 +13,8 @@ static void create(varargs int clone) {
     logd->write_syslog("Telnetd cloned!");
   }
   welcome = ::read_file(WELCOME_MESSAGE);
+  if(!welcome)
+    error("Can't read welcome message file " + WELCOME_MESSAGE + "!");
 }
 
 object select(string str)

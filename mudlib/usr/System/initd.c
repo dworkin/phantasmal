@@ -45,7 +45,8 @@ static void create(varargs int clone)
 
   /* Compile, find and install the Telnetd */
   if(!find_object(TELNETD)) { compile_object(TELNETD); }
-  "/kernel/sys/userd"->set_telnet_manager(find_object(TELNETD));
+  "/kernel/sys/userd"->set_telnet_manager(0,find_object(TELNETD));
+  /* "/kernel/sys/userd"->set_telnet_manager(find_object(TELNETD)); */
 
   /* Compile the Phrase manager (before Helpd) */
   if(!find_object(PHRASED)) { compile_object(PHRASED); }
