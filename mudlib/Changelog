@@ -9,6 +9,9 @@ Release 0.012:
 	  all the Kernel MUDLib legacy commands are now documented.
 	* Merged help with @help.  Now the regular help command handles
 	  all of it just fine.
+	* Slightly different logfile output format.
+	* Allow subscription to log and error channels with extra
+	  information.
 
 Release 0.011b:
 	* Added @make_portable command, very similar to @make_room.
