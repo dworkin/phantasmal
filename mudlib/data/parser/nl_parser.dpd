@@ -1,7 +1,10 @@
-punct = /[\.;!]/
+punct = /[\.;!:?]/
 pronoun = /((him)|(her)|(it))/
+digit = /[0-9]/
+digit2 = /[0-9][0-9]/
+digit3 = /[0-9][0-9][0-9]/
 digits = /([0-9]+)/
-wnum = /((one)|(two)|(three)|(four)|(five)|(six)|(seven)|(eight)|(nine))/
+wnum = /((zero)|(one)|(two)|(three)|(four)|(five)|(six)|(seven)|(eight)|(nine))/
 teens = /((ten)|(eleven)|(twelve)|(thirteen)|(fourteen)|(fifteen)|(sixteen)|(seventeen)|(eighteen)|(ninteen))/
 wtens = /((twenty)|(thirty)|(fourty)|(fifty)|(sixty)|(seventy)|(eighty)|(ninty))/
 
@@ -169,35 +172,38 @@ adjp: adjp adject
 pp: prep np
 
 det: num
-det: 'all' 'but' num
-det: 'all'
-det: 'no'
-det: 'a'
-det: 'the'
+det: 'all' 'but' num ? all_but_num
+det: 'all' ? num_all
+det: 'all' 'the' ? num_all
+det: 'no' ? num0
+det: 'a' ? num1
+det: 'the' ? num1
 
 num: number
 num: hundreds
 num: thousands
 num: thousands
-det: millions
 
-ones: wnum
+ones: wnum ? one2num
+ones: digit ? dig2num
 
 tens: ones
-tens: teens
-tens: wtens '-' ones
-tens: wtens ones
+tens: digit2 ? dig2num
+tens: teens ? ten2num
+tens: wtens ? ten2num
+tens: wtens '-' ones ? ten2num
+tens: wtens ones ? ten2num
 
 hundreds: tens
-hundreds: tens 'hundred' tens
-hundreds: tens 'hundred' 'and' tens
-hundreds: tens 'hundred' '-' 'and' '-' tens
+hundreds: digit3 ? dig2num
+hundreds: tens 'hundred' ? hun2num
+hundreds: tens 'hundred' tens ? hun2num
+hundreds: tens 'hundred' 'and' tens ? hun2num
+hundreds: tens 'hundred' '-' 'and' '-' tens ? hun2num
 
-thousands: hundreds 'thousand' hundreds
-thousands: hundreds 'thousand' 'and' hundreds
-
-millions: hundreds 'million' thousands
-millions: hundreds 'million' 'and' thousands
+thousands: hundreds 'thousand' ? thou2num
+thousands: hundreds 'thousand' hundreds ? thou2num
+thousands: hundreds 'thousand' 'and' hundreds ? thou2num
 
 number: digits ? dig2num
 number: number digits ? cat_num
