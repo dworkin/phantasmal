@@ -153,18 +153,19 @@ adject: itbv_n_adj
 adject: itbv_adj
 adject: tbv_n_adj
 adject: tbv_adj
-adject: noun '\'s'
-adject: noun '\''
 
-np: adjp noun
-np: pronoun
-np: adjp det adjp noun
-np: np 'and' adjp noun
-np: np 'and' pronoun
-np: np 'and' adjp det adjp noun
-np: np 'except' adjp noun
-np: np 'except' pronoun
-np: np 'except' adjp det adjp noun
+possess: noun '\'s'
+possess: noun '\''
+
+npr: possess adjp noun
+npr: prounoun
+npr: det adjp noun
+npr: possess det adjp noun
+npr: det 'of' possess adjp noun
+
+np: npr
+np: np 'and' npr
+np: np 'except' npr
 
 adjp:
 adjp: adjp adject
