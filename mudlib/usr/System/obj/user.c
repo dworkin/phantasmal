@@ -1,4 +1,4 @@
-/* $Header: /cvsroot/phantasmal/mudlib/usr/System/obj/user.c,v 1.31 2003/02/06 09:48:49 angelbob Exp $ */
+/* $Header: /cvsroot/phantasmal/mudlib/usr/System/obj/user.c,v 1.32 2003/02/22 20:18:35 angelbob Exp $ */
 
 #include <kernel/kernel.h>
 #include <kernel/user.h>
@@ -1281,13 +1281,46 @@ static void cmd_remove(object user, string cmd, string str) {
   }
 }
 
+private string bug_header(string cmd, object user) {
+  string ret;
+  object location;
+
+  location = user->get_location();
+
+  ret = "\n" + ctime(time()) + ": " + cmd + " Report\n";
+  ret += "Reported by user " + STRINGD->mixed_sprint(user->get_Name()) + "\n";
+  catch {
+    if(location) {
+      /* Currently, include the room name the way the user sees it.
+	 Could even be useful for debugging internationalization
+	 problems. */
+      ret += "In room #" + STRINGD->mixed_sprint(location->get_number())
+	+ " (" + location->get_brief()->to_string(user) + ")\n";
+    } else {
+      ret += "In no location at all!\n";
+    }
+  } : {
+    ret += "(Error trying to get location in " + cmd + " report!)\n";
+  }
+
+  return ret;
+}
+
 static void cmd_bug(object user, string cmd, string str) {
-  write_file(BUG_DATA, ctime(time()) + ": Bug Report: " + str + "\n\n");
+  write_file(BUG_DATA, bug_header("bug", user) + str + "\n");
+
   message("Reported bug: " + str + "\r\n");
 }
 
+static void cmd_idea(object user, string cmd, string str) {
+  write_file(IDEA_DATA, bug_header("idea", user) + str + "\n");
+
+  message("Reported idea: " + str + "\r\n");
+}
+
 static void cmd_typo(object user, string cmd, string str) {
-  write_file(TYPO_DATA, ctime(time()) + ": Bug Report: " + str + "\n\n");
+  write_file(TYPO_DATA, bug_header("typo", user) + str + "\n");
+
   message("Reported typo: " + str + "\r\n");
 }
 
