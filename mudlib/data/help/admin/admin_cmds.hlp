@@ -199,7 +199,8 @@ through (or not) and tossed out to make room for the next one.
 }}
 
 ~name{~enUS{log_subscribe,%log_subscribe,@log_subscribe,subscribe_log,
-	%subscribe_log,@subscribe_log,subscribe log,log subscribe}}
+	%subscribe_log,@subscribe_log,subscribe log,log subscribe, log,
+        subscribe, level, levels, subscription}}
 ~keywords{admin}
 ~desc{
   ~enUS{
