@@ -13,8 +13,6 @@ void upgraded(varargs int clone);
 
 
 /* Data from config file*/
-int    start_room;
-int    meat_locker;
 object game_driver;
 
 static void create(void) {
@@ -27,34 +25,6 @@ void upgraded(varargs int clone) {
   if(SYSTEM() || COMMON()) {
 
   }
-}
-
-int get_start_room(void) {
-  if(!AUTHORIZED())
-    return -1;
-
-  return start_room;
-}
-
-void set_start_room(int new_room) {
-  if(!AUTHORIZED())
-    return;
-
-  start_room = new_room;
-}
-
-int get_meat_locker(void) {
-  if(!AUTHORIZED())
-    return -1;
-
-  return meat_locker;
-}
-
-void set_meat_locker(int new_room) {
-  if(!AUTHORIZED())
-    return;
-
-  meat_locker = new_room;
 }
 
 void set_game_driver(object new_driver) {
