@@ -1,5 +1,5 @@
 FILE
-	/usr/common/obj/basic_unq_parser
+	/usr/common/obj/basic_unq_parser.c
 
 NAME
 	basic_unq_parse - convert an UNQ file to parsed UNQ data

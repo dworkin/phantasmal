@@ -1,5 +1,5 @@
 FILE
-	/usr/common/obj/basic_unq_parser
+	/usr/common/obj/basic_unq_parser.c
 
 NAME
 	unq_parse_with_dtd - parse UNQ data to a structured format

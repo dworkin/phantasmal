@@ -1,5 +1,5 @@
 FILE
-	/usr/common/obj/basic_unq_parser
+	/usr/common/obj/basic_unq_parser.c
 
 NAME
 	trim_empty_tags - remove tag/block pairs with only whitespace
