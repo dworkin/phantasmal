@@ -1,21 +1,72 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<html>
-  <head>
-    <title> Molly O'Hara's Maze Tutorial </title>
-    <style type="text/css">
-    <!--
-      p {font-family: serif, font-weight: normal; color: black;
-         font-size: 12pt }
-      h3 {font-family: serif; font-weight: bold; color: #FF20FF;
-          font-size: 16pt}
-     -->
-    </style>
-  </head>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+                      "http://www.w3.org/TR/xhtml1/DTD/strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<title>Innsmouth MUD Design: Maze Tutorial</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<link href="../phantasmal.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<table width="95%" border="0" cellspacing="0" cellpadding="4">
+  <tr>
+    <td colspan="2"> <table width="100%" border="0" cellspacing="1"
+        cellpadding="0" class="main">
+        <tr>
+          <td class="banner">Innsmouth MUD Design</td>
+        </tr>
+      </table></td>
+  </tr>
+  <tr>
+    <td valign="top">
+      <table width="25%"  border="0" cellspacing="1"
+             cellpadding="0"  class="main">
+        <tr>
+          <td class="content" style="font-size: 120%">
 
-  <body text="#000000" bgcolor="#DDDDDD" link="#0000EF" vlink="#51188E"
-	alink="#FF0000">
+          <ul style="margin: 0; padding-left: 10%">
+            <li> <a href="../DGD/index.html">DGD &amp; LPC Page</a> </li>
+	    <li> <a href="../DGD/LPC">LPC Textbook</a> </li>
+            <li> <a href="../index.html">Phantasmal Main</a> </li>
+	    <li> <a href="http://www.sf.net/projects/phantasmal">Phantasmal
+	      SourceForge</a> </li>
+	    <li> <a href="index.html">Innsmouth Main</a> </li>
+	    <li> <a href="MudDesign.html">MUD Design Page</a> </li>
+	    <li> <a href="Articles.html">Selected Articles</a> </li>
+          </ul>
 
-    <h3 align="center"> Maze Tutorial </h3>
+        </td>
+        </tr>
+        <tr>
+          <td class="content" align="center">
+            <a href="http://validator.w3.org/check/referer">
+            <img src="../images/valid-xhtml10.gif" alt="Valid XHTML 1.0!"
+             style="border:0;width:88px;height:31px" /></a><br />
+            <img src="../images/pixel.gif"
+             style="border:0;width:88px;height:1px" alt="" /><br />
+            <a href="http://jigsaw.w3.org/css-validator/check/referer">
+            <img src="http://jigsaw.w3.org/css-validator/images/vcss"
+             alt="Valid CSS!" style="border:0;width:88px;height:31px" />
+            </a><br />
+            <a href="http://sourceforge.net">
+            <img src="http://sourceforge.net/sflogo.php?group_id=48659&amp;type=6"
+             style="border: 0; width: 210; height: 62;"
+	     alt="SourceForge.net Logo" /></a>
+          </td>
+        </tr>
+      </table></td>
+    <td> <table width="100%"  border="0" cellspacing="1" cellpadding="0"  class="main">
+        <tr>
+          <td class="heading">&nbsp;&nbsp;&middot;&nbsp;
+	    <a href="http://phantasmal.sf.net/index.html">Phantasmal</a> &gt;
+            <a href="index.html">Innsmouth</a> &gt;
+            <a href="">Maze Tutorial</a>
+          </td>
+        </tr>
+        <tr>
+          <td class="content">
+
+
+    <h3 style="text-align: center"> Molly O'Hara's Maze Tutorial </h3>
 
     <p>
       Molly O'Hara of 4Dimensions.org posted this maze tutorial to
@@ -24,92 +75,164 @@
     </p>
 
 <p>
-Here's something simple for all codebases. MAZES. Most players hate them, but we all use them, to add some space between other zones, and also to torment them a bit. But not all new Builders know how to make a Maze right, so here is a crash course:
+  Here's something simple for all codebases. MAZES. Most players hate
+  them, but we all use them, to add some space between other zones,
+  and also to torment them a bit. But not all new Builders know how to
+  make a Maze right, so here is a crash course:
 </p>
 
 <p>
-Basically there are two types of mazes, linear or grids, representing the winding tunnels in a Dungeon or a seemingly endless prairie or forest. Mostly they are created in the same simple way, by linking the rooms back in circles, and here.s where inexperienced Builders quite often go wrong.
+  Basically there are two types of mazes, linear or grids,
+  representing the winding tunnels in a Dungeon or a seemingly endless
+  prairie or forest. Mostly they are created in the same simple way,
+  by linking the rooms back in circles, and here.s where inexperienced
+  Builders quite often go wrong.
 </p>
 
 <p>
-Linking in circles is fine, unless you do it on a straight line with too short distance between the back-linked rooms. The minimum distance is the number of rooms you can see other chars in, when looking in a direction. Otherwise you are going to see yourself, and that immediately gives the trick away. So the smallest functional maze you can make is 4 rooms, linked in a square, like this
+  Linking in circles is fine, unless you do it on a straight line with
+  too short distance between the back-linked rooms. The minimum
+  distance is the number of rooms you can see other chars in, when
+  looking in a direction. Otherwise you are going to see yourself, and
+  that immediately gives the trick away. So the smallest functional
+  maze you can make is 4 rooms, linked in a square, like this
 </p>
 
-ab<br/>
-cd<br/>
+<pre>
+ab
+cd
+</pre>
 
 <p>
-To make a maze out of this you just need to link a to d both north and west, and then link the three other rooms after the same principle. Even a mini maze like this can keep some players running around in circles for ages, but of course the more rooms you use, the harder it gets. And the room descs don.t HAVE to be all similar either, even though that.s the most common. A maze can be just as confusing - and a lot more interesting - with individual descs.
-</p>
-
-<p>
-We have a 100 room desert, that is a grid maze, where the rooms are all individual. The desert has a definite topography with ridges, depressions and a couple of waterholes, and because of the circle linking it gets repetitive in a certain rhythm, but basically you can wander around there forever. The desert code makes it a nasty place, where you mostly need to find some shadow during daytime, and move only at night. And it has had several players begging to be let out, because the exit is quite hard to find, and we made the entire zone !recall, !teleport and !summon-out too.
-</p>
-
-<p>
-The exit from a maze is of course the funny thing to make. It can be something as simple as a closed or hidden door, but it can also be something subtler, like an invisible portal or some mob letting you out in return for a favour. Or it can be a nasty trick. Below is an example of the latter. (This maze is in our Mud School, so I am not giving any big secrets away). 
-</p>
-
-<hr/>
-
-<p>
-Before they enter the Maze, the player gets the following information: <br/>
-When you go east from this room, you'll enter a maze. It is not very large, but it can still be pretty confusing. The rooms look all the same, so it will be a bit hard to figure out where you are. The Quest is simply to find the way out of the maze. Apart from the obvious solution of just going DOWN to Recall and dropping out, of course. *snicker*.
-</p>
-
-<p>
-The maze itself is only 6 rooms, linked after the principle in the example above, and each room looks like this:
+  To make a maze out of this you just need to link a to d both north
+  and west, and then link the three other rooms after the same
+  principle. Even a mini maze like this can keep some players running
+  around in circles for ages, but of course the more rooms you use,
+  the harder it gets. And the room descs don.t HAVE to be all similar
+  either, even though that.s the most common. A maze can be just as
+  confusing - and a lot more interesting - with individual descs.
 </p>
 
 <p>
-In A Large Forest [ Exits: n e s w d ] <br/>
-The forest is large, the trees tower above your head. Very little light penetrates through the dense foliage, not even in the middle of the day. Although there is no undergrowth blocking the view, this forest is still confusing, since every direction looks the same. The ground is covered with sparse grass, and there are several rabbit holes here, so watch your step. Occasionally you catch a glimpse of one of these cotton-tails, scampering away at the sound of your footsteps.
+  We have a 100 room desert, that is a grid maze, where the rooms are
+  all individual. The desert has a definite topography with ridges,
+  depressions and a couple of waterholes, and because of the circle
+  linking it gets repetitive in a certain rhythm, but basically you
+  can wander around there forever. The desert code makes it a nasty
+  place, where you mostly need to find some shadow during daytime, and
+  move only at night. And it has had several players begging to be let
+  out, because the exit is quite hard to find, and we made the entire
+  zone !recall, !teleport and !summon-out too.
 </p>
 
 <p>
-You can go in all cardinal directions in all rooms. Looking in any direction gives the same info: .All directions look the same in this forest..
+  The exit from a maze is of course the funny thing to make. It can be
+  something as simple as a closed or hidden door, but it can also be
+  something subtler, like an invisible portal or some mob letting you
+  out in return for a favour. Or it can be a nasty trick. Below is an
+  example of the latter. (This maze is in our Mud School, so I am not
+  giving any big secrets away).
+</p>
+
+<hr />
+
+<p>
+  Before they enter the Maze, the player gets the following
+  information: <br /> When you go east from this room, you'll enter a
+  maze. It is not very large, but it can still be pretty
+  confusing. The rooms look all the same, so it will be a bit hard to
+  figure out where you are. The Quest is simply to find the way out of
+  the maze. Apart from the obvious solution of just going DOWN to
+  Recall and dropping out, of course. *snicker*.
 </p>
 
 <p>
-Looking up, only shows the sky above, so that is no option. Climbing the trees doesn.t work either.
-Looking down gives this info: .A small rabbit hole leads down.. And also shows up the usual lazy crowd of players squatting at Recall.
+  The maze itself is only 6 rooms, linked after the principle in the
+  example above, and each room looks like this:
 </p>
 
 <p>
-There are no hidden doors or portals anywhere. So how do you get out?
+  In A Large Forest [ Exits: n e s w d ] <br /> The forest is large,
+  the trees tower above your head. Very little light penetrates
+  through the dense foliage, not even in the middle of the
+  day. Although there is no undergrowth blocking the view, this forest
+  is still confusing, since every direction looks the same. The ground
+  is covered with sparse grass, and there are several rabbit holes
+  here, so watch your step. Occasionally you catch a glimpse of one of
+  these cotton-tails, scampering away at the sound of your footsteps.
 </p>
 
 <p>
-Easy. You go down. 
+  You can go in all cardinal directions in all rooms. Looking in any
+  direction gives the same info: All directions look the same in this
+  forest..
 </p>
 
 <p>
-One of the six rooms is different, the exit down leads to an extra room, which in turns leads down to Recall. The attentive player would notice this because of the message about the players down there. Instead of .You see Soandso immediately to the down., in one of the rooms it will say .close by to the down. instead. 
+  Looking up, only shows the sky above, so that is no option. Climbing
+  the trees doesn.t work either.  Looking down gives this info: .A
+  small rabbit hole leads down.. And also shows up the usual lazy
+  crowd of players squatting at Recall.
 </p>
 
 <p>
-But since this Maze is in the Mud School, we want to teach the new players to use the not-so-common options LISTEN and SMELL, and therefor we put the main clue there. So in 5 of the rooms you get the Listen message .You hear the wind in the crowns of the trees. while in the room with the exit you get .A rustling sound is coming from the rabbit hole below. Wow, that hole is really uncommonly big!.
+  There are no hidden doors or portals anywhere. So how do you get out?
+</p>
+
+<p>
+  Easy. You go down. 
+</p>
+
+<p>
+  One of the six rooms is different, the exit down leads to an extra
+  room, which in turns leads down to Recall. The attentive player
+  would notice this because of the message about the players down
+  there. Instead of .You see Soandso immediately to the down., in one
+  of the rooms it will say .close by to the down. instead.
+</p>
+
+<p>
+  But since this Maze is in the Mud School, we want to teach the new
+  players to use the not-so-common options LISTEN and SMELL, and
+  therefor we put the main clue there. So in 5 of the rooms you get
+  the Listen message .You hear the wind in the crowns of the
+  trees. while in the room with the exit you get .A rustling sound is
+  coming from the rabbit hole below. Wow, that hole is really
+  uncommonly big!.
 </p>
 
 <p>
 That's one if the things you can use the extra descs for.
 </p>
 
-<hr>
+<hr />
 
 <p>
-On a side note: <br/>
-There are some coded or scripted ways to make mazes too, and at least one of them is downloadable from the net. Exits get opened and shut randomly as the zone resets, so it.s never quite the same. But I really don.t like those options myself. To me it makes sense that once you have mapped a maze, you should be able to follow the same path next time you enter it. We do have one Maze however, which is scripted to give an individual path for each player who makes it through. For each individual player the path is always the same, but no two players get the same route. This was made to stop the blabbering among some players who told each other the directions, and was of course very effective. But it also took a pretty long and complicated script to set it up, and even though I am fond of scripts, I prefer things to be simple. 
+  On a side note: <br /> There are some coded or scripted ways to make
+  mazes too, and at least one of them is downloadable from the
+  net. Exits get opened and shut randomly as the zone resets, so it.s
+  never quite the same. But I really don.t like those options
+  myself. To me it makes sense that once you have mapped a maze, you
+  should be able to follow the same path next time you enter it. We do
+  have one Maze however, which is scripted to give an individual path
+  for each player who makes it through. For each individual player the
+  path is always the same, but no two players get the same route. This
+  was made to stop the blabbering among some players who told each
+  other the directions, and was of course very effective. But it also
+  took a pretty long and complicated script to set it up, and even
+  though I am fond of scripts, I prefer things to be simple.
 </p>
 
-<hr>
-Molly O'Hara of 4 Dimensions<br/>
-4dimensions.org  Port 6000 <br/>
-
-
-    <a href="http://sourceforge.net">
-      <img src="http://sourceforge.net/sflogo.php?group_id=48659&type=6"
-	   width="210" height="62" border="0"
-	   alt="SourceForge.net Logo"></a>
-  </body>
+<hr />
+Molly O'Hara of 4 Dimensions<br />
+4dimensions.org  Port 6000 <br />
+<hr />
+            <address> 
+            <span><a href="mailto:angelbob-remove-spamfree@spamfree.users.sf.net">Noah Gibbs</a></span> 
+            </address></td> 
+        </tr> 
+      </table></td> 
+  </tr> 
+</table> 
+</body>
 </html>
