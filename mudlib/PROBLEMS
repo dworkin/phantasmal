@@ -35,9 +35,9 @@ Q: I run DGD and things look good except that there's no game.  What gives?
 
 A: This is a MUD server.  You'll need to connect to it with a telnet
 client on an appropriate port.  If you're unfamiliar with how the
-whole process works, you may find you're more comfortable trying out
-CircleMUD or another fully developed MUD before trying DGD and
-Phantasmal, which are definitely intended for the experienced crowd.
+whole process works you may find you're more comfortable trying out
+CircleMUD or another fully developed MUD.  DGD and Phantasmal are
+definitely intended for the experienced crowd.
 
 
 
@@ -57,3 +57,18 @@ just isn't cool enough for it, you're going to need to upgrade to a
 higher version of DGD, probably an experimental one.  Check out
 http://phantasmal.sourceforge.net/DGD and click on a link called
 something like "Downloading, Compiling and Configuring DGD".
+
+
+Q: I upgrade from one version of DGD to the next one and everybody
+except admin stops being a wizard!  What gives?
+
+A: The Kernel MUDLib stores its listing of who gets wizard privileges
+in the file "kernel/data/access.data".  If you delete this then
+everybody loses all their privileges.  One way to deal with it is to
+manually reinstate everybody.  Another is to grab the file from your
+old DGD install and restore it.
+
+If you copy the kernel MUDLib stuff rather than symbolically linking
+it, and you copy the new version *over* the old version, you won't get
+this problem (unless you overwrite the old access.data with the new
+one).  Naturally that approach comes with its own set of problems.
