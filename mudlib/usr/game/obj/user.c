@@ -1,4 +1,4 @@
-/* $Header: /cvsroot/phantasmal/mudlib/usr/game/obj/user.c,v 1.4 2003/12/10 11:41:41 angelbob Exp $ */
+/* $Header: /cvsroot/phantasmal/mudlib/usr/game/obj/user.c,v 1.5 2003/12/12 19:52:09 angelbob Exp $ */
 
 #include <kernel/kernel.h>
 #include <kernel/user.h>
@@ -31,6 +31,7 @@ static void cmd_social(object user, string cmd, string str);
 /* Macros */
 #define NEW_PHRASE(x) PHRASED->new_simple_english_phrase(x)
 
+int meat_locker_rn;
 
 /*
  * NAME:	create()
@@ -39,6 +40,8 @@ static void cmd_social(object user, string cmd, string str);
 static void create(int clone)
 {
   ::create(clone);
+
+  meat_locker_rn = 1;
 }
 
 void upgraded(varargs int clone) {
@@ -166,7 +169,7 @@ void player_login(int first_time)
   body = nil;
 
   /* Set up location, body, etc */
-  start_room_num = CONFIGD->get_start_room();
+  start_room_num = 0;
   start_room = MAPD->get_room_by_num(start_room_num);
 
   /* If start room can't be found, set the start room to the void */
@@ -274,7 +277,7 @@ void player_login(int first_time)
     mobile->teleport(location, 1);
 
     /* Move body to start room */
-    if(location->get_number() == CONFIGD->get_meat_locker()) {
+    if(location->get_number() == meat_locker_rn) {
       mobile->teleport(start_room, 1);
     }
   }
@@ -297,20 +300,18 @@ private void player_logout(void)
   /* Teleport body to meat locker */
   if(body) {
     object meat_locker;
-    int    ml_num;
     object mobile;
 
-    ml_num = CONFIGD->get_meat_locker();
-    if(ml_num >= 0) {
-      meat_locker = MAPD->get_room_by_num(ml_num);
+    if(meat_locker_rn >= 0) {
+      meat_locker = MAPD->get_room_by_num(meat_locker_rn);
       if(meat_locker) {
 	if (location) {
 	  mobile = body->get_mobile();
 	  mobile->teleport(meat_locker, 1);
 	}
       } else {
-	LOGD->write_syslog("Can't find room #" + ml_num + " as meat locker!",
-			   LOG_ERR);
+	LOGD->write_syslog("Can't find room #" + meat_locker_rn
+			   + " as meat locker!", LOG_ERR);
       }
     }
   }
