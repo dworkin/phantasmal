@@ -17,6 +17,7 @@ Release 0.014:
 	* There's now a system for unresolved rooms - this is needed to
 	  deal with zone loading and unloading properly if it's not all
 	  done in one large chunk.
+	* Fixed problem with upgrading -- call_limited won't directly work.
 
 Release 0.013:
 	* Added @list, an alias for @list_rooms.
