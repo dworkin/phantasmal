@@ -1,4 +1,4 @@
-/* $Header: /cvsroot/phantasmal/mudlib/usr/System/obj/user.c,v 1.27 2002/11/19 08:31:38 sarak Exp $ */
+/* $Header: /cvsroot/phantasmal/mudlib/usr/System/obj/user.c,v 1.28 2003/02/03 22:20:47 angelbob Exp $ */
 
 #include <kernel/kernel.h>
 #include <kernel/user.h>
@@ -1071,6 +1071,43 @@ static void print_prompt(void) {
 
 /************** User-level commands *************************/
 
+static void cmd_social(object user, string cmd, string str) {
+  string  verb;
+  string  target_str;
+  object* targets;
+
+  if(!str || str == "") {
+    send_system_phrase("Usage: ");
+    message(cmd + " <verb> [<target>]\r\n");
+    return;
+  }
+
+  if(sscanf(str, "%s %s", verb, target_str) == 2) {
+    if(!SOULD->is_valid(verb)) {
+      message(verb + " doesn't look like a valid verb.\r\n");
+      return;
+    }
+
+    targets = find_object_in_room(user, location, target_str);
+    if(!targets) {
+      message("You don't see any objects matching '" + target_str
+	      + "' here.\r\n");
+      return;
+    }
+
+    /* For the moment, just pick the first one */
+    mobile->social(verb, targets[0]);
+    return;
+  }
+
+  verb = STRINGD->trim_whitespace(str);
+  if(!SOULD->is_valid(verb)) {
+    message(verb + " doesn't look like a valid verb.\r\n");
+    return;
+  }
+  mobile->social(verb, nil);
+}
+
 static void cmd_set_lines(object user, string cmd, string str) {
   int new_num_lines;
 
@@ -1324,7 +1361,8 @@ static void cmd_look(object user, string cmd, string str) {
   }
 
   if (cmd[0] != 'e') {
-    /* trim an initial "at" off the front of the command */
+    /* trim an initial "at" off the front of the command if the verb
+       was "look" and not "examine". */
     sscanf(str, "at %s", str);
   }
 
