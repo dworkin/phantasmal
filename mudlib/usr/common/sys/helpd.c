@@ -63,6 +63,23 @@ void upgraded(void) {
 }
 
 
+/* This function takes a list of strings like that returned by explode()
+   and calls explode on the individual members of it.  Used to explode
+   wordlist around more than one delimiter. */
+private string* reexplode_wordlist(string *wordlist, string delim) {
+  string *newwords;
+  int     ctr;
+
+  newwords = ({ });
+  for(ctr = 0; ctr < sizeof(wordlist); ctr++) {
+    if(wordlist[ctr] && strlen(wordlist[ctr])) {
+      newwords += explode(wordlist[ctr], delim);
+    }
+  }
+
+  return newwords;
+}
+
 private string normalize_help_query(string query) {
   int     ctr, ctr2;
   string *words;
@@ -71,7 +88,13 @@ private string normalize_help_query(string query) {
   query = STRINGD->to_lower(STRINGD->trim_whitespace(query));
 
   words = explode(query, " ");
+
+  /* Re-explode the list around "-" and "_", just like space */
+  words = reexplode_wordlist(words, "-");
+  words = reexplode_wordlist(words, "_");
+
   query = "";
+
   for(ctr = 0; ctr < sizeof(words); ctr++) {
     if(words[ctr]) {
       word = "";

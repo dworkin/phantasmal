@@ -5,6 +5,11 @@ Release 0.013:
 	* Fixed an ObjectD bug with objects that just added an
 	  "upgraded" function.
 	* Made @delete work with details.
+	* Cut down some now-needless stuff in the helpfiles, added
+	  help for some undocumented commands.
+	* The help system now treats space, minus and underscore as
+	  equivalent.  That'll save us some more help entries and
+	  generate more useful responses.
 
 Release 0.012:
 	* More logging and stuff in ObjectD.  And fixed a bug that
