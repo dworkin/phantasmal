@@ -3,14 +3,47 @@
 use strict;
 use Cwd;
 
+# Directory in which to write HTML structure
 my $output_path = "./html";
 
-my %priv_objs;   # Privileged LPC objects that define API funcs
+
+# %priv_objs contains privileged LPC objects that define API funcs.
+# Keys in this array are text names of LPC objects.  Values of those
+# keys are list references.  There will be one element in the
+# referenced list for every API that the LPC object defines.  Each
+# element in the list for a key is a mapping reference.  Those
+# mappings contain the following data:
+
+# {output_html}  Output filename for that API's final HTML file
+# {output_base}  Output filename for that API's .base.html file
+# {func_name}    The API function's name
+# {func_desc}    Function description from name line
+#
+# These are all from their own sections:
+# {prototype}
+# {called_by}
+# {desc}
+# {return}
+# {errors}
+# {see_also}
+
+my %priv_objs;
+
 
 my %all_api_files;
 my @the_api_files = `find . -name "*.api"`;
 
-my %obj_filenames;  # Output files for particular object names
+# Output filenames for particular object names.  These are for
+# final HTML files.
+my %obj_filenames;
+
+# Output .base.html filenames for objects.
+my %obj_base_filenames;
+
+# %func_names is indexed by function name.  The value for a given
+# name is an output HTML file of a function with that name.  If
+# there are multiple functions with that name, the results are
+# unpredictable.
 
 my %func_names;     # Function names defined in various places
 
@@ -36,12 +69,15 @@ $obj_index = 1;
 $file_index = 1;
 foreach $obj (@objs) {
     foreach $fileref (@{$priv_objs{$obj}}) {
+	$fileref->{output_base}
+	= "file_idx_${obj_index}_$file_index.base.html";
 	$fileref->{output_html} = "file_idx_${obj_index}_$file_index.html";
 	$func_names{$fileref->{func_name}} = $fileref->{output_html};
 	$file_index++;
     }
 
     $obj_filenames{$obj} = "obj_idx$obj_index.html";
+    $obj_base_filenames{$obj} = "obj_idx$obj_index.base.html";
     $obj_index++;
 }
 
@@ -274,56 +310,38 @@ sub html_for_object {
 sub html_for_file {
     my $fileref = shift;
 
-    my $tmpname = ">$output_path/$fileref->{output_html}";
+    my $tmpname = ">$output_path/$fileref->{output_base}";
 
     open(FILE, $tmpname) or die "Can't open file $tmpname: $!";
 
     print FILE <<"EOF";
+<titledef text="$fileref->{func_name}" />
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<html>
-  <head>
-    <title> Phantasmal API Documentation </title>
-    <style type="text/css">
-    <!--
-      p {font-family: serif, font-weight: normal; color: black;
-         font-size: 12pt }
-      h3 {font-family: serif; font-weight: bold; color: #FF20FF;
-          font-size: 18pt}
-      h4 {font-family: serif; font-weight: bold; color: #0000FF;
-          font-size: 16pt}
-     -->
-    </style>
-  </head>
+<h3 style="text-align: center"> API Function: $fileref->{func_name} </h3>
 
-  <body text="#000000" bgcolor="#DDDDDD" link="#0000EF" vlink="#51188E"
-        alink="#FF0000">
+<dl>
+  <dt> Summary: </dt>
+  <dd> $fileref->{func_desc} <br/> <br/> </dd>
 
-    <h3 align="center"> API Function: $fileref->{func_name} </h3>
+  <dt> Defined In LPC Object: </dt>
+  <dd> $fileref->{def_file} <br/> <br/> </dd>
 
-    <dl>
-      <dt> Summary: </dt>
-      <dd> $fileref->{func_desc} <br/> <br/> </dd>
+  <dt> Prototype: </dt>
+  <dd> $fileref->{prototype} <br/> <br/> </dd>
 
-      <dt> Defined In LPC Object: </dt>
-      <dd> $fileref->{def_file} <br/> <br/> </dd>
+  <dt> Can Be Called By: </dt>
+  <dd> $fileref->{called_by} <br/> <br/> </dd>
 
-      <dt> Prototype: </dt>
-      <dd> $fileref->{prototype} <br/> <br/> </dd>
+  <dt> Description: </dt>
+  <dd> <p> $fileref->{desc} </p> </dd>
 
-      <dt> Can Be Called By: </dt>
-      <dd> $fileref->{called_by} <br/> <br/> </dd>
+  <dt> Return Value:</dt>
+  <dd> <p>$fileref->{return} </p> </dd>
 
-      <dt> Description: </dt>
-      <dd> <p> $fileref->{desc} </p> </dd>
+  <dt> Errors:</dt>
+  <dd> $fileref->{errors} <br/> <br/> </dd>
 
-      <dt> Return Value:</dt>
-      <dd> <p>$fileref->{return} </p> </dd>
-
-      <dt> Errors:</dt>
-      <dd> $fileref->{errors} <br/> <br/> </dd>
-
-      <dt> See Also:</dt>
+  <dt> See Also:</dt>
 EOF
     ;
 
@@ -340,18 +358,6 @@ EOF
 
     print FILE "</dd>\n";
 
-    print FILE <<"EOF";
-    </dl>
-
-    <a href="http://sourceforge.net">
-      <img src="http://sourceforge.net/sflogo.php?group_id=48659&type=6"
-           width="210" height="62" border="0"
-           alt="SourceForge.net Logo"></a>
-  </body>
-</html>
-
-EOF
-    ;
     close(FILE);
 }
 
@@ -365,31 +371,16 @@ sub html_for_obj {
     my ($obj_name, @filerefs) = @_;
     my ($tmpname, $fileref);
 
-    $tmpname = ">$output_path/$obj_filenames{$obj_name}";
+    $tmpname = ">$output_path/$obj_base_filenames{$obj_name}";
     open(FILE, $tmpname)
 	or die "Can't open obj index file $tmpname: $!";
 
     print FILE <<"EOF";
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<html>
-  <head>
-    <title> Phantasmal API Documentation </title>
-    <style type="text/css">
-    <!--
-      p {font-family: serif, font-weight: normal; color: black;
-         font-size: 12pt }
-      h3 {font-family: serif; font-weight: bold; color: #3000FF;
-          font-size: 16pt}
-     -->
-    </style>
-  </head>
+<titledef text="$obj_name" />
 
-  <body text="#000000" bgcolor="#DDDDDD" link="#0000EF" vlink="#51188E"
-        alink="#FF0000">
+<h3 style="text-align: center"> APIs in $obj_name </h3>
 
-    <h3 align="center"> APIs in $obj_name </h3>
-
-    <ul>
+<ul>
 EOF
     ;
 
@@ -398,22 +389,11 @@ EOF
     } @filerefs;
 
     foreach $fileref (@tmprefs) {
-	print FILE "      <li><a href=\"$fileref->{output_html}\">"
+	print FILE "  <li><a href=\"$fileref->{output_html}\">"
 	    . $fileref->{prototype} . "</a></li>\n";
     }
 
-    print FILE <<"EOF";
-    </ul>
-
-    <a href="http://sourceforge.net">
-      <img src="http://sourceforge.net/sflogo.php?group_id=48659&type=6"
-           width="210" height="62" border="0"
-           alt="SourceForge.net Logo"></a>
-  </body>
-</html>
-
-EOF
-
+    print FILE "</ul>\n";
     close(FILE);
 }
 
@@ -424,27 +404,13 @@ EOF
 sub html_for_index {
     my ($obj_name);
 
-    open(FILE, ">$output_path/index.html") or die "Can't open index.html: $!";
+    open(FILE, ">$output_path/index.base.html")
+	or die "Can't open index.base.html: $!";
 
     print FILE <<"EOF";
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<html>
-  <head>
-    <title> Phantasmal API Documentation </title>
-    <style type="text/css">
-    <!--
-      p {font-family: serif, font-weight: normal; color: black;
-         font-size: 12pt }
-      h3 {font-family: serif; font-weight: bold; color: #3000FF;
-          font-size: 16pt}
-     -->
-    </style>
-  </head>
+    <titledef text="Top" />
 
-  <body text="#000000" bgcolor="#DDDDDD" link="#0000EF" vlink="#51188E"
-        alink="#FF0000">
-
-    <h3 align="center"> Phantasmal API Objects </h3>
+    <h3 style="text-align: center"> Phantasmal API Objects </h3>
 
 EOF
     ;
@@ -474,17 +440,6 @@ EOF
 	}
     }
 
-    print FILE <<"EOF";
-
-    <a href="http://sourceforge.net">
-      <img src="http://sourceforge.net/sflogo.php?group_id=48659&type=6"
-           width="210" height="62" border="0"
-           alt="SourceForge.net Logo"></a>
-  </body>
-</html>
-
-EOF
-
     close(FILE);
 }
 
@@ -494,11 +449,11 @@ sub print_index_user {
 
     my $obj_name;
 
-    print FILE "    <b> Files under /usr/$user </b>\n";
-    print FILE "    <ul>\n";
+    print FILE "<b> Files under /usr/$user </b>\n";
+    print FILE "<ul>\n";
     for $obj_name (sort @objnames) {
-	print FILE "      <li> <a href=\"$obj_filenames{$obj_name}\">"
+	print FILE "  <li> <a href=\"$obj_filenames{$obj_name}\">"
 	    . "$obj_name </a> </li>\n";
     }
-    print FILE "    </ul>\n";
+    print FILE "</ul>\n";
 }

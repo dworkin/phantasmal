@@ -24,11 +24,14 @@ FILENAME: foreach $filename (@basefiles) {
 	unless($filename =~ /^(.*)\.base\.html$/i);
     $outfilename = $1 . ".html";
 
+    # By default, expect to update
+    $mtime2 = 0;
+
     # Check to see if file needs updating
-   ($_,$_,$_,$_,$_,$_,$_,$_,$_,$mtime1,$_,$_,$_)
-       = stat($filename);
-   ($_,$_,$_,$_,$_,$_,$_,$_,$_,$mtime2,$_,$_,$_)
-       = stat($outfilename);
+    ($_,$_,$_,$_,$_,$_,$_,$_,$_,$mtime1,$_,$_,$_)
+	= stat($filename);
+    ($_,$_,$_,$_,$_,$_,$_,$_,$_,$mtime2,$_,$_,$_)
+	= stat($outfilename) if -e $outfilename;
 
     next FILENAME if($mtime2 >= $mtime1);
 
