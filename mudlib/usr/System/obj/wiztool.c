@@ -226,7 +226,7 @@ static void process_command(string cmd, string str)
     if (strlen(cmd) != 0 && cmd[0] == '!') {
       cmd = cmd[1 ..];
     } else {
-      str = editor(cmd + " " + str);
+      str = editor(str);
       if (str) {
 	message(str);
       }
