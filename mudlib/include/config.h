@@ -104,9 +104,9 @@
 #define LOG_CHANNELS        "/data/system/logd_channels.unq"
 #define SYSTEM_PHRASES      "/usr/System/obj/system.phr"
 #define EXITD_PHRASES       "/usr/common/sys/exitd.phr"
-#define USER_COMMANDS_FILE  "/data/phrase/user_cmds.unq"
-#define SOULD_FILE          "/data/system/sould.unq"
 #define NL_PARSE_FILE       "/usr/common/sys/nl_parser.dpd"
+#define USER_COMMANDS_FILE  "/data/system/user_cmds.unq"
+#define SOULD_FILE          "/data/system/sould.unq"
 
 #define WELCOME_MESSAGE     "/usr/game/text/welcome.msg"
 #define SUSPENDED_MESSAGE   "/usr/game/text/suspended.msg"

@@ -12,6 +12,7 @@ inherit access API_ACCESS;
 inherit rsrc   API_RSRC;
 
 #define HELP_DTD  ("/usr/System/sys/help.dtd")
+#define GAME_INIT ("/usr/game/initd.c")
 
 /* How many objects can be saved to file in a single call_out? */
 #define SAVE_CHUNK   10
@@ -108,10 +109,6 @@ static void create(varargs int clone)
 
   access::create();
   rsrc::create();
-
-  add_user("common");
-  add_owner("common");
-  set_global_access("common", READ_ACCESS);
 
   driver = find_object(DRIVER);
 
@@ -247,6 +244,17 @@ static void create(varargs int clone)
   if(!find_object(CHANNELD)) compile_object(CHANNELD);
   if(!find_object(CONFIGD)) compile_object(CONFIGD);
   if(!find_object(SOULD)) compile_object(SOULD);
+
+
+  /* Now delegate to the initd in /usr/game, if any. */
+  if(read_file(GAME_INIT, 0, 1) != nil) {
+    catch {
+      if(!find_object(GAME_INIT))
+	compile_object(GAME_INIT);
+
+      call_other(find_object(GAME_INIT), "???");
+    }
+  }
 }
 
 void save_mud_data(object user, string room_dirname, string mob_filename,
