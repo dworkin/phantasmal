@@ -42,7 +42,8 @@ string get_type(void) {
 
 void __vol_hook(void) {
   int    num_ex, ctr;
-  object exit, reason, dest;
+  object exit, dest;
+  string reason;
 
   if(previous_program() != TIMED) {
     error("animal_mobile::__vol_hook should only be called by TIMED!");
