@@ -1,4 +1,4 @@
-/* $Header: /cvsroot/phantasmal/mudlib/usr/System/obj/user.c,v 1.24 2002/11/18 00:56:38 angelbob Exp $ */
+/* $Header: /cvsroot/phantasmal/mudlib/usr/System/obj/user.c,v 1.25 2002/11/18 06:47:31 angelbob Exp $ */
 
 #include <kernel/kernel.h>
 #include <kernel/user.h>
@@ -713,7 +713,7 @@ int login(string str)
  */
 private void player_login(void)
 {
-  int    start_room_num;
+  int    start_room_num, start_zone;
   object start_room;
 
   body = nil;
@@ -727,9 +727,16 @@ private void player_login(void)
     LOGD->write_syslog("Can't find the start room!  Starting in the void...");
     start_room_num = 0;
     start_room = MAPD->get_room_by_num(start_room_num);
+    start_zone = 0;
     if(start_room == nil) {
       /* Panic!  No void! */
       error("Internal Error: no Void!");
+    }
+  } else {
+    start_zone = ZONED->get_zone_for_room(start_room);
+    if(start_zone < 0) {
+      /* What's with this start room? */
+      error("Internal Error:  no zone, not even zero, for start room!");
     }
   }
 
@@ -742,7 +749,7 @@ private void player_login(void)
     body = clone_object(MOBILE_PORTABLE);
     if(!body)
       error("Can't clone simple portable!");
-    MAPD->add_room_number(body, -1);
+    MAPD->add_room_to_zone(body, -1, start_zone);
     if(!MAPD->get_room_by_num(body->get_number())) {
       LOGD->write_syslog("Error making new body!", LOG_ERR);
     }

@@ -103,10 +103,11 @@ static void create(varargs int clone)
   /* Compile the Objnumd */
   if(!find_object(OBJNUMD)) { compile_object(OBJNUMD); }
 
-  /* Set up ZoneD, Mapd & Exitd */
+  /* Set up ZoneD, Mapd, Exitd & MobileD */
   if(!find_object(ZONED)) { compile_object(ZONED); }
   if(!find_object(MAPD)) { compile_object(MAPD); }
   if(!find_object(EXITD)) { compile_object(EXITD); }
+  if(!find_object(MOBILED)) { compile_object(MOBILED); }
 
   bind_dtd = read_file(BIND_DTD);
   if (!bind_dtd) {
@@ -122,8 +123,8 @@ static void create(varargs int clone)
   if(!find_object(THE_VOID)) { compile_object(THE_VOID); }
   the_void = clone_object(THE_VOID);
   if(!the_void)
-    error("Can't clone void object!");
-  MAPD->add_room_number(the_void, 0);
+    error("Error occurred while cloning The Void!");
+  MAPD->add_room_to_zone(the_void, 0, 0);
 
   /* Load stuff into MAPD and EXITD */
   objs_file = read_file(ROOM_FILE);
@@ -132,7 +133,7 @@ static void create(varargs int clone)
     EXITD->add_deferred_exits();
     rooms_loaded = 1;
   } else {
-    DRIVER->message("Can't read room file!\n");
+    DRIVER->message("Can't read room file!  Starting blank!\n");
     LOGD->write_syslog("Can't read room file!  Starting blank!", LOG_WARN);
     rooms_loaded = 0;
   }
@@ -149,7 +150,7 @@ static void create(varargs int clone)
 void save_mud_data(object user, string room_filename,
 		   string zone_filename, string callback) {
   int*   objects;
-  int    cohandle;
+  int    cohandle, iter;
   mixed  tmp;
 
   if(!SYSTEM()) {
@@ -189,7 +190,11 @@ void save_mud_data(object user, string room_filename,
   }
 
   LOGD->write_syslog("Writing rooms to file", LOG_VERBOSE);
-  objects = MAPD->rooms_in_zone(0) - ({ 0 });
+  objects = ({ });
+  for(iter = 0; iter < ZONED->num_zones(); iter++) {
+    objects += MAPD->rooms_in_zone(iter);
+  }
+  objects -= ({ 0 });
 
   cohandle = call_out("__co_write_rooms", 0, user, objects, 0,
 		      room_filename, zone_filename);

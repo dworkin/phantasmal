@@ -197,10 +197,13 @@ void add_room_to_zone(object room, int num, int req_zone) {
 
 /* For backwards compatibility */
 void add_room_number(object room, int num) {
+  error("Obsolete function!");
   add_room_to_zone(room, num, 0);
 }
 
 void set_room_alias(string alias, object room) {
+  error("Obsolete function!");
+
   if(room_objects[alias] && !SYSTEM())
     error("Alias '" + alias + "' already registered in add_room_alias!");
 
@@ -227,6 +230,8 @@ void remove_room_object(object room) {
 }
 
 void remove_room_alias(string name) {
+  error("Obsolete function!");
+
   if(find_object(name))
     error("Name is an object, not an alias!");
 
@@ -238,15 +243,6 @@ void remove_room_alias(string name) {
 
 object get_room_by_num(int num) {
   if(num < 0) return nil;
-
-  /* TODO: replace check with new zone-checking */
-  /*
-  int seg;
-
-  seg = num / 100;
-  if(!sizeof(nozone_segments & ({ seg })))
-    return nil;
-  */
 
   return OBJNUMD->get_object(num);
 }
@@ -385,7 +381,7 @@ private int resolve_location(object room) {
 }
 
 void add_dtd_unq_rooms(mixed* unq, string filename) {
-  int    iter;
+  int    iter, res_tmp;
   mixed* resolve_rooms;
   object room;
 
@@ -409,12 +405,20 @@ void add_dtd_unq_rooms(mixed* unq, string filename) {
   }
 
   while(sizeof(resolve_rooms)) {
+    res_tmp = 0;
+
     for(iter = 0; iter < sizeof(resolve_rooms);) {
       if(resolve_location(resolve_rooms[iter])) {
+	res_tmp = 1;
 	resolve_rooms = resolve_rooms[..iter-1] + resolve_rooms[iter+1..];
       } else {
 	iter++;
       }
+    }
+
+    if(!res_tmp) {
+      /* This isn't working, no new rooms are being resolved! */
+      error("Can't resolve all rooms!  Edit room files to fix this!");
     }
   }
 }
@@ -442,12 +446,6 @@ int* segments_in_zone(int zone) {
 }
 
 int* rooms_in_segment(int segment) {
-  /* TODO: make this do new zone checking */
-  /*
-  if(sizeof( ({ segment }) & nozone_segments)) {
-  }
-  */
-
   return OBJNUMD->objects_in_segment(segment);
 }
 

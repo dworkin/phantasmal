@@ -45,7 +45,7 @@ void destructed(varargs int clone) {
 /* List MUD rooms */
 static void cmd_list_room(object user, string cmd, string str) {
   mixed*  rooms;
-  int     ctr;
+  int     ctr, zone;
   string  tmp;
 
   if(str) {
@@ -55,9 +55,12 @@ static void cmd_list_room(object user, string cmd, string str) {
 
   /* Just @list_rooms with no argument */
   if(str && (str == "all" || str == "world" || str == "mud")) {
-    user->message("Rooms in MUD:\r\n");
+    user->message("Rooms in MUD (" + ZONED->num_zones() + " zones):\r\n");
 
-    rooms = MAPD->rooms_in_zone(0);
+    rooms = ({ });
+    for(zone = 0; zone < ZONED->num_zones(); zone++) {
+      rooms += MAPD->rooms_in_zone(zone);
+    }
     for(ctr = 0; ctr < sizeof(rooms); ctr++) {
       object room, phr;
  
@@ -113,7 +116,7 @@ static void cmd_list_room(object user, string cmd, string str) {
 
 static void cmd_new_room(object user, string cmd, string str) {
   object room;
-  int    roomnum;
+  int    roomnum, zonenum;
   string segown;
 
   if(!str || STRINGD->is_whitespace(str)) {
@@ -137,9 +140,15 @@ static void cmd_new_room(object user, string cmd, string str) {
   }
 
   room = clone_object(SIMPLE_ROOM);
-  MAPD->add_room_number(room, roomnum);
+  zonenum = ZONED->get_zone_for_room(user->get_location());
+  if(zonenum < 0) {
+    LOGD->write_syslog("Odd, zone is less than zero when making new room...");
+    zonenum = 0;
+  }
+  MAPD->add_room_to_zone(room, roomnum, zonenum);
 
-  user->message("Added room #" + room->get_number() + ".\r\n");
+  user->message("Added room #" + room->get_number()
+		+ " to zone " + ".\r\n");
 }
 
 
