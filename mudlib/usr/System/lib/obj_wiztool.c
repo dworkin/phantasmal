@@ -162,19 +162,30 @@ static void cmd_stat(object user, string cmd, string str) {
   }
 
   if(sscanf(str, "#%d", objnum) != 1) {
-    objs = user->find_first_objects(str, LOC_INVENTORY, LOC_CURRENT_ROOM,
-				    LOC_BODY);
-    if(!objs) {
-      user->message("You don't find any object matching '"
-		    + str + "' here.\r\n");
-      return;
-    }
+    str = STRINGD->trim_whitespace(str);
 
-    if(sizeof(objs) > 1) {
-      user->message("More than one object matches.  You choose one.\r\n");
-    }
+    if(!STRINGD->stricmp(str, "here")) {
+      if(!user->get_location()) {
+	user->message("You aren't anywhere!\r\n");
+	return;
+      }
+      objnum = user->get_location()->get_number();
+    } else {
 
-    objnum = objs[0]->get_number();
+      objs = user->find_first_objects(str, LOC_INVENTORY, LOC_CURRENT_ROOM,
+				      LOC_BODY);
+      if(!objs) {
+	user->message("You don't find any object matching '"
+		      + str + "' here.\r\n");
+	return;
+      }
+
+      if(sizeof(objs) > 1) {
+	user->message("More than one object matches.  You choose one.\r\n");
+      }
+
+      objnum = objs[0]->get_number();
+    }
   }
 
   room = MAPD->get_room_by_num(objnum);
@@ -332,8 +343,8 @@ static void cmd_stat(object user, string cmd, string str) {
 	tmp += "<unreg> ";
       }
     }
+    tmp += "\r\n";
   }
-  tmp += "\r\n";
   details = obj->get_details();
   if(obj->get_archetype() && details && sizeof(details)) {
     object detail;
@@ -347,8 +358,8 @@ static void cmd_stat(object user, string cmd, string str) {
 	tmp += "<unreg> ";
       }
     }
+    tmp += "\r\n";
   }
-  tmp += "\r\n";
 
   if(obj->get_mobile()) {
     tmp += "Object is sentient.\r\n";
@@ -716,7 +727,7 @@ static void cmd_set_obj_detail(object user, string cmd, string str) {
   obj = MAPD->get_room_by_num(objnum);
   detail = MAPD->get_room_by_num(detailnum);
 
-  if(!obj) {
+  if(objnum != -1 && !obj) {
     user->message("Base object (#" + objnum
 		  + ") doesn't appear to be a room or portable.\r\n");
   }
@@ -727,10 +738,29 @@ static void cmd_set_obj_detail(object user, string cmd, string str) {
 
   if(!obj || !detail) return;
 
-  user->message("Setting obj #" + detailnum + " to be a detail of obj #"
-		+ objnum + ".\r\n");
-  if(detail->get_location())
-    detail->get_location()->remove_from_container(detail);
-  obj->add_detail(detail);
+  if(obj && detail->get_detail_of()) {
+    user->message("Object #" + detailnum + " is already a detail of object #"
+		  + detail->get_detail_of()->get_number() + "!\r\n");
+    return;
+  } else if(!obj && !detail->get_detail_of()) {
+    user->message("Object #" + detailnum
+		  + " isn't a detail of anything!\r\n");
+    return;
+  }
+
+  if(obj) {
+    user->message("Setting object #" + detailnum + " to be a detail of obj #"
+		  + objnum + ".\r\n");
+    if(detail->get_location())
+      detail->get_location()->remove_from_container(detail);
+    obj->add_detail(detail);
+  } else {
+    obj = detail->get_detail_of();
+
+    user->message("Removing detail #" + detailnum + " from object #"
+		  + obj->get_number() + ".\r\n");
+    obj->remove_detail(detail);
+  }
+
   user->message("Done.\r\n");
 }
