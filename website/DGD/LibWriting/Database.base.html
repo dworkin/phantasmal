@@ -63,5 +63,45 @@
     size.
   </p>
 
+<pre>
+Date: Fri, 6 Jul 2001 01:55:00 +0200 (CEST)
+From: "Felix A. Croes" <felix@dworkin.nl>
+Message-Id: <200107052355.BAA00502@dworkin.nl>
+To: dgd@list.imaginary.com
+Subject: RE: [DGD]Object properties from an extension
+
+"Michael J. Bacon" <mj.bacon@gte.net> wrote:
+
+> 	Ok, perhaps I am rubbing at this the wrong way.
+>
+> 	Lets say someone is crazy enough to try to implement persistence outside of
+> DGD's statedump type persistence.  Say, we wanted to store and retreive
+> object data from an OODBMS.
+>
+> 	Where would be the best place to hook into that?  Since I can't grab an
+> object's data in a generic way, I am assuming I would instead have to define
+> some routines on the auto object for registering object data that needs to
+> be saved and restored?
+
+I am going to give an answer depressingly similar to the one I gave before:
+it's not possible yet, but it will be possible through an official API
+at some time in the future.
+
+I intend to make it possible to store mud state in a regular database
+instead of a swapfile/dumpfile.  But I'm not going to define that interface
+until after multi-processing support, sorry.
+
+
+> 	Has anyone done anything like this?  I know that LPMOO redefines the
+> statedump mechanism to include saving/restoring MOO data to and from a MOO
+> database.  Could I use similar techiques?
+
+Doable but very painful.  You would not be able to trust ordinary LPC
+code anymore that might not save itself properly.
+
+Regards,
+Dworkin
+</pre>
+
   <p style="text-size: 150%"> <a href="../index.html"> Back to top level
     </a> </p>

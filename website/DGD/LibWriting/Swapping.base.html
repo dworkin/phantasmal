@@ -1,0 +1,50 @@
+  <titledef text="Swapping" />
+
+  <h2> DGD's Swapping Behavior </h2>
+
+  <p>
+    DGD calls itself a &quot;disk-based&quot; server.  That means that
+    DGD will swap out objects after they've been unused for awhile.
+    It uses a standard LRU (Least Recently Used) metric to determine
+    which objects should be removed from memory.  This swapping is
+    entirely transparent from the point of view of the LPC code.  All
+    LPC code executes as though every object was in RAM at all times,
+    and objects will be pulled into memory as they are referenced.
+  </p>
+
+  <p>
+    DGD's configuration file contains a parameter called
+    swap_fragment.  That's the fraction of all objects that should be
+    removed from memory.  For instance, if swap_fragment is equal to
+    20, then one-twentieth of all objects will be swapped out at the
+    end of every thread of execution.  A smaller swap_fragment will
+    cause DGD to use less memory, but will also mean more disk access
+    is necessary as objects are written.
+  </p>
+
+  <p>
+    Objects are stored as sectors.  The sector_size parameter tells
+    how large a single sector is, in bytes.  Every object takes up a
+    multiple of the sector size in the swap file.  So if the sector
+    size were 1024, no object could take less than one kilobyte to
+    store in the swap file.  An object with 3217 bytes of data would
+    wind up actually taking 4096 bytes in the swap file, or four
+    sectors.  A small sector size can save some space that way, though
+    a very small sector size (like, say, 64 bytes) will require the
+    DGD server to use up a lot of processor time and memory in
+    managing so many sectors.
+  </p>
+
+  <p>
+    The swap_cache config parameter says how many sectors can be in
+    RAM at once.  If this is large, DGD runs fast.  If it's small, DGD
+    takes less memory.
+  </p>
+
+  <p>
+    An object is swapped back into memory when one of its functions is
+    called, or when certain driver functions are called on it.
+  </p>
+
+  <p style="text-size: 150%"> <a href="../index.html"> Back to top level
+    </a> </p>

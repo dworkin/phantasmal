@@ -115,9 +115,41 @@
   </p>
 
   <p>
+    As a random aside, remember that an object isn't compiled until
+    the end of the thread where compile_object() gets called.  So
+    there are some subtle issues about what version of the
+    &quot;upgraded&quot; function gets called.  The old one, already
+    compiled into the object?  The new one, the one that isn't
+    currently compiled?
+  </p>
+
+  <p>
+    John &quot;West&quot; McKenna's Inferno library has a
+    significantly more complex approach, which allows for more
+    interesting upgrades in some cases.  Its upgrader builds a list of
+    objects that need recompiling.  It calls uninit() on them, then
+    upgrading().  Then it recompiles, then calles upgraded() and
+    finally init().
+  </p>
+
+  <p>
+    The uninit() and init() functions are expected to do everything
+    that's required when an object moves from one place to another
+    except the actual move.  This includes removing&frasl;adding
+    commands defined by the object from&frasl;to the user's grammar
+    table.
+  </p>
+
+  <p>
+    upgrading() and upgraded() are very rarely used.  They're there in
+    case the new version of the code needs extra initialising.
+  </p>
+
+  <p>
     The Kernel Library uses what's called an <a
     href="../Kernel/ObjectManager.html">Object Manager</a>, or
-    ObjectD, to do all of this.
+    ObjectD, to do all of this.  That doesn't change what you can do,
+    but it does alter some of the code.
   </p>
 
   <p style="text-size: 150%"> <a href="../index.html"> Back to top level
