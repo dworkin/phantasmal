@@ -27,4 +27,4 @@ ERRORS
 	By default, always causes an error.  Varies by subtype of mobile.
 
 SEE ALSO
-	MobileD:to_unq_text
+	Mobile:to_unq_text

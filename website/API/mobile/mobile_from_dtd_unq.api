@@ -32,4 +32,4 @@ ERRORS
 	Unrecognized fields or malformed UNQ will cause errors.
 
 SEE ALSO
-	MobileD:to_unq_text
+	Mobile:to_unq_text
