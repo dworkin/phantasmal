@@ -1,4 +1,4 @@
-/* $Header: /cvsroot/phantasmal/mudlib/usr/System/obj/user.c,v 1.59 2003/03/31 00:32:46 dbd22 Exp $ */
+/* $Header: /cvsroot/phantasmal/mudlib/usr/System/obj/user.c,v 1.60 2003/03/31 10:00:44 angelbob Exp $ */
 
 #include <kernel/kernel.h>
 #include <kernel/user.h>
@@ -638,11 +638,18 @@ private void player_login(void)
 
     body = clone_object(SIMPLE_ROOM);
     if(!body)
-      error("Can't clone simple portable!");
+      error("Can't clone player's body!");
 
     body->set_container(1);
     body->set_open(1);
     body->set_openable(0);
+
+    /* Players are able to lift 50 kilograms */
+    body->set_weight_capacity(50);
+    /* Players are able to carry up to 20 cubic decimeters of stuff. */
+    body->set_volume_capacity(20);
+    /* Players are able to carry an object up to 2 meters long */
+    body->set_length_capacity(200);
 
     MAPD->add_room_to_zone(body, -1, start_zone);
     if(!MAPD->get_room_by_num(body->get_number())) {
