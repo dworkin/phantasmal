@@ -74,7 +74,7 @@
 
 
 /* Storage directories */
-#define SYSTEM_USER_DIR     "/data/user"
+#define SYSTEM_USER_DIR     "/usr/System/users"
 #define LOGDIR              "/log"
 
 
