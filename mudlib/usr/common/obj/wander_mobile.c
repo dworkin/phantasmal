@@ -1,6 +1,7 @@
 #include <config.h>
 #include <kernel/kernel.h>
 #include <timed.h>
+#include <log.h>
 
 inherit MOBILE;
 
@@ -20,7 +21,8 @@ static void create(varargs int clone) {
 
 void upgraded(varargs int clone) {
   if(clone && !registered) {
-    LOGD->write_syslog("Setting up periodic call_out in wander mobile");
+    LOGD->write_syslog("Setting up periodic call_out in wander mobile",
+		       LOG_VERBOSE);
     TIMED->periodic_call_out(TIMED_MUD_MINUTE, "__move_hook");
     registered = 1;
   }
