@@ -1,0 +1,640 @@
+    <titledef text="Object Manager" />
+
+  <p>
+    There's a lot in the mailing list archives about how to write an
+    Object Manager.  Since you're better off adapting mine or Geir
+    Harald Hansen's, I'm just going to collect general information for
+    any other masochists who want to write their own.  That
+    information follows.
+  </p>
+
+<pre>
+Date: Mon, 21 Jun 1999 07:59:51 -0700 (PDT)
+From: Par Winzell <zell@lanminds.com>
+To: dgd@list.imaginary.com
+Subject: [DGD]upgrading kernel library
+Message-ID: <Pine.GSO.4.05.9906210758250.10523-100000@lanshark.lanminds.com>
+
+Geir,
+
+You're on the right track, and you're in luck. Thanks to the kernel
+lib enforcing the total separation between inheritable and stateful
+code, it's easier than it might be to write this kidn of automatic
+upgrading system.
+
+So, you want to upgrade /foo/lib/bar, which is inherited by a bunch
+of other programs, possibly including some destructed ones that are
+not yet freed (due to lingering dependencies). You can't recompile
+it because it's inherited, so you have to destruct it.
+
+To completely upgrade /foo/lib/bar, you need to observe the tree of
+all programs that depend on it. All the interior nodes of this tree
+are stateless inheritables, and so can be destructed as well. Next,
+you step through all the leaf node objects -- clones, daemons, etc.
+
+As you recompile them, one by one, you remove dependencies from the
+old issue of /foo/lib/bar until finally the last recompile frees
+the last dependency -- and the issue is freed.
+
+Things to note: Unless you forbid destruction of a program that has
+dependencies, you do have to use the ID's rather than just the path
+names in the database. If such destruction is possible, there will
+be more than one issue of the same program in memory at once (even
+if only one is visible from the LPC layer), and you definitely need
+to keep separate records for these issues!
+
+Also, for a real-sized Mud, you need a datastructure that can hold
+more than ARRAYSIZE dependencies. If you switch to using ID's, that
+is probably solved most easily with an array of mappings, something
+like issue = map[id>>8][id%0xFF].
+
+One complex issue is how to deal with upgrading e.g the auto object
+in a fully-grown Mud, where the swap file can be hugely larger than
+the RAM in the machine. Recompiling the leaf objects in one single
+thread becomes unworkable; DGD must be given the chance to swap out
+now and then. This essentially requires basic support for freezing
+all activity in the lib, explaining the kernel lib's support for
+call_out suspension.
+
+Zell
+    </pre>
+
+    <hr />
+
+    <pre>
+
+Date: Tue, 22 Jun 1999 17:31:02 +0200 (CEST)
+From: "Felix A. Croes" <felix@dworkin.nl>
+Message-Id: <199906221531.RAA03977@pattern.dworkin.nl>
+To: dgd@list.imaginary.com
+Subject: Re: [DGD]upgrading kernel library
+
+Rasmus H Hansen <hellbug@post1.tele.dk> wrote:
+
+> This upgrading of base objects seems to be a candidate for a kernel library
+> add-on. Immediately I don't see any need for great variation on how this is
+> implemented - but then again I haven't coded this, I merely thought it
+> over. Would anybody care to share such an implementation or maybe Dworkin
+> can be persuaded to include automatic rebuild (or whatever this feature
+> should be dubbed) in a future version of the kernel library.
+
+I know of three existing implementations of global upgrading, and
+they're all substantially different.  Only two of them use the
+kernel library.  I see room for more variants.
+
+The kernel library doesn't include this because it is supposed to be
+minimal.  It does provide all the hooks to make it possible, though --
+see the object manager documentation in dgd/mud/doc/kernel/hook. I
+estimate that it can be implemented in about a thousand lines of
+code.
+
+
+> (Fear the rollback of an atomic rebuild.)
+
+Compared to the time it took to do the global upgrade, a rollback
+due to an error in atomically executed code will be almost
+unnoticable.
+
+Regards,
+Dworkin
+    </pre>
+
+    <hr />
+
+    <pre>
+Date: Thu, 1 Jul 1999 00:22:32 +0200 (CEST)
+From: "Felix A. Croes" <felix@dworkin.nl>
+Message-Id: <199906302222.AAA20078@pattern.dworkin.nl>
+To: dgd@list.imaginary.com
+Subject: Re: [DGD]upgrading kernel library
+
+Two in one.
+
+Geir Harald Hansen <geirhans@ifi.uio.no> wrote:
+
+> > > Dworkin wrote:
+> > Possible variants:
+> > 
+> >  - keep track of different issues of compiled objects, including their
+> >    sources.
+> >  - don't keep track of different issues; instead, ensure that only
+> >    one issue exists of an object at any time by making the upgrade
+> >    operation atomic.  Disallow destructing of lib objects that are
+> >    still inherited other than by the upgrade operation.
+>
+> How can I make the upgrade operation atomic if I need to split it over
+> several callouts to permit DGD to swap out objects during the upgrade?
+> The recompilation of a non-inheritable could fail and leave separate
+> versions of inheritables in existence.
+
+You can't.  You would have to do it all on one thread to make the
+operation atomic.
+
+
+> Another thing, I suspend callouts.. Should I also somehow block all user
+> input and block new logins while upgrading?  How?
+
+You can block new connections by temporarily setting the login
+timeout to -1.  You can block input on connections using
+block_input() in /kernel/lib/connection.c.
+
+
+Stephen Schmidt <schmidsj@union.edu> wrote:
+
+>[...]
+> 1) I gather that by "global upgrade" we mean that, when we
+> update object A, we also want to update all objects B that
+> inherit A, and probably update all clones of A and B also.
+> Since this is not default behavior (by default, A's clones,
+> B, and B's clones would keep the pre-upgrade behavior until
+> they were reloaded) the mudlib has to keep track of everything
+> that inherits A and systematically replace old code with
+> new code. Is that about right, or have I missed a step?
+
+You may not realize that with "upgrading" I mean something other
+than "updating".  Global upgrading is the process of recompiling
+a set of objects without destructing them first, allowing them
+to retain state in the form of variables and callouts.  Of all
+the LPC servers, only DGD has this capability.
+
+However, it can only do so for one object (and all of its clones)
+at a time, and only if the object is not inherited by another.
+The division between inherited objects and other objects, enforced
+by the kernel library, ensures that there always is a way to
+upgrade any single object.  Global upgrading must coordinate
+the process for a set of objects, usually all those that inherit
+some specific object or objects.
+
+Regards,
+Dworkin
+</pre>
+
+<hr />
+
+<pre>
+
+Date: Tue, 6 Jul 1999 21:38:56 +0200 (CEST)
+From: "Felix A. Croes" <felix@dworkin.nl>
+Message-Id: <199907061938.VAA10080@pattern.dworkin.nl>
+To: dgd@list.imaginary.com
+Subject: Re: [DGD]upgrading old clones
+
+Geir Harald Hansen <geirhans@ifi.uio.no> wrote:
+
+> I just had an idea, and it is not well thought through yet, but I thought
+> I'd throw it in here and we'll find out whether it is good or not. ;)
+>
+> I think sometimes a kfun to upgrade clones of an old issue may be useful.
+> It need only work when there is a newer issue whose master object is
+> not destructed.  The older issue may not have any inheriting dependents,
+> but has at least one cloned dependent, of course, or it would not exist.
+>
+>    object upgrade_clones(int issue_id)
+>
+> This function would upgrade all clones with that issue ID to the newest
+> issue, adding to its number of clones.  It returns the new master object
+> issue of the clones, which already exists before this function call, or nil
+> if it fails somehow.  When this call succeeds, the old issue is removed.
+> Hmm, maybe it would be better to return the number of clones upgraded.
+
+It is arguably wrong for a cloneable object ever to have different
+issues; after all, shouldn't all clones have the same behaviour?
+Therefore I prefer simply to make destructing an object with clones
+impossible.
+
+Regards,
+Dworkin
+    </pre>
+
+    <hr />
+
+    <pre>
+Date: Thu, 6 Jan 2000 03:21:13 +0100 (CET)
+From: "Felix A. Croes" <felix@dworkin.nl>
+Message-Id: <200001060221.DAA17539@pattern.dworkin.nl>
+To: dgd@list.imaginary.com
+Subject: Re: [DGD]Object Upgrading Scenario
+
+> From: "Jason Cone" <jcone@uscdev.com> wrote:
+
+>[...]
+> Anyway, let assume the following object relationships:
+>
+>     A -i-> B -i-> C -c-> D
+>     A -i-> B -i-> C -i-> E -c-> F
+>
+> This notation should read, "Object D is a clone of object C which inherits
+> B, which inherits A.  Object F is a clone of object E which inherits object
+> C."
+>
+> Bad design issues aside, what is a possible implementation that could take
+> object E into account?  If E (and, consequently, F) didn't exist, an
+> overloaded compile_object() function would do the following:
+>
+>     destruct_object(A)
+>     destruct_object(B)
+>     ::compile_object(C)
+>
+> This would then allow for the single/multiple D object(s) to take advantage
+> of the new functionality that was added to A.  That approach, however, would
+> really mess things up if it used the same approach when trying to upgrade E
+> (F) -- ::compile_object() could not be called on object C as E inherits C
+> (would yield a run-time error).
+>
+> Thoughts?
+
+There isn't any way to upgrade all existing objects in your scenario.
+It is a special case of the more general problem:
+
+    If an object is both inherited and used in any other way (either
+    it has had a function called in it, or it has been cloned),
+    upgrading both this object and those that inherit it is not
+    possible.
+
+This is precisely why I prevented using/cloning of inheritable objects
+in the kernel library.
+
+
+> I know this subject has been beaten to death, but since we're running across
+> this issue during the implementation stage, my hope is that we can share a
+> successful implementation with everyone and not just discuss it on a
+> hypothetical issue.  I would like this scenario resolved, though, if
+> possible. :)
+
+With the existing primitive operations (compiling an object, recompiling
+an object, destructing an object), upgrading of all objects is not
+possible in your scenario.
+
+By the way, the subject is far from beaten to death.  I rather think
+it died prematurely. :)
+
+Regards,
+Dworkin
+    </pre>
+
+<hr />
+
+<pre>
+
+Date: Thu, 6 Jan 2000 04:30:01 +0100 (CET)
+From: "Felix A. Croes" <felix@dworkin.nl>
+Message-Id: <200001060330.EAA17677@pattern.dworkin.nl>
+To: dgd@list.imaginary.com
+Subject: Re: [DGD]Object Upgrading Scenario
+
+Neil McBride <neil@ekit-inc.com> wrote:
+
+>[...]
+> > There isn't any way to upgrade all existing objects in your scenario.
+> > It is a special case of the more general problem:
+> > 
+> >     If an object is both inherited and used in any other way (either
+> >     it has had a function called in it, or it has been cloned),
+> >     upgrading both this object and those that inherit it is not
+> >     possible.
+> > 
+> > This is precisely why I prevented using/cloning of inheritable objects
+> > in the kernel library.
+>
+> So, was it intentionaly designed this way in the driver, or is it simply
+> something that couldn't be worked around? (ie - the master keeps track
+> of clones and desting it loses track of them perhaps - I don't know ;) 
+
+I looked long and hard at implementing everything in the server
+back then, but eventually I decided to implement only minimal
+upgrading support (recompiling a single object) because the
+code would have been enormously complex at the server level.
+It is fairly simple in LPC (about 1000 lines if you start with
+the kernel library).  Given that this was completely new
+functionality which nobody had ever asked for and which many
+even failed to see a use for, I felt that it was not unreasonable
+to put some restrictions on mudlibs that wanted to have it.
+
+Another reason is that an LPC implementation -- as usual -- is
+more flexible.  For example, suppose you upgrade the auto object
+and everything that depends on it.  Recompiling every single
+object in the mud in one go would cause an enormous amount of lag,
+as well as consume a large amount of memory.  In LPC, the operation
+can be broken into several pieces, with other tasks + regula
+swapping in between.
+
+
+> The way I see it is that being able to make an instance of an object
+> (ie, clone) _and_ inheriting the original object is something that
+> should be possible.  I don't really understand why it's considered a bad
+> design, except in relation to the way DGD treats inheriting/compiling.
+
+It all depends on whether you like the separation between class
+(inheritable) and object.  If you do, then anything that ignores
+that difference is bad design.
+
+
+> Also, is there some reason as to why the extra functionality the kernel
+> lib provides is not made a standard part of the driver itself
+
+Backward compatibility.  Also, not everyone appreciates the distinction
+between class and object.
+
+
+> - possibly
+> along with the changes to make global upgrading completely automatic
+> (except for the outlined scenario ;) ??
+
+I understand that you'd rather have me implement it in the server
+than do it yourself, but I hope that the above clarifies my reasons
+for not having done so.
+
+Whatever came of the idea, put forward on this list, to implement
+global upgrades in LPC and make the code freely available?
+
+Regards,
+Dworkin
+</pre>
+
+<hr />
+
+<pre>
+From: Neil McBride <neil@ekit-inc.com>
+To: dgd@list.imaginary.com
+Subject: Re: [DGD]Object Upgrading Scenario
+
+> I understand that you'd rather have me implement it in the server
+> than do it yourself, but I hope that the above clarifies my reasons
+> for not having done so.
+> 
+> Whatever came of the idea, put forward on this list, to implement
+> global upgrades in LPC and make the code freely available?
+
+Back to the original problem then.  The proposed scenario is
+
+     A -i-> B -i-> C -c-> D
+     A -i-> B -i-> C -i-> E -c-> F
+
+The problem here is when D clones C.  The solution is an adaptation of a
+solution I 'thought' I'd worked out a few days ago, until I realised my
+memory of how it all worked was a little backwards ;)  Anyway, for ease
+of explanation, we'll call C the primary master, a new object, CX,
+called the secondary master and D will be the clone
+
+Now, when a call is made to clone an object, the clone_object can create
+the secondary master by creating a file that inherits the primary
+master, and nothing else.  The name of this can be determined by some
+algorithm so they can all be hidden from the user, thus making it all
+transparent.  The clone D, can then be made of the secondary master,
+leaving the primary master free to be inherited.
+
+This will also fit right into Jason's original ideas on how to deal with
+upgrading inherited objects.  Obviously, you would not hide these files
+from the internal processes dealing with it all ;)
+
+However, I'm not sure how to deal with the calling of functions in a
+master.  I imagine we could overload call_other as I think the
+{ob|file}->fn call uses call_other.  Correct me if I'm wrong.  I think
+someone with some more knowledge of how the function calling works needs
+to finish this off ;)
+
+Cheers,
+
+Neil.
+</pre>
+
+<hr />
+
+<pre>
+From: John "West" McKenna <john@ucc.gu.uwa.edu.au>
+Message-Id: <200001101445.WAA26194@mermaid.ucc.gu.uwa.edu.au>
+Subject: [DGD]upgrading
+To: dgd@list.imaginary.com
+Date: Mon, 10 Jan 2000 22:45:31 +0800 (WST)
+
+There's been a bit of talk about upgrading objects, and there's always
+been people wanting code for it.  So...  This is how I'm doing upgrading
+of objects.  Like Dworkin's kernel lib, I distinguish between classes
+and objects.  Actually, I make a three-way distinction:
+
+  1) libs: Anything with /lib/ in its path can be inherited.  It cannot
+     be cloned.  No other objects can be inherited.  create() is not
+     called, and the blueprint should not be used.
+  2) clones: Anything with /obj/ in its path can be cloned.  No other
+     objects can be cloned.  create() is called on the clones, but not
+     the blueprint.  The blueprint should not be used.
+  3) singles: All other objects have create() called on the blueprint.
+
+2 and 3 together are called 'objects'.
+
+If you're foolish enough to have *both* /lib/ and /obj/ in your path,
+you're treated as a lib.
+
+There is also mention of 'physical' objects.  These are clones that have
+some 'real' existence in the MUD universe (including players).  Any
+clone that wants a real existence inherits /kernel/lib/physical, which
+defines (among many other things) the function is_physical() to simply
+return 1.
+
+The code below is NOT the best way of doing things.  In particular, I'm
+not at all happy with the way that I'm including the auto object in the
+inheritence table.  There's a bug in there somewhere too - it fails in
+interesting ways if there was a compilation error.  
+
+Hopefully having some code will provoke a little discussion, and maybe
+even a little code...
+
+/*  The auto object */
+
+int is_clone() {
+  return (sscanf(object_name(this_object()), "%*s#"));
+}
+
+void _create() {
+  /* create() gets called for clones of objects in a .../obj/... directory, and
+     for blueprints of objects that are not in a .../obj/... or .../lib/...
+     directory, but not for anything else.  In particular, inherited objects
+     and the blueprints of clones don't get create() called. */
+  string name;
+
+  name=object_name(this_object());
+  /* It can only be a clone if it was in a .../obj/... directory, so no need
+     to explicitly check for that */
+  if (sscanf(name, "%*s#")) {
+    this_object()->create();
+  } else {
+    if (!sscanf(name, "%*s/lib/") && !sscanf(name, "%*s/obj/")) {
+      this_object()->create();
+    }
+  }
+}
+
+object compile_object(string name) {
+  object o;
+
+  o=::compile_object(name);
+  /* Make sure create() gets called */
+  call_other(o, "???");
+  return o;
+}
+
+object clone_object(object obj) {
+  if (sscanf(object_name(obj), "%*s/lib/")) {
+    DRIVER->message("Illegal clone: "+mixed_to_string(this_object())+
+      " attempting to clone "+mixed_to_string(obj));
+    return nil;
+  }
+  if (!sscanf(object_name(obj), "%*s/obj/")) {
+    DRIVER->message("Illegal clone: "+mixed_to_string(this_object())+
+      " attempting to clone "+mixed_to_string(obj));
+    return nil;
+  }
+  return ::clone_object(obj);
+}
+
+/* The driver object */
+
+mapping inheritence;
+mapping upgrading;
+mapping last_upgraded;
+int reboot_time;
+string *upgraded_clones;
+
+void initialize() {
+  /* ... */
+  reboot_time=time();
+}
+
+object inherit_program(string from, string path, int priv) {
+  if (!sscanf(path, "%*s/lib/")) {
+    message("Illegal inherit: "+from+" attempting to inherit "+path);
+    return nil;
+  } else {
+    if (!inheritence) {
+      inheritence=([ ]);
+    }
+    if (!inheritence[path]) {
+      inheritence[path]=({ });
+    }
+    if (!inheritence[AUTO]) {
+      inheritence[AUTO]=({ });
+    }
+    /* !!! This is really ugly.  There must be a better way of doing this.
+       But we're not told when someone inherits AUTO.  So we just add it
+       whenever any object gets mentioned (because if the object exists,
+       it inherits AUTO). */
+    inheritence[AUTO]=(inheritence[AUTO]-({ from }))+({ from });
+    inheritence[AUTO]=(inheritence[AUTO]-({ path }))+({ path });
+    inheritence[path]=(inheritence[path]-({ from }))+({ from });
+    return load(path);
+  }
+}
+
+static string *_upgrade(string path) {
+  string *inherited_by;
+  object obj;
+  string *done;
+  int i;
+
+  done=({ });
+  if (inheritence) {
+    obj=find_object(path);
+    inherited_by=inheritence[path];
+    if (!upgrading[path]) {
+      upgrading[path]=1;
+      if (inherited_by) {
+        /* It's a lib - destruct it and upgrade everything that inherits it */
+        last_upgraded[path]=time();
+        destruct_object(obj);
+        done+=({path});
+        for (i=0;i<sizeof(inherited_by);i++) {
+          done+=_upgrade(inherited_by[i]);
+        }
+      } else {
+        /* It's an object - if a blueprint exists, recompile it.  If there is
+           no blueprint, there's no point - it'll get compiled next time it
+           is used. */
+        if (obj) {
+          last_upgraded[path]=time();
+          compile_object(path);
+          upgraded_clones+=({path});
+          done+=({path});
+        }
+      }
+    }
+  }
+  return done;
+}
+
+static string *auto_upgrade(string path) {
+  string *inherited_by;
+  mixed *dir_info;
+  int last_upgrade, modified_time;
+  int i;
+  string *done;
+
+  done=({ });
+  if (last_upgraded[path]) {
+    last_upgrade=last_upgraded[path];
+  } else {
+    last_upgrade=reboot_time;
+  }
+  dir_info=get_dir(path+".c");
+  if (sizeof(dir_info[2])) {
+    modified_time=dir_info[2][0];
+    if (modified_time>last_upgrade) {
+      done+=_upgrade(path);
+    }
+  }
+  inherited_by=inheritence[path];
+  if (inherited_by) {
+    for (i=0;i<sizeof(inherited_by);i++) {
+      done+=auto_upgrade(inherited_by[i]);
+    }
+  }
+  return done;
+}
+
+string *upgrade(string path) {
+  /* If given a path, upgrade that object and everything that depends
+     on it.  If not given a path, do an automatic upgrade of every file
+     that has been modified since it was last recompiled.
+     Returns an array of the paths of all objects that were recompiled. */
+  string *done;
+
+  upgraded_clones=({ });
+  upgrading=([ ]);
+  if (!last_upgraded) {
+    last_upgraded=([ ]);
+  }
+  if (path) {
+    /* Just upgrade that file (and anything that depends on it) */
+    done=_upgrade(path);
+  } else {
+    /* Auto upgrade everything that has changed */
+    done=auto_upgrade(DRIVER);
+    done+=auto_upgrade(AUTO);
+  }
+  /* This has to be done as a call_out, unfortunately.  The 'compile' kfun
+     doesn't replace the objects with the new version until after the current
+     thread has finished.  But we want to call upgraded() on the new version. */
+  call_out("call_upgraded", 0, upgraded_clones+({ }));
+  upgraded_clones=({ });
+  return done;
+}
+
+void call_upgraded(string *paths) {
+  /* Tell each object it has been upgraded.  Also move them to the void and back
+     so uninit() and init() get called */
+  int i;
+  object obj;
+  object old_location;
+
+  for (i=0;i<sizeof(paths);i++) {
+    obj=load(paths[i]);
+    if (obj->is_clone() && obj->is_physical()) {
+      old_location=obj->query_property(UNIV_PROP_PARENT);
+      obj->move(nil);
+    }
+    obj->upgraded();
+    if (obj->is_clone() && obj->is_physical()) {
+      obj->move(old_location);
+    }
+  }
+}
+</pre>

@@ -1,0 +1,79 @@
+  <titledef text="Using parse_string" />
+
+  <h2> Using DGD's parse_string Kfun </h2>
+
+  <p>
+    The parse_string kfun is a very powerful parser to which you
+    supply a grammar of your choice.  It's much like lex and yacc, and
+    defines its own mini-language within DGD, much as lex and yacc do
+    with C.  DGD's parse_string, unlike most parsers, keeps track of
+    all your ambiguous matches.  That fact is both a great power and a
+    great responsibility.
+  </p>
+
+  <p>
+    What that means is that if your grammar allows something to be
+    parsed a couple of different ways then DGD will keep track of them
+    all while parsing.  If there are two ways to parse a double-if
+    statement with else (the else can go with either if) in your
+    grammar, and you feed parse_string a chunk with fifteen of those,
+    you'll find that DGD is keeping track of 2^15 (that's a little
+    more than 32,500) different interpretations of your file. Then it
+    will cheerfully return only the first.  That's slow, just in case
+    you hadn't guessed.
+  </p>
+
+  <p>
+    Similarly, if your grammar contains a rule like <tt>element_list:
+    element_list ',' element_list</tt> and also a rule to have
+    <tt>element_list</tt> match, say, an integer, then the input
+    &quot;17,25,3,17534,37,3524,2,1,359&quot; will also have many
+    possible parse trees, and will also take a very long time to
+    complete.  In a library like the Kernel Library that tries to
+    prevent infinite loops, you'll usually find you're out of ticks
+    and one of your rlimits() statements interrupts you midway through
+    the parsing.
+  </p>
+
+  <p>
+    However, sometimes you <i>want</i> ambiguous parsing.  For
+    instance, you may have a natural language parser for player
+    commands, and you'd like the player to be able to type &quot;get
+    down&quot; and have it mean either of &quot;get down from the
+    platform&quot; or &quot;take the down pillow&quot; according to
+    two different grammar rules.  DGD's parse_string will return both
+    parses, and you can decide which makes more sense for the player
+    currently.  Most parsers won't find all ambiguous matches for a
+    given grammar and input.
+  </p>
+
+  <p>
+    A fellow on the list named Steve Foley has graciously put together
+    a tutorial on parse_string, with the aid of Erwin Harte.  You can
+    find it <a href="../external/parse_string.html">here</a>.
+  </p>
+
+  <hr />
+
+  <ul>
+    <li> <a href="../external/lpc_grammar.txt">An (outdated) grammar
+        for DGD's LPC dialect</a></li>
+    <li> <a href="../external/ps_example_1.txt">Dworkin's example of
+        using functions to affect the final parse tree</a> </li>
+    <li> <a href="../external/ps_example_2.txt">Efficiency of sscanf
+        versus parse_string</a> </li>
+
+    <li> <a href="../external/ps_example_3.txt">A more specific
+	discussion about efficiency of sscanf versus parse_string</a>
+    </li>
+
+    <li> <a href="../external/ps_example_4.txt">Dworkin
+	discussing simple left-recursive rules for lists</a>
+    </li>
+
+  </ul>
+
+  <hr />
+
+  <p style="text-size: 150%"> <a href="index.html"> Back to DGD &amp; LPC
+      Page </a> </p>

@@ -38,9 +38,6 @@
       <li> <a href="#AtomicFunc">
 	  How do &quot;atomic&quot; functions work?
 	</a> </li>
-      <li> <a href="#ParseString">
-	  Using the parse_string function in DGD
-	</a> </li>
       <li> <a href="#CalloutTiming">
 	  How does call_out timing work in DGD?
 	</a> </li>
@@ -675,44 +672,6 @@ dinner_schedule = ([ ]);
     <p>Unlike rlimits, the use of atomic is not preventable by the
       mudlib.  This makes using atomic functions the best solution in
       cases where rlimits might be preferred, but is unavailable.</p>
-
-    <hr />
-
-    <a name="ParseString"> </a>
-    <h2> Using the parse_string DGD kfun </h2>
-
-    <p> The parse_string kfun is a very powerful parser to which
-      you supply a grammar of your choice.  It's reminiscent of
-      lex and yacc if you've used them before.  DGD's parse_string,
-      unlike most parsers,
-      keeps track of all your ambiguous matches.  That fact is both a
-      great power and a great responsibility. </p>
-
-    <p> What that means is that if your grammar allows something to be
-      parsed a couple of different ways then DGD will keep track of them
-      all while parsing.  If there are two ways to parse a double-if
-      statement with else (the else can go with either if) in your grammar,
-      and you feed parse_string a chunk with fifteen of those, you'll
-      find that DGD is keeping track of 2^15 (that's around 32,000)
-      different interpretations of your file. Then it will cheerfully
-      return only
-      the first.  That's slow, just in case you hadn't guessed. </p>
-
-    <p> However, sometimes you <i>want</i> ambiguous parsing.  For instance,
-      you may have a natural language parser for player commands, and
-      you'd like the player to be able to type &quot;get down&quot; and
-      have it mean either of &quot;get down from the platform&quot; or
-      &quot;take the down pillow&quot; according to two different grammar
-      rules.  DGD's parse_string will return both parses, and you can
-      decide which makes more sense where the player is standing at
-      the time.  Most parsers won't do this for you.  Lucky you found
-      DGD, hey? </p>
-
-    <p> A fellow on the list named Steve Foley has graciously put together
-      a tutorial on parse_string, with the aid of Erwin Harte.  You can
-      find it
-      <a href="../external/parse_string.html">here</a>.
-    </p>
 
     <hr />
 

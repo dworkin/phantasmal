@@ -71,7 +71,57 @@
   </p>
 
   <p>
-    
+    Using a standard database (say MySQL or PostgreSQL) has some
+    significant problems.  There's a reason that DGD doesn't normally
+    do callout to other languages &mdash; DGD has features like
+    rlimits() and atomic functions that are very difficult to
+    implement cross-language.  To use an external database, you'd need
+    to create a module for DGD to handle these constructs and handle
+    interruptions gracefully.  That's not impossible, but it's quite
+    difficult.  You could declare that rlimits() and atomic functions
+    don't work correctly for database operations.  But you'll find
+    that storing all your MUD's objects in a database will thus make
+    those features entirely useless.
+  </p>
+
+  <p>
+    Similarly, DGD's other large, unique feature &mdash;
+    upgrade-in-place &mdash; will present difficulties.  Any change in
+    the object's data fields will need to update the database fields
+    as well, which will be a significant undertaking.  It's quite
+    possible to do so, but it's another reason that DGD is simply a
+    poor fit for the idea of storing objects in an external database.
+    The fact that DGD already stores them so well and so quickly means
+    that the possible benefit of using an external database is much
+    smaller as well.  In general, DGD is simply poorly suited to the
+    use of an external database.
+  </p>
+
+  <h3> Internal Databases </h3>
+
+  <p>
+    Well, what about a database written in LPC?  You could have an
+    object that redirects all calls to get descriptions or other
+    textual data to a large database daemon.  Would this cut down on
+    memory and increase on processor use?
+  </p>
+
+  <p>
+    Hard to answer.  Some considerations:
+  </p>
+
+  <p>
+    Strings are shared within objects.  Constructed strings (such as
+    the results of string addition or taking a substring) are not
+    shared with identical strings created in a different manner until
+    the object is swapped out.
+  </p>
+
+  <p>
+    putting many shared strings in a single object creates a huge
+    object that would have to be in memory all the time, quite
+    possibly &lt;increasing&gt; memory use though decreasing swap file
+    size.
   </p>
 
   <p style="text-size: 150%"> <a href="../index.html"> Back to top level
