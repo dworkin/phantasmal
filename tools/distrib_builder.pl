@@ -104,10 +104,12 @@ system("cp -r $driverdir $outdir/dgd");
 print "Copying Phantasmal from $phantasmaldir...\n";
 system("cp -r $phantasmaldir $outdir/phantasmal");
 
-print "Moving Phantasmal user directories...\n";
+print "Moving Phantasmal directories...\n";
 system("rm -rf $outdir/usr/System $outdir/usr/common");
 system("mv $outdir/phantasmal/usr/System $outdir/usr/System");
 system("mv $outdir/phantasmal/usr/common $outdir/usr/common");
+system("rm -rf $outdir/include/kernel $outdir/include/phantasmal");
+system("mv $outdir/phantasmal/include/phantasmal $outdir/include/");
 
 print "Moving Kernel Library...\n";
 system("rm -rf $outdir/kernel/*");
@@ -116,26 +118,36 @@ system("mv $outdir/dgd/mud/kernel/sys $outdir/kernel/sys");
 system("mv $outdir/dgd/mud/kernel/obj $outdir/kernel/obj");
 system("mv $outdir/dgd/mud/kernel/lib $outdir/kernel/lib");
 
-print "Moving include directories...\n";
-system("rm -rf $outdir/include/kernel $outdir/include/phantasmal");
-system("mv $outdir/phantasmal/include/phantasmal $outdir/include/");
 system("mkdir $outdir/include/kernel");
-
-print "Moving Kernel Library headers...\n";
 system("mv $outdir/dgd/mud/include/kernel/*.h $outdir/include/kernel/");
 
 print "Moving DGD binary directory...\n";
+system("rm -rf $outdir/bin");
 system("mv $outdir/dgd/bin $outdir");
 
-print "Cleaning Phantasmal & DGD dirs...\n";
+print "Cleaning up non-game files & dirs...\n";
 system("rm -rf $outdir/phantasmal");
 system("rm -rf $outdir/dgd");
 
-print "Cleaning cvs dirs...\n";
+system("rm -f $outdir/tmp/swap $outdir/log/System.log "
+       . " $outdir/usr/game/users/*.pwd $outdir/bin/driver.old "
+       . " $outdir/include/float.h $outdir/include/limits.h "
+       . " $outdir/include/status.h $outdir/include/type.h "
+       . " $outdir/include/trace.h");
+
+# Remove CVS dirs.  Use a tempfile since find wants to descend into those
+# directories, and we've just removed them.
 system("find $outdir -name CVS -type d -print > /tmp/distrib_tmp.txt");
 system("rm -rf `cat /tmp/distrib_tmp.txt`");
-system("rm -f $outdir/README $outdir/INSTALL");
-system("rm -f $outdir/usr/README $outdir/kernel/README $outdir/include/README");
+
+# Remove all README, INSTALL, UPDATES and .cvsignore files
+system("find $outdir -name \"README\" -o -name \"INSTALL\" "
+       . "-o -name \"UPDATES\" "
+       . "-o -name \".cvsignore\" -exec rm \\{\\} \\;");
+
+system("find . -name \"*~\" -exec rm \\{\\} \\;");
+system("find . -name \"#*\" -exec rm \\{\\} \\;");
+system("find . -name \".#*\" -exec rm \\{\\} \\;");
 
 print "Moving bundle-specific files...\n";
 system("mv $outdir/bundled/* $outdir/");
