@@ -59,7 +59,7 @@ void destructed(varargs int clone) {
 
 /* List MUD rooms */
 static void cmd_list_room(object user, string cmd, string str) {
-  mixed*  rooms;
+  int*    rooms;
   int     ctr, zone;
   string  tmp;
   object  room, phr;
@@ -79,9 +79,6 @@ static void cmd_list_room(object user, string cmd, string str) {
       rooms += MAPD->rooms_in_zone(zone);
     }
   } else if(str == "" || str == "zone") {
-    int    zone;
-    int*   rooms;
-
     user->message("Rooms in zone:\r\n");
 
     room = user->get_location();
@@ -90,9 +87,7 @@ static void cmd_list_room(object user, string cmd, string str) {
       zone = 0;  /* Unzoned rooms */
 
     rooms = MAPD->rooms_in_zone(zone);
-  }
-
-  if(!rooms) {
+  } else {
     user->message("Usage: " + cmd + "\r\n"
 		  + "       " + cmd + " world\r\n");
     return;
@@ -102,7 +97,7 @@ static void cmd_list_room(object user, string cmd, string str) {
   for(ctr = 0; ctr < sizeof(rooms); ctr++) {
     room = MAPD->get_room_by_num(rooms[ctr]);
     phr = room->get_glance();
-    tmp += ralign10(rooms[ctr], 6) + "  ";
+    tmp += ralign10("" + rooms[ctr], 6) + "  ";
     if (room->get_mobile()) {
       tmp += "(body) ";
     } else if (room->get_detail_of()) {
