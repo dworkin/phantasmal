@@ -19,6 +19,9 @@ versions of DGD you should use the one that comes with your DGD server
 code and upgrade it when you upgrade DGD.  See the README files in
 Phantasmal's "kernel" and "include/kernel" directories.
 
+You may also want to copy the files from the DGD source tree in
+doc/kfun to the Phantasmal directory under doc/kfun.
+
 You'll need a version of DGD recent enough to have full support for
 lightweight objects and multiple incoming network ports.  This MUDLib
 has been tested with the DGD version(s) listed in TESTED_VERSIONS, and
