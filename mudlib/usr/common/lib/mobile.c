@@ -210,7 +210,7 @@ nomask int ask(object to, string str) {
 private atomic void path_place(object user, object *rem_path,
 			       object *add_path, object obj) {
   int i;
-  object env;
+  object env, my_user;
   string reason;
 
   /* assume the full move can be performed.  If it can't we'll throw an error,
@@ -218,11 +218,13 @@ private atomic void path_place(object user, object *rem_path,
      occurs.  Hurray for atomics!
   */
 
+  my_user = get_user();
+
   for (i = 0; i < sizeof(rem_path); ++i) {
     env = rem_path[i]->get_location();
-    if ((reason = rem_path[i]->can_remove(get_user(), body, obj, env)) ||
-	(reason = obj->can_get(get_user(), body, env)) ||
-	(reason = env->can_put(get_user(), body, obj, rem_path[i]))) {
+    if ((reason = rem_path[i]->can_remove(my_user, body, obj, env)) ||
+	(reason = obj->can_get(my_user, body, env)) ||
+	(reason = env->can_put(my_user, body, obj, rem_path[i]))) {
       error("$" + reason);
     } else {
       /* call function in object for removing from the current room */
@@ -237,9 +239,9 @@ private atomic void path_place(object user, object *rem_path,
   /* now add this object to the objects in the add path in order */
   for (i = 0; i < sizeof(add_path); ++i) {
     env = add_path[i]->get_location();
-    if ((reason = add_path[i]->can_put(get_user(), body, obj, env)) ||
-	(reason = obj->can_get(get_user(), body, add_path[i])) ||
-	(reason = env->can_remove(get_user(), body, obj, add_path[i]))) {
+    if ((reason = add_path[i]->can_put(my_user, body, obj, env)) ||
+	(reason = obj->can_get(my_user, body, add_path[i])) ||
+	(reason = env->can_remove(my_user, body, obj, add_path[i]))) {
       error("$" + reason);
     } else {
       obj->get(body, add_path[i]);
