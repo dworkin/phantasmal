@@ -8,24 +8,27 @@ inherit USER_STATE;
 /* Vars for MAKEROOM user state */
 private int    substate;
 
-/* Data specified by user */
-private int    room_number;
-private string brief_desc;
-private string glance_desc;
-private string look_desc;
-private string examine_desc;
-private string nouns;
-private string adjectives;
+private object new_obj;
 
+/* Data specified by user */
+private int    obj_number;
+private int    obj_type;
+
+
+/* Valid object-type values */
+#define OT_UNKNOWN                  1
+#define OT_ROOM                     2
+#define OT_PORTABLE                 3
 
 /* Valid substate values */
-#define SS_PROMPT_ROOM_NUMBER       1
-#define SS_PROMPT_BRIEF_DESC        2
-#define SS_PROMPT_GLANCE_DESC       3
-#define SS_PROMPT_LOOK_DESC         4
-#define SS_PROMPT_EXAMINE_DESC      5
-#define SS_PROMPT_NOUNS             6
-#define SS_PROMPT_ADJECTIVES        7
+#define SS_PROMPT_OBJ_TYPE          1
+#define SS_PROMPT_OBJ_NUMBER        2
+#define SS_PROMPT_BRIEF_DESC        3
+#define SS_PROMPT_GLANCE_DESC       4
+#define SS_PROMPT_LOOK_DESC         5
+#define SS_PROMPT_EXAMINE_DESC      6
+#define SS_PROMPT_NOUNS             7
+#define SS_PROMPT_ADJECTIVES        8
 
 /* Input function return values */
 #define RET_NORMAL            1
@@ -34,7 +37,8 @@ private string adjectives;
 
 
 /* Prototypes */
-static int  prompt_room_number_input(string input);
+static int  prompt_obj_type_input(string input);
+static int  prompt_obj_number_input(string input);
 static int  prompt_brief_desc_input(string input);
 static int  prompt_glance_desc_input(string input);
 static void prompt_look_desc_data(mixed data);
@@ -48,10 +52,24 @@ static int  prompt_adjectives_input(string input);
 static void create(varargs int clone) {
   ::create();
   if(!find_object(US_ENTER_DATA)) compile_object(US_ENTER_DATA);
+  if(!find_object(US_ENTER_YN)) compile_object(US_ENTER_YN);
   if(!find_object(LWO_PHRASE)) compile_object(LWO_PHRASE);
   if(clone) {
-    substate = SS_PROMPT_ROOM_NUMBER;
+    substate = SS_PROMPT_OBJ_TYPE;
+    obj_type = OT_UNKNOWN;
+    obj_number = -1;
   }
+}
+
+void specify_type(string type) {
+  if(type == "room" || type == "r")
+    obj_type = OT_ROOM;
+  else if(type == "port" || type == "portable" || type == "p")
+    obj_type = OT_PORTABLE;
+  else
+    error("Illegal value supplied to specify_type!");
+
+  substate = SS_PROMPT_OBJ_NUMBER;
 }
 
 /* This handles input directly from the user.  Handling depends on the
@@ -63,15 +81,23 @@ int from_user(string input) {
   if(input) {
     quitcheck = STRINGD->trim_whitespace(input);
     if(!STRINGD->stricmp(quitcheck, "quit")) {
-      send_string("(Quitting OLC -- Cancel!)\r\n");
+      if(new_obj) {
+	send_string("(Quitting OLC -- leaving obj #"
+		    + new_obj->get_number() + " -- Cancel!)\r\n");
+      } else {
+	send_string("(Quitting OLC -- Cancel!)\r\n");
+      }
       pop_state();
       return MODE_ECHO;
     }
   }
 
   switch(substate) {
-  case SS_PROMPT_ROOM_NUMBER:
-    ret = prompt_room_number_input(input);
+  case SS_PROMPT_OBJ_TYPE:
+    ret = prompt_obj_type_input(input);
+    break;
+  case SS_PROMPT_OBJ_NUMBER:
+    ret = prompt_obj_number_input(input);
     break;
   case SS_PROMPT_BRIEF_DESC:
     ret = prompt_brief_desc_input(input);
@@ -119,7 +145,8 @@ int from_user(string input) {
    user.  This happens if, for instance, somebody moves into
    or out of the same room and the player sees a message. */
 void to_user(string output) {
-  send_string(output);
+  /* For the moment, suspend output to the player who is mid-OLC */
+  /* send_string(output); */
 }
 
 /* This is called when the state is switched to.  The pushp parameter
@@ -127,12 +154,19 @@ void to_user(string output) {
    pushp is true, the state was just allocated and started.  If it's
    false, a state got pushed and we resumed control afterward. */
 void switch_to(int pushp) {
-  if(pushp && substate == SS_PROMPT_ROOM_NUMBER) {
+  if(pushp && substate == SS_PROMPT_OBJ_NUMBER) {
     /* Just allocated */
-    send_string("Creating a new room.  Type 'quit' at the prompt"
-		+ " to cancel.\r\n");
-    send_string("First, enter the desired room number,"
+    send_string("Creating a new object.  Type 'quit' at the prompt"
+		+ " (except on multiline prompts) to cancel.\r\n");
+    send_string("First, enter the desired object number,"
 		+ " or hit enter to assign it automatically.\r\n");
+    send_string(" > ");
+  } else if(pushp && substate == SS_PROMPT_OBJ_TYPE) {
+    /* Just allocated */
+    send_string("Creating a new object.  Type 'quit' at the prompt"
+		+ " (except on multiline prompts) to cancel.\r\n");
+    send_string("Please enter an object type.\r\n");
+    send_string("Valid values are:  room, portable (r/p)\r\n");
     send_string(" > ");
   } else if (substate == SS_PROMPT_LOOK_DESC) {
 
@@ -175,46 +209,112 @@ void pass_data(mixed data) {
   }
 }
 
-static int prompt_room_number_input(string input) {
+static int prompt_obj_type_input(string input) {
+  if(input)
+    input = STRINGD->trim_whitespace(STRINGD->to_lower(input));
+
+  /* TODO:  we should use the binder for this */
+  if(!input
+     || (input != "r" && input != "p" && input != "room" && input != "port"
+	 && input != "portable")) {
+    send_string("Valid values for object type are 'room' and 'portable'.\r\n");
+    send_string("Please enter object type or 'quit'.\r\n");
+
+    return RET_NORMAL;
+  }
+
+  if(input[0] == "r"[0]) {
+    obj_type = OT_ROOM;
+  } else {
+    obj_type = OT_PORTABLE;
+  }
+
+  send_string("Type the desired object number,"
+	      + " or hit enter to assign it automatically.\r\n");
+
+  substate = SS_PROMPT_OBJ_NUMBER;
+
+  /* The editor is going to print its own prompt, so don't bother
+     with ours. */
+  return RET_NORMAL;
+}
+
+static int prompt_obj_number_input(string input) {
   string segown;
+  object location;
+  int    zonenum;
 
   if(!input || STRINGD->is_whitespace(input)) {
     /* Autoassign */
-    room_number = -1;
+    obj_number = -1;
 
-    send_string("Room number will be assigned automatically.\r\n");
+    send_string("Object number will be assigned automatically.\r\n");
   } else {
     if(sscanf(input, "%*s %*d") == 2
        || sscanf(input, "%*d %*s") == 2
-       || sscanf(input, "%d", room_number) != 1) {
-      send_string("Please *only* enter a number.  Enter a room number"
+       || sscanf(input, "%d", obj_number) != 1) {
+      send_string("Please *only* enter a number.  Enter an object number"
 		  + " or hit enter.\r\n");
       return RET_NORMAL;
     }
-    /* Room number was parsed. */
-    if(room_number < 1) {
-      send_string("That doesn't appear to be a legal room number.\r\n");
-      send_string("Enter a (positive, nonzero) room number or hit enter.\r\n");
+    /* Object number was parsed. */
+    if(obj_number < 1) {
+      send_string("That doesn't appear to be a legal object number.\r\n");
+      send_string("Enter a positive, nonzero object number or hit enter.\r\n");
 
       return RET_NORMAL;
     }
-    if(MAPD->get_room_by_num(room_number)) {
-      send_string("There is already a room with that number.\r\n");
-      send_string("Enter a room number, type 'quit' or hit enter.\r\n");
+    if(MAPD->get_room_by_num(obj_number)) {
+      send_string("There is already an object with that number.\r\n");
+      send_string("Enter an object number, type 'quit' or hit enter.\r\n");
 
       return RET_NORMAL;
     }
-    segown = OBJNUMD->get_segment_owner(room_number / 100);
-    if(room_number >= 0 && segown && segown != MAPD) {
-      user->message("Room number " + room_number
-		    + " is in a segment reserved for non-rooms!\r\n");
-      send_string("Enter a room number, type 'quit' or hit enter.\r\n");
+    segown = OBJNUMD->get_segment_owner(obj_number / 100);
+    if(obj_number >= 0 && segown && segown != MAPD) {
+      user->message("Object number " + obj_number
+		    + " is in a segment somebody else is using!\r\n");
+      send_string("Enter an object number, type 'quit' or hit enter.\r\n");
       return RET_NORMAL;
     }
 
-    /* Okay, room number looks good -- continue. */
+    /* Okay, object number looks good -- continue. */
   }
 
+  location = get_user()->get_location();
+  if(location) {
+    /* The new room should be put into the same place as the room
+       the user is currently standing in.  Makes a good default. */
+    location = location->get_location();
+  }
+
+  new_obj = clone_object(SIMPLE_ROOM);
+  zonenum = -1;
+  if(obj_number < 0) {
+    if(location) {
+      zonenum = ZONED->get_zone_for_room(location);
+    } else {
+      zonenum = 0;
+    }
+    if(zonenum < 0) {
+      LOGD->write_syslog("Odd, zone is less than 0 in @make_room...",
+			 LOG_WARN);
+      zonenum = 0;
+    }
+  }
+  MAPD->add_room_to_zone(new_obj, obj_number, zonenum);
+
+  zonenum = ZONED->get_zone_for_room(new_obj);
+
+  if(location) {
+    location->add_to_container(new_obj);
+  }
+
+  send_string("Added room #" + new_obj->get_number()
+	      + " to zone #" + zonenum
+	      + " (" + ZONED->get_name_for_zone(zonenum) + ")" + ".\r\n\r\n");
+
+  /* Okay, now keep entering data... */
   send_string("Next, please enter a one-line brief description.\r\n");
   send_string("Examples of brief descriptions:  "
 	      + "'a sword', 'John', 'some bacon'.\r\n");
@@ -227,6 +327,8 @@ static int prompt_room_number_input(string input) {
 }
 
 static int prompt_brief_desc_input(string input) {
+  object phr;
+
   if(!input || STRINGD->is_whitespace(input)) {
     send_string("That was all whitespace.  Let's try that again.\r\n");
     send_string("Please enter a one-line brief description.\r\n");
@@ -236,7 +338,10 @@ static int prompt_brief_desc_input(string input) {
     return RET_NORMAL;
   }
 
-  brief_desc = STRINGD->trim_whitespace(input);
+  input = STRINGD->trim_whitespace(input);
+  phr = new_obj->get_brief();
+  phr->set_content_by_lang(get_user()->get_locale(), input);
+
   substate = SS_PROMPT_GLANCE_DESC;
 
   send_string("Please enter a one-line glance description.\r\n");
@@ -248,7 +353,7 @@ static int prompt_brief_desc_input(string input) {
 }
 
 static int prompt_glance_desc_input(string input) {
-  object edit_state;
+  object edit_state, phr;
 
   if(!input || STRINGD->is_whitespace(input)) {
     send_string("That was all whitespace.  Let's try that again.\r\n");
@@ -260,7 +365,10 @@ static int prompt_glance_desc_input(string input) {
     return RET_NORMAL;
   }
 
-  glance_desc = STRINGD->trim_whitespace(input);
+  input = STRINGD->trim_whitespace(input);
+  phr = new_obj->get_glance();
+  phr->set_content_by_lang(get_user()->get_locale(), input);
+
   substate = SS_PROMPT_LOOK_DESC;
 
   send_string("\r\nGlance desc accepted.\r\n");
@@ -281,15 +389,13 @@ static int prompt_glance_desc_input(string input) {
 }
 
 static void prompt_look_desc_data(mixed data) {
-  object edit_state;
+  object edit_state, phr;
 
   if(typeof(data) != T_STRING) {
     send_string("Non-string data passed to state!  Huh?  Cancelling.\r\n");
     pop_state();
     return;
   }
-
-  look_desc = STRINGD->trim_whitespace(data);
 
   if(!data || STRINGD->is_whitespace(data)) {
     send_string("That look description was all whitespace.  "
@@ -307,9 +413,13 @@ static void prompt_look_desc_data(mixed data) {
     return;
   }
 
-  substate = SS_PROMPT_EXAMINE_DESC;
+  data = STRINGD->trim_whitespace(data);
+  phr = new_obj->get_look();
+  phr->set_content_by_lang(get_user()->get_locale(), data);
 
+  substate = SS_PROMPT_EXAMINE_DESC;
   send_string("\r\nLook desc accepted.\r\n");
+
   send_string("Now, enter a multiline 'examine' description.  This is what an"
 	      + " observer would\r\n");
   send_string("note about this object with careful scrutiny.\r\n");
@@ -329,6 +439,8 @@ static void prompt_look_desc_data(mixed data) {
 }
 
 static void prompt_examine_desc_data(mixed data) {
+  string examine_desc;
+
   if(typeof(data) != T_STRING) {
     send_string("Non-string data passed to state!  Huh?  Cancelling.\r\n");
     pop_state();
@@ -342,6 +454,9 @@ static void prompt_examine_desc_data(mixed data) {
     examine_desc = STRINGD->trim_whitespace(data);
   }
 
+  if(examine_desc && !STRINGD->is_whitespace(examine_desc)) {
+    new_obj->set_examine(NEW_PHRASE(examine_desc));
+  }
   substate = SS_PROMPT_NOUNS;
 
   send_string("\r\nOkay, now let's get a list of the nouns and adjectives "
@@ -349,8 +464,10 @@ static void prompt_examine_desc_data(mixed data) {
   send_string("use to refer to the object.  For reference, we'll also let you"
 	      + " see\r\n");
   send_string("the short descriptions you supplied.\r\n");
-  send_string("Brief:  " + brief_desc + "\r\n");
-  send_string("Glance: " + glance_desc + "\r\n");
+  send_string("Brief:  " + new_obj->get_brief()->to_string(get_user())
+	      + "\r\n");
+  send_string("Glance: " + new_obj->get_glance()->to_string(get_user())
+	      + "\r\n");
   send_string("\r\nNow, give a space-separated list of nouns to refer to this"
 	      + " object.\r\n");
   send_string("Example: sword blade hilt weapon pommel\r\n\r\n");
@@ -358,26 +475,7 @@ static void prompt_examine_desc_data(mixed data) {
   /* Don't return anything, this is a void function */
 }
 
-static int prompt_nouns_input(string input) {
-
-  if(!input || STRINGD->is_whitespace(input)) {
-    send_string("Nope.  You'll want at least one noun.  Try again.\r\n");
-    send_string("Brief:  " + brief_desc + "\r\n");
-    send_string("Glance: " + glance_desc + "\r\n");
-    send_string("\r\nNow, give a space-separated list of nouns to refer to "
-		+ "this object.\r\n");
-    send_string("Example: sword blade weapon\r\n\r\n");
-    return RET_NORMAL;
-  }
-
-  substate = SS_PROMPT_ADJECTIVES;
-  nouns = STRINGD->trim_whitespace(input);
-  send_string("\r\nGood.  Next, do the same for adjectives.\r\n");
-  send_string("Example: heavy gray dull\r\n");
-
-  return RET_NORMAL;
-}
-
+/* Used when processing nouns and adjectives */
 private mixed process_words(string input) {
   object  phr, location;
   string* words;
@@ -396,74 +494,43 @@ private mixed process_words(string input) {
   return phr;
 }
 
+static int prompt_nouns_input(string input) {
+  string nouns;
+
+  if(obj_type == OT_PORTABLE
+     && (!input || STRINGD->is_whitespace(input))) {
+    send_string("Nope.  You'll want at least one noun.  Try again.\r\n");
+    send_string("Brief:  " + new_obj->get_brief()->to_string(get_user())
+		+ "\r\n");
+    send_string("Glance: " + new_obj->get_glance()->to_string(get_user())
+		+ "\r\n");
+    send_string("\r\nNow, give a space-separated list of nouns to refer to "
+		+ "this object.\r\n");
+    send_string("Example: sword blade weapon\r\n\r\n");
+    return RET_NORMAL;
+  }
+
+  nouns = STRINGD->trim_whitespace(input);
+  new_obj->add_noun(process_words(nouns));
+
+  substate = SS_PROMPT_ADJECTIVES;
+
+  send_string("\r\nGood.  Next, do the same for adjectives.\r\n");
+  send_string("Example: heavy gray dull\r\n");
+
+  return RET_NORMAL;
+}
+
 static int prompt_adjectives_input(string input) {
-  string segown;
-  object room, location, phr;
-  int    zonenum;
+  object phr;
+  string adjectives;
 
-  send_string("\r\nGood.  Creating object...\r\n");
+  send_string("\r\nGood.  Finishing object...\r\n");
+
   adjectives = STRINGD->trim_whitespace(input);
+  new_obj->add_adjective(process_words(adjectives));
 
-  segown = OBJNUMD->get_segment_owner(room_number / 100);
-
-  if((MAPD->get_room_by_num(room_number))
-     || (room_number >= 0 && segown && segown != MAPD)) {
-    /* TODO:  allocate room when num is entered? */
-
-    send_string("Somebody else has created an object with that number!\r\n");
-    send_string("Not sure how to deal with this conflict.  Quitting.\r\n");
-
-    return RET_POP_STATE;
-  }
-
-  location = get_user()->get_location();
-  if(location) {
-    /* The new room should be put into the same place as the room
-       the user is currently standing in.  Makes a good default. */
-    location = location->get_location();
-  }
-
-  room = clone_object(SIMPLE_ROOM);
-  zonenum = -1;
-  if(room_number < 0) {
-    if(location) {
-      zonenum = ZONED->get_zone_for_room(location);
-    } else {
-      zonenum = 0;
-    }
-    if(zonenum < 0) {
-      LOGD->write_syslog("Odd, zone is less than 0 in @make_room...",
-			 LOG_WARN);
-      zonenum = 0;
-    }
-  }
-  MAPD->add_room_to_zone(room, room_number, zonenum);
-
-  zonenum = ZONED->get_zone_for_room(room);
-
-  send_string("Added room #" + room->get_number()
-	      + " to zone #" + zonenum
-	      + " (" + ZONED->get_name_for_zone(zonenum) + ")" + ".\r\n");
-
-  /* Set various descriptions */
-  phr = room->get_brief();
-  phr->set_content_by_lang(get_user()->get_locale(), brief_desc);
-  phr = room->get_glance();
-  phr->set_content_by_lang(get_user()->get_locale(), glance_desc);
-  phr = room->get_look();
-  phr->set_content_by_lang(get_user()->get_locale(), look_desc);
-
-  if(examine_desc && !STRINGD->is_whitespace(examine_desc)) {
-    room->set_examine(room, NEW_PHRASE(examine_desc));
-  }
-
-  /* Set nouns and adjectives */
-  room->add_noun(process_words(nouns));
-  room->add_adjective(process_words(adjectives));
-
-  if(location) {
-    location->add_to_container(room);
-  }
+  send_string("Done.\r\n");
 
   return RET_POP_STATE;
 }
