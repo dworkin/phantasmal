@@ -148,11 +148,14 @@ void load_from_file(string filename) {
 
   unq = UNQ_PARSER->basic_unq_parse(str);
   if(!unq)
-    error("Can't parse contents to UNQ!");
+    error("Can't parse file contents to UNQ! (" + filename + ")");
 
   dtd_unq = dtd->parse_to_dtd(unq);
-  if(!dtd_unq)
+  if(!dtd_unq) {
+    LOGD->write_syslog("Error stack:\n"
+		       + dtd->get_parse_error_stack(), LOG_WARN);
     error("Can't parse UNQ according to DTD!");
+  }
 
   from_dtd_unq(dtd_unq);
 }
