@@ -1,81 +1,89 @@
                       Installing Phantasmal
 
 This document assumes you've already got DGD installed and working,
-and you've tested it with the Kernel MUDLib.  A source installation
-is always preferable for debugging, but the important thing is that
-DGD works and that you've got the source to the Kernel MUDLib.  If
-you haven't gotten DGD up and running, check out
+and you've tested it with the Kernel Library.  A source installation
+of DGD is better for debugging, but the important thing is that DGD
+works and that you've got the source to the Kernel Library.  If you
+haven't gotten DGD up and running, check out
 "http://phantasmal.sourceforge.net/DGD" and click on "Downloading,
-Compiling and Configuring DGD".  The DGD mailing list can also help
-you with these setup problems.
+Compiling and Configuring DGD".  The SourceForge forums and the DGD
+mailing list can also help you with these setup problems.
 
-You'll want to install your Kernel MUDLib (the mud/kernel subdirectory
+You'll need a recent version of DGD with full support for a bunch of
+the latest features.  This MUDLib has been tested with the DGD
+version(s) listed in TESTED_VERSIONS, and the most recent experimental
+version (like 1.2.66) is very likely to work with the most recent
+version of Phantasmal.  Note that my testing always uses the latest
+versions.  It's possible that the lower-numbered DGD versions in
+TESTED_VERSIONS don't work correctly any more, but they have with a
+recently.  When in doubt, upgrade to the latest DGD version listed in
+TESTED_VERSIONS, or to the most recent version of DGD.
+
+                         Basic Install
+
+You'll want to install your Kernel Library (the mud/kernel subdirectory
 under your DGD installation) into the kernel subdirectory of
-Phantasmal.  You'll also want to copy files from the Kernel MUDLib
-mud/include/kernel subdirectory into Phantasmal's include/kernel (note
--- do *not* replace Phantasmal's config.h or other stuff in include's
-top directory!).  Since the Kernel MUDLib changes with successive
+Phantasmal.  You'll also want to copy files from the Kernel Library
+mud/include/kernel subdirectory into Phantasmal's include/kernel.
+Please do *not* replace Phantasmal's config.h or other stuff in
+phantasmal/include!  Since the Kernel Library changes with successive
 versions of DGD you should use the one that comes with your DGD server
 code and upgrade it when you upgrade DGD.  See the README files in
 Phantasmal's "kernel" and "include/kernel" directories.
 
 You may also want to copy the files from the DGD source tree in
-doc/kfun to the Phantasmal directory under doc/kfun.
+dgd/doc/kfun to the Phantasmal directory under doc/kfun.  If you're
+doing development, you'll appreciate having them close by.
 
-You'll need a version of DGD recent enough to have full support for
-lightweight objects and multiple incoming network ports.  This MUDLib
-has been tested with the DGD version(s) listed in TESTED_VERSIONS, and
-the most recent 1.2.5X version is very likely to work with the most
-recent version of Phantasmal.  Note that testing always uses the
-latest versions, so it's possible that the lower-numbered DGD versions
-in TESTED_VERSIONS don't work correctly any more, but they have with a
-recent version of Phantasmal.  When in doubt, upgrade to the latest
-DGD version listed in TESTED_VERSIONS, or to the most recent version
-of DGD.
-
-You'll need a .dgd file for Phantasmal.  Copy the phantasmal.dgd file
-in your Phantasmal top-level directory and change the "directory"
-entry to the correct one where you installed Phantasmal.  Change the
-port number as well, if you want.  The binary port is for
+You'll need a .dgd file for Phantasmal.  Edit the phantasmal.dgd file
+in your Phantasmal top-level directory.  Change the "directory" entry
+to the correct one where you installed Phantasmal.  Remember that the
+directory needs to be absolute, not relative.  That means it should
+*start* with a slash or a drive letter, not with a dot.  You can
+change the port number as well, if you want.  The binary port is for
 administrator login if something goes drastically wrong.  You'll never
-ordinarily use it.  You may also want to change the number of sectors,
-called "swap_size", to be even more.  The number given should work
-fine at startup, though.  Eventually you'll want to change more stuff
-in the .dgd file, but you'll know enough about DGD to handle that
-yourself by the time it's necessary.  In any case, *do* remember that
-the path specified in phantasmal.dgd for the MUDLib's directory needs
-to be absolute, not relative.  That means it should *start* with a
-slash.
+ordinarily use it.  Eventually you may want to change more stuff in
+the .dgd file, but you should know enough about DGD by the time it's
+necessary.
 
-Also in your phantasmal.dgd file, consider having a look at
-ed_tmpfile, swap_file and dump_file.  Each of those is a relative path
-from your root Phantasmal MUDLib directory, the one containing this
-file (INSTALL).  You may want to create a "../tmp" directory from
-here, or change those paths to point somewhere else.
+
+                        Making Accounts
 
 Once you have the MUD running, you should first log in as admin, then
-make yourself a non-admin account to use.  When you make your new
-account (referred to as "me" in the follwing paragraph) you can grant
-it full adminstrative access by typing "%grant me access" and "%grant
-me / full".  This will be your main administrator account.  You can
-also trivially make as many new unprivileged accounts as you feel like
-just by logging in without bothering to grant them access.  Note the
-second grant command makes the account able to pretty much crash your
-MUD or destroy your data if the account owner feels like it, so use it
-sparingly and only with people you want to have full administrative
-access.  There will eventually be a less-privileged admin class
-suitable for builders, but that hasn't yet been implemented.
+make yourself a non-admin account to use.  I'll call the non-admin
+account "me" in the follwing paragraph, though it could be almost any
+word.  When you make your new non-admin account, you can grant it full
+adminstrative access by typing "%grant me access" and "%grant me /
+full".  That's "%grant", space, your account name, space, slash,
+space, "full", space, but without the quotes.  The "me" account can
+now be your main administrator account so you don't have to be called
+"admin", and so you can test better later.  The second grant command
+makes the account able to pretty much crash your MUD or destroy your
+data if the account owner feels like it, so use it only with very
+trusted people.  Full access is very powerful.  There will eventually
+be a less-privileged admin class suitable for builders, but that's not
+really in place yet.
 
-When you get started, type "help".  You may notice that the default
-help is different for administrators and regular non-admin players.  I
-try to keep all commands documented in the online help.  In case of
-conflict or uncertainty, the command lists in
+
+                            More Help
+
+When you get started, type "help".  Normally all commands are
+documented in the online help.  You may notice that the default help
+is different for administrators and regular non-admin players, so
+don't be confused if that happens.  If there's a command you're *sure*
+exists but you just can't find it, the command lists in
 /usr/System/lib/wiztoollib.c and /data/phrase/user_cmds.unq are
-definitive.
+definitive.  If it's not in those, it doesn't exist in the MUD yet.
 
 Further information on Phantasmal can be found in various locations.
-The SourceForge forums are excellent for getting help.  The DGD
-mailing list is also an appropriate place to ask general DGD and LPC
-questions rather than Phantasmal-specific ones.  And you can find more
-information linked from "http://phantasmal.sourceforge.net", or the
-SourceForge project at "http://sourceforge.net/projects/phantasmal".
+You can find more information about Phantasmal at
+"http://phantasmal.sf.net".  My pages about general DGD stuff are at
+"http://phantasmal.sf.net/DGD".  Read through both of them if you're
+having trouble with general stuff, there's a lot of information there.
+
+Phantasmal's SourceForge project is at
+"http://sf.net/projects/phantasmal".  The SourceForge forums are
+excellent for getting help, and you can find old design notes and
+project history there.  The DGD mailing list is also an appropriate
+place to ask general DGD and LPC questions rather than
+Phantasmal-specific ones.
