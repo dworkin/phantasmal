@@ -88,6 +88,8 @@
 #define CONFIG_FILE         "/data/system/config.unq"
 #define ROOM_FILE           "/data/object/roomfile.unq"
 #define PORT_FILE           "/data/object/portablefile.unq"
+#define SAFE_ROOM_FILE      "/data/object/safe_roomfile.unq"
+#define SAFE_PORT_FILE      "/data/object/safe_portablefile.unq"
 #define BUG_DATA            "/data/text/bug_reports.txt"
 #define TYPO_DATA           "/data/text/typo_reports.txt"
 #define LOG_CHANNELS        "/data/system/logd_channels.unq"
