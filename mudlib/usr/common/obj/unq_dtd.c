@@ -11,7 +11,9 @@ private mapping builtins;
 private string  accum_error;
 
 private void write_log(string str) {
-  write_file(LOG_FILE, str + "\n");
+  /* Uncomment this line to start seeing the write_file debug
+     messages in the LOG_FILE above. */
+  /* write_file(LOG_FILE, str + "\n"); */
 }
 
 static int create(varargs int clone) {
