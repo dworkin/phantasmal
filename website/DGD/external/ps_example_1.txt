@@ -1,0 +1,57 @@
+> This question is in regard to the parse_string() kfun and the omission of
+> the ()'s from production rules.  Basically, it's mentioned that functions
+> can be used to shape the returned parse tree, but I'm having an extremely
+> hard time visualizing it. :)  I guess the best way to ask this question or
+> address the issue is to present an example.
+
+And I'll respond with one:
+
+    whitespace = / /
+    word = /[a-z]+/
+
+    Thing: Noun
+    Thing: SubAdjs Noun
+    Noun: word
+    Adjs: word Adjs
+    Adjs: word
+    SubAdjs: Adjs ? do_the_sub_thing
+
+Now for different versions of do_the_sub_thing():
+
+    mixed *do_the_sub_thing(mixed *adjs)
+    {
+	return ({ adjs });
+    }
+
+=> ({ ({ "big", "blue" }), "bottle" })
+
+    mixed *do_the_sub_thing(mixed *adjs)
+    {
+	return adjs;
+    }
+
+=> ({ "big", "blue", "bottle" })
+
+    mixed *do_the_sub_thing(mixed *adjs)
+    {
+	return ({ });
+    }
+
+=> ({ "bottle" })
+
+    mixed *do_the_sub_thing(mixed *adjs)
+    {
+	return adjs - ({ "blue", "green" });
+    }
+
+=> ({ "big", "bottle" })
+
+    mixed *do_the_sub_thing(mixed *adjs)
+    {
+	return 0;
+    }
+
+=> 0
+
+Regards,
+Dworkin

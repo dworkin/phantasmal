@@ -1,0 +1,47 @@
+> Given the following 2 statements:
+>
+> Statement using sscanf()
+> ========================
+>     mpArray = allocate(2);
+>     sscanf("test 9", "%s %d", mpArray[0], mpArray[1]);
+>
+> Statement using parse_string()
+> ==============================
+>     mpArray = parse_string("   \
+>         whitespace = / /       \
+>         word = /[a-z]+/        \
+>         number = /[0-9]+/      \
+>                                \
+>         Sentence: word number ? to_number", "test 9");
+>
+>     mixed *to_number(mixed *mpTree)
+>     {
+>         return ({ mpTree[0], (int) mpTree[1] });
+>     }
+
+The sscanf() is far more efficient.  The parse_string() version has to:
+ - parse the grammar
+ - build a partial DFA for the regular expressions
+ - build a partial shift/reduce parser for the grammar
+ - parse the the string according to the grammar
+
+Each of these steps will take longer than the sscanf().  If the
+parse_string() is performed repeatedly with the same grammar in the same
+object, and no parse_string() call was made in the same object with a
+different grammar in the meantime, then the first 3 steps will be omitted;
+for this particular case, parse_string() is still slowest.  It gets more
+relatively efficient the more complex the grammar gets, the more often it
+is called (because of the building overhead), and the longer the string to
+parse is.
+
+Note however, the sscanf() and the parse_string() version do not do
+exactly the same thing: the parse_string() version will skip an arbitrary
+number of spaces.  Doing this without parse_string() is quite likely
+to be more expensive than with.
+
+Finally, the quoted grammar would be faster if whitespace is defined
+as / +/ rather than / /; that way, the number of individual tokens is
+reduced if the string to be parsed contains consecutive spaces.
+
+Regards,
+Dworkin

@@ -888,7 +888,7 @@ FREE(0010c644/48), array.c line 1109:
 DGD has a number of builtin limits:
  - at most 255 variable definitions per program
  - at most 255 function definitions per program
- - at most 32 function arguments/local variables per function
+ - at most 255 function arguments/local variables per function
  - at most 65535 bytes of code per function
  - An object can inherit at most 254 other objects (complication: with
    multiple inheritance, an object inherited more than once may count
@@ -903,10 +903,7 @@ changes in dgd/src/config.h:
     </pre>
     <p> <i> Ed Note: This message is out-of-date.
       String size is now also
-      adjustable in config.h.  Also, the number
-      of arguments and
-      local variables is now much higher,
-      127 if memory serves. </i>
+      adjustable in config.h. </i>
       <br /> </p>
     <p> You should note that you can get around the limit on functions
       per program listed above by separating the functions into two or more

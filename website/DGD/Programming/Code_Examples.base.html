@@ -3,6 +3,24 @@
     <h2> Code Examples </h2>
 
     <ul>
+      <li><a href="#Subsystems">Subsystems</a></li>
+      <li><a href="#Snippets">Snippets</a></li>
+      <li><a href="#Mudlibs">Example MUD Libraries</a></li>
+      <li><a href="#ParseString">Examples of Using parse_string</a></li>
+    </ul>
+
+    <a name="Subsystems"> </a>
+
+    <h3> Full Subsystems </h3>
+
+    <p>
+      The components in this section are significant pieces of
+      functionality which may be added to your MUD.  They are designed to
+      handle a particular task within the MUD, and handle it entirely, or
+      nearly so.
+    </p>
+
+    <ul>
       <li> Dworkin, Par Winzell and Erwin Harte put together an
         Alpha implementation of
 	<a href="http://sourceforge.net/projects/lpcssh/">SSH support for
@@ -18,6 +36,20 @@
       <li> Jason Cone's Template for InterMUD3 for DGD:
 	<a href="../external/I3Code.txt"> Mailing list message </a>
       </li>
+      <li> John &quot;West&quot; McKenna's (buggy) sample object manager:
+	<a href="../external/mckenna_objd.txt"> Mailing list message </a>
+      </li>
+      <li> James Tait's InterMUD3 daemon code,
+	<a href="../external/imud3d.c">imud3d.c</a>. </li>
+      <li> Another ObjectD, this one by pete at ana dot sk.
+	<a href="../external/pete-objectd.c">Here</a> it is.</li>
+    </ul>
+
+    <a name="Snippets"> </a>
+
+    <h3> Snippets </h3>
+
+    <ul>
       <li> Markus Tippman's LPC sqrt function:
 	<a href="../external/LPC_sqrt.txt"> Mailing list message </a>
       </li>
@@ -33,13 +65,10 @@
       <li> Sampsa Ranta's color-code parsing example:
 	<a href="../external/color_parse.txt"> From mailing list </a>
       </li>
-      <li> John &quot;West&quot; McKenna's (buggy) sample object manager:
-	<a href="../external/mckenna_objd.txt"> Mailing list message </a>
-      </li>
       <li> John &quot;West&quot; McKenna's sprintf stuff:
 	<a href="../external/sprintf.c">Source</a> and
 	<a href="../external/sprintf.doc.txt">documentation</a> </li>
-      <li> Mikael Lind's Mixed Toolkit:
+      <li> Mikael Lind's Mixed Toolkit (broken link, no longer available):
 	<a href="http://www.mtek.chalmers.se/~z94lind/dgd/repository/">
 	  Repository </a>,
 	<a href="http://www.mtek.chalmers.se/~z94lind/dgd/repository/code/mixed.c">
@@ -47,13 +76,40 @@
 	<a href="http://www.mtek.chalmers.se/~z94lind/dgd/repository/code/mixed.tgz">
 	  unix tarball (tgz file) </a> or
 	<a href="http://www.mtek.chalmers.se/~z94lind/dgd/repository/code/mixed.zip">
-	  Windowsable zip file </a> </li>
+	  Windows zip file </a> </li>
+    </ul>
+
+    <a name="Mudlibs"> </a>
+
+    <h3> Example MUD Libraries </h3>
+
+    <p>
+      Code in this section is a complete (though small) MUD Library.
+      For larger examples, see the &quot;MUDLibs&quot; section of this
+      site, or of the FAQ.
+    </p>
+
+    <ul>
       <li> Shevek's example of getting started with the Kernel MUDLib,
 	<a href="../external/System.zip">System.zip</a>. </li>
-      <li> James Tait's InterMUD3 daemon code,
-	<a href="../external/imud3d.c">imud3d.c</a>. </li>
-      <li> Another ObjectD, this one by pete at ana dot sk.
-	<a href="../external/pete-objectd.c">Here</a> it is.</li>
+    </ul>
+
+    <a name="ParseString"> </a>
+
+    <h3> Examples of Using parse_string </h3>
+
+    <p>
+      The parse_string kernel function is essentially its own mini-language
+      within DGD.
+    </p>
+
+    <ul>
+      <li> <a href="../external/lpc_grammar.txt">An (outdated) grammar
+        for DGD's LPC dialect</a></li>
+      <li> <a href="../external/ps_example_1.txt">Dworkin's example of
+        using functions to affect the final parse tree</a> </li>
+      <li> <a href="../external/ps_example_2.txt">Efficiency of sscanf
+        versus parse_string</a> </li>
     </ul>
 
     <hr />

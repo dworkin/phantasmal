@@ -1,0 +1,237 @@
+varargs mixed *parse(string foo, int nalt)
+{
+    return parse_string("\
+whitespace = /[ \t\n\r\v\f]+/						\
+whitespace = /\\/\\*([^*]|\\*+[^/*])*\\*\\//				\
+whitespace = /#[^\n]*\n/						\
+"+"									\
+INT_CONST = /[1-9][0-9]*/						\
+INT_CONST = /0[0-7]*/							\
+INT_CONST = /0[Xx][0-9a-fA-F]+/						\
+INT_CONST = /'[^\\\\]'/							\
+INT_CONST = /'\\\\[^0-7xX]'/						\
+INT_CONST = /'\\\\[0-7][0-7]?[0-7]?'/					\
+INT_CONST = /'\\\\[xX][0-9a-fA-F][0-9a-fA-F]?'/				\
+FLOAT_CONST = /[0-9]+\\.[0-9]*([eE][-+]?[0-9]+)/			\
+FLOAT_CONST = /[0-9]*\\.[0-9]+([eE][-+]?[0-9]+)/			\
+STRING_CONST = /\"([^\\\\\"\n]*(\\\\.)*)*\"/				\
+IDENTIFIER = /[a-zA-Z_][a-zA-Z_0-9]*/					\
+"+"									\
+program:								\
+program: program top_level_declaration					\
+"+"									\
+top_level_declaration: 'inherit' opt_inherit_label inherit_string ';'	\
+top_level_declaration: data_declaration					\
+top_level_declaration: function_declaration				\
+"+"									\
+opt_inherit_label:							\
+opt_inherit_label: IDENTIFIER						\
+"+"									\
+inherit_string: STRING_CONST						\
+inherit_string: inherit_string '+' STRING_CONST				\
+inherit_string: '(' inherit_string ')'					\
+"+"									\
+data_declaration: class_specifier_list type_specifier list_dcltr ';'	\
+"+"									\
+function_declaration: class_specifier_list type_specifier		\
+		      function_dcltr compound_stmt			\
+function_declaration: class_specifier_list				\
+		      IDENTIFIER '(' formals_declaration ')'		\
+		      compound_stmt					\
+"+"									\
+local_data_declaration: class_specifier_list type_specifier		\
+			list_dcltr ';'					\
+"+"									\
+formals_declaration:							\
+formals_declaration: 'void'						\
+formals_declaration: formal_declaration_list				\
+formals_declaration: formal_declaration_list '...'			\
+"+"									\
+formal_declaration_list: formal_declaration				\
+formal_declaration_list: formal_declaration_list ',' formal_declaration	\
+"+"									\
+formal_declaration: type_specifier data_dcltr				\
+formal_declaration: IDENTIFIER						\
+"+"									\
+class_specifier_list:							\
+class_specifier_list: class_specifier_list class_specifier		\
+"+"									\
+class_specifier: 'private'						\
+class_specifier: 'static'						\
+class_specifier: 'atomic'						\
+class_specifier: 'nomask'						\
+class_specifier: 'varargs'						\
+"+"									\
+type_specifier: 'int'							\
+type_specifier: 'float'							\
+type_specifier: 'string'						\
+type_specifier: 'object'						\
+type_specifier: 'mapping'						\
+type_specifier: 'mixed'							\
+type_specifier: 'void'							\
+"+"									\
+star_list:								\
+star_list: star_list '*'						\
+"+"									\
+data_dcltr: star_list IDENTIFIER					\
+"+"									\
+function_dcltr: star_list IDENTIFIER '(' formals_declaration ')'	\
+"+"									\
+dcltr: data_dcltr							\
+dcltr: function_dcltr							\
+"+"									\
+list_dcltr: dcltr							\
+list_dcltr: list_dcltr ',' dcltr					\
+"+"									\
+dcltr_or_stmt_list:							\
+dcltr_or_stmt_list: dcltr_or_stmt_list dcltr_or_stmt			\
+"+"									\
+dcltr_or_stmt: local_data_declaration					\
+dcltr_or_stmt: stmt							\
+"+"									\
+stmt: list_exp ';'							\
+stmt: compound_stmt							\
+stmt: 'if' '(' list_exp ')' stmt ? ifelse				\
+stmt: 'if' '(' list_exp ')' stmt 'else' stmt ? ifelse			\
+stmt: 'do' stmt 'while' '(' list_exp ')' ';'				\
+stmt: 'while' '(' list_exp ')' stmt					\
+stmt: 'for' '(' opt_list_exp ';' opt_list_exp ';' opt_list_exp ')' stmt	\
+stmt: 'rlimits' '(' list_exp ';' list_exp ')' compound_stmt		\
+stmt: 'catch' compound_stmt opt_caught_stmt				\
+stmt: 'switch' '(' list_exp ')' compound_stmt				\
+stmt: 'case' exp ':' stmt						\
+stmt: 'case' exp '..' exp ':' stmt					\
+stmt: 'default' ':' stmt						\
+stmt: 'break' ';'							\
+stmt: 'continue' ';'							\
+stmt: 'return' opt_list_exp ';'						\
+stmt: ';'								\
+"+"									\
+compound_stmt: '{' dcltr_or_stmt_list '}'				\
+"+"									\
+opt_caught_stmt:							\
+opt_caught_stmt: ':' stmt						\
+"+"									\
+function_name: IDENTIFIER						\
+function_name: '::' IDENTIFIER						\
+function_name: IDENTIFIER '::' IDENTIFIER				\
+"+"									\
+primary_p1_exp: INT_CONST						\
+primary_p1_exp: FLOAT_CONST						\
+primary_p1_exp: STRING_CONST						\
+primary_p1_exp: '(' '{' opt_arg_list_comma '}' ')'			\
+primary_p1_exp: '(' '[' opt_assoc_arg_list_comma ']' ')'		\
+primary_p1_exp: IDENTIFIER						\
+primary_p1_exp: '(' list_exp ')'					\
+primary_p1_exp: function_name '(' opt_arg_list ')'			\
+primary_p1_exp: 'catch' '(' list_exp ')'				\
+primary_p1_exp: primary_p2_exp '->' IDENTIFIER '(' opt_arg_list ')'	\
+"+"									\
+primary_p2_exp: primary_p1_exp						\
+primary_p2_exp: primary_p2_exp '[' list_exp ']'				\
+primary_p2_exp: primary_p2_exp '[' opt_list_exp '..' opt_list_exp ']'	\
+"+"									\
+postfix_exp: primary_p2_exp						\
+postfix_exp: postfix_exp '++'						\
+postfix_exp: postfix_exp '--'						\
+"+"									\
+prefix_exp: postfix_exp							\
+prefix_exp: '++' cast_exp						\
+prefix_exp: '--' cast_exp						\
+prefix_exp: '-' cast_exp						\
+prefix_exp: '+' cast_exp						\
+prefix_exp: '!' cast_exp						\
+prefix_exp: '~' cast_exp						\
+"+"									\
+cast_exp: prefix_exp							\
+cast_exp: '(' type_specifier star_list ')' cast_exp			\
+"+"									\
+mult_oper_exp: cast_exp							\
+mult_oper_exp: mult_oper_exp '*' cast_exp				\
+mult_oper_exp: mult_oper_exp '/' cast_exp				\
+mult_oper_exp: mult_oper_exp '%' cast_exp				\
+"+"									\
+add_oper_exp: mult_oper_exp						\
+add_oper_exp: add_oper_exp '+' mult_oper_exp				\
+add_oper_exp: add_oper_exp '-' mult_oper_exp				\
+"+"									\
+shift_oper_exp: add_oper_exp						\
+shift_oper_exp: shift_oper_exp '<<' add_oper_exp			\
+shift_oper_exp: shift_oper_exp '>>' add_oper_exp			\
+"+"									\
+rel_oper_exp: shift_oper_exp						\
+rel_oper_exp: rel_oper_exp '<' shift_oper_exp				\
+rel_oper_exp: rel_oper_exp '>' shift_oper_exp				\
+rel_oper_exp: rel_oper_exp '<=' shift_oper_exp				\
+rel_oper_exp: rel_oper_exp '>=' shift_oper_exp				\
+"+"									\
+equ_oper_exp: rel_oper_exp						\
+equ_oper_exp: equ_oper_exp '==' rel_oper_exp				\
+equ_oper_exp: equ_oper_exp '!=' rel_oper_exp				\
+"+"									\
+bitand_oper_exp: equ_oper_exp						\
+bitand_oper_exp: bitand_oper_exp '&' equ_oper_exp			\
+"+"									\
+bitxor_oper_exp: bitand_oper_exp					\
+bitxor_oper_exp: bitxor_oper_exp '^' bitand_oper_exp			\
+"+"									\
+bitor_oper_exp: bitxor_oper_exp						\
+bitor_oper_exp: bitor_oper_exp '|' bitxor_oper_exp			\
+"+"									\
+and_oper_exp: bitor_oper_exp						\
+and_oper_exp: and_oper_exp '&&' bitor_oper_exp				\
+"+"									\
+or_oper_exp: and_oper_exp						\
+or_oper_exp: or_oper_exp '||' and_oper_exp				\
+"+"									\
+cond_exp: or_oper_exp							\
+cond_exp: or_oper_exp '?' list_exp ':' cond_exp				\
+"+"									\
+exp: cond_exp								\
+exp: cond_exp '=' exp							\
+exp: cond_exp '+=' exp							\
+exp: cond_exp '-=' exp							\
+exp: cond_exp '*=' exp							\
+exp: cond_exp '/=' exp							\
+exp: cond_exp '%=' exp							\
+exp: cond_exp '<<=' exp							\
+exp: cond_exp '>>=' exp							\
+exp: cond_exp '&=' exp							\
+exp: cond_exp '^=' exp							\
+exp: cond_exp '|=' exp							\
+"+"									\
+list_exp: exp								\
+list_exp: list_exp ',' exp						\
+"+"									\
+opt_list_exp:								\
+opt_list_exp: list_exp							\
+"+"									\
+arg_list: exp								\
+arg_list: arg_list ',' exp						\
+"+"									\
+opt_arg_list:								\
+opt_arg_list: arg_list							\
+opt_arg_list: arg_list '...'						\
+"+"									\
+opt_arg_list_comma:							\
+opt_arg_list_comma: arg_list						\
+opt_arg_list_comma: arg_list ','					\
+"+"									\
+assoc_exp: exp ':' exp							\
+"+"									\
+assoc_arg_list: assoc_exp						\
+assoc_arg_list: assoc_arg_list ',' assoc_exp				\
+"+"									\
+opt_assoc_arg_list_comma:						\
+opt_assoc_arg_list_comma: assoc_arg_list				\
+opt_assoc_arg_list_comma: assoc_arg_list ','				\
+", foo, nalt);
+}
+
+mixed *ifelse(mixed *rule)
+{
+    /*
+     * indicate if/else scope with extra bracket pairs
+     */
+    return ({ "{" }) + rule + ({ "}" });
+}

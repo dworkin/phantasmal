@@ -1,0 +1,178 @@
+    <titledef text="Unsupported Features" />
+
+    <h2> What things does DGD explicitly not support?  Why not? </h2>
+
+    <p>Before answering this there are some things to point out.
+      First, Dworkin chooses what stays and what goes.  If he doesn't
+      want something in DGD and you do then you're just out of luck.
+      He puts it like this:</p>
+    <pre>
+DGD is not open source in the ordinary sense.  The availability of new
+code, and a consensus that the features added by this code are desirable,
+are not sufficient to have that code included into the main source.
+What you have to do is convince &lt;me&gt;.  Generally, you may assume that
+if I thought a feature desirable, I would have implemented it myself. :)
+    </pre>
+    <p>However, you can make a patch to DGD and keep it up to date
+      separately or just use it in your personal copy and not update
+      often.  There are several people who maintain these patches to
+      DGD for things that they think are important.  Patches like
+      that are called packages.  You can find them if you look in
+      the section about downloading DGD. </p>
+    <p>So first of all, look at the list of packages here and in the
+      <a href="http://dgd.is-here.com/dgd/faq/">DGD FAQ</a>.
+      Anything that's a package there means that Dworkin doesn't think
+      it belongs in DGD.  So if what you want is outgoing network
+      connections or ANSI color codes, you're out of luck.</p>
+
+    <h3> ANSI Color </h3>
+    <p>Some terminals don't support ANSI color.  They do bad things
+      with ASCII characters with the high bit set.  The normal DGD driver
+      does a bitwise-and of all outgoing bytes with 0x7F, which strips
+      off the high bit.  That means no ANSI color.  If you want it,
+      you can install the package. </p>
+
+    <h3> Foreign-Language Characters</h3>
+    <p>The standard character set for Windows and many other operating
+      systems includes foreign characters such as Czech, but sets the
+      high bit on them.  For the same reason as ANSI color above,
+      these aren't supported in plain DGD, and won't be.  Installing
+      the ANSI patch or doing the same thing manually may fix this problem.
+      See the section on configuring DGD to use
+      <a href="DGD_Config.html#ANSIColor">ANSI Color</a> for more details.
+    </p>
+
+    <h3> Lambda Functions </h3>
+    <p>Dworkin doesn't like any of the usual syntaxes for these, and
+      feels they're unnecessary anyway in a language that already has
+      virtual function dispatch (like virtual functions in C++).  Since
+      you can fake them using LPC you're not really losing any
+      functionality, even if you like the syntax and mindset better.</p>
+
+    <p>You can also supply a string to "compile_object" rather than
+      having it read a file.  This creates code from strings at
+      object granularity rather than function granularity, but in
+      many cases it works nicely for simulating lambda functions.
+      See the Kernel MUDLib <b>code</b> command for DGD 1.2.41 or
+      later as a fine example. </p>
+
+    <h3> Shadows </h3>
+    <p>There's nothing you can do with shadows that you can't do with
+      existing stuff in DGD that isn't a security risk.  Shadows add
+      very little functionality and add <i>lots</i> of security risks.
+      DGD is very security-conscious, so out they go.  You can also
+      fake them by patching call_out at the top levels of your MUDLib.
+      If you don't know how to do that, consider it a good sign that
+      using shadows is a bigger security hole than you want in your
+      MUDLib. </p>
+
+    <h3> C++-style double slash comments </h3>
+    <p> Dworkin's against them and they're not standard LPC.
+      If you need them enough to break compatibility with the rest of
+      the world, install the package (at least for DGD 1.1-series). </p>
+
+    <h3> Outgoing Network Connections </h3>
+    <p> First of all, notice that there's already a perfectly good
+      package that implements this.  If you really want outgoing network
+      connections, install the net package.
+      It's easier for you and for us than trying to get Dworkin to
+      change it.  He won't, and we've already seen all the arguments
+      before.  You can too if you check the
+      <a href="ftp://ftp.imaginary.com/pub/LPC/servers/DGD/list-archive/">
+        mailing list archives.</a></p>
+
+    <p>
+      Here is one representative argument of Dworkin's against the networking
+      package:
+    </p>
+
+    <p style="font-size: 90%">
+      What I consider unsafe about the net package is the fact that it
+      allows outbound connections.  It means that someone who breaks
+      the security of the mud can use it to assault another host.  As
+      long as the server remains a program that can only respond, the
+      worst thing it can do to your machine is use 100% CPU time, use
+      up a lot of memory, and crash to leave a large core dump -- it
+      cannot alter or even read files outside the mudlib directory.
+      If you make a separate file system partition for the mud, it
+      cannot even use up space intended for other files.
+    </p>
+
+    <p style="font-size: 90%">
+      Take vanilla DGD; install it on a disk partition of its own in
+      such a way that the entire mudlib tree is on this partition, and
+      the driver binary, swap file, state dump file and config file
+      are outside the mudlib tree; run the driver with appropriate
+      limitations on memory usage.  Now you can be absolutely sure
+      that whatever is being done with DGD, it will not affect your
+      machine other than by taking a certain amount of disk space,
+      memory, CPU time and network bandwidth.  Your mud might be taken
+      over and the auto object could be rewritten to evade the
+      restrictions it imposes; and still the mud cannot exceed these
+      known limitations, no matter how hard the admin tries to hang
+      himself inside the mud.  Nor can it be used to breach the
+      security of your system, or that of any other.
+    </p>
+
+    <p>So why no outbound network connections?  Basically, because it's
+      a security risk.  If you miscode your library <i>at all</i>
+      (and please remember that security is <i>hard</i>) it's possible
+      that your MUD can
+      be used as a relay to attack other hosts.  Dworkin doesn't want to
+      be party to that.  If you're so slick that you can implement a
+      real MUDLib with no security holes at all, you're also easily
+      skilled enough to install the net package and adapt it
+      to the latest experimental DGD.  And this way there won't be a
+      common, easy-to-exploit attack against standard DGD to let
+      MUDs act as a relay for a denial-of-service attack.  Ever.</p>
+
+    <p>We're aware that there are protocols like active FTP and
+      InterMUD3 that require outgoing network connections.  The
+      net package is waiting for you.</p>
+
+    <h3> Built-in HTTP, FTP, complex telnet, IRC, etc </h3>
+    <p> DGD won't do automatic HTML output for you, nor automatically
+      respond to HTTP or FTP requests.  It won't send complicated telnet
+      options on the regular port without the telnet client sending a
+      request for them first.  It won't implement an IRC server, an inetd,
+      a proxy, a firewall, or any of many other networked servers which
+      it is <i>quite</i> possible to build on top of DGD.  That's for
+      pretty much the same reason your C compiler doesn't come with
+      source for a full word processor, net server, spreadsheet, and
+      operating system.  GCC has been used to write all of these
+      things but the GCC source doesn't ship with all of them included.
+    </p>
+
+    <p> In the same way, DGD tries not to includes stuff that most of
+      its users won't need when the few users who <i>do</i> need it can
+      build it easily in LPC or into the driver.  Complex telnet options
+      like detecting screen size automatically fall into this category,
+      as does HTTP processing.</p>
+
+    <p> If you want to implement any of these, you should use the binary
+      port or -- for some of them -- install the net package first so you can
+      make outgoing connections.
+      You'll need to write a little server for each protocol you want to
+      support so it's a good idea to do web searches and find an RFC
+      for the protocol you want to use.</p>
+
+    <p> If you make your implementation public then I can put a little
+      advertisement here for it.  If you've got the first public
+      FTP or InterMUD3 implementation, this could be a great way to
+        get a little traffic to it.  Think about it.  Incidentally,
+        GurbaLib claims FTP and InterMUD3 compatibility but I haven't
+        looked at its source and I hesitate to yet call it
+        &quot;public&quot;. </p>
+
+    <h3> Foreach statements </h3>
+    <p> Says Dworkin: foreach has theoretical problems with mutable
+      expressions such as mappings; also I have doubts about the addition
+      of variable declarations in a statement, and non-mutable loop
+      variables, to LPC.</p>
+
+    <p> Obviously you can also do the same thing as a 'foreach' just
+      fine in existing LPC. </p>
+
+    <p style="text-size: 150%"> <a href="index.html"> Back to LPC &amp; DGD
+      Page
+      </a> </p>
