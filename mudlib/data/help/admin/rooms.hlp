@@ -6,6 +6,7 @@ Rooms are objects which are registered with MAPD.
 
 Some commands to play with rooms:
 @list_room               Lists existing rooms by number
+@make_room               Make a new room by asking questions
 @stat                    View room details by number
 @goto_room               Goes to an existing room by number
 @save_rooms              Save rooms to a file
@@ -31,6 +32,20 @@ and "glance" description.
 By default only rooms in the current zone are listed.  The same
 behavior occurs with the command "@list_rooms zone".  To see all rooms
 in the MUD, type "@list_rooms all".
+
+}}
+
+~name{~enUS{@make_room, make_room, makeroom, @makeroom, make room,
+            @make_rooms, make_rooms, makerooms, @makerooms, make rooms,
+            @roommake, roommake, room_make, @room_make, room make,
+            make}}
+~keywords{admin}
+~desc{
+  ~enUS{
+
+The @make_room command asks a series of questions about the new room
+to be created, and when the user is finished, creates the room that
+the questions describe.
 
 }}
 
