@@ -65,15 +65,15 @@ sub check_directory {
     }
 }
 
-$phantasmaldir = check_directory(["mudlib", "phantasmal"],
+$phantasmaldir = check_directory([".", "mudlib", "phantasmal"],
 				 "phantasmal.dgd",
 				 "Phantasmal MUDLib");
 
-$testgamedir = check_directory(["testgame", "mudlib", "phantasmal"],
+$testgamedir = check_directory([".", "testgame", "mudlib", "phantasmal"],
 			       "usr/game/obj/user.c",
 			       "Bundled Game");
 
-$driverdir = check_directory(["dgd", "../dgd", "~/dgd"],
+$driverdir = check_directory([".", "dgd", "../dgd", "~/dgd"],
 			     "src/dgd.c",
 			     "DGD Driver");
 
@@ -89,6 +89,7 @@ while(-e "$outdir") {
 	system("rm -rf $outdir");
 	last;
     } elsif ($input eq "n") {
+	print "(Overwriting old bundle)\n";
 	last;
     }
 }
@@ -153,8 +154,9 @@ system("find $outdir -name README -exec rm \\{\\} \\;");
 system("find $outdir -name .cvsignore -exec rm \\{\\} \\;");
 
 # Remove all customization stuff from regular Phantasmal
-system("rm -rf $outdir/doc $outdir/docs PROBLEMS SETUP UPDATES INSTALL");
-system("rm -rf Changelog TESTED_VERSIONS");
+system("rm -rf $outdir/doc $outdir/docs $outdir/PROBLEMS");
+system("rm -f  $outdir/SETUP $outdir/UPDATES $outdir/INSTALL");
+system("rm -f  $outdir/Changelog $outdir/TESTED_VERSIONS");
 
 system("find . -name \"*~\" -exec rm \\{\\} \\;");
 system("find . -name \"#*\" -exec rm \\{\\} \\;");
