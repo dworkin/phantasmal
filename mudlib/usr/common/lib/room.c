@@ -732,7 +732,7 @@ private string exits_to_unq(void) {
   object shortphr;
 
   ret = "";
-  
+
   /* new style */
   for(ctr = 0; ctr < sizeof(exits); ctr++) {
     exit_arr = exits[ctr];
@@ -1022,27 +1022,6 @@ void from_dtd_tag(string tag, mixed value) {
     for(ctr2 = 0; ctr2 < sizeof(value); ctr2++) {
       pending_removed_adjectives += ({ value[ctr2] });
     }
-  } else if(tag == "exit") {
-    string dirname;
-    int    roomnum, dir, exitnum1, exitnum2;
-
-    value = STRINGD->trim_whitespace(value);
-    if(sscanf(value, "%s: #%d %d %d", dirname, roomnum,
-	      exitnum1, exitnum2) == 4) {
-
-      dir = EXITD->direction_by_string(dirname);
-      if(dir == -1)
-	error("Can't find direction for dirname " + dirname);
-
-      if(tr_num <= 0)
-	error("Can't yet request an exit from an unnumbered room!");
-
-      EXITD->room_request_simple_exit(tr_num, roomnum, dir,
-				      exitnum1, exitnum2);
-    } else {
-      error("Can't parse as exit desc: '" + value + "'");
-    }
-  /* newexit stuff */
   } else if(tag == "newexit") {
     EXITD->room_request_complex_exit(tr_num, value);
   } else if(tag == "weight") {

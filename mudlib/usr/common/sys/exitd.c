@@ -16,14 +16,9 @@ private mapping builder_directions;
 
 /* When loading files, this lets us resolve room numbers *after* all rooms
    load... */
-private mixed*  deferred_add_exit;
 private mixed*  deferred_add_newexit;
 
 /* Prototypes */
-void add_twoway_exit_between(object room1, object room2, int direction,
-			     int num1, int num2);
-void add_oneway_exit_between(object room1, object room2, int direction,
-			     int num1);
 private void add_complex_exit_by_unq(int roomnum1, mixed value);
 void upgraded(varargs int clone);
 
@@ -40,7 +35,6 @@ static void create(varargs int clone) {
 
   exit_segments = ({ });
 
-  deferred_add_exit = ({ });
   deferred_add_newexit = ({ });
 
   upgraded();
@@ -157,21 +151,7 @@ int opposite_direction(int direction) {
   return direction - 1;
 }
 
-private void push_or_add_exit(int roomnum1, int roomnum2, int direction,
-			      int num1, int num2) {
-  object room1, room2;
-
-  room1 = MAPD->get_room_by_num(roomnum1);
-  room2 = MAPD->get_room_by_num(roomnum2);
-
-  if(room1 && room2) {
-    add_twoway_exit_between(room1, room2, direction, num1, num2);
-  } else {
-    deferred_add_exit += ({ ({ roomnum1, roomnum2, direction, num1, num2 }) });
-  }
-}
-
-private void push_or_add_newexit(int roomnum1, mixed value) {
+private void push_or_add_newexit(int roomnum1, mixed *value) {
   int ctr, roomnum2;
   object exit1, exit2;
   object room1, room2;
@@ -196,15 +176,6 @@ private void push_or_add_newexit(int roomnum1, mixed value) {
   }
 }
 
-void room_request_simple_exit(int roomnum1, int roomnum2, int direction,
-			      int num1, int num2) {
-  if(previous_program() != ROOM) {
-    error("Only ROOM can request deferred exit creation!");
-  }
-
-  push_or_add_exit(roomnum1, roomnum2, direction, num1, num2);
-}
-
 void room_request_complex_exit(int roomnum1, mixed value) {
   if(previous_program() != ROOM) {
     error("Only ROOM can request deferred exit creation!");
@@ -218,16 +189,6 @@ void add_deferred_exits(void) {
 
   if(!SYSTEM() && !COMMON() && !GAME())
     return;
-
-  exits = deferred_add_exit;
-  deferred_add_exit = ({ });
-
-  if (sizeof(exits)) {
-    for(ctr = 0; ctr < sizeof(exits); ctr++) {
-      ex = exits[ctr];
-      push_or_add_exit(ex[0], ex[1], ex[2], ex[3], ex[4]);
-    }
-  }
 
   exits = deferred_add_newexit;
   deferred_add_newexit = ({ });
@@ -245,9 +206,9 @@ int num_deferred_exits(void) {
   if(!SYSTEM() && !COMMON() && !GAME())
     return -1;
 
-  if(!deferred_add_exit && !deferred_add_newexit) return -1;
+  if(!deferred_add_newexit) return -1;
 
-  return sizeof(deferred_add_exit)+sizeof(deferred_add_newexit);
+  return sizeof(deferred_add_newexit);
 }
 
 private int allocate_exit_obj(int num, object obj) {

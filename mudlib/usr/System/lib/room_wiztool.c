@@ -403,6 +403,8 @@ static void cmd_new_exit(object user, string cmd, string str) {
   if(str)
     retcode = sscanf(str, "%s #%d %s", dirname, roomnum, type);
 
+  if (str && retcode == 2) type = "twoway";
+
   if(str && (retcode == 3 || retcode == 2)) {
     room = MAPD->get_room_by_num(roomnum);
     if(!room) {
@@ -420,21 +422,20 @@ static void cmd_new_exit(object user, string cmd, string str) {
   }
 
   if(!user->get_location()) {
-    user->message("You aren't standing anywhere so you can't make an exit!\r\n");
+    user->message("You aren't standing anywhere so you can't make"
+		  + " an exit!\r\n");
     return;
-
   }
   if(user->get_location()->get_exit(dir)) {
-    user->message("There already appears to be an exit in that direction.\r\n");
+    user->message("There already appears to be an exit in that"
+		  + " direction.\r\n");
     return;
   }
-  
+
   if (roomnum == 0) {
     user->message("Cannot link to void.\r\n");
     return;
   }
-
-  if (retcode == 2) type = "twoway";
 
   if (type=="oneway" || type=="one-way" || type=="1") {
     user->message("You begin creating a one-way exit to '"
@@ -451,91 +452,7 @@ static void cmd_new_exit(object user, string cmd, string str) {
     EXITD->add_twoway_exit_between(user->get_location(), room, dir, -1, -1);
 
   }
-}
-
-static void cmd_new_twoway_exit(object user, string cmd, string str) {
-  int    roomnum, dir;
-  object room;
-  string dirname;
-
-  if(str && sscanf(str, "%s #%d", dirname, roomnum) == 2) {
-    room = MAPD->get_room_by_num(roomnum);
-    if(!room) {
-      user->message("Can't locate room #" + roomnum + "\r\n");
-      return;
-    }
-    dir = EXITD->direction_by_string(dirname);
-    if(dir == -1) {
-      user->message("Don't recognize " + dirname + " as direction.\r\n");
-      return;
-    }
-  } else {
-    user->message("Usage: " + cmd + " <direction> #<room number>\r\n");
-    return;
-  }
-
-  if(!user->get_location()) {
-    user->message("You aren't standing anywhere so you can't make an exit!\r\n");
-    return;
-  }
-  if(user->get_location()->get_exit(dir)) {
-    user->message("There already appears to be an exit in that direction.\r\n");
-    return;
-  }
-
-  if (room->get_exit(EXITD->opposite_direction(dir))) {
-    user->message("There appears to be an exit in the other room.\r\n");
-    return;
-  }
-
-  if (roomnum == 0) {
-    user->message("Cannot link to void.\r\n");
-    return;
-  }
-
-  user->message("You begin creating an exit to '"
-		+ room->get_brief()->to_string(user) + "'.\r\n");
-  EXITD->add_twoway_exit_between(user->get_location(), room, dir, -1, -1);
-}
-
-static void cmd_new_oneway_exit(object user, string cmd, string str) {
-  int    roomnum, dir;
-  object room;
-  string dirname;
-
-  if(str && sscanf(str, "%s #%d", dirname, roomnum) == 2) {
-    room = MAPD->get_room_by_num(roomnum);
-    if(!room) {
-      user->message("Can't locate room #" + roomnum + "\r\n");
-      return;
-    }
-    dir = EXITD->direction_by_string(dirname);
-    if(dir == -1) {
-      user->message("Don't recognize " + dirname + " as direction.\r\n");
-      return;
-    }
-  } else {
-    user->message("Usage: " + cmd + " <direction> #<room number>\r\n");
-    return;
-  }
-
-  if(!user->get_location()) {
-    user->message("You aren't standing anywhere so you can't make an exit!\r\n");
-    return;
-  }
-  if(user->get_location()->get_exit(dir)) {
-    user->message("There already appears to be an exit in that direction.\r\n");
-    return;
-  }
-
-  if (roomnum == 0) {
-    user->message("Cannot link to void.\r\n");
-    return;
-  }
-
-  user->message("You begin creating an exit to '"
-		+ room->get_brief()->to_string(user) + "'.\r\n");
-  EXITD->add_oneway_exit_between(user->get_location(), room, dir, -1);
+  user->message("You create the exit successfully.\r\n");
 }
 
 static void cmd_clear_exits(object user, string cmd, string str) {
