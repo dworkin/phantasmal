@@ -386,7 +386,8 @@ static void cmd_stat(object user, string cmd, string str) {
   if(obj->get_archetype()) {
     tmp += "Instance of archetype #"
       + obj->get_archetype()->get_number()
-      + ".\r\n";
+      + " (" + obj->get_archetype()->get_glance()->to_string(user)
+      + ").\r\n";
   }
   if(room) {
     tmp += "Registered with MAPD as a room or portable.\r\n";
@@ -610,11 +611,23 @@ static void cmd_move_obj(object user, string cmd, string str) {
 
 static void cmd_set_obj_parent(object user, string cmd, string str) {
   object obj, parent;
+  string parentstr;
   int    objnum, parentnum;
 
   if(!str || sscanf(str, "%*s %*s %*s") == 3
-     || sscanf(str, "#%d #%d", objnum, parentnum) != 2) {
+     || (sscanf(str, "#%d %s", objnum, parentstr) != 2)) {
     user->message("Usage: " + cmd + " #<obj> #<parent>\r\n");
+    user->message("       " + cmd + " #<obj> none\r\n");
+    return;
+  }
+
+  parentstr = STRINGD->trim_whitespace(parentstr);
+
+  if(!STRINGD->stricmp(parentstr, "none")) {
+    parentnum = -1;
+  } else if(!sscanf(parentstr, "#%d", parentnum)) {
+    user->message("The second argument must be a parent object number, "
+		  + "or #-1, or 'none'.\r\n");
     return;
   }
 
@@ -625,11 +638,17 @@ static void cmd_set_obj_parent(object user, string cmd, string str) {
     return;
   }
 
-  parent = MAPD->get_room_by_num(parentnum);
-  if(!obj) {
-    user->message("The parent must be a room or portable.  Obj #"
-		  + objnum + " is not.\r\n");
-    return;
+  if(parentnum == -1) {
+    parent = nil;
+  } else {
+    parent = MAPD->get_room_by_num(parentnum);
+
+    if(!parent) {
+      user->message("The parent must be a room or portable.  Obj #"
+		    + parentnum
+		    + " is not.\r\nUse 'none' for no parent.\r\n");
+      return;
+    }
   }
 
   obj->set_archetype(parent);
