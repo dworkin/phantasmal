@@ -246,11 +246,11 @@ void add_twoway_exit_between(object room1, object room2, int direction,
   exit1->set_from_location(room1);
   exit1->set_direction(direction);
   exit1->set_exit_type(2); /* two-way */
-  exit1->set_openable(0);
+/*  exit1->set_openable(0); */
   exit1->set_open(1);
-  exit1->set_lockable(0);
+/*  exit1->set_lockable(0); */
+/*  exit1->set_locked(0); */
   exit1->set_glance(dir);
-  exit1->set_brief(dir);
   exit1->set_look(dir);
   exit1->add_noun(dir);
 
@@ -258,11 +258,11 @@ void add_twoway_exit_between(object room1, object room2, int direction,
   exit2->set_from_location(room2);
   exit2->set_direction(opposite_direction(direction));
   exit2->set_exit_type(2); /* two-way */
-  exit2->set_openable(0);
+/*  exit2->set_openable(0); */
   exit2->set_open(1);
-  exit2->set_lockable(0);
+/*  exit2->set_lockable(0); */
+/*  exit2->set_locked(0); */
   exit2->set_glance(opp_dir);
-  exit2->set_brief(opp_dir);
   exit2->set_look(opp_dir);
   exit2->add_noun(opp_dir);
 
@@ -305,11 +305,11 @@ void add_oneway_exit_between(object room1, object room2, int direction,
   exit1->set_from_location(room1);
   exit1->set_direction(direction);
   exit1->set_exit_type(1); /*one-way */
-  exit1->set_openable(0);
+/*  exit1->set_openable(0); */
   exit1->set_open(1);
-  exit1->set_lockable(0);
+/*  exit1->set_lockable(0); */
+/*  exit1->set_locked(0); */
   exit1->set_glance(dir);
-  exit1->set_brief(dir);
   exit1->set_look(dir);
   exit1->add_noun(dir);
 
@@ -340,6 +340,7 @@ void fix_exit(object exit, int type, int link) {
   exit->set_openable(0);
   exit->set_open(1);
   exit->set_lockable(0);
+  exit->set_locked(0);
 
   direction = exit->get_direction();
   dir_name = name_for_dir[exit->get_direction()];

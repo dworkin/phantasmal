@@ -25,12 +25,24 @@ API
      returns the exit object it indexes, or nil if the number
      indexes no exit.
 
-  add_simple_exit_between - takes two rooms, a direction from the
+  add_twoway_exit_between - takes two rooms, a direction from the
+     first to the second and two optional tracking numbers for the
+     exits.  The function adds a simple two-way exit between them.
+     The two halves of the exit lead in opposite directions, so
+     north might go from room1 to room2, and south from room2 to
+     room1.
+
+  add_oneway_exit_between - takes two rooms, a direction from the
      first to the second and an optional tracking number for the
-     exit.  The function adds a simple two-way exit between
-     them.  The two halves of the exit lead in opposite directions,
-     so north might go from room1 to room2, and south from room2
-     to room1.
+     exit.  The function adds a simple one-way exit between them.
+     The exit leads in a single direction from room1 to room2.
+
+  fix_exit - takes an exit, an integer type (1 for oneway, 2 for
+    twoway, others possible,) and an integer link (the object
+    number for the return exit (-1 if oneway) and updates the
+    data structure to the newest format.  Look, glance, nouns,
+    etc. are all defaulted to the direction.  Sets open to true,
+    openable, lockable, and locked to false.
 
   clear_all_exits - takes a room and removes all exits from it
      and their corresponding return exits.
