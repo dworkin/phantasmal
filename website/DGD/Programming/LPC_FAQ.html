@@ -1,0 +1,998 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+                      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<title>DGD and LPC: LPC FAQ</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<link href="../../phantasmal.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<table width="95%" border="0" cellspacing="0" cellpadding="4">
+  <tr>
+    <td colspan="2"> <table width="100%" border="0" cellspacing="1"
+        cellpadding="0" class="main">
+        <tr>
+          <td class="banner">The DGD Driver</td>
+        </tr>
+      </table></td>
+  </tr>
+  <tr>
+    <td valign="top">
+      <table width="25%"  border="0" cellspacing="1"
+             cellpadding="0"  class="main">
+        <tr>
+          <td class="content" style="font-size: 120%">
+
+          <ul style="margin: 0; padding-left: 10%">
+            <li> <a href="index.html">DGD &amp; LPC Page</a> </li>
+	    <li> <a href="../LPC">LPC Textbook</a> </li>
+	    <li> <a href="../Book">New LPC Introduction</a> </li>
+          </ul>
+
+        </td>
+        </tr>
+        <tr>
+          <td class="content" align="center">
+            <a href="http://validator.w3.org/check/referer">
+            <img src="../../images/valid-xhtml10.gif" alt="Valid XHTML 1.0!"
+             style="border:0;width:88px;height:31px" /></a><br />
+            <img src="../../images/pixel.gif"
+             style="border:0;width:88px;height:1px" alt="" /><br />
+            <a href="http://jigsaw.w3.org/css-validator/check/referer">
+            <img src="http://jigsaw.w3.org/css-validator/images/vcss"
+             alt="Valid CSS!" style="border:0;width:88px;height:31px" />
+            </a><br /><br /><br />
+            <a href="http://sourceforge.net">
+            <img src="http://sourceforge.net/sflogo.php?group_id=48659&amp;type=2"
+             style="border: 0; width: 125; height: 37;"
+	     alt="SourceForge.net Logo" /></a>
+          </td>
+        </tr>
+      </table></td>
+    <td> <table width="100%"  border="0" cellspacing="1" cellpadding="0" 
+          class="main">
+        <tr>
+          <td class="heading">&nbsp;&nbsp;&middot;&nbsp;
+	    <a href="http://phantasmal.sf.net/DGD">DGD Page</a> &gt;
+            <a href="">LPC FAQ</a>
+          </td>
+        </tr>
+        <tr>
+          <td class="content">
+    
+
+    <h2> The LPC Language in DGD </h2>
+
+    <ul>
+      <li> <a href="#CallByRef">
+	  Call-by-reference versus Call-by-value in LPC
+	</a> </li>
+      <li> <a href="#FunVarModifiers">
+	  Function and variable modifiers (static, private, etc)
+	</a> </li>
+      <li> <a href="#Inheritance">
+	  How does inheritance work in DGD's dialect of LPC?
+	</a> </li>
+      <li> <a href="#ArrayOps">
+	  LPC Array and Mapping Operations
+	</a> </li>
+      <li> <a href="#StringOps">
+	  LPC String Operations
+	</a> </li>
+      <li> <a href="#Varargs">
+	  Varargs and &quot;...&quot; functions in DGD
+	</a> </li>
+      <li> <a	href="#MiscDiff">
+	  Miscellaneous differences between LPC and C
+	</a> </li>
+      <li> <a href="#ErrCatch">
+	  Catching errors in LPC code
+	</a> </li>
+    </ul>
+
+    <h3> DGD Driver Behavior and Implementation Details </h3>
+
+    <ul>
+      <li> <a href="#NilOps">
+	  The nil value in DGD's LPC
+	</a> </li>
+      <li> <a href="#AtomicFunc">
+	  How do &quot;atomic&quot; functions work?
+	</a> </li>
+      <li> <a href="#ParseString">
+	  Using the parse_string function in DGD
+	</a> </li>
+      <li> <a href="#CalloutTiming">
+	  How does call_out timing work in DGD?
+	</a> </li>
+      <li> <a href="#StatusFunc">
+	  Can I use values from the DGD configuration file in the code?
+	</a> </li>
+      <li> <a href="#MemManagement">
+	  Memory Management in DGD
+	</a> </li>
+      <li> <a href="#DGDCodeLimits">
+	  Limits on quantities of various LPC objects DGD allows
+	</a> </li>
+      <li> <a href="#ThreadLocal">
+	  What is thread-local storage in DGD?
+	</a> </li>
+      <li> <a href="#LightWeightObjs">
+	  What are DGD LightWeight Objects (LWOs)?
+	</a></li>
+    </ul>
+
+    <h3> LPC Documentation </h3>
+
+    <p> Note:  None of the documentation in this section is designed
+      specifically for DGD so expect some differences between the
+      listed sources and how DGD really works! </p>
+
+    <ul>
+      <li> <a href="../external/Basic_LPC.html">
+	  Descartes of Borg's (in)famous LPC tutorial. </a></li>
+      <li> Jehuda's
+	<a href="http://www.geocities.com/homemud/Textbooks-e.html">
+	  Page of LPC Tutorials</a> has a lot of places to learn LPC. </li>
+      <li> I've gotten a good start on adapting Ronny Wikh's
+	<a href="http://www.sneakers.org/lpmud/www.neosoft.com/genesis/lpc_toc.html">
+	  LPC Textbook</a>.  It was one
+	of the best available sources for learning LPC.  I now believe that
+	my <a href="../LPC/">DGD adaptation</a> is a better way to learn
+	and a better reference, at least if you're using DGD. </li>
+      <li> The
+	<a href="http://www.lysator.liu.se/nanny/docs/manual/manual.html">
+	  NannyMUD LPC Manual</a> is about an older dialect of LPC. </li>
+    </ul>
+
+    <a name="CallByRef"> </a>
+    <h2> Call-By-Reference vs Call-By-Value in LPC </h2>
+
+    <p>
+      Here's a link to this topic in the
+      <a href="../LPC/section_42.html#SEC4.2.1.3">LPC textbook</a>.
+    </p>
+
+    <hr />
+
+    <a name="FunVarModifiers"> </a>
+    <h2> Function and Variable Modifiers </h2>
+    <p> Note: these are properly called function or variable <i>classes</i>
+      to distinguish them from function and variable <i>types</i>. </p>
+
+      <p>
+        Here's a link to this topic in the <a
+        href="../LPC/section_42.html#SEC4.2.4">LPC textbook</a>.
+      </p>
+
+    <hr />
+
+    <a name="Inheritance"> </a>
+    <h2> How does inheritance work in DGD's LPC? </h2>
+
+    <p>Basic inheritance is pretty simple.  Conceptually if one program
+      inherits from another it means the one inheriting &quot;is&quot;
+      the thing it inherits from.  That's why inheritance is often
+      referred to as an &quot;is-a&quot; relationship.  Anyway, how you
+      <i>think</i> of it is your own business.</p>
+
+    <p>If program B inherits from program A, then B can call all of A's
+      non-private functions without having to do a call_other.  It
+      also gets the ability to refer to all of A's non-private variables,
+      which it gets copies of.  It gets those copies because B contains
+      a complete object of type A inside of it, and can refer to it as
+      though B were just another part of A except for private functions and
+      variables.  A gets no special privileges on B, only the
+      other way around. </p>
+
+    <p> Note that all function calls are virtual in DGD, except perhaps
+      nomask (which could be virtual, but it wouldn't matter anyway).
+      That means that even if you don't explicitly use call_out syntax,
+      the function call will potentially go to any child class that
+      may have overridden it.  If you need to be 100% sure that no
+      child class has overridden a function, you probably need to use
+      nomask, and possibly private, in its declaration. </p>
+
+    <p> Note that all DGD inheritance is the equivalent of C++ virtual
+      inheritance.  This means that even if you have a diamond-shaped
+      inheritance graph.  For instance, say class A inherits class B and
+      C, and both B and C inherit from D.  Class A only gets a single
+      copy of D's data members, not one for B and one for C.  If you
+      need a class to get its own copy of another class, one that
+      nobody else can modify even through inheritance, then you should
+      probably have that class allocate a new instance of the one it
+      wants to control instead of inheriting from it.  That way you're
+      getting containment instead of inheritance. </p>
+
+    <p>Since B &quot;is&quot; an A, people outside B can call A's functions
+      in B just like they could in A.  Usually that's the point but if
+      you don't want that in a particular instance then you can use private
+      inheritance to avoid it.  If you say</p>
+    <pre>
+private inherit "/usr/System/obj/A";
+    </pre>
+    <p>instead of</p>
+    <pre>
+inherit "/usr/System/obj/A";
+    </pre>
+    <p>then nobody outside B, including B's children, can call A's
+      functions.  Even if they were normal before, within B they're
+      static.  If B were to also inherit A publically, either directly
+      or through a parent class, that would override the private
+      inheritance.</p>
+    <p>The other cute trick that inheritance can do is to use
+      namespaces.  Instead of the inherit line above, B could say </p>
+    <pre>
+inherit foo "/usr/System/obj/A";
+    </pre>
+    <p>This would still let B call all of A's functions, but instead of
+      calling them like this:</p>
+    <pre>
+inherited_A_func("bob", "spam");
+    </pre>
+    <p>they'd be called like this:</p>
+    <pre>
+foo::inherited_A_func("bob", "spam");
+    </pre>
+    <p>Nifty, yeah?  The two tricks can be combined, like this:</p>
+    <pre>
+private inherited foo "/usr/System/obj/A";
+    </pre>
+
+    <p>
+      For more about one more complicated take on inheritance and how
+      it should work in DGD, see the <a
+      href="../Kernel/Inheritance.html"> Kernel Library </a> inheritance
+      docs. </p>
+
+    <hr />
+
+    <a name="ArrayOps"> </a>
+
+    <h2> LPC Array and Mapping Operations </h2>
+    <p> LPC has two nifty types that C doesn't really have:  array and
+      mapping.  While C <i>does</i> have an array type, LPC's version is
+      much niftier for MUD coding. </p>
+    <p> The mapping (hash table) type is called, simply enough, mapping.
+      Assigning it can look like this: </p>
+    <pre>
+mapping dinner_schedule;
+dinner_schedule = ([ "Monday" : "Meatloaf",
+                     "Tuesday" : "Chicken",
+                     "Wednesday" : "Tater tots",
+                     "Thursday" : "Fish",
+                     "Friday" : "Leftovers",
+                   ]);
+    </pre>
+
+    <p>
+    That comma on the last line is optional, like in Perl.  To query
+    the mapping, you'd say something like: </p>
+    <pre>
+message("My dinner on Tuesday is " + dinner_schedule["Tuesday"] + "\n");
+    </pre>
+
+    <p>
+    To add an element to the mapping, you'd assign a value to it.  For
+    instance: </p>
+
+    <pre>
+dinner_schedule["Saturday"] = "Prime Rib";
+
+
+    </pre>
+
+    <p>
+    To remove an element from the mapping, you can assign nil to it.  For
+    instance: </p>
+
+    <pre>
+dinner_schedule["Wednesday"] = nil;  /* No dinner on Wednesday!  :( */
+    </pre>
+
+    <p>
+    You can also subtract an array of indices from a mapping to remove
+    those elements, so another way to do the same thing as above
+    would be: </p>
+    <pre>
+dinner_schedule -= ({"Wednesday"});
+
+
+    </pre>
+
+    <p>
+    To shallow-copy an array or mapping, the following code from the
+    Melville MUDLib should work: </p>
+    <pre>
+nomask mixed copy (mixed a) {
+    mixed b ;
+    if (typeof(a)==T_ARRAY || typeof(a)==T_MAPPING) {
+        b = a[..] ;
+    } else {
+        b = a ;
+    }
+    return b ;
+}
+    </pre>
+  <p>
+    Note that a &quot;shallow copy&quot; just means a one-level copy.
+    The elements of the mapping are copied, but if they point to something
+    like an object, then both copies still point to the same object.
+  </p>
+    <p>
+      Although Melville chooses not to, you could also iterate through the
+      array or mapping and copy every element with the copy() routine
+      above, which would give a full deep-copy.  The recursive copy routine
+      would also die on circular data structures but luckily for me
+      deep-copying circular data structures is beyond the scope of this
+      document.  Look it up elsewhere.
+    </p>
+    <p>
+      The copy operation above, incidentally, is a great example of
+      array-slice notation, much like in Perl.  The notation </p>
+    <pre>
+b = a[..];
+    </pre>
+    <p> means to copy the whole array.  The notation </p>
+    <pre>
+b = a[1..4];
+    </pre>
+    <p> would copy only the second through fifth array elements. </p>
+
+    <hr />
+
+    <a name="StringOps"> </a>
+    <h2> LPC String Operations </h2>
+    <p>LPC has an integrated string type, but no character type.  This is
+      a little confusing if you're coming from a C background.  You can
+      still dereference a string with array syntax, it just returns an
+      integer which happens to be between 0 and 255.  You can assign a
+      value to the array-dereference of a string, which assigns that
+      character of the string that ASCII code, approximately like C.</p>
+
+    <p> If you're looking for the equivalent operation to
+      &quot;if(mystring[0] == 'a')&quot;, I prefer to use
+      &quot;if(mystring[0] == "a"[0])&quot;.  It's not perfect, but
+      I don't know a better way of getting a character value in DGD
+      in a fast, transparent way.
+    </p>
+
+    <hr />
+
+    <a name="Varargs"> </a>
+    <h2> LPC Varargs and &quot;...&quot; functions </h2>
+
+    <p> There are two ways in LPC to call functions with a variable
+      number of arguments.  The modern and recommended way is
+      the <b>varargs</b> keyword.  The older way is the
+      <b>...</b> operator. </p>
+
+    <p> The <b>varargs</b> keyword is put into the function declaration,
+      like this: </p>
+    <pre>
+int print_one_or_two_numbers(int first, varargs int second);
+    </pre>
+
+    <p>
+    This will allow the function to take one or two arguments.  The extra
+    argument, if not supplied, defaults to the same value that
+    an uninitialized field would.  For an integer that means the value
+    defaults to zero.  The function above may be called as
+    &quot;print_one_or_two_numbers(7,3);&quot; or
+    &quot;print_one_or_two_numbers(8);&quot;.  If there are multiple
+    varargs arguments, simply put the varargs keyword once, before
+    the first varargs argument.  For instance: </p>
+
+    <pre>
+int print_two_to_five_numbers(int first, int second, varargs int third,
+                              int fourth, int fifth);
+    </pre>
+
+    <p>
+    This function may be called with between two and five integers,
+    as the name suggests.  You can't, for instance, call it and
+    supply a &quot;fourth&quot; argument but not a &quot;third&quot;
+    argument.  The arguments are used in the order supplied.
+  </p>
+
+    <p> The <b>...</b> operator is really two operators.  It's one
+      operator when you're specifying a function and another when
+      you're calling a function.  The first is used more frequently,
+      but the second is necessary if you're going to pass a variable
+      number of arguments to another varargs-type function. </p>
+
+    <p> When you define a varargs function with <b>...</b>, the
+      final argument will silently become an array.  For instance: </p>
+
+    <pre>
+void print_some_stuff(string format, mixed stuff_to_print...);
+    </pre>
+
+    <p>
+    Though you declared it <b>mixed</b>, stuff_to_print is actually
+    a <b>mixed *</b>.  If you'd declared it <b>int</b>, it would
+    have become an <b>int *</b>.  If the function is called as
+    &quot;print_some_stuff(&quot;Bob: %num %num %string&quot;, 7, 15,
+    &quot;sam&quot;)&quot;
+    then <i>format</i> will be &quot;Bob: %num %num %string&quot; and
+    <i>stuff_to_print</i> will be ({ 7, 15, &quot;sam&quot; }).
+    Pretty simple.  If the type of your final argument isn't <i>mixed</i>
+    then you won't be able to supply multiple types of varargs
+    arguments. </p>
+
+    <p> So what if you want to use those varargs arguments to call
+      another varargs function?  In C you use a structure and call
+      the new function in a funky way, but LPC has no such structure,
+      nor the library or function call that C uses.  Instead, it has
+      the rather ingenious <b>...</b> operator's other variant,
+      the one you use on a function call. </p>
+
+    <p> To use it, the final argument of your function call should be
+      an array.  For instance, if <b>print_some_stuff</b> used
+      another function underneath to do the real work, the body of
+      it might be: </p>
+
+    <pre>
+void print_some_stuff(string format, mixed stuff)
+{
+    "/usr/leetboy/obj/myprint"->myprint(format, stuff...);
+}
+    </pre>
+
+    <p>
+    The call to <i>myprint</i> above would expand into a call
+    like the original one -- one with four arguments in the example
+    above.  So the array is expanded back into the individual
+    arguments.</p>
+
+    <hr />
+
+    <a name="MiscDiff"> </a>
+    <h2> Miscellaneous Differences Between LPC and C </h2>
+
+    <h3> Floating-point Differences </h3>
+
+    <p> There are no explicit double-precision floating point numbers in LPC.
+      The driver is compiled one way or the other and you use whichever
+      it chooses.  Either way, the type is called &quot;float&quot;. </p>
+
+    <p> LPC is less prone to automatically upcast an int to a float
+      than C is.  That means you can't just compare an int to a float
+      with less-than, you have to use a float on both sides or typecast.
+      You also can't just pass an int to a function that expects a float
+      as a parameter for the same reason. </p>
+
+    <p>LPC follows the normal human float-rounding convention of
+      rounding things higher than 0.50 up to the next highest integer
+      and lower than 0.50 down to the next lowest one instead of the C
+      convention of always truncating toward zero.  It takes some
+      getting used to. </p>
+
+    <h3> Other Differences </h3>
+
+    <p> In LPC you can't do the C-style &quot;declare and initialize&quot;
+      with both of those things on one line.  For instance, this: </p>
+
+    <pre>
+mapping dinner_schedule = ([ ]);
+    </pre>
+    <p> should instead be this: </p>
+
+    <pre>
+mapping dinner_schedule;
+dinner_schedule = ([ ]);
+    </pre>
+
+    <p> Unlike C, LPC doesn't have a proper &quot;char&quot; type.  Instead,
+      it just uses integers.  This can cause some slightly oddities, but
+      it's basically the same.  One trick to remember:  even though
+      <i>you</i> may know that that int is acting as a char, if you
+      concatenate it onto a string it still shows up as a number.  Many
+      traditional C-style loops where you go through and do something
+      for every character, or build a string by concatenating the
+      characters of another string in order, are a little different
+      as a result of this.
+    </p>
+
+    <hr />
+
+    <a name="ErrCatch"> </a>
+    <h2> Catching Errors in LPC Code </h2>
+
+    <p> In some cases you know that a chunk of LPC code may cause an
+      error, and if so then you'd like to catch the error, possibly
+      examine the return value and do some cleanup.  LPC can help
+      you.  Here's a bit of code from the Kernel MUDLib's
+      &quot;/lib/wiztool.c&quot;: </p>
+
+    <pre>
+    err = catch(result = ::read_file(path, offset, size));
+    if (err) {
+        message(path + ": " + err + ".\n");
+        return -1;
+    }
+    </pre>
+
+    <p>
+    The <b>message</b> and <b>read_file</b> functions do about what
+    you'd expect.  The interesting bit is the <b>catch</b>
+    statement.  Note the parentheses (<i>not</i> curly-braces)
+    around the expression following the <b>catch</b> keyword.  If
+    <b>read_file</b> causes an error during its operation, the
+    <b>catch</b> will intercept it and return its error message as
+    a string.  The <b>catch</b> will return nil if no error occurs
+    on the <b>read_file</b>.  Nifty! </p>
+
+    <p> There's a second form of the <b>catch</b> statement with
+      similar but subtly different functionality.  We'll have a look
+      at another Kernel MUDLib example, this one from
+      &quot;/kernel/lib/port.c&quot;.  You'll see that it uses the
+      alternate <b>catch</b> construct twice, one inside the other.
+      </p>
+
+    <pre>
+        catch {
+            ::open_port(protocol, port);
+            porttype = (protocol == "telnet") ? "telnet" : "binary";
+            if (protocol == "tcp" &amp;&amp; udp) {
+                udpport = clone_object(PORT_UDP);
+                catch {
+                    udpport->listen(port);
+                } : {
+                    destruct_object(udpport);
+                    return 0;
+                }
+            }
+            return 1;
+        } : {
+            return 0;
+        }
+    </pre>
+
+    <p>
+    Note the curly-braces following the <b>catch</b> statement,
+    and the colon and additional block following the first block.
+    Notice also that this statement doesn't attempt to extract the
+    error string associated with the error -- that's more
+    important than it looks. </p>
+
+    <p> So how's this one different?  There's the obvious, the fact
+      that it lets you execute a block of code if an error occurs.
+      That's the &quot;return 0&quot; of the outer loop or the
+      &quot; destruct_object(udpport); return 0; &quot; of the inner
+      loop.  There's the fact that it uses curly-braces rather than
+      parentheses, of course.  There's also the fact that this
+      version, <i>unlike the other</i>, will call your error
+      manager.  It supplies the <b>caught</b> flag so that you'll
+      know it's being intercepted rather than causing an error that
+      just kills the thread. </p>
+
+    <p> Another difference is that there's no obvious way to get the
+      error string in the second version.  The Kernel MUDLib does so
+      in a couple of places since it gets passed as a parameter.
+      When it does, the result looks like this: </p>
+
+    <pre>
+            catch {
+                rlimits (-1; -1) {
+                    if (!rsrcd->rsrc_incr(oowner, "events", obj, 1)) {
+                        error("Too many events");
+                    }
+                    events[name] = objlist;
+                }
+            } : error(::call_trace()[1][TRACE_FIRSTARG][1]);
+    </pre>
+
+    <p>
+    Pretty ugly.  But hey, it works...  You may have trouble with
+    using this exact syntax for older versions of DGD, as well.
+    Bear in mind that you're technically pulling a random piece
+    out of the call stack, which can be <i>interesting</i> if you
+    do it wrong... </p>
+
+    <p> As a last note, you'll need to make sure you include the
+      correct header to use the call_trace and TRACE_FIRSTARG you
+      see above.  That header is &lt;trace.h&gt;. </p>
+
+    <hr />
+
+    <a name="NilOps"> </a>
+    <h2> What's nil?  How does DGD use it? </h2>
+
+    <p> If you check the DGD mailing list in roughly the March 1999
+      timeframe, a lot of discussion of this went on.  To get the information
+      from the original source, that's the place to look. </p>
+
+    <p> nil is DGD's false or uninitialized value.  Many other
+      LPMUDs use the integer 0 for this value, and DGD used to do so.
+      These days when you have an uninitialized or destroyed object
+      (or in many
+      cases unallocated memory), you'll find nil instead of
+      integer 0.  nil and 0 are the same thing at lower type-checking levels
+      (levels 0 and 1) which still work the way DGD did long ago, nil-wise.
+    </p>
+
+    <p> nil happens in a lot of places. For instance: </p>
+
+    <ul>
+      <li> The kfun <b>allocate</b> allocates an array of nil values. </li>
+      <li> String, object, array and mapping variables are initialized
+	to nil. </li>
+      <li> call_other on a nonexistent function returns nil. </li>
+      <li> Dereferencing a mapping with a nonexistent key returns nil.
+      </li>
+      <li> To remove an element from a mapping, assign nil to the mapping
+	dereferenced with that element's key. </li>
+      <li> nil is a perfectly good boolean value -- saying
+	&quot;if(nil)&quot; is valid syntax.  The body of the if
+	statement will never execute, since nil is always false.
+	Using &quot;if(!nil)&quot; is also
+	valid syntax, and the body of the if statement will always
+	execute. </li>
+      <li> nil is a valid value of type string, object, array or mapping.
+	You can compare it against those objects to see if they're
+	initialized.  You can't, however, compare nil against an int
+	or float
+	with ==.  Doing so is a compile-time error. </li>
+      <li> nil is the value of varargs (optional) parameters of the
+	types mentioned above when the
+	function caller doesn't supply those parameters. </li>
+    </ul>
+
+    <hr />
+
+    <a name="AtomicFunc"> </a>
+    <h2> How do Atomic Functions work? </h2>
+
+    <p>
+      Here's a link to this topic in the <a
+      href="../LPC/section_42.html#SEC4.2.4.5">LPC textbook</a>.
+    </p>
+
+    <h3> More about Atomic functions: </h3>
+
+    <p> The atomic function feature is probably the most significant
+      addition to LPC since mappings.  I'll give two examples to explain
+      how it affects code. </p>
+
+    <hr style="width: 30%" />
+
+    <p> The 2.4.5 mudlib for DGD contains the following code in
+      /dgd/lib/inventory.c: </p>
+
+    <pre>
+    private void move(object obj, object from, object dest)
+    {
+	int light;
+
+	light = query_light(obj);
+	if (from != 0) {
+	    from->_F_rm_inv(obj, light);
+	}
+	obj->_F_move(dest);
+	dest->_F_add_inv(obj, light);
+    }
+    </pre>
+
+    <p>This code is called from the move_object() efun to do the
+      actual movement.  If it were to fail halfway through, this would
+      result in an inconsistency.  For example, if the inventory array
+      of `dest' already has the maximum size, adding the object `obj'
+      to the inventory of `dest' will result in an error; this will
+      leave the environment of `obj' set to `dest' while `obj' is not
+      actually in the inventory of `dest'. </p>
+
+    <p>Furthermore, there are some errors that can happen in almost any
+      code: running out of ticks, or out of stack space for nested
+      function calls.  (It so happens that this particular code snippet
+      is safe from those errors.) </p>
+
+    <p>Now if the function were made atomic, it would either succeed
+      normally, or fail without making any change at all.  The object
+      is either moved or not moved -- it cannot get stuck in an
+      intermediate state where it is half moved. </p>
+
+    <p>Using atomic is not the only solution.  It may be possible to
+      check for all possible error conditions in advance, and only
+      execute the code if it's safe.  Alternatively, an error occurring
+      halfway through could be caught, and the already-performed
+      actions could be undone explicitly.  However, using atomic is
+      usually the simplest solution, often the cheapest, and sometimes
+      the only possible one.</p>
+
+    <p>There is a lot of code out there that doesn't check for errors at
+      all, of course.  The atomic function feature could be used to guard
+      such code from inconsistencies with only minimal rearrangement. </p>
+
+    <hr style="width: 30%" />
+
+    <p>Another example, not as low-level but still involving movement: </p>
+
+    <p>In muds using the 2.4.5 mudlib, sometimes there are rooms with an
+      error in the reset function -- for example, a monster is cloned
+      that doesn't exist.  If a player moves into such a room and the
+      room is loaded for the first time, the result is that the player
+      is stuck in a dark room with no exits (the init() function is never
+      called).</p>
+
+    <p>Now if movement into this room were handled by an atomic function,
+      the player would still see the "error in fabric of space" message
+      but without actually moving anywhere.  Movement has become an
+      atomic operation, which either succeeds or doesn't happen at all.</p>
+
+    <p>Note that calls to atomic functions may be nested, so that both
+      low-level object movement and player-level movement can be made
+      atomic. </p>
+
+    <hr style="width: 30%" />
+
+    <p>So when do we use atomic, and when do we encapsulate code with
+      rlimits (-1; -1) instead?  Use rlimits if you are sure that the
+      code will succeed if you give it infinite ticks and stack space;
+      use atomic otherwise.  The reason for this is that atomic code
+      executes somewhat slower than normal code, whereas rlimits has
+      no effect on execution speed at all. </p>
+
+    <p>Unlike rlimits, the use of atomic is not preventable by the
+      mudlib.  This makes using atomic functions the best solution in
+      cases where rlimits might be preferred, but is unavailable.</p>
+
+    <hr />
+
+    <a name="ParseString"> </a>
+    <h2> Using the parse_string DGD kfun </h2>
+
+    <p> The parse_string kfun is a very powerful parser to which
+      you supply a grammar of your choice.  It's reminiscent of
+      lex and yacc if you've used them before.  DGD's parse_string,
+      unlike most parsers,
+      keeps track of all your ambiguous matches.  That fact is both a
+      great power and a great responsibility. </p>
+
+    <p> What that means is that if your grammar allows something to be
+      parsed a couple of different ways then DGD will keep track of them
+      all while parsing.  If there are two ways to parse a double-if
+      statement with else (the else can go with either if) in your grammar,
+      and you feed parse_string a chunk with fifteen of those, you'll
+      find that DGD is keeping track of 2^15 (that's around 32,000)
+      different interpretations of your file. Then it will cheerfully
+      return only
+      the first.  That's slow, just in case you hadn't guessed. </p>
+
+    <p> However, sometimes you <i>want</i> ambiguous parsing.  For instance,
+      you may have a natural language parser for player commands, and
+      you'd like the player to be able to type &quot;get down&quot; and
+      have it mean either of &quot;get down from the platform&quot; or
+      &quot;take the down pillow&quot; according to two different grammar
+      rules.  DGD's parse_string will return both parses, and you can
+      decide which makes more sense where the player is standing at
+      the time.  Most parsers won't do this for you.  Lucky you found
+      DGD, hey? </p>
+
+    <p> A fellow on the list named Steve Foley has graciously put together
+      a tutorial on parse_string, with the aid of Erwin Harte.  You can
+      find it
+      <a href="../external/parse_string.html">here</a>.
+    </p>
+
+    <hr />
+
+    <a name="CalloutTiming"> </a>
+    <h2> How does call_out timing in DGD work? </h2>
+
+    <p> In DGD, &quot;call_out&quot; is the kernel function that you use
+      to make something happen after a certain delay.  This can be used
+      for heartbeat functions, for instance, or to close a network
+      connection that has been idle too long.</p>
+
+    <p>If you start two callouts with a 5 second delay immediately
+      after eachother, they could be executed in any order.  However,
+      they &lt;will&gt; both be executed before a callout delayed for 6
+      seconds. </p>
+
+    <p> This is also the case for long-term (&gt;= 128 seconds) and
+      millisecond callouts. </p>
+
+    <p> This change substantially speeds up DGD on a multi-processor
+      system. </p>
+
+    <hr />
+
+    <a name="StatusFunc"> </a>
+    <h2> Can I use values from the DGD config file in
+      the code? </h2>
+
+    <p>In your .dgd file (for instance, mud.dgd for the Kernel MUDLib)
+      there are some values for various properties of DGD like the
+      sector size and swap fragment.  Many of these values and many
+      others can be
+      queried with the status() kfun.  The constants and offsets for
+      things you can query with status are put into the autogenerated
+      header file &quot;/include/status.h&quot; when DGD starts up. </p>
+
+    <p>The list of queried values for 1.2.35:</p>
+
+    <pre>
+# define ST_VERSION     0       /* driver version */
+# define ST_STARTTIME   1       /* system start time */
+# define ST_BOOTTIME    2       /* system reboot time */
+# define ST_UPTIME      3       /* system virtual uptime */
+# define ST_SWAPSIZE    4       /* # sectors on swap device */
+# define ST_SWAPUSED    5       /* # sectors in use */
+# define ST_SECTORSIZE  6       /* size of swap sector */
+# define ST_SWAPRATE1   7       /* # objects swapped out last minute */
+# define ST_SWAPRATE5   8       /* # objects swapped out last five minutes */
+# define ST_SMEMSIZE    9       /* static memory allocated */
+# define ST_SMEMUSED    10      /* static memory in use */
+# define ST_DMEMSIZE    11      /* dynamic memory allocated */
+# define ST_DMEMUSED    12      /* dynamic memory in use */
+# define ST_OTABSIZE    13      /* object table size */
+# define ST_NOBJECTS    14      /* # objects in use */
+# define ST_COTABSIZE   15      /* callouts table size */
+# define ST_NCOSHORT    16      /* # short-term callouts */
+# define ST_NCOLONG     17      /* # long-term &amp; millisecond callouts */
+# define ST_UTABSIZE    18      /* user table size */
+# define ST_ETABSIZE    19      /* editor table size */
+# define ST_STRSIZE     20      /* max string size */
+# define ST_ARRAYSIZE   21      /* max array/mapping size */
+# define ST_STACKDEPTH  22      /* remaining stack depth */
+# define ST_TICKS       23      /* remaining ticks */
+# define ST_PRECOMPILED 24      /* precompiled objects */
+
+# define O_COMPILETIME  0       /* time of compilation */
+# define O_PROGSIZE     1       /* program size of object */
+# define O_DATASIZE     2       /* # variables in object */
+# define O_NSECTORS     3       /* # sectors used by object */
+# define O_CALLOUTS     4       /* callouts in object */
+# define O_INDEX        5       /* unique ID for master object */
+
+# define CO_HANDLE      0       /* callout handle */
+# define CO_FUNCTION    1       /* function name */
+# define CO_DELAY       2       /* delay */
+# define CO_FIRSTXARG   3       /* first extra argument */
+    </pre>
+
+    <hr />
+
+    <a name="MemManagement"> </a>
+    <h2> DGD Memory Management Tidbits </h2>
+
+    <p>DGD uses reference counting as its primary method of garbage
+      collection, like Perl or (I believe) Java.  Normally this would mean
+      that you should absolutely never, ever use circular data structures
+      to avoid nasty, silent, cumulative memory leaks, but DGD is nicer
+      than Perl or Java that way.  If you leave circular data structures
+      sitting around before the late 1.2 series, you'll see error
+      messages that look something like this: </p>
+
+    <pre>
+FREE(000f122c/72), array.c line 1109:
+ 03 01 'd '. 00 0f '8 cc 04 01 00 03 00 00 00 05 03 01 'd '. 00 0f '8 ', 04 01
+FREE(0010c644/48), array.c line 1109:
+ 03 01 'e 'r 00 0f 'R 80 04 01 00 05 00 00 00 07 03 01 'Y ': 00 0f '> 98 04 01
+[...]
+    </pre>
+
+    <p>
+    That means that you've made an oops and left a circular data structure
+    lying around.  Now you know, so you can go clean it up.   Late
+    in the 1.2 series, Dworkin added extra code to fix the same problem
+    silently, so you don't even need to fix your circularities if you
+    don't care about backwards compatibility. </p>
+
+    <hr />
+
+    <a name="DGDCodeLimits"> </a>
+    <h2> Limits on Quantities in DGD </h2>
+    <pre>
+DGD has a number of builtin limits:
+ - at most 255 variable definitions per program
+ - at most 255 function definitions per program
+ - at most 32 function arguments/local variables per function
+ - at most 65535 bytes of code per function
+ - An object can inherit at most 254 other objects (complication: with
+   multiple inheritance, an object inherited more than once may count
+   as more than one)
+ - strings can be at most 65535 bytes long
+ - arrays/mappings can have at most 32767 elements/element pairs
+
+There are also some limits that can be extended with appropriate
+changes in dgd/src/config.h:
+ - at most 65535 objects
+ - at most 65535 swap sectors
+    </pre>
+    <p> <i> Ed Note: This message is out-of-date.
+      String size is now also
+      adjustable in config.h.  Also, the number
+      of arguments and
+      local variables is now much higher,
+      127 if memory serves. </i>
+      <br /> </p>
+    <p> You should note that you can get around the limit on functions
+      per program listed above by separating the functions into two or more
+      programs (.c files) and inheriting them. </p>
+
+    <hr />
+
+    <a name="ThreadLocal"> </a>
+    <h2> What is thread-local storage? </h2>
+
+    <p>Dworkin says:</p>
+    <p>There are variables which are unique within the mud, and which can
+      be kept in a central object.  Thus, for example, has this_player()
+      been implemented in the 2.4.5 simulation.  However, once
+      multi-processor support is enabled in DGD a variable in an object
+      which is modified in every thread -- such as this_player(), which
+      is kept as a variable in /dgd/sys/global -- would effectively undo
+      most of the advantages of running threads in parallel (for the
+      details on why, I refer to my previous postings on the subject of
+      multi-processor support; they're in the mailing list archive). </p>
+
+    <p> The solution is thread local storage, which exists only for as long
+      as the current thread -- usually started by receiving a message or a
+      callout -- is active.  Thread local storage exists only on the stack,
+      not in an object.  By inheriting /kernel/lib/api/tls, objects can
+      access values in thread local storage, or even change the size of the
+      thread local store. </p>
+
+    <p>TLS is implemented using a trick: the value returned by call_trace()
+      includes the arguments to all functions.  The kernel lib ensures
+      that the first argument to the second function in the trace is  
+      always an array, which can be retrieved from the trace and
+      accessed directly.  By inheriting /kernel/lib/api/tls
+      [ed: in the kernel MUDLib], this can be done safely and
+      efficiently. </p>
+
+
+    <hr />
+
+    <a name="LightWeightObjs"> </a>
+    <h2> What are DGD LightWeight Objects (LWOs)? </h2>
+
+    <p>In 1.2.18, Dworkin released the first implementation of
+      lightweight objects.  From a message he wrote:</p>
+    <pre>
+Mikael Lind &lt;z94lind@mtek.chalmers.se&gt; wrote:
+
+&gt;[...]
+&gt; Light-weight objects under DGD sound very intriguing. I do not think
+&gt; that I have seen them mentioned before. Is it possible to get some
+&gt; kind of explanation of what they will be like? My initial thought was
+&gt; along the lines of objects that one can use for abstract data types
+&gt; and similar things; basically, objects that are garbage-collected by
+&gt; the driver.
+
+That is indeed what they are.  Like clones, they are created from a
+master object, which is a normal, persistent object.  Light-weight
+objects do have some restrictions:
+
+ - they cannot be explicitly destructed
+ - they cannot be used as an editor, user or parser object
+ - they cannot have callouts
+ - destructing a master object will also instantly destruct all
+   light-weight objects made therefrom (!)
+
+Furthermore, like arrays, they are local to the dataspace of some
+particular (persistent) object.  This means that if a light-weight
+object is exported to some other object's dataspace, it will become
+a &lt;copy&gt; there at the end of the LPC thread, just as currently
+happens with arrays and mappings.
+
+Regards,
+Dworkin
+    </pre>
+    <p> For an example of lightweight objects in action you can
+      check out the Phantasmal MUDLib and its Object Manager. </p>
+
+    <p style="text-size: 150%"> <a href="index.html"> Back to DGD &amp; LPC
+      Page
+      </a> </p>
+            <address>
+            <span><a href="mailto:angelbob-remove-spamfree@spamfree.users.sf.net">Noah Gibbs</a></span>
+            </address></td>
+        </tr>
+      </table></td>
+  </tr>
+</table>
+</body>
+</html>
