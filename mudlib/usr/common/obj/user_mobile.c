@@ -56,8 +56,7 @@ void hook_emote(mixed *args) {
 
 /* Args -- body, target, verb */
 void hook_social(mixed *args) {
-  object actor_body, target_body;
-  string verb, ret;
+  string ret;
 
   if(user) {
     ret = SOULD->get_social_string(user, args[0], args[1], args[2]);
