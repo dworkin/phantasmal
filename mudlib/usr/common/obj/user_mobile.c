@@ -7,7 +7,11 @@ inherit MOBILE;
 /* user associated with this mobile */
 object user;
 
-/* overriden functions from mobile.c */
+static void create(varargs int clone) {
+  ::create(clone);
+}
+
+/* overridden functions from mobile.c */
 object get_user(void) {
   return user;
 }
