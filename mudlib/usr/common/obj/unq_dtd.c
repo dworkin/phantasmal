@@ -482,7 +482,9 @@ private mixed parse_to_string_with_mods(mixed* type, mixed unq) {
     repmin = 1;
   } else if (type[1] == "*") {
     /* do nothing, any value is acceptable */
-  } else if (sscanf(type[1], "<%d..%d>", repmin, repmax) == 2 || sscanf(type[1], "<..%d>", repmax) == 1 || sscanf(type[1], "<%d..>", repmin) == 1) {
+  } else if (sscanf(type[1], "<%d..%d>", repmin, repmax) == 2
+	     || sscanf(type[1], "<..%d>", repmax) == 1
+	     || sscanf(type[1], "<%d..>", repmin) == 1) {
     /* do nothing, all values already entered */
   } else if (sscanf(type[1], "<%d>", repmin) == 1) {
     repmax = repmin;
@@ -600,13 +602,17 @@ private mixed parse_to_builtin(string type, mixed unq) {
   }
 
   if(type == "unq") {
+    if(typeof(unq) == T_STRING) {
+      return ({ "", unq }) ;
+    }
+
     if(typeof(unq) != T_ARRAY) {
-      accum_error += "Builtin 'unq' object is not an array!\n";
+      accum_error += "Builtin 'unq' object is not an array or string!\n";
       return nil;
     }
 
-    if(sizeof(unq) != 2) {
-      accum_error += "Builtin 'unq' array is not size 2!\n";
+    if(sizeof(unq) % 2) {
+      accum_error += "Builtin 'unq' array is not a multiple of 2!\n";
       return nil;
     }
 
@@ -861,23 +867,8 @@ private mixed* dtd_string_with_mods(string str) {
   if(str == nil)
     error("Nil passed to dtd_string_with_mods!");
 
-  if(STRINGD->is_alpha(str))
+  if(STRINGD->is_ident(str))
     return ({ str });
-
-  if (sscanf(str, "%s<%s>", str, mod) == 2) {
-    mod = "<" + mod + ">";
-    return ({ str, mod });
-  }
-
-  if (sscanf(str, "%s<%s>", str, mod) == 2) {
-    mod = "<" + mod + ">";
-    return ({ str, mod });
-  }
-
-  if (sscanf(str, "%s<%s>", str, mod) == 2) {
-    mod = "<" + mod + ">";
-    return ({ str, mod });
-  }
 
   if (sscanf(str, "%s<%s>", str, mod) == 2) {
     mod = "<" + mod + ">";
@@ -889,7 +880,7 @@ private mixed* dtd_string_with_mods(string str) {
   if(mod == "?" || mod == "*" || mod == "+")
     return ({ str, mod });
 
-  error("Don't recognize UNQ type " + str);
+  error("Can't recognize modifiers in modified UNQ type '" + str + "'");
 }
 
 private mixed* dtd_struct(string* array) {
