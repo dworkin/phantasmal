@@ -38,14 +38,17 @@ static void create(void) {
      inherit from the same AUTO object(s). */
   if(!find_object(GAME_PATH_SPECIAL))
     compile_object(GAME_PATH_SPECIAL);
-
   CONFIGD->set_path_special_object(find_object(GAME_PATH_SPECIAL));
 
   /* Build game driver and set it */
   if(!find_object(GAME_DRIVER))
     compile_object(GAME_DRIVER);
-
   CONFIGD->set_game_driver(find_object(GAME_DRIVER));
+
+  /* Find and compile the room registry *before* the first room is
+     loaded.  Otherwise things will crash. */
+  if(!find_object(GAME_ROOM_REGISTRY))
+    compile_object(GAME_ROOM_REGISTRY);
 
   /* Load configuration for game driver */
   config_unq_file();
@@ -235,12 +238,22 @@ static void load_custom_rooms(void) {
     if(dir_list[1][ctr] == -2) {
       /* Directory, recurse */
     } else if(sscanf(dir_list[0][ctr], "%s.c", prog_name) == 1) {
-      /* Custom room file, compile it */
-      LOGD->write_syslog("Compiling file " + prog_name + ".c");
-      err = catch(compile_object("/usr/game/rooms/" + prog_name));
-      if(err) {
-	LOGD->write_syslog("Err compiling file " + dir_list[0][ctr]
-			   + ": " + err, LOG_ERROR);
+      /* Custom room file, make sure the room is used */
+      if(!GAME_ROOM_REGISTRY->room_for_type("/" + prog_name)) {
+	LOGD->write_syslog("Compiling room " + prog_name);
+	/* Try to compile object for use. */
+	compile_object("/usr/game/rooms/" + prog_name);
+	if(find_object("/usr/game/rooms/" + prog_name)) {
+	  object newobj;
+	  /* Clone the object so it'll show up in the registry */
+	  newobj = clone_object("/usr/game/rooms/" + prog_name);
+	  if(newobj) {
+	    MAPD->add_room_to_zone(newobj, -1, 0);
+	  } else {
+	    LOGD->write_syslog("Couldn't clone " + prog_name
+			       + ", not enough memory?");
+	  }
+	}
       }
     }
   }

@@ -242,13 +242,6 @@ void upgraded(varargs int clone) {
 }
 
 
-mixed* parse_to_room(string room_file) {
-  if(!SYSTEM())
-    error("Only privileged code may call parse_to_room!");
-
-  return UNQ_PARSER->unq_parse_with_dtd(room_file, room_dtd);
-}
-
 mixed* get_command_sets(object wiztool) {
   if(previous_program() != GAME_WIZTOOL)
     error("Only privileged code may call get_command_sets!");
@@ -313,16 +306,17 @@ static void process_command(string cmd, string str)
   }
 
   switch (cmd) {
-  case "cd":
-  case "pwd":
-  case "ls":
-  case "cp":
-  case "mv":
-  case "rm":
-  case "mkdir":
-  case "rmdir":
+  case "%cd":
+  case "%pwd":
+  case "%ls":
+  case "%cp":
+  case "%mv":
+  case "%rm":
+  case "%mkdir":
+  case "%rmdir":
 
-    call_other(this_object(), "cmd_" + cmd, user, cmd, str == "" ? nil : str);
+    call_other(this_object(), "cmd_" + cmd[1..], user, cmd,
+	       str == "" ? nil : str);
     break;
 
   default:

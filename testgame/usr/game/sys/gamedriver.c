@@ -39,10 +39,6 @@ object new_user_connection(string first_line) {
   return clone_object(GAME_USER);
 }
 
-string wiztool_program(void) {
-  return GAME_WIZTOOL;
-}
-
 string get_welcome_message(object connection) {
   if(!AUTHORIZED())
     return nil;

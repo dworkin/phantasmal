@@ -12,28 +12,93 @@
 
 #include <gameconfig.h>
 
-nomask void dummy_func(void) {
+inherit room ROOM;
+inherit unq DTD_UNQABLE;
 
+/* Override how create/destruct/upgraded work! */
+
+nomask static void create(varargs int clone) {
+  room::create();
+  unq::create();
+
+  if(clone) {
+    MAPD->add_room_object(this_object());
+    GAME_ROOM_REGISTRY->add_room();
+  }
+
+  if(function_object("room_created", this_object())) {
+    this_object()->room_created();
+  }
 }
 
-/* This opens the object.  Return TRUE to allow, or FALSE to prevent */
-int open_script() {
-  return TRUE;
+nomask void destructed(varargs int clone) {
+  if(!SYSTEM())
+    error("Can't call room::destructed() unprivileged!");
+
+  room::destructed(clone);
+  unq::destructed(clone);
+  if(clone) {
+    MAPD->remove_room_object(this_object());
+  }
+
+  if(function_object("room_destructed", this_object())) {
+    this_object()->room_destructed();
+  }
 }
 
-/* This closes the object.  Return TRUE to allow, or FALSE to prevent */
-int close_script() {
-  return TRUE;
+nomask void upgraded(varargs int clone) {
+  if(!SYSTEM())
+    error("Can't call room::upgraded() unprivileged!");
+
+  room::upgraded(clone);
+  unq::upgraded(clone);
+
+  if(function_object("room_upgraded", this_object())) {
+    this_object()->room_upgraded();
+  }
 }
 
-/* This is triggered when the object is picked up.  Return TRUE to allow,
-   or FALSE to prevent */
-int get_script(object person_getting_this_object) {
-  return TRUE;
+string to_unq_text(void) {
+  if(SYSTEM() || COMMON() || GAME()) {
+    string filename;
+
+    if(!sscanf(object_name(this_object()), "/usr/game/rooms/%s", filename)) {
+      LOGD->write_syslog("Can't parse object name in to_unq_text!");
+      filename = "invalid_file";
+    }
+    return "~object{\n  ~obj_type{custom:/" + filename + "}\n"
+      + to_unq_flags()
+      + "\n}\n\n";
+  }
+  error("Can't call to_unq_text unprivileged!");
 }
 
-/* This is triggered when the object is dropped.  Return TRUE to allow,
-   or FALSE to prevent */
-int drop_script(object person_dropping_this_object) {
-  return TRUE;
+void from_dtd_unq(mixed* unq) {
+  int    ctr;
+  string dtd_tag_name;
+  mixed  dtd_tag_val;
+
+  if(!SYSTEM() || !COMMON() || !GAME())
+    error("Can't call custom_room:from_dtd_unq unprivileged!");
+
+  if(unq[0] != "object")
+    error("Doesn't look like object data!");
+
+  for (ctr = 0; ctr < sizeof(unq[1]); ctr++) {
+    dtd_tag_name = unq[1][ctr][0];
+    dtd_tag_val  = unq[1][ctr][1];
+
+    if(dtd_tag_name == "data") {
+      /*
+      if((typeof(dtd_tag_val) != T_ARRAY)
+	 || (sizeof(dtd_tag_val) != 2)
+	 || (dtd_tag_val[0] != "filename"))
+	error("Error in data section of UNQ for custom room obj!");
+
+      set_filename(dtd_tag_val[1]);
+      */
+    } else {
+      from_dtd_tag(dtd_tag_name, dtd_tag_val);
+    }
+  }
 }
