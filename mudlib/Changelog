@@ -1,4 +1,5 @@
 Release 0.012:
+	* Added @make_portable command, very similar to @make_room.
 
 Release 0.011:
 	* Lots of refactoring and general code changes.  Always.  Every
