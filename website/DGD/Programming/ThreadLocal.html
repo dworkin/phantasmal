@@ -532,6 +532,60 @@ happen, and happen often.
 > handleable?
 </pre>
 
+<hr />
+
+<pre>
+From: DGD Mailing List (Erwin Harte)
+Date: Sat Apr 24 19:19:01 2004
+Subject: [DGD] Re: time() and suspending call_outs
+
+On Sat, Apr 24, 2004 at 03:34:16PM -0700, Steve Wooster wrote:
+>     My first question is... are time() and militime() static within a 
+> single thread? For example, would this be an infinite loop or a one-second 
+> loop?
+> 
+> void hog_all_the_cpu()
+> {
+>     int time=time();
+>     rimits (-1,-1)
+>     {
+>         while(time==time());
+>     }
+> }
+
+That should be a one second loop.
+
+> What about if I replaced time() with militime() in that function?
+
+Did you try?
+
+    > @code t = millitime(); while (t[0] == millitime()[0] && t[1] == millitime()[1]); return ({ t, millitime() });
+    $30 = ({ ({ 1082847960, 0.883 }), ({ 1082847960, 0.884 }) })
+
+:-)
+
+[...]
+> Is there any way to do the use_up_ticks_without_using_cpu() function?
+
+Not that I'm aware of.
+
+[...]
+> I just thought of one more question... for an object daemon, since I don't 
+> want the source code of every single object stored in memory at once, am I 
+> forced to store the source code in real objects rather than LWOs referenced 
+> by the object daemon?
+
+If you want to store the source code at all (which is quite a project,
+let me tell you), then you need persistent objects yes, otherwise
+it'll still all be stored in the main object after all.
+
+Cheers,
+
+Erwin.
+-- 
+Erwin Harte
+</pre>
+
   <p style="text-size: 150%"> <a href="index.html"> Back to DGD &amp; LPC
       Page </a> </p>
             <address>
