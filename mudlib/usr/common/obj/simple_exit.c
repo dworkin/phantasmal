@@ -11,3 +11,7 @@ static void create(varargs int clone) {
   }
 
 }
+
+void upgraded(varargs int clone) {
+  ::upgraded(clone);
+}

@@ -32,5 +32,5 @@ void destructed(varargs int clone) {
 }
 
 void upgraded(varargs int clone) {
-
+  ::upgraded(clone);
 }

@@ -37,6 +37,11 @@ void destructed(int clone) {
   obj::destructed(clone);
 }
 
+void upgraded(varargs int clone) {
+  cont::upgraded();
+  obj::upgraded();
+}
+
 void set_number(int new_num) {
   if(previous_program() == MAPD) {
     tr_num = new_num;

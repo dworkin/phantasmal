@@ -37,6 +37,10 @@ void destructed(int clone) {
   }
 }
 
+void upgraded(varargs int clone) {
+
+}
+
 void add_to_container(object obj) {
   append_to_container(obj);
 }

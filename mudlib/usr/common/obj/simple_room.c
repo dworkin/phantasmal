@@ -32,6 +32,11 @@ void destructed(int clone) {
   }
 }
 
+void upgraded(varargs int clone) {
+  room::upgraded(clone);
+  unq::upgraded(clone);
+}
+
 int get_pending_location(void) {
   return pending_location;
 }

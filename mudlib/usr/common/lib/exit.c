@@ -18,6 +18,10 @@ static void create(varargs int clone) {
   }
 }
 
+void upgraded(varargs int clone) {
+  ::upgraded(clone);
+}
+
 void set_number(int new_num) {
   if(previous_program() == EXITD) {
     tr_num = new_num;

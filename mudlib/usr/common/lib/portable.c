@@ -40,6 +40,11 @@ void destructed(varargs int clone) {
   obj::destructed(clone);
 }
 
+void upgraded(varargs int clone) {
+  cont::upgraded(clone);
+  obj::upgraded(clone);
+}
+
 void set_number(int new_num) {
   if(previous_program() == PORTABLED) {
     tr_num = new_num;

@@ -67,6 +67,10 @@ void destructed(int clone) {
   }
 }
 
+void upgraded(varargs int clone) {
+
+}
+
 object get_location(void) {
   return location;
 }

@@ -1,6 +1,7 @@
 #include <config.h>
 
-inherit PORTABLE;
+inherit port PORTABLE;
+inherit unq UNQABLE;
 
 private int pending_location;
 
@@ -9,7 +10,8 @@ private int pending_location;
 #define PHR(x) PHRASED->new_simple_english_phrase(x)
 
 static void create(varargs int clone) {
-  ::create(clone);
+  port::create(clone);
+  unq::create(clone);
   if(clone) {
     set_brief(PHR("A portable object"));
     set_glance(PHR("A new portable object"));
@@ -18,6 +20,16 @@ static void create(varargs int clone) {
     pending_location = -1;
   }
 
+}
+
+void upgraded(varargs int clone) {
+  port::upgraded(clone);
+  unq::upgraded(clone);
+}
+
+void destructed(varargs int clone) {
+  port::destructed(clone);
+  unq::destructed(clone);
 }
 
 
