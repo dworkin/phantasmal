@@ -12,6 +12,8 @@ Release 0.012:
 	* Slightly different logfile output format.
 	* Allow subscription to log and error channels with extra
 	  information.
+	* LOGD and ERRORD now send out notifications on the log and
+	  error channels.
 
 Release 0.011b:
 	* Added @make_portable command, very similar to @make_room.
