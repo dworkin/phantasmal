@@ -1,4 +1,4 @@
-/* $Header: /cvsroot/phantasmal/mudlib/usr/game/obj/user.c,v 1.2 2003/12/08 09:07:33 angelbob Exp $ */
+/* $Header: /cvsroot/phantasmal/mudlib/usr/game/obj/user.c,v 1.3 2003/12/08 09:29:40 angelbob Exp $ */
 
 #include <kernel/kernel.h>
 #include <kernel/user.h>
@@ -358,6 +358,8 @@ int process_command(string str)
 	break;
 
       default:
+	/* If single word, leave cmd the same.  If multiword, put
+	   first word in cmd. */
 	if(sscanf(cmd, "%s %s", cmd, str) != 2) {
 	  str = "";
 	}
@@ -368,6 +370,9 @@ int process_command(string str)
     if(cmd && strlen(cmd)) {
       switch (cmd) {
       case "password":
+	if(str && strlen(str))
+	  message("(Arguments ignored...)\r\n");
+
 	if (password) {
 	  send_system_phrase("Old password: ");
 	  set_state(previous_object(), STATE_OLDPASSWD);
@@ -378,12 +383,16 @@ int process_command(string str)
 	return MODE_NOECHO;
 
       case "quit":
+	if(str && strlen(str))
+	  message("(Arguments ignored...)\r\n");
+
 	return MODE_DISCONNECT;
       }
     }
 
     if(SOULD->is_social_verb(cmd)) {
       cmd_social(this_object(), cmd, str = "" ? nil : str);
+      str = nil;
     }
 
     if(commands_map[cmd]) {

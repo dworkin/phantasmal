@@ -1,4 +1,4 @@
-/* $Header: /cvsroot/phantasmal/mudlib/usr/System/obj/user.c,v 1.75 2003/12/08 09:07:32 angelbob Exp $ */
+/* $Header: /cvsroot/phantasmal/mudlib/usr/System/obj/user.c,v 1.76 2003/12/08 09:29:39 angelbob Exp $ */
 
 #include <kernel/kernel.h>
 #include <kernel/user.h>
@@ -46,6 +46,9 @@ void upgraded(varargs int clone);
 static void create(int clone)
 {
   ::create(clone);
+
+  if(!find_object(SYSTEM_WIZTOOL))
+    compile_object(SYSTEM_WIZTOOL);
 }
 
 void upgraded(varargs int clone) {
@@ -59,6 +62,20 @@ void upgraded(varargs int clone) {
     ]);
 
   }
+}
+
+/****************/
+
+/* This is a cheat -- the existing userlib is in /usr/System/, but the
+   Kernel Lib checks to see if an object's creator is System to allow
+   cloning with a creator other than yourself.  That means that a User
+   object in /usr/game/, even if it inherits PHANTASMAL_USER, can't do
+   it.  This is a cheat to let that happen correctly.  */
+object clone_wiztool_as(string name) {
+  if(previous_program() == PHANTASMAL_USER)
+    return clone_object(SYSTEM_WIZTOOL, name);
+
+  error("This function is only usably by PHANTASMAL_USER, not by you!");
 }
 
 /****************/

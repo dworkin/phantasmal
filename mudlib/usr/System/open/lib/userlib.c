@@ -1,4 +1,4 @@
-/* $Header: /cvsroot/phantasmal/mudlib/usr/System/open/lib/userlib.c,v 1.2 2003/12/08 09:07:33 angelbob Exp $ */
+/* $Header: /cvsroot/phantasmal/mudlib/usr/System/open/lib/userlib.c,v 1.3 2003/12/08 09:29:40 angelbob Exp $ */
 
 #include <kernel/kernel.h>
 #include <kernel/user.h>
@@ -683,6 +683,8 @@ static int process_message(string str)
     message_all_users("\r\n");
     if (!wiztool && sizeof(rsrc::query_owners() & ({ name })) != 0) {
       wiztool = DEFAULT_USER_OBJ->clone_wiztool_as(name);
+      if(!wiztool)
+	error("Can't clone wiztool!");
     }
 
     catch {
