@@ -85,20 +85,24 @@ void set_segment_zone(int segment, int zonenum) {
   mixed* seg;
   int    owner;
 
-  for(owner = 0; owner < sizeof(owners); owner++) {
-    if(previous_program() == owners[owner])
-      break;
+  if(previous_program() == SYSTEM_WIZTOOLLIB) {
+    owner = -1;
+  } else {
+    for(owner = 0; owner < sizeof(owners); owner++) {
+      if(previous_program() == owners[owner])
+	break;
+    }
+    if(owner >= sizeof(owners)
+       || owners[owner] != previous_program())
+      error("Unknown owner " + previous_program()
+	    + " calling set_segment_zone!");
   }
-  if(owner >= sizeof(owners)
-     || owners[owner] != previous_program())
-    error("Unknown owner " + previous_program()
-	  + " calling set_segment_zone!");
 
   seg = segments[segment];
   if(!seg) {
     error("Can't set_segment_zone on a nonexistent segment!");
   }
-  if(seg[0] != owner)
+  if(owner != -1 && seg[0] != owner)
     error("Can't set zone of somebody else's segment!");
 
   seg[2] = zonenum;
