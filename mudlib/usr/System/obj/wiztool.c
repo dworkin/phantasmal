@@ -119,6 +119,12 @@ void upgraded(varargs int clone) {
 	"@set_obj_len"                : ({ "cmd_set_obj_value" }),
 	"@set_obj_height"             : ({ "cmd_set_obj_value" }),
 
+	"@new_tag_type"               : ({ "cmd_new_tag_type" }),
+	"@list_tags"                  : ({ "cmd_list_tags" }),
+        "@set_tag"                    : ({ "cmd_set_tag" }),
+        "@set_obj_tag"                : ({ "cmd_set_tag" }),
+        "@set_object_tag"             : ({ "cmd_set_tag" }),
+
 	"@add_noun"            : ({ "cmd_add_nouns" }),
 	"@add_nouns"           : ({ "cmd_add_nouns" }),
 	"@clear_nouns"         : ({ "cmd_clear_nouns" }),

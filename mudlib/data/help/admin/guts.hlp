@@ -86,7 +86,7 @@ The %destruct command destructs objects by object name or history
 number.  Destructing a library and recompiling it may not be enough to
 fully replace it in the code of its inherited objects.
 
-See %history and "http://www.angelbob.com/projects/Kernel/Inheritance.html".
+See %history and "http://phantasmal.sf.net/DGD/Kernel/Inheritance.html".
 
 }}
 
@@ -102,19 +102,19 @@ fully replace it in the code of its inherited objects, though
 recompiling a clonable will upgrade all clones.  If clonable, the
 compiled object will be added to the command history.
 
-See %history, "http://www.angelbob.com/projects/Kernel/Inheritance.html",
+See %history, "http://phantasmal.sf.net/DGD/Kernel/Inheritance.html",
 %destruct, and %full_rebuild.
 
 }}
 
 
-~name{~enUS{%code, code, arbitrary code}}
+~name{~enUS{%code, code, arbitrary code, lpc, lpc code}}
 ~keywords{admin}
 ~desc{
   ~enUS{
 
-This command will run a bit of DGD LPC code that you specify and return
-a result.  Simple examples include:
+The %code command will run a bit of DGD LPC code that you specify and
+return a result.  Simple examples include:
 
 %code 3 + 7
 %code destruct_object($3)
@@ -122,9 +122,12 @@ a result.  Simple examples include:
 
 This code will be run from your directory, and thus with your
 permissions.  The object itself will be called /usr/you/_code where
-"you" is replaced by your username.
+"you" is replaced by your username.  If you have a file called
+/usr/you/include/code.h, it will be included before the code is run.
+This allows you to declare variables and inherit from a parent object,
+if you so desire.
 
-See %history and "http://www.angelbob.com/projects/DGD_Page.html".
+See %history and "http://phantasmal.sf.net/DGD".
 
 }}
 

@@ -1,0 +1,84 @@
+~name{~enUS{tag, tags}}
+~keywords{admin}
+~desc{
+  ~enUS{
+
+Tags are extra named data that get attached to existing objects.
+For instance, mobiles might be tagged with a "cursedByGod" value,
+or objects might be tagged with an "UnlockedByKeyNumber" value.
+
+help new_tag_type
+help set_tag
+
+}}
+
+
+~name{~enUS{new_tag_type, new_tag, add_tag_type, add_tag}}
+~keywords{admin}
+~desc{
+  ~enUS{
+
+@new_tag_type will create a new type of tag for any applicable object
+type.  The usage is "@new_tag_type <scope> <name> <type> [<getter>
+[<setter>]]".  Getter and setter are function names, and if you supply
+them then when that tag is gotten or set, those functions will be
+called on the object in question.  This allows non-tag values to get
+gotten or set as though they were tags.
+
+Examples:
+@new_tag_type object UnlockedByKeyNumber integer
+@new_tag_type mob cursedByGod int is_cursed set_cursed
+@new_tag_type obj KeyNumber integer
+
+Currently type must be integer or float, but more types will be allowed
+later on.  Tag names are permitted to have spaces, but there is currently
+no way to specify that with this command.
+
+Use the stat command to view an object's tag values.
+
+}}
+
+~name{~enUS{set_tag, set_tag_value, set_value, set_obj_tag, set_object_tag,
+            set_object_tag_value, set_obj_tag_value, set_obj_tag_val,
+            set_object_tag_val}}
+~keywords{admin}
+~desc{
+  ~enUS{
+
+Set_tag allows you to set the tag value of a given tagged object,
+such as a room or mobile.  The usage is "@set_tag <name> <code>".
+The name must be a valid tag name -- see @new_tag_type.  Code can
+be any valid DGD code, but should evaluate to the type that you
+wish to set the tag to.  For an integer tag, for instance, this
+should be an integer.  For a tag of type mapping, it should be
+a mapping.
+
+Example:
+@set_tag #374 KeyNumber 7
+@set_tag $7 cursedByGod $7->getCurseLevel()
+
+The object may be specified by either an object number or a history
+value.  The history value must correspond to a tagged DGD object.
+
+Tag names are permitted to have spaces, but there is currently no way
+to manipulate any tag whose name has a space using this command.
+
+Use the stat command to view an object's tag values.
+
+}}
+
+
+~name{~enUS{list_tag, list_tags}}
+~keywords{admin}
+~desc{
+  ~enUS{
+
+The @list_tags command shows a list of all tag names with their
+associated data types.  The usage is either "@list_tag object" or
+"@list_tag mobile".
+
+Tag settings for a specific object can be shown by using the stat
+command on that object.
+
+See alse: @new_tag_type
+}}

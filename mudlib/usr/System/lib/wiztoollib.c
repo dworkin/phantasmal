@@ -181,6 +181,58 @@ static void cmd_destruct(object user, string cmd, string str)
 }
 
 
+/*
+ * NAME:	evaluate_lpc_code()
+ * DESCRIPTION:	Evaluate a piece of LPC code, returning a result.
+ *              Based on implementation of the code command.
+ */
+static mixed evaluate_lpc_code(object user, string lpc_code)
+{
+  mixed *parsed, result;
+  object obj;
+  string name, str;
+
+  if (!lpc_code) {
+    error("Can't evaluate (nil) as LPC code!");
+  }
+
+  parsed = parse_code(lpc_code);
+  if (!parsed) {
+    error("Couldn't parse code!");
+  }
+  name = USR + "/" + owner + "/_code";
+  obj = find_object(name);
+  if (obj) {
+    destruct_object(obj);
+  }
+
+  str = USR + "/" + owner + "/include/code.h";
+  if (file_info(str)) {
+    str = "# include \"~/include/code.h\"\n";
+  } else {
+    str = "";
+  }
+  str = "# include <float.h>\n# include <limits.h>\n" +
+    "# include <status.h>\n# include <trace.h>\n" +
+    "# include <type.h>\n" + str + "\n" +
+    "mixed exec(object user, mixed argv...) {\n" +
+    "    mixed a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z;\n\n" +
+    "    " + parsed[0] + "\n}\n";
+  str = catch(obj = compile_object(name, str),
+	      result = obj->exec(user, parsed[1 ..]...));
+  if (str) {
+    error(str);
+    result = nil;
+  }
+
+  if (obj) {
+    destruct_object(obj);
+  }
+
+  return result;
+}
+
+
 static void cmd_get_config(object user, string cmd, string str) {
   object configd;
 
@@ -646,4 +698,186 @@ static void cmd_new_mobile(object user, string cmd, string str) {
 
   MOBILED->add_mobile_number(mobile, mobnum);
   user->message("Added mobile #" + mobile->get_number() + ".\r\n");
+}
+
+static void cmd_new_tag_type(object user, string cmd, string str) {
+  string scope, name, type, getter, setter;
+  mapping scope_strings, type_strings;
+
+  scope_strings = ([ "object" : "object",
+		   "obj" : "object",
+		   "mobile" : "mobile",
+		   "mob" : "mobile" ]);
+
+  type_strings = ([ "int" : T_INT,
+		  "1" : T_INT,
+		  "integer" : T_INT,	
+		  "float" : T_FLOAT,
+		  "real" : T_FLOAT,
+		  "2" : T_FLOAT ]);
+
+  if(!str || !strlen(str) || (sscanf(str, "%*s %*s %*s %*s %*s %*s") == 6)
+     || ((sscanf(str, "%s %s %s %s %s", scope, name, type, getter,
+		 setter) != 5)
+	 && (sscanf(str, "%s %s %s %s", scope, name, type, getter) != 4)
+	 && (sscanf(str, "%s %s %s", scope, name, type) != 3))) {
+    user->message("Usage: " + cmd
+		  + " <obj|mob> <name> <type> [<getter> [<setter>]]\r\n");
+    return;
+  }
+
+  scope = STRINGD->trim_whitespace(STRINGD->to_lower(scope));
+  if(!scope_strings[scope]) {
+    user->message("Scope '" + scope + "' isn't recognized.\r\n");
+    user->message("Should be 'object' or 'mobile'.\r\n");
+    return;
+  }
+
+  type = STRINGD->trim_whitespace(STRINGD->to_lower(type));
+  if(!type_strings[type]) {
+    user->message("Type '" + type + "' isn't recognized.\r\n");
+    user->message("Should be 'int' or 'float'.\r\n");
+    return;
+  }
+
+  name = STRINGD->trim_whitespace(name);
+
+  if(getter)
+    getter = STRINGD->trim_whitespace(getter);
+  if(setter)
+    setter = STRINGD->trim_whitespace(setter);
+
+  switch(scope_strings[scope]) {
+  case "object":
+  case "mobile":
+    call_other(TAGD, "new_" + scope_strings[scope] + "_tag",
+	       name, type_strings[type], getter, setter);
+    break;
+  }
+  user->message("Added new tag type '" + name + "'.\r\n");
+}
+
+static void cmd_set_tag(object user, string cmd, string str) {
+  object obj_to_set;
+  string usage_string, str2, err, tag_name;
+  int    index;
+  mixed  chk, *split_tmp;
+
+  usage_string = "Usage: " + cmd + " #<obj> <tag name> <value>\r\n"
+    + "       " + cmd + " $<hist> <tag name> <value>\r\n";
+  if(sscanf(str, "#%d %s", index, str2) == 2) {
+    obj_to_set = MAPD->get_room_by_num(index);
+    if(!obj_to_set)
+      obj_to_set = MOBILED->get_mobile_by_num(index);
+
+    if(!obj_to_set) {
+      user->message("Can't find object #" + index + "!\r\n" + usage_string);
+      return;
+    }
+  } else if (sscanf(str, "$%d %s", index, str2) == 2) {
+    if(index >= 0 && index <= sizeof(::query_history())) {
+      chk = fetch(index);
+      if(typeof(chk) == T_OBJECT)
+	obj_to_set = chk;
+      else {
+	user->message("History entry $" + index + " isn't an object!\r\n");
+	return;
+      }
+
+      if(function_object("get_tag", obj_to_set) != TAGGED) {
+	user->message("History entry $" + index
+		      + " isn't a tagged object!\r\n");
+	return;
+      }
+
+    } else {
+      user->message("Can't find history entry $" + index + ".\r\n");
+      return;
+    }
+
+  } else {
+    user->message(usage_string);
+    return;
+  }
+
+  split_tmp = explode(str2, " ");
+  if(sizeof(split_tmp) < 2) {
+    user->message(usage_string);
+    return;
+  }
+  tag_name = split_tmp[0];
+  str2 = implode(split_tmp[1..], " ");
+
+  user->message("Evaluating code w/ obj, '" + tag_name + "', code: '"
+		+ str2 + "'.\r\n");
+
+  /* Now we have obj_to_set, and str2 contains the remaining command line */
+  /* err = catch (chk = evaluate_lpc_code(user, str2)); */
+  chk = evaluate_lpc_code(user, str2);
+  if(err) {
+    user->message("Error evaluating code: " + err + "\r\n");
+    return;
+  }
+
+  store(chk);
+  TAGD->set_tag_value(obj_to_set, tag_name, chk);
+  user->message("Set value of tag '" + tag_name + "' to "
+		+ STRINGD->mixed_sprint(chk) + ".\r\n");
+}
+
+static void cmd_list_tags(object user, string cmd, string str) {
+  string  *all_tags, msg;
+  mapping  type_names;
+  int      ctr;
+
+  type_names = ([ T_INT : "int",
+		T_FLOAT : "flt",
+		T_MAPPING : "map",
+		T_ARRAY : "arr",
+		T_NIL   : "nil" ]);
+
+  if(str)
+    str = STRINGD->trim_whitespace(str);
+
+  if(!str || !strlen(str)
+     || ((str != "object") && (str != "mobile"))) {
+    user->message("Usage: " + cmd + " <object|mobile>\r\n");
+    return;
+  }
+
+  switch(str) {
+  case "object":
+    all_tags = TAGD->object_tag_names();
+    break;
+  case "mobile":
+    all_tags = TAGD->mobile_tag_names();
+    break;
+  default:
+    error("Internal error!");
+  }
+
+  if(sizeof(all_tags) == 0) {
+    user->message("There are none.\r\n");
+    return;
+  }
+
+  msg = "Tag Names & Types:\r\n";
+  for(ctr = 0; ctr < sizeof(all_tags); ctr++) {
+    int type;
+
+    switch(str) {
+    case "object":
+      type = TAGD->object_tag_type(all_tags[ctr]);
+      break;
+    case "mobile":
+      type = TAGD->mobile_tag_type(all_tags[ctr]);
+      break;
+    default:
+      error("Internal error!");
+    }
+
+    msg += "  " + type_names[type] + "  " + all_tags[ctr] + "\r\n";
+  }
+
+  user->message_scroll(msg);
 }

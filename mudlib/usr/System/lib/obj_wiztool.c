@@ -126,26 +126,42 @@ static void cmd_set_obj_desc(object user, string cmd, string str) {
 
 private void priv_mob_stat(object user, object mob) {
   object mobbody, mobuser;
+  mixed* tags;
+  int    ctr;
+  string tmp;
 
   mobbody = mob->get_body();
   mobuser = mob->get_user();
 
-  user->message("Body: ");
+  tmp = "";
+
+  tmp = "Body: ";
   if(mobbody) {
-    user->message("#" + mobbody->get_number() + " (");
-    user->message(mobbody->get_glance()->to_string(user));
-    user->message(")\r\n");
+    tmp += "#" + mobbody->get_number() + " (";
+    tmp += mobbody->get_glance()->to_string(user);
+    tmp += ")\r\n";
   } else {
-    user->message("(none)\r\n");
+    tmp += "(none)\r\n";
   }
 
-  user->message("User: ");
+  tmp += "User: ";
   if(mobuser) {
-    user->message(mobuser->get_name() + "\r\n");
+    tmp += mobuser->get_name() + "\r\n";
   } else {
-    user->message("(NPC, not player)\r\n");
+    tmp += "(NPC, not player)\r\n";
   }
 
+  tags = TAGD->mobile_all_tags(mob);
+  if(!sizeof(tags)) {
+    tmp += "\r\nNo tags set.\r\n";
+  } else {
+    for(ctr = 0; ctr < sizeof(tags); ctr+=2) {
+      tmp += "  " + tags[ctr] + ": " + STRINGD->mixed_sprint(tags[ctr + 1])
+	+ "\r\n";
+    }
+  }
+
+  user->message_scroll(tmp);
 }
 
 
@@ -154,7 +170,7 @@ static void cmd_stat(object user, string cmd, string str) {
   object  obj, room, exit, location;
   string* words;
   string  tmp;
-  mixed*  objs, *art_desc;
+  mixed*  objs, *art_desc, *tags;
   object *details;
 
   if(!str || STRINGD->is_whitespace(str)) {
@@ -375,6 +391,18 @@ static void cmd_stat(object user, string cmd, string str) {
     }
     tmp += "\r\n";
   }
+
+  tmp += "\r\nTag Name: Value\r\n";
+  tags = TAGD->object_all_tags(obj);
+  if(!sizeof(tags)) {
+    tmp += "\r\nNo tags set.\r\n";
+  } else {
+    for(ctr = 0; ctr < sizeof(tags); ctr+=2) {
+      tmp += "  " + tags[ctr] + ": " + STRINGD->mixed_sprint(tags[ctr + 1])
+	+ "\r\n";
+    }
+  }
+  tmp += "\r\n";
 
   if(obj->get_mobile()) {
     tmp += "Object is sentient.\r\n";
