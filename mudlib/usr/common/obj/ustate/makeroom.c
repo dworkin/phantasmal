@@ -634,6 +634,7 @@ static int prompt_obj_number_input(string input) {
     send_string("Somebody has deleted the base object between the time you"
 		+ " entered it\r\n  and now.  No detail was created."
 		+ "  Exiting OLC!\r\n");
+    destruct_object(new_obj);
     return RET_POP_STATE;
   }
 

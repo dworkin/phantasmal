@@ -1,4 +1,5 @@
 Release 0.017:
+	* Removed support for non-System wiztool objects.  Oops!
 	* Added support for custom and non-System wiztool objects
 	* Added a custom room-binder object for nonstandard room types
 	* Started support for 'custom' rooms not loaded from UNQ files
