@@ -3,15 +3,19 @@
 use strict;
 use Cwd;
 
-my $output_dir;
+my $output_path = "./html";
 
-$output_dir = "./html";
-
-my %priv_dirs;   # Privileged directories that define API funcs
-my %func_names;  # Function names defined in various places
+my %priv_objs;   # Privileged LPC objects that define API funcs
 
 my %all_api_files;
 my @the_api_files = `find . -name "*.api"`;
+
+# Yet unused
+my %func_names;     # Function names defined in various places
+my %obj_filenames;  # Output files for particular object names
+
+#################################################
+# Impromptu 'main'-type code
 
 read_all_files(@the_api_files);
 @the_api_files = ([]);   # Garbage collection
@@ -19,14 +23,23 @@ read_all_files(@the_api_files);
 verify_format();
 set_new_fields();
 
-# For each /usr/XXX/blah directory, output its files
-my ($dir, $dir_index, @dirs, $fileref);
-@dirs = sort keys %priv_dirs;
-foreach $dir (@dirs) {
-    print "In directory $dir:\n";
-
-    html_for_directory($dir, $dir_index, @{$priv_dirs{$dir}});
+unless(-d $output_path) {
+    mkdir($output_path);
 }
+
+# For each /usr/XXX/blah/foo.c object, output its files
+my ($obj, $obj_index, @objs, $fileref, $file_index);
+$obj_index = 1;
+$file_index = 1;
+@objs = sort keys %priv_objs;
+foreach $obj (@objs) {
+    print "Object $obj APIs:\n";
+
+    html_for_object($obj, @{$priv_objs{$obj}});
+    $obj_index++;
+}
+
+html_for_index();
 
 
 ##############################################################
@@ -140,15 +153,16 @@ sub set_new_fields {
 	$fileref->{def_file} = $1;
 
 	unless($fileref->{def_file}
-	       =~ /\/(([a-zA-Z0-9]+\/)+)[a-zA-Z0-9]+\.c/) {
+	       =~ /\/(([a-zA-Z0-9]+\/)+)([a-zA-Z0-9]+)\.c/) {
 	    die "Filename '$fileref->{def_file}' doesn't parse in API file "
 		. "'$fileref->{filename}'!";
 	}
-	unless(defined($priv_dirs{$1})) {
-	    $priv_dirs{$1} = ([]);
+	my $filename = '/' . $1 . "$3";
+	unless(defined($priv_objs{$filename})) {
+	    $priv_objs{$filename} = ([]);
 	}
-	$ref = $priv_dirs{$1};
-	$priv_dirs{$1} = ([ @$ref, $fileref ]);
+	$ref = $priv_objs{$filename};
+	$priv_objs{$filename} = ([ @$ref, $fileref ]);
 
 	unless($fileref->{NAME} =~ /^\s*([a-zA-Z0-9_]+)\s*-\s*(.*)$/) {
 	    die "Unrecognized format for entry NAME, '$fileref->{NAME}'" .
@@ -171,23 +185,126 @@ sub set_new_fields {
     }
 }
 
-sub html_for_directory {
-    my (@filerefs, $fileref, $dir_index, $dir_name);
+sub html_for_object {
+    my (@filerefs, $fileref, $obj_name);
 
-    $dir_index = shift;
-    $dir_name = shift;
+    $obj_name = shift;
     @filerefs = @_;
 
     foreach $fileref (@filerefs) {
 	print "  File: $fileref->{filename}\n";
-	
+	html_for_file($fileref);
     }
 
-    html_for_dir($dir_name, $dir_index, @filerefs);
+    html_for_obj($obj_name, @filerefs);
 }
 
-sub html_for_dir {
-    my ($dir_name, $dir_index, @filerefs) = @_;
+# HTML for specific API file entries
+sub html_for_file {
+    my $fileref = shift;
+    my $tmpname = ">$output_path/file_idx_${obj_index}_$file_index.html";
 
-    
+    open(FILE, $tmpname) or die "Can't open file $tmpname: $!";
+
+    $fileref->{output_html} = "file_idx_${obj_index}_$file_index.html";
+
+    print FILE <<"EOF";
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title> Phantasmal API Documentation </title>
+    <style type="text/css">
+    <!--
+      p {font-family: serif, font-weight: normal; color: black;
+         font-size: 12pt }
+      h3 {font-family: serif; font-weight: bold; color: #FF20FF;
+          font-size: 16pt}
+     -->
+    </style>
+  </head>
+
+  <body text="#000000" bgcolor="#DDDDDD" link="#0000EF" vlink="#51188E"
+        alink="#FF0000">
+
+    <h3 align="center"> API Function: $fileref->{func_name} </h3>
+
+EOF
+    ;
+
+
+
+    print FILE <<"EOF";
+
+    <a href="http://sourceforge.net">
+      <img src="http://sourceforge.net/sflogo.php?group_id=48659&type=6"
+           width="210" height="62" border="0"
+           alt="SourceForge.net Logo"></a>
+  </body>
+</html>
+
+EOF
+    ;
+    close(FILE);
+    $file_index++;
+}
+
+
+# HTML for object entry, for objects like /usr/System/obj/objectd.c.
+sub html_for_obj {
+    my ($obj_name, @filerefs) = @_;
+    my ($tmpname, $fileref);
+
+    $tmpname = ">$output_path/obj_idx$obj_index.html";
+    open(FILE, $tmpname)
+	or die "Can't open obj index file $tmpname: $!";
+    print "Opened file $tmpname.\n";
+
+    print FILE <<"EOF";
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title> Phantasmal API Documentation </title>
+    <style type="text/css">
+    <!--
+      p {font-family: serif, font-weight: normal; color: black;
+         font-size: 12pt }
+      h3 {font-family: serif; font-weight: bold; color: #3000FF;
+          font-size: 16pt}
+     -->
+    </style>
+  </head>
+
+  <body text="#000000" bgcolor="#DDDDDD" link="#0000EF" vlink="#51188E"
+        alink="#FF0000">
+
+    <h3 align="center"> APIs in $obj_name </h3>
+
+    <ul>
+EOF
+    ;
+
+    foreach $fileref (@filerefs) {
+	print FILE "      <li><a href=\"$fileref->{output_html}\">"
+	    . $fileref->{prototype} . "</a></li>\n";
+    }
+
+    print FILE <<"EOF";
+    </ul>
+
+    <a href="http://sourceforge.net">
+      <img src="http://sourceforge.net/sflogo.php?group_id=48659&type=6"
+           width="210" height="62" border="0"
+           alt="SourceForge.net Logo"></a>
+  </body>
+</html>
+
+EOF
+
+    close(FILE);
+}
+
+
+sub html_for_index {
+
 }
