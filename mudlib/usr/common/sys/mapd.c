@@ -253,7 +253,7 @@ private int assign_room_to_zone(int num, object room, int req_zone) {
   int    segnum, ctr, zone;
   string segown;
 
-  if(num != -1) {
+  if(num >= 0) {
     segnum = num / 100;
 
     segown = OBJNUMD->get_segment_owner(segnum);
@@ -263,7 +263,7 @@ private int assign_room_to_zone(int num, object room, int req_zone) {
       return -1;
     }
     zone = OBJNUMD->get_segment_zone(segnum);
-    if(zone != req_zone && req_zone != 0)
+    if(zone != req_zone && req_zone >= 0)
       error("Room number (#" + num
 	    + ") not in requested zone (#" + req_zone
 	    + ") in assign_room_to_zone!");
