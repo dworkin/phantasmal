@@ -125,7 +125,8 @@ void new_help_file(string path) {
     error("Helpfile " + path + " too long!");
   }
 
-  err = catch (unq_data = UNQ_PARSER->unq_parse_with_dtd(contents, help_dtd));
+  err = catch (unq_data
+	       = UNQ_PARSER->unq_parse_with_dtd(contents, help_dtd, path));
 
   if (err != nil) {
     LOGD->write_syslog("Helpd got parse error parsing " + path);
