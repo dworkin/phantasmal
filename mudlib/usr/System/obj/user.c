@@ -1,4 +1,4 @@
-/* $Header: /cvsroot/phantasmal/mudlib/usr/System/obj/user.c,v 1.17 2002/06/13 05:03:44 angelbob Exp $ */
+/* $Header: /cvsroot/phantasmal/mudlib/usr/System/obj/user.c,v 1.18 2002/06/13 18:50:48 angelbob Exp $ */
 
 #include <kernel/kernel.h>
 #include <kernel/user.h>
@@ -561,7 +561,7 @@ void show_room_to_player(object location) {
 
   objs = location->objects_in_container();
   for(ctr = 0; ctr < sizeof(objs); ctr++) {
-    if(!objs[ctr]->is_no_desc()) {
+    if(!objs[ctr]->is_no_desc() && objs[ctr] != body) {
       message("- ");
       send_phrase(objs[ctr]->get_brief());
       message("\r\n");
