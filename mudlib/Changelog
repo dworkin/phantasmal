@@ -1,4 +1,10 @@
 Release 0.013:
+	* Added @list, an alias for @list_rooms.
+	* Added @make_detail command.
+	* Made details load and save properly.
+	* Fixed an ObjectD bug with objects that just added an
+	  "upgraded" function.
+	* Made @delete work with details.
 
 Release 0.012:
 	* More logging and stuff in ObjectD.  And fixed a bug that
