@@ -80,6 +80,7 @@ private void   register_inherit_data(object issue);
 private void   call_upgraded(object obj);
 private object add_clonable(string owner, object obj, string* inherited);
 private object add_lib(string owner, string path, string* inherited);
+string destroyed_obj_list(void);
 
 
 static void create(varargs int clone)
@@ -398,7 +399,8 @@ private void clear_child_data(object issue) {
   index = issue->get_index();
   children = issue->get_children();
   if(!children) {
-    LOGD->write_syslog("Should children be NULL in clear_child_data?",
+    LOGD->write_syslog("Should children be NULL for issue #" +
+		       index + " in clear_child_data?",
 		       LOG_WARNING);
     return;
   }
@@ -515,7 +517,7 @@ private object add_clonable(string owner, object obj, string* inherited) {
     old_index = dest_issues[object_name(obj)];
     old_version = obj_issues->index(old_index);
     if(!old_version) {
-      LOGD->write_syslog("Can't get issue for old version!", LOG_ERR);
+      LOGD->write_syslog("Can't get issue# for destroyed version!", LOG_ERR);
     }
     if(old_version && !old_version->destroyed()) {
       LOGD->write_syslog("Old issue is in dest_issues but not destroyed!",
@@ -558,10 +560,17 @@ private object add_clonable(string owner, object obj, string* inherited) {
       LOGD->write_syslog("Clearing destroyed issue on recompile", LOG_VERBOSE);
       dest_issues[object_name(obj)] = nil;
       dest_issues[old_index] = nil;
-      dest_issues[idx] = nil;
     }
 
   }
+
+  /* If we're making a new object, that means that this issue# shouldn't
+     be in the destructed issues. */
+  if(dest_issues[idx]) {
+    LOGD->write_syslog("Clearing destructed issue# which should be clean!",
+		       LOG_WARN);
+  }
+  dest_issues[idx] = nil;
 
   return new_issue;
 }
@@ -704,8 +713,18 @@ void destruct(string owner, object obj)
       return;
     }
 
+    objname = object_name(obj);
+
     /* Not a clone */
     if(dest_issues[objname] || dest_issues[index]) {
+      if(dest_issues[objname])
+	LOGD->write_syslog("Name '" + STRINGD->mixed_sprint(objname)
+			   + "' already in dest_issues.",
+			   LOG_VERBOSE);
+      if(dest_issues[index])
+	LOGD->write_syslog("Index " + index + " already in dest_issues.",
+			   LOG_VERBOSE);
+
       LOGD->write_syslog("Object is already in dest_issues!", LOG_ERR);
     }
 
@@ -720,6 +739,7 @@ void destruct(string owner, object obj)
     if(function_object("destructed", obj)) {
       obj->destructed(0);
     }
+
   }
 }
 
@@ -797,7 +817,10 @@ void remove_program(string owner, string path, int timestamp, int index)
 
     if(issue) {
       unregister_inherit_data(issue);
-      clear_child_data(issue);
+
+      /* For libraries only, clear child data */
+      if(function_object("clear_child_data", issue))
+	clear_child_data(issue);
     } else if(aggro_recompile > 1) {
       LOGD->write_syslog("Removing unregistered issue of " + path, LOG_WARN);
     }
@@ -809,6 +832,7 @@ void remove_program(string owner, string path, int timestamp, int index)
     if(!status(path)) {
       all_libs[path] = nil;
     }
+
   }
 }
 
@@ -927,8 +951,10 @@ string destroyed_obj_list(void) {
   ret = "Objects:\n";
   keys = map_indices(dest_issues);
   for(ctr = 0; ctr < sizeof(keys); ctr++) {
-    if(typeof(keys[ctr]) == T_INT)
-      continue;  /* Index is num, not name */
+    if(typeof(keys[ctr]) == T_INT) {
+      /* Index is num, not name */
+      continue;
+    }
 
     ret += "* ";
     idx = dest_issues[keys[ctr]];
@@ -936,9 +962,9 @@ string destroyed_obj_list(void) {
     if(issue) {
       ret += issue->get_name();
     } else {
-      ret += " (nil) ";
+      ret += "(nil)";
     }
-    ret += "(" + dest_issues[keys[ctr]] + ")" + "\n";
+    ret += " (" + idx + ")" + "\n";
   }
 
   return ret;
