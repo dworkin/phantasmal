@@ -154,13 +154,16 @@ Ghak'La must have been Messy-In-A-Hideous-Way.}}
 }
 ~portable{
   ~number{9}
-  ~location{309}
+  ~location{300}
   ~bdesc{
     ~enUS{a rubber ball}}
   ~gdesc{
     ~enUS{a red rubber ball}}
   ~ldesc{
     ~enUS{It's a red rubber ball.}}
+  ~edesc{
+    ~enUS{It's a simple red rubber ball.  There's an odd swirly spot on it in
+one place, but it's otherwise unremarkable.}}
   ~flags{0}
   ~article{0}
   ~nouns{{~enUS{ball}}}
@@ -264,7 +267,7 @@ doesn't give you any clues.}}
 }
 ~portable{
   ~number{202}
-  ~location{309}
+  ~location{300}
   ~bdesc{
     ~enUS{a breadbox}}
   ~gdesc{
@@ -405,7 +408,7 @@ the west.}}
   ~gdesc{
     ~enUS{campus parent room}}
   ~ldesc{
-    ~enUS{This room should never bee seen directly.  It is meant only as a parent
+    ~enUS{This room should never be seen directly.  It is meant only as a parent
 room for outdoor rooms on the Miskatonic University campus.}}
   ~flags{0}
   ~article{0}
@@ -444,6 +447,7 @@ the entrance to Telman Hall.  An ugly sculpture is at the top of the
 steps.  You can see Peabody Hall to the north, and several more
 academic halls beyond.  The rest of campus stretches out around you.}}
   ~flags{0}
+  ~parent{303}
   ~article{0}
   ~nouns{{}}
   ~adjectives{{}}
@@ -462,6 +466,7 @@ of windows on the first and second floor are painted over and presumably
 painted shut.  You can see the oddly-angled side of Telman Hall to the
 south.}}
   ~flags{0}
+  ~parent{303}
   ~article{0}
   ~nouns{{}}
   ~adjectives{{}}
@@ -480,6 +485,7 @@ odd, angular building.  The wall to the south of you contains no windows,
 at least on this side of the building.  The grass here is long but
 dry and tufted.}}
   ~flags{0}
+  ~parent{303}
   ~article{0}
   ~nouns{{}}
   ~adjectives{{}}
@@ -496,13 +502,14 @@ dry and tufted.}}
 Marsh Hall stands just northwest of you and you can see the city of
 Arkham through the trees to the north and east.}}
   ~flags{0}
+  ~parent{303}
   ~article{0}
   ~nouns{{}}
   ~adjectives{{}}
 }
 ~body{
   ~number{309}
-  ~location{300}
+  ~location{308}
   ~bdesc{
     ~enUS{Angelbob}}
   ~gdesc{
@@ -558,7 +565,7 @@ Arkham through the trees to the north and east.}}
 }
 ~room{
   ~number{313}
-  ~location{302}
+  ~location{306}
   ~bdesc{
     ~enUS{a mobile turnip}}
   ~gdesc{
@@ -574,7 +581,7 @@ washing machine back home.}}
 }
 ~portable{
   ~number{314}
-  ~location{300}
+  ~location{302}
   ~bdesc{
     ~enUS{a dog}}
   ~gdesc{
@@ -639,14 +646,51 @@ guess it's some form of manufacturing artifact.}}
   ~ldesc{
     ~enUS{The logo is faded the point of being illegible.  You'd guess from similar
 boxes that it once bore the insignia of the box's maker.}}
+  ~edesc{
+    ~enUS{Peering very carefully at the old, faded logo you can just barely make
+out what looks like a picture of a pineapple.  Why a pineapple?}}
   ~flags{0}
   ~article{0}
   ~nouns{{~enUS{logo,label,insignia}}}
   ~adjectives{{~enUS{old,faded}}}
 }
 ~portable{
+  ~number{319}
+  ~detail{318}
+  ~bdesc{
+    ~enUS{a faded pineapple}}
+  ~gdesc{
+    ~enUS{the faint outline of a pineapple}}
+  ~ldesc{
+    ~enUS{You see the faded lines of the pineapple in the logo.  It's hard to tell
+for certain what it was originally, but it's certainly short, squat and
+roundish with some spiky bits on top.  Your best guess is that it's a
+pineapple.}}
+  ~flags{0}
+  ~article{0}
+  ~nouns{{~enUS{pineapple,outline,picture}}}
+  ~adjectives{{~enUS{faint,faded}}}
+}
+~portable{
+  ~number{320}
+  ~detail{303}
+  ~bdesc{
+    ~enUS{the streets}}
+  ~gdesc{
+    ~enUS{the Arkham streets}}
+  ~ldesc{
+    ~enUS{You can see the surrounding streets of the city of Arkham through the
+trees and buildings.  They flank Miskatonic University on every side.
+You've got a clear view on pedestrians or parked cars in a few places
+even from here.}}
+  ~flags{0}
+  ~article{0}
+  ~nouns{{~enUS{street,streets,road,city}}}
+  ~adjectives{{~enUS{city,surrounding,arkham}}}
+}
+~portable{
   ~number{400}
-  ~location{300}
+  ~detail{300}
   ~bdesc{
     ~enUS{floor}}
   ~gdesc{
@@ -656,14 +700,14 @@ boxes that it once bore the insignia of the box's maker.}}
 been cleaned nearly often enough.  You can see places near the walls where
 the carpet is pulled thin and has begun fraying.  The heavy threads
 are quite dirty and worn.  The carpet looks like it was once red or orange.}}
-  ~flags{4}
+  ~flags{0}
   ~article{1}
   ~nouns{{~enUS{carpet,threads,floor,rug}}}
   ~adjectives{{~enUS{old,worn,heavy,threadbare,carpeted,red,orange,stained,frayed,fraying}}}
 }
 ~portable{
   ~number{401}
-  ~location{300}
+  ~detail{300}
   ~bdesc{
     ~enUS{couches}}
   ~gdesc{
@@ -674,14 +718,14 @@ faded and lost their original colors which seem to have been red, green
 and indeterminate.  A cheap wooden chair sits anonymously in the corner
 next to one of them.  All of the furnishings are faded, worn, nicked,
 scratched and generally what you'd expect in a student lounge.}}
-  ~flags{4}
+  ~flags{0}
   ~article{0}
   ~nouns{{~enUS{couch,couches,sofa,sofas,chair,chairs}}}
   ~adjectives{{~enUS{old,large,stained,red,green,faded,nicked,scratched,worn}}}
 }
 ~portable{
   ~number{402}
-  ~location{300}
+  ~detail{300}
   ~bdesc{
     ~enUS{table}}
   ~gdesc{
@@ -691,14 +735,14 @@ scratched and generally what you'd expect in a student lounge.}}
 solid-looking.  It has a dark wooden top and sides which have seen better
 days.  The whole thing is nicked, scratched, gouged and generally the
 sort of furniture you'd expect to find in a student lounge.}}
-  ~flags{4}
+  ~flags{0}
   ~article{2}
   ~nouns{{~enUS{table}}}
   ~adjectives{{~enUS{nicked,scratched,old,worn,stained,faded,large,gouged}}}
 }
 ~portable{
   ~number{403}
-  ~location{301}
+  ~detail{301}
   ~bdesc{
     ~enUS{floor}}
   ~gdesc{
@@ -707,14 +751,14 @@ sort of furniture you'd expect to find in a student lounge.}}
     ~enUS{The floor has permanent dust and grime ground into checkerboard tiles,
 attached even more securely by sticky and decaying floor polish.  It
 reminds you of other educational institutions.}}
-  ~flags{4}
+  ~flags{0}
   ~article{1}
   ~nouns{{~enUS{floor,tiles,checkerboard,tile,checker,checkers,dust,grime,polish}}}
   ~adjectives{{~enUS{tile,tiled,checker,checkered,checkerboard,dusty,grimy,polished,floor,sticky,decaying,decayed}}}
 }
 ~portable{
   ~number{404}
-  ~location{302}
+  ~detail{302}
   ~bdesc{
     ~enUS{academic halls}}
   ~gdesc{
@@ -724,14 +768,14 @@ reminds you of other educational institutions.}}
 student lounge.  North of here is Marsh Hall which covers Modern History
 and Languages, while to the south looms the oddly angular Telman Hall
 of Mathematics and Science.}}
-  ~flags{4}
+  ~flags{0}
   ~article{0}
   ~nouns{{~enUS{hall,halls}}}
   ~adjectives{{~enUS{peabody,telman,math,science,mathematics,sciences,history,languages,humanities,academic}}}
 }
 ~portable{
   ~number{405}
-  ~location{302}
+  ~detail{302}
   ~bdesc{
     ~enUS{the Tower}}
   ~gdesc{
@@ -741,14 +785,14 @@ of Mathematics and Science.}}
 small two-story wooden building has been a fixture of campus life
 for as long as anybody can remember.  It's a place for procrastinating
 students to socialize out in the fresh air.}}
-  ~flags{4}
+  ~flags{0}
   ~article{0}
   ~nouns{{~enUS{tower}}}
   ~adjectives{{}}
 }
 ~portable{
   ~number{406}
-  ~location{302}
+  ~detail{302}
   ~bdesc{
     ~enUS{front steps}}
   ~gdesc{
@@ -761,14 +805,14 @@ dark and weatherstained.}}
 dark and weatherstained.  Apparently they're quite waterproof since they
 are barely warped at all.  Their uneven coloration suggests that now and
 then a board is replaced as an old one wears out.}}
-  ~flags{4}
+  ~flags{0}
   ~article{0}
   ~nouns{{~enUS{steps,step}}}
   ~adjectives{{~enUS{front,old,maintained,well-maintained,wood,wooden}}}
 }
 ~portable{
   ~number{407}
-  ~location{302}
+  ~detail{302}
   ~bdesc{
     ~enUS{hallway}}
   ~gdesc{
@@ -776,14 +820,14 @@ then a board is replaced as an old one wears out.}}
   ~ldesc{
     ~enUS{Looking into Peabody Hall, you can see dusty doors leading in several
 directions from its front hallway.}}
-  ~flags{4}
+  ~flags{0}
   ~article{0}
   ~nouns{{~enUS{hall,hallway}}}
   ~adjectives{{~enUS{peabody,inside,front}}}
 }
 ~portable{
   ~number{408}
-  ~location{304}
+  ~detail{304}
   ~bdesc{
     ~enUS{gaslamp}}
   ~gdesc{
@@ -793,14 +837,14 @@ directions from its front hallway.}}
 It was all the rage once.  You have to snicker at the irony of the poor
 old thing outside the Modern History building rather than, say, the
 Ancient History hall.}}
-  ~flags{4}
+  ~flags{0}
   ~article{0}
   ~nouns{{~enUS{lamp,gaslamp,lantern,post,lamppost,lightpost,light}}}
   ~adjectives{{~enUS{light,lamp,lantern,gas}}}
 }
 ~portable{
   ~number{409}
-  ~location{304}
+  ~detail{304}
   ~bdesc{
     ~enUS{the Block and the Tower}}
   ~gdesc{
@@ -809,14 +853,14 @@ Ancient History hall.}}
     ~enUS{Off to the southwest you can see the Block, an open area in the middle
 of campus, and the Tower within it.  The Tower is an old two-story open
 building where idle students hang out.}}
-  ~flags{4}
+  ~flags{0}
   ~article{0}
   ~nouns{{~enUS{block,tower}}}
   ~adjectives{{}}
 }
 ~portable{
   ~number{410}
-  ~location{304}
+  ~detail{304}
   ~bdesc{
     ~enUS{academic halls}}
   ~gdesc{
@@ -826,14 +870,14 @@ building where idle students hang out.}}
 To the south is Peabody Hall and Telman beyond it.  To the West you can
 see the gardener's shed just south of Pickford Engineering Hall.  Further
 East is the home of the English and Literature departments, Merritt Hall.}}
-  ~flags{4}
+  ~flags{0}
   ~article{0}
   ~nouns{{~enUS{hall,halls}}}
   ~adjectives{{~enUS{academic,telman,peabody,merritt,pickford,engineering,literature,english,humanities,economics,marsh,history,modern,languages}}}
 }
 ~portable{
   ~number{411}
-  ~location{304}
+  ~detail{304}
   ~bdesc{
     ~enUS{shed}}
   ~gdesc{
@@ -842,14 +886,14 @@ East is the home of the English and Literature departments, Merritt Hall.}}
     ~enUS{To the west, you can see an old shed used by the gardener hiding in the
 trees.  North of it is Pickford Hall, and south is the Block and the
 Tower.}}
-  ~flags{4}
+  ~flags{0}
   ~article{0}
   ~nouns{{~enUS{shed,building}}}
   ~adjectives{{~enUS{old,gardener's,decrepit,tool}}}
 }
 ~portable{
   ~number{412}
-  ~location{305}
+  ~detail{305}
   ~bdesc{
     ~enUS{spiral steps}}
   ~gdesc{
@@ -858,14 +902,14 @@ Tower.}}
     ~enUS{The steps are individually weirdly angular, and together they make an
 irregular spiral up to the sculpture outside the doors of Telman Hall.
 The pattern makes your head hurt if you look at it too long.}}
-  ~flags{4}
+  ~flags{0}
   ~article{0}
   ~nouns{{~enUS{step,steps,stair,stairs}}}
   ~adjectives{{~enUS{spiral,not-quite-spiral,not,quite}}}
 }
 ~portable{
   ~number{413}
-  ~location{305}
+  ~detail{305}
   ~bdesc{
     ~enUS{ugly sculpture}}
   ~gdesc{
@@ -874,14 +918,14 @@ The pattern makes your head hurt if you look at it too long.}}
     ~enUS{This sculpture is made of several ugly bright orange blocks arranged
 roughly into the shape of a "w".  It's not clear what it's supposed to
 be.}}
-  ~flags{4}
+  ~flags{0}
   ~article{0}
   ~nouns{{~enUS{sculpture,w,doubleyou,dubya,double-u}}}
   ~adjectives{{~enUS{ugly,orange,w,doubleyou,dubya,double-u}}}
 }
 ~portable{
   ~number{414}
-  ~location{305}
+  ~detail{305}
   ~bdesc{
     ~enUS{academic halls}}
   ~gdesc{
@@ -890,14 +934,14 @@ be.}}
     ~enUS{You can see Peabody Hall to the north, and Marsh hall beyond it.  The
 Block, a clearing in the center of campus, is barely visible through the
 trees to the northwest.}}
-  ~flags{4}
+  ~flags{0}
   ~article{0}
   ~nouns{{~enUS{hall,halls,peabody,marsh,clearing,block}}}
   ~adjectives{{~enUS{academic,peabody,marsh,distant}}}
 }
 ~portable{
   ~number{415}
-  ~location{306}
+  ~detail{306}
   ~bdesc{
     ~enUS{grass}}
   ~gdesc{
@@ -910,14 +954,14 @@ inviting.}}
   ~edesc{
     ~enUS{You search through the long grass, but you don't find anything beyond
 the expected small bugs, dirt and weeds.}}
-  ~flags{4}
+  ~flags{0}
   ~article{0}
   ~nouns{{~enUS{ground,grass,green}}}
   ~adjectives{{~enUS{green,grassy,long}}}
 }
 ~portable{
   ~number{416}
-  ~location{306}
+  ~detail{306}
   ~bdesc{
     ~enUS{academic halls}}
   ~gdesc{
@@ -925,14 +969,14 @@ the expected small bugs, dirt and weeds.}}
   ~ldesc{
     ~enUS{The only halls you can see from here are Peabody immediately to the
 north and the side of Telman to the south.}}
-  ~flags{4}
+  ~flags{0}
   ~article{0}
   ~nouns{{~enUS{halls,dorms}}}
   ~adjectives{{~enUS{academic,school}}}
 }
 ~portable{
   ~number{417}
-  ~location{306}
+  ~detail{306}
   ~bdesc{
     ~enUS{Telman Hall}}
   ~gdesc{
@@ -950,14 +994,14 @@ quite obvious why.
 
 Staring at it too long makes your head hurt, and your eyes feel like
 they're twisting in their sockets.  It's not comfortable.}}
-  ~flags{4}
+  ~flags{0}
   ~article{0}
   ~nouns{{~enUS{hall,telman}}}
   ~adjectives{{~enUS{telman,engineering,mathematics,science}}}
 }
 ~portable{
   ~number{418}
-  ~location{306}
+  ~detail{306}
   ~bdesc{
     ~enUS{Peabody Hall}}
   ~gdesc{
@@ -968,14 +1012,14 @@ on the first and second floor, each one painted over and painted
 shut.  The building is made of brick and you can see the sloped roof
 up above.  Peabody is an older building, and streaks of grime have
 formed below the windows.}}
-  ~flags{4}
+  ~flags{0}
   ~article{0}
   ~nouns{{~enUS{peabody,hall,windows}}}
   ~adjectives{{~enUS{peabody,painted,brick,humanities,economics}}}
 }
 ~portable{
   ~number{419}
-  ~location{307}
+  ~detail{307}
   ~bdesc{
     ~enUS{Telman's wall}}
   ~gdesc{
@@ -986,14 +1030,14 @@ of some kind.  There are no windows on the northern wall at all.  There's
 something odd about the angle the wall makes with the ground -- you can't
 tell if it's looming over you or receding away from you, but the angle
 is very unusual in any case.}}
-  ~flags{4}
+  ~flags{0}
   ~article{0}
   ~nouns{{~enUS{hall,telman,walls,windows}}}
   ~adjectives{{~enUS{telman,hall,angular,odd,mathematics,science}}}
 }
 ~portable{
   ~number{420}
-  ~location{307}
+  ~detail{307}
   ~bdesc{
     ~enUS{dry grass}}
   ~gdesc{
@@ -1001,14 +1045,14 @@ is very unusual in any case.}}
   ~ldesc{
     ~enUS{The grass here is in dry clumps and doesn't look particularly healthy.
 The ground underneath is quite hard.}}
-  ~flags{4}
+  ~flags{0}
   ~article{0}
   ~nouns{{~enUS{tufts,grasses,clumps,ground}}}
   ~adjectives{{~enUS{grassy,tufts,dry,long,hard,tufted}}}
 }
 ~portable{
   ~number{421}
-  ~location{308}
+  ~detail{308}
   ~bdesc{
     ~enUS{long grass}}
   ~gdesc{
@@ -1016,14 +1060,14 @@ The ground underneath is quite hard.}}
   ~ldesc{
     ~enUS{The grass here isn't cut as often as the more frequently-trodden parts
 of campus.  It looks long and comfortable to walk through or lie in.}}
-  ~flags{4}
+  ~flags{0}
   ~article{0}
   ~nouns{{~enUS{grasses}}}
   ~adjectives{{~enUS{green,long}}}
 }
 ~portable{
   ~number{422}
-  ~location{308}
+  ~detail{308}
   ~bdesc{
     ~enUS{academic halls}}
   ~gdesc{
@@ -1032,7 +1076,7 @@ of campus.  It looks long and comfortable to walk through or lie in.}}
     ~enUS{Peabody Hall stands to the south of you, and Marsh to the northwest.
 Neither side of either building looks particularly interesting from
 here.}}
-  ~flags{4}
+  ~flags{0}
   ~article{0}
   ~nouns{{~enUS{marsh,peabody,halls}}}
   ~adjectives{{~enUS{telman,marsh,halls,economics,humanities,history,languages,modern}}}
