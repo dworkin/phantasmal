@@ -54,16 +54,10 @@ void upgraded(varargs int clone) {
   command_sets
     = ({
       ([
-	"@set_glance"          : ({ "cmd_set_obj_desc" }),
 	"@set_brief"           : ({ "cmd_set_obj_desc" }),
 	"@set_look"            : ({ "cmd_set_obj_desc" }),
 	"@set_examine"         : ({ "cmd_set_obj_desc" }),
 	"@stat"                : ({ "cmd_stat" }),
-
-	"@set_obj_art"         : ({ "cmd_set_obj_article" }),
-	"@set_object_art"      : ({ "cmd_set_obj_article" }),
-	"@set_obj_article"     : ({ "cmd_set_obj_article" }),
-	"@set_object_article"  : ({ "cmd_set_obj_article" }),
 
 	"@set_obj_fl"          : ({ "cmd_set_obj_flag" }),
 	"@set_obj_flag"        : ({ "cmd_set_obj_flag" }),

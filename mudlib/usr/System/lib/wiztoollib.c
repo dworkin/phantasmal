@@ -440,7 +440,7 @@ static void cmd_list_mobiles(object user, string cmd, string str) {
     tmp += "     ";
 
     if(mob->get_body()) {
-      phr = mob->get_body()->get_glance();
+      phr = mob->get_body()->get_brief();
       tmp += phr->to_string(user);
     } else {
       tmp += "<bodiless mob>";

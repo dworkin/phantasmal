@@ -58,7 +58,7 @@ static object resolve_object_name(object user, string name)
 }
 
 
-/* Set object description.  This command is @set_brief, @set_glance,
+/* Set object description.  This command is @set_brief,
    @set_look and @set_examine. */
 static void cmd_set_obj_desc(object user, string cmd, string str) {
   object obj;
@@ -138,7 +138,7 @@ private void priv_mob_stat(object user, object mob) {
   tmp = "Body: ";
   if(mobbody) {
     tmp += "#" + mobbody->get_number() + " (";
-    tmp += mobbody->get_glance()->to_string(user);
+    tmp += mobbody->get_brief()->to_string(user);
     tmp += ")\r\n";
   } else {
     tmp += "(none)\r\n";
@@ -166,11 +166,11 @@ private void priv_mob_stat(object user, object mob) {
 
 
 static void cmd_stat(object user, string cmd, string str) {
-  int     objnum, ctr, art_type;
+  int     objnum, ctr;
   object  obj, room, exit, location;
   string* words;
   string  tmp;
-  mixed*  objs, *art_desc, *tags;
+  mixed*  objs, *tags;
   object *details, *archetypes;
 
   if(!str || STRINGD->is_whitespace(str)) {
@@ -237,9 +237,9 @@ static void cmd_stat(object user, string cmd, string str) {
        && location->get_number() != -1) {
       tmp += "#" + location->get_number();
 
-      if(location->get_glance()) {
+      if(location->get_brief()) {
 	tmp += " (";
-	tmp += location->get_glance()->to_string(user);
+	tmp += location->get_brief()->to_string(user);
 	tmp += ")\r\n";
       } else {
 	tmp += "\r\n";
@@ -262,13 +262,6 @@ static void cmd_stat(object user, string cmd, string str) {
     tmp += "(none)\r\n";
   }
 
-  tmp += "Glance: ";
-  if(obj->get_glance()) {
-    tmp += "'" + obj->get_glance()->to_string(user) + "'\r\n";
-  } else {
-    tmp += "(none)\r\n";
-  }
-
   tmp += "Look:\r\n  ";
   if(obj->get_look()) {
     tmp += "'" + obj->get_look()->to_string(user) + "'\r\n";
@@ -286,14 +279,6 @@ static void cmd_stat(object user, string cmd, string str) {
   } else {
     tmp += "(none)\r\n";
   }
-
-  /* Show user the article type */
-  tmp += "Article: ";
-  art_type = obj->get_article_type();
-  art_desc = ({ "Undefined", "Definite (the)", "Indefinite (a/an)",
-		  "Proper Name (no article)", "Illegal", "Illegal" });
-  tmp += art_desc[art_type];
-  tmp += "\r\n";
 
   /* Show user the nouns and adjectives */
   tmp += "Nouns ("
@@ -418,7 +403,7 @@ static void cmd_stat(object user, string cmd, string str) {
     tmp += "Instance of archetype(s): ";
     for(ctr = 0; ctr < sizeof(archetypes); ctr++) {
       tmp += "#" + archetypes[ctr]->get_number()
-	+ " (" + archetypes[ctr]->get_glance()->to_string(user)
+	+ " (" + archetypes[ctr]->get_brief()->to_string(user)
 	+ ")";
     }
     tmp += ".\r\n";
@@ -431,48 +416,6 @@ static void cmd_stat(object user, string cmd, string str) {
   }
 
   user->message_scroll(tmp);
-}
-
-
-static void cmd_set_obj_article(object user, string cmd, string str) {
-  string  objname, article;
-  mapping arts;
-  int     artnum;
-  object  obj;
-
-  arts = ([ "def": ART_DEFINITE,
-	    "definite": ART_DEFINITE,
-	    "the": ART_DEFINITE,
-	    "prop": ART_PROPER,
-	    "none": ART_PROPER,
-	    "proper": ART_PROPER,
-	    "name": ART_PROPER,
-	    "a": ART_INDEFINITE,
-	    "an": ART_INDEFINITE,
-	    "ind": ART_INDEFINITE,
-	    "indefinite": ART_INDEFINITE,
-	    "indef": ART_INDEFINITE,
-	    ]);
-
-  if(!str || sscanf(str, "%*s %*s %*s") == 3
-     || sscanf(str, "%s %s", objname, article) != 2) {
-    user->message("Usage: " + cmd + " #<objnum> <article>\r\n");
-  }
-
-  obj = resolve_object_name(user, objname);
-  if(!obj) {
-    user->message("Can't find object '" + objname + "'.\r\n");
-    return;
-  }
-
-  if(!arts[article]) {
-    user->message("The word '" + article
-		  + "' doesn't seem to be a kind of article.\r\n");
-    return;
-  }
-
-  obj->set_article_type(arts[article]);
-  user->message("Article type set.\r\n");
 }
 
 
