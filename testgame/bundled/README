@@ -11,6 +11,16 @@ installed it in, and possibly other aspects of your system.  Go ahead
 and read the INSTALL file in this directory for more details.
 
 
+                         Port Numbers
+
+Phantasmal uses the third binary port for standard login, or the only
+telnet port.  Either of those should get you a satisfactory result if
+you use them for telnetting to the MUD.  The first binary port is the
+safety port - you don't want normal players using it.  The second
+binary port is for SSH, and you'll want to instruct the players in how
+to use that as a MUD client.
+
+
                            Versions
 
 This bundled release incorporates a recent version of DGD, a recent version
