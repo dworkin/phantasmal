@@ -37,7 +37,6 @@ static  void __co_write_zones(object user, int* objects, int ctr,
 			      string zonefile);
 static  void __reboot_callback(void);
 static  void __shutdown_callback(void);
-static  int  read_object_dir(string path);
         void set_path_special_object(object new_obj);
 
 
@@ -68,9 +67,9 @@ static int delete_directory(string dirname) {
 static void create(varargs int clone)
 {
   object driver, obj, the_void;
-  string zone_file, mapd_dtd, help_dtd, objs_file, mobfile_dtd, mob_file;
+  string zone_file, mapd_dtd, help_dtd, mobfile_dtd;
   string bind_dtd;
-  int major, minor, patch, rooms_loaded, mobiles_loaded;
+  int major, minor, patch;
 
   /* First things first -- this release needs one of the
      latest versions of DGD, so let's make sure. */
@@ -217,37 +216,8 @@ static void create(varargs int clone)
     error("Error occurred while cloning The Void!");
   MAPD->add_room_to_zone(the_void, 0, 0);
 
-
-  /* Load stuff into MAPD and EXITD */
-  /* TODO:  move this section into GAME_INITD */
-  if(read_object_dir(ROOM_DIR) >= 0) {
-    EXITD->add_deferred_exits();
-    MAPD->do_room_resolution(1);
-    rooms_loaded = 1;
-  } else {
-    DRIVER->message("Can't read object files!  Starting incomplete!\n");
-    LOGD->write_syslog("Can't read object files!  Starting incomplete!",
-		       LOG_ERROR);
-    rooms_loaded = 0;
-  }
-
-  /* driver->message("Loading mobiles...\n"); */
-
   /* Set up the MOBILED */
   MOBILED->init();
-
-  /* Load the mobilefile into MOBILED */
-  /* TODO:  move this into GAME_INITD */
-  mob_file = read_file(MOB_FILE);
-  if(mob_file) {
-    MOBILED->add_unq_text_mobiles(mob_file, MOB_FILE);
-    mobiles_loaded = 1;
-  } else {
-    DRIVER->message("Can't read mobile file!  Starting w/o mobiles!\n");
-    LOGD->write_syslog("Can't read mobile file!  Starting w/o mobiles!",
-		       LOG_ERROR);
-    mobiles_loaded = 0;
-  }
 
   /* Make sure ConfigD is set up for scripting */
   CONFIGD->set_path_special(nil);
@@ -572,34 +542,6 @@ static void __co_write_zones(object user, int* objects, int ctr,
   LOGD->write_syslog("Finished writing saved data...", LOG_NORMAL);
   if(user)
     user->message("Finished writing data.\n");
-}
-
-
-static int read_object_dir(string path) {
-  mixed** dir;
-  int     ctr;
-  string  file;
-
-  dir = get_dir(path + "/zone*.unq");
-  if(!sizeof(dir[0])) {
-    LOGD->write_syslog("Can't find any '" + path
-		       + "/zone*.unq' files to load!", LOG_ERR);
-    return -1;
-  }
-
-  for(ctr = 0; ctr < sizeof(dir[0]); ctr++) {
-    /* Skip directories */
-    if(dir[1][ctr] == -2)
-      continue;
-
-    file = read_file(path + "/" + dir[0][ctr]);
-    if(!file || !strlen(file)) {
-      /* Nothing was read.  Return error. */
-      return -1;
-    }
-
-    MAPD->add_unq_text_rooms(file, ROOM_DIR + "/" + dir[0][ctr]);
-  }
 }
 
 
