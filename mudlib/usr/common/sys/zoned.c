@@ -177,7 +177,6 @@ void write_to_file(string filename) {
   if(previous_program() != "/usr/System/initd")
     error("Only INITD may instruct the ZONED to write files!");
 
-  LOGD->write_syslog("Writing to file " + filename);
   dtd::write_to_file(filename);
 }
 
