@@ -491,7 +491,7 @@ static void cmd_list_mobiles(object user, string cmd, string str) {
 
 static void cmd_delete_mobile(object user, string cmd, string str) {
   int    mobnum;
-  object mob;
+  object mob, body, location;
 
   if(!str || STRINGD->is_whitespace(str)
      || sscanf(str, "%*s %*s") == 2
@@ -513,7 +513,17 @@ static void cmd_delete_mobile(object user, string cmd, string str) {
     return;
   }
 
-  destruct_object(mob);
+  /* Need to remove mobile from any room lists it currently occupies. */
+  body = mob->get_body();
+  if(body) {
+    location = body->get_location();
+    if(location) {
+      location->remove_from_container(body);
+      destruct_object(mob);
+      location->add_to_container(body);
+    }
+  }
+
   user->message("Mobile #" + mobnum + " successfully destructed.\r\n");
 }
 
