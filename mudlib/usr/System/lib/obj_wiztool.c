@@ -150,6 +150,7 @@ static void cmd_stat(object user, string cmd, string str) {
   int     objnum, ctr, art_type;
   object  obj, room, exit, location;
   string* words;
+  string  tmp;
   mixed*  objs, *art_desc;
 
   if(!str || STRINGD->is_whitespace(str) || sscanf(str, "%*s %*s") == 2
@@ -177,141 +178,141 @@ static void cmd_stat(object user, string cmd, string str) {
     return;
   }
 
-  user->message("Location: ");
+  tmp = "Location: ";
   location = obj->get_location();
   if(location) {
     if(typeof(location->get_number()) == T_INT
        && location->get_number() != -1) {
-      user->message("#" + location->get_number());
+      tmp += "#" + location->get_number();
 
       if(location->get_glance()) {
-	user->message(" (");
-	user->send_phrase(location->get_glance());
-	user->message(")\r\n");
+	tmp += " (";
+	tmp += location->get_glance()->to_string(user);
+	tmp += ")\r\n";
       } else {
-	user->message("\r\n");
+	tmp += "\r\n";
       }
     } else {
-      user->message(" (unregistered)\r\n");
+      tmp += " (unregistered)\r\n";
     }
   } else {
-    user->message(" (none)\r\n");
+    tmp += " (none)\r\n";
   }
 
-  user->message("Descriptions ("
+  tmp += "Descriptions ("
 		+ PHRASED->locale_name_for_language(user->get_locale())
-		+ ")\r\n");
+		+ ")\r\n";
 
-  user->message("Brief:\r\n  ");
+  tmp += "Brief:\r\n  ";
   if(obj->get_brief()) {
-    user->message("'" + obj->get_brief()->to_string(user) + "'\r\n");
+    tmp += "'" + obj->get_brief()->to_string(user) + "'\r\n";
   } else {
-    user->message("(none)\r\n");
+    tmp += "(none)\r\n";
   }
 
-  user->message("Glance:\r\n  ");
+  tmp += "Glance:\r\n  ";
   if(obj->get_glance()) {
-    user->message("'" + obj->get_glance()->to_string(user) + "'\r\n");
+    tmp += "'" + obj->get_glance()->to_string(user) + "'\r\n";
   } else {
-    user->message("(none)\r\n");
+    tmp += "(none)\r\n";
   }
 
-  user->message("Look:\r\n  ");
+  tmp += "Look:\r\n  ";
   if(obj->get_look()) {
-    user->message("'" + obj->get_look()->to_string(user) + "'\r\n");
+    tmp += "'" + obj->get_look()->to_string(user) + "'\r\n";
   } else {
-    user->message("(none)\r\n");
+    tmp += "(none)\r\n";
   }
 
-  user->message("Examine:\r\n  ");
+  tmp += "Examine:\r\n  ";
   if(obj->get_examine()) {
     if(obj->get_examine() == obj->get_look()) {
-      user->message("(defaults to Look desc)\r\n");
+      tmp += "(defaults to Look desc)\r\n";
     } else {
-      user->message("'" + obj->get_examine()->to_string(user) + "'\r\n");
+      tmp += "'" + obj->get_examine()->to_string(user) + "'\r\n";
     }
   } else {
-    user->message("(none)\r\n");
+    tmp += "(none)\r\n";
   }
 
   /* Show user the article type */
-  user->message("Article: ");
+  tmp += "Article: ";
   art_type = obj->get_article_type();
   art_desc = ({ "Undefined", "Definite (the)", "Indefinite (a/an)",
 		  "Proper Name (no article)", "Illegal", "Illegal" });
-  user->message(art_desc[art_type]);
-  user->message("\r\n");
+  tmp += art_desc[art_type];
+  tmp += "\r\n";
 
   /* Show user the nouns and adjectives */
-  user->message("Nouns ("
-		+ PHRASED->locale_name_for_language(user->get_locale())
-		+ "): ");
+  tmp += "Nouns ("
+    + PHRASED->locale_name_for_language(user->get_locale())
+    + "): ";
   words = obj->get_nouns(user->get_locale());
-  user->message(implode(words, ", "));
-  user->message("\r\n");
+  tmp += implode(words, ", ");
+  tmp += "\r\n";
 
-  user->message("Adjectives ("
-		+ PHRASED->locale_name_for_language(user->get_locale())
-		+ "): ");
+  tmp += "Adjectives ("
+    + PHRASED->locale_name_for_language(user->get_locale())
+    + "): ";
   words = obj->get_adjectives(user->get_locale());
-  user->message(implode(words, ", "));
-  user->message("\r\n");
-
-  user->message("\r\n");
+  tmp += implode(words, ", ");
+  tmp += "\r\n\r\n";
 
   if(function_object("is_container", obj)) {
     if(obj->is_no_desc()) {
-      user->message("The object is a 'nodesc' scenery object.\r\n");
+      tmp += "The object is a 'nodesc' scenery object.\r\n";
     }
     if(obj->is_container()) {
       if(obj->is_open()) {
-	user->message("The object is an open container.\r\n");
+	tmp += "The object is an open container.\r\n";
       } else {
-	user->message("The object is a closed container.\r\n");
+	tmp += "The object is a closed container.\r\n";
       }
     } else {
-      user->message("The object is not a container.\r\n");
+      tmp += "The object is not a container.\r\n";
     }
   }
 
-  user->message("\r\n");
+  tmp += "\r\n";
 
   if(function_object("num_objects_in_container", obj)) {
-    user->message("Contains objects [" + obj->num_objects_in_container()
-		  + "]: ");
+    tmp += "Contains objects [" + obj->num_objects_in_container()
+		  + "]: ";
     objs = obj->objects_in_container();
     for(ctr = 0; ctr < sizeof(objs); ctr++) {
       if(typeof(objs[ctr]->get_number()) == T_INT
 	 && objs[ctr]->get_number() != -1) {
-	user->message("#" + objs[ctr]->get_number() + " ");
+	tmp += "#" + objs[ctr]->get_number() + " ";
       } else {
-	user->message("<unreg> ");
+	tmp += "<unreg> ";
       }
     }
-    user->message("\r\nContains " + sizeof(obj->mobiles_in_container())
-		  + " mobiles.\r\n\r\n");
+    tmp += "\r\nContains " + sizeof(obj->mobiles_in_container())
+		  + " mobiles.\r\n\r\n";
   }
 
   if(obj->get_mobile()) {
-    user->message("Object is sentient.\r\n");
+    tmp += "Object is sentient.\r\n";
     if(obj->get_mobile()->get_user()) {
-      user->message("Object is "
-		    + obj->get_mobile()->get_user()->query_name()
-		    + "'s body.\r\n");
+      tmp += "Object is "
+	+ obj->get_mobile()->get_user()->query_name()
+	+ "'s body.\r\n";
     }
   }
 
   if(obj->get_archetype()) {
-    user->message("Instance of archetype #"
-		  + obj->get_archetype()->get_number()
-		  + ".\r\n");
+    tmp += "Instance of archetype #"
+      + obj->get_archetype()->get_number()
+      + ".\r\n";
   }
   if(room) {
-    user->message("Registered with MAPD as a room.\r\n");
+    tmp += "Registered with MAPD as a room or portable.\r\n";
   }
   if(exit) {
-    user->message("Registered with EXITD as an exit.\r\n");
+    tmp += "Registered with EXITD as an exit.\r\n";
   }
+
+  user->message_scroll(tmp);
 }
 
 
