@@ -8,7 +8,6 @@
  * /lib/object.c
  *
  * A straightforward MUD object with the normal, expected facilities.
- * Not, by itself, a container.
  *
  */
 
@@ -45,7 +44,7 @@ int    tr_num;
 object mobile;
 
 /* Parent/archetype for data inheritance */
-object parent;
+object archetype;
 
 /* Details -- sub-objects that are part of this one */
 mixed*  details;
@@ -143,6 +142,8 @@ object get_mobile(void) {
   return mobile;
 }
 
+/**** Get and Set textual descriptions of the object ****/
+
 object get_brief(void) {
   return bdesc;
 }
@@ -180,16 +181,17 @@ void clear_examine(void) {
   edesc = nil;
 }
 
+
 int get_number(void) {
   return tr_num;
 }
 
-object get_parent(void) {
-  return parent;
+object get_archetype(void) {
+  return archetype;
 }
 
-void set_parent(object new_parent) {
-  parent = new_parent;
+void set_archetype(object new_arch) {
+  archetype = new_arch;
 }
 
 void add_noun(object phr) {
