@@ -23,7 +23,9 @@ Release 0.013:
 	* Merged MOBILE_PORTABLE into SIMPLE_PORTABLE
 	* Merged SIMPLE_PORTABLE into SIMPLE_ROOM
 	* Made mobiles able to accept an optional name field as a comment
-	* HelpD now loads using call_outs
+	* New prototype parser (thanks to Keith Dunwoody)
+	* Serious rework of EXIT code, including locked and lockable
+	  objects, ability to look at doors, one- and two-way exits.
 
 Release 0.012:
 	* More logging and stuff in ObjectD.  And fixed a bug that

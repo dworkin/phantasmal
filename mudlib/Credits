@@ -1,12 +1,15 @@
 The Phantasmal MUDLib is primarily written and maintained by Noah
 Gibbs.  Other contributors include:
 
-- Keith Dunwoody for patches to merge PORTABLED with MAPD, for major
-contributions to the MOBILE infrastructure, and a patch to add new
-modifiers to UNQ DTDs
+- Keith Dunwoody for patches to merge PORTABLED with MAPD, for the new
+parser, for major contributions to the MOBILE infrastructure, and a
+patch to add new modifiers to UNQ DTDs
 
 - Tom Lokovic for testing, ideas, and work on various speculative or
 related projects, including the original design of the UNQ format
+
+- Dan Parks for the new exits code, for a bugfix with user login and
+password changing, and for some miscellaneous other bugfinding
 
 - Gary (muphicks at mups dot co dot united-kingdom) for a useful patch
 for the zonefile and general brainstorming
@@ -15,8 +18,6 @@ for the zonefile and general brainstorming
 
 - Jay Shaffstall for StringD code and escape character codes for UNQ
 parsers
-
-- Dan Parks for a bugfix with user login and password changing
 
 - Mark Luszniak for requesting more documentation, and for submitting
 simple object code.
