@@ -56,6 +56,12 @@ int is_alphanum(string str) {
 			+ "full : regstring", str);
 }
 
+int is_ident(string str) {
+  return !!parse_string("regstring = /[a-zA-Z\-_]+/\n"
+			+ "notreg = /[^a-zA-Z\-_]+/\n"
+			+ "full : regstring", str);
+}
+
 int string_has_char(int char, string str) {
   int len, iter;
 
