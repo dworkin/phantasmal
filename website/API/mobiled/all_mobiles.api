@@ -1,0 +1,23 @@
+FILE
+	/usr/common/sys/mobiled.c
+
+NAME
+	all_mobiles - get a list of all mobiles everywhere
+
+PROTOTYPE
+	int *all_mobiles(void)
+
+CALLED BY
+	System, Common, Game
+
+DESCRIPTION
+	Returns a list of mobile numbers of every mobile in the game.
+
+RETURN VALUE
+	A list of integer mobile numbers, or nil.
+
+ERRORS
+	Normally none.
+
+SEE ALSO
+	add_mobile_number, get_mobile_by_num, mobiles_in_segment

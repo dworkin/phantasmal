@@ -1,0 +1,27 @@
+FILE
+	/usr/common/sys/mobiled.c
+
+NAME
+	remove_mobile - remove a mobile from the mobiled, and from the
+	containing room
+
+PROTOTYPE
+	void remove_mobile(object mobile)
+
+CALLED BY
+	System, Common, Game
+
+DESCRIPTION
+	Removes the mobile from mobiled.  Also removes the mobile from
+	the mobile list of the room containing the mobile, and destructs
+	the mobile's object.
+
+RETURN VALUE
+	None.
+
+ERRORS
+	An already-destructed mobile will give an error, as will
+	inconsistencies in the room bookkeeping.
+
+SEE ALSO
+	add_mobile_number

@@ -1,0 +1,25 @@
+FILE
+	/usr/common/sys/mobiled.c
+
+NAME
+	clone_mobile_by_type - clone a new mobile object
+
+PROTOTYPE
+	object clone_mobile_by_type(string mobtype)
+
+CALLED BY
+	System, Common, Game
+
+DESCRIPTION
+	Passes a type name to mobiled, and receives a new cloned mobile
+	of that type in return.  The new object is cloned based on the
+	mobile binder file.
+
+RETURN VALUE
+	The mobile, or nil if the type is unrecognized or the cloning
+	fails.
+
+ERRORS
+	All errors caused by clone_object() may occur.
+
+SEE ALSO

@@ -1,0 +1,32 @@
+FILE
+	/usr/common/sys/mobiled.c
+
+NAME
+	add_dtd_unq_mobiles - add and register mobiles as pre-parsed UNQ
+
+PROTOTYPE
+	void add_dtd_unq_mobiles(mixed *unq, string filename)
+
+CALLED BY
+	System, Common, Game
+
+DESCRIPTION
+	Creates and registers mobiles based on the supplied UNQ data.
+	The UNQ data is assumed to come from the standard mobile UNQ
+	DTD.  This function uses the mobile binder's current
+	configuration.  It is assumed that the mobiles' bodies, if
+	any, already exist and are registered by number with the
+	MapD.
+
+	This function is optional, in the sense that everything it
+	does can be done in your own way and your own format, if
+	you're so inclined.
+
+RETURN VALUE
+	None.
+
+ERRORS
+	Many errors can occur in parsing, cloning and setting data.
+
+SEE ALSO
+	add_mobile_number, get_mobile_by_num, add_unq_text_mobiles

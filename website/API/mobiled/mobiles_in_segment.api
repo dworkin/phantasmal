@@ -1,0 +1,23 @@
+FILE
+	/usr/common/sys/mobiled.c
+
+NAME
+	mobiles_in_segment - get a list of all mobiles in a given segment
+
+PROTOTYPE
+	int *mobiles_in_segment(int segment_number)
+
+CALLED BY
+	System, Common, Game
+
+DESCRIPTION
+	Returns a list of mobile numbers in the given segment.
+
+RETURN VALUE
+	A list of integer mobile numbers, or nil.
+
+ERRORS
+	Normally none.
+
+SEE ALSO
+	add_mobile_number, get_mobile_by_num, all_mobiles

@@ -1,0 +1,25 @@
+FILE
+	/usr/common/sys/mobiled.c
+
+NAME
+	add_mobile_number - register a mobile with MobileD
+
+PROTOTYPE
+	int add_mobile_number(object mobile, int num)
+
+CALLED BY
+	System, Common, Game
+
+DESCRIPTION
+	Registers a mobile with MobileD.  If num is greater than zero,
+	it assigns that as the number, or causes an error.  If num is
+	-1, a number is automatically assigned.
+
+RETURN VALUE
+	The new mobile number, or -1 if the number can't be assigned.
+
+ERRORS
+	Invalid parameters can cause various errors.
+
+SEE ALSO
+	remove_mobile
