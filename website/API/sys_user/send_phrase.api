@@ -1,0 +1,24 @@
+FILE
+	/usr/System/obj/user.c
+
+NAME
+	send_phrase - send a Phantasmal phrase object to the user
+
+PROTOTYPE
+	int send_phrase(object phrase)
+
+CALLED BY
+	System, Common, Game
+
+DESCRIPTION
+	Send the user the phrase in question, filtered by the state
+	stack and localized to the user.
+
+RETURN VALUE
+	The number of bytes sent.
+
+ERRORS
+	Return -1 if unable to send
+
+SEE ALSO
+	message, new_simple_english_phrase, send_system_phrase

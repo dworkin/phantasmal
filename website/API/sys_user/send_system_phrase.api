@@ -1,0 +1,27 @@
+FILE
+	/usr/System/obj/user.c
+
+NAME
+	send_system_phrase - send a standard system Phantasmal phrase
+	object to the user
+
+PROTOTYPE
+	int send_system_phrase(string str)
+
+CALLED BY
+	System, Common, Game
+
+DESCRIPTION
+	Send the user the phrase in question, filtered by the state
+	stack and localized to the user.  The phrase is specified by
+	a string.  If you're not familiar with the System phrases, you
+	should skip this function in favor of another.
+
+RETURN VALUE
+	The number of bytes sent.
+
+ERRORS
+	Return -1 if unable to send
+
+SEE ALSO
+	message, send_phrase

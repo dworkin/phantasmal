@@ -1,0 +1,24 @@
+FILE
+	/usr/System/obj/user.c
+
+NAME
+	get_idle_time - get the user's idle time
+
+PROTOTYPE
+	int get_idle_time(void)
+
+CALLED BY
+	Anybody (for now)
+
+DESCRIPTION
+	Return the user's idle time in seconds.  The idle time is the
+	time since the last network input on the user's connection.
+
+RETURN VALUE
+	The user's idle time in seconds
+
+ERRORS
+	Normally none.
+
+SEE ALSO
+	get_name

@@ -1,0 +1,23 @@
+FILE
+	/usr/System/obj/user.c
+
+NAME
+	get_Name - get the user's name, capitalized
+
+PROTOTYPE
+	string get_Name(void)
+
+CALLED BY
+	Anybody (for now)
+
+DESCRIPTION
+	Return the user's name as a string, with the first letter capitalized
+
+RETURN VALUE
+	The user's name as a string, capitalized
+
+ERRORS
+	Normally none.
+
+SEE ALSO
+	get_locale, get_name

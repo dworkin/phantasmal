@@ -1,0 +1,23 @@
+FILE
+	/usr/System/obj/user.c
+
+NAME
+	get_name - get the user's name as typed
+
+PROTOTYPE
+	string get_name(void)
+
+CALLED BY
+	Anybody (for now)
+
+DESCRIPTION
+	Return the user's name as a string, as the user typed it.
+
+RETURN VALUE
+	The user's name as a string
+
+ERRORS
+	Normally none.
+
+SEE ALSO
+	get_locale, get_Name

@@ -1,0 +1,24 @@
+FILE
+	/usr/System/obj/user.c
+
+NAME
+	message - send a message to the user
+
+PROTOTYPE
+	int message(string str)
+
+CALLED BY
+	System, Common, Game
+
+DESCRIPTION
+	Send the user the string in question, filtered by the state
+	stack.
+
+RETURN VALUE
+	The number of bytes sent.
+
+ERRORS
+	Return -1 if unable to send
+
+SEE ALSO
+	send_phrase, send_system_phrase

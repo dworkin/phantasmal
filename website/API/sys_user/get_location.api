@@ -1,0 +1,23 @@
+FILE
+	/usr/System/obj/user.c
+
+NAME
+	get_location - get the user's location
+
+PROTOTYPE
+	object get_location(void)
+
+CALLED BY
+	Anybody (for now)
+
+DESCRIPTION
+	Return the user's location as an object
+
+RETURN VALUE
+	The user's name as a DGD object
+
+ERRORS
+	Normally none.
+
+SEE ALSO
+	get_body, get_name

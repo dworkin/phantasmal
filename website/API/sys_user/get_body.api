@@ -1,0 +1,24 @@
+FILE
+	/usr/System/obj/user.c
+
+NAME
+	get_body - get the user's body object
+
+PROTOTYPE
+	object get_body(void)
+
+CALLED BY
+	Anybody (for now)
+
+DESCRIPTION
+	Return the user's body as a DGD object.  The body object can
+	be used to find the mobile object and other information.
+
+RETURN VALUE
+	The user's body as a DGD object.
+
+ERRORS
+	Normally none.
+
+SEE ALSO
+	get_location, get_name

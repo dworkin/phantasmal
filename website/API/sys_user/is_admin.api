@@ -1,0 +1,23 @@
+FILE
+	/usr/System/obj/user.c
+
+NAME
+	is_admin - get whether the user is an administrator
+
+PROTOTYPE
+	int is_admin(void)
+
+CALLED BY
+	Anybody (for now)
+
+DESCRIPTION
+	Return whether the user is registered as an administrator.
+
+RETURN VALUE
+	1 if the user is an administrator, 0 otherwise.
+
+ERRORS
+	Normally none.
+
+SEE ALSO
+	get_name

@@ -1,0 +1,24 @@
+FILE
+	/usr/System/obj/user.c
+
+NAME
+	set_locale - set the user's locale
+
+PROTOTYPE
+	void set_locale(int new_locale)
+
+CALLED BY
+	System, Common, Game
+
+DESCRIPTION
+	Set the user's locale as an integer.  Please be careful that
+	the locale is valid!
+
+RETURN VALUE
+	None.
+
+ERRORS
+	Normally none.
+
+SEE ALSO
+	get_locale, name_for_language, language_by_name

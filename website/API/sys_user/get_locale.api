@@ -1,0 +1,23 @@
+FILE
+	/usr/System/obj/user.c
+
+NAME
+	get_locale - get the user's locale
+
+PROTOTYPE
+	int get_locale(void)
+
+CALLED BY
+	Anybody (for now)
+
+DESCRIPTION
+	Return the user's locale as an integer
+
+RETURN VALUE
+	The user's locale as an integer
+
+ERRORS
+	Normally none.
+
+SEE ALSO
+	set_locale, name_for_language
