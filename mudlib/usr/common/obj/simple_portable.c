@@ -1,6 +1,5 @@
 #include <config.h>
 
-/* inherit port PORTABLE; */
 inherit port ROOM;
 inherit unq UNQABLE;
 
