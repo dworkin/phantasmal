@@ -4,7 +4,7 @@
 
 /* Phrase functions */
 
-string* content;
+mixed* content;
 
 static void create(varargs int clone)
 {
