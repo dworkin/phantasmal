@@ -28,6 +28,8 @@ void upgraded(varargs int clone);
 
 #define PHR(x) PHRASED->new_simple_english_phrase(x)
 #define FILE(x) PHRASED->file_phrase(EXITD_PHRASES,(x))
+#define TRUE 1
+#define FALSE 0
 
 static void create(varargs int clone) {
   if(clone)
@@ -362,12 +364,8 @@ void add_twoway_exit_between(object room1, object room2, int direction,
   exit1->set_from_location(room1);
   exit1->set_direction(direction);
   exit1->set_exit_type(ET_TWOWAY);
-
-/*  exit1->set_openable(0); */
-  exit1->set_open(1);
-/*  exit1->set_lockable(0); */
-/*  exit1->set_locked(0); */
-
+  exit1->set_open(TRUE);
+  exit1->set_container(TRUE);
   exit1->set_glance(dir);
   exit1->set_look(dir);
   exit1->add_noun(dir);
@@ -375,12 +373,10 @@ void add_twoway_exit_between(object room1, object room2, int direction,
   exit2->set_destination(room1);
   exit2->set_from_location(room2);
   exit2->set_direction(opposite_direction(direction));
-  exit2->set_exit_type(ET_TWOWAY); /* two-way */
+  exit2->set_exit_type(ET_TWOWAY);
 
-/*  exit2->set_openable(0); */
-  exit2->set_open(1);
-/*  exit2->set_lockable(0); */
-/*  exit2->set_locked(0); */
+  exit2->set_open(TRUE);
+  exit2->set_container(TRUE);
 
   exit2->set_glance(opp_dir);
   exit2->set_look(opp_dir);
@@ -425,12 +421,8 @@ void add_oneway_exit_between(object room1, object room2, int direction,
   exit1->set_from_location(room1);
   exit1->set_direction(direction);
   exit1->set_exit_type(ET_ONEWAY);
-
-/*  exit1->set_openable(0); */
-  exit1->set_open(1);
-/*  exit1->set_lockable(0); */
-/*  exit1->set_locked(0); */
-
+  exit1->set_open(TRUE);
+  exit1->set_container(TRUE);
   exit1->set_glance(dir);
   exit1->set_look(dir);
   exit1->add_noun(dir);
@@ -459,10 +451,11 @@ void fix_exit(object exit, int type, int link) {
 
   exit->set_exit_type(type);
   exit->set_link(link);
-  exit->set_openable(0);
-  exit->set_open(1);
-  exit->set_lockable(0);
-  exit->set_locked(0);
+  exit->set_openable(FALSE);
+  exit->set_open(TRUE);
+  exit->set_container(TRUE);
+  exit->set_lockable(FALSE);
+  exit->set_locked(FALSE);
 
   direction = exit->get_direction();
   dir_name = name_for_dir[exit->get_direction()];
@@ -476,7 +469,7 @@ void fix_exit(object exit, int type, int link) {
 void remove_exit(object room, object exit) {
   object other_exit, dest;
 
-  if (exit->get_exit_type()==2) { /* two-way door, remove other side first */
+  if (exit->get_exit_type()==ET_TWOWAY) { /* two-way door, remove other side first */
     other_exit = EXITD->get_exit_by_num(exit->get_link());
     dest = other_exit->get_from_location();
     dest->remove_exit(other_exit);
