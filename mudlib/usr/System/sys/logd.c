@@ -9,6 +9,7 @@
 
 #define SYSLOGFILE   (LOGDIR + "/System.log")
 #define LOGD_DTD     ("/usr/System/sys/logchannel.dtd")
+#define LOG_CHANNELS ("/usr/System/sys/logd_channels.unq")
 
 private mapping channels;
 private mapping levelname;

@@ -13,6 +13,7 @@
  * that Phantasmal needs to know.
  */
 #define GAME_INITD            "/usr/game/initd"
+#define GAME_DRIVER            "/usr/game/sys/gamedriver"
 
 /*
  * These are just for the default setup.  You can remove any of them
@@ -22,6 +23,8 @@
 #define PATHAUTOD             "/usr/game/sys/pathautod"
 #define INHERIT_SCRIPT_AUTO   "/usr/game/include/inherit_script_auto.h"
 #define SCRIPT_AUTO_OBJECT    "/usr/game/lib/script_auto"
+
+#define CONFIGD_DTD         "/usr/common/sys/config.dtd"
 
 #define HEART_BEAT            "/usr/game/sys/heart_beat"
 

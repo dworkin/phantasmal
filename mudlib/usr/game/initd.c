@@ -8,9 +8,17 @@ static void configure_from_unq(mixed* unq);
 static void load_files(void);
 
 static void create(void) {
+  string throwaway;
+
   /* Load in configuration files and set data in the common and System
      directories */
   load_files();
+
+  /* Build game driver and set it */
+  throwaway = catch (find_object(GAME_DRIVER) ? nil
+		     : compile_object(GAME_DRIVER));
+  if(find_object(GAME_DRIVER))
+    CONFIGD->set_game_driver(find_object(GAME_DRIVER));
 
   /* Register a help directory for the HelpD to use */
   HELPD->new_help_directory("/data/help");
@@ -24,39 +32,5 @@ static void load_files(void) {
   CONFIGD->set_start_room(0);
   CONFIGD->set_meat_locker(1);
 
-  file_tmp = read_file("/usr/game/text/welcome.msg");
-  if(!file_tmp)
-    error("Can't read /usr/game/text/welcome.msg!");
-  CONFIGD->set_welcome_message(file_tmp);
-
-  file_tmp = read_file("/usr/game/text/shutdown.msg");
-  if(!file_tmp)
-    error("Can't read /usr/game/text/shutdown.msg!");
-  CONFIGD->set_shutdown_message(file_tmp);
-
-  file_tmp = read_file("/usr/game/text/suspended.msg");
-  if(!file_tmp)
-    error("Can't read /usr/game/text/suspended.msg!");
-  CONFIGD->set_suspended_message(file_tmp);
-
   LOGD->write_syslog("Configured Phantasmal from /usr/game!");
-}
-
-static void config_unq_file(void) {
-  object config_dtd;
-  string config_dtd_file, config_file;
-  mixed* unq_data;
-
-  config_dtd_file = read_file("/usr/game/config.dtd");
-
-  config_dtd = clone_object(UNQ_DTD);
-  config_dtd->load(config_dtd_file);
-  config_dtd_file = nil; /* Free the data */
-
-  config_file = read_file("/usr/game/config.unq");
-
-  unq_data = UNQ_PARSER->unq_parse_with_dtd(config_file, config_dtd);
-  configure_from_unq(unq_data);
-
-  destruct_object(config_dtd);
 }

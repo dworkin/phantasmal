@@ -13,12 +13,13 @@ void upgraded(varargs int clone);
 
 
 /* Data from config file*/
-int start_room;
-int meat_locker;
-string welcome_message, shutdown_message, suspended_message;
-
+int    start_room;
+int    meat_locker;
+object game_driver;
 
 static void create(void) {
+  game_driver = nil;
+
   upgraded();
 }
 
@@ -56,51 +57,20 @@ void set_meat_locker(int new_room) {
   meat_locker = new_room;
 }
 
-string get_welcome_message(void) {
-  if(!AUTHORIZED())
-    return nil;
-
-  return welcome_message;
+void set_game_driver(object new_driver) {
+  if(previous_program() == GAME_INITD)
+    game_driver = new_driver;
 }
 
-void set_welcome_message(string new_room) {
-  if(!AUTHORIZED())
-    return;
+object get_game_driver(void) {
+  if(SYSTEM() || COMMON())
+    return game_driver;
 
-  welcome_message = new_room;
+  return nil;
 }
-
-string get_shutdown_message(void) {
-  if(!AUTHORIZED())
-    return nil;
-
-  return shutdown_message;
-}
-
-void set_shutdown_message(string new_room) {
-  if(!AUTHORIZED())
-    return;
-
-  shutdown_message = new_room;
-}
-
-string get_suspended_message(void) {
-  if(!AUTHORIZED())
-    return nil;
-
-  return suspended_message;
-}
-
-void set_suspended_message(string new_room) {
-  if(!AUTHORIZED())
-    return;
-
-  suspended_message = new_room;
-}
-
 
 void set_path_special_object(object new_obj) {
-  if(GAME()) {
+  if(previous_program() == GAME_INITD) {
     INITD->set_path_special_object(new_obj);
   }
 }

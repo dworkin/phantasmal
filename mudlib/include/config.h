@@ -78,7 +78,6 @@
 /* UNQ DTDs */
 #define MAPD_ROOM_DTD       "/usr/common/sys/room.dtd"
 #define MOB_FILE_DTD        "/usr/common/sys/mobile.dtd"
-#define CONFIGD_DTD         "/usr/common/sys/config.dtd"
 #define ZONED_DTD           "/usr/common/sys/zoned.dtd"
 #define BIND_DTD            "/usr/common/sys/bind.dtd"
 #define SOULD_DTD           "/usr/common/sys/sould.dtd"
@@ -96,16 +95,11 @@
 #define BUG_DATA            "/usr/game/text/bug_reports.txt"
 #define IDEA_DATA           "/usr/game/text/idea_reports.txt"
 #define TYPO_DATA           "/usr/game/text/typo_reports.txt"
-#define LOG_CHANNELS        "/data/system/logd_channels.unq"
 #define SYSTEM_PHRASES      "/usr/System/obj/system.phr"
 #define EXITD_PHRASES       "/usr/common/sys/exitd.phr"
 #define NL_PARSE_FILE       "/usr/common/sys/nl_parser.dpd"
 #define USER_COMMANDS_FILE  "/data/system/user_cmds.unq"
 #define SOULD_FILE          "/data/system/sould.unq"
-
-#define WELCOME_MESSAGE     "/usr/game/text/welcome.msg"
-#define SUSPENDED_MESSAGE   "/usr/game/text/suspended.msg"
-#define SHUTDOWN_MESSAGE    "/usr/game/text/shutdown.msg"
 
 
 /* Random inherited stuff */

@@ -67,14 +67,27 @@ int query_timeout(object connection)
 
 string query_banner(object connection)
 {
+  object game_driver;
+
   if(!SYSTEM() && !KERNEL())
      return nil;
 
+  game_driver = CONFIGD->get_game_driver();
+  if(!game_driver) {
+    if(shutdown)
+      return "MUD is shutting down...  Try again later.\r\n";
+
+    if(suspended)
+      return "MUD is suspended.  Try again in a minute or two.\r\n";
+
+    return "Phantasmal (no gamedriver)\r\n\r\nLogin: ";
+  }
+
   if(shutdown)
-    return CONFIGD->get_shutdown_message();
+    return game_driver->get_shutdown_message(connection);
 
   if(suspended)
-    return CONFIGD->get_suspended_message();
+    return game_driver->get_suspended_message(connection);
 
-  return CONFIGD->get_welcome_message();
+  return game_driver->get_welcome_message(connection);
 }

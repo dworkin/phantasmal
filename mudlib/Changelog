@@ -1,4 +1,6 @@
 Release 0.015:
+	* Moved logd_channels from data directory into /usr/System
+	* Added a game driver object, made telnetd defer to it
 	* Simplified /usr/game as more stuff moves into testgame
 	* Moved objects out of /data, and made it easy to do the same for
 	  helpfiles

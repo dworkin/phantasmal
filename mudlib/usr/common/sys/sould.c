@@ -59,8 +59,15 @@ mixed* to_dtd_unq(void) {
   error("Not implemented yet");
 }
 
+void from_unq_text(string unq_text) {
+  if(!SYSTEM() && !COMMON() && !GAME())
+    return;
+
+  unq::from_unq_text(unq_text);
+}
+
 void from_dtd_unq(mixed* unq) {
-  if(!SYSTEM() && !COMMON())
+  if(!SYSTEM() && !COMMON() && !GAME())
     return;
 
   while(sizeof(unq) > 0) {
