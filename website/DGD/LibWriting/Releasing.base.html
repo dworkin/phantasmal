@@ -39,6 +39,89 @@
       really a problem, just an annoyance) </li>
   </ul>
 
+  <h3> The 'Stock MUD' Argument </h3>
+
+  <p>
+    If you release a reasonably runnable MUD that people use, you'll
+    find that the areas you supply are used as stock areas.  It's not
+    really avoidable.  Is that a good or a bad thing?
+  </p>
+
+  <p>
+    If you distributed a library with no predefined 'areas' then you
+    could largely avoid this.  But is it bad to be recognizable in
+    terms of the feel of the library?  For players it's a good thing,
+    since familiar means comfortable as a rule.  However, it's not
+    clear that beginner 'stock' areas are as valuable as say, a known,
+    common set of commands.
+  </p>
+
+  <p>
+    Dworkin's suggestion is to release only part of your mudlib.
+    Include the base classes, but not the actual rooms and objects.
+    That way you won't have to fear the 100 identical clones.  Just
+    include a few example rooms with a few example monsters (adjust to
+    whatever your mudlib actually contains).  This suggestion can be
+    annoying to initially set up since you'll need a release process
+    that strips out the appropriate files.  However, once you have it
+    in place, it avoids other people cloning your MUD unless they can
+    rewrite a *lot* of game-specific code.
+  </p>
+
+  <h3> &quot;I'll Release When It Works&quot; Syndrome </h3>
+
+  <p>
+    I know of more DGD MUD Libraries that have abandoned development,
+    never released, than have ever been released in total for DGD.  Of
+    those libraries, all but two or three were going to release code
+    as soon as it worked correctly.  When they had a release that
+    satisfied them, they were going to make sure everybody could use
+    it.  Not one of them ever released a line of code.  Their good ideas,
+    their starting MUD code, every line of text and code is gone.
+  </p>
+
+  <p>
+    John McKenna 'released' his &quot;Inferno&quot; MUD Library when I
+    found it on an FTP server, almost by accident, and asked if I
+    could link to it.  He didn't send out links publicly, to my
+    knowledge.  He certainly didn't intend it to be broadly used.  But
+    by agreeing to let me link to it, he contributed more to the
+    current DGD community than every one of the MUDLib efforts that
+    were abandoned unreleased.  More than all of them put together.
+    And all he ever contributed was an example MUDLib, and not one
+    that very many people look at.
+  </p>
+
+  <p>
+    If you're writing a MUD Library and you're planning to release
+    code, please, please don't wait until it works.  If you do,
+    chances are very good that we'll never see a line of your code,
+    ever.  You might just contribute one decent subsystem of your MUD
+    (Phantasmal's HelpD and I/O have both been used in other MUDs long
+    before Phantasmal was playable).  But even if that's all anybody
+    ever sees, you've still contributed <i>something</i>.  Are you
+    really that dedicated to making sure all of your effort is lost
+    forever?
+  </p>
+
+  <h3> Maintenance and Technical Support </h3>
+
+  <p>
+    Some people worry that if they release their MUD Library code,
+    they'll have to provide technical support to all the people who
+    want to use it.  This is a valid concern.  However, you'll find
+    that you can always tell them to bugger off, particularly if
+    you've written decent documentation.  However, the success of your
+    MUD Library in the world at large will absolutely depend on your
+    willingness to provide support to developers who try to use it.
+  </p>
+
+  <p>
+    Dworkin says: use a DGD-like policy with regard to changes: make
+    clear that you will be very happy with bugfixes, but will only
+    include those &quot;enhancements&quot; that you yourself like.
+  </p>
+
   <h3> Commentary From People Who Have Released </h3>
 
   <p>
@@ -120,6 +203,12 @@
     </p>
 
   </span>
+
+  <p style="font-size: 75%">
+    Some text on this page is kidnapped, verbatim, from email by
+    Dan Root.  Other text is kidnapped from other people, but they're
+    credited individually above.
+  </p>
 
   <p style="text-size: 150%"> <a href="../index.html"> Back to top level
     </a> </p>
