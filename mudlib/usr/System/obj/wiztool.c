@@ -118,9 +118,6 @@ void upgraded(void) {
 	"@add_deferred"        : ({ "cmd_add_deferred_exits" }),
 	"@check_deferred"      : ({ "cmd_check_deferred_exits" }),
 
-	"@new_port"            : ({ "cmd_new_portable" }),
-	"@new_portable"        : ({ "cmd_new_portable" }),
-
 	"@list_mob"            : ({ "cmd_list_mobiles" }),
 	"@list_mobile"         : ({ "cmd_list_mobiles" }),
 	"@list_mobiles"        : ({ "cmd_list_mobiles" }),

@@ -57,8 +57,6 @@ static void create(varargs int clone)
       auto::compile_object(US_ENTER_DATA);
     if(!find_object(UNQ_DTD))
       auto::compile_object(UNQ_DTD);
-    if(!find_object(SIMPLE_PORTABLE))
-      auto::compile_object(SIMPLE_PORTABLE);
     if(!find_object(SIMPLE_ROOM))
       auto::compile_object(SIMPLE_ROOM);
   }
@@ -373,55 +371,6 @@ static void cmd_full_rebuild(object user, string cmd, string str) {
   }
 
   user->message("Done.\r\n");
-}
-
-
-static void cmd_new_portable(object user, string cmd, string str) {
-  object port;
-  int    portnum, zonenum;
-  string segown;
-
-  if(!str || STRINGD->is_whitespace(str)) {
-    portnum = -1;
-  } else if(sscanf(str, "%*s %*s") == 2
-	    || sscanf(str, "#%d", portnum) != 1) {
-    user->message("Usage: " + cmd + " [#port num]\r\n");
-    return;
-  }
-
-  if(MAPD->get_room_by_num(portnum)) {
-    user->message("There is already a portable with that number!\r\n");
-    return;
-  }
-
-  segown = OBJNUMD->get_segment_owner(portnum / 100);
-  if(portnum >= 0 && segown && segown != MAPD) {
-    user->message("That number is in a segment reserved for "
-		  + "non-portables!\r\n");
-    return;
-  }
-
-  port = clone_object(SIMPLE_PORTABLE);
-  if(!port)
-    error("Can't clone simple portable!");
-  zonenum = -1;
-  if(portnum < 0) {
-    zonenum = ZONED->get_zone_for_room(user->get_location());
-    if(zonenum < 0) {
-      LOGD->write_syslog("Odd, zone < 0 when making new portable...");
-      zonenum = 0;
-    }
-  }
-  MAPD->add_room_to_zone(port, portnum, zonenum);
-  if(!MAPD->get_portable_by_num(port->get_number())) {
-    LOGD->write_syslog("Urgh -- error in cmd_new_portable!", LOG_ERR);
-  }
-
-  if(user->get_location()) {
-    user->get_location()->add_to_container(port);
-  }
-
-  user->message("Added portable #" + port->get_number() + ".\r\n");
 }
 
 
