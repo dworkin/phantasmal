@@ -74,7 +74,13 @@ atomic void set_segment_zone(int segment, int zonenum, varargs int req_own) {
   mixed* seg;
   int    owner, oldzone;
 
-  if(previous_program() == SYSTEM_WIZTOOLLIB) {
+  if(previous_program() == SYSTEM_WIZTOOLLIB
+     || previous_program() == ZONED) {
+
+    /* The wiztoollib and the ZoneD both have full access to the
+       setting of zones.  That's because wiztoollib holds the
+       admin commands to alter zone numbers and ZoneD does the
+       tracking. */
     owner = -1;
     if(req_own)
       owner = req_own;
