@@ -1,0 +1,27 @@
+FILE
+	/usr/System/sys/helpd.c
+
+NAME
+	new_help_directory - read and register directory of help files
+
+PROTOTYPE
+	void new_help_directory(string path)
+
+CALLED BY
+	System, Common, Game
+
+DESCRIPTION
+	Read all files ending in .hlp as help entries, and make them
+	available for querying.  new_help_directory scans the directory
+	given and all subdirectories.  It also registers the directory
+	for automatic upgrade on recompile, and rereading with the
+	reread_help_files function.
+
+RETURN VALUE
+	Nothing.
+
+ERRORS
+	Errors can occur in reading files or parsing help entries.
+
+SEE ALSO
+	reread_help_files, new_help_file, clear_registered_help_dirs

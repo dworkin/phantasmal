@@ -1,0 +1,38 @@
+FILE
+	/usr/System/sys/helpd.c
+
+NAME
+	query_exact - query the HelpD for a specific string
+
+PROTOTYPE
+	mixed *query_exact(string key, object user)
+
+CALLED BY
+	System, Common, Game
+
+DESCRIPTION
+	Check the HelpD for an entry matching 'key' exactly.  The
+	supplied user object is necessary to determine locale,
+	so that various languages can be queried as appropriate.
+
+RETURN VALUE
+	An array of help entries matching the supplied string is
+	returned.  Each entry is an array of the form:
+
+        [ key, description, file path, soundex key, keywords ]
+
+	Key is an exact string that matches the entry.  Description
+	is the entry itself, which is most commonly why query_exact
+	is called.  File path is the path to the help file.  The
+	soundex key is an encoded string representing how the
+	word is pronounced.  The keywords are a list of special
+	conditions that must be met for the entry.
+
+	If no entries are found, nil is returned.
+
+ERRORS
+	Normally none
+
+SEE ALSO
+	new_help_file, query_exact_with_keywords, query_soundex,
+	query_soundex_with_keywords

@@ -1,0 +1,24 @@
+FILE
+	/usr/System/sys/helpd.c
+
+NAME
+	reread_help_files - re-reads all registered help files
+
+PROTOTYPE
+	void reread_help_files(void)
+
+CALLED BY
+	System, Common, Game
+
+DESCRIPTION
+	Re-read all help files in all directories registered with
+	new_help_directory.
+
+RETURN VALUE
+	Nothing.
+
+ERRORS
+	Errors in reading files and parsing help entries can occur.
+
+SEE ALSO
+	clear_registered_help_dirs, reread_help_files, new_help_directory

@@ -1,0 +1,31 @@
+FILE
+	/usr/System/sys/helpd.c
+
+NAME
+	query_soundex - query the HelpD for a phonetic match
+
+PROTOTYPE
+	mixed *query_soundex(string key, object user)
+
+CALLED BY
+	System, Common, Game
+
+DESCRIPTION
+	Check the HelpD for an entry matching 'key' phonetically.
+	The supplied user object is necessary to determine locale,
+	so that various languages can be queried as appropriate.
+	Currently, Phantasmal's HelpD only supports Soundex queries
+	in English.
+
+RETURN VALUE
+	An array of help entries matching the supplied string is
+	returned.  See 'query_exact' for the format.
+
+	If no entries are found, nil is returned.
+
+ERRORS
+	Normally none
+
+SEE ALSO
+	new_help_file, query_exact_with_keywords, query_exact,
+	query_soundex_with_keywords

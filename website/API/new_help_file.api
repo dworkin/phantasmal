@@ -1,0 +1,25 @@
+FILE
+	/usr/System/sys/helpd.c
+
+NAME
+	new_help_file - read help file
+
+PROTOTYPE
+	void new_help_file(string path)
+
+CALLED BY
+	System, Common, Game
+
+DESCRIPTION
+	Read a file ending in .hlp as a help entry and make it
+	available for querying.
+
+RETURN VALUE
+	Nothing.
+
+ERRORS
+	Errors can occur in reading a file or parsing a help entry.
+
+SEE ALSO
+	new_help_directory, query_exact, query_exact_with_keywords,
+        query_soundex, query_soundex_with_keywords

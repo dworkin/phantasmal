@@ -1,0 +1,25 @@
+FILE
+	/usr/System/sys/helpd.c
+
+NAME
+	clear_help_entries - remove all help entries
+
+PROTOTYPE
+	void clear_help_entries(void)
+
+CALLED BY
+	System, Common, Game
+
+DESCRIPTION
+	When this function is called, the HelpD clears out all existing
+	help entries.  This is useful when reloading your help entries,
+	to delete extraneous entries.
+
+RETURN VALUE
+	Nothing.
+
+ERRORS
+	Normally none.
+
+SEE ALSO
+	reread_help_files, new_help_file, new_help_directory
