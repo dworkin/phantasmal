@@ -12,7 +12,7 @@
 
     <ul>
       <li> <a href="#DGDPackages">
-	  DGD and related software, and how to get it
+	  DGD Stuff, and How to Get It
 	</a> </li>
       <li> <a href="#MUDLibs">
 	  Available MUDLibs
@@ -37,19 +37,37 @@
 	</a></li>
     </ul>
 
+    <p>
+      If you're just getting into DGD, you'll want to know some
+      things.  First, you'll need a MUDLib to go with your DGD server.
+      If you don't know what that is, you should definitely read the
+      <a href="http://cie.imaginary.com/LPMud/lpmud_faq.html"> LPMUD
+      Frequently Asked Questions </a>.  And if you don't know what a
+      MUDLib is, you should probably make sure you have plenty of
+      other MUD experience or lots of documentation.  DGD is an
+      incredible driver with a lot of good features, but it currently
+      has no good MUDLib for a beginner to use.  You're going to be
+      doing a lot of programming before this is all over.
+    </p>
+
     <hr> </hr>
 
     <a name="DGDPackages">
-    <h2> DGD Stuff, and how to get it: </h2>
+    <h2> DGD Stuff, and How to Get It: </h2>
 
-    <h3> DGD Itself, Versions and Packages: </h3>
+    <h3> The DGD server: </h3>
     <ul>
       <li> Check the <a href="ftp://ftp.dworkin.nl/pub/dgd/">Dworkin.nl FTP
 	  Site</a> for the most up-to-date DGD stuff.
       </li>
       <li> <a href="ftp://ftp.dworkin.nl/pub/dgd/dgd-1.2.tar.gz">
 	  DGD 1.2 source </a> from Dworkin's site. </li>
+      <li> <a href="ftp://ftp.dworkin.nl/pub/dgd/experimental/dgd-1.2.50.tar.gz">
+	  DGD 1.2.50 source </a> from Dworkin's site. </li>
+    </ul>
 
+    <h3> Add-ons and Packages </h3>
+    <ul>
       <li> <a href="ftp://ftp.dworkin.nl/pub/dgd/pkg/">
 	  Packages for DGD 1.2 (not many) </a> </li>
       <li> <a href="ftp://ftp.dworkin.nl/pub/dgd/pkg/1.1/">
@@ -61,17 +79,15 @@
 	  the diff</a> you can use to get the same result. <b>(old)</b></li>
     </ul>
 
-    This is also probably a <i>great</i> section to mention some other
-    things which, since you're just getting into DGD, you'll want to know.
-    First, you'll also need a MUDLib.  If you don't know what that is,
-    you should definitely read the
-    <a href="http://cie.imaginary.com/LPMud/lpmud_faq.html"> LPMUD
-      Frequently Asked Questions </a>.  Of course, if you don't know what
-    a MUDLib is, you should probably make sure you have plenty of other
-    MUD experience.  While DGD is an incredible driver
-    with a lot of good features, it currently has no good MUDLib for a
-    true beginner to use.  You're going to be doing
-    a lot of programming before this is all over.
+    <p>
+      Don't bother with the add-ons unless you know you specifically
+      need one or another.  What you mostly want is the DGD server
+      itself.  Consult your MUDLib documentation to determine what
+      version of DGD you're likely to need.  If you're writing a new
+      MUDLib from scratch, get the most recent experimental version
+      of DGD.  They're all pretty stable.
+    </p>
+
   </a>
 
     <hr> </hr>
@@ -88,7 +104,7 @@
       <li> <a href="http://phantasmal.sourceforge.net">Phantasmal</a>
 	is built on top of the Kernel MUDLib, and shows off cool DGD
 	features like compile-in-place, object tracking and LWOs.
-	It works only with very recent versions of DGD. </li>
+	It works only with recent experimental versions of DGD. </li>
       <li> <a href="external/melville_0.9.1.tar.gz">
 	  Melville 0.9.1, a minimal but quite usable MUDLib</a> tested with
 	DGD 1.1.  It includes a sould, channeld and mud mail.</li>
@@ -96,15 +112,17 @@
 	  GurbaLib</a> has the most features and cool stuff of any
 	current MUDLib.  It has rooms, creatures, guilds, and basically
 	all the expected trappings.  Download it instead of 2.4.5 :-)
-	Note that it runs on a nonstandard, modified DGD 1.1 base. </li>
+	It runs on a nonstandard, modified DGD 1.1 base.  However,
+	the link to it seems to be broken, so I'm not sure where you
+	should download it. </li>
       <li> The Kernel MUDLib is extremely well-written and secure, but
 	also very, very minimal.  It's distributed with any recent
 	version of <a href="#DGDPackages"> DGD </a>
       </li>
       <li> The LPC 2.4.5 MUDLib has been adapted for use with DGD 1.1.
 	It's sloppy, it's outdated, it's unsupported -- but it
-	<b>does</b> give you a game from the get-go.  I'm not sure where
-	you can or should currently download it :-(
+	<b>does</b> give you a game from the get-go.  You can download
+	it <a href="external/2.4.5-for-1.1.tgz">here</a>.
       </li>
 
       <li> <a href="http://tihlde.org/~franks/downloads/dgd/">
@@ -129,7 +147,8 @@
       <li> The LPMOO MUDLib is a nifty idea -- MOO implemented on top of
 	DGD.  The current version is extremely out-of-date.  There's a
 	patch to update it to DGD 1.1, which is at least closer to
-	modern.  I no longer know where you can download them, though. </li>
+	modern.  You can download version 1.2
+	<a href="external/lpmoo-1.2.tar.gz">here</a> </li>
     </ul>
 
     <h4> Still in Early Development / Not Yet Downloadable </h4>

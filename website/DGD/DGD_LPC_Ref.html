@@ -209,40 +209,13 @@
     <a name="AtomicFunc">
     <h2> How do Atomic Functions work? </h2>
 
-    <p> An error in an atomic function will undo all the changes made
-      within the function.  This is also true for code called from an
-      atomic function. </p>
-
-    <p> Changes will only be undone when an error forces execution to
-      leave the atomic function; an error caught within an atomic function
-      will not be undone.  If an error is caught in code that called the
-      atomic function, changes will be undone before the error is caught.
+    <p>
+      Here's a link to this topic in the <a
+      href="LPC/section_42.html#SEC4.2.4.5">LPC textbook</a>.
     </p>
 
-    <p> It is an error to move, remove, or write to a file within atomically
-      executed code. </p>
 
-    <p> Calls to atomic functions may be nested. </p>
-
-    <p> Atomically executed code uses up twice as many ticks as the code
-      that called the atomic function. </p>
-
-    <pre>
-Example:
-
-    atomic void move(object destination)
-    {
-        environment = destination;
-        destination->enter(this_object());
-    }
-    </pre>
-
-    <p>An error in move(), or within enter() in the destination, will
-      undo the movement before propagating the error. </p>
-
-    <center> <hr width="40%"> </hr> </center>
-
-    <h2> More about Atomic functions: </h2>
+    <h3> More about Atomic functions: </h3>
 
     <p> The atomic function feature is probably the most significant
       addition to LPC since mappings.  I'll give two examples to explain
@@ -267,8 +240,8 @@ Example:
     }
     </pre>
 
-    <p>This code is called from the move_object() efun to do the actual
-      movement.  If it were to fail halfway through, this would
+    <p>This code is called from the move_object() efun to do the
+      actual movement.  If it were to fail halfway through, this would
       result in an inconsistency.  For example, if the inventory array
       of `dest' already has the maximum size, adding the object `obj'
       to the inventory of `dest' will result in an error; this will
@@ -290,12 +263,12 @@ Example:
       execute the code if it's safe.  Alternatively, an error occurring
       halfway through could be caught, and the already-performed
       actions could be undone explicitly.  However, using atomic is
-      always the most simple solution, often the cheapest, and sometimes
+      usually the simplest solution, often the cheapest, and sometimes
       the only possible one.</p>
 
     <p>There is a lot of code out there that doesn't check for errors at
       all, of course.  The atomic function feature could be used to guard
-      such code from inconsistencies with only minimal rewriting. </p>
+      such code from inconsistencies with only minimal rearrangement. </p>
 
     <center> <hr width="10%"> </hr> </center>
 
@@ -319,43 +292,16 @@ Example:
 
     <center> <hr width="10%"> </hr> </center>
 
-    <p>So when to use atomic, and when to encapsulate code with
+    <p>So when do we use atomic, and when do we encapsulate code with
       rlimits (-1; -1) instead?  Use rlimits if you are sure that the
       code will succeed if you give it infinite ticks and stack space;
       use atomic otherwise.  The reason for this is that atomic code
       executes somewhat slower than normal code, whereas rlimits has
       no effect on execution speed at all. </p>
 
-    <p>Unlike rlimits, the use of atomic is not protected by the mudlib.
-      This makes using atomic functions the best solution in cases where
-      rlimits might be preferred, but is unavailable.</p>
-
-    <center> <hr width="30%"> </hr> </center>
-
-    <h3>Planes in Atomic Functions and Commits</h3>
-
-    <p>From the mailing list:</p>
-    <pre>
-> Maybe I missed it, but what's this 'plane' you're referring to in a lot
-> of the bug-fixes lately?
-
-There are many planes.  At the very bottom, there is the base plane, where
-grubby bits play in the mud and everything is solid.  Above that, there
-are higher, more ethereal planes, where things that seem real may turn
-out to be a figment of the imagination, and an event can only be said to
-have happened when it comes down to earth.
-
-Travel between the planes is possible, and is said to involve some form
-of atomics.  Of course, you have to be careful, or the basic nature of
-reality could be affected.
-
-Regards,
-Dworkin
-    </pre>
-    <p>What does this mean?  It means &quot;planes&quot; have to do with
-      atomic functions.  If you don't get it, don't worry about it.  Or
-      just read the mailing list.  Reading up on atomicity, transactions
-      and rollback has been known to help, too.</p>
+    <p>Unlike rlimits, the use of atomic is not preventable by the
+      mudlib.  This makes using atomic functions the best solution in
+      cases where rlimits might be preferred, but is unavailable.</p>
 
   </a>
 

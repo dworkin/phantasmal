@@ -552,25 +552,37 @@ static string   TempName;  /* An example of a non-saved global variable. */
     </p>
 
     <p>
-      If a function is declared <code>atomic</code>, it may not read
-      or write files in any way, nor may it read or write network data
-      on network connections.  Any attempt to do so will cause an
-      error.  Atomic functions also use a different error handler than
-      do non-atomic functions.  They use up twice as many ticks per
-      operation as other functions (see <code>rlimits</code> for an
-      explanation of ticks).
+      If a function is declared <code>atomic</code>, it may not read,
+      write, move or rename files in any way.  It may not read or
+      write network data on network connections.  Any attempt to do so
+      will cause an error.  Atomic functions also use a different
+      error handler than non-atomic functions.  They use up twice as
+      many ticks per operation as non-atomic functions (see
+      <code>rlimits</code> for an explanation of ticks).
     </p>
 
     <p>
       So what's different about them?  It's the fact that they will
       either execute completely and without error, or nothing will
-      happen.  You can write to global variables and data structures
-      in an atomic function, even if those variables or data
-      structures are in a different object than the atomic function.
-      If an error occurs and the function terminates, those writes to
-      variables and data structures will be fully undone.  It is as
+      happen.  You can call other functions or write to global
+      variables and data structures in an atomic function, even if
+      those variables or data structures are in a different object
+      than the atomic function.  If an error occurs and the function
+      terminates, those writes to variables and data structures will
+      be fully undone, as will the calls to other objects.  It is as
       though the atomic function has never been called at all, except
       for the fact that it causes an error to be handled.
+    </p>
+
+    <p>
+      Calls to atomic functions may be nested.  That is to say, atomic
+      functions may call other atomic functions, catching errors if
+      necessary.  They may also, of course, call non-atomic functions.
+      Changes will only be undone when an error forces execution to
+      leave the atomic function; an error caught within an atomic
+      function will not be undone.  If an error is caught in code that
+      called the atomic function, changes will be undone before the
+      error is caught.
     </p>
 
     <p>
