@@ -140,9 +140,8 @@ static void create(varargs int clone)
   driver->set_object_manager(find_object(OBJECTD));
   OBJECTD->do_initial_obj_setup();
 
-  /* Compile the StringD & TimeD */
+  /* Compile the StringD for use by LogD and HelpD */
   if(!find_object(STRINGD)) { compile_object(STRINGD); }
-  if(!find_object(TIMED))   { compile_object(TIMED); }
 
   /* Start up logging channels in the LogD */
   LOGD->start_channels();
@@ -153,9 +152,6 @@ static void create(varargs int clone)
 
   /* Compile the Phrase manager (before HelpD) */
   if(!find_object(PHRASED)) { compile_object(PHRASED); }
-
-  /* Load command parser */
-  if (!find_object(PARSED)) { compile_object(PARSED); }
 
   /* driver->message("Parsing help file...\n"); */
 
@@ -192,9 +188,11 @@ static void create(varargs int clone)
     LOGD->write_syslog("Can't read zone list!  Starting blank!\n", LOG_WARN);
   }
 
+  /* Start appropriate daemons for object, mobile and zone loading */
   if(!find_object(MAPD)) { compile_object(MAPD); }
   if(!find_object(EXITD)) { compile_object(EXITD); }
   if(!find_object(MOBILED)) { compile_object(MOBILED); }
+  if(!find_object(TAGD)) { compile_object(TAGD); }
 
   mapd_dtd = read_file(MAPD_ROOM_DTD);
   if(!mapd_dtd)
@@ -224,6 +222,9 @@ static void create(varargs int clone)
 
   /* driver->message("Loading mobiles...\n"); */
 
+  /* Might be needed when making new mobiles */
+  if(!find_object(TIMED))   { compile_object(TIMED); }
+
   /* Set up the MOBILED */
   MOBILED->init();
 
@@ -252,11 +253,17 @@ static void create(varargs int clone)
     LOGD->write_syslog("Can't read zone file!  Starting blank!\n", LOG_WARN);
   } 
 
-  /* Start up ChannelD, ConfigD and SoulD */
+  /* Start up ChannelD, ConfigD and SoulD, none of which are
+     vital to initial loading. */
   if(!find_object(CHANNELD)) compile_object(CHANNELD);
   if(!find_object(CONFIGD)) compile_object(CONFIGD);
   if(!find_object(SOULD)) compile_object(SOULD);
 
+  /* Load command parser */
+  if (!find_object(PARSED)) { compile_object(PARSED); }
+
+  /* Make sure ConfigD is set up for scripting */
+  CONFIGD->set_path_special(nil);
 
   /* Now delegate to the initd in /usr/game, if any. */
   if(read_file(GAME_INITD + ".c", 0, 1) != nil) {

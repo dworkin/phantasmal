@@ -41,12 +41,6 @@ void destructed(int clone) {
   ::destructed(clone);
 }
 
-void set_number(int new_num) {
-  if(previous_program() == EXITD) {
-    tr_num = new_num;
-  } else error("Only EXITD can set exit numbers!");
-}
-
 void set_direction(int new_dir) {
   if(previous_program() == EXITD) {
     direction = new_dir;

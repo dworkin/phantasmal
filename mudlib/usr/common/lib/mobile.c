@@ -11,6 +11,7 @@
 */
 
 inherit unq DTD_UNQABLE;
+inherit tag TAGGED;
 
 /*
  * cached vars
@@ -20,9 +21,16 @@ static object body;     /* The mobile's body -- an OBJECT of some type */
 static object location;
 static int    number;
 
-/*
- * Note:  inherits create() and upgraded() from UNQABLE
- */
+static void create(varargs int clone) {
+  unq::create();
+  tag::create();
+}
+
+void upgraded(void) {
+  unq::upgraded();
+  tag::upgraded();
+}
+
 
 /*
  * System functions
@@ -65,7 +73,7 @@ int get_number(void) {
   return number;
 }
 
-void set_number(int new_num) {
+nomask void set_number(int new_num) {
   if(previous_program() != MOBILED) {
     error("Only MOBILED can set mobile numbers!");
   }

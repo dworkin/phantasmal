@@ -1,4 +1,5 @@
 #include <phantasmal/log.h>
+#include <phantasmal/lpc_names.h>
 
 #include <gameconfig.h>
 #include <config.h>

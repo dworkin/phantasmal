@@ -7,6 +7,7 @@
 
 #include <config.h>
 
+inherit tag TAGGED;
 
 /*
  * /lib/object.c
@@ -74,7 +75,7 @@ void clear_adjectives(void);
 
 
 static void create(varargs int clone) {
-  ::create(clone);
+  tag::create(clone);
 
   if(clone) {
     tr_num = -1;
@@ -514,7 +515,7 @@ int num_objects_in_container(void) {
 
 /* Functions for MOBILE use */
 
-void set_mobile(object new_mob) {
+nomask void set_mobile(object new_mob) {
   if(previous_program() == MOBILE || previous_program() == MOBILED) {
     if(detail_of) {
       error("A mobile can't (yet?) inhabit a detail!");
@@ -653,7 +654,7 @@ void remove_detail(object obj) {
 
 /* Functions for use by MAPD, EXITD, etc - overridden in child classes */
 
-void set_number(int num) {
+nomask void set_number(int num) {
   string prog;
 
   prog = previous_program();

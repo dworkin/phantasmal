@@ -113,12 +113,6 @@ void upgraded(varargs int clone) {
  * Get and set functions for fields
  */
 
-void set_number(int new_num) {
-  if(previous_program() == MAPD) {
-    tr_num = new_num;
-  } else error("Only MAPD can set room numbers!");
-}
-
 void enum_room_mobiles(string cmd, object *except, mixed args...) {
   object *mobiles;
   int i;

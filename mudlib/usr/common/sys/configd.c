@@ -1,6 +1,7 @@
 #include <kernel/kernel.h>
 
 #include <phantasmal/log.h>
+#include <phantasmal/lpc_names.h>
 
 #include <config.h>
 #include <gameconfig.h>
@@ -17,6 +18,11 @@ object game_driver;
 
 static void create(void) {
   game_driver = nil;
+
+  if(!find_object(PATHSPECIAL))
+    compile_object(PATHSPECIAL);
+
+  INITD->set_path_special_object(find_object(PATHSPECIAL));  
 
   upgraded();
 }
@@ -41,6 +47,10 @@ object get_game_driver(void) {
 
 void set_path_special_object(object new_obj) {
   if(previous_program() == GAME_INITD) {
-    INITD->set_path_special_object(new_obj);
+    PATHSPECIAL->set_game_path_object(new_obj);
+
+    INITD->set_path_special_object(find_object(PATHSPECIAL));
+  } else {
+    error("Only GAME_INITD can set the path_special object!");
   }
 }
