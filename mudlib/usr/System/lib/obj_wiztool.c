@@ -253,6 +253,23 @@ static void cmd_stat(object user, string cmd, string str) {
 
   user->message("\r\n");
 
+  if(function_object("is_container", obj)) {
+    if(obj->is_no_desc()) {
+      user->message("The object is a 'nodesc' scenery object.\r\n");
+    }
+    if(obj->is_container()) {
+      if(obj->is_open()) {
+	user->message("The object is an open container.\r\n");
+      } else {
+	user->message("The object is a closed container.\r\n");
+      }
+    } else {
+      user->message("The object is not a container.\r\n");
+    }
+  }
+
+  user->message("\r\n");
+
   if(function_object("num_objects_in_container", obj)) {
     user->message("Contains objects [" + obj->num_objects_in_container()
 		  + "]: ");
@@ -526,5 +543,48 @@ static void cmd_set_obj_parent(object user, string cmd, string str) {
   }
 
   obj->set_archetype(parent);
+  user->message("Done.\r\n");
+}
+
+static void cmd_set_obj_flag(object user, string cmd, string str) {
+  object  obj;
+  int     objnum, flagval;
+  string  flagname, flagstring;
+  mapping valmap;
+
+  if(str) str = STRINGD->trim_whitespace(str);
+  if(str && !STRINGD->stricmp(str, "flagnames")) {
+    user->message("Flag names:  cont container nodesc open\r\n");
+    return;
+  }
+
+  if(!str || sscanf(str, "%*s %*s %*s %*s") == 4
+     || (sscanf(str, "#%d %s %s", objnum, flagname, flagstring) != 3
+	 && sscanf(str, "#%d %s", objnum, flagname) != 2)) {
+    user->message("Usage: " + cmd + " #<obj> flagname [flagvalue]\r\n");
+    user->message("       " + cmd + " flagnames\r\n");
+    return;
+  }
+
+  valmap = ([
+    "true": 1,
+      "false": 0,
+      "1": 1,
+      "0": 0,
+      "yes": 1,
+      "no": 0 ]);
+
+  if(flagstring) {
+    if( ({ flagstring }) & map_indices(valmap) ) {
+      flagval = valmap[flagstring];
+    } else {
+      user->message("I can't tell if value '" + flagstring
+		    + "' is true or false!\r\n");
+      return;
+    }
+  } else {
+    flagval = 1;
+  }
+
   user->message("Done.\r\n");
 }
