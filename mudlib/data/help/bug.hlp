@@ -1,5 +1,5 @@
 ~name{
-  ~enUS{bug,typo}
+  ~enUS{bug,typo,idea}
 }
 ~desc{
   ~enUS{
@@ -14,10 +14,16 @@ Give a significant description.  For example:
   bug When I attack the dented lamp with my sledgehammer, it gets less dented!
 
 Feel free to contact an implementor directly to describe a more
-complicated bug.  Thanks!
+complicated bug.
 
-For what happens when you exploit a bug on this MUD, see "help exploits".}
-}
+If you've got an idea or feature request, use the idea command:
+
+  idea You should be able to buy calcium tablets at the market.
+
+Thanks!
+
+For what happens when you exploit a bug on this MUD, see "help exploits".
+}}
 
 
 ~name{~enUS{exploit,exploits}}
