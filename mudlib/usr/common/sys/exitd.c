@@ -28,8 +28,7 @@ void upgraded(varargs int clone);
 
 #define PHR(x) PHRASED->new_simple_english_phrase(x)
 #define FILE(x) PHRASED->file_phrase(EXITD_PHRASES,(x))
-#define TRUE 1
-#define FALSE 0
+
 
 static void create(varargs int clone) {
   if(clone)
