@@ -103,7 +103,7 @@ private mixed* load_command_sets_file(string filename) {
   }
 
   if(!find_object(PHRASED)) { compile_object(PHRASED); }
-  LOGD->write_syslog("Allocating command_sets", LOG_NORMAL);
+  LOGD->write_syslog("Allocating command_sets", VERBOSE);
   tmp_cmd = allocate(PHRASED->num_locales());
 
   unq = UNQ_PARSER->basic_unq_parse(file);

@@ -203,11 +203,6 @@ private int allocate_exit_obj(int num, object obj) {
       string tmp;
 
       exit_segments |= ({ num / 100 });
-      tmp = "Exit segments: ";
-      for(segment = 0; segment < sizeof(exit_segments); segment++) {
-	tmp += exit_segments[segment] + " ";
-      }
-      LOGD->write_syslog(tmp, LOG_NORMAL);
     }
 
     return num;
