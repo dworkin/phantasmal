@@ -7,10 +7,10 @@
 
 /* Thanks go to Geir Harald Hansen, who released an objectd well
    before I knew anything about DGD.  Studying his work has been
-   valuable, as has correspondence (his and others) on and with the
-   DGD Mailing List.  This objectd has somewhat different goals than
-   his, and operates in some very different (and some very similar)
-   ways.  See also the doc/design/OBJECTD document for details. */
+   valuable, as has correspondence (his and others) on the DGD Mailing
+   List.  This objectd has somewhat different goals than his, and
+   operates in some very different (and some very similar) ways.  See
+   also the doc/design/OBJECTD document for details. */
 
 #include <config.h>
 #include <status.h>
@@ -70,10 +70,9 @@ private mapping dest_issues;
 private object* upgrade_clonables;
 private int     upgrade_callout;
 
-/* Mapping of directories and AUTO objects.  If an object has one of
-   these directories as a prefix, it will use the specified AUTO
-   object. */
-private mapping auto_objects;
+/* This object has a path_special() method.  ObjectD defers to it, if
+   it has been set. */
+private object path_special_object;
 
 private void   unregister_inherit_data(object issue);
 private void   register_inherit_data(object issue);
@@ -109,7 +108,6 @@ static void create(varargs int clone)
   all_libs = ([ ]);
   comp_dep = ({ });
   upgrade_clonables = ({ });
-  auto_objects = ([ ]);
 
   if(!find_object(ISSUE_LWO))
     compile_object(ISSUE_LWO);
@@ -940,9 +938,13 @@ void compile_failed(string owner, string path)
 
 /* Non-System files can inherit from a nonstandard AUTO object if the
    ObjectD returns one.  This is where that happens. */
+/* We check the auto_objects mapping for directories that have been
+   registered for special treatement. */
 string path_special(string compiled)
 {
-
+  if(path_special_object) {
+    return path_special_object->path_special(compiled);
+  }
 
   return "";
 }
@@ -1261,4 +1263,11 @@ void recompile_auto_object(object output) {
 
   /* Recompile all clonables */
   recompile_every_clonable(rsrc::query_owners());
+}
+
+
+void set_path_special(object new_manager) {
+  if(SYSTEM()) {
+    path_special_object = new_manager;
+  }
 }
