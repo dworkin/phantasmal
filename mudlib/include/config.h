@@ -15,6 +15,7 @@
 #define MAPD        "/usr/common/sys/mapd"
 #define EXITD       "/usr/common/sys/exitd"
 #define ZONED       "/usr/common/sys/zoned"
+#define MOBILED     "/usr/common/sys/mobiled"
 #define OBJNUMD     "/usr/common/sys/objnumd"
 #define CHANNELD    "/usr/common/sys/channeld"
 #define CONFIGD     "/usr/common/sys/configd"
