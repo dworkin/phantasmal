@@ -1,37 +1,39 @@
                       Installing Phantasmal
 
 This document assumes you've already got DGD installed and working,
-and you've tested it already with the Kernel MUDLib.  A source
-installation is always preferable for debugging, but the important
-thing is that it works and that you've got the source to the Kernel
-MUDLib.  If you haven't gotten DGD up and running, check out
+and you've tested it with the Kernel MUDLib.  A source installation
+is always preferable for debugging, but the important thing is that
+DGD works and that you've got the source to the Kernel MUDLib.  If
+you haven't gotten DGD up and running, check out
 "http://phantasmal.sourceforge.net/DGD" and click on "Downloading,
-Compiling and Configuring DGD".  The mailing list can also help you.
+Compiling and Configuring DGD".  The DGD mailing list can also help
+you with these setup problems.
 
 You'll want to install your Kernel MUDLib (the mud/kernel subdirectory
 under your DGD installation) into the kernel subdirectory of
 Phantasmal and copy files from the corresponding include/kernel
-subdirectory into Phantasmal's include/kernel (note -- do *not* simply
-replace Phantasmal's config.h!).  Since the Kernel MUDLib changes with
+subdirectory into Phantasmal's include/kernel (note -- do *not* replace
+Phantasmal's config.h!).  Since the Kernel MUDLib changes with
 successive versions of DGD you should use the one that comes with your
 DGD server code and upgrade it when you upgrade DGD.
 
 You'll need a version of DGD recent enough to have full support for
 lightweight objects and multiple incoming network ports.  This MUDLib
 is currently well-tested with DGD versions listed in TESTED_VERSIONS,
-and the most recent 1.2.4X version is very likely to work with the
-most recent version of Phantasmal.
+and the most recent 1.2.4X or 1.2.5X version is very likely to work
+with the most recent version of Phantasmal.
 
 You'll need to make a .dgd file for Phantasmal.  Copy the mud.dgd file
 in your DGD directory and change a couple of things.  The big ones are
 the directory it runs in and the port number (if you want).  You'll
-eventually want to change more stuff in there, but you'll almost
-certainly know enough about DGD to handle that yourself by the time
-it's necessary.  In any case, *do* remember that the path specified in
-phantasmal.dgd for the directory needs to be absolute, not relative.
-That means it should *start* with a slash.  Something you may want to
-change sooner rather than later is the number of sectors allowable
-(2048 is currently good for a small Phantasmal-based MUD).
+eventually want to change more stuff in the .dgd file, but you'll
+know enough about DGD to handle that yourself by the time it's
+necessary.  In any case, *do* remember that the path specified in
+phantasmal.dgd for the MUDLib's directory needs to be absolute, not
+relative.  That means it should *start* with a slash.  Something you
+will probably want to change sooner rather than later is the number of
+sectors allowable (2048 is currently good for a small Phantasmal-based
+MUD).
 
 Once you have the MUD running, you should first log in as admin, then
 make yourself a non-admin account to use.  When you make your new
@@ -47,10 +49,10 @@ access.  There will eventually be a less-privileged admin class
 suitable for builders, but that hasn't yet been implemented.
 
 Many of the standard Kernel MUDLib commands have been altered to have
-a % sign in front of the name.  These are documented in the help.
-Type "help" to start using player help, or "@help" to start using
-admin help.  A few undocumented commands still exist and are unchanged
-from the Kernel MUDLib.  Player commands have no punctuation on the
-front and should all be documented.  In case of conflict or
-uncertainty, the lists in /usr/System/lib/wiztoollib.c and
+a "%" in front of the name.  These are documented in the help. Type
+"help" to start using player help, or "@help" to start using admin
+help.  A few undocumented commands still exist and are unchanged from
+the Kernel MUDLib.  Player commands have no punctuation on the front
+and should all be documented.  In case of conflict or uncertainty,
+the lists in /usr/System/lib/wiztoollib.c and
 /data/phrase/user_cmds.unq are definitive.
