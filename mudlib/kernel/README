@@ -1,2 +1,4 @@
 Copy your Kernel MUDLib code here.  There should be directories called
-data, lib, obj, and sys.
+data, lib, obj, and sys.  If you want, and if your system supports it,
+you can symlink rather than copying.  Be careful, doing so has been
+known to cause problems in upgrading (see PROBLEMS file).
