@@ -24,4 +24,4 @@
 #define INHERIT_CUSTOM_ROOM_AUTO "/include/inherit_cr_auto.h"
 
 /* SoN Custom Room Script objects inherit from this. */
-#define CUSTOM_ROOM_PARENT    "/usr/game/lib/cr_parent"
+#define CUSTOM_ROOM_PARENT    "/usr/game/open/lib/cr_auto"

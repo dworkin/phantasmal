@@ -25,7 +25,7 @@ void add_room(void) {
   if(previous_program() != CUSTOM_ROOM_PARENT)
     error("Only privileged code can call room_registry:add_room!");
 
-  if(sscanf(object_name(previous_object()), "/usr/game/rooms/%s#%*d",
+  if(sscanf(object_name(previous_object()), "/usr/game/obj/rooms/%s#%*d",
 	    type) != 2)
     error("Can't parse object name in room_registry:add_room!");
 
