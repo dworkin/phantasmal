@@ -2,10 +2,10 @@ FILE
 	/usr/common/lib/dtd_unqable.c
 
 NAME
-	from_unq - parse the UNQable object from parsed UNQ data
+	from_unq_text - parse the UNQable object from UNQ in text form
 
 PROTOTYPE
-	void from_unq(mixed *unq_data)
+	void from_unq_text(string unq_text)
 
 CALLED BY
 	Anybody
@@ -14,7 +14,7 @@ DESCRIPTION
 	Parse the object from UNQ data.  For more information about
 	parsed UNQ format, see basic_unq_parse in the basic_unq_parser
 	object.  The default implementation of this method calls
-	from_dtd_unq in the given object, so you should override this
+	from_unq in the given object, so you should override this
 	method or that one (or both).
 
 	This function isn't access-protected.  You should access-protect
@@ -28,5 +28,4 @@ ERRORS
 	Usually none.
 
 SEE ALSO
-	from_unq_text, from_dtd_unq, basic_unq_parse,
-	dtd_unqable:get_parse_error_stack
+	from_dtd_unq, basic_unq_parser:basic_unq_parse

@@ -29,4 +29,4 @@ ERRORS
 	Usually none.
 
 SEE ALSO
-	from_unq, from_unq_text, to_dtd_unq, basic_unq_parse
+	from_unq, to_dtd_unq, basic_unq_parser:basic_unq_parse

@@ -16,6 +16,9 @@ DESCRIPTION
 	removed.  This may result in the empty string.  If nil is
 	passed in, it is also returned.
 
+	There is a Phrase equivalent to this defined in the
+	intl_phrase library.
+
 RETURN VALUE
 	The new string.
 
@@ -23,4 +26,4 @@ ERRORS
 	Normally none.
 
 SEE ALSO
-	char_is_whitespace, is_whitespace
+	char_is_whitespace, is_whitespace, intl_phrase:trim_whitespace
