@@ -372,14 +372,15 @@ static void cmd_goto_room(object user, string cmd, string str) {
 /******  Exit Functions ****************************************/
 
 static void cmd_new_exit(object user, string cmd, string str) {
-  int    roomnum, dir, tempint;
+  int    roomnum, dir, retcode;
   object room;
   string dirname;
   string type;
 
-  tempint = sscanf(str, "%s #%d %s", dirname, roomnum, type);
+  if(str)
+    retcode = sscanf(str, "%s #%d %s", dirname, roomnum, type);
 
-  if(str &&  tempint== 3 || tempint==2) {
+  if(str && (retcode == 3 || retcode == 2)) {
     room = MAPD->get_room_by_num(roomnum);
     if(!room) {
       user->message("Can't locate room #" + roomnum + "\r\n");
@@ -405,7 +406,7 @@ static void cmd_new_exit(object user, string cmd, string str) {
     return;
   }
 
-  if (tempint == 2) type="twoway";
+  if (retcode == 2) type = "twoway";
 
   if (type=="oneway" || type=="one-way" || type=="1") {
     user->message("You begin creating a one-way exit to '"
