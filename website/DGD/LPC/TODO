@@ -3,7 +3,6 @@ General section on getting DGD set up so you can play with this stuff
 
 
 * General LPC:
-Threads of execution.
 Varargs parameters and "..."
 Explanation of nil values
 More on atomic functions (in part 3?)
@@ -25,7 +24,7 @@ Static functions in AUTO object
 Compile options
 Limits on # of objects
 Precompiled DGD objects
-Telnet vs Binary ports
+KFuns
 
 
 * Kernel Library:
