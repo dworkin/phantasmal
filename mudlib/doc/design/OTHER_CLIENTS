@@ -235,3 +235,79 @@ for doing so can be found on the Pueblo/UE website.
 
 The Pueblo/UE website is http://pueblo.sf.net/. It has the Pueblo FAQ,
 instructions on downloading the latest version, etc.
+
+===========================================================================
+
+Pueblo supports a much larger subset of HTML, so it's less clear what
+to send and how it behaves, at least on the face of it.  They also
+support some nonstandard HTML extensions.
+
+Their help document is java-based (bastards!) and seems not to be
+included in the CVS source (bastards!) so I'll excerpt bits of it.
+It'll be messy because they don't have a single linear version of it,
+just a choppy version with a lot of small HTML pages (bastards!).
+
+
+
+ Document Structure Elements
+
+  <!-- Comments -->  <body>  <head>  <html>  <title>
+
+
+ Anchor Element
+
+  <a>
+
+
+ Embed Element
+
+  <embed> 
+
+
+ Image Element
+
+  <img>
+
+
+ Block Formatting Elements
+
+  <address>  <basefont>  <blockquote>  <br>  <center>  <h1>  <h2>  <h3>
+  <h4>  <h5>  <h6>  <hr>  <listing>  <p>  <plaintext>  <pre>  <samp>
+  <xmp>
+
+
+ Character Formatting Elements
+
+  <b>  <cite>  <code>  <em>  <font>  <i>  <strike>  <strong>
+  <tt>  <u> 
+
+
+ List Elements
+
+  <dl>  <dir>  <li>  <menu>  <ol>  <ul> 
+
+
+ Form Elements
+
+  <form>  <input>  <option>  <select>  <textarea> 
+
+
+ Unsupported HTML elements
+
+  <isindex>  <kbd>  <link>  <meta>  <nextid>  <table>  <var>
+
+
+======================
+
+There's a *lot* of documentation on this stuff, and not all parts of
+the supported tags are also supported -- attributes, for instance, are
+frequently trimmed to a manageable set.  That's fair, but it's also
+very poorly documented.  Since Pueblo is designed to be able to view
+real web pages rather than just be a vaguely HTML-y terminal program,
+that means it's got a pretty sprawling spec.  At least, it would if it
+were all documented in one place :-)
+
+The helpfiles are on SourceForge.  Luckily, the MUD doesn't have to
+know the whole thing and how to handle it, it just needs to know the
+challenge sequence and then send whatever subset of tags it feels
+like.  So we'll burn that bridge when we get to it.
