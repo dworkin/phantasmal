@@ -98,9 +98,9 @@
 #define SAFE_ZONE_FILE      "/data/object/safe_zonefile.unq"
 #define ROOM_BIND_FILE      "/usr/common/sys/room_binder.unq"
 #define MOBILE_BIND_FILE    "/usr/common/sys/mobile_binder.unq"
-#define BUG_DATA            "/data/text/bug_reports.txt"
-#define IDEA_DATA           "/data/text/idea_reports.txt"
-#define TYPO_DATA           "/data/text/typo_reports.txt"
+#define BUG_DATA            "/usr/game/text/bug_reports.txt"
+#define IDEA_DATA           "/usr/game/text/idea_reports.txt"
+#define TYPO_DATA           "/usr/game/text/typo_reports.txt"
 #define LOG_CHANNELS        "/data/system/logd_channels.unq"
 #define SYSTEM_PHRASES      "/usr/System/obj/system.phr"
 #define EXITD_PHRASES       "/usr/common/sys/exitd.phr"
@@ -108,9 +108,9 @@
 #define SOULD_FILE          "/data/system/sould.unq"
 #define NL_PARSE_FILE       "/usr/common/sys/nl_parser.dpd"
 
-#define WELCOME_MESSAGE     "/data/text/welcome.msg"
-#define SUSPENDED_MESSAGE   "/data/text/suspended.msg"
-#define SHUTDOWN_MESSAGE    "/data/text/shutdown.msg"
+#define WELCOME_MESSAGE     "/usr/game/text/welcome.msg"
+#define SUSPENDED_MESSAGE   "/usr/game/text/suspended.msg"
+#define SHUTDOWN_MESSAGE    "/usr/game/text/shutdown.msg"
 
 
 /* Random inherited stuff */
