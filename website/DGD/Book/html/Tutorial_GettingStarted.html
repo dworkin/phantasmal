@@ -83,7 +83,7 @@
 <p>
   Next try typing <kbd>code status()[ST_VERSION]</kbd>.  Note the
   opening and closing parentheses go <em>before</em>
-  &quot;ST_VERSION&quot; in square brackets.  If you do it right,
+  <var>ST_VERSION</var> in square brackets.  If you do it right,
   you'll get the current version of DGD, such as &quot;DGD
   1.2.70&quot;, returned between quotation marks, and of course
   assigned to a history number like $2.
@@ -103,14 +103,14 @@
 </p>
 
 <p>
-  It turns out that ST_VERSION, in the example with status(), is
-  actually a number.  The code command defines certain constant values
-  for you, and assigns names to them.  So if you type simply <kbd>code
-  ST_VERSION</kbd>, you should see the numerical value of ST_VERSION,
-  0, printed out.  That's because underneath, ST_VERSION is just the
-  number 0.  We've assigned a value to it using the C Preprocessor, a
-  very powerful part of the language that will be described in a later
-  chapter.
+  It turns out that <var>ST_VERSION</var>, in the example with
+  status(), is actually a number.  The code command defines certain
+  constant values for you, and assigns names to them.  So if you type
+  simply <kbd>code ST_VERSION</kbd>, you should see the numerical
+  value of <var>ST_VERSION</var>, 0, printed out.  That's because
+  underneath, <var>ST_VERSION</var> is just the number 0.  We've
+  assigned a value to it using the C Preprocessor, a very powerful
+  part of the language that will be described in a later chapter.
 </p>
 
 <p>

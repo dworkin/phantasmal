@@ -158,10 +158,42 @@ mixed exec(object user, mixed argv...) {
   it, you'll want to use its history entry.  This command line will
   assume that the object was $15 (as in the paragraph above).  If
   yours was a different history number, you should substitute your own
-  number.  Type <kbd>code $15->exec(this_user())</kbd>.  You should
+  number.  Type <kbd>code $15-&gt;exec(this_user())</kbd>.  You should
   get a result like <samp>$16 = 7</samp>.  You've successfully
   returned the number 7.  Success!
 </p>
+
+<p>
+  Go back and look at the code again.  You may have realized that the
+  long line starting with <var>mixed</var> declares all those
+  single-letter variables I mentioned earlier.  <code>Mixed</code> is
+  declares a variable, just as <var>int</var> and <var>float</var> do.
+  A <var>mixed</var> variable can hold any DGD type.  You
+  <em>could</em> just make all of your variables mixed rather than
+  bothering with all the different types.  But there are some serious
+  disadvantages to doing that, as we'll discuss later on.
+</p>
+
+<p>
+  DGD doesn't guarantee that variables like 'c' and 'f' are globally
+  declared.  The code command chooses to provide them.  Constants like
+  <var>ST_VERSION</var> aren't really part of the language either.
+  They're included by the series of <code>#include</code> directives
+  at the start of the source file.  In your own code, you'll need to
+  specifically include the files for any constants you may wish to
+  use.
+</p>
+
+<p>
+  We'll cover more about the specifics of that file and what we mean
+  by a function later on.  Similarly, we'll cover more about why you
+  had to call it with the syntax you did.  However, in the mean time,
+  you have a good simple way to store your code and make modifications
+  to it instead of retyping the whole thing every time.  That'll be
+  useful for code like what you typed in the <a
+  href="Tutorial_Loops.html">Loops and Looping</a> section.
+</p>
+
 
 <table style="width: 100%; border: 1px">
   <tr>
@@ -170,7 +202,7 @@ mixed exec(object user, mixed argv...) {
 
     <td align="center"><a href="Tutorial.html"> Up<br /> A Quick LPC Tutorial </a></td>
 
-    <td align="right"><a href="Misc.html"> Next &mdash;&gt; <br />A Miscellany </a></td>
+    <td align="right"><a href="Tutorial_Arrays.html"> Next &mdash;&gt; <br />Arrays </a></td>
   </tr>
 </table>
             <address>

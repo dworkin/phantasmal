@@ -1,0 +1,168 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+                      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<title>Programming the DGD Driver: Arrays</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<link href="http://phantasmal.sf.net/DGD/driverbook.css"
+      rel="stylesheet" type="text/css" />
+</head>
+<body>
+<table width="95%" border="0" cellspacing="0" cellpadding="4">
+  <tr>
+    <td colspan="2">
+      <table width="100%" border="0" cellspacing="1"
+        cellpadding="0" class="main">
+        <tr>
+          <td class="banner">Programming the DGD Driver</td>
+        </tr>
+      </table></td>
+  </tr>
+  <tr>
+    <td valign="top">
+      <table width="25%"  border="0" cellspacing="1"
+             cellpadding="0"  class="main">
+        <tr>
+          <td class="content" style="font-size: 120%">
+
+          <ul style="margin: 0; padding-left: 10%">
+            <li> <a href="index.html">Table of Contents</a> </li>
+	    <li> <a href="http://phantasmal.sf.net/DGD/index.html">
+	         DGD &amp; LPC Page </a> </li>
+          </ul>
+
+        </td>
+        </tr>
+        <tr>
+          <td class="content" align="center">
+            <a href="http://validator.w3.org/check/referer">
+            <img src="http://phantasmal.sf.net/images/valid-xhtml10.gif"
+	     alt="Valid XHTML 1.0!"
+             style="border:0;width:88px;height:31px" /></a><br />
+            <img src="http://phantasmal.sf.net/images/pixel.gif"
+             style="border:0;width:88px;height:1px" alt="" /><br />
+            <a href="http://jigsaw.w3.org/css-validator/check/referer">
+            <img src="http://jigsaw.w3.org/css-validator/images/vcss"
+             alt="Valid CSS!" style="border:0;width:88px;height:31px" />
+            </a><br /><br /><br />
+            <a href="http://sourceforge.net">
+            <img src="http://sourceforge.net/sflogo.php?group_id=48659&amp;type=2"
+             style="border: 0; width: 125; height: 37;"
+	     alt="SourceForge.net Logo" /></a>
+          </td>
+        </tr>
+      </table></td>
+    <td> <table width="100%"  border="0" cellspacing="1" cellpadding="0" 
+          class="main">
+        <tr>
+          <td class="content">
+
+
+<h2> 2.7 Arrays </h2>
+
+
+<p>
+  Let's write a function to count digits in a string.  Go ahead and
+  change <tt>myobj.c</tt> (or make a new object) to the following:
+</p>
+
+<pre>
+mixed count_digits(string str) {
+  int   *num_count;
+  int    ctr;
+  object user;
+
+  num_count = allocate(10);
+  for(ctr = 0; ctr &lt; 10; ctr++) {
+    num_count[ctr] = 0;
+  }
+
+  for(ctr = 0; ctr &lt; strlen(str); ctr++) {
+    num_count[str[ctr] - '0']++;
+  }
+
+  user = this_user();
+  user-&gt;message(&quot;Count: [&quot;);
+  for(ctr = 0; ctr &lt; 10; ctr++) {
+    user-&gt;message(num_count[ctr] + &quot; &quot;);
+  }
+  user-&gt;message(&quot;]\n&quot;);
+}
+</pre>
+
+<p>
+  To call this file, first compile it.  So you'll type <kbd>compile
+  /usr/admin/myobj.c</kbd>.  If you're not using <tt>myobj.c</tt> as
+  the filename, substitute the one you're using.  You should get a
+  result like <samp>$34 = &lt;/usr/admin/myobj&gt;</samp>.  Now, using
+  the history variable you get back ($34 in the example), type
+  <kbd>$34->count_digits(&quot;0123456789&quot;)</kbd>, or the
+  equivalent with your own history variable number.  You should see a
+  result like the following:
+</p>
+
+<pre>
+Count: [1 1 1 1 1 1 1 1 1 1 ]
+$36 = nil
+</pre>
+
+<p>
+  Since the function doesn't explicitly return anything, the history
+  variable result is nil.  But since it uses the
+  <code>user-&gt;message</code> function to send output to the user,
+  the list of number counts is printed out.  Try calling the function
+  a few more times with arguments different from
+  &quot;0123456789&quot;.  It will count the number of occurrences of
+  each digit in your input.
+</p>
+
+<p>
+  If you look at the line in the code starting with <code>mixed
+  count_digits</code>, you'll notice that it's different from the code
+  in the <a href="Tutorial_CodeInFiles">last section</a>.  It uses a
+  different <dfn>function name</dfn>, <var>count_digits</var> instead
+  of <var>exec</var>.  That's why you typed &quot;count_digits&quot;
+  when calling the function.  You'll also notice that instead of
+  having <code>object user, mixed argv...</code> in parentheses, it
+  has <code>string str</code>.  That section tells what the function
+  needs to be passed &mdash; for the first function, you supplied
+  <code>this_user()</code>, while for <var>count_digits</var>, you
+  supplied a single string which was called &quot;str&quot; throughout
+  the function.
+</p>
+
+<p>
+  There are two new types of variable declaration in the code to
+  count_digits.  There is a variable type called <var>object</var>,
+  like <var>mixed</var> or <var>int</var>.  A variable of type
+  <var>object</var> will hold a compiled DGD object, such as a
+  connection object, or the object that <tt>myobj.c</tt> compiles
+  into.
+</p>
+
+<p>
+  You'll notice that the variable declaration for <var>num_count</var>
+  starts with <var>int</var>, but that there's an asterisk in front of
+  it.  The asterisk means that <var>num_count</var> isn't an integer,
+  but rather a <dfn>reference</dfn> to an integer.
+</p>
+
+<table style="width: 100%; border: 1px">
+  <tr>
+
+    <td><a href="Tutorial_CodeInFiles.html"> &lt;&mdash; Prev<br /> Making and Using LPC Files </a></td>
+
+    <td align="center"><a href="Tutorial.html"> Up<br /> A Quick LPC Tutorial </a></td>
+
+    <td align="right"><a href="Misc.html"> Next &mdash;&gt; <br />A Miscellany </a></td>
+  </tr>
+</table>
+            <address>
+            <span><a href="mailto:angelbob-remove-spamfree@spamfree.users.sf.net">Noah Gibbs</a></span>
+            </address></td>
+        </tr>
+      </table></td>
+  </tr>
+</table>
+</body>
+</html>
