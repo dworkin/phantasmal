@@ -4,6 +4,7 @@
 static void create(varargs int clone) {
 }
 
+
 int char_is_whitespace(int char) {
   if((char == '\n') || (char == '\t')
      || char == ' ')
@@ -11,6 +12,7 @@ int char_is_whitespace(int char) {
 
   return 0;
 }
+
 
 int char_to_lower (int char)
 {
@@ -20,6 +22,7 @@ int char_to_lower (int char)
         return char;
 }
 
+
 int char_to_upper (int char)
 {
         if ((char <= 'z' && char >= 'a'))
@@ -27,6 +30,7 @@ int char_to_upper (int char)
 
         return char;
 }
+
 
 int is_whitespace(string str) {
   int len;
@@ -40,6 +44,7 @@ int is_whitespace(string str) {
   return 1;
 }
 
+
 int is_alpha(string str) {
   int ctr;
 
@@ -47,6 +52,7 @@ int is_alpha(string str) {
 			+ "notreg = /[^a-zA-Z]+/\n"
 			+ "full : regstring", str);
 }
+
 
 int is_alphanum(string str) {
   int ctr;
@@ -56,11 +62,13 @@ int is_alphanum(string str) {
 			+ "full : regstring", str);
 }
 
+
 int is_ident(string str) {
   return !!parse_string("regstring = /[a-zA-Z\-_]+/\n"
 			+ "notreg = /[^a-zA-Z\-_]+/\n"
 			+ "full : regstring", str);
 }
+
 
 int string_has_char(int char, string str) {
   int len, iter;
@@ -72,6 +80,7 @@ int string_has_char(int char, string str) {
   }
   return 0;
 }
+
 
 string trim_whitespace(string str) {
   int start, end;
@@ -87,6 +96,7 @@ string trim_whitespace(string str) {
   return str[start..end];
 }
 
+
 string to_lower(string text) {
   int ctr;
   int len;
@@ -99,6 +109,7 @@ string to_lower(string text) {
   }
   return newword;
 }
+
 
 string to_upper(string text) {
   int ctr;
@@ -113,6 +124,9 @@ string to_upper(string text) {
   return newword;
 }
 
+
+/* If s1 is later in alphabetical order, return 1.  If s2 is later,
+   return -1.  If neither, return 0. */
 int stricmp(string s1, string s2) {
   int tmp1, tmp2, len1, len2;
   int len, iter;
@@ -138,6 +152,30 @@ int stricmp(string s1, string s2) {
   if(len1 > len2) return 1;
   return -1;
 }
+
+
+/* If s1 is later in alphabetical order, return 1.  If s2 is later,
+   return -1.  If neither, return 0. */
+int strcmp(string s1, string s2) {
+  int len1, len2;
+  int len, iter;
+
+  len1 = strlen(s1);
+  len2 = strlen(s2);
+  len = len1 > len2 ? len2 : len1;
+
+  for(iter = 0; iter < len; iter++) {
+    if(s1[iter] > s2[iter])
+      return 1;
+    if(s2[iter] > s1[iter])
+      return -1;
+  }
+
+  if(len1 == len2) return 0;
+  if(len1 > len2) return 1;
+  return -1;
+}
+
 
 string mixed_sprint(mixed data) {
   int    iter;
@@ -217,6 +255,52 @@ int prefix_string(string prefix, string str) {
   }
 
   return 0;
+}
+
+
+/* This function takes a list of strings, sorts them alphabetically,
+   and returns them.  Uninitialized (nil) strings aren't guaranteed
+   to be preserved. */
+string* alpha_sort_list(string* list) {
+  int     ctr, new_offset, bottom_offset, len;
+  string* new_list;
+
+  if(sizeof(list) <= 1)
+    return list;
+
+  new_list = ({ });
+
+  bottom_offset = 0;
+  while(1) {
+    new_offset = bottom_offset;
+    while(bottom_offset < sizeof(list) && !list[new_offset]) {
+      new_offset++;
+      bottom_offset++;
+    }
+
+    if(bottom_offset == sizeof(list)) {
+      /* Done. */
+      return new_list;
+    }
+
+    for(ctr = 1; ctr < sizeof(list); ctr++) {
+      if(list[ctr] && strcmp(list[ctr], list[new_offset]) < 0) {
+	new_offset = ctr;
+      }
+    }
+
+    if(!list[new_offset]) {
+      /* Nothing but nil entries left, so we're done. */
+      return new_list;
+    }
+
+    /* Okay, new_offset is now the minimum-sized entry */
+    new_list += ({ list[new_offset] });
+    list[new_offset] = nil;
+  }
+
+  /* We shouldn't actually get here */
+  error("Internal error sorting strings!");
 }
 
 
