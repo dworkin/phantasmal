@@ -1,6 +1,6 @@
-  <titledef text="Large AUTO Objs" />
+  <titledef text="Designing AUTO Objs" />
 
-  <h2> Some Tradeoffs in Designing Your AUTO Object </h2>
+  <h2> Designing Your AUTO Object </h2>
 
   <p>
     There are a number of tradeoffs in designing your AUTO object.
@@ -132,6 +132,75 @@
     the few times that #include is a reasonable way to add functions
     to an object.
   </p>
+
+<pre>
+From: dgd at list.imaginary.com (Erwin Harte)
+Date: Wed Mar 20 23:03:00 2002
+Subject: [DGD] Mudlibs?
+
+On Thu, Mar 21, 2002 at 02:56:11AM +0100, Vladimir I. Lazarenko wrote:
+> Hello Erwin,
+> 
+> Hmm. and if i inherit it into auto.c object?
+> Will i be able to use it whereever?
+
+You don't _inherit_ things into the auto object, you'll have to
+#include them into it.  But yes, if you do that, you will be able to
+use it whenever.
+
+Now, personally I'd consider that really bad form and would prefer to
+have something like /lib/sprintf.c available for the objects that
+actually _need_ it.  But maybe that's just me, I like to keep the
+auto-object(s) lean and mean, makes it less likely that security or
+consistency bugs creep in.
+
+Oh, and your reminder of the day:
+
+> EH> Aside: Responding after that which is relevant would be appreciated.
+
+Thanks in advance,
+
+Erwin.
+-- 
+Erwin Harte
+</pre>
+
+<hr />
+
+<pre>
+From: DGD Mailing List (Erwin Harte)
+Date: Wed Jan  7 11:15:02 2004
+Subject: [DGD] Re: masking kfuns
+
+On Wed, Jan 07, 2004 at 04:53:45PM +0000, Robert Forshaw wrote:
+> How do I mask a kfun, and how do I refer to the original function? Is it 
+> anything like driver::kfun() ?
+
+Yes.  In your auto-object, you can do something like this:
+
+    static object find_object(string path)
+    {
+        /* Do some of your own sanitizing of input, etc. */
+
+        /* ... */
+        
+        return ::find_object(path);
+    }
+
+> Once the function is masked is it possible for someone to do driver::kfun() 
+> to bymass the masked version? If so how can I prevent it?
+
+If you redefine the function in the auto-object, then only code in the
+auto-object can use ::function() to access the original.  And of
+course the driver-object can, assuming you don't do bizarre things
+like inheriting the auto-object, there.
+
+Cheers,
+
+Erwin.
+-- 
+Erwin Harte
+</pre>
 
   <p style="text-size: 150%"> <a href="../index.html"> Back to top level
     </a> </p>
