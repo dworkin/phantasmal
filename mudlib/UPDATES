@@ -13,7 +13,8 @@ include/version.h
   New version number
 
 usr/System/initd.c
-  Check for Kernel MUDLib version
+  Check for Kernel MUDLib version and DGD version -- allow the widest
+  range of DGD versions that seems reasonable.
 
 data/object/roomfile, data/object/mobfile, data/object/zonefile
   Remove player data, remove .old and safe_* files.  Remove *~ files
