@@ -1,0 +1,604 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title> DGD LPC Textbook </title>
+  </head>
+
+  <body text="#000000" bgcolor="#DDDDDD" link="#0000EF" vlink="#51188E"
+	alink="#FF0000">
+
+    <h1> LPC:  The LPMUD Programming Language </h1>
+    <h2> DGD edition </h2>
+
+    <p> Copyright 1996, 2003 Ronny Wikh and Noah Gibbs </p>
+
+    <hr size="4">
+
+    <h3><a name="SEC3.2.6" href="index.html#SEC3.2.6">
+	Scope and prototypes</a></h3>
+
+    <p>
+      <b>Scope</b> is a term defining where a function or variable
+      declaration is valid. Since programs are read top down (just
+      like you read this page), declarations of functions and
+      variables are available to the below the actual
+      declaration. However, the scope might be further limited.
+    </p>
+
+    <p>
+      A variable that is declared inside a function is only valid
+      until the end of that function (the terminating <code>}</code>)
+      is reached.  If it's declared in a block inside that function,
+      such as inside a <code>for</code> loop, it's only valid until
+      the end of that block (the <code>}<code> matching the beginning
+      <code>{</code> of that block).
+    </p>
+
+    <pre>
+&lt;top of file&gt;
+int GlobCount;
+
+/* Only GlobCount is available here */
+
+void
+var_func(int arg)
+{
+    int var_1;
+
+    /* GlobCount, arg and var_1 are available here */
+    &lt; code &gt;
+
+    {
+        string var_2;
+
+        /* GlobCount, arg, var_1 and var_2 are available in this block */
+        &lt; code &gt;
+    }
+
+    /* GlobCount, arg and var_1 are available here */
+    &lt; code &gt;
+
+    {
+        int var_2;
+        mapping var_3;
+
+        /* GlobCount, arg, var_1, var_2 and var_3 are available here
+          Note that this var_2 is a NEW var_2, an int not a string */
+        &lt; code &gt;
+    }
+
+    /* GlobCount, arg and var_1 are available here */
+    &lt; code &gt;
+}
+
+/* Here only GlobCount and the function var_func are available */
+    </pre>
+
+    <p>
+      Function declarations follow the same rule of scope, though you
+      can't declare a function inside another function.  Suppose you
+      have these two functions where the first uses the second:
+    <pre>
+int
+func_1()
+{
+    &lt; code &gt;
+    func_2("test");
+}
+
+void
+func_2(string data)
+{
+    &lt; code &gt;
+}
+    </pre>
+  </p>
+
+    <p>
+      Then you have a problem, because the first function tries to use
+      the second function before it is declared. This may result in an
+      error message, and it's bad practice in any case.  To take care
+      of this you can rearrange the functions so that
+      <code>func_2</code> comes before <code>func_1</code> in the
+      listing.  This isn't always the best layout, and it isn't always
+      possible.  It's usually better to write a <b>function
+      prototype</b>.  The function prototype should be placed at the
+      top of the file after the <code>inherit</code> and
+      <code>#include</code> statements (described later) but
+      <i>before</i> any code.  It should look very much like the
+      function declaration itself. In this case:
+
+    <pre>
+&lt; top of file, <code>inherit</code> and <code>#include</code> statements &gt;
+
+void func_2(string data);
+
+&lt; the actual code &gt;
+    </pre> </p>
+
+
+    <h3><a name="SEC3.2.7" href="index.html#SEC3.2.7">
+	Operator expressions</a></h3>
+
+    <p>
+      The LPC language defines a large set of operator expressions.
+      These are simply expressions that operate on other
+      expressions. What follows here is a list of them.  This section
+      uses condensed notation to save space and reduce complexity.
+    </p>
+
+<dl compact>
+
+<dt><tt>E</tt>
+<dd> Any expression, including compound expressions. </dd>
+
+<dt><tt>V</tt>
+<dd> A variable. </dd>
+</dl>
+
+
+    <h4><a name="SEC3.2.7.1" href="index.html#SEC3.2.7.1">
+	Miscellaneous operators</a></h4>
+
+    <dl compact>
+      <dt>(E) </dt>
+
+      <dd>
+	The expression inside the parentheses is evaluated before
+	anything outside the parenthesis. This is useful for isolating
+	expressions that need to be done in a specific order.  It's
+	also useful when you are uncertain about operator precedence,
+	or when you want to make it obvious to readers of your code
+	what the precedence is.
+      </dd>
+
+      <dt>E1, E2</dt>
+
+      <dd>
+	<a name="IDX13"></a>
+
+	The first expression is evaluated first and the result stored,
+	then E2 is evaluated and the result is thrown away.  Finally,
+	the stored result of E1 is returned as the value of the entire
+	expression.  The statement <code>a = 1, 2, 3;</code> will set
+	'a' to contain '1'.
+      </dd>
+
+      <dt>V = E</dt>
+
+      <dd>
+	<a name="IDX14"></a>
+
+	The variable is given the value of the expression. The
+	resulting value of this entire expression is also the value of
+	E.  For instance, <code>a = b = 4;</code> will set a and b to
+	be 4. It can also be written <code>a = (b = 4)</code> to
+	illustrate the order of execution.
+      </dd>
+
+    </dl>
+
+
+    <h4><a name="SEC3.2.7.2" href="index.html#SEC3.2.7.2">
+	Arithmetic operators</a></h4>
+
+    <dl compact>
+
+      <dt>E1 + E2</dt>
+
+      <dd>
+	<a name="IDX15"></a>
+
+	<p>
+	  The expressions are evaluated and the results added to each
+	  other.  You can add integers, floats, strings, arrays and
+	  mappings.  Strings, arrays and mappings are simply
+	  concatenated - pasted together to the end of the first
+	  argument.
+	</p>
+
+	<p>
+	  It's also possible to add integers to strings, they will
+	  then be converted to strings and pasted to the end of the
+	  string.
+	</p>
+      </dd>
+
+      <dt>E1 - E2</dt>
+
+      <dd> <a name="IDX16"></a>
+
+	<p>
+	  E2 is subtracted from E1.  You can subtract integers, floats
+	  and any type from arrays of the same type. For arrays the
+	  item, if it exists in the array it is subtracted from, is
+	  removed from the array. If it doesn't exist in the array,
+	  the array is returned intact.
+	</p>
+      </dd>
+
+      <dt>E1 * E2</dt>
+
+      <dd>
+	<a name="IDX17"></a>
+
+	E1 is multiplied by E2.  This only works on integers and floats.
+      </dd>
+
+      <dt>E1 / E2</dt>
+
+      <dd>
+	<a name="IDX18"></a>
+
+	E1 is divided by E2.  This only works on integers and floats.
+      </dd>
+
+      <dt>E1 % E2</dt>
+
+      <dd>
+	<a name="IDX19"></a>
+
+	The remainder (also called the modulus) of the expression 'E1
+	/ E2' is returned.  This only works with integers.  For
+	instance, <code>14 % 3</code> will yield 2 as the remainder.
+      </dd>
+
+      <dt>-E</dt>
+
+      <dd>
+	Return E, negated arithmetically.  This only works on
+	integers and floats.  For either one, the value returned
+	is equal to zero minus E, or negative E.
+      </dd>
+
+      <dt>E++, ++E</dt>
+
+      <dd>
+	<a name="IDX20"></a>
+
+	<p>
+	  The expression E is incremented by one. If the operator is
+	  in front of the expression (called &quot;prefix&quot;) then
+	  the incremented value is returned, otherwise the previous
+	  value is.  For instance, if the variable <code>ctr</code> is
+	  equal to 3 then <code>++ctr</code> would return 4 and
+	  <code>ctr++</code> would return 3.  This only works on
+	  integers.
+	</p>
+
+	<p>
+	  The value of <code>++a</code> is also an lvalue, which means
+	  it can be assigned to.  If you don't immediately know what
+	  that means, don't do that.
+	</p>
+
+	<pre>
+'a = 3; b = ++a;' will yield the result 'a = 4, b = 4', while
+'a = 3; b = a++;' will yield the result 'a = 4, b = 3'.
+	</pre>
+      </dd>
+
+      <dt>E--, --E</dt>
+
+      <dd>
+	<a name="IDX21"></a>
+
+	The expression 'E' is decremented by one. If the operator is
+	in front of the expression, the decrement is done before the
+	value is returned, otherwise afterwards.  This only works
+	on integers.
+
+	<pre>
+'a = 3; b = --a;' will yield the result 'a = 2, b = 2', while
+'a = 3; b = a--;' will yield the result 'a = 2, b = 3'.
+	</pre>
+      </dd>
+    </dl>
+
+
+    <h4><a name="SEC3.2.7.3" href="index.html#SEC3.2.7.3">
+	Boolean operators</a></h4>
+
+    <p>
+      Boolean operators are applicable only to integers with
+      the exception of the <code>&amp;</code> operator which also
+      works on arrays. Internally an integer is 32 bits long. However,
+      in the following examples I will only show the ten last bits as
+      the others are 0 and can be ignored with the one exception of
+      the <code>~</code>-operator.
+
+</p>
+
+<ol>
+
+<li>E1 &amp; E2
+
+<a name="IDX22"></a>
+E1 and E2.
+
+
+<pre>
+1011101001   (= 745)
+1000100010 &amp; (= 546)
+------------
+1000100000   (= 544) =&gt; 745 &amp; 546 = 544
+</pre>
+
+Used on two arrays, this function will return a new array that holds all
+elements that are members of both of the argument arrays.
+		
+<li>E1 | E2
+
+<a name="IDX23"></a>
+E1 or E2.
+
+
+<pre>
+1011101001   (= 745)
+1000100010 | (= 546)
+------------
+1011101011   (= 747) =&gt; 745 | 546 = 747
+</pre>
+
+<li>E1 ^ E2
+
+<a name="IDX24"></a>
+E1 xor (exclusive or) E2.
+
+
+<pre>
+1011101001   (= 745)
+1000100010 ^ (= 546)
+------------
+0011001011   (= 203) =&gt; 745 ^ 546 = 203
+</pre>
+
+<li>~E
+
+<a name="IDX25"></a>
+1-complement of E (invert E).
+
+
+<pre>
+00000000000000000000001011101001 ~ (= 745)
+----------------------------------
+11111111111111111111110100010110   (= -746) =&gt; ~745 = -746
+</pre>
+
+<b>NB!</b> The above example might be hard to understand unless you
+really know your binary arithmetic. However, trust me when I say that
+this is <i>not</i> a typo, it's the way it should look. Read a book
+on boolean algebra (the section on two-complement binary arithmentic)
+and all will be clear.
+
+<li>E1 &lt;&lt; E2
+
+<a name="IDX26"></a>
+E1 is shifted left E2 steps.
+
+
+<pre>
+5 &lt;&lt; 4 =&gt; 101(b) &lt;&lt; 4 = 1010000(b) = 80
+</pre>
+
+<li>E1 &gt;&gt; E2
+
+<a name="IDX27"></a>
+E1 is shifted right E2 steps.
+
+
+<pre>
+1054 &gt;&gt; 5 =&gt; 10000011110(b) &gt;&gt; 5 = 100000(b) = 32
+</pre>
+
+</ol>
+
+
+
+<h4><a name="SEC31" href="index.html#SEC31">Conditional (logical) operators</a></h4>
+
+
+<ol>
+
+<li>E1 || E2
+
+<a name="IDX28"></a>
+Returns true if E1 or E2 evaluates as true. Will not evaluate E2 if E1
+is true.
+
+<li>E1 &amp;&amp; E2
+
+<a name="IDX29"></a>
+Returns true if both E1 and E2 evaluates as true.  Will not evaluate E2
+if E1 is false.
+
+<li>!E
+
+<a name="IDX30"></a>
+Returns true if E is false &amp; vice versa.
+
+</ol>
+
+
+
+<h4><a name="SEC32" href="index.html#SEC32">Comparative operators</a></h4>
+
+
+<ol>
+
+<li>E1 == E2
+
+<a name="IDX31"></a>
+Returns true if E1 is equal to E2, can be used on all kinds of types,
+but see the special section later on arrays and mappings, it works
+differently on them from what you might think.
+
+<li>E1 != E2
+
+<a name="IDX32"></a>
+Returns true if E1 isn't equal to E2, can be used on all kinds of types,
+but see the special section later on arrays and mappings, it works
+differently om them from what you might think.
+
+<li>E1 &gt; E2
+
+<a name="IDX33"></a>
+Returns true if E1 is greater than E2, can be used on all types except
+arrays and mappings.
+
+<li>E1 &lt; E2
+
+<a name="IDX34"></a>
+Returns true if E1 is less than E2, can be used on all types except
+arrays and mappings.
+
+<li>E1 &gt;= E2
+
+<a name="IDX35"></a>
+Returns true if E1 is greater or equal to E2, can be used on all types
+except arrays and mappings.
+
+<li>E1 &lt;= E2
+
+<a name="IDX36"></a>
+Returns true if E1 is less or equal to E2, can be used on all types
+except arrays and mappings.
+
+</ol>
+
+
+
+<h3><a name="SEC33" href="index.html#SEC33">Prefix allocation</a></h3>
+<p>
+<a name="IDX37"></a>
+
+</p>
+<p>
+All of the arithmetic and boolean operator expressions can be written in a
+shorter way if all you want to do is compute one variable with any other
+expression and then store the result in the variable again.
+
+</p>
+<p>
+Say that what you want to do is this <code>a = a + 5;</code>, a much neater
+way of writing that is <code>a += 5;</code>. The value of the second
+expression is added to the first and then stored in the first which
+happens to be a variable.
+
+</p>
+<p>
+You write all the others in the same way, i.e. the variable, then the
+operator directly followed by <code>=</code> and then the expression.
+
+</p>
+
+<pre>
+a &gt;&gt;= 5;       /* a = a &gt;&gt; 5; */
+b %= d + 4;    /* b = b % (d + 4); */
+c ^= 44 &amp; q;   /* c = c ^ (44 &amp; q); */
+</pre>
+
+
+
+<h3><a name="SEC34" href="index.html#SEC34">
+      Precedence and Order of evaluation</a></h3>
+
+<p>
+The table below summarizes the rules for precedence and associativity
+of all operators, including those which we have not yet discussed. 
+Operators on the same line have the same precedence, rows are in order
+of decreasing precedence, so, for example, <code>*</code>, <code>/</code> and <code>%</code>
+all have the same precedence, which is higher than that of <code>+</code> and
+<code>-</code>.
+
+</p>
+<p>
+Note that the precedence of the bitwise logical operators <code>&amp;</code>,
+<code>^</code> and <code>|</code> falls below <code>==</code> and <code>!=</code>. This implies
+that bit-testing expressions like
+
+</p>
+
+<pre>
+if ((x &amp; MASK) == 0) ...
+</pre>
+
+<p>
+must be fully parenthesized to give proper results.
+
+</p>
+
+<ol>
+<li>() []
+
+Left to right
+
+<li>! ~ ++ -- - (type) * &amp;
+
+Right to left
+
+<li>* / %
+
+Left to right
+
+<li>+ -
+
+Left to right
+
+<li>&lt;&lt; &gt;&gt;
+
+Left to right
+
+<li>&lt; &lt;= &gt; &gt;=
+
+Left to right
+
+<li>== !=
+
+Left to right
+
+<li>&amp;
+
+Left to right
+
+<li>^
+
+Left to right
+
+<li>|
+
+Left to right
+
+<li>&amp;&amp;
+
+Left to right
+
+<li>||
+
+Left to right
+
+<li>?:
+
+Right to left
+
+<li>= += == etc.
+
+Right to left
+
+<li>,
+
+Left to right
+</ol>
+
+    <hr>
+    <a href="http://sourceforge.net">
+      <img src="http://sourceforge.net/sflogo.php?group_id=48659&type=6"
+	   width="210" height="62" border="0" alt="SourceForge.net Logo"></a>
+    <address><a href="mailto:noah_gibbs@yaNOSPAMhoo.com">Noah Gibbs</a>
+    </address>
+    <!-- Created: Mon Jun 11 21:50:30 PDT 2001 -->
+    <!-- hhmts start -->
+Last modified: Tue Apr  8 21:20:13 PDT 2003
+<!-- hhmts end -->
+  </body>
+</html>
