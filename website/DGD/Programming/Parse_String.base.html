@@ -6,21 +6,97 @@
     The parse_string kfun is a very powerful parser to which you
     supply a grammar of your choice.  It's much like lex and yacc, and
     defines its own mini-language within DGD, much as lex and yacc do
-    with C.  DGD's parse_string, unlike most parsers, keeps track of
-    all your ambiguous matches.  That fact is both a great power and a
-    great responsibility.
+    with C.
   </p>
 
   <p>
-    What that means is that if your grammar allows something to be
-    parsed a couple of different ways then DGD will keep track of them
-    all while parsing.  If there are two ways to parse a double-if
-    statement with else (the else can go with either if) in your
-    grammar, and you feed parse_string a chunk with fifteen of those,
-    you'll find that DGD is keeping track of 2^15 (that's a little
-    more than 32,500) different interpretations of your file. Then it
-    will cheerfully return only the first.  That's slow, just in case
-    you hadn't guessed.
+    For a basic overview of parse_string(), please read
+    dgd&frasl;doc&frasl;parser.  It came with your DGD distribution.
+    It will answer your basic questions.  It's the most updated and
+    most definitive document on how parse_string() behaves.
+  </p>
+
+  <h3> Tokenizing </h3>
+
+  <p>
+    A parse_string() grammar has two types of symbols.  One is for
+    tokens, the other (called a 'production') is for nonterminal
+    symbols.  Every grammar must contain at least one token rule and at
+    least one production rule.
+  </p>
+
+  <p>
+    The input string is first broken up into tokens and whitespace.
+    Whitespace is ignored.  The entire input must be parsed into
+    valid, legal tokens or the parsing fails entirely.  Then the
+    tokens are parsed according to the nonterminal rules.  There is a
+    special 'whitespace' token rule, called 'whitespace', which is how
+    whitespace is distinguished from regular tokens.
+  </p>
+
+  <p>
+    Tokens match longest-first &mdash; that is, the token rule that
+    matches the longest chunk of test will be used, even if another
+    token rule matches a shorter string 'more exactly'.  If two rules
+    match the same string (and thus the same length), then the rule
+    that is first in the grammar will be used.
+  </p>
+
+  <p>
+    There is a special token rule, called 'nomatch'.  If you say, in
+    your grammar, <tt>mytoken = nomatch</tt>, then the token 'mytoken'
+    will be used for any string that doesn't match another token.  The
+    nomatch rule can be quite inefficient.  On a complicated grammar,
+    though, it's usually still more efficient than using sscanf() or
+    implode()&frasl;explode() rather than parse_string().
+  </p>
+
+  <h3> Production Rules </h3>
+
+  <h3> Literal Strings </h3>
+
+  <p>
+    If you use literal strings (like 'foo') in your production rules,
+    then those literal strings will effectively be defined as tokens,
+    and they will come 'first' in your grammar.  That means that they
+    will be matched as literal strings in preference to any other rule
+    that you define.  That can cause a problem with a grammar like:
+  </p>
+
+  <pre>
+  word = &frasl;[a-z]+&frasl;
+
+  rule : word 'foo'
+  </pre>
+
+  <p>
+    Then the 'word' regexp will never match 'foo' because it is used in
+    the grammar.  A workaround here is to do something like this:
+  </p>
+
+  <pre>
+  word = &frasl;[a-z]+&frasl;
+
+  rule : _word 'foo'
+
+  _word : word
+  _word : 'foo'
+  </pre>
+
+  <h3> Ambiguous Matching </h3>
+
+  <p>
+    DGD's parse_string, unlike most parsers, keeps track of all your
+    ambiguous matches.  That fact is both a great power and a great
+    responsibility.  What that means is that if your grammar allows
+    something to be parsed a couple of different ways then DGD will
+    keep track of them all while parsing.  If there are two ways to
+    parse a double-if statement with else (the else can go with either
+    if) in your grammar, and you feed parse_string a chunk with
+    fifteen of those, you'll find that DGD is keeping track of 2^15
+    (that's a little more than 32,500) different interpretations of
+    your file. Then it will cheerfully return only the first.  That's
+    slow, just in case you hadn't guessed.
   </p>
 
   <p>
@@ -48,12 +124,81 @@
   </p>
 
   <p>
+    The parse_string() kfun allows you to specify how many ambiguous
+    parsings you want returned.  However, DGD will track all of them
+    (or at least the first 32000 and some), no matter how few you
+    specify, throughout the process.  That's necessary because the LPC
+    functions that you call on nonterminal rules can disqualify a
+    particular parse tree, so you may need to keep all of them around
+    to try out.  If you say you want the first three returned, but
+    only two of the first 10,000 parse trees turns out to be valid
+    after your LPC code is called, then DGD did the right thing by not
+    throwing away the next 10,000 parse trees, right?
+  </p>
+
+  <p>
+    Note that you can apply rules in different orders and get to the
+    same parse tree.  This does <i>not</i> cause ambiguous parsing,
+    and does <i>not</i> come with a big speed penalty.  When figuring
+    out whether you can have ambiguous parses with your grammar, just
+    look at whether the same input string can match multiple different
+    parse trees.
+  </p>
+
+  <h3> Efficiency of parse_string() vs sscanf() vs explode() </h3>
+
+  <p>
+    The sscanf() solution is usually fastest for simple operations,
+    especially if most of the text is static and there is only a
+    single occurrence of the string you're trying to extract.  If
+    there are multiple occurrences and the pattern is simple,
+    explode() (or a combination of explode() and implode()) is usually
+    fastest.  parse_string() is likely to be fastest in other cases,
+    especially with a complex grammar.
+  </p>
+
+  <h3> Caching </h3>
+
+  <p>
+    parse_string() precalculates a significant amount of state (called
+    a DFA) when it determines how to parse according to a particular
+    grammar.  When you first call parse_string(), this DFA is created
+    and stored in the object that called parse_string().  That means
+    that if you have multiple grammars, it is often faster to store
+    them in multiple, separate objects so that each object can keep
+    its own precalculated DFA rather than having to recalculate every
+    time it changes from one grammar to another.
+  </p>
+
+  <h3> Other Tutorials </h3>
+
+  <p>
     A fellow on the list named Steve Foley has graciously put together
     a tutorial on parse_string, with the aid of Erwin Harte.  You can
     find it <a href="../external/parse_string.html">here</a>.
   </p>
 
-  <hr />
+  <h3> Books </h3>
+
+  <p>
+    Dworkin says: you can read up on grammars in books about compiler
+    construction, the Chomsky language hierarchy, or even in Linux
+    documentation for flex and yacc.  A good book about compiler
+    construction is: <br />
+    <i>Aho, Sethi, Ullman: Compilers -- Principles, Techniques, and Tools
+      <br />
+      Addison Wesley 1986, second edition </i>
+  </p>
+
+  <p>
+    Par Winzell recommends the Dragon Book: <br />
+
+    <i> Principles, Techniques and Tools, by Alfred V. Aho, Ravi Sethi,
+    and Jeffrey D. Ullman <br />
+    Addison-Wesley 1986; ISBN 0-201-10088-6) </i>
+  </p>
+
+  <h3> Examples </h3>
 
   <ul>
     <li> <a href="../external/lpc_grammar.txt">An (outdated) grammar
@@ -62,11 +207,8 @@
         using functions to affect the final parse tree</a> </li>
     <li> <a href="../external/ps_example_2.txt">Efficiency of sscanf
         versus parse_string</a> </li>
-
-    <li> <a href="../external/ps_example_3.txt">A more specific
-	discussion about efficiency of sscanf versus parse_string</a>
-    </li>
-
+    <li> <a href="../external/ps_example_3txt">A Skotos grammar to
+      parse LPC values</a> </li>
     <li> <a href="../external/ps_example_4.txt">Dworkin
 	discussing simple left-recursive rules for lists</a>
     </li>
@@ -75,127 +217,11 @@
 
   <hr />
 
+  <!-- ********************************************************* -->
+
   <h3> More Messages About Using parse_string() </h3>
 
-<pre>
-Date: Fri, 28 Jan 2000 14:34:04 +0100 (CET)
-From: "Felix A. Croes" <felix@dworkin.nl>
-Message-Id: <200001281334.OAA03750@pattern.dworkin.nl>
-To: dgd@list.imaginary.com
-Subject: Re: [DGD]parse_string
-
-Ludger Merkens <balduin@uni-paderborn.de> wrote:
-
->[...]
->     grammar = "                     \
-> whitespace=/[ \t\n\r\v\f]+/         \ /* strip some chars */
-> whitespace=/[!-\\[\\]|]+/           \ /* some more        */
-> tag=/<[^<]*>/                       \ /* tags start with <, end with >
-> term =/[a-zA-Z]+'s/                 \ /* e.g. GNU's */
-> term =/\\(*[a-zA-Z`']+\\)*/         \ /* Hello or 'Hello' */
-> eol =/<[^<>]*/                      \ /* < but neither < nor > follows. */
-> s : tag s                           \
-> s : term s                          \
-> s : term                            \
-> s : eol                             \ /* broken tag at end of chunk */
-> s : tag                             \
-> ";
->
-> First of all, I want to know how the whitespace rules are used, e.g. I 
-> stumbled over a tag containing \n in spite of the first whitespace rule.
-
-Whitespace is matched like any other token: take the longest possible
-match.  The longest possible match for "tag" explicitly allows embedded
-whitespace, as does the longest possible match for "eol".  Also note
-that the rule for tag matches "<foo>>>>>".
-
-
-> Second I need some details about efficiency of parsing. If I use this
-> grammar on a string containing html with length of 1000 chars, I have
-> a cost of about 25240 ticks. Whereas I get for 2000 chars 181664 ticks
-> and for 3000 even 591632. 
-
-This is becaus the grammar is right-recursive for s.  If you replace
-the first two rules with left-recursive rules, the grammar will become
-more efficient:
-
-    s: s tag
-    s: s term
-
-
-> - Which execution costs do I have to expect O(n^2), O(n^3) ... (be n the
->   length of the string)
-
-Parsing with the (suitably rewritten) grammar above would have cost
-O(n).  The worst case for a LR grammar is O(n^3).  The worse case for
-an ambiguous grammar is O(n^m), where m is the number of rules in the
-grammar.
-
-
-> - In how far is the cost dependend on the grammar, are there rules which
->   are parsed faster than others? Are there some good books, url's how to
->   build a well formed (fast parsed) grammar (kfg)
-
-SLR grammars are handled most efficiently, especially if they have no
-recursion or only left recursion.  Next are LALR, LR, non-ambiguous, and
-ambiguous, in that order with the most efficient worst case first.
-
-You can read up on grammars in books about compiler construction, the
-Chomsky language hierarchy, or even in Linux documentation for flex and
-yacc.  A good book about compiler construction is
-
-    Aho, Sethi, Ullman: Compilers -- Principles, Techniques, and Tools
-    Addison Wesley 1986, second edition
-
-Regards,
-Dworkin
-</pre>
-
-<hr />
-
-<pre>
-Date: Tue, 1 Feb 2000 15:10:10 +0100 (CET)
-From: "Felix A. Croes" <felix@dworkin.nl>
-Message-Id: <200002011410.PAA11957@pattern.dworkin.nl>
-To: dgd@list.imaginary.com
-Subject: Re: [DGD]parse_string
-
-Ludger Merkens <balduin@uni-paderborn.de> wrote:
-
-> Another parse_string example
-> I try the following:
->
->     grammar = "\
-> whitespace=/[ !-[]+/            \ /* note the [ in the set */
-> tag=/<[a-zA-Z]+>/               \
-> term =/\\(*[A-Za-z`']+\\)*/     \
-> s : term ? _term                \
-> s : tag ?  _tag                 \
-> ";
->
-> if i call parse_string("! <abc>",grammar) i receive
-> ({"abc"}) and the function _term is called.
-> looks wrong to me.
-
-Token rules, from dgd/doc/parser:
-
-    [set]   a single character in the given set, which is constructed of
-            single characters such as `a' and/or character ranges such as
-            `a-z'.  `\' may be used to escape the characters `]', `^', `-', `\'
-
-The range `!-[' is perhaps more inclusive than you suspected.
-
-The alternative grammar succeeds because `-' at the beginning or end
-of a character set obviously cannot be part of a range, and therefore
-is not interpreted as such.
-
-Regards,
-Dworkin
-</pre>
-
-<hr />
-
-<pre>
+  <pre>
 From: Par Winzell <zell@skotos.net>
 Message-ID: <15077.44945.803778.78438@alyx.skotos.net>
 Date: Tue, 24 Apr 2001 09:53:37 -0700
@@ -296,9 +322,6 @@ there is a wealth of writings on the matter out there. The defining
 text on compilers and parsing when I went to school was the dragon
 book, and I'd imagine it still does the trick:
 
-	Dragon Book n. The classic text Compilers: Principles,
-	Techniques and Tools, by Alfred V. Aho, Ravi Sethi, and
-	Jeffrey D. Ullman (Addison-Wesley 1986; ISBN 0-201-10088-6),
 
 If there are problems with parse_string(), I'd say one of the major
 ones is that you really have to be fairly well-versed in constructing
@@ -314,215 +337,6 @@ and it should not be terribly difficult, since the token definitions
 themselves are regexps.
 
 Zell
-</pre>
-
-<hr />
-
-<pre>
-Date: Thu, 7 Jun 2001 04:51:43 +0200
-From: Erwin Harte <harte@xs4all.nl>
-To: dgd@list.imaginary.com
-Subject: Re: [DGD]Parse String
-Message-ID: <20010607045143.X21409@mail.is-here.com>
-
-On Wed, Jun 06, 2001 at 09:49:13PM -0400, S. Foley wrote:
-> I apologize in advance if I am working off of an outdated parse_string
-> help file.
-> 
-> My first question relates to the type of 'operators' (I don't know what
-> else to call them) usable in token rules.  The help file for parse
-> string indicates the following such operators are available:
-
-I think they may be called 'quantifiers', not sure though.
-
-> >and, with regular expressions "a" and "b":
-> >
-> >   a*      zero or more occurrences of a	(highest precedence)
-> >   a+      one or more occurrences of a
-> >   ab      the concatenation of a and b
-> >   a|b     a or b
-> >   (a)     a					(lowest precedence)
-> 
-> Yet looking at an example grammar Mr. Croes wrote I see the following:
-> 
-> >FLOAT_CONST = /[0-9]+\\.[0-9]*([eE][-+]?[0-9]+)/ \
-> >FLOAT_CONST = /[0-9]*\\.[0-9]+([eE][-+]?[0-9]+)/ \
-> 
-> Now from what I understand '?' is frequently used in regular expressions
-> to indicate 0 or 1 occurences of what precedes it.  Is that what it is
-> being used for here?
-
-Yes. :)
-
->                       If so, are there any other 'operators' like this
-> that are frequently used in regular expressions that are useable in
-> token rules that are undocumented (assuming I have an up to date help
-> file for parse_string)?
-
-Not that I'm aware of, assuming you're referring to such things as
-\d and \s to represent [0-9] and [\t\n\r ] for instance?  I _think_
-Dworkin considers those unnecessary syntactic sugar, convenient but
-not required in the essential functionality.  For instance, there is
-as far as I know no <regexp>{n,m} support, since those can be
-rewritten with the already available features.
-
-> I also have another question relating to precedence.  The parse_string
-> help file states the following:
-> 
-> >For any regular expression, the longest possible token will be
-> >matched.  The name "whitespace" is reserved for defining a special
-> >token, which is simply skipped.  More than one rule may be specified > for 
-> >each token, including whitespace.
-> 
-> >If a string matches more than token, the token for which the rule
-> >appears first in the grammar is selected.  If a string does not match
-> >any token, it is rejected and parsing fails.
-> 
-> My question is if I define some tokens:
-> 
->   token1 = /[a-z]+/
->   token2 = /.*/
-> 
-> Despite the fact that the rule for token1 precedes the rule for token2,
-> nothing is ever going to be matched up to token1 because the longest
-> match precedence rule takes precedence over all?  My experiments with
-> the function and my reading up on the subject of regexp's seem to
-> indicate that this would be the case.
-
-Yes.  The order becomes important when more than one rule matches, for
-instance:
-
-  token1 = /[a-zA-Z0-9]+/
-  token2 = /foo/
-
-In thise case, the sequence 'foo' would be seen as a token1, not
-token2, so that any rule with token2 in it will never be matched in
-practice.
-
-There is another catch, if you define something like this:
-
-  word = /[a-z]+/
-
-  rule : word 'foo'
-
-Then the 'word' regexp will never match 'foo' because it is used in
-the grammar.  A workaround here is to do something like this:
-
-  word = /[a-z]+/
-
-  rule : _word 'foo'
-
-  _word : word
-  _word : 'foo'
-
-> I have one last theoretical question.  I've been told that for every
-> regular expression it is possible to write an inverse regular expression.  
-> That is to say, if I have a regular expression A, I can
-> write a regular expression B such that everything that A matches, B will
-> not match, and everything A does not match, B will match.  How difficult
-> would it be to implement an 'operator' (like * or +) for token rules
-> that could be used to mean any string that does not match the regular
-> expression that precedes it?  Would it be possible to write a front
-> end to parse_string using parse_string itself to generate B from A?
-> 
-> I have almost no background in the computer sciences, so I apologize
-> if any of these questions were trivial.
-
-For individual cases it _sounds_ straightforward, but it wouldn't
-surprise me at all if there were some very nasty catches lurking
-right around the corner there... anyone else feel like tackling this
-one? :-)
-
-Erwin.
--- 
-Erwin Harte <harte@xs4all.nl>
-</pre>
-
-<hr />
-
-<pre>
-Date: Fri, 15 Jun 2001 14:18:18 +0200 (CEST)
-From: "Felix A. Croes" <felix@dworkin.nl>
-Message-Id: <200106151218.OAA25941@dworkin.nl>
-To: dgd@list.imaginary.com
-Subject: Re: [DGD]parse_string()
-
-"S. Foley" <s_d_foley@hotmail.com> wrote:
-
-> More parse_string stuff from me I'm afraid.
->
-> Here's how I understand how parse_string works.  Please correct me if I'm 
-> wrong.  I suspect I have some fundamental misconceptions.
->
-> You have a string to parse, some token rules, and some production rules.
-> Is the string tokenized immediately with respect to the token rules prior to 
-> the production rules?  The concept in my head is that the string is 
-> translated into some sequence of tokens, and then the production rules get 
-> used to try to recreate the same token sequence.  If the production rules 
-> can create a match, then the string may be parsed according to the grammar.  
-> I'm starting to feel as if I have it totally backwards though.
-
-This is correct.  The string is tokenized first, and the tokens are then
-parsed.
-
-
-> I have a more practical question that I've tried to solve on and off for a 
-> few months now.  I'm trying to write a function that will explode a string 
-> with a delimiter specified by a regular expression.  My initial thought was 
-> to simply take the regular expression I wanted to use as a delimiter, use a 
-> catchall token to catch everything else (like /.+/) and it would be cake.  
-> Initially I assumed that there was a way to write the production rules to 
-> get around the longest match rule, but since the tokenizing of the string 
-> happens prior to the workings of the production rules (err...right?) this is 
-> impossible.
-
-Quite.  You can, of course, make a grammar for a regular expression,
-but using regular expressions for this is much more efficient.
-
-
-> Next, I figured I could use /./ instead of /.+/, and just use some LPC 
-> functions in the production rule to craft the array.  But that's insane of 
-> course, because you are generating an ungodly number of tokens, since the 
-> tokenizing occurs prior to the production rules (err... right?).  So while 
-> it would kinda work, it's incredibly inefficient.
-
-Correct.
-
-
-> So I started wondering if every regular expression A had some inverse 
-> regular expression B, such that everything A match, B didn't, and everything 
-> A didn't, B did.  If I could generate B from A, then I could easily write 
-> the production rules and limit the number of tokens to the bare minimum 
-> required...
->
-> Where I'm currently stuck is how to express the inverse of the concatenation 
-> of two regular expressions, a and b.  Is there some trick to it?  You can 
-> assume for this that I am able to express the inverse of a (!a) and the 
-> inverse of b (!b).
-
-A very good question.
-
-Each regular expression has an inverse.  This is easy to prove: each
-regular expression has a corresponding deterministic finite automaton,
-and vice versa.  So the inverse regular expression is the one which
-expresses the same DFA, but with the final and non-final states
-transposed.
-
-Building a DFA for a regular expression is exactly what parse_string()
-does.  Unfortunately, the optimal way to compute the inverse of a
-regular expression is very close to actually constructing the DFA,
-transposing final and non-final states, etc.  This is of course
-ridiculous.  If you actually have to build your own DFA to be able
-to implement regexplode(), there isn't much point in using
-parse_string() in the first place.
-
-So the question becomes, should there be an easier way to use
-parse_string() for implementing regexplode()?  The answer to that
-question is yes.  I am going to think this over for a bit, to see
-what I can do about it.
-
-Regards,
-Dworkin
 </pre>
 
 <hr />
@@ -626,237 +440,6 @@ What the pp_[a-f] functions did I leave up to your own imagination.
 Erwin.
 -- 
 Erwin Harte <harte@xs4all.nl>
-</pre>
-
-<hr />
-
-<pre>
-From dgd at list.imaginary.com  Sun Dec  9 16:28:00 2001
-From: dgd at list.imaginary.com (Par Winzell)
-Date: Sun Dec  9 16:28:00 2001
-Subject: [DGD] Desperately Wanted
-In-Reply-To: <5.1.0.14.0.20011209151141.023b53f0@mail>
-References: <200112091446.PAA04114@dworkin.nl>
- <5.1.0.14.0.20011209151141.023b53f0@mail>
-Message-ID: <15379.57885.573752.149699@troll.skotos.net>
-
-David,
-
- > I would kill for, give booze / pizza / money / code boring objects for,
- > do just about anything for a code snippet or a deeper explanation
- > of the parse_string() function.
-
-First, a computer science degree helps or an equivalent amount
-of immersion in context-free grammars help. Alternately you can
-try to give yourself a crash course; I suggest buying a book in
-print. The traditional work is "the dragon book",
-
-http://www.amazon.com/exec/obidos/ISBN%3D0201100886/104-5095468-2962302
-
-but it's not cheap. You can get the basic idea from various web
-pages, but any non-trivial use of parse_string gets into subtle
-stuff pretty quickly (specifically, ambiguous grammars).
-
-My second recommendation is a Google search for
-
-	mud-dev string parsing
-
-where you have to click on 'repeat search with ommitted results
-included' at the bottom of the page. This will uncover all the
-discussions in late 1997 on DGD's parse_string(), most of it by
-Dworkin himself. I believe this is the first node:
-
-http://www.kanga.nu/archives/MUD-Dev-L/1997Q4/msg00164.php
-
-
-There are also lots of people who have done parse_string work
-on this very list. Here is a small grammar that Skotos uses to
-parse ascii representations of LPC values. This is overkill,
-because a simple recursive descent parser can do the trick... 
-
-... but hell, it works pretty darn well.
-
-=========================================================================
-private
-string query_grammar() {
-   return
-      "whitespace = /[ \t\r\n]+/\n" +
-      "int = /[0-9]+/\n" +
-      "float = /[+-]?([0-9]+\\.|[0-9]*\\.[0-9]+)([eE][+-]?[0-9]+)?/\n" +
-      "str = /\"([^\\\\\"]*\\\\.)*[^\\\\\"]*\"/\n" +
-      "obj = /<[^>]+>/\n" +
-
-      "Value: 'nil' ? make_nil\n" +
-      "Value: int ? parse_int\n" +
-      "Value: float ? parse_flt\n" +
-      "Value: str ? parse_str\n" +
-      "Value: obj ? parse_obj\n" +
-      "Value: '{' '}' ? empty_array\n" +
-      "Value: '{' ArrList '}' ? pick_middle\n" +
-      "Value: '[' ']' ? empty_mapping\n" +
-      "Value: '[' MapList ']' ? pick_middle\n" +
-      "ArrList: Value ? make_array\n" +
-      "ArrList: ArrList ',' Value ? build_array\n" +
-      "MapList: Value ':' Value ? make_mapping\n" +
-      "MapList: MapList ',' Value ':' Value ? build_mapping\n";
-}
-=========================================================================
-
-With:
-
-=========================================================================
-static
-mixed *colour_value(mixed *tree) {
-   return ({ paint_value(tree[3], (int) tree[1]) });
-}
-
-static
-mixed *make_nil(mixed *tree) {
-   return ({ nil });
-}
-
-static
-mixed *parse_int(mixed *tree) {
-   return ({ (int) tree[0] });
-}
-
-static
-mixed *parse_flt(mixed *tree) {
-   SysLog(dump_value(tree));
-   return ({ (float) tree[0] });
-}
-
-      "Value: float {{ return ({ (float) tree[0] }); }}"
-
-static
-mixed *parse_str(mixed *tree) {
-   return ({
-      replace_strings(tree[0][1 .. strlen(tree[0])-2],
-		      "\\\"", "\"",
-		      "\\\\", "\\")
-	 });
-}
-
-static
-mixed *parse_obj(string *tree) {
-   object obj;
-
-   obj = find_object(tree[0][1 .. strlen(tree[0])-2]);
-   if (!obj) {
-      error("cannot find object " + tree[0]);
-   }
-   return ({ obj });
-}
-
-static
-mixed *pick_middle(mixed *tree) {
-   return tree[1 .. 1];
-}
-
-static
-mixed *empty_array(mixed *tree) {
-   return ({ ({ }) });
-}
-
-static
-mixed *make_array(mixed *tree) {
-   return ({ tree });
-}
-
-static
-mixed *build_array(mixed *tree) {
-   return ({ tree[0] + ({ tree[2] }) });
-}
-
-static
-mixed *empty_mapping(mixed *tree) {
-   return ({ ([ ]) });
-}
-
-static
-mixed *make_mapping(mixed *tree) {
-   return ({ ([ tree[0] : tree[2] ]) });
-}
-
-static
-mixed *build_mapping(mixed *tree) {
-   return ({ tree[0] + ([ tree[2] : tree[4] ]) });
-}
-=========================================================================
-
-
-There are lots more interesting examples out there. Anyone?
-
-Zell
-</pre>
-
-<hr />
-
-<pre>
-From dgd at list.imaginary.com  Mon Dec 10 14:02:01 2001
-From: dgd at list.imaginary.com (Par Winzell)
-Date: Mon Dec 10 14:02:01 2001
-Subject: [DGD] Re: Parse String and Virtual Objects
-In-Reply-To: <F16eS48qun63QxHPI5R00009e02@hotmail.com>
-References: <F16eS48qun63QxHPI5R00009e02@hotmail.com>
-Message-ID: <15381.4428.583330.389047@troll.skotos.net>
-
-S. Foley writes:
-
- > This function really isn't too hard to figure out, though the effort 
- > required is something north of 'none'.  I have no formal training in the 
- > computer sciences or any programming language and through a combination of 
- > the list archives, web searches on grammars, and trial and error use of the 
- > actual function, I was able to figure it out (and as bulbs go, I'm not 
- > particularly bright ;) ).
-
-I agree that you can get a pretty good idea of what it does by just
-staring at examples long enough. The problem comes when you exceed a
-certain level of complexity in your grammars. If there are many ways
-to correctly parse a given string with a grammar, parsing takes more
-and more time. It takes some real work to keep this from happening to
-a complex grammar. It also gets real bad real fast for a lot of cases
-that look very innocent.
-
-The C language has a classic case of fairly simple ambiguity --
-
-	if (E1) if (E2) S1; else S2;
-
-has two legitimate parsings:
-
-	if (E1) {
-		if (E2) {
-			S1;
-		} else {
-			S2;
-		}
-	}
-
-OR
-
-	if (E1) {
-		if (E2) {
-			S1;
-		}
-	} else {
-		S2;
-	}
-
-
-A parser like YACC/BISON just picks one (the former, I think),
-but parse_string() gives you the option of collecting them all.
-
-The if if else ambiguity isn't so bad, but there are examples
-that get very bad very fast...
-
-... and now after writing all this, I don't remember if DGD does
-or does not suffer a slow-down from an ambiguius grammar if it
-is called without its third argument (which specifies how many
-ambigously valid parse trees to return at each branch point).
-
-Felix?
-
-Zell
 </pre>
 
 <hr />
@@ -1035,153 +618,6 @@ Hope that helps,
 Erwin.
 -- 
 Erwin Harte <harte@xs4all.nl>
-</pre>
-
-<hr />
-
-<pre>
-From dgd at list.imaginary.com  Wed May 14 11:01:00 2003
-From: dgd at list.imaginary.com (Jay Shaffstall)
-Date: Wed May 14 11:01:00 2003
-Subject: [DGD] Grammar question
-Message-ID: <5.1.0.14.0.20030514114256.00ad06d0@mail.netwalk.com>
-
-I thought I'd been doing pretty well with writing grammars, but have just 
-encountered a problem that I could use some assistance with.  I have the 
-following simple grammar that demonstrates the problem:
-
-	whitespace = /[\b\n\r\t ]/
-	word = /[^\b\n\r\t ]+/
-	command: 'write' multiword
-	multiword: word multiword
-	multiword: word
-
-The goal is to support a command of the form "write *" where * is any 
-sequence of words.  This works fine, except when one of the words is 
-"write".  So "write I will write" will fail to parse.
-
-I'm obviously not understanding how the grammars parse, since to me it 
-looks as if the grammar should match "write I will write".  Can anyone 
-explain why this does not parse, and suggest a way around the problem?
-
-Thanks,
-Jay
-</pre>
-
-<hr />
-
-<pre>
-From dgd at list.imaginary.com  Wed May 14 11:07:00 2003
-From: dgd at list.imaginary.com (Erwin Harte)
-Date: Wed May 14 11:07:00 2003
-Subject: [DGD] Grammar question
-In-Reply-To: <5.1.0.14.0.20030514114256.00ad06d0@mail.netwalk.com>
-References: <5.1.0.14.0.20030514114256.00ad06d0@mail.netwalk.com>
-Message-ID: <20030514160642.GV17525@sleepy.dwarf>
-
-On Wed, May 14, 2003 at 12:04:29PM -0400, Jay Shaffstall wrote:
-[...]
-> I'm obviously not understanding how the grammars parse, since to me it 
-> looks as if the grammar should match "write I will write".  Can anyone 
-> explain why this does not parse, and suggest a way around the problem?
-
-To parse_string() once you've used a constant string, it won't match
-the more generic tokens that you've defined.
-
-Here's a workaround:
-
- 	whitespace = /[\b\n\r\t ]/
- 	word = /[^\b\n\r\t ]+/
- 	command: 'write' multiword
-	multiword: Word multiword
-	multiword: Word
-
-	Word: word
-	Word: 'write'
-
-You'll want to extend Word with any other keywords that occur in your
-grammar.
-
-Hope that helps,
-
-Erwin.
--- 
-Erwin Harte        |  I'm using a whitelist to block spam.  If you get
-harte@is-here.com  |  a bounce when emailing me directly that either
-                   |  means you haven't emailed me in the past 7 years
-                   |  or your address changed.  If so, please register.
-</pre>
-
-<hr />
-
-<pre>
-From dgd at list.imaginary.com  Fri Oct 24 16:52:01 2003
-From: dgd at list.imaginary.com (Felix A. Croes)
-Date: Fri Oct 24 16:52:01 2003
-Subject: [DGD] Re: parse_string() and ambiguity
-In-Reply-To: <003601c39a70$3a27d710$cc244b43@maxcmilotlno0p>
-Message-ID: <200310242151.h9OLp4Fm019653@pattern.dworkin.nl>
-
-"S. Foley" <zeppo1@mindspring.com> wrote:
-
-> Consider the string input to parse string 'I run' and the same lame grammar:
->
-> SENTENCE : SUBJECT PREDICATE  /* rule 1*/
-> SUBJECT : word                                    /* rule 2*/
-> PREDICATE : word                               /* rule 3*/
->
-> 'I run' is tokenized to ({ word, word }) which can be arrived at first by
-> application of rule #1, then #2, and then #3, or via application of #1, #3,
-> and then #2.  The bottom line is that the difference in order of application
-> isn't relevant?
-
-It isn't relevant because the parse tree is the same in both cases.  The
-first word is a SUBJECT and the same word is a PREDICATE.  Don't look at
-the "application order"; only look at the resulting parse tree.
-
-Regards,
-Dworkin
-</pre>
-
-<hr />
-
-<pre>
-From dgd at list.imaginary.com  Tue Jan  6 07:29:01 2004
-From: dgd at list.imaginary.com (Felix A. Croes)
-Date: Tue Jan  6 07:29:01 2004
-Subject: [DGD] parse_string question
-In-Reply-To: <20040106083936.29574.qmail@web12823.mail.yahoo.com>
-Message-ID: <200401061328.i06DSJo6022374@pattern.dworkin.nl>
-
-Noah Gibbs <noah_gibbs@yahoo.com> wrote:
-
-> Then I add a 'bad token' rule.  The rule looks like
-> this:
->
-> bad_token = /.*/
->
-> It comes after all other token rules in the file.  So
-> it shouldn't affect any existing parseable grammars,
-> but it should make a bunch of inputs stop giving
-> "Invalid token at offset XXX" errors and start just
-> returning nil.
->
-> No dice.  It turns out that adding the bad token rule
-> suddenly makes simple transitive verbs ("get lamp",
-> "look road") stop parsing.
-
-The bad_token matches everything, and parse_string() gives
-preference to the longest possible match.  So one token
-only matches "get" and another matches all of "get lamp"
-as a single token, and the latter one will be considered
-to be the real match.
-
-The ordering of tokens in the grammar only comes into play
-when two tokens match the same input string.  That doesn't
-happen here, "get lamp" is matched only by bad_token.
-
-Regards,
-Dworkin
 </pre>
 
   <p style="text-size: 150%"> <a href="index.html"> Back to DGD &amp; LPC

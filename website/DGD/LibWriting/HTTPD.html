@@ -75,6 +75,45 @@
   </p>
 
   <p>
+    You can also allow players to play over HTTP, or some related
+    protocol.  If so, please remember <i>not</i> to identify your
+    players by IP address.  Issues like firewalls and NAT can greatly
+    confuse your MUD server, causing multiple players to be treated as
+    one, or a player to suddenly lose connection when he appears to
+    change IP addresses.  Cookies are one of several more reliable
+    tracking methods, though there are certainly others.
+  </p>
+
+  <p>
+    Bear in mind that standard HTTP does not allow 'push' code for
+    things like 'tell' and 'say', nor for sudden events like a
+    creature entering a room and attacking.  For that reason, Java (or
+    Javascript?) or some more proprietary replacement like ActiveX may
+    be necessary to allow your MUD proper two-way interactivity.
+  </p>
+
+  <p>
+    More complex setups can work quite well, of course.  Christopher
+    Allen describes the Skotos setup like this:
+  </p>
+
+  <p style="color: #FF00C0">
+    You might want to take a look at a couple of Skotos games, in
+    particular, Castle Marrach and Grendel's Revenge. Both have gifs
+    and jpegs under client control.
+  </p>
+
+  <p style="color: #FF00C0">
+    Our basic technique is to have a pane for flowing text that is
+    imbedded inside an html page. This text pane can receive special
+    commands that it will send out to the DOM of the web page it sits
+    inside. This allows us to change the whole web page
+    dynamically. We have three clients that use this technique, an
+    Active-X client that is based on Pueblo, a Java client, and a
+    Mozilla Javascript client.
+  </p>
+
+  <p>
     The RFC for HTTP 1.0 is <a
     href="http://www.ics.uci.edu/pub/ietf/http/rfc1945.html">here</a>.
     It may be useful for your implementation efforts.
@@ -86,18 +125,18 @@
   </p>
 
   <pre>
-&lt;script language="JavaScript"&gt;
+&lt;script language=&quot;JavaScript&quot;&gt;
 &lt;!--
 
 &frasl;&frasl; Use this function to retrieve a cookie.
 function getCookie(name){
-var cname = name + "=";
+var cname = name + &quot;=&quot;;
 var dc = document.cookie;
     if (dc.length &gt; 0) {
     begin = dc.indexOf(cname);
         if (begin != -1) {
         begin += cname.length;
-        end = dc.indexOf(";", begin);
+        end = dc.indexOf(&quot;;&quot;, begin);
             if (end == -1) end = dc.length;
             return unescape(dc.substring(begin, end));
         }
@@ -107,184 +146,27 @@ return null;
 
 &frasl;&frasl; Use this function to save a cookie.
 function setCookie(name, value) {
-document.cookie = name + "=" + escape(value) + "; path=&frasl;";
+document.cookie = name + &quot;=&quot; + escape(value) + &quot;; path=&frasl;&quot;;
 }
 
 &frasl;&frasl; Use this function to delete a cookie.
 function delCookie(name) {
-document.cookie = name + "=; expires=Thu, 01-Jan-70 00:00:01 GMT" +  "; path=&frasl;";
+document.cookie = name + &quot;=; expires=Thu, 01-Jan-70 00:00:01 GMT&quot; +  &quot;; path=&frasl;&quot;;
 }
 &frasl;&frasl;--&gt;
 &lt;&frasl;script&gt;
-    </pre>
+  </pre>
 
-<pre>
-From: dgd at list.imaginary.com (Wes Connell)
-Date: Sat Jan  5 17:55:02 2002
-Subject: [DGD] Http daemon
-Message-ID: <20020105164033.A15483@brutality.org>
+  <p>
+    Using the above, the following code can be included:
+  </p>
 
-.oOo. Stephen Schmidt (schmidsj@union.edu) wrote:
-
-> On Fri, 4 Jan 2002, Lord Lerkista wrote:
-> > Anyone have a http daemon that can send it to me??
-> 
-> A related question: Does anyone have an http daemon that can
-> set cookies? If you can set a cookie, then you can identify
-> each http connection with a particular player - otherwise
-> I don't see a reliable way to do that. I might be missing
-> something. If not, though, I'd recommend that anyone who
-> is coding an http daemon support cookies, or some other
-> method of identifying the requesting player.
-
-What I've done with my httpd code (and it might not be the best way to do it)
-was to actually output some Javascript code that accesses the document object
-normally. 
-
-I actually got this Javascipt from some JS help page... author unknown.
-
-
-I spit the Javascript out first then I call something like:
-
-send_html_output("<script language="JavaScript">);
-send_html_output("setCookie(\"ACCOUNTNAME\", account_name);");
-send_html_output("setCookie(\"PASSWORD\", encrypted_password);");
-send_html_output("</script>");
-
-Then show other HTML stuff.
-
-I haven't used this in any sort of production code so there may be serious 
-flaws in the way I handle this. It worked for me though. :)
-
-Good luck!
-
--- 
-Wes!
-wes@brutality.org
-
-From: dgd at list.imaginary.com (Risto Karjalainen)
-Date: Sat Jan  5 21:04:01 2002
-Subject: [DGD] Http daemon
-Message-ID: <000701c1965c$42b377a0$2a23d5d4@karjm15>
-
-David Jackson wrote:
-> The way my daemon identifies players is by IP number, then requesting a
-> password, and tracking it for the session, expiring the IP after a
-timeout.
-
-This is how I would have done it a month ago, but just recently I was
-enlightened by a friend of mine. Different computers CAN share the same IP
-number, so you could actually play from both computers after logging on with
-either of them. So obviously identifying players only by their IP isn't the
-best way to do it.
-
->From the discussion I had with the friend of mine I gather that cookies is
-The Way.
-
-
-Regards,
-Risto Karjalainen
-
-
-
-From dgd at list.imaginary.com  Tue Mar 19 00:35:01 2002
-From: dgd at list.imaginary.com (Stephen Schmidt)
-Date: Tue Mar 19 00:35:01 2002
-Subject: [DGD] New to List - Some questions
-In-Reply-To: <Pine.LNX.4.44.0203182242090.6763-100000@eris.io.com>
-Message-ID: <Pine.OSF.4.40.0203190056230.63222-100000@idol.union.edu>
-
-On Mon, 18 Mar 2002, Deathdog The Assassin wrote:
-> 3) I mentioned doing development, but I'm stuck with figuring out how to
-> actually use this thing.... where do I start?
-
-First decision you need to make is whether you want to build a
-mudlib completely from scratch, or build on top of the kernel.
-There is a great deal to be said for building over the kernel,
-but speaking as someone who's trying to do it himself, it's
-quite difficult. Docs do not exist in any great quantity. If
-you build over the kernel, asking a lot of questions on this
-list is probably the best move. It is on my task list to write
-some docs on how to do it, but I have to learn how first :)
-
-If you are not building over the kernel, best bet is to study
-the existing libs, including Phantasmal (which I'm not familiar
-with) and Melville (which I am), the latter having at least
-some documentation and internal comments which may help.
-
-> Will  DGD allow me to code, from the ground up, a complete multi-user system,
-> tailored exactly how I want
-
-Pretty much yes.
-
-> Should I maybe just do something with a custom app?
-
-I'd avoid that. I play a couple games like that and the problem
-of ensuring that your custom app compiles and runs under lots of
-Windows systems and configurations, not to mention non-PC
-environments, is a real drag.
-
-> I want to know if DGD
-> can do exactly what I want, which is to make a real-time multi-user game
-> for which portions of said game can be accessed and interacted with using
-> a web browser as well as a telnet client. Does that make any sense?
-
-I've looked fairly seriously at this. The short answer is yes, except
-that the web browser interface has some serious limits. Standard
-html will not allow push technology, and MUD type games need it
-to implement "tell" and "say" commands, and to display the results
-of one user's actions to the other users. You're probably looking
-at writing some Java code to handle messages incoming to the player
-(or supporting a telnet client within your web frame, or something
-that allows the game server to push a message back to the user).
-The advantage to using Java, though, is that you don't have to worry
-about getting it running on each user's system. If they've got their
-browser running, Java works too, at least until Microsoft can destroy
-Java (don't get me started on that ;)
-
-If I was doing this, I would unquestionably go with the web and
-Java approach.
-
-I will suggest, optimistically perhaps, that the best thing to do
-would be to create a very minimal web interface mudlib for DGD,
-put that into public circulation for people to play with and help
-you debug, and then go to the big project.
-
-Steve Schmidt
-
-
-From dgd at list.imaginary.com  Fri Jan 31 12:48:01 2003
-From: dgd at list.imaginary.com (Christopher Allen)
-Date: Fri Jan 31 12:48:01 2003
-Subject: [DGD] DGD & Simulations
-References: <20030131092536.20658.h011.c001.wm@mail.orpgs.com.criticalpath.net>
-Message-ID: <036d01c2c959$3b7daec0$f885e8c6@artemis>
-
-"Dannic" <dannic@orpgs.com>:
-> I was thinking more in lines of .gif and .jpg images
-> being seen in the client window.  Possibly a frame as
-> what is possible with zmud and mushclient.  They are
-> generally small images and can be loaded pretty quick.
-> Hosted on a server other than the mud server.
-
-You might want to take a look at a couple of Skotos games, in
-particular, Castle Marrach and Grendel's Revenge. Both have gifs and
-jpegs under client control.
-
-Our basic technique is to have a pane for flowing text that is imbedded
-inside an html page. This text pane can receive special commands that it
-will send out to the DOM of the web page it sits inside. This allows us
-to change the whole web page dynamically. We have three clients that use
-this technique, an Active-X client that is based on Pueblo, a Java
-client, and a Mozilla Javascript client.
-
--- Christopher Allen
-
-------------------------------------------------------------------------
-.. Christopher Allen                                 Skotos Tech Inc. ..
-..                           1512 Walnut St., Berkeley, CA 94709-1513 ..
-.. <http://www.skotos.net>           o510/647-2760x202  f510/647-2761 ..
-</pre>
+  <pre>
+send_html_output(&quot;&lt;script language=&quot;JavaScript&quot;&gt;);
+send_html_output(&quot;setCookie(\&quot;ACCOUNTNAME\&quot;, account_name);&quot;);
+send_html_output(&quot;setCookie(\&quot;PASSWORD\&quot;, encrypted_password);&quot;);
+send_html_output(&quot;&lt;&frasl;script&gt;&quot;);
+  </pre>
 
   <p style="text-size: 150%"> <a href="../index.html"> Back to top level
     </a> </p>

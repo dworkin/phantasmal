@@ -1,0 +1,144 @@
+From dgd at list.imaginary.com  Sun Dec  9 16:28:00 2001
+From: dgd at list.imaginary.com (Par Winzell)
+Date: Sun Dec  9 16:28:00 2001
+Subject: [DGD] Desperately Wanted
+In-Reply-To: <5.1.0.14.0.20011209151141.023b53f0@mail>
+References: <200112091446.PAA04114@dworkin.nl>
+ <5.1.0.14.0.20011209151141.023b53f0@mail>
+Message-ID: <15379.57885.573752.149699@troll.skotos.net>
+
+but it's not cheap. You can get the basic idea from various web
+pages, but any non-trivial use of parse_string gets into subtle
+stuff pretty quickly (specifically, ambiguous grammars).
+
+My second recommendation is a Google search for
+
+	mud-dev string parsing
+
+where you have to click on 'repeat search with ommitted results
+included' at the bottom of the page. This will uncover all the
+discussions in late 1997 on DGD's parse_string(), most of it by
+Dworkin himself. I believe this is the first node:
+
+http://www.kanga.nu/archives/MUD-Dev-L/1997Q4/msg00164.php
+
+
+There are also lots of people who have done parse_string work
+on this very list. Here is a small grammar that Skotos uses to
+parse ascii representations of LPC values. This is overkill,
+because a simple recursive descent parser can do the trick... 
+
+... but hell, it works pretty darn well.
+
+=========================================================================
+private
+string query_grammar() {
+   return
+      "whitespace = /[ \t\r\n]+/\n" +
+      "int = /[0-9]+/\n" +
+      "float = /[+-]?([0-9]+\\.|[0-9]*\\.[0-9]+)([eE][+-]?[0-9]+)?/\n" +
+      "str = /\"([^\\\\\"]*\\\\.)*[^\\\\\"]*\"/\n" +
+      "obj = /<[^>]+>/\n" +
+
+      "Value: 'nil' ? make_nil\n" +
+      "Value: int ? parse_int\n" +
+      "Value: float ? parse_flt\n" +
+      "Value: str ? parse_str\n" +
+      "Value: obj ? parse_obj\n" +
+      "Value: '{' '}' ? empty_array\n" +
+      "Value: '{' ArrList '}' ? pick_middle\n" +
+      "Value: '[' ']' ? empty_mapping\n" +
+      "Value: '[' MapList ']' ? pick_middle\n" +
+      "ArrList: Value ? make_array\n" +
+      "ArrList: ArrList ',' Value ? build_array\n" +
+      "MapList: Value ':' Value ? make_mapping\n" +
+      "MapList: MapList ',' Value ':' Value ? build_mapping\n";
+}
+=========================================================================
+
+With:
+
+=========================================================================
+static
+mixed *colour_value(mixed *tree) {
+   return ({ paint_value(tree[3], (int) tree[1]) });
+}
+
+static
+mixed *make_nil(mixed *tree) {
+   return ({ nil });
+}
+
+static
+mixed *parse_int(mixed *tree) {
+   return ({ (int) tree[0] });
+}
+
+static
+mixed *parse_flt(mixed *tree) {
+   SysLog(dump_value(tree));
+   return ({ (float) tree[0] });
+}
+
+      "Value: float {{ return ({ (float) tree[0] }); }}"
+
+static
+mixed *parse_str(mixed *tree) {
+   return ({
+      replace_strings(tree[0][1 .. strlen(tree[0])-2],
+		      "\\\"", "\"",
+		      "\\\\", "\\")
+	 });
+}
+
+static
+mixed *parse_obj(string *tree) {
+   object obj;
+
+   obj = find_object(tree[0][1 .. strlen(tree[0])-2]);
+   if (!obj) {
+      error("cannot find object " + tree[0]);
+   }
+   return ({ obj });
+}
+
+static
+mixed *pick_middle(mixed *tree) {
+   return tree[1 .. 1];
+}
+
+static
+mixed *empty_array(mixed *tree) {
+   return ({ ({ }) });
+}
+
+static
+mixed *make_array(mixed *tree) {
+   return ({ tree });
+}
+
+static
+mixed *build_array(mixed *tree) {
+   return ({ tree[0] + ({ tree[2] }) });
+}
+
+static
+mixed *empty_mapping(mixed *tree) {
+   return ({ ([ ]) });
+}
+
+static
+mixed *make_mapping(mixed *tree) {
+   return ({ ([ tree[0] : tree[2] ]) });
+}
+
+static
+mixed *build_mapping(mixed *tree) {
+   return ({ tree[0] + ([ tree[2] : tree[4] ]) });
+}
+=========================================================================
+
+
+There are lots more interesting examples out there. Anyone?
+
+Zell

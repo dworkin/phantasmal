@@ -97,6 +97,14 @@
     use of an external database.
   </p>
 
+  <p>
+    Dworkin has mentioned the possibility of eventually modifying DGD
+    to be able to use an external object database.  However, he's not
+    planning to do it at <i>least</i> until multiprocessor support is
+    done.  When&frasl;if that occurs, the 'poor fit' comments above
+    will presumably be obsolete.
+  </p>
+
   <h3> Internal Databases </h3>
 
   <p>
@@ -124,101 +132,20 @@
     size.
   </p>
 
-<pre>
-Date: Fri, 6 Jul 2001 01:55:00 +0200 (CEST)
-From: "Felix A. Croes" <felix@dworkin.nl>
-Message-Id: <200107052355.BAA00502@dworkin.nl>
-To: dgd@list.imaginary.com
-Subject: RE: [DGD]Object properties from an extension
+  <h3> Socket Interfaces to Databases </h3>
 
-"Michael J. Bacon" <mj.bacon@gte.net> wrote:
-
-> 	Ok, perhaps I am rubbing at this the wrong way.
->
-> 	Lets say someone is crazy enough to try to implement persistence outside of
-> DGD's statedump type persistence.  Say, we wanted to store and retreive
-> object data from an OODBMS.
->
-> 	Where would be the best place to hook into that?  Since I can't grab an
-> object's data in a generic way, I am assuming I would instead have to define
-> some routines on the auto object for registering object data that needs to
-> be saved and restored?
-
-I am going to give an answer depressingly similar to the one I gave before:
-it's not possible yet, but it will be possible through an official API
-at some time in the future.
-
-I intend to make it possible to store mud state in a regular database
-instead of a swapfile/dumpfile.  But I'm not going to define that interface
-until after multi-processing support, sorry.
-
-
-> 	Has anyone done anything like this?  I know that LPMOO redefines the
-> statedump mechanism to include saving/restoring MOO data to and from a MOO
-> database.  Could I use similar techiques?
-
-Doable but very painful.  You would not be able to trust ordinary LPC
-code anymore that might not save itself properly.
-
-Regards,
-Dworkin
-</pre>
-
-<hr />
-
-<pre>
-From dgd at list.imaginary.com  Fri Feb  1 17:21:00 2002
-From: dgd at list.imaginary.com (Erwin Harte)
-Date: Fri Feb  1 17:21:00 2002
-Subject: [DGD] Need some guidance
-In-Reply-To: <5.1.0.14.0.20020201222806.009f8e90@mail.btinternet.com>
-References: <5.1.0.14.0.20020201222806.009f8e90@mail.btinternet.com>
-Message-ID: <20020201225914.GP1336@kansas.is-here.com>
-
-On Fri, Feb 01, 2002 at 10:39:17PM +0000, Shevek wrote:
-> What I'm looking to do is to hook a DGD server up to a MySQL database. 
-> Sounds a bit odd, but I want to use something like Apache to serve web 
-> pages with info off the database, PHP to run the dynamic content, and the 
-> DGD server to process activity within the site (ie Playing around with the 
-> information without being driven by user events), and provide chat via a 
-> Java applet (Probably just a simple binary connection).
-> 
-> Ever so minor problem (:>) is that I can't figure out how to access the 
-> database from within DGD. The  rest doesn't appear incredibly difficult to 
-> put together, but it all revolves around that hookup.
-
-You'd have to either link the MySQL libraries into DGD with some
-special commands to execute queries (which sounds like an interesting
-challenge, to me), or have some ability to create outgoing connections
-and connect to the MySQL port.  No clue how easy it is to communicate
-with a MySQL daemon, though.
-
-> Any suggestions on how to proceed would be gratefully received. Or, and it 
-> sounds wierd now I think of it, would it be better to just lose the MySQL 
-> functionality and code some DB style object directly in LPC (Sounds 
-> difficult to do well for multiple connections, or for neatness of DB).
-
-It all depends on what you want to do.  If you keep an object per
-table for the indexes (make sure you don't trip over the mapping or
-array size limitations) and an object per X table entries, then you
-can probably do some fairly efficient queries without needing to swap
-things in unnecessarily.  How many entries you store per object all
-depends on how big you think the individual entries will be (if you
-have some text or blob columns then it can add up rather quickly).
-
-Next problem: How to figure out where to store a table row.  You
-probably want to do something based on an md5 hash of the primary
-index of that row, take the first X bytes/characters (depending on
-whether you handle it as hex or not) and use that in a mapping from
-md5-indices to objects.
-
-Just my bit of brainstorming, hope it gets you started in the right
-direction somehow. :-)
-
-Erwin.
--- 
-Erwin Harte <harte@xs4all.nl>
-</pre>
+  <p>
+    You can get around these problems by not calling directly to the
+    database, but instead accessing it over a socket interface.  This
+    is possible, but is essentially using the database as an external
+    server, one on which no actual LPC objects are stored.  This is
+    useful, for instance, if web pages are there and DGD will be
+    looking at them and maybe processing or serving them, but will not
+    be upgrading them directly or otherwise modifying them as LPC
+    objects.  In that case, the database can be accessed like any
+    other external server.  Doing so may require the network patch if
+    outgoing connections must be made from the DGD server.
+  </p>
 
   <p style="text-size: 150%"> <a href="../index.html"> Back to top level
     </a> </p>
