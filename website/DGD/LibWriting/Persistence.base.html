@@ -47,6 +47,39 @@
     conceptually, the server never, never goes down.
   </p>
 
+  <p>
+    Par Winzell probably explained it best:
+  </p>
+
+  <p style="color: #2020FF">
+    It's almost impossible to convey the experience of running a truly
+    persistent Mud to somebody who has never done it. So many
+    assumptions disappear. The way objects are created, areas
+    designed, everything changes.
+  </p>
+
+  <p style="color: #2020FF">
+    In traditional LPMud, virtually everything is an initialization
+    script, like the create() function in your example. Half the code
+    in a wizard's directory is startup code. In a persistent world,
+    rather than write a lot of startup code, you tend to write
+    behaviour code, and configure objects.
+  </p>
+
+  <p style="color: #2020FF">
+    Most code in a traditional LPMud isn't real code, it's just a
+    cumbersome configuration (set_this and set_that) technique. That
+    pretty much goes away in a persistent game.
+  </p>
+
+  <p style="color: #2020FF">
+    The cumulative effect is that if you design your mudlib to be
+    fully persistent from scratch, you will find yourself making
+    subtly different decisions on pretty much every single design
+    question that comes up, and you end up with something drastically
+    different than LPMud.
+  </p>
+
   <h3> DGD Support </h3>
 
   <p>
@@ -157,10 +190,10 @@
 
   <p>
     In any case, it's sometimes necessary to write code to initialize
-    new fields (such as one you just added), or move data from old
-    fields into new ones.  It's not harder than writing a datafile
-    converter that does the same thing, but the results can be
-    trickier if you do it wrong.  Remember, in this case you're
+    new fields (such as one you just added) in old objects, or move
+    data from old fields into new ones.  It's not harder than writing
+    a datafile converter that does the same thing, but the results can
+    be trickier if you do it wrong.  Remember, in this case you're
     updating live data and you may have players connected at the time.
     Backing up first is a useful thing, and it may be useful to start
     a secondary 'test' server from a live statedump and try your
@@ -241,6 +274,17 @@
     both do this.  However, object saving is slow compared to
     statedumps, so normally object saving will only be used for
     export to a different MUD or different program.
+  </p>
+
+  <p>
+    Having the ability to read or write datafiles can also be a good
+    means of object creation, or to import zones from other types of
+    MUDs, or other builder tricks.  And if, for some reason, you don't
+    want to use statedumps, regular file load &amp; save can be a way
+    around that.  For instance, if your MUD is going to change
+    drastically and regularly, you may want file load &amp; save to
+    avoid having to upgrade your objects in-place.  That's essentially
+    what Phantasmal keeps it around for.
   </p>
 
   <h3> Can't This All Be Done Without DGD? </h3>
