@@ -45,23 +45,14 @@ static string previous_program(varargs int n) {
 
 }
 
+/* Previous_object actually doesn't care about the redefined call_other.
+   Since it only cares about calls via call_other(), not calling static
+   functions defined by one's own AUTO object, its result is unchanged.
+*/
+#if 0
 static object previous_object(varargs int n) {
-  int idx;
-  string tmp;
-
-  idx = 1;
-  while(1) {
-    tmp = ::previous_program(idx);
-    if(tmp != "/usr/System/open/lib/common_auto") {
-      if(!n) {
-	return ::previous_object(idx);
-      }
-      n--;
-    }
-    idx++;
-  }
-
 }
+#endif
 
 #if 0
 /* Currently I'm still debugging this stuff, so call_trace returns the
