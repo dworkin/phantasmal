@@ -178,7 +178,7 @@ static void cmd_delete_room(object user, string cmd, string str) {
 
   destruct_object(room);
 
-  user->message("Room #" + roomnum + " destroyed.\r\n");
+  user->message("Room/Portable #" + roomnum + " destroyed.\r\n");
 }
 
 
@@ -549,16 +549,4 @@ static void cmd_check_deferred_exits(object user, string cmd, string str) {
   num = EXITD->num_deferred_exits();
 
   user->message("Deferred exits: " + num + ".\r\n");
-}
-
-static void cmd_make_room(object user, string cmd, string str) {
-  object state;
-
-  if(str && !STRINGD->is_whitespace(str)) {
-    user->message("Usage: " + cmd + "\r\n");
-    return;
-  }
-
-  state = clone_object(US_MAKE_ROOM);
-  user->push_state(state);
 }
