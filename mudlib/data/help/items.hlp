@@ -10,6 +10,8 @@ remove               Remove an item from another
 inventory            See what you're carrying
 look                 Look at an object
 examine              Examine an object closely
+open                 Open a container
+close                Close a container
 
 }}
 
@@ -33,7 +35,29 @@ See also: put, remove, drop
 You can place an object inside another by saying "put" or "place" -- for
 instance "place turnip in bag" or "put weasel in breadbox".
 
-See also: get, remove, drop
+See also: get, remove, drop, open, close
+
+}}
+
+
+~name{~enUS{open} ~esUS{abra}}
+~desc{~enUS{
+
+You can open an openable container by saying "open" -- for instance,
+"open box" or "open sack".
+
+See also: get, put, remove, drop, close
+
+}}
+
+
+~name{~enUS{close} ~esUS{cierra}}
+~desc{~enUS{
+
+You can close a closeable container by saying "close" -- for instance,
+"close box" or "close sack".
+
+See also: get, put, remove, drop, open
 
 }}
 
@@ -45,7 +69,7 @@ You can take an object from inside another by saying "remove turtle
 from little bowl" or "remove Bob from his fantasy world".  The standard
 "get" verbs (get, take) work fine for this, too.
 
-See also:  get, put, drop
+See also:  get, put, drop, open, close
 
 }}
 
