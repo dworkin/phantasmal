@@ -14,7 +14,8 @@
     <p> That's a fair question.  Naturally this page is quite biased,
       and more information should be sought before you're fully
       satisfied.  The DGD mailing list is an excellent resource for
-      this kind of question and I recommend it over my own personal
+      this kind of question.  For objectivity, I definitely recommend
+      the DGD list over my own personal
       opinion as author of Phantasmal :-) </p>
 
     <p> My current opinion is that the competition is between
@@ -33,7 +34,7 @@
       Its most compelling feature for most users, though,
       is the fact that its code is quite simple.
       Melville doesn't do much extra for you, but its
-      functionality is reasonably obvious and simple, and
+      functionality is reasonably obvious, and
       its structure reflects that.  Developers have been
       using it as a very good tutorial for a very long time
       -- it's one of the very oldest DGD MUDLibs. </p>
@@ -44,12 +45,17 @@
       OLC (online creation) facilities, several well-defined file
       formats for loading objects, extensive localization,
       and the ability to recompile the MUD on the fly.  It has
-      mobiles, and daemons managing its various objects.
+      mobiles, and daemons managing its various objects.  Its objects
+      do fun tricks of various sorts including height, weight and
+      volume.
       It's also
       based on the Kernel MUDLib, giving it a very stable and
-      secure base to work from.  The latest versions generally
+      secure base to work from.  As this description implies, the
+      latest versions
       contain many more features than Melville, despite a few specific 
-      Melville features that they don't have yet.
+      Melville features that they don't have (yet?).  Those features
+      are also better documented, with online help and web tutorials
+      available for almost everything.
     </p>
 
     <p> Phantasmal is also in more active development and the
@@ -59,13 +65,15 @@
       shouting.  However, it remains to be seen if developers
       will begin actually creating MUDs based on Phantasmal
       or if Melville's compelling simplicity will continue to
-      win it converts.
+      win it converts.  After all, most DGD developers are here
+      to write a MUDLib anyway, so what's a few more features to
+      debug?
     </p>
 
     <h3> How does Phantasmal compare to the Kernel MUDLib? </h3>
 
     <p> Phantasmal is built on top of the Kernel MUDLib, and provides
-      services on top of it.  The existing Kernel MUDLib functions
+      services on top of it.  The existing Kernel MUDLib commands
       are provided with slightly different names but the same
       syntax and functionality.  The Kernel MUDLib is significantly
       worse than Phantasmal for providing a stereotypical MUD, but
@@ -74,10 +82,12 @@
       functionality is in place. </p>
 
     <p> If you want to build on the Kernel MUDLib, Phantasmal makes
-      a fine example of how to do so, and you could take
-      components of it piecemeal -- both Phantasmal and the
+      a fine example of how to do so.  You could also take
+      components piecemeal -- both Phantasmal and the
       Kernel MUDLib are public domain, so either can be used
-      or relicensed in any way whatsoever. </p>
+      or relicensed in any way whatsoever.  Jay Shaffstall, for
+      instance, took Phantasmal's UNQ and Help systems for use
+      in an unrelated MUDLib. </p>
 
     <h3> How does Phantasmal compare to GurbaLib? </h3>
 
@@ -87,7 +97,7 @@
       been in development for some time. </p>
 
     <p> GurbaLib has a large set of game features which are not
-      necessarily polished but have at least been written that
+      necessarily polished (but have at least been written) that
       Phantasmal does not have.  Some of them, Phantasmal is likely
       never to have.  Some features implemented by GurbaLib but not
       Phantasmal include: wearable and wieldable
@@ -95,24 +105,27 @@
       Actions and Triggers;
       Message Boards;  Races;
       ANSI colors;  Player and Site Banning;
-      Vendors;  Guilds;  Doors;  Aliases;
+      Vendors;  Guilds;  Aliases;
       Skill System. </p>
 
     <p> Obviously, GurbaLib as described is more suitable for a
       stereotypical MUD than Phantasmal.  Phantasmal aims to address
       some of those points, but will take significant development to
-      catch up.  It has a very few points for which it can claim
-      superiority -- Phantasmal can rebuild in-place, either
-      individual objects or all at once.  It has a genuinely
-      excellent help system.  Its localization is extensive and
-      GurbaLib's (presumably) basically nonexistent.  However, for
-      general MUD use Phantasmal simply isn't equal. </p>
+      catch up.  Phantasmal also has a few points for which it can claim
+      superiority -- Phantasmal can rebuild in-place, for instance.
+      It has a genuinely excellent help system.
+      Its localization is extensive and GurbaLib's is
+      basically nonexistent.  However, for general MUD use Phantasmal
+      simply isn't equal. </p>
 
     <p> GurbaLib isn't based on the Kernel MUDLib, and runs on
       a modified DGD 1.1.  This makes it problematic to follow
       current experimental DGD development.  That may not be a
       problem for you, though, if you don't have or want
-      LWOs, atomicity, etc. </p>
+      LWOs, atomicity, etc.  And since Phantasmal follows the
+      latest experimental versions of DGD so closely, the upgrade
+      headache may be just as bad as GurbaLib's lack of
+      new features. </p>
 
     <p> As an overall MUD, GurbaLib with its modified DGD 1.1 is
       probably the best currently available.  It isn't as flexible
@@ -120,7 +133,7 @@
       (like rebuild-in-place), but it has a decent
       game already built.  Phantasmal may one day catch up in that
       respect but GurbaLib is still likely to be a better overall
-      choice if you're building a strongly Diku-like MUD. </p>
+      choice if you're building a more stereotypical LPC MUD. </p>
 
     <h3> How does Phantasmal compare to 2.4.5? </h3>
 
@@ -135,7 +148,7 @@
 
     <p> Phantasmal has no aspirations to unseat 2.4.5.  Phantasmal
       is already architecturally superior, but will probably never
-      be an unpack-and-go MUD solution.  Such a solution
+      be an unpack-and-go Fantasy MUD.  Such a solution
       contributes objectionably to the prevalence of stock
       areas and I choose not to add to the problem. </p>
 
@@ -145,7 +158,7 @@
       has localization, OLC, full recompilation and help system over
       2.4.5.  Even when Phantasmal has extensive gameplay features,
       it still will not replace 2.4.5's biggest advantage, the fact
-      that 2.4.5 will unpack into a running MUD.
+      that 2.4.5 will unpack into a stereotypical LPC MUD.
       Phantasmal isn't meant to. </p>
 
     <h3> Any Other MUDLibs Out There? </h3>
@@ -162,6 +175,14 @@
       <a href="http://www.sf.net/projects/macrocosm">Macrocosm</a>,
       and <a href="http://www.sf.net/projects/whedimer">Whedimer</a>.
     </p>
+
+    <p> There's also the Skotos stuff, which isn't available at all
+      to hobbyists.  But if you want to put together a commercial
+      DGD MUD without paying $100,000 a year (the current license
+      price directly from Dworkin), you'll definitely need to talk
+      to Skotos, and they may throw in the use of their stuff.
+      They have a game application process already.  Check out their
+      <a href="http://www.skotos.net">site</a>. </p>
 
   </font>
 
