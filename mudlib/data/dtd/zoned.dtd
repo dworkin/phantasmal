@@ -1,0 +1,6 @@
+~DTD{
+  ~zones{segment*}
+  ~segment{segnum,zonenum}
+  ~segnum{int}
+  ~zonenum{int}
+}
