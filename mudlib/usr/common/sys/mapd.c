@@ -1,9 +1,10 @@
 #include <kernel/kernel.h>
+
+#include <phantasmal/log.h>
+#include <phantasmal/map.h>
+
 #include <config.h>
 #include <type.h>
-#include <log.h>
-
-#include <map.h>
 
 /* The Mapd keeps track of room objects, their groupings and their
    relationship to each other.  It also loads in rooms in

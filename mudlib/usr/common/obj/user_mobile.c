@@ -1,6 +1,8 @@
-#include <config.h>
 #include <kernel/kernel.h>
-#include <map.h>
+
+#include <phantasmal/map.h>
+
+#include <config.h>
 
 inherit MOBILE;
 

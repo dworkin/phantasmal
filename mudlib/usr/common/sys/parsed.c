@@ -4,10 +4,11 @@
  * Skotos.net articles)
  */
 
+#include <phantasmal/parser.h>
+
+#include <config.h>
 #include <limits.h>
 #include <type.h>
-#include <parser.h>
-#include "config.h"
 
 /* code for enabling super-verbose logging */
 #ifdef LOGGING

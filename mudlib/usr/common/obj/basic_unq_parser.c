@@ -1,8 +1,9 @@
+#include <phantasmal/log.h>
+
 #include <config.h>
 #include <limits.h>
 #include <type.h>
 #include <trace.h>
-#include <log.h>
 
 string parser;
 

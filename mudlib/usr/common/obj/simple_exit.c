@@ -1,8 +1,9 @@
-#include <phrase.h>
+#include <phantasmal/phrase.h>
+#include <phantasmal/map.h>
+#include <phantasmal/log.h>
+#include <phantasmal/exit.h>
+
 #include <config.h>
-#include <map.h>
-#include <log.h>
-#include <exit.h>
 
 inherit unq DTD_UNQABLE;
 inherit ext EXIT;

@@ -1,7 +1,10 @@
+#include <kernel/user.h>
+
+#include <phantasmal/log.h>
+
 #include <config.h>
 #include <type.h>
-#include <log.h>
-#include <kernel/user.h>
+
 
 inherit USER_STATE;
 

@@ -12,16 +12,16 @@
    operates in some very different (and some very similar) ways.  See
    also the doc/design/OBJECTD document for details. */
 
-#include <config.h>
-#include <status.h>
-#include <type.h>
-#include <log.h>
-#include <trace.h>
-
 #include <kernel/kernel.h>
 #include <kernel/objreg.h>
 #include <kernel/rsrc.h>
 
+#include <phantasmal/log.h>
+
+#include <config.h>
+#include <status.h>
+#include <type.h>
+#include <trace.h>
 
 /* TODO:  (features)
    - Allow recompiles that destruct and rebuild all necessary stuff

@@ -1,8 +1,10 @@
+#include <kernel/kernel.h>
+
+#include <phantasmal/log.h>
+#include <phantasmal/channel.h>
+
 #include <config.h>
 #include <trace.h>
-#include <log.h>
-#include <kernel/kernel.h>
-#include <channel.h>
 
 private object log;
 private string comp_err;

@@ -1,6 +1,7 @@
+#include <phantasmal/log.h>
+
 #include <config.h>
 #include <limits.h>
-#include <log.h>
 
 private object dtd;
 private string dtd_text;

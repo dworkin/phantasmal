@@ -1,7 +1,9 @@
 #include <kernel/kernel.h>
+
+#include <phantasmal/log.h>
+
 #include <config.h>
 #include <type.h>
-#include <log.h>
 
 /* MobileD-owned Segments */
 private int*    mobile_segments;

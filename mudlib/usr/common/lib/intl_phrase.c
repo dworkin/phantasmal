@@ -1,6 +1,7 @@
+#include <phantasmal/phrase.h>
+
 #include <config.h>
 #include <type.h>
-#include <phrase.h>
 
 /* Phrase functions */
 

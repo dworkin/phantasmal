@@ -1,12 +1,13 @@
+#include <kernel/kernel.h>
+
+#include <phantasmal/phrase.h>
+#include <phantasmal/log.h>
+
 #include <config.h>
 #include <limits.h>
 #include <type.h>
-#include <phrase.h>
 #include <trace.h>
 #include <status.h>
-#include <log.h>
-
-#include <kernel/kernel.h>
 
 /* Reference to Soundexd */
 private object  soundex;

@@ -1,12 +1,13 @@
-#include <exit.h>
+#include <kernel/kernel.h>
+
+#include <phantasmal/exit.h>
+#include <phantasmal/log.h>
+#include <phantasmal/phrase.h>
+#include <phantasmal/map.h>
+#include <phantasmal/obj_flags.h>
+
 #include <config.h>
 #include <type.h>
-#include <log.h>
-#include <phrase.h>
-#include <map.h>
-#include <obj_flags.h>
-
-#include <kernel/kernel.h>
 
 inherit OBJECT;
 

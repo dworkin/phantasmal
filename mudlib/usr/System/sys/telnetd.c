@@ -1,7 +1,9 @@
 #include <kernel/user.h>
 #include <kernel/kernel.h>
+
+#include <phantasmal/log.h>
+
 #include <config.h>
-#include <log.h>
 
 static int    suspended, shutdown;
 

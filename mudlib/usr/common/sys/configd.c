@@ -1,7 +1,9 @@
 #include <kernel/kernel.h>
+
+#include <phantasmal/log.h>
+
 #include <config.h>
 #include <gameconfig.h>
-#include <log.h>
 #include <type.h>
 
 #define AUTHORIZED() (SYSTEM() || KERNEL() || GAME())

@@ -1,7 +1,8 @@
-#include <phrase.h>
+#include <phantasmal/phrase.h>
+#include <phantasmal/map.h>
+#include <phantasmal/log.h>
+
 #include <config.h>
-#include <map.h>
-#include <log.h>
 
 inherit room ROOM;
 inherit unq DTD_UNQABLE;

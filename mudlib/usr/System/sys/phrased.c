@@ -1,6 +1,8 @@
 #include <kernel/kernel.h>
+
+#include <phantasmal/phrase.h>
+
 #include <config.h>
-#include <phrase.h>
 #include <type.h>
 #include <status.h>
 

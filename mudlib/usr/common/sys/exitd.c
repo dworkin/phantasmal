@@ -1,10 +1,11 @@
+#include <kernel/kernel.h>
+
+#include <phantasmal/log.h>
+#include <phantasmal/exit.h>
+#include <phantasmal/map.h>
+
 #include <config.h>
 #include <type.h>
-#include <kernel/kernel.h>
-#include <log.h>
-#include <exit.h>
-
-#include <map.h>
 
 inherit PHRASE_REPOSITORY;
 

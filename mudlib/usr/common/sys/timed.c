@@ -1,8 +1,10 @@
-#include <config.h>
-#include <log.h>
-#include <type.h>
-#include <phantasmal/timed.h>
 #include <kernel/kernel.h>
+
+#include <phantasmal/timed.h>
+#include <phantasmal/log.h>
+
+#include <config.h>
+#include <type.h>
 
 mapping* per_queue;
 mixed*   per_call_out;

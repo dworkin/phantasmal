@@ -1,6 +1,8 @@
 #include <kernel/kernel.h>
+
+#include <phantasmal/log.h>
+
 #include <config.h>
-#include <log.h>
 #include <type.h>
 
 /* User-state processing stack */

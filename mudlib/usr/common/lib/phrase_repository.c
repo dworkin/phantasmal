@@ -1,8 +1,9 @@
+#include <phantasmal/phrase.h>
+#include <phantasmal/log.h>
+
 #include <config.h>
-#include <phrase.h>
 #include <limits.h>
 #include <type.h>
-#include <log.h>
 
 /********************* Loading phrases from files **********************/
 

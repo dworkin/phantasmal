@@ -1,7 +1,9 @@
-#include <map.h>
-#include <config.h>
 #include <kernel/kernel.h>
-#include <phrase.h>
+
+#include <phantasmal/map.h>
+#include <phantasmal/phrase.h>
+
+#include <config.h>
 
 /* Mobile: structure for a sentient, not-necessarily-player critter's
    mind.  The mobile will be attached to a body under any normal

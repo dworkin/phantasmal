@@ -1,9 +1,11 @@
+#include <kernel/kernel.h>
+
+#include <phantasmal/log.h>
+#include <phantasmal/channel.h>
+
 #include <config.h>
 #include <limits.h>
 #include <type.h>
-#include <log.h>
-#include <kernel/kernel.h>
-#include <channel.h>
 
 #define SYSLOGFILE   (LOGDIR + "/System.log")
 #define LOGD_DTD     ("/usr/System/sys/logchannel.dtd")

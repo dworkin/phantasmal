@@ -1,10 +1,12 @@
+#include <kernel/kernel.h>
+
+#include <phantasmal/phrase.h>
+#include <phantasmal/grammar.h>
+#include <phantasmal/log.h>
+#include <phantasmal/obj_flags.h>
+
 #include <config.h>
 
-#include <kernel/kernel.h>
-#include <phrase.h>
-#include <grammar.h>
-#include <log.h>
-#include <obj_flags.h>
 
 /*
  * /lib/object.c

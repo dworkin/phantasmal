@@ -1,16 +1,16 @@
-#include <config.h>
-
 #include <kernel/kernel.h>
 #include <kernel/access.h>
 #include <kernel/rsrc.h>
 #include <kernel/user.h>
 
+#include <phantasmal/log.h>
+#include <phantasmal/grammar.h>
+#include <phantasmal/search_locations.h>
+
+#include <config.h>
 #include <type.h>
 #include <status.h>
 #include <limits.h>
-#include <log.h>
-#include <grammar.h>
-#include <phantasmal/search_locations.h>
 
 inherit access API_ACCESS;
 

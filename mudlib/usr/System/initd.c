@@ -2,12 +2,14 @@
 #include <kernel/access.h>
 #include <kernel/rsrc.h>
 #include <kernel/version.h>
+
+#include <phantasmal/log.h>
+#include <phantasmal/version.h>
+
 #include <status.h>
 #include <type.h>
 #include <config.h>
 #include <gameconfig.h>
-#include <log.h>
-#include <version.h>
 
 inherit access API_ACCESS;
 inherit rsrc   API_RSRC;

@@ -1,6 +1,7 @@
+#include <phantasmal/timed.h>
+
 #include <gameconfig.h>
 #include <config.h>
-#include <phantasmal/timed.h>
 
 static void create(void) {
 

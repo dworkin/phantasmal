@@ -1,7 +1,9 @@
-#include <config.h>
 #include <kernel/kernel.h>
+
 #include <phantasmal/timed.h>
-#include <log.h>
+#include <phantasmal/log.h>
+
+#include <config.h>
 
 inherit MOBILE;
 

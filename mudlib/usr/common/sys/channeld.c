@@ -1,7 +1,9 @@
 #include <kernel/kernel.h>
+
+#include <phantasmal/log.h>
+#include <phantasmal/channel.h>
+
 #include <config.h>
-#include <log.h>
-#include <channel.h>
 #include <type.h>
 
 mixed*  channels;

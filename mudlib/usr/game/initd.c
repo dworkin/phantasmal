@@ -1,6 +1,7 @@
+#include <phantasmal/log.h>
+
 #include <gameconfig.h>
 #include <config.h>
-#include <log.h>
 
 static void config_unq_file(void);
 static void configure_from_unq(mixed* unq);

@@ -1,7 +1,8 @@
+#include <phantasmal/log.h>
+
 #include <config.h>
 #include <type.h>
 #include <trace.h>
-#include <log.h>
 #include <limits.h>
 
 #define INDENT_LEVEL 4

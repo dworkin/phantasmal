@@ -1,14 +1,16 @@
+#include <kernel/kernel.h>
+
+#include <phantasmal/log.h>
+#include <phantasmal/phrase.h>
+#include <phantasmal/map.h>
+
 #include <config.h>
 #include <type.h>
-#include <log.h>
-#include <phrase.h>
-#include <map.h>
-
-#include <kernel/kernel.h>
 
 /* room.c:
 
-   A basic MUD room with standard trimmings
+   A basic MUD room or object with standard trimmings.  This includes
+   portables and containers, though not exits.
 */
 
 inherit obj OBJECT;

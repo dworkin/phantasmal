@@ -1,7 +1,9 @@
 #include <kernel/kernel.h>
+
+#include <phantasmal/log.h>
+
 #include <config.h>
 #include <gameconfig.h>
-#include <log.h>
 
 /* This is the AUTO object for scripts.  It's meant to prevent them
  * from doing anything unpleasant, especially without permission. */

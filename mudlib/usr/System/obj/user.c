@@ -1,15 +1,17 @@
-/* $Header: /cvsroot/phantasmal/mudlib/usr/System/obj/user.c,v 1.72 2003/11/29 23:27:05 angelbob Exp $ */
+/* $Header: /cvsroot/phantasmal/mudlib/usr/System/obj/user.c,v 1.73 2003/11/30 00:05:24 angelbob Exp $ */
 
 #include <kernel/kernel.h>
 #include <kernel/user.h>
 #include <kernel/rsrc.h>
+
+#include <phantasmal/log.h>
+#include <phantasmal/phrase.h>
+#include <phantasmal/channel.h>
+#include <phantasmal/map.h>
+#include <phantasmal/search_locations.h>
+
 #include <config.h>
 #include <type.h>
-#include <log.h>
-#include <phrase.h>
-#include <channel.h>
-#include <map.h>
-#include <phantasmal/search_locations.h>
 
 inherit LIB_USER;
 inherit user API_USER;

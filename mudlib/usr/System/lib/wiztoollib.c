@@ -2,11 +2,13 @@
 #include <kernel/access.h>
 #include <kernel/rsrc.h>
 #include <kernel/user.h>
+
+#include <phantasmal/log.h>
+
 #include <trace.h>
 #include <type.h>
 #include <status.h>
 #include <limits.h>
-#include <log.h>
 
 inherit auto AUTO;
 inherit wiz LIB_WIZTOOL;

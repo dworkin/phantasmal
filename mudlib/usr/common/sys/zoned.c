@@ -1,7 +1,9 @@
+#include <kernel/kernel.h>
+
+#include <phantasmal/log.h>
+
 #include <config.h>
 #include <type.h>
-#include <kernel/kernel.h>
-#include <log.h>
 #include <limits.h>
 
 /* ZoneD -- daemon that tracks zones -- currently mostly hardcoded */
