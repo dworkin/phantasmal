@@ -164,52 +164,6 @@ nomask void whisper(object to, string str) {
   return;
 }
 
-/* 
- * ask()
- * 
- * Function to ask something.  Everyone in the same room as you can hear your
- * ask.
- */
-
-nomask void ask(object to, string str) {
-  object user;
-  object mob;
-
-  if(!SYSTEM() && !COMMON() && !GAME())
-    return;
-
-  user = get_user();
-
-  if (to->get_location() != location) {
-    return;
-  }
-
-  if (to == nil) {
-    if (user) {
-      user->message("You ask: " + str + "\r\n");
-    }
-
-    location->enum_room_mobiles("hook_ask_other", ({ this_object() }),
-				body, nil, str);
-  } else {
-    mob = to->get_mobile();
-    if (mob == nil) {
-      return;
-    }
-    mob->hook_ask(body, str);
-    if (user) {
-      user->message("You ask ");
-      user->send_phrase(to->get_brief());
-      user->message(": " + str + "\r\n");
-    }
-
-    location->enum_room_mobiles("hook_ask_other", ({ this_object(), mob }),
-				body, to, str);
-  }
-  
-  return;
-}
-
 /*
  * path_place()
  *
@@ -580,12 +534,6 @@ void hook_whisper(object body, string message) {
 }
 
 void hook_whisper_other(object body, object target) {
-}
-
-void hook_ask(object body, string message) {
-}
-
-void hook_ask_other(object body, object target, string message) {
 }
 
 void hook_leave(object leaving_body, int direction) {

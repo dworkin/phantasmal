@@ -84,27 +84,6 @@ void hook_whisper_other(object body, object target) {
   }
 }
 
-void hook_ask(object body, string message) {
-  if (user) {
-    user->send_phrase(body->get_brief());
-    user->message(" asks you: " + message + "\r\n");
-  }
-}
-
-void hook_ask_other(object body, object target, string message) {
-  if (user) {
-    if (target) {
-      user->send_phrase(body->get_brief());
-      user->message(" asks ");
-      user->send_phrase(target->get_brief());
-      user->message(": " + message + "\r\n");
-    } else {
-      user->send_phrase(body->get_brief());
-      user->message(" asks: " + message + "\r\n");
-    }
-  }
-}
-
 void hook_leave(object body, int dir) {
   if (user) {
     if (dir == DIR_TELEPORT) {

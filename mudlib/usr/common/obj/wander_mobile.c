@@ -1,6 +1,6 @@
 #include <config.h>
 #include <kernel/kernel.h>
-#include <timed.h>
+#include <phantasmal/timed.h>
 #include <log.h>
 
 inherit MOBILE;
@@ -23,7 +23,7 @@ void upgraded(varargs int clone) {
   if(clone && !registered) {
     LOGD->write_syslog("Setting up heart_beat in wander mobile",
 		       LOG_VERBOSE);
-    TIMED->set_heart_beat(TIMED_MUD_MINUTE, "__move_hook");
+    TIMED->set_heart_beat(TIMED_HALF_MINUTE, "__move_hook");
     registered = 1;
   }
 }
