@@ -356,6 +356,9 @@ exits and mobiles.
 
 It shows inheritance and tag values, among other information.
 
+Examples: @stat turnip
+          @stat #103
+
 See Also:  MAPD, OBJREGD, MOBILED, EXITD, room, portable, mobile, exit
 
 }}
