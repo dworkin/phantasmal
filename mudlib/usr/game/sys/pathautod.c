@@ -9,12 +9,14 @@ string path_special(string file) {
 
   if(previous_program() == OBJECTD) {
     if(sscanf(file, "/usr/%s/script/%*s", username)) {
-      if(username != "System") {
-	SCRIPT_AUTO;
-      } else
-	return "";
-    } else
-      return "";
+      if(sscanf(username, "System")
+	 || sscanf(username, "common"))
+	return nil;
+
+      return INHERIT_SCRIPT_AUTO;
+    } else {
+      return nil;
+    }
   } else {
     return nil;
   }

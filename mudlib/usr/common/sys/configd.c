@@ -1,5 +1,6 @@
 #include <kernel/kernel.h>
 #include <config.h>
+#include <gameconfig.h>
 #include <log.h>
 #include <type.h>
 
@@ -93,4 +94,11 @@ void set_suspended_message(string new_room) {
     return;
 
   suspended_message = new_room;
+}
+
+
+void set_path_special_object(object new_obj) {
+  if(GAME()) {
+    INITD->set_path_special_object(new_obj);
+  }
 }

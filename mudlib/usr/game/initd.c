@@ -1,3 +1,4 @@
+#include <gameconfig.h>
 #include <config.h>
 #include <log.h>
 
@@ -5,8 +6,28 @@ static void config_unq_file(void);
 static void configure_from_unq(mixed* unq);
 static void load_files(void);
 
+static void set_up_scripting(void);
+
 static void create(void) {
+  /* Load in configuration files and set data in the common and System
+     directories */
   load_files();
+
+  set_up_scripting();
+}
+
+static void set_up_scripting(void) {
+  /* Set up special AUTO paths for scripts */
+  if(!find_object(PATHAUTOD))
+    compile_object(PATHAUTOD);
+
+  compile_object(SCRIPT_AUTO_OBJECT);
+
+  CONFIGD->set_path_special_object(find_object(PATHAUTOD));
+
+  /* Test script obj */
+  compile_object("/usr/game/script/test_script");
+  call_other("/usr/game/script/test_script", "???");
 }
 
 static void load_files(void) {

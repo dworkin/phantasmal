@@ -5,6 +5,7 @@
 #include <status.h>
 #include <type.h>
 #include <config.h>
+#include <gameconfig.h>
 #include <log.h>
 #include <version.h>
 
@@ -12,7 +13,6 @@ inherit access API_ACCESS;
 inherit rsrc   API_RSRC;
 
 #define HELP_DTD  ("/usr/System/sys/help.dtd")
-#define GAME_INIT ("/usr/game/initd")
 
 /* How many objects can be saved to file in a single call_out? */
 #define SAVE_CHUNK   10
@@ -24,16 +24,17 @@ private int __sys_suspended;
 /* Prototypes */
 private void suspend_system();
 private void release_system();
-static void __co_write_rooms(object user, int* objects, int* zones,
-			     int ctr, int zone_ctr, string roomfile,
+static  void __co_write_rooms(object user, int* objects, int* zones,
+			      int ctr, int zone_ctr, string roomfile,
+			      string mobfile, string zonefile);
+static  void __co_write_mobs(object user, int* objects, int ctr,
 			     string mobfile, string zonefile);
-static void __co_write_mobs(object user, int* objects, int ctr,
-			    string mobfile, string zonefile);
-static void __co_write_zones(object user, int* objects, int ctr,
-			     string zonefile);
-static void __reboot_callback(void);
-static void __shutdown_callback(void);
-static int  read_object_dir(string path);
+static  void __co_write_zones(object user, int* objects, int ctr,
+			      string zonefile);
+static  void __reboot_callback(void);
+static  void __shutdown_callback(void);
+static  int  read_object_dir(string path);
+        void set_path_special_object(object new_obj);
 
 
 static int delete_directory(string dirname) {
@@ -251,14 +252,14 @@ static void create(varargs int clone)
 
 
   /* Now delegate to the initd in /usr/game, if any. */
-  if(read_file(GAME_INIT + ".c", 0, 1) != nil) {
+  if(read_file(GAME_INITD + ".c", 0, 1) != nil) {
     catch {
-      if(!find_object(GAME_INIT))
-	compile_object(GAME_INIT);
+      if(!find_object(GAME_INITD))
+	compile_object(GAME_INITD);
 
-      call_other(find_object(GAME_INIT), "???");
+      call_other(find_object(GAME_INITD), "???");
     } : {
-      error("Error in /usr/game/initd.c:create()!");
+      error("Error in GAME_INITD:create()!");
     }
   }
 }
@@ -374,6 +375,13 @@ void reboot(void)
     LOGD->write_syslog("Rebooting!", LOG_NORMAL);
   }
 }
+
+void set_path_special_object(object new_obj) {
+  if(previous_program() == CONFIGD) {
+    OBJECTD->set_path_special(new_obj);
+  }
+}
+
 
 
 
