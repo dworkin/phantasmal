@@ -4,6 +4,7 @@
 #include <phantasmal/grammar.h>
 #include <phantasmal/log.h>
 #include <phantasmal/obj_flags.h>
+#include <phantasmal/phrase.h>
 
 #include <config.h>
 
@@ -32,10 +33,12 @@ object edesc;  /* An "examine" description, meant to convey details only
 		  available when searched for.  Defaults to ldesc. */
 
 /* Specifiers, determining how the player may refer to the object. */
-string** nouns;   /* An array (by locale) of arrays of phrases for the
-		     various nouns which can specify this object */
-string** adjectives;  /* An array (by locale) of arrays of phrases for
-			 allowable adjectives that specify this object */
+private string** nouns;   /* An array (by locale) of arrays of phrases
+			     for the various nouns which can specify
+			     this object */
+private string** adjectives;  /* An array (by locale) of arrays of
+				 phrases for allowable adjectives that
+				 specify this object */
 
 /* These are arrays of removed nouns and verbs from parent objects.
    Usually a parent's nouns and verbs are inherited automatically by
@@ -78,6 +81,10 @@ void clear_nouns(void);
 void clear_adjectives(void);
 string* get_nouns(int locale);
 string* get_adjectives(int locale);
+private void register_my_nouns(void);
+private void unregister_my_nouns(void);
+private void register_my_adjs(void);
+private void unregister_my_adjs(void);
 
 
 static void create(varargs int clone) {
@@ -268,10 +275,12 @@ void remove_archetype(object arch_to_remove) {
   error("Not yet implemented!");
 }
 
-private void add_remove_noun(object phr, int do_add) {
+private atomic void add_remove_noun(object phr, int do_add) {
   int    locale, ctr2;
   string tmp;
   mixed* words;
+
+  unregister_my_nouns();
 
   if(PHRASED->num_locales() > sizeof(nouns)) {
     error("Fix objects to support dynamic adding of locales!");
@@ -309,6 +318,8 @@ private void add_remove_noun(object phr, int do_add) {
       }
     }
   }
+
+  register_my_nouns();
 }
 
 void add_noun(object phr) {
@@ -322,6 +333,9 @@ void remove_noun(object phr) {
 
 void clear_nouns(void) {
   int ctr, num_loc;
+
+  if(nouns)
+    unregister_my_nouns();
 
   num_loc = PHRASED->num_locales();
   nouns = allocate(num_loc);
@@ -351,6 +365,13 @@ string* get_nouns(int locale) {
   return nouns[locale] + ret;
 }
 
+string** get_immediate_nouns(void) {
+  if(!COMMON() && !SYSTEM())
+    return nil;
+
+  return nouns;
+}
+
 string* get_removed_nouns(int locale) {
   return removed_nouns[locale][..];
 }
@@ -376,6 +397,13 @@ string* get_adjectives(int locale) {
   return adjectives[locale] + ret;
 }
 
+string** get_immediate_adjectives(void) {
+  if(!COMMON() && !SYSTEM())
+    return nil;
+
+  return adjectives;
+}
+
 
 private void add_remove_adjective(object phr, int do_add) {
   int    locale, ctr2;
@@ -385,6 +413,8 @@ private void add_remove_adjective(object phr, int do_add) {
   if(PHRASED->num_locales() > sizeof(nouns)) {
     error("Fix objects to support dynamic adding of locales!");
   }
+
+  unregister_my_adjs();
 
   for(locale = 0; locale < PHRASED->num_locales(); locale++) {
     string *cur_adjectives;
@@ -417,6 +447,8 @@ private void add_remove_adjective(object phr, int do_add) {
       }
     }
   }
+
+  register_my_adjs();
 }
 
 void add_adjective(object phr) {
@@ -430,6 +462,9 @@ void remove_adjective(object phr) {
 
 void clear_adjectives(void) {
   int ctr, num_loc;
+
+  if(adjectives)
+    unregister_my_adjs();
 
   num_loc = PHRASED->num_locales();
   adjectives = allocate(num_loc);
@@ -836,6 +871,62 @@ void remove_detail(object obj) {
 
   obj->set_detail_of(nil);
   details -= ({ obj });
+}
+
+
+/* Registration of nouns and adjectives with ParseD */
+
+/*
+ * ParseD needs to know what words are valid nouns and adjectives in
+ * the system, and that requires knowing what nouns and adjectives
+ * apply to objects in the system.  We can't directly register and
+ * unregister nouns and adjectives because multiple objects will use
+ * them (think 'green' or 'rock' or 'sword').  So ParseD will refcount
+ * them for us, but we have to ref or unref them when we add or
+ * remove nouns and adjectives.
+ *
+ * Objects with parents are responsible for only their *own* nouns and
+ * adjectives, not those of their parent objects.  Since the parent
+ * must exist to be valid, the parent nouns and adjectives must
+ * already be referenced.  Similarly, the removed_XXX arrays have no
+ * effect on referencing of nouns and adjectives.
+ *
+ * Currently, ParseD is only in English.  These ref and unref
+ * functions can update non-English just fine, but we'll need to make
+ * them do it when/if we add a non-English language that requires it.
+ *
+ */
+
+private void register_my_nouns(void) {
+  int ctr;
+
+  for(ctr = 0; ctr < sizeof(nouns[LANG_englishUS]); ctr++) {
+    PARSED->ref_noun(nouns[LANG_englishUS][ctr]);
+  }
+}
+
+private void unregister_my_nouns(void) {
+  int ctr;
+
+  for(ctr = 0; ctr < sizeof(nouns[LANG_englishUS]); ctr++) {
+    PARSED->unref_noun(nouns[LANG_englishUS][ctr]);
+  }
+}
+
+private void register_my_adjs(void) {
+  int ctr;
+
+  for(ctr = 0; ctr < sizeof(adjectives[LANG_englishUS]); ctr++) {
+    PARSED->ref_adj(adjectives[LANG_englishUS][ctr]);
+  }
+}
+
+private void unregister_my_adjs(void) {
+  int ctr;
+
+  for(ctr = 0; ctr < sizeof(adjectives[LANG_englishUS]); ctr++) {
+    PARSED->unref_adj(adjectives[LANG_englishUS][ctr]);
+  }
 }
 
 

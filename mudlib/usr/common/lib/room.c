@@ -877,8 +877,9 @@ string to_unq_flags(void) {
   /* The double-braces are intentional -- this uses the efficient
      method of specifying nouns and adjectives rather than the human-
      friendly one.  Both are parseable, naturally. */
-  ret += "  ~nouns{{" + serialize_wordlist(nouns) + "}}\n";
-  ret += "  ~adjectives{{" + serialize_wordlist(adjectives) + "}}\n";
+  ret += "  ~nouns{{" + serialize_wordlist(get_immediate_nouns()) + "}}\n";
+  ret += "  ~adjectives{{" + serialize_wordlist(get_immediate_adjectives())
+    + "}}\n";
 
   arch = get_archetypes();
   if(arch && sizeof(arch)) {

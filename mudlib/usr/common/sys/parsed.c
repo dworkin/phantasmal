@@ -1,14 +1,21 @@
 /*
- * Command parser for parsing user input
- * Also does the work of the binder (as described in From the Dawn of Time
- * Skotos.net articles)
+ * First-line command parser for parsing user input
  */
+
+#include <kernel/kernel.h>
 
 #include <phantasmal/parser.h>
 
 #include <config.h>
 #include <limits.h>
 #include <type.h>
+
+/* #define LOGGING */
+
+/* Parser concatenation rules are stuck into another file so that this
+   one is more readable. */
+inherit concat "/usr/common/lib/parsed/ps_rules";
+inherit reg    "/usr/common/lib/parsed/register";
 
 /* code for enabling super-verbose logging */
 #ifdef LOGGING
@@ -17,47 +24,163 @@
 #define LOG(x)
 #endif
 
+/* Where to find parser files */
+#define NL_TOKEN_FILE    "/usr/common/sys/nl_tokens.dpd"
+#define NL_GRAMMAR_FILE  "/usr/common/sys/nl_parser.dpd"
+
 /* number of ambiguities to keep */
-#define NUM_KEEP 5
+#define NUM_AMBIGUOUS 5
 
+string grammar_file;
+string token_file;
 string grammar;
-mapping ones;
-mapping tens;
 
-static void upgraded(varargs int clone);
+void upgraded(varargs int clone);
 static string uncomment_file(string file);
 
-static void create(varargs int clone) {
-  if (clone) {
-    error("Cloning not allowed!");
-  }
 
+static void create(varargs int clone) {
+  concat::create();
+  reg::create();
   upgraded();
 }
 
-static void upgraded(varargs int clone) {
-  grammar = read_file(NL_PARSE_FILE);
+void upgraded(varargs int clone) {
+  /* Expect call only from self and ObjectD */
+  if(!SYSTEM() && !COMMON())
+    return;
 
-  if (grammar == nil) {
-    error("Error reading grammar from file " + NL_PARSE_FILE);
+  concat::upgraded(clone);
+  reg::upgraded(clone);
+
+  token_file = read_file(NL_TOKEN_FILE);
+  grammar_file = read_file(NL_GRAMMAR_FILE);
+
+  if (grammar_file == nil) {
+    error("Error reading grammar from file " + NL_GRAMMAR_FILE);
+  }
+  if (token_file == nil) {
+    error("Error reading token grammar from file " + NL_TOKEN_FILE);
   }
 
-  grammar = "whitespace = /[ \r\n\t\b\\,]+/\n" + grammar;
-
-  ones = ([ "zero" : 0, "one" : 1,  "two" : 2, "three" : 3, "four" : 4, 
-	  "five" : 5, "six" : 6, "seven" : 7, "eight" : 8, "nine" : 9 ]);
-  tens = ([ "ten" : 10, "eleven" : 11, "twelve" : 12, "thirteen" : 13,
-	  "fourteen" : 14, "fifteen" : 15, "sixteen" : 16, "seventeen": 17,
-	  "eighteen" : 18, "nineteen" : 19, "twenty" : 20, "thirty" : 30,
-          "forty" : 40, "fourty" : 40, "fifty" : 50, "sixty" : 60,
-	  "seventy" : 70, "eighty" : 80, "ninety" : 90 ]);
-
-  grammar = uncomment_file(grammar);
-
-  LOG("Loaded grammar:\n");
-  LOG(grammar);
+  LOG("Loaded token file:\n");
+  LOG(token_file);
+  LOG("\n");
+  LOG("******************************************************\n");
+  LOG("Loaded grammar file:\n");
+  LOG(grammar_file);
   LOG("\n");
 }
+
+
+private string** divide_into_lines(string *words, int linelen, int divchar) {
+  string **ret;
+  string  *line;
+  int      curlen, ctr;
+
+  ret = ({ });
+  ctr = 0;
+  while(sizeof(words) > ctr) {
+    curlen = 0;
+    line = ({ });
+
+    do {
+      /* Move a word into 'line' */
+      line += ({ words[ctr] });
+      curlen += strlen(words[ctr]) + divchar;
+      ctr++;
+    } while((curlen < linelen) && (sizeof(words) > ctr));
+
+    ret += ({ line });
+  }
+
+  return ret;
+}
+
+
+/* This function writes the part-of-speech token grammar to a string
+   and returns it.  This depends on things like the list of nouns and
+   adjectives that are currently registered. */
+private string* pos_grammars(void) {
+  string*  words;
+  string** linelist;
+  string   output, nontoken;
+  int      ctr, line;
+  int*     cat_list;
+  mapping* categories, *pos_categories;
+  mapping  word_type_map;
+
+  /* Make sure we have a valid wordmap */
+  init_wordmap();
+
+  /* Allocate and initialize all the category mappings */
+  categories = allocate(1 << sizeof(parts_of_speech));
+  for(ctr = 0; ctr < (1 << sizeof(parts_of_speech)); ctr++)
+    categories[ctr] = ([ ]);
+
+  /* For each word, place it in its appropriate category */
+  word_type_map = pvt_get_wordmap();
+  words = map_indices(word_type_map);
+  for(ctr = 0; ctr < sizeof(words); ctr++) {
+    categories[word_type_map[words[ctr]]][words[ctr]] = 1;
+  }
+
+  /* Make the token grammar from the categories */
+  output = "";
+  for(ctr = 1; ctr < sizeof(categories); ctr++) {
+    words = map_indices(categories[ctr]);
+
+    if(words && sizeof(words)) {
+      /* Divide into 50+-char lines, with 3-char separators */
+      linelist = divide_into_lines(words, 50, 3);
+
+      for(line = 0; line < sizeof(linelist); line++) {
+	output += make_string_from_pos_bits(ctr) + " = /(";
+	output += implode(linelist[line], ")|(");
+	output += ")/\n";
+      }
+    } else {
+      output += "# Skipping " + make_string_from_pos_bits(ctr) + "\n";
+    }
+  }
+
+  /* Make new categories */
+  pos_categories = allocate(sizeof(parts_of_speech));
+  for(ctr = 0; ctr < sizeof(parts_of_speech); ctr++)
+    pos_categories[ctr] = ([ ]);
+
+  /* Sift category information into pos_categories */
+  for(ctr = 1; ctr < sizeof(categories); ctr++) {
+
+    /* For each part of speech (counted off by 'line'), check the bit
+       and put the category into the pos_categories entry.  The
+       category is assigned to the pos_categories entry by inserting into the
+       pos_category entry's hash table with a key of the category number and
+       a value of 1. */
+    for(line = 0; line < sizeof(parts_of_speech); line++) {
+      if((ctr & (1 << line)) && map_sizeof(categories[ctr])) {
+	pos_categories[line][ctr] = 1;
+      }
+    }
+  }
+
+  /* Make the non-token grammar from the pos_categories */
+  nontoken = "";
+  for(ctr = 0; ctr < sizeof(parts_of_speech); ctr++) {
+    nontoken += "# All different kinds of " + parts_of_speech[ctr] + "\n";
+
+    cat_list = map_indices(pos_categories[ctr]);
+    for(line = 0; line < sizeof(cat_list); line++) {
+      nontoken += parts_of_speech[ctr] + ": "
+	+ make_string_from_pos_bits(cat_list[line]) + "\n";
+    }
+
+    nontoken += "\n";
+  }
+
+  return ({ output, nontoken });
+}
+
 
 /* Function for removing comments from the grammar file.  A comment is
  * anything which starts with the pound ('#') sign.
@@ -80,235 +203,67 @@ static string uncomment_file(string file) {
   return result;
 }
 
+private void set_grammar(void) {
+  /* This function is told when it's time to regenerate the grammar
+     from words and files.  This is generally after a recompile, or
+     after OLC has added a new word to one of the part-of-speech
+     tables.  You never know when the user will want to type one of
+     those new words, so we just regenerate the grammar to be sure. */
+
+  /* The grammar is made of a whitespace token (contains ctrl chars,
+     must be inserted from LPC), an autogenerated chunk of
+     part-of-speech tokens, a token-parsing grammar from one file, a
+     bad-token token (also contains ctrl chars), and a non-token
+     grammar from a second file.  These are assembled in the order
+     listed, using simple string concatenation. */
+
+  /* If we ever start overrunning the DGD string limit on this concat,
+     we can uncomment_file() earlier in the process on the subfiles
+     individually. */
+
+  if(regenerate_grammar) {
+    string  whitespace_string, bad_token_string;
+    string  token_autogen, grammar_autogen;
+    string *gram;
+
+    whitespace_string = "whitespace = /[ \r\n\t\b,]+/\n";
+    bad_token_string = "bad_token = /[^ \r\n\t\b\\\\!,.?:;]+/\n";
+    gram = pos_grammars();
+    token_autogen = gram[0];
+    grammar_autogen = gram[1];
+
+    grammar = whitespace_string + token_file + token_autogen + "\n"
+      + bad_token_string + grammar_file + grammar_autogen;
+
+    grammar = uncomment_file(grammar);
+    regenerate_grammar = 0;
+
+    LOG("*********************************************\n");
+    LOG("*********************************************\n");
+    LOG("*********************************************\n");
+    LOG("Setting grammar:\n" + grammar + "\n");
+  }
+}
+
+
 /* function for parsing commands */
 mixed *parse_cmd(string cmd){
+  mixed *ret;
+
+  set_grammar();
+
+  LOG("*********************************************\n");
   LOG("Parsing string: " + cmd + "$\n");
-  return parse_string(grammar, cmd, NUM_KEEP);
-}
 
-/* function for binding noun phrases */
-mixed *bind_noun(mixed *phrase, int how) {
-  error("Binding nouns not yet implemented.");
-  return nil;
-}
+  if(!cmd || STRINGD->is_whitespace(cmd))
+    return ({ });
 
-private string bind_verb(mixed *phrase) {
-  error("Binding verbs not yet implemented.");
-  return nil;
-}
+  catch {
+    ret = parse_string(grammar, cmd, NUM_AMBIGUOUS);
 
-
-/* functions for converting numbers strings (as parsed) into numbers */
-static mixed *dig2num(mixed *token){
-  return ({ (int)token[0] });
-}
-
-static mixed *cat_num(mixed *token) {
-  return ({ (token[0] * (int)pow(10.0,
-				 (float)strlen(token[1]))) + (int)token[1] });
-}
-
-static mixed *num1(mixed *token) {
-  return ({ 1 });
-}
-
-static mixed *num0(mixed *token) {
-  return ({ 0 });
-}
-
-static mixed *all_but_num(mixed *token) {
-  return ({ - token[0] });
-}
-
-static mixed *num_all(mixed *token) {
-  return ({ INT_MAX });
-}
-
-static mixed *one2num(mixed *token) {
-  return ({ ones[token[0]] });
-}
-
-static mixed *ten2num(mixed *token) {
-  int size;
-  size = sizeof(token);
-  if (size == 1) {
-    return ({ tens[token[0]] });
-  } else {
-    return ({ tens[token[0]] + token[size - 1] });
-  }
-}
-
-static mixed *hun2num(mixed *token) {
-  int size;
-  size = sizeof(token);
-  if (size == 2) {
-    return ({ token[0]*100 });
-  } else {
-    return ({ token[0]*100 + token[size-1] });
-  }
-}
-
-static mixed *thou2num(mixed *token) {
-  int size;
-  size = sizeof(token);
- 
-  if (token[0] >= 1000) {
+    return ret;
+  } : {
+    error("Parsing failed.  Command is '" + cmd + "'.");
     return nil;
   }
-
-  if (size == 2) {
-    return ({ token[0]*1000 });
-  } else {
-    return ({ token[0]*1000 + token[size-1] });
-  }
 }
-
-/* Functions for "and" and "or" joins */
-static mixed *and_join(mixed *token) {
-  return ({ ({ JOIN_AND, token[0], token[2] }) });
-}
-
-static mixed *sub_join(mixed *token) {
-  return ({ ({ JOIN_SUB, token[0], token[2] }) });
-}
-
-/* or_join -- this phrase should be interpreted one or the other way, but not
- * both.  Not sure that this function is useful, should be able to deal with
- * this, since this is how parse_string() will represent ambiguities 
- * (I think).
- */
-static mixed *or_join(mixed *token) {
-  return ({ ({ ({ token[0] }) , ({ token[2] }) }) });
-}
-
-/* noun depthifying functions */
-/* noun phrases have the following format:
- * ({ PHR_NOUN, <descriptor>, <number>, <owner>, <adj1>, <adj2>, ..., <adjN> })
- * 
- * In addition there are the following special nouns:
- * Everything: ({ PHR_NOUN, "all", INT_MAX, nil })
- * Pronouns:
- *    He: ({ PHR_NOUN, "he", 1, nil })
- *    She: ({ PHR_NOUN, "she", 1, nil })
- *    It: ({ PHR_NOUN, "it", 1, nil })
- */
-static mixed* noun_all(mixed *token) {
-  return ({ ({ PHR_NOUN, "all", INT_MAX, nil }) });
-}
-
-static mixed *noun(mixed *token) {
-  /* very last token is the noun -- all previous tokens are adjectives */
-  return ({ ({ PHR_NOUN, token[sizeof(token)-1], 1, nil }) + token[0..sizeof(token)-2] });
-}
-
-static mixed *noun_pronoun(mixed *token) {
-  return ({ ({ PHR_NOUN, token[0], 1, nil }) });
-}
-
-static mixed *noun_repeat(mixed *token) {
-  return ({ ({ PHR_NOUN, token[sizeof(token)-1], token[0], nil }) 
-	      + token[1..sizeof(token)-2] });
-}
-
-static mixed *noun_owned(mixed *token) {
-  return ({ ({ PHR_NOUN, token[sizeof(token)-1], 1, token[0] }) 
-	      + token[2..sizeof(token)-2] });
-}
-
-static mixed *noun_owned_repeat(mixed *token) {
-  mixed *noun_phrase;
-  /* toklen is the number of adj/owner/num tokens (exclues the noun). */
-  int i, toklen;
-  
-  /* set up the noun phrase.  Assume last word is the noun, but don't know
-   * much else about the noun phrase yet, so put in bogus values.
-   */
-  toklen = sizeof(token) - 1;
-  noun_phrase = ({ PHR_NOUN, token[toklen], 1, nil });
-
-  for (i = 0; i < toklen; ++i) {
-    switch (typeof(token[i])) {
-    case T_STRING:
-      /* adjective, add to end of noun phrase */
-      noun_phrase += ({ token[i] });
-      break;
-    case T_INT:
-      /* number of objects */
-      noun_phrase[NPR_NUMBER] = token[i];
-      break;
-    case T_ARRAY:
-      if (typeof(token[i][NPR_TYPE]) == T_INT && token[i][NPR_TYPE] == PHR_NOUN) {
-	/* this token is the owner */
-	noun_phrase[NPR_OWNER] = token[i];
-
-	/* kill the next token, this indicates possesive */
-	++i;
-      } else {
-	LOGD->write_syslog("Got a phrase I'm not quite sure what to do with.\r\n");
-	LOGD->write_syslog(STRINGD->mixed_sprint(token[i]) + "\r\n");
-      }
-      break;
-    default:
-      error("Unexpected type of argument in noun_owned_repeat()");
-    }
-  }
-
-  return noun_phrase;
-}
-
-/* function for handing prepositional phrases */
-/* all prepositional phrases are preposition, noun phrase */
-
-static mixed *prep(mixed *tokens) {
-  return ({ ({ PHR_PREP, tokens[0], tokens[1] }) });
-}
-
-/* function for handling verb phrases */
-/* all verb phrases are a verb, followed by one or more noun or prepositional
- * phrase */
-
-static mixed *verb(mixed *tokens) {
-  return ({ ({ PHR_VERB }) + tokens });
-}
-
-/* function for parsing to an adjective phrase */
-static mixed *adject(mixed *tokens) {
-  int i;
-  mixed *phr;
-  mixed noun;
-
-  phr = ({ });
-  noun = tokens[sizeof(tokens) - 1];
-
-  for (i = sizeof(tokens); i-- > 0; ) {
-    switch(typeof(tokens[i])) {
-    case T_STRING:
-      if (tokens[i] == "of") { 
-	--i;
-	/* the noun is the string right before the "of" */
-	/* This code is dead at the moment, pending better handling of "of"
-	 * type constructs */
-	noun = tokens[i];
-	break;
-      } else {
-	phr = ({ tokens[i] }) + phr;
-      }
-      break;
-    case T_ARRAY:
-      if (tokens[i][NPR_TYPE] == ADJ_NPR) {
-	tokens[i][NPR_TYPE] = ADJ_NPR;
-      }
-      phr = ({ tokens[i] }) + phr;
-      break;
-    }
-  }
-
-  /* add the noun to the end of the phrase, if it's not already there */
-  if (phr[sizeof(phr)-1] != noun) {
-    phr += ({ noun });
-  }
-
-  return phr;
-}
-
-

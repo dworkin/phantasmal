@@ -1,4 +1,4 @@
-/* $Header: /cvsroot/phantasmal/mudlib/usr/game/obj/user.c,v 1.5 2003/12/12 19:52:09 angelbob Exp $ */
+/* $Header: /cvsroot/phantasmal/mudlib/usr/game/obj/user.c,v 1.6 2004/01/09 06:39:42 angelbob Exp $ */
 
 #include <kernel/kernel.h>
 #include <kernel/user.h>
@@ -401,18 +401,45 @@ int process_command(string str)
     }
 
     if(commands_map[cmd]) {
-      call_other(this_object(),                /* Call on self */
-		 commands_map[cmd],            /* The function */
-		 this_object(),                /* This user */
-		 cmd,                          /* The command */
-		 str == "" ? nil : str);       /* str or nil */
+      string err;
+
+      err = (call_other(this_object(),                /* Call on self */
+			commands_map[cmd],            /* The function */
+			this_object(),                /* This user */
+			cmd,                          /* The command */
+			str == "" ? nil : str)        /* str or nil */
+	     );
+      if(err) {
+	LOGD->write_syslog("Error on command '" + cmd + "/"
+			   + (str ? str : "(nil)") + "'.  Err text: "
+			   + err);
+
+	message("Your command failed with an internal error.\r\n");
+	message("The error has been logged.\r\n");
+
+	/* Return normal status, print a prompt and continue. */
+	return -1;
+      }
       str = nil;
     }
   }
 
   if (str) {
     if (wiztool) {
-      wiztool->command(cmd, str);
+      string err;
+
+      err = catch(wiztool->command(cmd, str));
+      if(err) {
+	LOGD->write_syslog("Error on command '" + cmd + "/"
+			   + (str ? str : "(nil)") + "'.  Err text: "
+			   + err);
+
+	message("Your command failed with an internal error.\r\n");
+	message("The error has been logged.\r\n");
+
+	/* Return normal status, print a prompt and continue. */
+	return -1;
+      }
     } else {
       send_system_phrase("No match");
       message(": " + cmd + " " + str + "\r\n");
@@ -433,7 +460,39 @@ static void cmd_parse(object user, string cmd, string str) {
   output = PARSED->parse_cmd(str);
 
   if (output == nil) {
+    string *words, *tmpwords;
+    int     ctr;
+
     message("FAILED!\r\n");
+
+    /* If the parse failed, either one or more words weren't
+       recognized or the words weren't in an order that made any
+       sense.  Check to see that we recognize all words. */
+
+    if(str) {
+
+      /* Currently we explode on comma and space.  We should really
+	 explode on several other whitespace characters but they
+	 currently can't be input.  We should probably do this with
+	 parse_string somehow, but I'm lazy and that's complicated. */
+      tmpwords = explode(str, " ");
+      words = ({ });
+      for(ctr = 0; ctr < sizeof(tmpwords); ctr++) {
+	words += explode(tmpwords[ctr], ",");
+      }
+
+      for(ctr = 0; ctr < sizeof(words); ctr++) {
+	if(!PARSED->registered_as_word(words[ctr])) {
+	  message("The game doesn't know the word '" + words[ctr]
+		  + "' (and maybe others).\r\n"
+		  + "Try rephrasing your request.\r\n");
+	  return;
+	}
+      }
+    }
+
+    message("Every individual word made sense, yet together...\r\n"
+	    + "I don't get it.\r\n");
   } else {
     message("PARSED!\r\n" + STRINGD->tree_sprint(output, 0) + "\r\n");
   }
@@ -497,7 +556,6 @@ static void cmd_emote(object user, string cmd, string str) {
   mobile->emote(str);
 }
 
-/* TODO:  remove public inheritance of USER_API? */
 static void cmd_tell(object self, string cmd, string str) {
   object user;
   string username;

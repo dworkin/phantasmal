@@ -108,6 +108,7 @@ static string to_unq_flags(void) {
   object dest, shortphr, other_exit;
   string  ret, tmp_n, tmp_a;
   int locale, opp_dir;
+  string** nouns, **adjectives;
 
   ret = "";
 
@@ -148,6 +149,8 @@ static string to_unq_flags(void) {
 
   /* Skip debug locale */
   tmp_n = tmp_a = "";
+  nouns = get_immediate_nouns();
+  adjectives = get_immediate_adjectives();
   for(locale = 1; locale < sizeof(nouns); locale++) {
     if(sizeof(nouns[locale])) {
       tmp_n += "~" + PHRASED->locale_name_for_language(locale) + "{"
