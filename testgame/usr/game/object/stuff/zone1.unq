@@ -15,7 +15,7 @@ You can't seem to approach it, only to recede.}}
   ~newexit{
     ~rnumber{312}
     ~direction{2}
-    ~destination{301}
+    ~destination{101}
     ~return{313}
     ~type{2}
     ~rbdesc{
@@ -56,7 +56,7 @@ barely visible until it's about ten feet across.}}
   ~newexit{
     ~rnumber{313}
     ~direction{1}
-    ~destination{300}
+    ~destination{100}
     ~return{312}
     ~type{2}
     ~rbdesc{
