@@ -1,6 +1,7 @@
 Release 0.015:
 	* Moved HelpD into ~System
 	* Altered how tick counts for upgraded() work
+	* Changed syntax for @set_obj_parent to allow removing parent
 
 Release 0.014:
 	* Bugfix to @make_room to deal with rooms whose location is nil
