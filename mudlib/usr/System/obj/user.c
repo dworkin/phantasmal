@@ -1,4 +1,4 @@
-/* $Header: /cvsroot/phantasmal/mudlib/usr/System/obj/user.c,v 1.15 2002/06/10 21:17:26 angelbob Exp $ */
+/* $Header: /cvsroot/phantasmal/mudlib/usr/System/obj/user.c,v 1.16 2002/06/10 21:18:21 angelbob Exp $ */
 
 #include <kernel/kernel.h>
 #include <kernel/user.h>
@@ -81,7 +81,7 @@ static void create(int clone)
     locale = PHRASED->language_by_name("english");
 
     /* More defaults */
-    num_lines = 22;
+    num_lines = 20;
   } else {
     upgraded();
   }
@@ -236,8 +236,7 @@ int get_idle_time(void) {
 }
 
 int get_num_lines(void) {
-  /* return num_lines; */
-  return 20;
+  return num_lines;
 }
 
 int is_admin(void)  {
