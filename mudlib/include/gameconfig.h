@@ -24,3 +24,5 @@
 #define SCRIPT_AUTO_OBJECT    "/usr/game/lib/script_auto"
 
 #define HEART_BEAT            "/usr/game/sys/heart_beat"
+
+#define GAME_VERSION          "0.015"

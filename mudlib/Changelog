@@ -1,4 +1,8 @@
 Release 0.015:
+	* Simplified /usr/game as more stuff moves into testgame
+	* Moved objects out of /data, and made it easy to do the same for
+	  helpfiles
+	* Moved most Phantasmal headers into include/phantasmal
 	* Modified TimeD to use only real-world time
 	* Moved some headers into /include/phantasmal
 	* Removed 'ask' function and all related hooks & docs
@@ -10,7 +14,7 @@ Release 0.015:
 	* Made /usr/game configure ConfigD directly
 	* Made /usr/game's initd work
 	* Moved most files out of /data into /usr/System, /usr/common and
-	  /usr/game.
+	  /usr/game
 	* Added /usr/game directory
 	* Moved HelpD into ~System
 	* Altered how tick counts for upgraded() work

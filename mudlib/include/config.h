@@ -85,12 +85,12 @@
 
 /* Other data files */
 #define CONFIG_FILE         "/data/system/config.unq"
-#define ROOM_DIR            "/data/object/stuff"
-#define MOB_FILE            "/data/object/mobfile.unq"
-#define ZONE_FILE           "/data/object/zonefile.unq"
-#define SAFE_ROOM_DIR       "/data/object/safe_stuff"
-#define SAFE_MOB_FILE       "/data/object/safe_mobfile.unq"
-#define SAFE_ZONE_FILE      "/data/object/safe_zonefile.unq"
+#define ROOM_DIR            "/usr/game/object/stuff"
+#define MOB_FILE            "/usr/game/object/mobfile.unq"
+#define ZONE_FILE           "/usr/game/object/zonefile.unq"
+#define SAFE_ROOM_DIR       "/usr/game/object/safe_stuff"
+#define SAFE_MOB_FILE       "/usr/game/object/safe_mobfile.unq"
+#define SAFE_ZONE_FILE      "/usr/game/object/safe_zonefile.unq"
 #define ROOM_BIND_FILE      "/usr/common/sys/room_binder.unq"
 #define MOBILE_BIND_FILE    "/usr/common/sys/mobile_binder.unq"
 #define BUG_DATA            "/usr/game/text/bug_reports.txt"

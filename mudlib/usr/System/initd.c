@@ -165,7 +165,6 @@ static void create(varargs int clone)
     error("Can't load file " + HELP_DTD + "!");
 
   HELPD->load_help_dtd(help_dtd);
-  HELPD->new_help_directory("/data/help");
 
   /* driver->message("Loading phantasmal object system...\n"); */
 
@@ -181,7 +180,8 @@ static void create(varargs int clone)
   }
 
   /* Load zone name list information -- BEFORE first call to
-     any MAPD function. */
+     any MAPD function. */ 
+  /* TODO:  move this into GAME_INITD, and restructure it */
   zone_file = read_file(ZONE_FILE);
   if(zone_file){
     ZONED->init_zonelist_from_file(zone_file);
@@ -208,6 +208,7 @@ static void create(varargs int clone)
 
 
   /* Load stuff into MAPD and EXITD */
+  /* TODO:  move this into GAME_INITD */
   if(read_object_dir(ROOM_DIR) >= 0) {
     EXITD->add_deferred_exits();
     MAPD->do_room_resolution(1);
@@ -225,6 +226,7 @@ static void create(varargs int clone)
   MOBILED->init();
 
   /* Load the mobilefile into MOBILED */
+  /* TODO:  move this into GAME_INITD */
   mob_file = read_file(MOB_FILE);
   if(mob_file) {
     MOBILED->add_unq_text_mobiles(mob_file, MOB_FILE);
@@ -239,6 +241,7 @@ static void create(varargs int clone)
   /* Load zone/segment mapping information.
      Note: must load after rooms, exits and mobiles have
      already been loaded to avoid losing segments. */
+  /* TODO:  move this into GAME_INITD, and restructure it */
   zone_file = read_file(ZONE_FILE);
   if(zone_file){
     ZONED->init_from_file(zone_file);
