@@ -1,13 +1,4 @@
                Building a MUD Based on Phantasmal
 
   See "http://phantasmal.sf.net/Setup/".  Or you can check
-"website/Setup/html" if you have the website CVS package.
-
-                Files Phantasmal Needs
-
-  You need a /usr/game directory.  Phantasmal will use objects in this
-directory for configuration.  If you care at all about security,
-things in this directory will need to be protected.
-
-  You'll need an /include/gameconfig.h.  It should #define the location
-of your GAME_INITD object, usually "/usr/game/initd".
+"website/Setup/" if you have Phantasmal's 'website' CVS module.
