@@ -1,19 +1,12 @@
-           SETTING UP A MUD BASED ON PHANTASMAL
+                    ALTERING PHANTASMAL
 
                       INTRODUCTION
 
-For getting a normal MUD going, Phantasmal isn't as usable as 2.4.5 or
-GurbaLib.  That's fine, it's experimental.  If you're serious about
-building your own MUDlib, though, you should realize that Phantasmal
-builds on the Kernel library for a reason -- you may wish to do so
-instead of using this, and simply treat Phantasmal as one more example
-MUDLib.
-
-Phantasmal provides some useful bits, such as an improved user object
-and error handler.  There are, of course, a number of other very
-useful objects and commands it doesn't yet provide.  I'll keep working
-on infrastructure, but you're likely to do better building any given
-feature for yourself than waiting for me to do it for you.
+If you're serious about building your own MUDlib, you should realize
+that Phantasmal builds on the Kernel Library for a reason -- you may
+wish to do so instead of using this, and simply treat Phantasmal as
+one more example MUDLib.  At a minimum you'll want to read up on the
+Kernel Library.
 
 Note: you can find more stuff about developing based on Phantasmal at
 the following URL: "http://phantasmal.sourceforge.net/Developing.html"
@@ -22,28 +15,18 @@ the following URL: "http://phantasmal.sourceforge.net/Developing.html"
                  OVERALL ORGANIZATION
 
 Phantasmal does its best to conform to the spirit, not just the
-letter, of the Kernel MUDLib's restrictions and recommendations.  It
+letter, of the Kernel Library's restrictions and recommendations.  It
 puts its libraries in /usr/Whoever/lib, its clonable objects in
 /usr/Whoever/obj, and its daemons (objects that are instantiable, but
 that normally simply keep a single copy of their data and provide
 services) in /usr/common/sys/ or /usr/System/sys.  Lightweight objects
 are currently in /usr/common/data.
 
-The data directory contains a variety of data including some kinds of
-structured data and (later) code.  Essentially this is what makes the
-MUD special and different from others, and so this is the directory
-that a production MUD will want to censor when releasing its code --
-you'll be storing player data, areas and so on in this directory and
-so you may not want to redistribute all of it.
-
 Nods in the direction of code security are made by checking the
-previous_program(), among other ways.  There's a document on
-Phantasmal Security policy on the SourceForge site in the
-documentation section but don't expect Phantasmal to be properly
-secured against your fellow administrators.  That will happen
-eventually, but it's still in early development.  Security against
-non-admin players is quite good even now, and we hope to keep it that
-way.
+previous_program(), among other ways.  Security against non-admin
+players is quite good even now, and we hope to keep it that way.  With
+luck we'll have scripts before long, which is a fine way to allow
+builders to do some coding without letting them mess anything up.
 
 
                     SPECIFIC TASKS
@@ -82,12 +65,9 @@ the commands in all appropriate locales.
 
                    SPECIFIC LOCATIONS
 
-A lot of game-specific data goes in "/data".  You should know the UNQ
-phrase format before editing things in "/data" on a live MUD.
-
 If you're serious about making a real MUD happen, look through and
 change (when necessary) absolutely every helpfile entry -- they're all
-found under "/data/help" and "/data/help/admin".  Nothing says
+found under "/usr/game/help" and "/usr/game/help/admin".  Nothing says
 "unprofessional" (plus "lame", "sloppy", and so on) like leaving stock
 MUDLib stuff unchanged in your MUD, especially when it's wrong.  The
 help files contain a lot of contact information, MUD policies and
@@ -104,10 +84,10 @@ your friend, or your editor's "find" feature if you're not using a
 Unix variant.  You can alter what gets logged with
 "/data/system/logd_channels.unq".  Figure out how it works.
 
-Managers like stringd.c, phrased.c, logd.c, userd.c and so on live in
-either "/usr/common/sys" or "/usr/System/sys/".  Pretty much any
+Managers such as stringd.c, phrased.c, logd.c, userd.c and so on live
+in either "/usr/common/sys" or "/usr/System/sys/".  Pretty much any
 manager that can be removed from "/usr/System/sys/" already has been.
-Understand why.  Hint:  think security.
+Understand why.  Hint: think security.
 
 
                    GENERAL GUIDELINES
@@ -155,7 +135,7 @@ code.  You can find the binder files in "/data/system/".  Look for
 files like "room_binder.unq" and "mobile_binder.unq".  From there,
 look through the code until you understand what they do.
 
-Know the Kernel MUDLib.  Phantasmal does my humble best to conform to
+Know the Kernel Library.  Phantasmal does my humble best to conform to
 its requirements, and may do even better in the future.  Understand
 how its resource management works and how that interacts with having
 administrative privileges of various kinds.
