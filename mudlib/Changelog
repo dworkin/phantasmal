@@ -1,4 +1,7 @@
 Release 0.015:
+	* Changed hook function signatures and how enum_mobiles works
+	* Full security audit for /usr/common/sys and /usr/common/obj
+	* Full security audit for /usr/System
 	* Added simple scripting to /usr/game
 	* Added second AUTO object to /usr/game
 	* Made /usr/game configure ConfigD directly
