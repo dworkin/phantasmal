@@ -1,0 +1,2322 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+                      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<title>DGD and LPC: Persistent Game Design</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<link href="../../phantasmal.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<table width="95%" border="0" cellspacing="0" cellpadding="4">
+  <tr>
+    <td colspan="2"> <table width="100%" border="0" cellspacing="1"
+        cellpadding="0" class="main">
+        <tr>
+          <td class="banner">The DGD Driver</td>
+        </tr>
+      </table></td>
+  </tr>
+  <tr>
+    <td valign="top">
+      <table width="25%"  border="0" cellspacing="1"
+             cellpadding="0"  class="main">
+        <tr>
+          <td class="content" style="font-size: 120%">
+
+          <ul style="margin: 0; padding-left: 10%">
+            <li> <a href="index.html">DGD &amp; LPC Page</a> </li>
+	    <li> <a href="../LPC">LPC Textbook</a> </li>
+	    <li> <a href="../Book">New LPC Introduction</a> </li>
+          </ul>
+
+        </td>
+        </tr>
+        <tr>
+          <td class="content" align="center">
+            <a href="http://validator.w3.org/check/referer">
+            <img src="../../images/valid-xhtml10.gif" alt="Valid XHTML 1.0!"
+             style="border:0;width:88px;height:31px" /></a><br />
+            <img src="../../images/pixel.gif"
+             style="border:0;width:88px;height:1px" alt="" /><br />
+            <a href="http://jigsaw.w3.org/css-validator/check/referer">
+            <img src="http://jigsaw.w3.org/css-validator/images/vcss"
+             alt="Valid CSS!" style="border:0;width:88px;height:31px" />
+            </a><br /><br /><br />
+            <a href="http://sourceforge.net">
+            <img src="http://sourceforge.net/sflogo.php?group_id=48659&amp;type=2"
+             style="border: 0; width: 125; height: 37;"
+	     alt="SourceForge.net Logo" /></a>
+          </td>
+        </tr>
+      </table></td>
+    <td> <table width="100%"  border="0" cellspacing="1" cellpadding="0" 
+          class="main">
+        <tr>
+          <td class="heading">&nbsp;&nbsp;&middot;&nbsp;
+	    <a href="http://phantasmal.sf.net/DGD">DGD Page</a> &gt;
+            <a href="">Persistent Game Design</a>
+          </td>
+        </tr>
+        <tr>
+          <td class="content">
+  
+
+  <h2> Persistence, As Applied to Game Design </h2>
+
+  <p>
+    The phrase 'persistent world' means a world that exists
+    more-or-less 24&frasl;7, whether you're there or not.  The
+    implication is that some of the changes that you make to the world
+    may persist, though current 'persistent worlds' aren't especially
+    persistent.  Respawning tends to occur so rapidly that if you
+    leave for an hour, there's hardly any way to tell you were ever
+    there except by looking at your character.  There are a few
+    exceptions like house deeds, but note that you generally have to
+    carry this stuff around with you.  Changes to persistent worlds
+    tend to occur in small amounts, and in rare locations.
+  </p>
+
+  <p>
+    A fair number of MUDs will let objects sit around for essentially
+    forever.  If they're removed, it's by the actions of other
+    players, or of the world itself in some way.  This gives a more
+    immediate sort of persistence, though respawns mean that it's
+    still pretty limited.  Monsters you kill will be back in a few
+    minutes, items you take are the same.  Overall, it feels a bit
+    like a syndicated television show where no problem is allowed to
+    take more than thirty minutes to fix.
+  </p>
+
+  <h3> Game Design Concerns </h3>
+
+  <p>
+    But why would any of this matter in a MUD?  In a MUD, you normally
+    clean up old items to avoid inflation (well, okay, to avoid even
+    <i>more</i> inflation).  You reset objects and monsters
+    constantly.  When the old stuff isn't going to be kept around for
+    any time anyway, why bother to make it persist for years?  Why
+    would you care?
+  </p>
+
+  <p>
+    The answer is that you can make a much better game with
+    persistence, but only if you abandon the constant resets that
+    define so much of current hack-and-slash MUD-dom.  Imagine a game
+    where monsters are spawned in some more dynamic way and wander
+    around more freely.  Imagine a game where a monster, when you
+    killed it, were to actually <i>die</i> and not pop back up in the
+    same spot a few minutes later.
+  </p>
+
+  <p>
+    But wouldn't your world be entirely depopulated after a few days?
+    Not if there were another way to spawn monsters.  Normally, MUD
+    monsters spawn in a single location and stay there unless they're
+    molested.  However, if animals were to wander randomly in from the
+    far edges of the forest, if orcs were to spawn in tunnels and only
+    come to the surface from there, if townsmen had to train to become
+    guards rather than having guards spring fully-formed from the
+    dust...  Then a few clever players, by carefully placing NPCs and
+    traps, would be able to <i>change</i> the balance of the world.
+    Those orcs could be beaten back and the tunnels guarded by
+    powerful NPCs or players, and there would be no orcs for some time
+    (until the gamemasters intervened, perhaps).  Or the orcs could be
+    herded toward the forest, making it more dangerous.  There are
+    many variations, and the interesting combinations would increase
+    exponentially as the world grew larger and more varied.
+  </p>
+
+  <p>
+    That's the concept.  It's not the only concept.  There are other
+    alluring possibilities that persistence allows, including simple
+    things like burying a treasure in the forest and being able to dig
+    it up months or years later.
+  </p>
+
+  <h3> Persistent Games and Your Builders </h3>
+
+<pre>
+From dgd at list.imaginary.com  Wed Dec 26 11:42:01 2001
+From: dgd at list.imaginary.com (Stephen Schmidt)
+Date: Wed Dec 26 11:42:01 2001
+Subject: [DGD] Persistance
+In-Reply-To: <000101c18e2c$ffc154d0$849bb80a@elf>
+Message-ID: <Pine.OSF.4.40.0112261210200.16212-100000@idol.union.edu>
+
+On Wed, 26 Dec 2001, Kevin N. Carpenter wrote:
+> With that in mind, I'm fascinated with the concept of a persistent mud.
+
+I am too, although I've never been able to do much about it. What
+follows is based on meditation on the subject, not on any coding
+experience I've had.
+
+> I presume that the mud should always be shutdown and a dump file
+> created.  That dumpfile should be passed to the driver as an argument
+> when restarting the mud.
+
+Yes. The question of what to do with the user and player objects
+of a user who is connected at shutdown time is an interesting one.
+>From a system management standpoint it's probably best to destruct
+them. From a gameworld standpoint, it's not clear that it is. One
+of the issues that really interests me is this: If a world is
+persistant, so that objects are expected not to vanish and reappear
+causelessly, then what happens to a player character when the
+associated user logs out? It seems to me that the PC should still
+have some kind of passive existence in the game even when the
+user is not connected. Precisely how to handle this is not clear,
+and would vary from game to game anyway. A mundane solution is
+to give each player a house with a bedroom, or a castle, or some
+other permanent location. (Perhaps you could quit only in that
+location, though then dropped connections are a problem.) More
+fantasy-oriented solutions involve players changing plane, or
+changing from trance to life and back, or other, more creative
+alternatives.
+
+> I believe I caught Felix mentioning that swap files could be used instead?
+
+Not that I'm aware of; can any gurus comment?
+
+> Once I'm past this, the next issue would be object management.
+> Presumably every object in a persistent mud must be upgradeable to avoid
+> every having to restart (Hmm, "Let there be light!" comes to mind) the
+> mud.
+
+I think DGD takes care of this for you, although I'm shaky on the
+details. Certainly I would not advise opening a mud and calling it
+"persistent" unless the core mudlib was throughly debugged. Make
+sure you understand, for example, the reasons for the restrictions
+that the kernel lib imposes on cloning and inheriting objects (as
+I understand it, an object can be either cloned or inherited but
+not both, and this is precisely to avoid technical problems of having
+to deal with changing the code of upgraded objects, though I do
+not recall what those technical problems are).
+
+Further, it's not clear to me that the usual model of wizards
+extending the game world would necessarily be appropriate for
+a persistent mud. If the world was persistent, yet wizards
+could clone new objects, there is a problem of open-ended
+expansion that would have to be resolved in some way. There
+ought to be some in-game-world mechanism for resolving what
+happens when an object is destructed. It also seems that expansion
+of the game world would be more troubling in a persistent world
+than a non-persistant one, though not fatally so. One might be
+able to do away with wizards in the usual sense, and allow players
+to do more of the manipulation of the game world, within constraints
+imposed by the persistence of the objects in the world, and presumably
+limits on how new objects can be brought into existence. One would
+want to think carefully about game world ecology.
+
+I think I may have taken a thread that the author intended to
+be about coding objects, and diverted it into a discussion of
+game design :)  But I really believe that, if we change the
+software rather dramatically by introducing persistence, then
+we ought to think about whether the games that are built with
+that software need to change as well, perhaps equally dramatically.
+Certainly it is not obvious that the game model should remain
+unchanged.
+
+Steve
+
+
+Sweet words can buy honor
+Good deeds can gain respect
+If a man is bad, do not abandon him.
+	- Tao Te Ching, chapter sixty-two
+
+
+
+From dgd at list.imaginary.com  Wed Dec 26 18:13:01 2001
+From: dgd at list.imaginary.com (Shevek)
+Date: Wed Dec 26 18:13:01 2001
+Subject: [DGD] Persistance
+In-Reply-To: <Pine.OSF.4.40.0112261210200.16212-100000@idol.union.edu>
+References: <000101c18e2c$ffc154d0$849bb80a@elf>
+Message-ID: <5.1.0.14.0.20011226232802.009f1740@mail.btinternet.com>
+
+>Yes. The question of what to do with the user and player objects
+>of a user who is connected at shutdown time is an interesting one.
+> >From a system management standpoint it's probably best to destruct
+>them. From a gameworld standpoint, it's not clear that it is. One
+>of the issues that really interests me is this: If a world is
+>persistant, so that objects are expected not to vanish and reappear
+>causelessly, then what happens to a player character when the
+>associated user logs out? It seems to me that the PC should still
+>have some kind of passive existence in the game even when the
+>user is not connected. Precisely how to handle this is not clear,
+>and would vary from game to game anyway. A mundane solution is
+>to give each player a house with a bedroom, or a castle, or some
+>other permanent location. (Perhaps you could quit only in that
+>location, though then dropped connections are a problem.) More
+>fantasy-oriented solutions involve players changing plane, or
+>changing from trance to life and back, or other, more creative
+>alternatives.
+
+I'm playing around with this problem myself in my own little embryonic 
+mudlib. The way I'm doing things right now the player's have a spirit 
+object that associates itself with an actual body object. At 
+logoff/disconnect the spirits get destructed and the body remains wherever 
+they left it (So some safehouses would be available in any final mud). It 
+also allows for a spirit to occupy different bodies (With different 
+abilities) throughout the player's existence on the mud, or even for 
+player's to share/possess the bodies of others (Think there may have been a 
+discussion on this in the archives). I don't know how common this is to the 
+various mudlibs, but it seems a nice enough way of doing things.
+The only real problems arise in making sure that when a player logs in 
+their spirit gets associated with the correct body and the easiest way of 
+doing that is use a save file of some kind. I'm not 100% sure that counts 
+as true persistence.
+
+I don't like the idea of making the bodies of offline players passive. 
+Instead I'm looking into a system whereby the actions of a player in 
+specific situations are logged and go into building up a picture of how 
+they do things (Eg % of times a player runs at low hit points). Then when 
+offline the player's body can react to any of those specific situations in 
+a similar style (It can't ever be exact) to the actual player. I'm also 
+toying with letting them set a location (Eg Home, Guild, etc)  for a body 
+to try and reach if they are disconnected/quit, although that would mean 
+some pretty good route finding code.
+
+I guess for me persistence means the environment and only the environment 
+is persistent. Everything else should be able to restart itself at any 
+point and still produce the correct results. So when you start the driver 
+from a statedump you can just issue a simple command and have everything 
+cleaned up.
+
+Cheers,
+         Shevek
+
+
+From dgd at list.imaginary.com  Fri Dec 28 10:02:01 2001
+From: dgd at list.imaginary.com (David Jackson)
+Date: Fri Dec 28 10:02:01 2001
+Subject: [DGD] Persistance
+In-Reply-To: <Pine.OSF.4.40.0112261210200.16212-100000@idol.union.edu>
+References: <Pine.OSF.4.40.0112261210200.16212-100000@idol.union.edu>
+Message-ID: <20011228154509.ZQIK18975.femail46.sdc1.sfba.home.com@there>
+
+On Wednesday 26 December 2001 11:24, you wrote:
+
+<SNIP-PRUNE>
+> of the issues that really interests me is this: If a world is
+> persistant, so that objects are expected not to vanish and reappear
+> causelessly, then what happens to a player character when the
+> associated user logs out? It seems to me that the PC should still
+> have some kind of passive existence in the game even when the
+> user is not connected. Precisely how to handle this is not clear,
+> and would vary from game to game anyway. A mundane solution is
+<SNIP-PRUNE>
+
+I think player-owned houses would go a long ways towards maintaining a 
+passive persistence.  However, I don't think there's any need to present any 
+sort of explanation for a player leaving the game...IMHO...it doesn't detract 
+from the immersion.
+
+One of the beauties of a persistent world is the ability to change variables 
+and have those variables retain their values over reboots.  This offers all 
+sorts of possibilities.
+
+<SNIP-PRUNE>
+> Further, it's not clear to me that the usual model of wizards
+> extending the game world would necessarily be appropriate for
+> a persistent mud. If the world was persistent, yet wizards
+> could clone new objects, there is a problem of open-ended
+> expansion that would have to be resolved in some way. There
+> ought to be some in-game-world mechanism for resolving what
+> happens when an object is destructed. It also seems that expansion
+> of the game world would be more troubling in a persistent world
+> than a non-persistant one, though not fatally so. One might be
+> able to do away with wizards in the usual sense, and allow players
+> to do more of the manipulation of the game world, within constraints
+> imposed by the persistence of the objects in the world, and presumably
+> limits on how new objects can be brought into existence. One would
+> want to think carefully about game world ecology.
+>
+
+Yes, I agree.  Persistence presents the problem that you have to stop 
+tinkering with the code after a point, unless you wish to break existing 
+objects which already exist in the world.  Without some kind of robust 
+upgrading routines, which is what I think Kevin suggested.
+
+It's exciting to think what persistence could bring to a MUD.  Players could 
+be allowed to change the landscape - but wisdom tells us that players aren't 
+always going to be thematically correct, and sometimes they are going to be 
+sloppy, poorly described, with typos and grammatical errors.  If you put 
+restraints on what they create, the other problem is that newly-created 
+objects, after a point, will seem stale and generic.  I think that this is 
+the obvious reason for having "wizards" - wizards you can reign in with 
+design standards.  Players are not so easily controlled.
+
+> I think I may have taken a thread that the author intended to
+> be about coding objects, and diverted it into a discussion of
+> game design :)  But I really believe that, if we change the
+> software rather dramatically by introducing persistence, then
+> we ought to think about whether the games that are built with
+> that software need to change as well, perhaps equally dramatically.
+> Certainly it is not obvious that the game model should remain
+> unchanged.
+>
+> Steve
+
+I had hoped that someone would introduce a thread regarding game design on 
+the DGD list - particularly to take advantage of the unique strengths of the 
+DGD driver.  
+
+Here's my question - state dumps should be performed at intervals, in case of 
+crashes, and should also be performed when you manually shut down the MUD.  
+Is there a generic function for performing a state dump?
+
+David Jackson
+Mystic Visions
+
+From dgd at list.imaginary.com  Fri Dec 28 11:33:00 2001
+From: dgd at list.imaginary.com (Stephen Schmidt)
+Date: Fri Dec 28 11:33:00 2001
+Subject: [DGD] Persistance
+In-Reply-To: <000301c18fc2$0a6827b0$849bb80a@elf>
+Message-ID: <Pine.OSF.4.40.0112281213210.167158-100000@idol.union.edu>
+
+On Fri, 28 Dec 2001, Kevin N. Carpenter wrote:
+> > It's exciting to think what persistence could bring to a MUD.  Players
+> > could be allowed to change the landscape - but wisdom tells us that
+> > players aren't always going to be thematically correct, and sometimes
+> > they are going to be sloppy, poorly described, with typos and
+> > grammatical errors.
+
+> I've been thinking around a compromise based around a couple (3-4?)
+> wizards with Admin power and the rest of the mud running on an economy
+> based system where folks can buy houses, rent rooms, etc.
+
+A mud I was on some time ago (based on MudOS) had something like
+this. They had a clan system, and each clan had a clan house that
+was built and designed by the clan members. They didn't have any
+serious problems with theme or appropriateness, and the minor
+problems they had were easily corrected. The group responsibility
+for the houses probably helped - there was some self-policing,
+and each clan had to have a few relatively high-level members
+who had been around and understood the theme, and so forth.
+I agree that these are valid concerns, but I think they are not
+terribly difficult to solve.
+
+Steve
+
+
+
+From dgd at list.imaginary.com  Wed Jan  7 16:44:01 2004
+From: dgd at list.imaginary.com (Par Winzell)
+Date: Wed Jan  7 16:44:01 2004
+Subject: [DGD] Persistance
+In-Reply-To: <BAY10-F60MWE17iPMen00025b43@hotmail.com>
+References: <BAY10-F60MWE17iPMen00025b43@hotmail.com>
+Message-ID: <3FFC8986.6050504@skotos.net>
+
+> I'm wondering how useful having a persistant MUD is. I think of it as a 
+> luxury, since most MUDS don't have 100% persistance. I also think of it 
+> as a luxury to be able to clone and inherit from an object.
+
+It's almost impossible to convey the experience of running a truly 
+persistent Mud to somebody who has never done it. So many assumptions 
+disappear. The way objects are created, areas designed, everything changes.
+
+In traditional LPMud, virtually everything is an initialization script, 
+like the create() function in your example. Half the code in a wizard's 
+directory is startup code. In a persistent world, rather than write a 
+lot of startup code, you tend to write behaviour code, and configure 
+objects.
+
+Most code in a traditional LPMud isn't real code, it's just a cumbersome 
+configuration (set_this and set_that) technique. That pretty much goes 
+away in a persistent game.
+
+The cumulative effect is that if you design your mudlib to be fully 
+persistent from scratch, you will find yourself making subtly different 
+decisions on pretty much every single design question that comes up, and 
+you end up with something drastically different than LPMud.
+
+Zell
+
+
+From dgd at list.imaginary.com  Wed Jan  7 17:06:01 2004
+From: dgd at list.imaginary.com (Robert Forshaw)
+Date: Wed Jan  7 17:06:01 2004
+Subject: [DGD] Persistance
+Message-ID: <BAY10-F19qhcpyIhee500023893@hotmail.com>
+
+>
+>In traditional LPMud, virtually everything is an initialization script, 
+>like the create() function in your example. Half the code in a wizard's 
+>directory is startup code. In a persistent world, rather than write a lot 
+>of startup code, you tend to write behaviour code, and configure objects.
+
+I don't appreciate what you're saying (you did say it would be difficult :),
+as I understand it setting attributes to an object is part of configuring
+its behaviour? What exactly do you mean by 'behaviour code' ?
+
+>
+>Most code in a traditional LPMud isn't real code, it's just a cumbersome 
+>configuration (set_this and set_that) technique. That pretty much goes away 
+>in a persistent game.
+
+How so? You still need to set attributes on an object, do you not?
+How does persistance change this?
+
+>The cumulative effect is that if you design your mudlib to be fully 
+>persistent from scratch, you will find yourself making subtly different 
+>decisions on pretty much every single design question that comes up, and 
+>you end up with something drastically different than LPMud.
+
+That much I understood, but I'm not sure what you are refering
+to specifically...
+
+_________________________________________________________________
+Express yourself with cool new emoticons http://www.msn.co.uk/specials/myemo
+
+
+From dgd at list.imaginary.com  Wed Jan  7 17:20:02 2004
+From: dgd at list.imaginary.com (Noah Gibbs)
+Date: Wed Jan  7 17:20:02 2004
+Subject: [DGD] Persistance
+In-Reply-To: <BAY10-F19qhcpyIhee500023893@hotmail.com>
+Message-ID: <20040107231922.63156.qmail@web12824.mail.yahoo.com>
+
+  I get a little insight into these things as well,
+though not like Skotos.
+
+  As for how areas are designed, imagine a world with
+no zone resets.  Stuff doesn't pop back into place a
+few moments after you kill it or steal it.  You might
+say "that seems stupid.  How would you get more
+opponents and money?"  But if you think it through,
+you wind up with something subtly more like the real
+world.  It's a nice change, or so I believe.  That
+changes area design completely.  It also makes an
+economy possible, since it allows for the possibility
+of scarcity.  Zone resets are the #1 source of runaway
+inflation since new "valuables" come into the economy
+constantly, thus destroying any actual value they may
+otherwise have had.
+
+  Anyway, MUD-Dev has addressed these questions, and
+I'm not going to be able to do better in one message. 
+Go read about it there :-)
+
+> as I understand it setting attributes to an
+> object is part of configuring
+> its behaviour? What exactly do you mean by
+> 'behaviour code' ?
+
+  Imagine that you created an object once, and it
+stayed.  But imagine you didn't create it as a regular
+occurrence.  You'd never write any initialization code
+for it, not once it had its attributes (which could be
+done in some other way, as Skotos does, or with a data
+file, as Phantasmal does).
+
+  There's no reset, no respawn, no destruction and
+remaking.  It's just, y'know, there.  So you don't
+write code for routine destruction, nor code for
+initialization.  You just set some attributes (some of
+which may involve code, naturally) and away it goes.
+
+  State dumps allow you to bring everything back to
+the way it was pre-reboot, and to do so without
+writing a single line of save/load code.  So you can
+get by without init code, without object destructors
+(well, sort of).  No load/save.  It saves a lot of
+code.  I know it's a lot -- Phantasmal *has* all that
+code :-)
+
+  In return, when you change object code, you have to
+write a little piece of code to update the existing
+object(s).  That can be nontrivial, sadly.  But it
+runs to turn the old object into the new object, not
+to make the new object from scratch.
+
+> >Most code in a traditional LPMud isn't real code,
+> it's just a cumbersome 
+> >configuration (set_this and set_that) technique.
+> That pretty much goes away 
+> >in a persistent game.
+> 
+> How so? You still need to set attributes on an
+> object, do you not?
+> How does persistance change this?
+
+  For one thing, you can make the object and shape it.
+ You can change the attributes dynamically and they
+stay.  Kind of like how you don't need to extrude a
+sculpture whole, but can start with a lump of clay. 
+So you never have to write the initialization code,
+but you *do* have to set data somehow.
+
+
+=====
+------
+noah_gibbs@yahoo.com
+
+__________________________________
+Do you Yahoo!?
+Yahoo! Hotjobs: Enter the "Signing Bonus" Sweepstakes
+http://hotjobs.sweepstakes.yahoo.com/signingbonus
+
+
+
+From dgd at list.imaginary.com  Wed Jan  7 18:46:01 2004
+From: dgd at list.imaginary.com (Robert Forshaw)
+Date: Wed Jan  7 18:46:01 2004
+Subject: [DGD] Persistance
+Message-ID: <BAY10-F77praWmXTzjb0003d547@hotmail.com>
+
+>From: Noah Gibbs <noah_gibbs@yahoo.com>
+>   As for how areas are designed, imagine a world with
+>no zone resets.  Stuff doesn't pop back into place a
+>few moments after you kill it or steal it.  You might
+>say "that seems stupid.  How would you get more
+>opponents and money?"  But if you think it through,
+>you wind up with something subtly more like the real
+>world.  It's a nice change, or so I believe.
+
+I'm not quite sure what this has to do with persistance. It seems to me that 
+resets and respawning are a design consideration, and can exist regardless 
+of whether the MUD gets rebooted or not...
+
+>  That
+>changes area design completely.  It also makes an
+>economy possible, since it allows for the possibility
+>of scarcity.  Zone resets are the #1 source of runaway
+>inflation since new "valuables" come into the economy
+>constantly, thus destroying any actual value they may
+>otherwise have had.
+
+What you are describing is the theory of game balance. What does this have 
+to do with persistance? It can still be achieved with a non-persistant MUD 
+can it not?
+
+>Imagine that you created an object once, and it
+>stayed.  But imagine you didn't create it as a regular
+>occurrence.  You'd never write any initialization code
+>for it, not once it had its attributes (which could be
+>done in some other way, as Skotos does, or with a data
+>file, as Phantasmal does).
+>
+>   There's no reset, no respawn, no destruction and
+>remaking.  It's just, y'know, there.
+
+This sounds drastically different from the conventions I've grown accustomed 
+to. What's the point of storing configuration in a datafile? Setting 
+attributes isn't difficult and having a datafile just makes it harder to 
+alter the possible attributes an object may have.
+
+>So you don't
+>write code for routine destruction, nor code for
+>initialization.  You just set some attributes (some of
+>which may involve code, naturally) and away it goes.
+
+Hmm. I thought that was how it was always done? *scratches head*
+
+>For one thing, you can make the object and shape it.
+>You can change the attributes dynamically and they
+>stay.
+
+They stay on a non-persistant MUD also though, except when there is a 
+reboot...
+
+_________________________________________________________________
+It's fast, it's easy and it's free. Get MSN Messenger today! 
+http://www.msn.co.uk/messenger
+
+
+
+
+
+> >Imagine that you created an object once, and it
+> >stayed.  But imagine you didn't create it as a
+> regular
+> >occurrence.  You'd never write any initialization
+> code
+> >for it, not once it had its attributes (which could
+> be
+> >done in some other way, as Skotos does, or with a
+> data
+> >file, as Phantasmal does).
+> >
+> >   There's no reset, no respawn, no destruction and
+> >remaking.  It's just, y'know, there.
+> 
+> This sounds drastically different from the
+> conventions I've grown accustomed 
+> to. What's the point of storing configuration in a
+> datafile?
+
+  There isn't.  You'd never *write* to the datafile. 
+You'd just read from it, once, to make the object.
+
+> Setting 
+> attributes isn't difficult and having a datafile
+> just makes it harder to 
+> alter the possible attributes an object may
+> have.
+
+  I think you're giving datafiles too little credit,
+but that's neither here nor there.  Here's something
+that Skotos seems to consider a feature (and I
+certainly do), though you may not:  you can make
+objects entirely without having to write code.  While
+that approach doesn't scale to really complicated
+objects, it's a good way to make 95% of the objects in
+a given MUD.
+
+  For the other 5%, you can either write code your way
+or write little scripts that attach to the objects. 
+At that point it's kind of an academic distinction.
+
+  However, the first approach works much better for
+the other 95% of objects.  Plus you can alter the
+objects more easily after creation since your changes
+stick, and you don't have to make changes to the code.
+ Doing the equivalent of '%set_obj_weight "sword" "9
+lbs"' is really hard when the sword object is a .c
+file and you'd have to rewrite the code to change that
+:-)
+
+> >So you don't
+> >write code for routine destruction, nor code for
+> >initialization.  You just set some attributes (some
+> of
+> >which may involve code, naturally) and away it
+> goes.
+> 
+> Hmm. I thought that was how it was always done?
+> *scratches head*
+
+  Here's the different bit -- you don't have to set
+the attributes in a way that's reproducible.  Your way
+involves writing code that knows how to set
+attributes.  Our way involves setting the attributes
+in any way *once*, then never worrying about it again.
+ Not even to save or restore it.
+
+> >   State dumps [...] save a lot of
+> >code.  I know it's a lot -- Phantasmal *has* all
+> >that code :-)
+> 
+> It sounds like you could get away with just doing
+> state dumps, but that does 
+> cause lag, no?
+
+  Not a lot, no.  Skotos does it this way.  For that
+matter, so does EverQuest if memory serves.  Everquest
+doesn't use DGD statedumps, but their periodic backups
+are just as large and just as laggy.
+
+  Also, you never have to statedump until shutdown, so
+actually, it *never* has to cause any lag.
+
+> I'm thinking of preserving user
+> configuration, etc. with 
+> savefiles in case there is a crash (you never know
+> what might happen).
+
+  Yup.  Statedumps would give you that for free. 
+Like, you'd have to write only about ten lines of
+code, and *no* code specific to particular kinds of
+objects, ever.
+
+> >For one thing, you can make the object and
+> >shape it.
+> >You can change the attributes dynamically and they
+> >stay.
+> 
+> They stay on a non-persistant MUD also though,
+> except when there is a 
+> reboot...
+
+  Yes.  Do you want all those objects to go away every
+time you add a bugfix?  You suggested "every few
+weeks".  Even on that timeframe, that's noticeable
+disruption.  You're right, not doing it is a luxury. 
+But why turn away that luxury?
+
+  Also, bear in mind that altering objects in these
+ways is actually a good way for builders to do stuff. 
+That's harder if it all goes away every couple of
+weeks :-)
+
+
+
+
+From dgd at list.imaginary.com  Wed Jan  7 19:43:01 2004
+From: dgd at list.imaginary.com (Par Winzell)
+Date: Wed Jan  7 19:43:01 2004
+Subject: [DGD] Persistance
+In-Reply-To: <BAY10-F77praWmXTzjb0003d547@hotmail.com>
+References: <BAY10-F77praWmXTzjb0003d547@hotmail.com>
+Message-ID: <3FFCB2CD.50005@skotos.net>
+
+>> changes area design completely.  It also makes an
+>> economy possible, since it allows for the possibility
+>> of scarcity.  Zone resets are the #1 source of runaway
+>> inflation since new "valuables" come into the economy
+>> constantly, thus destroying any actual value they may
+>> otherwise have had.
+> 
+> What you are describing is the theory of game balance. What does this 
+> have to do with persistance? It can still be achieved with a 
+> non-persistant MUD can it not?
+
+Anything can be achieved with anything else. DGD's style of persistence 
+just means that things naturally stay around forever. Old style MUDs 
+reboot so often that everything tends to be built around it.
+
+Modern MMORPGs are a good example of hybrids; most of the world state is 
+transient and disappears, but select things are stored in a database. Of 
+course, even LPMud does this to some degree with player.o files and 
+whatever. Everything has -some- persistence. The word can mean almost 
+anything.
+
+>> Imagine that you created an object once, and it
+>> stayed.  But imagine you didn't create it as a regular
+>> occurrence.  You'd never write any initialization code
+>> for it, not once it had its attributes (which could be
+>> done in some other way, as Skotos does, or with a data
+>> file, as Phantasmal does).
+>>
+>>   There's no reset, no respawn, no destruction and
+>> remaking.  It's just, y'know, there.
+> 
+> This sounds drastically different from the conventions I've grown 
+> accustomed to. What's the point of storing configuration in a datafile? 
+> Setting attributes isn't difficult and having a datafile just makes it 
+> harder to alter the possible attributes an object may have.
+
+I can't help but feel that you're spending your effort arguing the 
+precision of these descriptions rather than trying to harvest the fruit 
+of the experience behind them.
+
+In LPMud, if you create a room, you create a hallway.c file that, when 
+compiled, sets the description and such of the room. In a persistent 
+game, you clone a room object, configure it during runtime (e.g. using 
+some kind of editor, or by calling set_description, or whatever). And 
+then it is always there, until eternity.
+
+You're right, this is not a shocking "oh my GOD, you can do that with 
+persistence!?" thing, but you asked an open-ended question, and you must 
+be satisfied with vague answers.
+
+>> So you don't
+>> write code for routine destruction, nor code for
+>> initialization.  You just set some attributes (some of
+>> which may involve code, naturally) and away it goes.
+> 
+> Hmm. I thought that was how it was always done? *scratches head*
+
+No. If the game reboots from no state, then there must be something that 
+recreates the state. This can be instructions in a datafile or an LPC 
+object or whatever.
+
+> It sounds like you could get away with just doing state dumps, but that 
+> does cause lag, no? I'm thinking of preserving user configuration, etc. 
+> with savefiles in case there is a crash (you never know what might happen).
+
+I have no idea what this means.
+
+>> In return, when you change object code, you have to
+>> write a little piece of code to update the existing
+>> object(s).  That can be nontrivial, sadly.  But it
+>> runs to turn the old object into the new object, not
+>> to make the new object from scratch.
+> 
+> Do you mean writing the code to update objects is non-trivial? I thought 
+> it was all there in the kernel lib? ;) I never have thought that writing 
+> an object manager will be hard.
+
+Good, you'll have no trouble with it then. But Noah was probably talking 
+about the problem that when you never have a reboot, you never get to 
+start from scratch, and so every time you e.g. change the implementation 
+of a datastructure, you have to also write code that transforms the data 
+in the existing instances from the old form to the new.
+
+For example, if you decide after 6 years of running the game that 
+inventories should be stored using mappings rather than inventories to 
+avoid certain laggy situations, you'd have to write a patch function in 
+your inventory code to mutate the array to the right mapping format and 
+then run that patch function in every one of the possibly millions of 
+objects that constitute your world at that point.
+
+In LPMud, you'd just reboot.
+
+>> For one thing, you can make the object and shape it.
+>> You can change the attributes dynamically and they
+>> stay.
+> 
+> They stay on a non-persistant MUD also though, except when there is a 
+> reboot...
+
+Uh.
+
+Zell
+</pre>
+
+<hr />
+
+<pre>
+From dgd at list.imaginary.com  Wed Jan  7 20:03:01 2004
+From: dgd at list.imaginary.com (Robert Forshaw)
+Date: Wed Jan  7 20:03:01 2004
+Subject: [DGD] Persistance
+Message-ID: <BAY10-F31wqOUBZ5x530003da82@hotmail.com>
+
+>From: Noah Gibbs <noah_gibbs@yahoo.com>
+> > I'm not quite sure what this has to do with
+> > persistance. It seems to me that
+> > resets and respawning are a design consideration,
+> > and can exist regardless
+> > of whether the MUD gets rebooted or not...
+>
+>   Yes.  Perhaps this wasn't what Erwin (I think?) was
+>talking about, though it's what you usually hear
+>called a "persistent MUD".
+>
+> > > [...] It also makes an
+> > >economy possible, [...]
+> >
+> > What you are describing is the theory of game
+> > balance.
+>
+>   Well, sort of.  Not that I've heard any real theory
+>on that topic put forward :-)
+
+I just meant it was under that topic, and didn't appear to have anything to 
+do with persistance.
+
+>
+> > What does this have
+> > to do with persistance? It can still be achieved
+> > with a non-persistant MUD can it not?
+>
+>   This is a consequence of the deal with zone resets.
+>It can't be done with zone resets, no.  At least, not
+>without an exponentially-expanding player base or
+>serious money drains.
+
+I'm sure it can be made to work whatever the situation is, but isn't this 
+besides the point? Or am I missing something?
+
+> > >   There's no reset, no respawn, no destruction and
+> > >remaking.  It's just, y'know, there.
+> >
+> > This sounds drastically different from the
+> > conventions I've grown accustomed
+> > to. What's the point of storing configuration in a
+> > datafile?
+>
+>   There isn't.  You'd never *write* to the datafile.
+>You'd just read from it, once, to make the object.
+>
+
+The reason I was so befuddled by the mention of 'no respawn, no destruction' 
+is because in my experience, things MUST be destructed at some point, if 
+only to achieve certain effects. For instance, killing a monster, you 
+destruct the monster object and clone a corpse object. Something like that. 
+I don't see how this can be achieved if every object isn't permitted to 
+destruct? I also think that respawning is manditory unless you plan to be 
+writing new game content every day for the entire lifespan of the MUD.
+
+> > Setting
+> > attributes isn't difficult and having a datafile
+> > just makes it harder to
+> > alter the possible attributes an object may
+> > have.
+>
+>   I think you're giving datafiles too little credit,
+>but that's neither here nor there.  Here's something
+>that Skotos seems to consider a feature (and I
+>certainly do), though you may not:  you can make
+>objects entirely without having to write code.  While
+>that approach doesn't scale to really complicated
+>objects, it's a good way to make 95% of the objects in
+>a given MUD.
+
+I don't personally consider it an advantage. I wouldn't be comfortable if 
+the builders on my MUD didn't actually know how to code. Setting attributes 
+for me has always been the easiest part of MUD building.
+
+>
+>   For the other 5%, you can either write code your way
+>or write little scripts that attach to the objects.
+>At that point it's kind of an academic distinction.
+
+It seems like a lot of work, writing a mini-interpreter for scripts etc. and 
+for datafiles, just so you can evade the 'effort' of writing actual code. It 
+doesn't make much sense to me.
+
+>
+>   However, the first approach works much better for
+>the other 95% of objects.  Plus you can alter the
+>objects more easily after creation since your changes
+>stick, and you don't have to make changes to the code.
+
+That is one advantage, sure, but with an object manager keeping everything 
+in task it isn't so hard to make an 'update' command to recompile an altred 
+object.
+
+> > Hmm. I thought that was how it was always done?
+> > *scratches head*
+>
+>   Here's the different bit -- you don't have to set
+>the attributes in a way that's reproducible.  Your way
+>involves writing code that knows how to set
+>attributes.  Our way involves setting the attributes
+>in any way *once*, then never worrying about it again.
+>  Not even to save or restore it.
+
+But you only have to set attributes once 'my way' as well. Like, in the 
+create() or reset() function. And you still have to write code that knows 
+how to set attributes, by reading and interpreting the datafiles and then 
+setting the relevent variables.
+
+> > It sounds like you could get away with just doing
+> > state dumps, but that does
+> > cause lag, no?
+>
+>   Not a lot, no.  Skotos does it this way.  For that
+>matter, so does EverQuest if memory serves.  Everquest
+>doesn't use DGD statedumps, but their periodic backups
+>are just as large and just as laggy.
+>
+>   Also, you never have to statedump until shutdown, so
+>actually, it *never* has to cause any lag.
+
+This is good news. It does mean though, that in the odd chance that your MUD 
+crashes during a state dump, your ruined! And if you only permit a statedump 
+at shutdown (which interrupts the MUD, doesn't it?) then you're losing 
+however-long-it-was-since-last-reboot worth of changes. So if you haven't 
+shut down for 4 weeks, your liable to lose that much character development 
+etc. which would be catastrophic. The only way to keep things backed up 
+enough would be to do a statedump every hour or so, and I think that's too 
+much lag. Which is why I was thinking, it would be more appropriate to save 
+certain critical objects, like the users, every 20 minutes or so, and do 
+statedumps as well say, every 5 days?
+It is pleasing to know that statedumps don't last long though. :)
+>
+> > I'm thinking of preserving user
+> > configuration, etc. with
+> > savefiles in case there is a crash (you never know
+> > what might happen).
+
+> > >In return, when you change object code, you have to
+> > >write a little piece of code to update the existing
+> > >object(s).  That can be nontrivial, sadly.  But it
+> > >runs to turn the old object into the new object,
+> > not
+> > >to make the new object from scratch.
+> >
+> > Do you mean writing the code to update objects is
+> > non-trivial?
+>
+>   Yes.  When you change the definition of an object to
+>have new data fields, you have to put something in the
+>new data fields.  When you change how things get
+>stored, you massage the data into the new forms.
+
+That sounds like a big pain. Unless you have good foresight and know a good 
+way of avoiding such difficulty (I don't :P).
+
+>For
+>instance, I might change my objects to stop storing a
+>"brief description" string and instead store offsets
+>into my arrays of nouns and adjectives to make a
+>description.  So if you see a "broad green tabard"
+>then you're guaranteed you can "look broad green
+>tabard" since it uses nouns and adjectives in the
+>object.
+>
+>   However, when I take add the new data field (let's
+>say an array of integer offsets, so it'll be an int
+>pointer), I'll need to fill in decent values.  I could
+>make it default to saying the first two adjectives,
+>then the first noun.  So I'd set the array to [0, 1,
+>0], where the last element is the offset into the
+>array of nouns.
+>
+>   So far, so good.  But where do I put the code to
+>fill in all those fields?  One answer is "in the
+>ObjectD".  My favorite answer is to have the ObjectD
+>call a function called "upgraded" if it exists on
+>every object that gets upgraded.  That's what
+>Phantasmal does.
+
+I thought it would go in the object where the data is being loaded to...
+
+>
+>   So I could put that code I mentioned above into the
+>upgraded() function of my object type, then type
+>"%full_recompile" at the command line, and my objects
+>would all start being described as "big brown table"
+>and "flat checkered floor" and things, all according
+>to the first nouns and adjectives on their current
+>lists.  Then I'd go fix all the descs, 'cause that
+>would look funny :-)
+>
+>   But I've had to write specific upgrade code for the
+>specific change I made to my objects.  In a standard
+>MUD, I'd make the change to the object loading code,
+>then shutdown the MUD and restart it.  Then all my
+>objects would be appropriately altered, but I'd also
+>have to drop everybody's network connection to do it,
+>and generally disrupt things.  Not nearly as
+>convenient.  Plus, it's slow to do all that loading
+>and saving of LPC objects using LPC code.  Much faster
+>to use a statedump.
+
+Well, I think I am tempted to impose the inheritance/cloning limitations on 
+my MUD for the sake of persistance, but I don't like the idea of datafiles 
+and I think that is something to be considered seperately.
+
+> > I never have
+> > thought that writing an
+> > object manager will be hard.
+>
+>   Look at the existing ones before you decide that.
+>Please.  There are some subtleties you're not
+>considering.  Seriously.
+
+I do keep examing the kernel one but I just end up confused. I'll try again 
+when I've learned a bit more.
+
+> > They stay on a non-persistant MUD also though,
+> > except when there is a
+> > reboot...
+>
+>   Yes.  Do you want all those objects to go away every
+>time you add a bugfix?  You suggested "every few
+>weeks".  Even on that timeframe, that's noticeable
+>disruption.  You're right, not doing it is a luxury.
+>But why turn away that luxury?
+
+Good point. I think I will go for a persitant lib then.
+
+>
+>   Also, bear in mind that altering objects in these
+>ways is actually a good way for builders to do stuff.
+>That's harder if it all goes away every couple of
+>weeks :-)
+
+I'm not sure what you mean. By 'do stuff' do you mean build or interfere 
+with the games natural process? If the latter then that's a no-no as far as 
+I'm concerned. If you mean building, then what exactly goes away every 
+couple of weeks? The code they've produced doesn't go away (*confused*).
+
+Thanks for the response though, it was valuable because you've swayed me 
+into going for a persitant MUD rather than a 'standard' one. :)
+
+_________________________________________________________________
+Stay in touch with absent friends - get MSN Messenger 
+http://www.msn.co.uk/messenger
+</pre>
+
+<hr />
+
+<pre>
+From dgd at list.imaginary.com  Wed Jan  7 21:11:01 2004
+From: dgd at list.imaginary.com (Erwin Harte)
+Date: Wed Jan  7 21:11:01 2004
+Subject: [DGD] Re: Persistance
+In-Reply-To: <BAY10-F77praWmXTzjb0003d547@hotmail.com>
+References: <BAY10-F77praWmXTzjb0003d547@hotmail.com>
+Message-ID: <20040108031002.GY13070@sleepy.dwarf>
+
+On Thu, Jan 08, 2004 at 12:45:32AM +0000, Robert Forshaw wrote:
+[...]
+> I'm not quite sure what this has to do with persistance. It seems to me 
+> that resets and respawning are a design consideration, and can exist 
+> regardless of whether the MUD gets rebooted or not...
+
+Yes.  But then you also need to design something that makes items
+'wear', so that you don't, after a few months of running, have 200
+swords of utter destruction or something along those lines.
+
+In a persistent game uniqueness is important to avoid inflation, so
+you don't want to clone the same things over and over and over, which
+is what typically resets do.
+
+On IgorMUD this was already an issue after over a month or so of
+uptime, imagine a game that runs for years without a cold start?
+
+[...]
+> > That
+> >changes area design completely.  It also makes an
+> >economy possible, since it allows for the possibility
+> >of scarcity.  Zone resets are the #1 source of runaway
+> >inflation since new "valuables" come into the economy
+> >constantly, thus destroying any actual value they may
+> >otherwise have had.
+> 
+> What you are describing is the theory of game balance. What does this have 
+> to do with persistance? It can still be achieved with a non-persistant MUD 
+> can it not?
+
+Yes.  I don't think anyone is saying you have to write a persistent
+game, but I think a lot of us are convinced it's one of the best ways
+to make your game environment more appealing, more `real' if you wish.
+
+[...]
+> >  State dumps allow you to bring everything back to
+> >the way it was pre-reboot, and to do so without
+> >writing a single line of save/load code.  So you can
+> >get by without init code, without object destructors
+> >(well, sort of).  No load/save.  It saves a lot of
+> >code.  I know it's a lot -- Phantasmal *has* all that
+> >code :-)
+> 
+> It sounds like you could get away with just doing state dumps, but that 
+> does cause lag, no? I'm thinking of preserving user configuration, etc. 
+> with savefiles in case there is a crash (you never know what might happen).
+
+If you work with a persistent game, you will keep previous a (few)
+previous statedump(s) around and make those statedumps regularly.  If
+you crash because of some bug in DGD or something else going haywire,
+you go back to the most recent statedump with which you can avoid that
+problem, in most cases that'll be the most recent one.  Thereby losing
+only a few hours or so of 'state'.
+
+[...]
+> Do you mean writing the code to update objects is non-trivial? I thought it 
+> was all there in the kernel lib? ;) I never have thought that writing an 
+> object manager will be hard.
+
+The support is in the kernel-lib, and there is an example object-db
+out there (I think) that shows you how you can track inheritance and
+clone lists/counts.
+
+> >For one thing, you can make the object and shape it.
+> >You can change the attributes dynamically and they
+> >stay.
+> 
+> They stay on a non-persistant MUD also though, except when there is a 
+> reboot...
+
+Indeed.  I remember the first time I walked into a room on the mud I
+ran a couple of years ago and realized that it was quite possible that
+the equipment I found 'on the floor' there could quite possibly have
+been there for over a year (it wasn't a very busy mud).  I quite liked
+that idea and if I ever (hah!) write a game again, I'll definitely
+make it persistent.
+
+Cheers,
+
+Erwin.
+-- 
+Erwin Harte <harte@is-here.com>
+</pre>
+
+<hr />
+
+<pre>
+From dgd at list.imaginary.com  Wed Jan  7 22:29:05 2004
+From: dgd at list.imaginary.com (Noah Gibbs)
+Date: Wed Jan  7 22:29:05 2004
+Subject: [DGD] Persistance
+In-Reply-To: <BAY10-F31wqOUBZ5x530003da82@hotmail.com>
+Message-ID: <20040108042820.35932.qmail@web12824.mail.yahoo.com>
+
+--- Robert Forshaw <iouswuoibev@hotmail.com> wrote:
+> > > What you are describing is the theory of game
+> > > balance.
+> >
+> >   Well, sort of.  Not that I've heard any real
+> theory
+> >on that topic put forward :-)
+> 
+> I just meant it was under that topic, and didn't
+> appear to have anything to 
+> do with persistance.
+
+  In the sense that persistence isn't required to do a
+"no resets" game, you're right.  Phantasmal, for
+instance, does "no resets", but isn't usually run
+persistent (it can, but I don't do it that way on my
+own MUD).
+
+  However, those approaches are usually combined
+because most non-persistent MUDs divide state into
+"permanent state" (which gets reset) and "transient
+state" (which you never bother to save to disk, and
+which dies on reboot, because you're going to throw it
+away next reset anyway).  You're right that you can do
+this on a non-persistent MUD, but few non-persistent
+MUDs do.  Persistent MUDs, on the other hand,
+frequently do.
+
+  That's because zone resets cause some problems that
+become obvious very quickly on persistent MUDs, but
+less obvious on non-persistent MUDs.
+
+  This would be one of those "subtly different" things
+you were asking about.
+
+> > > >   There's no reset, no respawn, no destruction
+> and
+> > > >remaking.  It's just, y'know, there.
+
+  Here we go.  I confused you here.  When I say the
+above, I'm treating the phrase "destruction and
+remaking" as a unit.  Like when you save a list of
+object numbers in a file for a player inventory, but
+destroy the underlying objects.  Stuff like that.  Or
+when you save to a file, restart the MUD, and reload.
+
+  It's not that there's no destruction (as you say,
+some effects require it).  It's that the
+destruct-and-remake cycle, very common on most MUDs,
+almost never happens on persistent MUDs.
+
+> I also think that respawning is manditory
+> unless you plan to be 
+> writing new game content every day for
+> the entire
+> lifespan of the MUD.
+
+  Well, if the basic activity on your MUD is killing
+monsters, then yes, you're right.  I'll simply leave
+the name "Blood Dusk MUD" as an example of a
+surprisingly traditional MUD that doesn't work that
+way (well, mostly).
+
+> >[...]Skotos seems to consider a feature (and I
+> >certainly do), though you may not:  you can make
+> >objects entirely without having to write code. 
+> >While
+> >that approach doesn't scale to really complicated
+> >objects, it's a good way to make 95% of the objects
+> >in a given MUD.
+> 
+> I don't personally consider it an advantage.
+
+  Didn't figure you would.  You don't seem to have
+much experience with just how horrible most MUD
+builders' code is.  There's time for you to gain
+enlightenment in that respect.
+
+> I wouldn't be comfortable if 
+> the builders on my MUD didn't actually know
+> how to code. Setting attributes 
+> for me has always been the easiest part of MUD
+> building.
+
+  If your MUD builders are required to be competent
+coders, you're cutting your pool of builders to less
+than half of its original size.  If they have to be
+good at writing prose *and* coding, you're cutting it
+to more like a tenth, especially if you don't pay them
+(and nobody does).
+
+  If your builders are only required to be tolerable
+(or barely-tolerable) coders, then you want to make
+them write code very rarely.  If you can give them a
+simpler interface, you do.
+
+  This is where you get to tell me that you'd never
+accept anybody that wasn't a good coder to build on
+your MUD.  I know the drill.  However, it's also where
+I get to laugh at you since I know how hard it is to
+find good builders who *can't* code, let alone the
+ones who can. :-)
+
+> It seems like a lot of work, writing a
+> mini-interpreter for scripts etc. and 
+> for datafiles, just so you can evade the
+> 'effort' of writing actual code. It 
+> doesn't make much sense to me.
+
+  That's because you don't like the idea of altering
+object attributes on the fly.  I *really* like the
+idea of being able to change an object's description
+or weight or damage rating using a single command on
+the command-line.  Having a data format instead of all
+code starts paying off very quickly in that case.
+
+  And you're not avoiding the effort of code.  You're
+avoiding the error-proneness of code, and the slowness
+of code, and the security requirements of code, and
+handling errors caused by code...  The nice thing
+about a data format is that you can be really fascist
+about it.  Not an integer?  Ditch it.
+
+  You can handle all the same problems with code, but
+debugging all the error handling machinery is more of
+a pain.  Again, I know.  I do both.
+
+> > Plus you can alter the
+> >objects more easily after creation since your
+> >changes stick, and you don't have to make
+> >changes to the code.
+> 
+> That is one advantage, sure, but with an object
+> manager keeping everything 
+> in task it isn't so hard to make an 'update'
+> command to recompile an altred 
+> object.
+
+  Nope, that's pretty easy, you're right.  However,
+given the choice of a one-line update command or
+editing a file and recompiling, I'll take the one-line
+update command.  Again, that's what my MUD does.
+
+> >   Here's the different bit -- you don't have
+> > to set
+> >the attributes in a way that's reproducible.
+> >Your way
+> >involves writing code that knows how to set
+> >attributes.  Our way involves setting the
+> >attributes
+> >in any way *once*, then never worrying about
+> >it again.
+> >  Not even to save or restore it.
+> 
+> But you only have to set attributes once 'my way' as
+> well.
+
+  Nope.  You have to write code that knows how to set
+it once, which is different.  You still have to keep
+the code around to keep setting it.  Your code has to
+keep working -- not just the line that sets the
+attributes, but the whole file, 'cause otherwise it
+doesn't compile and the object goes away.  The code is
+brittle, and you have to make sure it sticks around.
+
+> And you still have to write code that knows 
+> how to set attributes, by reading and interpreting
+> the datafiles and then 
+> setting the relevent variables.
+
+  Once, yes.  But not once per object.  I've done it
+twice because I have the code to read datafiles and
+the code to read command-line commands.  Still, I've
+done it twice, not hundreds or thousands of times.
+
+  Chances are good that any good MUD will have a lot
+more than two objects :-)
+
+> This is good news. It does mean though, that
+> in the odd chance that your MUD 
+> crashes during a state dump, your ruined!
+
+  Well, yes.  Statedumps are the fastest complete
+backups you'll find under DGD.  You can complain about
+them causing lag, but any other form of complete
+backup will cause even more lag.  If you object to the
+possibility that a crash will destroy your stuff, you
+have to keep backups.  And statedumps are the fastest
+available backups.
+
+> And if you only permit a statedump 
+> at shutdown (which interrupts the MUD, doesn't it?)
+
+  It does, in fact, interrupt the MUD.  That's why I
+(for Phantasmal) have a form of shutdown that allows
+statedumps, and I also have a "%statedump" command
+that does a statedump *without* shutting the MUD down.
+ As with a number of other issues you've mentioned,
+you don't have to pick one way and do it that way. 
+You can do both, it just takes a little more code.  In
+this case, barely more code at all.
+
+> The only way to keep things backed up 
+> enough would be to do a statedump every
+> hour or so,
+> and I think that's too 
+> much lag. Which is why I was thinking, it
+> would be more appropriate to save 
+> certain critical objects, like the users,
+> every 20 minutes or so, and do 
+> statedumps as well say, every 5 days?
+
+  Sure, that'd work.  I think you've decided
+statedumps are laggier than they are, but whatever. 
+You can try it out and see how much of a problem you
+have.  I suspect you'll discover that statedumps are
+fast and your worries are baseless.  But it's easy to
+make that configurable, so you'll write about the same
+code either way.
+
+
+=====
+------
+noah_gibbs@yahoo.com
+
+__________________________________
+Do you Yahoo!?
+Yahoo! Hotjobs: Enter the "Signing Bonus" Sweepstakes
+http://hotjobs.sweepstakes.yahoo.com/signingbonus
+
+From dgd at list.imaginary.com  Wed Jan  7 22:40:03 2004
+From: dgd at list.imaginary.com (Noah Gibbs)
+Date: Wed Jan  7 22:40:03 2004
+Subject: [DGD] Persistance
+In-Reply-To: <BAY10-F31wqOUBZ5x530003da82@hotmail.com>
+Message-ID: <20040108043955.38038.qmail@web12824.mail.yahoo.com>
+
+> > Yes.  When you change the definition of
+> > an object to have new data fields, you have to
+> > put something in the new data fields.  When
+> > you change how things get stored, you massage
+> > the data into the new forms.
+>
+> That sounds like a big pain. Unless you have
+> good foresight and know a good 
+> way of avoiding such difficulty (I don't :P).
+
+  Yup.  In a non-persistent MUD, you'd change your
+routines for reading and writing files, which would
+require you to write almost the same code.  It's a
+tradeoff.  If you save and reload to external files,
+you'll probably write less code, but you can't keep
+your MUD up all the time.  That's the reason
+Phantasmal does it your way, and uses file save/load
+rather than update functions for most things.  I don't
+care about uptime or professionalism, I just want to
+upgrade with minimum pain.  File load and save is
+probably the least pain if you don't care about
+uptime.
+
+  Skotos has running games, and they want to keep them
+running cleanly and smoothly, so they use in-place
+update.  That way they don't have to take their server
+down for bugfixes.
+
+> > [... Example ...]
+> >   So far, so good.  But where do I put the
+> > code to fill in all those fields?  One answer
+> > is "in the ObjectD".  My favorite answer is
+> > to have the ObjectD call a function
+> > called "upgraded" if it exists on every
+> > object that gets upgraded.  That's what
+> > Phantasmal does.
+>
+> I thought it would go in the object where the
+> data is being loaded to...
+
+  It does.  That object defines the upgraded()
+function, which gets called by ObjectD.  But the
+function is in the object that's being upgraded.
+
+> [...] I don't like the
+> idea of datafiles and I think that is
+> something to be considered seperately.
+
+  Yes it is.
+
+> > > I never have
+> > > thought that writing an
+> > > object manager will be hard.
+> >
+> >   Look at the existing ones before you
+> > decide that. Please.  There are some
+> > subtleties you're not considering.  Seriously.
+>
+> I do keep examing the kernel one but I just
+> end up confused.
+
+  Yeah.  One reason you're probably confused is that
+the kernel library doesn't come with one.  It just
+knows how to delegate to one.  Look on my page of LPC
+code samples and look for the example object manager
+by Geir Harald Hansen.  It's the same one I used for
+reference when writing Phantasmal's.  Or you could
+look at Phantasmal's ObjectD, but it's a little more
+complicated.
+
+> >   Also, bear in mind that altering objects
+> > in these ways is actually a good way for
+> > builders to do stuff.  That's harder if it
+> > all goes away every couple of weeks :-)
+
+> I'm not sure what you mean. By 'do stuff' do
+> you mean build or interfere with the games
+> natural process?
+
+  I meant build, though you could interfere as well.
+
+> If you mean building, then what exactly goes
+> away every couple of weeks? The code they've
+> produced doesn't go away (*confused*).
+
+  Being able to reshape an existing object depends on
+being able to easily make alterations.  If you *can*
+easily make alterations (i.e. without altering the
+code), then those alterations can stay.  So builders
+could have, say, a wand that makes things heavier and
+lighter, and use that to adjust weights.  Or if you
+have light levels, they could use a similar
+contrivance to make sure everything is of a similar
+light level without having to edit files.
+
+  But if you're set on objects consisting only of
+code, and being recompiled to change their object
+values, then that doesn't matter as much to you. 
+Since objects can't change attributes in any
+programmatic way in your system, you'll care less
+about altering them and having it stick.
+
+> Thanks for the response though, it was valuable
+> because you've swayed me into going for a
+> persitant MUD rather than a 'standard' one. :)
+
+  Happy to help.
+
+
+=====
+------
+noah_gibbs@yahoo.com
+
+__________________________________
+Do you Yahoo!?
+Yahoo! Hotjobs: Enter the "Signing Bonus" Sweepstakes
+http://hotjobs.sweepstakes.yahoo.com/signingbonus
+
+From dgd at list.imaginary.com  Wed Jan  7 23:13:01 2004
+From: dgd at list.imaginary.com (Robert Forshaw)
+Date: Wed Jan  7 23:13:01 2004
+Subject: [DGD] Persistance
+Message-ID: <BAY10-F96TCWjPzErsu0003e2c3@hotmail.com>
+
+>From: Noah Gibbs <noah_gibbs@yahoo.com>
+>   Didn't figure you would.  You don't seem to have
+>much experience with just how horrible most MUD
+>builders' code is.  There's time for you to gain
+>enlightenment in that respect.
+
+Well I remember what mine used to be like (LPC was the very first language I 
+actually learned properly and became good at).
+
+>This is where you get to tell me that you'd never
+>accept anybody that wasn't a good coder to build on
+>your MUD.  I know the drill.  However, it's also where
+>I get to laugh at you since I know how hard it is to
+>find good builders who *can't* code, let alone the
+>ones who can. :-)
+
+I also think that not having done any programming diminishes your sense of 
+achievement. When its just a matter of filling in templates...
+
+>   That's because you don't like the idea of altering
+>object attributes on the fly.
+
+On the contrary, I think it is very useful to be able to do that. And you 
+can do that by calling functions in the object.
+I *really* like the
+>idea of being able to change an object's description
+>or weight or damage rating using a single command on
+>the command-line.
+
+You can do that too, by calling a function.
+
+>Having a data format instead of all
+>code starts paying off very quickly in that case.
+
+So what you're saying is, a single command immediately updates the data file 
+and then immediately updates the object? I'm beginning to get the idea (I 
+think). I'm still not sure if its worth doing though.
+
+>
+>   And you're not avoiding the effort of code.  You're
+>avoiding the error-proneness of code, and the slowness
+>of code, and the security requirements of code, and
+>handling errors caused by code...  The nice thing
+>about a data format is that you can be really fascist
+>about it.  Not an integer?  Ditch it.
+>
+>   You can handle all the same problems with code, but
+>debugging all the error handling machinery is more of
+>a pain.  Again, I know.  I do both.
+>
+> > > Plus you can alter the
+> > >objects more easily after creation since your
+> > >changes stick, and you don't have to make
+> > >changes to the code.
+> >
+> > That is one advantage, sure, but with an object
+> > manager keeping everything
+> > in task it isn't so hard to make an 'update'
+> > command to recompile an altred
+> > object.
+>
+>   Nope, that's pretty easy, you're right.  However,
+>given the choice of a one-line update command or
+>editing a file and recompiling, I'll take the one-line
+>update command.  Again, that's what my MUD does.
+
+And don't worry I'll be having a look at it as soon as I think I am able to 
+comprehend it all. ;)
+
+> > But you only have to set attributes once 'my way' as
+> > well.
+>
+>   Nope.  You have to write code that knows how to set
+>it once, which is different.  You still have to keep
+>the code around to keep setting it.  Your code has to
+>keep working -- not just the line that sets the
+>attributes, but the whole file, 'cause otherwise it
+>doesn't compile and the object goes away.  The code is
+>brittle, and you have to make sure it sticks around.
+
+Ok.
+
+>Well, yes.  Statedumps are the fastest complete
+>backups you'll find under DGD.  You can complain about
+>them causing lag, but any other form of complete
+>backup will cause even more lag.  If you object to the
+>possibility that a crash will destroy your stuff, you
+>have to keep backups.  And statedumps are the fastest
+>available backups.
+
+Ok, got it. I thought save_object() would be faster.
+
+>
+> > And if you only permit a statedump
+> > at shutdown (which interrupts the MUD, doesn't it?)
+>
+>   It does, in fact, interrupt the MUD.  That's why I
+>(for Phantasmal) have a form of shutdown that allows
+>statedumps, and I also have a "%statedump" command
+>that does a statedump *without* shutting the MUD down.
+>  As with a number of other issues you've mentioned,
+>you don't have to pick one way and do it that way.
+>You can do both, it just takes a little more code.  In
+>this case, barely more code at all.
+>
+> > The only way to keep things backed up
+> > enough would be to do a statedump every
+> > hour or so,
+> > and I think that's too
+> > much lag. Which is why I was thinking, it
+> > would be more appropriate to save
+> > certain critical objects, like the users,
+> > every 20 minutes or so, and do
+> > statedumps as well say, every 5 days?
+>
+>   Sure, that'd work.  I think you've decided
+>statedumps are laggier than they are, but whatever.
+>You can try it out and see how much of a problem you
+>have.  I suspect you'll discover that statedumps are
+>fast and your worries are baseless.  But it's easy to
+>make that configurable, so you'll write about the same
+>code either way.
+
+That's what I'll do then, try it out.
+
+_________________________________________________________________
+It's fast, it's easy and it's free. Get MSN Messenger today! 
+http://www.msn.co.uk/messenger
+
+
+From dgd at list.imaginary.com  Wed Jan  7 23:36:01 2004
+From: dgd at list.imaginary.com (Noah Gibbs)
+Date: Wed Jan  7 23:36:01 2004
+Subject: [DGD] Persistance
+In-Reply-To: <BAY10-F96TCWjPzErsu0003e2c3@hotmail.com>
+Message-ID: <20040108053455.28466.qmail@web12826.mail.yahoo.com>
+
+--- Robert Forshaw <iouswuoibev@hotmail.com> wrote:
+> Well I remember what mine used to be like (LPC was
+> the very first language I 
+> actually learned properly and became good at).
+
+  *grin*
+
+  While LPC wasn't my first language, my first MUD
+code (in C, on a Diku-ish base) was pretty bad.
+
+> I also think that not having done any
+> programming diminishes your sense of 
+> achievement. When its just a matter of filling in
+> templates...
+
+  Calling MUD programming "filling in templates" is
+like saying that Neal Stephenson is "just pushing keys
+on the keyboard" to write things like Cryptonomicon. 
+Technically true, but missing the point.  If you do it
+well, building is storytelling.  Saying that
+storytelling sucks because it isn't programming is... 
+Well, silly.
+
+> >   That's because you don't like the idea of
+> > altering object attributes on the fly.
+> 
+> On the contrary, I think it is very useful to be
+> able to do that. And you 
+> can do that by calling functions in the object.
+
+  But you need to either have a persistent MUD, or
+have the ability to load and save.  At least, if you
+want those changes to stick around.  And since those
+changes can be used for building, now we're at the
+point where building in a persistent environment is
+different again :-)
+
+> I *really* like the
+> >idea of being able to change an object's
+> description
+> >or weight or damage rating using a single command
+> on
+> >the command-line.
+> 
+> You can do that too, by calling a function.
+
+  And again, you have to either do save/load or
+statedumps, or you have to have all that state go away
+every time you reboot.
+
+> >Having a data format instead of all
+> >code starts paying off very quickly in that case.
+> 
+> So what you're saying is, a single command
+> immediately updates the data file 
+> and then immediately updates the object?
+
+  Conceptually, I guess.  A more accurate way to put
+it is that the in-memory version is definitive, so
+updating that is updating the only thing that matters.
+ If you ever bother to put it back in a data file
+(which Phantasmal does), you'll just write the data
+file instead of dumping state (which Phantasmal *can*
+do, or it can dump state).
+
+  So the data file is, by its nature, out of date at
+the time you run the command.  If you want new
+up-to-date data files you'll need to output them
+again.  In Phantasmal's case you do that with the
+%shutdown or %datadump commands.
+
+> Ok, got it. I thought save_object() would be faster.
+
+  Don't think so.  Statedumps use a format that's easy
+for DGD to parse and hard for humans.  The
+save_object() command is mostly the opposite.  Also,
+Dworkin dislikes it and prefers you not use it, so
+it's probably not very fast :-)
+
+
+=====
+------
+noah_gibbs@yahoo.com
+
+__________________________________
+Do you Yahoo!?
+Yahoo! Hotjobs: Enter the "Signing Bonus" Sweepstakes
+http://hotjobs.sweepstakes.yahoo.com/signingbonus
+
+From dgd at list.imaginary.com  Thu Jan  8 00:34:01 2004
+From: dgd at list.imaginary.com (Christopher Allen)
+Date: Thu Jan  8 00:34:01 2004
+Subject: [DGD] Persistance
+References: <BAY10-F60MWE17iPMen00025b43@hotmail.com> <3FFC8986.6050504@skotos.net>
+Message-ID: <02b301c3d5b1$92769b00$aa1351d1@artemis>
+
+Par Winzell <zell@skotos.net> wrote:
+> It's almost impossible to convey the experience of running a truly
+> persistent Mud to somebody who has never done it. So many assumptions
+> disappear. The way objects are created, areas designed, everything
+> changes.
+>
+> In traditional LPMud, virtually everything is an initialization
+> script, like the create() function in your example. Half the code in
+> a wizard's directory is startup code. In a persistent world, rather
+> than write a
+> lot of startup code, you tend to write behaviour code, and configure
+> objects.
+>
+> Most code in a traditional LPMud isn't real code, it's just a
+> cumbersome configuration (set_this and set_that) technique. That
+> pretty much goes away in a persistent game.
+>
+> The cumulative effect is that if you design your mudlib to be fully
+> persistent from scratch, you will find yourself making subtly
+> different decisions on pretty much every single design question that
+> comes up, and you end up with something drastically different than
+> LPMud.
+
+It might be more specific or useful to give him a Skotos example. How long has
+Marrach been running persistently?
+
+-- Christopher Allen
+</pre>
+
+<hr />
+
+<pre>
+From dgd at list.imaginary.com  Thu Jan  8 06:10:01 2004
+From: dgd at list.imaginary.com (Bart van Leeuwen)
+Date: Thu Jan  8 06:10:01 2004
+Subject: [DGD] Persistance
+In-Reply-To: <BAY10-F96TCWjPzErsu0003e2c3@hotmail.com>
+References: <BAY10-F96TCWjPzErsu0003e2c3@hotmail.com>
+Message-ID: <20040108130727.E22327@isengard.intra.bartsplace.net>
+
+On Thu, 8 Jan 2004, Robert Forshaw wrote:
+
+> >From: Noah Gibbs <noah_gibbs@yahoo.com>
+> >   Didn't figure you would.  You don't seem to have
+> >much experience with just how horrible most MUD
+> >builders' code is.  There's time for you to gain
+> >enlightenment in that respect.
+>
+> Well I remember what mine used to be like (LPC was the very first language I
+> actually learned properly and became good at).
+>
+> >This is where you get to tell me that you'd never
+> >accept anybody that wasn't a good coder to build on
+> >your MUD.  I know the drill.  However, it's also where
+> >I get to laugh at you since I know how hard it is to
+> >find good builders who *can't* code, let alone the
+> >ones who can. :-)
+>
+> I also think that not having done any programming diminishes your sense of
+> achievement. When its just a matter of filling in templates...
+
+How interesting..
+2 of my coders have been pushing for, and workign on a GUI based tool to
+do just that, reduce writing basic rooms/monsters/objects to filling out
+templates.. the tool will just ask the proper questions to ensure a
+minimum of information is given that will work for the mud. They want this
+to make that they can concentrate on describing things instead of having
+to 'code' them, at least for all standard cases.
+
+Designing a world is not about code, code is what makes the world work,
+but it does no more and no less then that.
+
+As a coder I take pride in my code, and I think there is a real
+achievement in writing it. For the area designers that we have around, the
+goal and achievement is in user experience, code, descriptions and what
+not are a tool for that.
+
+>
+> >   That's because you don't like the idea of altering
+> >object attributes on the fly.
+>
+> On the contrary, I think it is very useful to be able to do that. And you
+> can do that by calling functions in the object.
+> I *really* like the
+> >idea of being able to change an object's description
+> >or weight or damage rating using a single command on
+> >the command-line.
+>
+> You can do that too, by calling a function.
+>
+> >Having a data format instead of all
+> >code starts paying off very quickly in that case.
+>
+> So what you're saying is, a single command immediately updates the data file
+> and then immediately updates the object? I'm beginning to get the idea (I
+> think). I'm still not sure if its worth doing though.
+>
+> >
+> >   And you're not avoiding the effort of code.  You're
+> >avoiding the error-proneness of code, and the slowness
+> >of code, and the security requirements of code, and
+> >handling errors caused by code...  The nice thing
+> >about a data format is that you can be really fascist
+> >about it.  Not an integer?  Ditch it.
+> >
+> >   You can handle all the same problems with code, but
+> >debugging all the error handling machinery is more of
+> >a pain.  Again, I know.  I do both.
+
+Using an interpreted data model always adds an extra layer. It is very
+usefull, but it is also very hard to debug when somethign is wrong in your
+design, or you just happen to have implemented some of the interpreting
+code in a way that doesn't account for all conditions.
+
+It is very usefull, but it is definitely not easier to debug unless you
+have designed, written and debugged your code very well.
+
+> > >
+> > > Plus you can alter the
+> > > >objects more easily after creation since your
+> > > >changes stick, and you don't have to make
+> > > >changes to the code.
+> > >
+> > > That is one advantage, sure, but with an object
+> > > manager keeping everything
+> > > in task it isn't so hard to make an 'update'
+> > > command to recompile an altred
+> > > object.
+> >
+> >   Nope, that's pretty easy, you're right.  However,
+> >given the choice of a one-line update command or
+> >editing a file and recompiling, I'll take the one-line
+> >update command.  Again, that's what my MUD does.
+>
+> And don't worry I'll be having a look at it as soon as I think I am able to
+> comprehend it all. ;)
+>
+> > > But you only have to set attributes once 'my way' as
+> > > well.
+> >
+> >   Nope.  You have to write code that knows how to set
+> >it once, which is different.  You still have to keep
+> >the code around to keep setting it.  Your code has to
+> >keep working -- not just the line that sets the
+> >attributes, but the whole file, 'cause otherwise it
+> >doesn't compile and the object goes away.  The code is
+> >brittle, and you have to make sure it sticks around.
+>
+> Ok.
+>
+> >Well, yes.  Statedumps are the fastest complete
+> >backups you'll find under DGD.  You can complain about
+> >them causing lag, but any other form of complete
+> >backup will cause even more lag.  If you object to the
+> >possibility that a crash will destroy your stuff, you
+> >have to keep backups.  And statedumps are the fastest
+> >available backups.
+>
+> Ok, got it. I thought save_object() would be faster.
+
+If you have a few objects for which you need to keep state, it may be
+faster, if you don't know or have a lot of objects that need to keep
+state, go for state dumps.
+
+>
+> >
+> > > And if you only permit a statedump
+> > > at shutdown (which interrupts the MUD, doesn't it?)
+> >
+> >   It does, in fact, interrupt the MUD.  That's why I
+> >(for Phantasmal) have a form of shutdown that allows
+> >statedumps, and I also have a "%statedump" command
+> >that does a statedump *without* shutting the MUD down.
+> >  As with a number of other issues you've mentioned,
+> >you don't have to pick one way and do it that way.
+> >You can do both, it just takes a little more code.  In
+> >this case, barely more code at all.
+> >
+> > > The only way to keep things backed up
+> > > enough would be to do a statedump every
+> > > hour or so,
+> > > and I think that's too
+> > > much lag. Which is why I was thinking, it
+> > > would be more appropriate to save
+> > > certain critical objects, like the users,
+> > > every 20 minutes or so, and do
+> > > statedumps as well say, every 5 days?
+> >
+> >   Sure, that'd work.  I think you've decided
+> >statedumps are laggier than they are, but whatever.
+> >You can try it out and see how much of a problem you
+> >have.  I suspect you'll discover that statedumps are
+> >fast and your worries are baseless.  But it's easy to
+> >make that configurable, so you'll write about the same
+> >code either way.
+>
+> That's what I'll do then, try it out.
+
+>From what I understand, statedumps are more efficient if the swapfile is
+kept uptodate (ie, when the only objects in memory are those that are
+actually beign used)
+
+This makes it seem to me that there is some use in scheduling swapouts?
+I know I do a statedump every 60 minutes, and it doesn't cause any
+noticable lagging, but I guess that with less then 10k objects around, my
+environment quallifies as rather small for now
+
+>
+> _________________________________________________________________
+> It's fast, it's easy and it's free. Get MSN Messenger today!
+> http://www.msn.co.uk/messenger
+>
+> _________________________________________________________________
+> List config page:  http://list.imaginary.com/mailman/listinfo/dgd
+>
+</pre>
+
+<hr />
+
+<pre>
+From dgd at list.imaginary.com  Thu Jan  8 07:40:02 2004
+From: dgd at list.imaginary.com (Erwin Harte)
+Date: Thu Jan  8 07:40:02 2004
+Subject: [DGD] Re: Persistance
+In-Reply-To: <02b301c3d5b1$92769b00$aa1351d1@artemis>
+References: <BAY10-F60MWE17iPMen00025b43@hotmail.com> <3FFC8986.6050504@skotos.net> <02b301c3d5b1$92769b00$aa1351d1@artemis>
+Message-ID: <20040108133935.GD13070@sleepy.dwarf>
+
+On Wed, Jan 07, 2004 at 10:35:13PM -0800, Christopher Allen wrote:
+> Par Winzell <zell@skotos.net> wrote:
+[...Persistent games...]
+> It might be more specific or useful to give him a Skotos
+> example. How long has Marrach been running persistently?
+
+The statedump that we're using was started in May '99, the current
+virtual uptime is over 1600 days.
+
+Erwin.
+-- 
+Erwin Harte <harte@is-here.com>
+
+From dgd at list.imaginary.com  Thu Jan  8 07:57:01 2004
+From: dgd at list.imaginary.com (Erwin Harte)
+Date: Thu Jan  8 07:57:01 2004
+Subject: [DGD] Re: Persistance
+In-Reply-To: <BAY10-F96TCWjPzErsu0003e2c3@hotmail.com>
+References: <BAY10-F96TCWjPzErsu0003e2c3@hotmail.com>
+Message-ID: <20040108135650.GE13070@sleepy.dwarf>
+
+On Thu, Jan 08, 2004 at 05:12:17AM +0000, Robert Forshaw wrote:
+> >Well, yes.  Statedumps are the fastest complete
+> >backups you'll find under DGD.  You can complain about
+> >them causing lag, but any other form of complete
+> >backup will cause even more lag.  If you object to the
+> >possibility that a crash will destroy your stuff, you
+> >have to keep backups.  And statedumps are the fastest
+> >available backups.
+> 
+> Ok, got it. I thought save_object() would be faster.
+
+Castle Marrach's statedump is nearly 2GB in size.  The statedump
+usually takes only a few seconds, only occasionally it goes into the
+10-20 seconds range.
+
+Cheers,
+
+Erwin.
+-- 
+Erwin Harte <harte@is-here.com>
+
+From dgd at list.imaginary.com  Thu Jan  8 08:43:01 2004
+From: dgd at list.imaginary.com (Robert Forshaw)
+Date: Thu Jan  8 08:43:01 2004
+Subject: [DGD] Persistance
+Message-ID: <BAY10-F39OlgMSTOqlZ00028f95@hotmail.com>
+
+>From: Bart van Leeuwen <bart@wotf.org>
+>This makes it seem to me that there is some use in scheduling swapouts?
+>I know I do a statedump every 60 minutes, and it doesn't cause any
+>noticable lagging, but I guess that with less then 10k objects around, my
+>environment quallifies as rather small for now
+
+Hang on, I never thought about this in full, but when a user logs off their 
+progress needs to be saved, and not with a statedump, obviously...
+
+_________________________________________________________________
+It's fast, it's easy and it's free. Get MSN Messenger today! 
+http://www.msn.co.uk/messenger
+</pre>
+
+<hr />
+
+<pre>
+From dgd at list.imaginary.com  Thu Jan  8 11:24:01 2004
+From: dgd at list.imaginary.com (Stephen Schmidt)
+Date: Thu Jan  8 11:24:01 2004
+Subject: [DGD] Persistance
+In-Reply-To: <200401081502.i08F2Leo031199@pattern.dworkin.nl>
+Message-ID: <Pine.OSF.4.40.0401081137130.334838-100000@idol.union.edu>
+
+"Robert Forshaw" <iouswuoibev@hotmail.com> wrote:
+> ...when a statedump occurs when User A quits, their progress is saved,
+> but User B may not have been around for a while and is no longer present in
+> memory, hence when the statedump occurs User B's progress is lost forever.
+
+This is where the -game- complexities of designing a persistent
+mud (as opposed to the code complexities) get involved.
+
+In a non-persistent game, the user body is magically created out
+of nowhere when the player logs in, and magically vanishes back
+into the ether when the player logs out. "Dust thou art, and to
+dust thou shalt return" etc.
+
+In a persistant game this is not acceptable. If John Doe is
+playing your game, and his character, Lord Boyardee, 11th
+level fighter and master of Castle Noodles, is a part of
+the persistent world, then when John Doe logs out, Lord
+Boyardee can't vanish. Instead of characters going in and
+out, you have to have some concept of characters going
+inactive. When John Doe logs out, Lord Boyardee is still
+there, somewhere, but the player's not controlling him
+anymore. Either he has to have some simple AI that keeps
+him ticking while the player is away, or he has to enter
+some kind of game state in which he would be inaccessible
+to the game world for a while.
+
+This raises some interesting game design possibilities. One
+option: All characters are wraiths, or some other kind of
+spirit or demon or something. These spirits have the ability
+to occasionally take a material form, for a limited period
+of time. In this option, when the human player is not logged
+in, their character is back in the spirit world, no material
+form, not accessible from the game world. When the player
+logs in, the spirit takes on its material form and interacts
+with the game world. When he logs out, it's back to the
+ethereal plane for the spirit character.
+
+Another option: Players are vampires. When you are logged out,
+your character is lying in his coffin with the lid closed.
+When you log in, the lid opens and you begin moving around.
+When you log out, you turn into a bat and fly back to your
+coffin. This differs from the previous case because the
+coffin is still part of the game world. When you are logged
+out, another player could enter your room, open your coffin
+lid, and drive a silver stake through your heart, or steal
+your fake fangs, or whatever it is one does to do in a
+vampire these days.
+
+Another option: Players are feudal lords. Each one has his
+own castle with an inner sanctum. When the player is logged
+in, he comes out of his inner sanctum and runs his territory.
+When he logs out, the lord goes back into the inner sanctum,
+where he is untouchable (or maybe not, as case may be) and
+his NPC courtiers handle the affairs of the territory for a
+while, until the player logs back in again. This one requires
+a small AI to control the courtiers who are handling the
+player's affairs while he is logged out.
+
+There are more options, but three will have to hold you for now :)
+
+They all raise one common problem, which is that sometimes
+human players quit your game. If Vampire Lestat is in his
+coffin, and the human player isn't going to log into your
+game ever again, then at -some- point you want to dest the
+coffin and the body of Vampire Lestat. No need to save
+anything, because this is the utter and total end of Vampire
+Lestat. He's gone and will never reappear. This is basically
+the same problem as purging your inactive characters on a
+non-persistent mud (because the character database is the
+one persistent feature of a non-persistent mud) but in the
+persistent mud you have the problem that each inactive
+character is taking up, not just a couple dozen lines of
+file space on your server, but at least one object in your
+game world. So you need to build the periodic purge into
+the design of the game world somehow. It's a solvable
+problem and I'll leave it as an exercise for the interested
+student.
+
+Your game design also has to handle the question of where
+new characters come from, and I'll leave that one open also.
+
+Steve
+
+
+
+
+
+From dgd at list.imaginary.com  Thu Jan  8 11:41:01 2004
+From: dgd at list.imaginary.com (Noah Gibbs)
+Date: Thu Jan  8 11:41:01 2004
+Subject: [DGD] Persistance
+In-Reply-To: <20040108130727.E22327@isengard.intra.bartsplace.net>
+Message-ID: <20040108173954.34703.qmail@web12821.mail.yahoo.com>
+
+--- Bart van Leeuwen <bart@wotf.org> wrote:
+> As a coder I take pride in my code, and I think
+> there is a real
+> achievement in writing it. For the area designers
+> that we have around, the
+> goal and achievement is in user experience, code,
+> descriptions and what
+> not are a tool for that.
+
+  Amen.
+
+> Using an interpreted data model always adds an extra
+> layer. It is very
+> usefull, but it is also very hard to debug when
+> somethign is wrong in your
+> design, or you just happen to have implemented some
+> of the interpreting
+> code in a way that doesn't account for all
+> conditions.
+> 
+> It is very usefull, but it is definitely not easier
+> to debug unless you
+> have designed, written and debugged your code very
+> well.
+
+  Yes.  But almost everything I do now (the 95% I
+mentioned) is in data files.  In my case, UNQ files. 
+That reduces "what the @#$# did this code do?" errors
+to parsing errors, which are much easier to deal with.
+
+  Scripts still have the same problems as always, but
+I have to use *many* fewer of them, so overall it's a
+big win.
+
+
+
+=====
+------
+noah_gibbs@yahoo.com
+
+
+
+
+On a somewhat related note, one mud I was at had a Hall of
+Fame where characters who had accumulated a certain amount
+of wealth and experience could have their accomplishments
+permanently records in exchange for purging the character.
+That encouraged players to get rid of their old megapowerful
+characters when they started a new one, instead of leaving
+them lingering. Persistent muds would find something like
+that useful, perhaps.
+
+Steve
+
+
+
+From dgd at list.imaginary.com  Thu Jan  8 13:48:01 2004
+From: dgd at list.imaginary.com (Bart van Leeuwen)
+Date: Thu Jan  8 13:48:01 2004
+Subject: [DGD] Persistance
+In-Reply-To: <Pine.OSF.4.40.0401081418560.363806-100000@idol.union.edu>
+References: <Pine.OSF.4.40.0401081418560.363806-100000@idol.union.edu>
+Message-ID: <20040108203916.C23512@isengard.intra.bartsplace.net>
+
+
+On Thu, 8 Jan 2004, Stephen Schmidt wrote:
+
+> On Thu, 8 Jan 2004, Robert Forshaw wrote:
+> > >From: Noah Gibbs <noah_gibbs@yahoo.com>
+> > >   What does this buy you?
+> >
+> > It buys me players not coming back some day and finding their characters
+> > deleted?
+>
+> Yes, but why does it matter if they're archived on disk in some
+> place outside the mud, or archived on disk in the swapfile? Either
+> way they're on your server disk, and nowhere else. Unless having
+> them in the swapfile would slow down object access from the
+> swapfile, but I doubt that's the case. And if they're in the
+> state file you don't have to bother with removing them or
+> reloading them when they reappear.
+
+At a certain point I may want to remove a character from the game, yet be
+able to archive it to some other medium then the server disk so I can
+reinstate it at some point.
+
+Another thing is that I may at some point want to restart the persistent
+world without purging all players.
+
+I think that the problems described are more a game design issue and are
+not unique to a persistent mud. In all cases you have to somehow deal
+with players that do have an existance in your virtual world but are not
+logged on. How you deal with that determines how persistent the stats and
+inventory of the character are, but is independent from how persistent
+your world is. Having said that, on a persistent mud it makes a lot more
+sense to use an object for storing information instead of a file, all a
+file buys you is that you can keep the character persistent regardless of
+the world.
+
+Bart.
+</pre>
+
+  <p style="text-size: 150%"> <a href="../index.html"> Back to top level
+    </a> </p>
+            <address>
+            <span><a href="mailto:angelbob-remove-spamfree@spamfree.users.sf.net">Noah Gibbs</a></span>
+            </address></td>
+        </tr>
+      </table></td>
+  </tr>
+</table>
+</body>
+</html>
