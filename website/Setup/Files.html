@@ -29,15 +29,15 @@
       include it, and use its GAME_INITD definition to find your
       game's Init object.  A common value for GAME_INITD is
       &quot;/usr/game/initd&quot;.  Note the lack of a &quot;.c&quot;
-      on the end.
+      on the end.  That's important.
     </p>
 
     <h3> GAME_INITD </h3>
 
     <p>
-      When DGD starts up, it hands off control to the Kernel Library,
-      which hands off control to Phantasmal, which hands off control
-      to you.  It seems complicated, but you can ignore most of it.
+      When DGD starts up, it hands off control to the Kernel Library.
+      That hands off control to Phantasmal, which hands off control to
+      your game.  It seems complicated, but you can ignore most of it.
       Just pretend that Phantasmal and the Kernel are the same thing,
       because from your point of view, they are.
     </p>
@@ -47,24 +47,27 @@
       have a function with the signature <tt> &quot;static void
       create(void)&quot; </tt>.  When you start your MUD server, the
       create() function of the GAME_INITD will get called.  So if you
-      want to do things on startup, you should make sure that function
-      exists.
+      want to do things on startup, you should make sure the create()
+      function exists.
     </p>
 
     <p>
       The create() function is called with unlimited ticks and stack
-      space, so it's a good place to load large files, create large
-      data structures and otherwise do preprocessing.  If the create
-      function fails, so does the startup of the whole MUD.
+      space.  That means it can take as much processor time or stack
+      space as it wants -- functions that get called later on have to
+      be much more careful.  So create() is a good place to load large
+      files, create large data structures and otherwise do
+      preprocessing.  Be careful, though.  If the create() function
+      fails, so does the startup of the whole MUD.
     </p>
 
     <p>
-      Your create() function could configure the ConfigD, SoulD and/or
+      Your create() function could configure the ConfigD, SoulD and
       HelpD.  If you want to configure a heart beat function or one or
-      more special AUTO objects, this is the place to do it.  Your
-      GAME_INITD has privileges that no other object in your game
-      will, such as setting ConfigD's path_special object.  See the
-      API documentation for specific daemons for details.
+      more special AUTO objects, create() is the place to do that,
+      too.  Your GAME_INITD has privileges that no other object in
+      your game does, such as setting ConfigD's path_special object.
+      See the API documentation on specific daemons for details.
     </p>
 
     <p>
@@ -79,14 +82,14 @@
 
     <p>
       Phantasmal will call various functions on your driver object
-      when events like new connections happen.  Specifically, the
+      when events (like new connections) happen.  Specifically, the
       driver object must define functions for Phantasmal to call.  The
       functions include new_user_connection, get_welcome_message,
       get_suspended_message, and get_shutdown_message.  See the API
       documentation for /usr/System/sys/gamedriver for details.  Your
-      driver object does not have to use this pathname, and is only
-      required to be a valid DGD object that defines the specified
-      functions.
+      driver object does not have to use that pathname.  Your driver
+      only required to be a valid DGD object that defines functions
+      with the correct names.
     </p>
 
     <p>
@@ -111,24 +114,24 @@
     <p>
       In certain circumstances, Phantasmal will turn off new incoming
       connections.  For instance, it does this when recompiling the
-      LPC portions of the driver in-place.  Usually the MUD will be
-      suspended for no more than a few seconds at a time.  A new
-      incoming connection during those seconds will receive a message
-      determined by calling get_suspended_message on your driver
-      object.  This function takes a single argument, a new connection
-      object.
+      itself in-place.  Usually the MUD will be suspended for no more
+      than a few seconds at a time.  A new incoming connection during
+      those seconds will receive a message determined by calling
+      get_suspended_message on your driver object.  This function
+      takes a single argument, a new connection object.
     </p>
 
     <p>
-      If the new connection is allowed (get_welcome_message does not
-      return nil) and the user types a line ending with a newline,
-      that line will be passed as a string to your driver's
-      new_user_connection function.  If that function returns nil, the
-      connection is aborted.  If it returns a valid DGD object, the
-      connection is allowed.  Any object returned should inherit from
-      the PHANTASMAL_USER object, which will allow the connection to
-      be properly set up.  The object you return from your driver's
-      new_user_connection function is called a User Object.
+      If the new connection is allowed (that is, if
+      get_welcome_message does not return nil) and the user types a
+      line ending with a newline, then that line will be passed as a
+      string to your driver's new_user_connection function.  If that
+      function returns nil, the connection is aborted.  If it returns
+      a valid DGD object, the connection is allowed.  Any object
+      returned should inherit from the PHANTASMAL_USER object, which
+      will allow the connection to be properly set up.  The object you
+      return from your driver's new_user_connection function is called
+      a User Object.
     </p>
 
     <h3> The User Object </h3>
@@ -136,7 +139,7 @@
     <p>
       Phantasmal will currently do login and password confirmation for
       you, using a standard system.  This may change in the future.
-      For now, this object is described as though that is true.
+      For now, it's true.
     </p>
 
     <p>

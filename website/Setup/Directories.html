@@ -28,9 +28,9 @@
     <p>
       The idea is that /usr/game is where your game's rules are kept.
       That's the part that <i>you</i> supply, the details of your
-      MUD's world.  Phantasmal doesn't need to know what you name your
-      skills or classes (if any), what you name your commands or even
-      how you handle things like scripting.  Phantasmal just keeps
+      MUD's specific world.  Phantasmal doesn't need to know what you
+      name your skills or classes (if any), what you name your
+      commands or exactly what your users see.  Phantasmal just keeps
       track of zones, rooms, exits and NPCs, and supplies you a
       standard library of functions to play with.  You use what you
       want and leave the rest alone.  But most especially, you
@@ -47,6 +47,13 @@
       member's stuff in a separate directory, and then link zones into
       the main MUD when they work correctly.  That's not fully spelled
       out yet, though.
+    </p>
+
+    <p>
+      Note that one reason not to change /usr/common or /usr/System is
+      so that you can easily use new versions of Phantasmal.  If you
+      make it easy to upgrade, you'll get new features for free
+      whenever Phantasmal adds them.
     </p>
 
     <a href="http://sourceforge.net">
