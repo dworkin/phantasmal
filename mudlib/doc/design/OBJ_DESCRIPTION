@@ -1,0 +1,828 @@
+This is in the form of a set of e-mail responses.  I have only the
+ones written by TDL, which in turn excerpt what I wrote.  That's
+'cause I save old e-mail, but not stuff I send :-) This entire
+exchange took place in early April of 2002.
+
+This describes a very interesting framework for object descriptions.
+It may or may not be exactly what Phantasmal winds up implementing.
+It is, in any case, an excellent thought exercise.
+
+==========================================================================
+> I've worked out a framework for how the mud can
+> describe objects and
+> groups of objects.  It formalizes not only how the
+> mud describes objects,
+> but how the player can refer to objects.  It also
+> formalizes when and how
+> definite articles are used.
+> 
+> I'm assuming that there's a class hierarchy of
+> objects, featuring
+> arbitrary multiple inheritance, and that an object
+> can be an instance of
+> multiple classes if it wants.  (I'm also assuming
+> that inheritance is
+> "virtual" in the C++ sense, and that subclases can
+> selectively 
+> "uninherit" things if they want to.  Neither of
+> these are critical for the
+> current discussion, though.)
+> 
+> I'm also only considering English for now.  Forgive
+> me.
+> 
+> For simplicity, let's assume that an object is fully
+> defined by
+> the classes which it inherits.  That is, we'll only
+> consider descriptions
+> which are based on an object's classes, and not its
+> attributes or status.
+> We'll see how robust a system we can get with that
+> before we get confused
+> by attributes.
+> 
+> Every class, then, has to provide the following:
+> 
+>    - A set of nouns by which individual instances of
+> this class
+>      may be referred.  These may be compound nouns
+> ("end table",
+>      "remote control"), but they may not contain
+> articles.  For
+>      every noun that you want to add to this list,
+> make sure it
+>      sounds right to say "the", "one", and "a" (or
+> "an") in
+>      front of it.
+> 
+>    - A set of plural nouns by which multiple
+> instances of
+>      this class may be referred.  Examples are
+> "remote
+>      controls" and "geese".  For every noun you want
+> to add to
+>      this list, make sure it sounds right to say "a
+> couple",
+>      "several", "five" , and "many" in front of it.
+> 
+>    - A set of collective nouns by which collections
+> of instances
+>      of this class may be referred.  This is things
+> like
+>      "livestock", "equipment", "silverware", or
+> "weaponry".  For
+>      every noun you might add in this list, make
+> sure it sounds
+>      right to say "some" and "a fair amount of" in
+> front of it.
+> 
+> The latter two categories are not the same.  Plural
+> nouns described some
+> "number" of objects, while collective nouns describe
+> some "amount" of
+> something.  The "amount" in this case is discrete
+> (since I'm not dealing
+> with stuff like "5.3 ounces of water"), but it's
+> still grammatically
+> distinct from simple plurality.
+> 
+> (None of these categories handle proper nouns like
+> "Bob."  Ignore those
+> for now.)
+> 
+> Okay.  Nothing profound so far.  It's probably what
+> you were planning,
+> anyway.  But I'm trying to formalize this stuff.
+> 
+> Given the above, we can now implement several
+> low-level functions.  It
+> should be obvious how to implement each.
+> 
+>  bool doesDescribeOne(class *o, string s);  //
+> returns true if the given
+>                                             //
+> string describes a single
+>                                             //
+> instance of the given class
+> 
+>  bool doesDescribeMany(class *o, string s); //
+> returns true if the given
+>                                             //
+> string describes several
+>                                             //
+> instances of the given class
+> 
+>  string describeOne(class *o);   // returns a string
+> describing one
+>                                  // instance of the
+> given class, not
+>                                  // including any
+> articles.  It either
+>                                  // chooses a noun
+> randomly, or (more
+>                                  // likely) chooses
+> the one marked
+>                                  // "preferred".
+> 
+>  string describeMulti(class *o, int num);
+>                                  // returns a string
+> describing several
+>                                  // instances of the
+> given class.  It 
+>                                  // can choose
+> whether to use a
+>                                  // plural noun or a
+> collective noun.
+>                                  // Based on the
+> given number, it may
+>                                  // prepend a
+> specific number ("five") or
+>                                  // a general
+> quantifier ("several").
+> 
+> Easy enough.  But next comes the kicker.
+> 
+>  string describeObjects(vector<object *> objects,
+> int maxPhrases);
+> 
+> This function takes a set of specific objects and
+> returns a string
+> describing that set of objects, including articles,
+> conjunctions,
+> and all.  The "brevity" of the description is
+> controlled by the parameter
+> "maxPhrases".
+> 
+> Suppose it's given a spoon, a fork, a knife, a
+> spatula, and a banana.
+> 
+> If maxPhrases is 1, the best it can to is "several
+> objects" or "some
+> stuff".  (It finds the class common to all objects,
+> which in this case is
+> "object", and calls describeMulti() on that class.)
+> 
+> If maxPhrases is 2, it can do "some kitchenware and
+> a banana".  (It
+> notices that the silverware and the spatula have a
+> common class, and so it
+> groups them accordingly.)
+> 
+> If maxPhrases is 3, it can do "some utencils, a
+> spatula, and a
+> banana".  (It took the opportunity to differentiate
+> the utencils from the
+> spatula.)
+> 
+> You get the idea.
+> 
+> Internally, this function takes the set of objects,
+> finds the places they
+> appear in the class hierarchy, and tries to find a
+> set of "common
+> ancestor" classes that covers all objects.  It's an
+> optimization
+> problem: you want the number of ancestors to get as
+> close to maxPhrases as
+> you can without going over, and you want to minimize
+> the distance from the
+> objects to the ancestors you choose.  (Otherwise
+> you'd always say "an
+> object, an object, an object, and some objects.")
+> 
+> I'm not saying that this optimization is easy, but
+> it _is_ self-contained,
+> and it's easy enough to implement a dumb version
+> that will work in many
+> cases.  This can be made as smart-and-slow or
+> dumb-and-fast as
+> desired, without affecting the design of the rest of
+> the system.
+> 
+> One part of this function's strategy isn't self
+> contained: the choice of
+> whether to use definite or indefinite articles for
+> each phrase it
+> returns.  That choice depends on "conversation
+> context".  I believe I
+> have a strong sense of how that choice should be
+> made, but I'll
+> ramble about that some other time if you like.
+> 
+> This function doesn't solve all the world's
+> problems, but I believe it's
+> an important low-level tool.  Higher level code will
+> choose what objects
+> to describe, which to leave out, and where it wants
+> the descriptions to
+> show up.  Once the higher level code has decided it
+> wants to describe a
+> set of objects somewhere in a sentence, it calls
+> describeObjects() to get
+> that description, all bundled up and grammatically
+> happy.
+> 
+> If this is still in the realm of "yeah, yeah,
+> someday" to you, forgive me
+> for making you read all that.  But I feel like I
+> have a concrete sense
+> now of how to get this stuff working for real, so I
+> wanted to share.
+> 
+> (I've left lots of stuff out, but this is already
+> way too long.  I'll shut
+> up for now.)
+> 
+> --Tom
+
+==========================================================================
+
+> > More of it is doable right now than you realize
+> 
+> Not sure about that.  I sent it to you because I
+> believe just about 
+> all of it is doable.  :)
+> 
+> >   It *does* leave out explicit adjectives
+> 
+> Yes, and to get those right, the "search" that tries
+> to describe a set of
+> objects in maxPhrases phrases needs to consider
+> grouping based on
+> adjectives as well.
+> 
+> Suppose describeObjects() is given a red pen, a red
+> pen, a red pen, a
+> green pen, and a banana.  Let's assume that all the
+> pens are just pens,
+> and the color is an attribute (as opposed to a
+> class).
+> 
+> If maxPhrases is 1, the best we can do is "some
+> stuff" or "some oblong
+> objects".
+> 
+> If maxPhrases is 2, we can do "some pens and a
+> banana."
+> 
+> If maxPhrases is 3, we can do "some red pens, a
+> green pen, and a banana."
+> 
+> This last bit means that the "optimization" needs to
+> consider adjectives
+> as well.  It's not necessarily straightforward, but
+> I think it's doable.
+> 
+> Incidentally, the choice for which attributes to
+> categorize on first
+> should be class-specific.  If we're asked to
+> describe several crayons,
+> it's most natural to differentiate based on color
+> first (then possibly
+> sharpness, etc).  If we're asked to describe several
+> apples, we should
+> differentiate by size, then possibly ripeness.
+> 
+> > the boolean query for
+> > whether a string describes the object combined
+> with
+> > the ability to describe a set of them handles
+> that.
+> 
+> For recognizing adjectives that a user has typed,
+> yes, that's true.
+> 
+> > The simplest is that it doesn't
+> > allow an object described individually to have
+> > variable levels of detail.
+> 
+> That would be cool.  An extra bonus.
+> 
+> >   Also, do "doesDescribeOne" and its relatives
+> parse
+> > and accept articles?
+> 
+> I'm assuming no, that they're supposed to deal with
+> noun phrases
+> sans-article.  describeObjects(), being a bigger and
+> stompier function,
+> does have to deal with them.
+> 
+> Or to put it another way: it's okay if
+> doesDescribeOne() and kin handle
+> articles, as long as we have variants that handle
+> the un-articled
+> nouns.  This is important because some higher-level
+> code (such as
+> describeObjects()) will need to do complex article
+> determination itself,
+> and so we don't want the very low level code
+> (doesDescribeOne(),
+> etc) always imposing its own articles.
+> 
+> However, my reasoning for that is based on my
+> assumptions for how definite
+> and indefinite articles should work.  And I don't
+> have time to get into
+> that this morning.  :)
+> 
+> --Tom
+
+==========================================================================
+
+> >   This framework also fails to address the
+> question of
+> > multiple possible groupings for a single object.
+> > ...
+> >   Though I suppose that's really what parent
+> classes
+> > are *for*...  "The doorman" could be a parent
+> class.
+> 
+> That's what I'm assuming.
+> 
+> I should take a couple minutes to explain my take on
+> definite vs
+> indefinite articles.  Here's what I believe:
+> 
+> Objects should never be tagged as "definite" or
+> "indefinite".  Definiteness
+> (definity?) is never a property of a particular
+> object; it is a property
+> of a phrase, and which object(s) that phrase was
+> most recently used to
+> describe.
+> 
+> For example, suppose I have a red pen, a blue pen,
+> and a green pen.
+> Suppose I point to the red pen and say "that is a
+> red pen."  At this point
+> in the conversation, the phrase "the pen" maps
+> unambiguously to the red
+> pen.  So does the phrase "the red pen."
+> 
+> (Ignore how we'd implement this.  Just see if you
+> agree with my logic.)
+> 
+> Suppose I then point to the green pen and say "that
+> is a green pen."  Now
+> the phrase "the pen" maps to the green pen, as does
+> "the green pen."  But
+> the phrase "the red pen" still maps to the red pen.
+> 
+> So it's never the case that an object is "definite"
+> or "indefinite".  It's
+> only definite or indefinite with respect to a
+> particular potential
+> description of the object.
+> 
+> For this reason, I don't think of it as a property
+> of the object at
+> all.  I think of it as a property of the phrase. 
+> Each phrase ("pen",
+> "red pen", "pens", "warm-colored pens") has a
+> pointer to the object (or 
+> set of objects) which it most recently described. 
+> (Often it's null.)
+> 
+> The mapping from a phrase to its
+> most-recent-referents must be updated
+> whenever _any_ object which matches the phrase is
+> mentioned.  For example,
+> If "the pens" maps to all three pens, but then
+> someone says "the
+> winter-colored pens", we have to udpate the phrase
+> "the pens" as well as
+> the phrase "the winter-colored pens".
+> 
+> This makes sense to me.  Does this make sense to
+> you?
+> 
+> Now let's consider describeObjects(), which is given
+> a set of objects and
+> a limit (maxPhrases) on the number of phrases it may
+> use.
+> 
+> The job of describeObjects() is to choose up to
+> maxPhrases phrases.  Each
+> phrase will describe a subset of the objects.  The
+> selection of these
+> phrases is a partitioning process: it decides how to
+> separate the given
+> objects into groups, where all objects in a group
+> share the same
+> description.
+> 
+> Once it has decided to describe a subset of the
+> objects by a given phrase
+> ("utencils" or "leaky red pens" or something), NOW
+> is the time for it to
+> choose definite or indefinite.  It queries the
+> phrase to ask if that
+> phrase was most recently used to describe this
+> particular set of
+> objects.  If it was, describeObjects() uses the
+> definite form for that
+> phrase  If it wasn't, describeObjects() uses the
+> indefinite form for that
+> phrase.  (In the latter case, it then updates the
+> phrase so that it will
+> be definite for these objects _next_ time.)
+> 
+> --Tom
+
+==========================================================================
+
+> >   This doesn't address the same objects that would
+> be
+> > tagged as definite under the old scheme:  "the
+> floor",
+> > "the sky".
+> 
+> Yes, I'm convinced that those are abberations in the
+> language.  An
+> artifact of living on the earth is that you know, no
+> matter where you
+> are, there's probably a floor.  And notably, it
+> doesn't show up in
+> descriptions _specifically_ because you expect
+> everyone to assume it's
+> there.
+> 
+> This blanket use of "the" for floor works because
+> there's pretty much
+> always exactly one floor in any given place.  And
+> you can imagine
+> exceptions:
+> 
+>     You're in a nightclub.  Ugly people are wiggling
+> on a shiny
+>     dance floor.
+>     > drop dead rat on floor
+>     Do you mean the floor, or the dance floor?
+> 
+> One way to get this to work: whenever you move to a
+> new room, it
+> checks to see if there's a single obvious "floor"
+> object (which there
+> almost always is).  If there is, it sets the
+> most-recent-referent of 
+> the phrase "floor" to that object.  If there isn't,
+> it sets the
+> most-recent-referent of the phrase "floor" to null.
+> 
+> > > look at my Tori Amos CD
+> > You stare lovingly for a moment at the cover
+> before
+> > realizing that, cute or no, you don't think much
+> of
+> > her music.
+> > ...
+> >   Note that funky articles in a couple of places. 
+> > It's not necessarily a problem, but it *is* a
+> little
+> > odd.
+> 
+> It is sort of odd, and I'm open to improvements.
+> 
+> Incidentally, I don't think we should ultimately be
+> ignoring articles
+> in user commands.  As in an earlier example, "take a
+> pen" and "take the
+> pen" mean two completely different things.  (The
+> first implies some
+> freedom on the part of the recipient, while the
+> latter implies
+> prior agreement on a particular pen.)
+> 
+> If you think about it, text game pidgin english
+> commands like "take
+> pen" or "open door with blue key" almost always have
+> an implied "the" when
+> articles are left out.  I'm tempted to make that
+> explicit: articles are
+> supported, and if you leave out an article, it
+> assumes the definite
+> article.
+> 
+> --Tom
+
+==========================================================================
+
+> > in the example above using the phrase "the cover"
+> when
+> > "my Tori Amos CD" was the actual phrase used.
+> 
+> I've been working through this too.  If you walk
+> into a room and see a
+> box, you should be able to say "look at the front of
+> the box" even if the
+> "front" has never been mentioned.  (Same for "the
+> cover of the cd".)  This
+> is similar to "the floor".  You assume all boxes
+> have fronts and all cd's
+> have covers.  So you're right, some objects and
+> parts-of-objects can be
+> definite-articled for free, but only in very limited
+> ways.  I don't claim
+> to understand all the implications, but I believe
+> strongly that the answer
+> is _not_ to tag the objects themselves as
+> "definite".
+> 
+> Actually, maybe I _do_ know what's going on.  As I
+> said before, objects
+> aren't definite, but _phrases_ may be definite for
+> particular objects.  In
+> the case of prepositional phrases, those are
+> definite only with respect to
+> the prepositional object (or whatever it's called).
+> 
+>    There's a box here.
+>    > look at the front of the box
+> 
+> It first disambiguates "the box", then sees if the
+> phrase "front of <that 
+> particular box>" has a most-recent-referent.  If it
+> doesn't, the game
+> "searches" to see if there's exactly one reasonable
+> referent.  If so, it
+> lets you get away with the definite article.  The
+> same scheme would work
+> for the floor.
+> 
+> So this changes the strategy slightly.  When the
+> player uses an indefinite
+> article, the game feels free to choose anything that
+> matches the
+> description.  When the player uses a definite
+> article, the game
+> first checks to see if that phrase is bound to a
+> most-recent-referent.  If
+> so, it uess that.  If it doesn't, it searches to see
+> if there's a single
+> obvious referent.
+> 
+> > Even if you've only just seen him, he really isn't
+> just *a* King of
+> > Spain.
+> 
+> Hehehehe.
+> 
+> --Tom
+
+==========================================================================
+
+> > > look up
+> > You see the Berkeley Naked Guy!
+> 
+> Hanging on the ceiling above you?  Creepy!  And
+> unsanitary!  :)
+> 
+> > Presumably the King of Spain is also the most
+> recent
+> > "King of Spain" in cache as well, at least
+> > conceptually.  So the "distinctiveness" tag is
+> really
+> > sort of a probability of that object being
+> considered
+> > "permanently in cache"
+> 
+> That makes sense.
+> 
+> --Tom
+
+==========================================================================
+
+> > if instead of the player
+> > saying "the cover of the CD" they say "the cover",
+> we
+> > should still check the CD.
+> 
+> Yup.  That would be good.
+> 
+> > You're in the kitchen.  Again.  If only you could
+> > avoid the need for food.  And the hunchback in
+> > lederhosen.
+> 
+> ROFL
+> 
+> > > look at stem
+> > (You look at the stem of the apple in the
+> fruitbasket)
+> 
+> I would argue that here, unless there's exactly one
+> object with a stem, it
+> should say "which stem?".  But that's because I read
+> "look at stem" as
+> "look at the stem," which is ambiguous.
+> 
+> > the nappy and suedelike leather of these
+> > DeutscheBritches.
+> 
+> :)
+> 
+> >   Hm.  Okay.  That's certainly fair.  I'm trying
+> to
+> > figure out if any detail of a definite-articled
+> object
+> > is also definite-articled.
+> 
+> I don't think so.  While bob's head is part of bob
+> (and so we think of the
+> head as being subordinate), in the sentence "look at
+> bob's head", bob
+> isn't the direct object.  The head is.  The
+> bob-possessive serves,
+> basically, as an adjective modifying "head".  I
+> believe the the
+> definite-ness of the detail is independent from the
+> definite-ness of the
+> thing-which-the-detail-happens-to-be-on.
+> 
+> To pick an extreme example:
+> 
+>    > touch the front of a box
+>    You pick and box and touch its front.  Wheee!
+>    > touch the front of the box
+>    You touch the front of the same box.  It's less
+> exhilerating the
+>    second time.
+> 
+> In both cases, the prepositional phrase is
+> disambiguated (so we know what
+> it's "of"), then we disambiguate "front" based on
+> that.
+> 
+> > > It first disambiguates "the box", then sees if
+> the
+> > > phrase "front of <that 
+> > > particular box>" has a most-recent-referent.
+> 
+> Oh.  I've sort of said that already.  Oops. :)
+> 
+> --Tom
+
+==========================================================================
+
+> > To pick an extreme example:
+> 
+> Here's an even more extreme example, which I don't
+> claim we should
+> support, but it clarifies my delusions about what
+> definite articles do:
+> 
+>     You're in a tavern.  There are several tables,
+> each with
+>     several glasses.
+> 
+>     > look at the glass on the table
+> 
+>     Which table?
+> 
+>     [ it failed to disambiguate the prepositional
+> phrase, so it gave up.
+>       it didn't even bother trying to disambiguate
+> the noun phrase that
+>       used the prepositional phrase. ]
+> 
+>     > look at the glass on the first table
+> 
+>     Which glass?
+> 
+>     [ it successfully disambiguated the
+> prepositional phrase, but
+>       when it tried to disambiguate "the glass" on
+> that table, it
+>       failed. ]
+> 
+>     > look at a glass on the first table
+> 
+>     It's dirty.
+> 
+>     [ it successfully disambiguated the prepositions
+> phrase, then
+>       chose a glass from that table. ]
+> 
+>     > look at a glass on a table
+> 
+>     It's dirty.
+> 
+>     [ It chose a table, then chose a glass on that
+> table.  In
+>       this case, it would have to backtrack and
+> choose another table
+>       if the first choice had no glasses. ]
+> 
+>     > look at a glass on the table
+> 
+>     It's dirty.
+>     [ It disambiguated the prepositional phrase
+> (coming up with the
+>       same table as last time), then chose a glass
+> from it. ]
+> 
+> Those all make sense to me.  The remaining case is
+> 
+>     > look at the glass on a table
+> 
+> By my claims, it should disambiguate the
+> prepositional phrase by picking
+> one (randomly?), then try to disambiguate "the
+> glass" on that particular
+> table.  If there is exactly one glass on that table,
+> we're in luck, and it
+> chooses it.  If there's more than one glass on that
+> table, but we referred
+> to one of them recently, it chooses that one. 
+> Otherwise, it says "Which
+> glass?"
+> 
+> This seems like the right behavior, though.
+> 
+> --Tom
+
+==========================================================================
+
+> >  But that's because I read "look at stem" as
+> > "look at the stem," which is ambiguous.
+> 
+> Incidentally, I'm not adamant that "look at stem"
+> means "look at THE
+> stem."  If you'd prefer that it implies some
+> imaginary article which is
+> neither "the" nor "a", and which means "find the
+> definitive interpretation 
+> if there is one, and if not, pick one randomly", I
+> wouldn't object.  My
+> main obsession is getting "the" and "a", as the game
+> uses them, as correct
+> as possible.
+> 
+> And, as always, forgive me if I'm being pushy.  My
+> repeated 
+> explanations are for clarification, and aren't
+> intended to force my
+> uneducated viewpoint on you.  :)
+> 
+> --Tom
+
+==========================================================================
+
+> > Here's an even more extreme example, which I don't
+> claim we should
+> > support, but it clarifies my delusions about what
+> definite articles do:
+> 
+> The more I think about it, the more I think this
+> case will just work, if
+> we disambiguate prepositional phrases before
+> disambiguating the noun
+> phrases that use them.
+> 
+> If we do try to do this stuff, here's a good test:
+> 
+>      You're in a tavern.  There are several tables,
+> each with
+>      several glasses.
+>  
+>      > look at a glass on the first table
+> 
+>      It's tall and skinny.
+> 
+>      [ it disambiguates the table, then picks a
+> glass on it. ]
+> 
+>      > look at a glass on the second table.
+> 
+>      It's short and cracked.
+> 
+>      [ same deal ]
+> 
+>      > look at the glass on the first table.
+> 
+>      It's tall and skinny.
+> 
+>      [ this should come up with the same glass as
+> before, since
+>        "the glass" should disambiguate relative to
+> the disambiguation
+>        of the prepositional phrase. ]
+> 
+>      > look at the glass on the second table.
+> 
+>      It's short and cracked.
+> 
+>      [ same deal ]
+> 
+> I'm not sure how exactly to implement this, or
+> exactly how to represent
+>
+the-mapping-from-context-specific-phrases-to-most-recent-referents.
+>  Maybe 
+> it won't be practical.  It's good to keep in mind,
+> though.
+> 
+> --Tom
+
+==========================================================================
