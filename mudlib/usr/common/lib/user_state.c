@@ -23,6 +23,10 @@ static void create(varargs int clone) {
 }
 
 void init(object new_user, object new_next_state) {
+  if(previous_program() != SYSTEM_USER
+     && previous_program() != SYSTEM_USER_IO)
+    error("Only privileged code can call USER_STATE:init()!");
+
   user = new_user;
   next_state = new_next_state;
 }
@@ -60,8 +64,9 @@ static void push_state(object state) {
 }
 
 static void pass_data(mixed data) {
-  if(next_state)
+  if(next_state) {
     next_state->pass_data(data);
-
-  user->user_state_data(data);
+  } else {
+    user->user_state_data(data);
+  }
 }
