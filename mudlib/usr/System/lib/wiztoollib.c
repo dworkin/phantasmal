@@ -66,8 +66,13 @@ static void cmd_reboot(object user, string cmd, string str) {
 }
 
 static void cmd_datadump(object user, string cmd, string str) {
-  find_object(INITD)->save_mud_data(user, nil);
+  find_object(INITD)->save_mud_data(user, ROOM_FILE, PORT_FILE, nil);
   user->message("Data save commenced.\n");
+}
+
+static void cmd_safesave(object user, string cmd, string str) {
+  find_object(INITD)->save_mud_data(user, SAFE_ROOM_FILE, SAFE_PORT_FILE, nil);
+  user->message("Safe data save commenced.\n");
 }
 
 static void cmd_compile(object user, string cmd, string str)

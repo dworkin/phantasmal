@@ -153,6 +153,8 @@ void upgraded(void) {
 	"%swapout"             : ({ "cmd_swapout" }),
 	"%statedump"           : ({ "cmd_statedump" }),
 	"%datadump"            : ({ "cmd_datadump" }),
+	"%save"                : ({ "cmd_datadump" }),
+	"%safesave"            : ({ "cmd_safesave" }),
 
 	"%code"                : ({ "cmd_code" }),
 	"%history"             : ({ "cmd_history" }),
