@@ -1,4 +1,4 @@
-/* $Header: /cvsroot/phantasmal/mudlib/usr/System/obj/user.c,v 1.65 2003/05/25 06:03:02 angelbob Exp $ */
+/* $Header: /cvsroot/phantasmal/mudlib/usr/System/obj/user.c,v 1.66 2003/11/12 22:26:18 angelbob Exp $ */
 
 #include <kernel/kernel.h>
 #include <kernel/user.h>
@@ -1531,6 +1531,32 @@ static void cmd_movement(object user, string cmd, string str) {
   }
 
   show_room_to_player(location);
+}
+
+
+/* This one is special, and is called specially... */
+static void cmd_social(object user, string cmd, string str) {
+  object* targets;
+
+  if(!SOULD->is_valid(cmd)) {
+    message(cmd + " doesn't look like a valid social verb.\r\n");
+    return;
+  }
+
+  if(str && str != "") {
+    targets = location->find_contained_objects(user, str);
+    if(!targets) {
+      message("You don't see any objects matching '" + str
+	      + "' here.\r\n");
+      return;
+    }
+
+    /* For the moment, just pick the first one */
+    mobile->social(cmd, targets[0]);
+    return;
+  }
+
+  mobile->social(cmd, nil);
 }
 
 
