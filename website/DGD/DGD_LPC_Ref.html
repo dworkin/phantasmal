@@ -196,30 +196,13 @@
     <h2> Function and Variable Modifiers </h2>
     <p> Note: these are properly called function or variable <i>classes</i>
       to distinguish them from function and variable <i>types</i>. </p>
-    <pre>
-variables:
 
-    static      not saved by save_object(), not affected by
-                restore_object()
-    private     not visible from inheriting objects (as opposed to
-                MudOS, where it is just an error to access it from an
-                inheriting object); implies static
-    nomask      all variables are automatically nomask, and this keyword
-                cannot be used with variables
+      <p>
+        Here's a link to this topic in the <a
+        href="LPC/section_42.html#SEC4.2.4">LPC textbook</a>.
+      </p>
 
-functions:
-
-    static      can only be called from the same object.
-                In the auto object, behaves like a kernel function:
-                cannot be called with this_object()->func() and calls
-                to it are not redirected if the function is masked.
-    private     same as for variables
-    nomask      cannot be masked by an inheriting object; contradicts
-                private
-    atomic      an uncaught error in an atomic function will cause all
-                changes made from that function to be undone.  File
-                reading and writing may not occur in an atomic function.
-    </pre> </a>
+    </a>
 
     <hr> </hr>
 

@@ -447,70 +447,79 @@ string mixed_print_to_string(mixed arg)
 	The static variable qualifier</a></h4>
 
     <p>
-      <a name="IDX66"></a>
-
       Static variables must be global variables.  Global variables are
-      defined in the file <i>outside</i> any function. These variables
-      are available in all functions defined after they are, so their
-      <b>scope</b> is object-wide rather than limited to one function.
+      variables defined outside of any function in the file. These
+      variables are visible and usable in all functions defined later
+      in the file than they are, so their <b>scope</b> is object-wide
+      rather than limited to one function.
     </p>
 
     <p>
-      It is possible to save global variables in an object with a
-      special function called <code>save_object</code>, described
-      later.  If the global variable is declared as
-      <code>static</code>, it is <i>not</i> saved along with the
-      others.  Note that DGD doesn't particularly recommend using
+      It is possible to save the global variables of an object with a
+      function called <code>save_object</code> and restore them with
+      <code>restore_object</code>.  If a global variable is declared
+      as <code>static</code>, it is <i>not</i> saved or restored along
+      with the others.  DGD doesn't particularly recommend using
       <code>save_object</code> anyway -- it's better to use statedumps
       or some other form of structured storage in most cases.
     </p>
 
     <pre>
-static string   TempName;        /* A non-saved global var. */
+static string   TempName;  /* An example of a non-saved global variable. */
     </pre>
 
 
     <h4><a name="SEC4.2.4.2" href="index.html#SEC4.2.4.2">
 	The static function qualifier</a></h4>
     <p>
-      <a name="IDX67"></a>
-
       A function that is declared <code>static</code> can not be
-      called using external calls, only internal. This makes the
-      function 'invisible' and inaccessable for other objects.  Note
-      that child classes of the object may call static functions, so
-      it may not be a perfect security solution.  <code>Private</code>
-      functions, or functions that check the caller with
-      <code>previous_program()</code> may be better for security
-      purposes.
+      called using external calls (call_other), only internal. This
+      makes the function invisible and inaccessable to other objects.
+      Child classes of the object may call the object's static
+      functions, so be sure to take that into account.  Functions that
+      check the caller with <code>previous_program()</code> may be
+      better for security purposes.  You can also combine the two
+      approaches.
+    </p>
+
+    <p>
+      Since you can't call a static function with call_other() from
+      another object, you also can't call it with object->func()
+      syntax, since that's equivalent to call_other().  If the static
+      function is later masked (see the 'nomask' function modifier for
+      details on masking), the call won't be redirected as usual.
+    </p>
+
+    <p>
+      Static functions defined by the AUTO object (see chapter 5) are
+      special.  They are treated just like built-in kernel functions
+      -- they can't be called with call_other(), for instance.
     </p>
 
 
     <h4><a name="SEC4.2.4.3" href="index.html#SEC4.2.4.3">
-	The private function/variable qualifier</a></h4>
+	The private function and variable qualifier</a></h4>
     <p>
-      <a name="IDX68"></a>
-
-      A variable or function that has been declared as
-      <code>private</code> will not be inherited by child objects.
-      Private functions and variables can only be accessed by the
-      object that defines them.  They are also not saved by
-      <code>save_object()</code>.  Note that in MudOS, private
-      functions and variables cause an error if they're accessed by a
-      child class.  In DGD, they are simply invisible from the child
-      objects.
+      A variable or function that has been declared
+      <code>private</code> will not be usable by other objects,
+      including child objects.  Private functions and variables can
+      only be accessed by the object that defines them.  Private
+      variables, like <code>static</code> variables, are not saved by
+      <code>save_object()</code>.
     </p>
 
 
     <h4><a name="SEC4.2.4.4" href="index.html#SEC4.2.4.4">
-	The nomask function/variable qualifier</a></h4>
+	The nomask function qualifier</a></h4>
 
     <p>
-      <a name="IDX69"></a>
-
-      Functions and variables that are declared as <code>nomask</code>
-      can not be masked by inheritance.  Attempting to do so gives an
-      error message.
+      Functions that are declared as <code>nomask</code> can not be
+      masked by inheritance.  That is to say, a child object may not
+      declare another function with the same name.  Normally a
+      function with the same name in a child object would simply
+      replace the original function silently (called <i>masking</i>
+      it).  A function marked <code>nomask</code> may not be replaced
+      in this way.  Attempting to do so gives an error message.
     </p>
 
     <p>
@@ -520,7 +529,14 @@ static string   TempName;        /* A non-saved global var. */
       declared as both <code>static</code> and <code>nomask</code> are
       a powerful way to make sure a function can be called only by
       child classes, but the definition of the function will always be
-      known for any child class.
+      known for any child class.  A <code>private</code> function
+      may not also be declared <code>nomask</code>.
+    </p>
+
+    <p>
+      Variables may not be marked <code>nomask</code> -- they have the
+      same functionality automatically, so there is no use for a
+      <code>nomask</code> variable modifier.
     </p>
 
 
@@ -528,34 +544,33 @@ static string   TempName;        /* A non-saved global var. */
 	The atomic function qualifier</a></h4>
 
     <p>
-      <a name="IDX71"></a>
-
-      Atomic functions are very powerful, and are unique to DGD among
-      LPC dialects.  Only functions may be declared atomic, not
-      variables.  The <code>atomic</code> modifier is used just like
-      the <code>static</code> or <code>nomask</code> modifier, before
-      a function's name.
+      Atomic functions are very powerful, and are specific to DGD Only
+      functions may be declared atomic, not variables.  The
+      <code>atomic</code> modifier is used just like the
+      <code>static</code> or <code>nomask</code> modifier, before a
+      function's name.
     </p>
 
     <p>
       If a function is declared <code>atomic</code>, it may not read
       or write files in any way, nor may it read or write network data
       on network connections.  Any attempt to do so will cause an
-      error.  Atomic functions also use a different Error handler than
-      do non-atomic functions.  They use twice the ticks of other
-      functions (see <code>rlimits</code> for an explanation of
-      ticks).
+      error.  Atomic functions also use a different error handler than
+      do non-atomic functions.  They use up twice as many ticks per
+      operation as other functions (see <code>rlimits</code> for an
+      explanation of ticks).
     </p>
 
     <p>
-      So what's different about them?  The fact that they will either
-      fully execute, or nothing will happen.  You can write to global
-      variables and data structures in an atomic function, even if
-      those variables or data structures are in a different object
-      than the atomic function.  If an error occurs and the function
-      terminates, those writes to variables and data structures will
-      be fully undone.  It is as though the atomic function has never
-      been called at all, except for the fact that it causes an error.
+      So what's different about them?  It's the fact that they will
+      either execute completely and without error, or nothing will
+      happen.  You can write to global variables and data structures
+      in an atomic function, even if those variables or data
+      structures are in a different object than the atomic function.
+      If an error occurs and the function terminates, those writes to
+      variables and data structures will be fully undone.  It is as
+      though the atomic function has never been called at all, except
+      for the fact that it causes an error to be handled.
     </p>
 
     <p>
