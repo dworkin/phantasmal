@@ -3,8 +3,8 @@
 ~desc{
   ~enUS{
 
-The builder commands play with rooms, exits and (eventually) mobiles
-and portables.  Help in the following categories is available:
+The builder commands play with rooms, exits, mobiles and portables.
+Help on the following major topics is available:
 
 @help objects
 @help rooms
@@ -30,6 +30,7 @@ Some commands for exits:
 @list_exit         Shows exits in the MUD
 @remove_exit       Removes an exit from the current room
 @clear_exits       Remove all exits attached to current room
+@stat              Shows information about an object
 
 @check_deferred    Check for deferred exits
 @add_deferred      Attempt to resolve deferred exits
@@ -134,9 +135,35 @@ destination room has been loaded.
 ~keywords{admin}
 ~desc{
   ~enUS{
-[Not Yet Documented]
+Zones are units of building and of administration.  Zone borders will
+be in-game limits for some mobiles' movement.  A zone consists of a
+number of segments.  Here are some zone-related help topics:
+
+@segmap           Shows information about segments, including their zone
+segment           Help on how to manage segments
+@set_seg_zone     Sets the zone for a given segment
+@zonemap          Show the current zones
+@new_zone         Adds a new zone to the @zonemap
+
+To manipulate things within a zone such as rooms, see their
+individual help topics.
 }}
 
+
+~name{~enUS{@new_zone,new_zone,%new_zone,new zone,
+            @add_zone,add_zone,%add_zone,add zone,
+            @newzone,newzone,%newzone,
+            @addzone,addzone,%addzone,new}}
+~keywords{admin}
+~desc{
+  ~enUS{
+The @new_zone command adds a zone to the @zonemap.  After you add it
+you can add new objects to it.  The usage is:
+
+@new_zone New Fredslund
+
+See also: @zonemap
+}}
 
 ~name{~enUS{wiz,wiztool,wizzes,wizards,immort,immortals}}
 ~keywords{admin}
@@ -146,9 +173,9 @@ destination room has been loaded.
 Many MUDs use the word "wizard" or "wiz", or "immortal" or "immort" to
 refer to those who make more MUD and keep it running on a day to day
 basis.  Since "wizard" sounds suspiciously like an in-game player
-class, Phantasmal prefers to call such folk admins, builders, or
+class, Phantasmal prefers to call them admins, builders, or
 implementors depending on what they actually do.  We try to
 consistently maintain such usage in the MUD and in the help files.
-Exceptions should be reported as bugs.
+When we don't, report it as a bug.
 }}
 
