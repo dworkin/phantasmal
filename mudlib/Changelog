@@ -27,3 +27,4 @@ Release 0.10:
 	* UNQ DTDs can now import other DTD's.
 	* Improved UNQ DTD type inheritance.
 	* The mobfile can now be restored.
+	* @new_zone command to add new zones
