@@ -109,8 +109,8 @@ Wombat fumes.  About the usual, you hope.}}
   ~adjectives{{}}
 }
 ~portable{
-  ~number{208}
-  ~location{0}
+  ~number{207}
+  ~location{302}
   ~bdesc{
     ~enUS{Angelbob}}
   ~gdesc{
@@ -120,6 +120,20 @@ Wombat fumes.  About the usual, you hope.}}
   ~article{0}
   ~flags{0}
   ~nouns{{~enUS{angelbob}}}
+  ~adjectives{{}}
+}
+~portable{
+  ~number{208}
+  ~location{300}
+  ~bdesc{
+    ~enUS{Noah}}
+  ~gdesc{
+    ~enUS{Noah}}
+  ~ldesc{
+    ~enUS{Noah wanders the MUD.}}
+  ~article{0}
+  ~flags{0}
+  ~nouns{{~enUS{noah}}}
   ~adjectives{{}}
 }
 ~portable{
@@ -166,9 +180,9 @@ scratched and generally what you'd expect in a student lounge.}}
     ~enUS{table}}
   ~ldesc{
     ~enUS{The table has been built as a piece with the floor somehow, and is quite
-solid-looking.  It has a solid wooden top and sides which have seen better
+solid-looking.  It has a dark wooden top and sides which have seen better
 days.  The whole thing is nicked, scratched, gouged and generally the
-sort of thing you'd expect to find here.}}
+sort of furniture you'd expect to find in a student lounge.}}
   ~article{2}
   ~flags{4}
   ~nouns{{~enUS{table}}}
@@ -189,4 +203,73 @@ reminds you of other educational institutions.}}
   ~flags{4}
   ~nouns{{~enUS{floor,tiles,checkerboard,tile,checker,checkers,dust,grime,polish}}}
   ~adjectives{{~enUS{tile,tiled,checker,checkered,checkerboard,dusty,grimy,polished,floor,sticky,decaying,decayed}}}
+}
+~portable{
+  ~number{404}
+  ~location{302}
+  ~bdesc{
+    ~enUS{academic halls}}
+  ~gdesc{
+    ~enUS{academic halls}}
+  ~ldesc{
+    ~enUS{To the east is the Peabody Hall of Economics, which also contains the
+student lounge.  North of here is Marsh Hall which covers Modern History
+and Languages, while to the south looms the oddly angular Telman Hall
+of Mathematics and Science.}}
+  ~article{0}
+  ~flags{4}
+  ~nouns{{~enUS{hall,halls}}}
+  ~adjectives{{~enUS{peabody,telman,math,science,mathematics,sciences,history,languages,humanities,academic}}}
+}
+~portable{
+  ~number{405}
+  ~location{302}
+  ~bdesc{
+    ~enUS{the Tower}}
+  ~gdesc{
+    ~enUS{the Tower}}
+  ~ldesc{
+    ~enUS{To the west, in a square in the middle of campus, is The Tower.  The
+small two-story wooden building has been a fixture of campus life
+for as long as anybody can remember.  It's a place for procrastinating
+students to socialize out in the fresh air.}}
+  ~article{0}
+  ~flags{4}
+  ~nouns{{~enUS{tower}}}
+  ~adjectives{{}}
+}
+~portable{
+  ~number{406}
+  ~location{302}
+  ~bdesc{
+    ~enUS{front steps}}
+  ~gdesc{
+    ~enUS{front steps}}
+  ~ldesc{
+    ~enUS{The wooden steps have seen the tread of many feet over the years, and are
+dark and weatherstained.}}
+  ~edesc{
+    ~enUS{The wooden steps have seen the tread of many feet over the years, and are
+dark and weatherstained.  Apparently they're quite waterproof since they
+are barely warped at all.  Their uneven coloration suggests that now and
+then a board is replaced as an old one wears out.}}
+  ~article{0}
+  ~flags{4}
+  ~nouns{{~enUS{steps,step}}}
+  ~adjectives{{~enUS{front,old,maintained,well-maintained,wood,wooden}}}
+}
+~portable{
+  ~number{407}
+  ~location{302}
+  ~bdesc{
+    ~enUS{hallway}}
+  ~gdesc{
+    ~enUS{hallway}}
+  ~ldesc{
+    ~enUS{Looking into Peabody Hall, you can see dusty doors leading in several
+directions from its front hallway.}}
+  ~article{0}
+  ~flags{4}
+  ~nouns{{~enUS{hall,hallway}}}
+  ~adjectives{{~enUS{peabody,inside,front}}}
 }

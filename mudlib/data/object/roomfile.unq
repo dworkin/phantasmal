@@ -238,3 +238,36 @@ and east.}}
   ~nouns{{}}
   ~adjectives{{}}
 }
+~room{
+  ~number{302}
+  ~location{0}
+  ~bdesc{
+    ~enUS{Steps of Building}}
+  ~gdesc{
+    ~enUS{Steps of Building}}
+  ~ldesc{
+    ~enUS{The front steps of Peabody Hall are old, well-maintained and wooden.
+Through a door, you can see the front hallway of Peabody to the east,
+and the M.U. campus stretches all around you.  Several other academic
+halls can be seen to the north and south.  The Tower is visible to
+the west.}}
+  ~parent{303}
+  ~article{0}
+  ~nouns{{}}
+  ~adjectives{{}}
+  ~exit{e: #301 122 123}
+}
+~room{
+  ~number{303}
+  ~location{0}
+  ~bdesc{
+    ~enUS{campus parent room}}
+  ~gdesc{
+    ~enUS{campus parent room}}
+  ~ldesc{
+    ~enUS{This room should never bee seen directly.  It is meant only as a parent
+room for outdoor rooms on the Miskatonic University campus.}}
+  ~article{0}
+  ~nouns{{}}
+  ~adjectives{{}}
+}
