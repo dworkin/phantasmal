@@ -3,5 +3,5 @@
   ~level{5}
 }
 
-~channel{~name{unq parsing}        ~level{3}}
-~channel{~name{/usr/System/initd}  ~level{2}}
+~channel{~name{/usr/common/obj/unq_dtd}   ~level{3}}
+~channel{~name{/usr/System/initd}         ~level{2}}
