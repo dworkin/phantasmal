@@ -1,0 +1,7 @@
+                     Installing Bundled Phantasmal
+
+  After unpacking the distribution, run the "install_mud" script,
+which should be as easy as going to the right directory and typing
+"./install_mud".
+
+  You can run the MUD by typing "./start_mud".
