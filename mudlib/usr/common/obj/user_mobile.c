@@ -12,6 +12,10 @@ static void create(varargs int clone) {
 }
 
 /* overridden functions from mobile.c */
+string get_type(void) {
+  return "user";
+}
+
 object get_user(void) {
   return user;
 }
@@ -106,4 +110,12 @@ void hook_enter(mixed *args) {
       user->message("\r\n");
     }
   }
+}
+
+void from_dtd_unq(mixed* unq) {
+  /* Set the body, location and number fields */
+  unq = mobile_from_dtd_unq(unq);
+
+  /* User mobiles don't actually (yet) have any additional data.
+     So we can just return. */
 }

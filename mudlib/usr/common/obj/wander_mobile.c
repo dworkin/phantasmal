@@ -25,6 +25,10 @@ void upgraded(varargs int clone) {
   }
 }
 
+string get_type(void) {
+  return "wander";
+}
+
 void __move_hook(void) {
   if(previous_program() != TIMED) {
     error("wander_mobile::__move_hook should only be called by TIMED!");
