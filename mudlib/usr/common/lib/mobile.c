@@ -343,7 +343,62 @@ nomask string place(object obj, object to) {
 }
  
 /*
- * int move()
+ * string open()
+ *
+ * have the mobile attempt to open the given object.
+ *
+ * return nil on success, or a string indicating the reason for
+ * the failure on failure.  (replace this by a phrase later?)
+ */
+nomask string open(object obj) {
+  if(!obj->is_openable() || !obj->is_container()) {
+    return "That can't be opened!";
+  }
+
+  if(obj->is_open()) {
+    return "That's already open.";
+  }
+
+  if(obj->get_location() != location
+     && obj->get_location() != body) {
+    return "You can't reach that from here.";
+  }
+
+  obj->set_open(1);
+
+  return nil;
+}
+
+/*
+ * string close()
+ *
+ * have the mobile attempt to close the given object.
+ *
+ * return nil on success, or a string indicating the reason for
+ * the failure on failure.  (replace this by a phrase later?)
+ */
+nomask string close(object obj) {
+  if(!obj->is_openable() || !obj->is_container()) {
+    return "That can't be closed!";
+  }
+
+  if(!obj->is_open()) {
+    return "That's already closed.";
+  }
+
+  if(obj->get_location() != location
+     && obj->get_location() != body) {
+    return "You can't reach that from here.";
+  }
+
+  obj->set_open(0);
+
+  return nil;
+}
+
+
+/*
+ * string move()
  *
  * move's the mobile's body through the given exit.
  *
@@ -388,7 +443,7 @@ nomask string move(int dir) {
   return nil;
 }
 /*
- * int teleport()
+ * string teleport()
  *
  * teleport's the mobile's body to the given destination.
  * 
