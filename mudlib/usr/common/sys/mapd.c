@@ -87,12 +87,14 @@ void set_segment_zone(int segment, int newzone, int oldzone) {
   if(previous_program() != OBJNUMD)
     error("Only objnumd can notify MAPD of a segment zone change!");
 
+  if(oldzone == -1)
+    oldzone = 0;
   if(sizeof(zone_segments[oldzone] & ({ segment }))) {
     zone_segments[oldzone] -= ({ segment });
-  } else {
-    /* This is called atomically -- how can I signal a problem, but
-       not a fatal error? */
   }
+
+  if(newzone == -1)
+    error("Setting zone to illegal zone number!");
 
   zone_segments[newzone] += ({ segment });
 }
