@@ -1,0 +1,25 @@
+FILE
+	/usr/common/sys/stringd.c
+
+NAME
+	unq_escape - Escape data for UNQ encoding
+
+PROTOTYPE
+	string unq_escape(string str)
+
+CALLED BY
+	Anybody
+
+DESCRIPTION
+	Returns the string with all tildes, curly-braces and backslashes
+	prefaced with a backslash.  This means that if decoded as an
+	UNQ string, everything will appear as a literal character.
+	This is useful for serializing strings as UNQ.
+
+RETURN VALUE
+	The new string.
+
+ERRORS
+	Normally none.
+
+SEE ALSO

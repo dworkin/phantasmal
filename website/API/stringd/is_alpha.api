@@ -1,0 +1,25 @@
+FILE
+	/usr/common/sys/stringd.c
+
+NAME
+	is_alpha - return whether a string is entirely alphabetical
+
+PROTOTYPE
+	int is_alpha(string str)
+
+CALLED BY
+	Anybody
+
+DESCRIPTION
+	Returns true if the string consists only of uppercase or
+	lowercase alphabetic characters.  That means no numbers, no
+	whitespace, no punctuation, no newlines and so on.
+
+RETURN VALUE
+	1 for true, 0 for false.
+
+ERRORS
+	Normally none.
+
+SEE ALSO
+	is_whitespace, is_alphanum, is_ident

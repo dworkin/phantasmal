@@ -1,0 +1,24 @@
+FILE
+	/usr/common/sys/stringd.c
+
+NAME
+	strcmp - compare two strings
+
+PROTOTYPE
+	int strcmp(string s1, string s2)
+
+CALLED BY
+	Anybody
+
+DESCRIPTION
+	Returns 1 if s1 is later in ASCII order than s2.  Returns
+	-1 if s2 is later than s1.  Returns 0 if the two are equal.
+
+RETURN VALUE
+	1, 0, or -1.  See Description.
+
+ERRORS
+	Normally none.
+
+SEE ALSO
+	stricmp

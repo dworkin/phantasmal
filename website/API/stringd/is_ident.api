@@ -1,0 +1,27 @@
+FILE
+	/usr/common/sys/stringd.c
+
+NAME
+	is_alphanum - return whether a string is a valid LPC identifier
+
+PROTOTYPE
+	int is_ident(string str)
+
+CALLED BY
+	Anybody
+
+DESCRIPTION
+	Returns true if the string consists only of uppercase or
+	lowercase alphabetic characters, digits, and underscores.
+	That means no whitespace, no other punctuation, no newlines
+	and so on.  Strings of this form are usable as identifiers
+	in C and LPC.
+
+RETURN VALUE
+	1 for true, 0 for false.
+
+ERRORS
+	Normally none.
+
+SEE ALSO
+	is_whitespace, is_alpha, is_alphanum

@@ -1,0 +1,24 @@
+FILE
+	/usr/common/sys/stringd.c
+
+NAME
+	to_upper - converts a string to uppercase
+
+PROTOTYPE
+	string to_upper(string str)
+
+CALLED BY
+	Anybody
+
+DESCRIPTION
+	Returns the string with all lowercase alphabetic characters
+	converted to uppercase.
+
+RETURN VALUE
+	The new string.
+
+ERRORS
+	Normally none.
+
+SEE ALSO
+	char_to_upper, to_lower

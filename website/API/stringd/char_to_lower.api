@@ -1,0 +1,24 @@
+FILE
+	/usr/common/sys/stringd.c
+
+NAME
+	char_to_lower - return the lowercase version of an alphabetic character
+
+PROTOTYPE
+	int char_to_lower(int char)
+
+CALLED BY
+	Anybody
+
+DESCRIPTION
+	Returns nonalphabetic characters intact.  Returns uppercase
+	alphabetic characters as lowercase.
+
+RETURN VALUE
+	The new lowercase character.
+
+ERRORS
+	Normally none.
+
+SEE ALSO
+	to_lower, char_to_upper

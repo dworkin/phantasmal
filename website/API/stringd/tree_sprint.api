@@ -1,0 +1,35 @@
+FILE
+	/usr/common/sys/stringd.c
+
+NAME
+	tree_sprint - print LPC data to a string
+
+PROTOTYPE
+	string tree_sprint(mixed data, int indent)
+
+CALLED BY
+	Anybody
+
+DESCRIPTION
+	Returns the string encoding the given LPC data.  This could be
+	used for debugging, or potentially to serialize data to a file.
+	The data should contain no self-references or tree_sprint may
+	get into an infinite loop, repeat parts of the data or otherwise
+	behave unpredictably.
+
+	Objects print only their names, not their contents.  This limits
+	the use of tree_sprint for serialization.
+
+	Tree_sprint attempts to format the data for human reading, even
+	with large structures.  This attempt does not always succeed.
+	The supplied 'indent' variable tells how many spaces to indent
+	the current data, at a minimum.
+
+RETURN VALUE
+	The new string.
+
+ERRORS
+	Unrecognized DGD types may give an error.
+
+SEE ALSO
+	mixed_sprint

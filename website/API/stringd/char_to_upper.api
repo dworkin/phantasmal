@@ -1,0 +1,24 @@
+FILE
+	/usr/common/sys/stringd.c
+
+NAME
+	char_to_upper - return the uppercase version of an alphabetic character
+
+PROTOTYPE
+	int char_to_upper(int char)
+
+CALLED BY
+	Anybody
+
+DESCRIPTION
+	Returns nonalphabetic characters intact.  Returns lowercase
+	alphabetic characters as uppercase.
+
+RETURN VALUE
+	The new uppercase character.
+
+ERRORS
+	Normally none.
+
+SEE ALSO
+	to_upper, char_to_lower

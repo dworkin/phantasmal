@@ -1,0 +1,24 @@
+FILE
+	/usr/common/sys/soundexd.c
+
+NAME
+	match - check two soundex keys for how closely they match
+
+PROTOTYPE
+	float match(string first, string second)
+
+CALLED BY
+	Anybody
+
+DESCRIPTION
+	Compares two soundex keys and returns a floating-point value
+	between 0.0 and 1.0 for how closely they match.
+
+RETURN VALUE
+	0.0 means no match at all, 1.0 means a complete match.
+
+ERRORS
+	Normally none.
+
+SEE ALSO
+	get_key

@@ -1,0 +1,24 @@
+FILE
+	/usr/common/sys/stringd.c
+
+NAME
+	to_lower - converts a string to lowercase
+
+PROTOTYPE
+	string to_lower(string str)
+
+CALLED BY
+	Anybody
+
+DESCRIPTION
+	Returns the string with all uppercase alphabetic characters
+	converted to lowercase.
+
+RETURN VALUE
+	The new string.
+
+ERRORS
+	Normally none.
+
+SEE ALSO
+	char_to_lower, to_upper

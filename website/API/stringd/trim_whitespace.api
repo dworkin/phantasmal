@@ -1,0 +1,26 @@
+FILE
+	/usr/common/sys/stringd.c
+
+NAME
+	trim_whitespace - remove leading and trailing whitespace from a
+	string
+
+PROTOTYPE
+	string trim_whitespace(string str)
+
+CALLED BY
+	Anybody
+
+DESCRIPTION
+	Returns the string with all leading and trailing whitespace
+	removed.  This may result in the empty string.  If nil is
+	passed in, it is also returned.
+
+RETURN VALUE
+	The new string.
+
+ERRORS
+	Normally none.
+
+SEE ALSO
+	char_is_whitespace, is_whitespace

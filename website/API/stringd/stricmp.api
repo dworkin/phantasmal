@@ -1,0 +1,26 @@
+FILE
+	/usr/common/sys/stringd.c
+
+NAME
+	stricmp - compare two strings without regard to case
+
+PROTOTYPE
+	int stricmp(string s1, string s2)
+
+CALLED BY
+	Anybody
+
+DESCRIPTION
+	Returns 1 if s1 is later in alphabetical order than s2.  Returns
+	-1 if s2 is later than s1.  Returns 0 if the two are equal.
+	All comparisons are done treating upper- and lowercase letters
+	as identical.
+
+RETURN VALUE
+	1, 0, or -1.  See Description.
+
+ERRORS
+	Normally none.
+
+SEE ALSO
+	strcmp

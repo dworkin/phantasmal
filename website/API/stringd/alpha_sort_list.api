@@ -1,0 +1,27 @@
+FILE
+	/usr/common/sys/stringd.c
+
+NAME
+	alpha_sort_list - sort a list of string alphabetically
+
+PROTOTYPE
+	string *alpha_sort_list(string *list)
+
+CALLED BY
+	Anybody
+
+DESCRIPTION
+	Returns a copy of the list of strings.  The copy is sorted in
+	ASCII order, as strcmp() would order them.  This sort isn't
+	guaranteed fast, but it *is* already written.
+
+	Nil strings may be discarded during the sort, and in general
+	their sorting behavior is undefined.
+
+RETURN VALUE
+	A list of strings.
+
+ERRORS
+	Normally none.
+
+SEE ALSO

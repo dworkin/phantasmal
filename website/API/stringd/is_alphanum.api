@@ -1,0 +1,25 @@
+FILE
+	/usr/common/sys/stringd.c
+
+NAME
+	is_alphanum - return whether a string is entirely alphanumeric
+
+PROTOTYPE
+	int is_alphanum(string str)
+
+CALLED BY
+	Anybody
+
+DESCRIPTION
+	Returns true if the string consists only of uppercase or
+	lowercase alphabetic characters and digits.  That means no
+	whitespace, no punctuation, no newlines and so on.
+
+RETURN VALUE
+	1 for true, 0 for false.
+
+ERRORS
+	Normally none.
+
+SEE ALSO
+	is_whitespace, is_alpha, is_ident

@@ -1,0 +1,24 @@
+FILE
+	/usr/common/sys/stringd.c
+
+NAME
+	string_has_char - return whether a string contains a particular
+	character.
+
+PROTOTYPE
+	int string_has_char(int char, string str)
+
+CALLED BY
+	Anybody
+
+DESCRIPTION
+	Returns true if and only if the string contains the given character.
+
+RETURN VALUE
+	1 for true, 0 for false.
+
+ERRORS
+	Normally none.
+
+SEE ALSO
+	is_whitespace, is_alpha, is_alphanum, is_ident

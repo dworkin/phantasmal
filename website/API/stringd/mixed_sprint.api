@@ -1,0 +1,30 @@
+FILE
+	/usr/common/sys/stringd.c
+
+NAME
+	mixed_sprint - print LPC data to a string
+
+PROTOTYPE
+	string mixed_sprint(mixed data)
+
+CALLED BY
+	Anybody
+
+DESCRIPTION
+	Returns the string encoding the given LPC data.  This could be
+	used for debugging, or potentially to serialize data to a file.
+	The data should contain no self-references or mixed_sprint may
+	get into an infinite loop, repeat parts of the data or otherwise
+	behave unpredictably.
+
+	Objects print only their names, not their contents.  This limits
+	the use of mixed_sprint for serialization.
+
+RETURN VALUE
+	The new string.
+
+ERRORS
+	Unrecognized DGD types may give an error.
+
+SEE ALSO
+	tree_sprint

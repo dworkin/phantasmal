@@ -1,0 +1,22 @@
+FILE
+	/usr/common/sys/stringd.c
+
+NAME
+	prefix_string - return whether one string is a prefix of another
+
+PROTOTYPE
+	int prefix_string(string prefix, string text)
+
+CALLED BY
+	Anybody
+
+DESCRIPTION
+	Returns true if 'prefix' is a prefix of 'text', false otherwise.
+
+RETURN VALUE
+	1 for true, 0 for false.
+
+ERRORS
+	Normally none.
+
+SEE ALSO
