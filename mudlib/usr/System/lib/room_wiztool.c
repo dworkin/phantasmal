@@ -70,7 +70,16 @@ static void cmd_list_room(object user, string cmd, string str) {
 
       room = MAPD->get_room_by_num(rooms[ctr]);
       phr = room->get_glance();
-      tmp += "  " + rooms[ctr] + "   ";
+      tmp += "  " + rooms[ctr] + "  ";
+      if (room->get_mobile()) {
+        tmp += "(mob)  ";
+      } else if (room->get_detail_of()) {
+        tmp += "(det)  ";
+      } else if (room->get_location() && room->get_location()!=MAPD->get_room_by_num(0)) {
+        tmp += "(obj)  ";
+      } else {
+        tmp += "(room) ";
+      }
       tmp += phr->to_string(user);
       tmp += "\r\n";
     }
@@ -99,7 +108,16 @@ static void cmd_list_room(object user, string cmd, string str) {
 
       room = MAPD->get_room_by_num(rooms[ctr]);
       phr = room->get_glance();
-      tmp += "  " + rooms[ctr] + "   ";
+      tmp += "  " + rooms[ctr] + "  ";
+      if (room->get_mobile()) {
+        tmp += "(mob)  ";
+      } else if (room->get_detail_of()) {
+        tmp += "(det)  ";
+      } else if (room->get_location() && room->get_location()!=MAPD->get_room_by_num(0)) {
+        tmp += "(obj)  ";
+      } else {
+        tmp += "(room) ";
+      }
       tmp += phr->to_string(user);
       tmp += "\r\n";
     }
