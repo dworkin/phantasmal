@@ -25,17 +25,27 @@ static void create(varargs int clone) {
 void upgraded(varargs int clone) {
   int ctr;
 
-  num_channels = 3;
-  channels = allocate(num_channels);
-
-  for(ctr = 0; ctr < num_channels; ctr++) {
-    channels[ctr] = ([ ]);
-  }
-
+  /* Note:  these must mesh with include/channel.h.  Don't just modify
+     stuff here. */
   channel_attributes = ({ ({ "OOC", 0 }),
+			    ({ "Log", ATTRIB_ADMIN }),
 			    ({ "Error", ATTRIB_ADMIN }),
 			    ({ "Gossip", 0 }),
 			    });
+
+  if(!channels) {
+    num_channels = sizeof(channel_attributes);
+    channels = allocate(num_channels);
+
+    for(ctr = 0; ctr < num_channels; ctr++) {
+      channels[ctr] = ([ ]);
+    }
+  }
+
+  if(num_channels != sizeof(channel_attributes)) {
+    LOGD->write_syslog("Warning!  ChannelD doesn't fully upgrade yet"
+		       + " when recompiled!");
+  }
 }
 
 mixed* channel_list(int is_admin) {
@@ -66,30 +76,35 @@ int get_channel_by_name(string name, object user) {
   return -1;
 }
 
-void phrase_to_channel(int channel, object phrase) {
-  int    ctr;
+void string_to_channel(int channel, string str, varargs int modifiers) {
+  int    ctr, do_write;
   mixed* keys;
+  int    sub_dat;
 
   keys = map_indices(channels[channel]);
   for(ctr = 0; ctr < sizeof(keys); ctr++) {
-    channels[channel][keys[ctr]][0]->send_phrase(phrase);
+    sub_dat = channels[channel][keys[ctr]][1];
+
+    do_write = 1;
+    switch(channel) {
+    case CHANNEL_ERR:
+    case CHANNEL_LOG:
+      if(modifiers && sub_dat) {
+	if(modifiers < sub_dat)
+	  do_write = 0;
+      }
+      break;
+    }
+
+    if(do_write)
+      channels[channel][keys[ctr]][0]->message(str);
   }
 }
 
-void string_to_channel(int channel, string str) {
-  int    ctr;
-  mixed* keys;
-
-  keys = map_indices(channels[channel]);
-  for(ctr = 0; ctr < sizeof(keys); ctr++) {
-    channels[channel][keys[ctr]][0]->message(str);
-  }
-}
-
-int subscribe_user(object user, int channel, string args) {
+int subscribe_user(object user, int channel, varargs int arg) {
   int    attrib, ctr;
 
-  if(channel < CHANNEL_OOC || channel > num_channels) {
+  if(channel < 0 || channel > num_channels) {
     return -1;
   }
   attrib = channel_attributes[channel][1];
@@ -101,7 +116,7 @@ int subscribe_user(object user, int channel, string args) {
   if(is_subscribed(user, channel))
     return -1;
 
-  channels[channel][user->query_name()] = ({ user, args });
+  channels[channel][user->query_name()] = ({ user, arg });
   return 1;
 }
 
@@ -137,11 +152,16 @@ void unsubscribe_user_from_all(object user) {
 }
 
 int is_subscribed(object user, int channel) {
-  int ctr;
-
   if(channels[channel][user->query_name()]) {
     return 1;
   }
 
   return 0;
+}
+
+int sub_data_level(object user, int channel) {
+  if(channels[channel][user->query_name()]) {
+    return channels[channel][user->query_name()][1];
+  }
+
 }
