@@ -1,0 +1,5 @@
+~DTD{
+  ~bind{tag,code}
+  ~tag{string}
+  ~code{string}
+}

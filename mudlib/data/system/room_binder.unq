@@ -1,0 +1,14 @@
+~bind{
+  ~tag{room}
+  ~code{/usr/common/obj/simple_room}
+}
+
+~bind{
+  ~tag{portable}
+  ~code{/usr/common/obj/simple_portable}
+}
+
+~bind{
+  ~tag{body}
+  ~code{/usr/common/obj/mobile_portable}
+}
