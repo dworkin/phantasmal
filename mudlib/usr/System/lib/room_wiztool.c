@@ -9,6 +9,7 @@
 #include <status.h>
 #include <limits.h>
 #include <log.h>
+#include <exit.h>
 
 inherit access API_ACCESS;
 /* prototypes */
@@ -405,6 +406,11 @@ static void cmd_new_exit(object user, string cmd, string str) {
     user->message("There already appears to be an exit in that direction.\r\n");
     return;
   }
+  
+  if (roomnum == 0) {
+    user->message("Cannot link to void.\r\n");
+    return;
+  }
 
   if (retcode == 2) type = "twoway";
 
@@ -460,6 +466,11 @@ static void cmd_new_twoway_exit(object user, string cmd, string str) {
     return;
   }
 
+  if (roomnum == 0) {
+    user->message("Cannot link to void.\r\n");
+    return;
+  }
+
   user->message("You begin creating an exit to '"
 		+ room->get_brief()->to_string(user) + "'.\r\n");
   EXITD->add_twoway_exit_between(user->get_location(), room, dir, -1, -1);
@@ -495,6 +506,11 @@ static void cmd_new_oneway_exit(object user, string cmd, string str) {
     return;
   }
 
+  if (roomnum == 0) {
+    user->message("Cannot link to void.\r\n");
+    return;
+  }
+
   user->message("You begin creating an exit to '"
 		+ room->get_brief()->to_string(user) + "'.\r\n");
   EXITD->add_oneway_exit_between(user->get_location(), room, dir, -1);
@@ -515,7 +531,7 @@ static void cmd_clear_exits(object user, string cmd, string str) {
 
 static void cmd_remove_exit(object user, string cmd, string str) {
   int    dir;
-  object exit;
+  object exit, exit2;
 
   if(!str || STRINGD->is_whitespace(str) || sscanf(str, "%*s %*s") == 2) {
     user->message("Usage: " + cmd + " <direction>\r\n");
@@ -539,7 +555,9 @@ static void cmd_remove_exit(object user, string cmd, string str) {
     return;
   }
 
-  EXITD->remove_exit(user->get_location(), exit);
+  EXITD->clear_exit(exit);
+
+  user->message("Exit " + str + " destroyed.\r\n");
 }
 
 static void cmd_fix_exits(object user, string cmd, string str) {

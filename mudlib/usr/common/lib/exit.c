@@ -36,6 +36,10 @@ void upgraded(varargs int clone) {
   ::upgraded(clone);
 }
 
+void destructed(int clone) {
+  ::destructed(clone);
+}
+
 void set_number(int new_num) {
   if(previous_program() == EXITD) {
     tr_num = new_num;
@@ -100,12 +104,12 @@ object get_destination() {
   return destination;
 }
 
-/*  WAS:    ~exit{string}
- *  NOW:    ~newexit{rnumber,direction,destination,return,type,
- *                   rdetail?,rbdesc?,rgdesc?,rldesc?,redesc?,
- *                   rnouns?,radjectives?,rflags?}}
+/*
+ * string to_unq_flags(void)
+ *
+ * creates a string out of the object flags.
  */
-string to_unq_text(void) {
+string to_unq_flags(void) {
   object dest, shortphr, other_exit;
   string  ret, tmp_n, tmp_a;
   int locale, opp_dir;
@@ -115,10 +119,10 @@ string to_unq_text(void) {
   dest = get_destination();
   shortphr = EXITD->get_short_for_dir(get_direction());
 
-  ret += "  ~newexit{~rnumber{" + get_number() + "}"
-      + " ~direction{" + get_direction() + "}"
-      + " ~destination{" + dest->get_number() + "}"
-      + " ~return{";
+  ret += "    ~rnumber{" + get_number() + "}\n"
+      + "    ~direction{" + get_direction() + "}\n"
+      + "    ~destination{" + dest->get_number() + "}\n"
+      + "    ~return{";
 
   if(get_link() > 0 && dest) {
     opp_dir = EXITD->opposite_direction(get_direction());
@@ -126,13 +130,13 @@ string to_unq_text(void) {
     if(!other_exit) {
       LOGD->write_syslog("Problem finding return exit!");
     } else {
-      ret += other_exit->get_number() + "}";
+      ret += other_exit->get_number() + "}\n";
     }
   } else {
-    ret += "-1}";
+    ret += "-1}\n";
   }
 
-  ret += " ~type{" + get_exit_type() + "}\n";
+  ret += "    ~type{" + get_exit_type() + "}\n";
 
   if (get_detail_of()) {
     ret += "    ~rdetail{" + get_detail_of()->get_number() + "}\n";
@@ -173,11 +177,52 @@ string to_unq_text(void) {
     ret += "    ~radjectives{{" + tmp_a + "}}\n";
   }
 
-  ret += "    ~rflags{" + objflags + "}}\n";
+  ret += "    ~rflags{" + objflags + "}";
 
   return ret;
 }
 
+/*
+ * void from_dtd_flags(mixed *unq)
+ *
+ * loads data from the unq parsed with a room-derived dtd.
+ */
+
+void from_dtd_tag(string tag, mixed value) {
+  int ctr;
+
+  if (tag=="rnumber") {
+    tr_num = value;
+  } else if (tag=="direction") {
+    direction = value;
+  } else if (tag=="destination") {
+    destination = value;
+  } else if (tag=="return") {
+    link_to = value;
+  } else if (tag=="type") {
+    type = value;
+  } else if (tag=="rdetail") {
+      /* what to do? */
+  } else if (tag=="rbdesc") {
+     bdesc = value;
+  } else if (tag=="rgdesc") {
+    gdesc = value;
+  } else if (tag=="rldesc") {
+    ldesc = value;
+  } else if (tag=="redesc") {
+    edesc = value;
+  } else if (tag=="rflags") {
+    objflags = value;
+  } else if(tag=="rnouns") {
+    for(ctr = 0; ctr < sizeof(value); ctr++) {
+      add_noun(value[ctr]);
+    }
+  } else if(tag=="radjectives") {
+    for(ctr = 0; ctr < sizeof(value); ctr++) {
+      add_adjective(value[ctr]);
+    }
+  }
+}
 
 /*
  * flag overrides

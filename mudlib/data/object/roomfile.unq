@@ -14,7 +14,12 @@ walls are.}}
   ~article{0}
   ~nouns{{~enUS{locker}}}
   ~adjectives{{~enUS{meat}}}
-  ~newexit{~rnumber{114} ~direction{4} ~destination{1} ~return{115} ~type{2}
+  ~newexit{
+    ~rnumber{114}
+    ~direction{4}
+    ~destination{1}
+    ~return{115}
+    ~type{2}
     ~rgdesc{
     ~enUS{west}
     ~esUS{oeste}}
@@ -22,8 +27,27 @@ walls are.}}
     ~enUS{west}
     ~esUS{oeste}}
     ~rnouns{{~enUS{west}~esUS{oeste}}}
-    ~rflags{2}}
-  ~newexit{~rnumber{116} ~direction{1} ~destination{1} ~return{117} ~type{2}
+    ~rflags{3}}
+  ~newexit{
+    ~rnumber{115}
+    ~direction{3}
+    ~destination{1}
+    ~return{114}
+    ~type{2}
+    ~rgdesc{
+    ~enUS{east}
+    ~esUS{este}}
+    ~rldesc{
+    ~enUS{east}
+    ~esUS{este}}
+    ~rnouns{{~enUS{east}~esUS{este}}}
+    ~rflags{3}}
+  ~newexit{
+    ~rnumber{116}
+    ~direction{1}
+    ~destination{1}
+    ~return{117}
+    ~type{2}
     ~rgdesc{
     ~enUS{north}
     ~esUS{norte}}
@@ -31,8 +55,27 @@ walls are.}}
     ~enUS{north}
     ~esUS{norte}}
     ~rnouns{{~enUS{north}~esUS{norte}}}
-    ~rflags{2}}
-  ~newexit{~rnumber{118} ~direction{7} ~destination{1} ~return{119} ~type{2}
+    ~rflags{3}}
+  ~newexit{
+    ~rnumber{117}
+    ~direction{2}
+    ~destination{1}
+    ~return{116}
+    ~type{2}
+    ~rgdesc{
+    ~enUS{south}
+    ~esUS{sur}}
+    ~rldesc{
+    ~enUS{south}
+    ~esUS{sur}}
+    ~rnouns{{~enUS{south}~esUS{sur}}}
+    ~rflags{3}}
+  ~newexit{
+    ~rnumber{118}
+    ~direction{7}
+    ~destination{1}
+    ~return{119}
+    ~type{2}
     ~rgdesc{
     ~enUS{northwest}
     ~esUS{noroeste}}
@@ -40,8 +83,27 @@ walls are.}}
     ~enUS{northwest}
     ~esUS{noroeste}}
     ~rnouns{{~enUS{northwest}~esUS{noroeste}}}
-    ~rflags{2}}
-  ~newexit{~rnumber{120} ~direction{5} ~destination{1} ~return{121} ~type{2}
+    ~rflags{3}}
+  ~newexit{
+    ~rnumber{119}
+    ~direction{8}
+    ~destination{1}
+    ~return{118}
+    ~type{2}
+    ~rgdesc{
+    ~enUS{southeast}
+    ~esUS{sudeste}}
+    ~rldesc{
+    ~enUS{southeast}
+    ~esUS{sudeste}}
+    ~rnouns{{~enUS{southeast}~esUS{sudeste}}}
+    ~rflags{3}}
+  ~newexit{
+    ~rnumber{120}
+    ~direction{5}
+    ~destination{1}
+    ~return{121}
+    ~type{2}
     ~rgdesc{
     ~enUS{northeast}
     ~esUS{nordeste}}
@@ -49,7 +111,21 @@ walls are.}}
     ~enUS{northeast}
     ~esUS{nordeste}}
     ~rnouns{{~enUS{northeast}~esUS{nordeste}}}
-    ~rflags{2}}
+    ~rflags{3}}
+  ~newexit{
+    ~rnumber{121}
+    ~direction{6}
+    ~destination{1}
+    ~return{120}
+    ~type{2}
+    ~rgdesc{
+    ~enUS{southwest}
+    ~esUS{sudoeste}}
+    ~rldesc{
+    ~enUS{southwest}
+    ~esUS{sudoeste}}
+    ~rnouns{{~enUS{southwest}~esUS{sudoeste}}}
+    ~rflags{3}}
   ~weight{0}
   ~volume{0}
   ~length{0}
@@ -75,7 +151,12 @@ It looks very cozy.
   ~article{0}
   ~nouns{{}}
   ~adjectives{{}}
-  ~newexit{~rnumber{106} ~direction{20} ~destination{3} ~return{107} ~type{2}
+  ~newexit{
+    ~rnumber{106}
+    ~direction{20}
+    ~destination{3}
+    ~return{107}
+    ~type{2}
     ~rgdesc{
     ~enUS{out}
     ~esUS{fuera}}
@@ -83,7 +164,7 @@ It looks very cozy.
     ~enUS{out}
     ~esUS{fuera}}
     ~rnouns{{~enUS{out}~esUS{fuera}}}
-    ~rflags{2}}
+    ~rflags{3}}
   ~weight{2000}
   ~volume{1000000}
   ~length{1000}
@@ -107,7 +188,26 @@ fur here and there in different colors.}}
   ~article{0}
   ~nouns{{}}
   ~adjectives{{}}
-  ~newexit{~rnumber{108} ~direction{2} ~destination{4} ~return{109} ~type{2}
+  ~newexit{
+    ~rnumber{107}
+    ~direction{19}
+    ~destination{2}
+    ~return{106}
+    ~type{2}
+    ~rgdesc{
+    ~enUS{in}
+    ~esUS{dentro}}
+    ~rldesc{
+    ~enUS{in}
+    ~esUS{dentro}}
+    ~rnouns{{~enUS{in}~esUS{dentro}}}
+    ~rflags{3}}
+  ~newexit{
+    ~rnumber{108}
+    ~direction{2}
+    ~destination{4}
+    ~return{109}
+    ~type{2}
     ~rgdesc{
     ~enUS{south}
     ~esUS{sur}}
@@ -115,7 +215,7 @@ fur here and there in different colors.}}
     ~enUS{south}
     ~esUS{sur}}
     ~rnouns{{~enUS{south}~esUS{sur}}}
-    ~rflags{2}}
+    ~rflags{3}}
   ~weight{2000}
   ~volume{1000000}
   ~length{1000}
@@ -138,7 +238,26 @@ can be found in the east and west walls.}}
   ~article{0}
   ~nouns{{}}
   ~adjectives{{}}
-  ~newexit{~rnumber{110} ~direction{2} ~destination{5} ~return{111} ~type{2}
+  ~newexit{
+    ~rnumber{109}
+    ~direction{1}
+    ~destination{3}
+    ~return{108}
+    ~type{2}
+    ~rgdesc{
+    ~enUS{north}
+    ~esUS{norte}}
+    ~rldesc{
+    ~enUS{north}
+    ~esUS{norte}}
+    ~rnouns{{~enUS{north}~esUS{norte}}}
+    ~rflags{3}}
+  ~newexit{
+    ~rnumber{110}
+    ~direction{2}
+    ~destination{5}
+    ~return{111}
+    ~type{2}
     ~rgdesc{
     ~enUS{south}
     ~esUS{sur}}
@@ -146,7 +265,7 @@ can be found in the east and west walls.}}
     ~enUS{south}
     ~esUS{sur}}
     ~rnouns{{~enUS{south}~esUS{sur}}}
-    ~rflags{2}}
+    ~rflags{3}}
   ~weight{2000}
   ~volume{1000000}
   ~length{1000}
@@ -174,6 +293,20 @@ dust from the walls settled on the floor -- it's quite clean here.}}
   ~article{0}
   ~nouns{{}}
   ~adjectives{{}}
+  ~newexit{
+    ~rnumber{111}
+    ~direction{1}
+    ~destination{4}
+    ~return{110}
+    ~type{2}
+    ~rgdesc{
+    ~enUS{north}
+    ~esUS{norte}}
+    ~rldesc{
+    ~enUS{north}
+    ~esUS{norte}}
+    ~rnouns{{~enUS{north}~esUS{norte}}}
+    ~rflags{3}}
   ~weight{2000}
   ~volume{1000000}
   ~length{1000}
@@ -290,15 +423,20 @@ see opalescent light filtering in through the petals.
   ~article{0}
   ~nouns{{~enUS{room,test}}}
   ~adjectives{{~enUS{test}}}
-  ~newexit{~rnumber{104} ~direction{20} ~destination{0} ~return{105} ~type{2}
+  ~newexit{
+    ~rnumber{101}
+    ~direction{3}
+    ~destination{79}
+    ~return{100}
+    ~type{2}
     ~rgdesc{
-    ~enUS{out}
-    ~esUS{fuera}}
+    ~enUS{east}
+    ~esUS{este}}
     ~rldesc{
-    ~enUS{out}
-    ~esUS{fuera}}
-    ~rnouns{{~enUS{out}~esUS{fuera}}}
-    ~rflags{2}}
+    ~enUS{east}
+    ~esUS{este}}
+    ~rnouns{{~enUS{east}~esUS{este}}}
+    ~rflags{3}}
   ~weight{2000}
   ~volume{1000000}
   ~length{1000}
@@ -327,7 +465,12 @@ see opalescent light filtering in through the petals.
   ~article{0}
   ~nouns{{~enUS{room,test}}}
   ~adjectives{{~enUS{test}}}
-  ~newexit{~rnumber{100} ~direction{4} ~destination{77} ~return{101} ~type{2}
+  ~newexit{
+    ~rnumber{100}
+    ~direction{4}
+    ~destination{77}
+    ~return{101}
+    ~type{2}
     ~rgdesc{
     ~enUS{west}
     ~esUS{oeste}}
@@ -335,7 +478,21 @@ see opalescent light filtering in through the petals.
     ~enUS{west}
     ~esUS{oeste}}
     ~rnouns{{~enUS{west}~esUS{oeste}}}
-    ~rflags{2}}
+    ~rflags{3}}
+  ~newexit{
+    ~rnumber{103}
+    ~direction{2}
+    ~destination{81}
+    ~return{102}
+    ~type{2}
+    ~rgdesc{
+    ~enUS{south}
+    ~esUS{sur}}
+    ~rldesc{
+    ~enUS{south}
+    ~esUS{sur}}
+    ~rnouns{{~enUS{south}~esUS{sur}}}
+    ~rflags{3}}
   ~weight{2000}
   ~volume{1000000}
   ~length{1000}
@@ -364,7 +521,12 @@ see opalescent light filtering in through the petals.
   ~article{0}
   ~nouns{{~enUS{room,test}}}
   ~adjectives{{~enUS{test}}}
-  ~newexit{~rnumber{102} ~direction{1} ~destination{79} ~return{103} ~type{2}
+  ~newexit{
+    ~rnumber{102}
+    ~direction{1}
+    ~destination{79}
+    ~return{103}
+    ~type{2}
     ~rgdesc{
     ~enUS{north}
     ~esUS{norte}}
@@ -372,7 +534,7 @@ see opalescent light filtering in through the petals.
     ~enUS{north}
     ~esUS{norte}}
     ~rnouns{{~enUS{north}~esUS{norte}}}
-    ~rflags{2}}
+    ~rflags{3}}
   ~weight{2000}
   ~volume{1000000}
   ~length{1000}
@@ -534,7 +696,12 @@ the middle of the room seems to be built directly into the floor somehow.}}
   ~article{1}
   ~nouns{{~enUS{lounge}}}
   ~adjectives{{}}
-  ~newexit{~rnumber{112} ~direction{2} ~destination{301} ~return{113} ~type{2}
+  ~newexit{
+    ~rnumber{112}
+    ~direction{2}
+    ~destination{301}
+    ~return{113}
+    ~type{2}
     ~rgdesc{
     ~enUS{south}
     ~esUS{sur}}
@@ -542,7 +709,7 @@ the middle of the room seems to be built directly into the floor somehow.}}
     ~enUS{south}
     ~esUS{sur}}
     ~rnouns{{~enUS{south}~esUS{sur}}}
-    ~rflags{2}}
+    ~rflags{3}}
   ~weight{2000}
   ~volume{1000000}
   ~length{1000}
@@ -567,6 +734,34 @@ and east.}}
   ~article{0}
   ~nouns{{}}
   ~adjectives{{}}
+  ~newexit{
+    ~rnumber{113}
+    ~direction{1}
+    ~destination{300}
+    ~return{112}
+    ~type{2}
+    ~rgdesc{
+    ~enUS{north}
+    ~esUS{norte}}
+    ~rldesc{
+    ~enUS{north}
+    ~esUS{norte}}
+    ~rnouns{{~enUS{north}~esUS{norte}}}
+    ~rflags{3}}
+  ~newexit{
+    ~rnumber{123}
+    ~direction{4}
+    ~destination{302}
+    ~return{122}
+    ~type{2}
+    ~rgdesc{
+    ~enUS{west}
+    ~esUS{oeste}}
+    ~rldesc{
+    ~enUS{west}
+    ~esUS{oeste}}
+    ~rnouns{{~enUS{west}~esUS{oeste}}}
+    ~rflags{3}}
   ~weight{2000}
   ~volume{1000000}
   ~length{1000}
@@ -592,7 +787,12 @@ the west.}}
   ~article{0}
   ~nouns{{}}
   ~adjectives{{}}
-  ~newexit{~rnumber{122} ~direction{3} ~destination{301} ~return{123} ~type{2}
+  ~newexit{
+    ~rnumber{122}
+    ~direction{3}
+    ~destination{301}
+    ~return{123}
+    ~type{2}
     ~rgdesc{
     ~enUS{east}
     ~esUS{este}}
@@ -600,8 +800,13 @@ the west.}}
     ~enUS{east}
     ~esUS{este}}
     ~rnouns{{~enUS{east}~esUS{este}}}
-    ~rflags{2}}
-  ~newexit{~rnumber{124} ~direction{1} ~destination{304} ~return{125} ~type{2}
+    ~rflags{3}}
+  ~newexit{
+    ~rnumber{124}
+    ~direction{1}
+    ~destination{304}
+    ~return{125}
+    ~type{2}
     ~rgdesc{
     ~enUS{north}
     ~esUS{norte}}
@@ -609,8 +814,13 @@ the west.}}
     ~enUS{north}
     ~esUS{norte}}
     ~rnouns{{~enUS{north}~esUS{norte}}}
-    ~rflags{2}}
-  ~newexit{~rnumber{126} ~direction{2} ~destination{305} ~return{127} ~type{2}
+    ~rflags{3}}
+  ~newexit{
+    ~rnumber{126}
+    ~direction{2}
+    ~destination{305}
+    ~return{127}
+    ~type{2}
     ~rgdesc{
     ~enUS{south}
     ~esUS{sur}}
@@ -618,7 +828,7 @@ the west.}}
     ~enUS{south}
     ~esUS{sur}}
     ~rnouns{{~enUS{south}~esUS{sur}}}
-    ~rflags{2}}
+    ~rflags{3}}
   ~weight{2000}
   ~volume{1000000}
   ~length{1000}
@@ -664,7 +874,26 @@ Tower off to the southwest.  A defunct lamp stands beside you.}}
   ~article{0}
   ~nouns{{}}
   ~adjectives{{}}
-  ~newexit{~rnumber{132} ~direction{3} ~destination{308} ~return{133} ~type{2}
+  ~newexit{
+    ~rnumber{125}
+    ~direction{2}
+    ~destination{302}
+    ~return{124}
+    ~type{2}
+    ~rgdesc{
+    ~enUS{south}
+    ~esUS{sur}}
+    ~rldesc{
+    ~enUS{south}
+    ~esUS{sur}}
+    ~rnouns{{~enUS{south}~esUS{sur}}}
+    ~rflags{3}}
+  ~newexit{
+    ~rnumber{132}
+    ~direction{3}
+    ~destination{308}
+    ~return{133}
+    ~type{2}
     ~rgdesc{
     ~enUS{east}
     ~esUS{este}}
@@ -672,7 +901,7 @@ Tower off to the southwest.  A defunct lamp stands beside you.}}
     ~enUS{east}
     ~esUS{este}}
     ~rnouns{{~enUS{east}~esUS{este}}}
-    ~rflags{2}}
+    ~rflags{3}}
   ~weight{2000}
   ~volume{1000000}
   ~length{1000}
@@ -697,7 +926,26 @@ academic halls beyond.  The rest of campus stretches out around you.}}
   ~article{0}
   ~nouns{{}}
   ~adjectives{{}}
-  ~newexit{~rnumber{128} ~direction{3} ~destination{306} ~return{129} ~type{2}
+  ~newexit{
+    ~rnumber{127}
+    ~direction{1}
+    ~destination{302}
+    ~return{126}
+    ~type{2}
+    ~rgdesc{
+    ~enUS{north}
+    ~esUS{norte}}
+    ~rldesc{
+    ~enUS{north}
+    ~esUS{norte}}
+    ~rnouns{{~enUS{north}~esUS{norte}}}
+    ~rflags{3}}
+  ~newexit{
+    ~rnumber{128}
+    ~direction{3}
+    ~destination{306}
+    ~return{129}
+    ~type{2}
     ~rgdesc{
     ~enUS{east}
     ~esUS{este}}
@@ -705,7 +953,7 @@ academic halls beyond.  The rest of campus stretches out around you.}}
     ~enUS{east}
     ~esUS{este}}
     ~rnouns{{~enUS{east}~esUS{este}}}
-    ~rflags{2}}
+    ~rflags{3}}
   ~weight{2000}
   ~volume{1000000}
   ~length{1000}
@@ -730,7 +978,26 @@ south.}}
   ~article{0}
   ~nouns{{}}
   ~adjectives{{}}
-  ~newexit{~rnumber{130} ~direction{2} ~destination{307} ~return{131} ~type{2}
+  ~newexit{
+    ~rnumber{129}
+    ~direction{4}
+    ~destination{305}
+    ~return{128}
+    ~type{2}
+    ~rgdesc{
+    ~enUS{west}
+    ~esUS{oeste}}
+    ~rldesc{
+    ~enUS{west}
+    ~esUS{oeste}}
+    ~rnouns{{~enUS{west}~esUS{oeste}}}
+    ~rflags{3}}
+  ~newexit{
+    ~rnumber{130}
+    ~direction{2}
+    ~destination{307}
+    ~return{131}
+    ~type{2}
     ~rgdesc{
     ~enUS{south}
     ~esUS{sur}}
@@ -738,7 +1005,7 @@ south.}}
     ~enUS{south}
     ~esUS{sur}}
     ~rnouns{{~enUS{south}~esUS{sur}}}
-    ~rflags{2}}
+    ~rflags{3}}
   ~weight{2000}
   ~volume{1000000}
   ~length{1000}
@@ -763,6 +1030,20 @@ dry and tufted.}}
   ~article{0}
   ~nouns{{}}
   ~adjectives{{}}
+  ~newexit{
+    ~rnumber{131}
+    ~direction{1}
+    ~destination{306}
+    ~return{130}
+    ~type{2}
+    ~rgdesc{
+    ~enUS{north}
+    ~esUS{norte}}
+    ~rldesc{
+    ~enUS{north}
+    ~esUS{norte}}
+    ~rnouns{{~enUS{north}~esUS{norte}}}
+    ~rflags{3}}
   ~weight{2000}
   ~volume{1000000}
   ~length{1000}
@@ -786,6 +1067,20 @@ Arkham through the trees to the north and east.}}
   ~article{0}
   ~nouns{{}}
   ~adjectives{{}}
+  ~newexit{
+    ~rnumber{133}
+    ~direction{4}
+    ~destination{304}
+    ~return{132}
+    ~type{2}
+    ~rgdesc{
+    ~enUS{west}
+    ~esUS{oeste}}
+    ~rldesc{
+    ~enUS{west}
+    ~esUS{oeste}}
+    ~rnouns{{~enUS{west}~esUS{oeste}}}
+    ~rflags{3}}
   ~weight{2000}
   ~volume{1000000}
   ~length{1000}
@@ -1385,7 +1680,12 @@ the east and west appear to be more of the hostel's grounds.}}
   ~article{0}
   ~nouns{{}}
   ~adjectives{{}}
-  ~newexit{~rnumber{134} ~direction{1} ~destination{603} ~return{135} ~type{2}
+  ~newexit{
+    ~rnumber{134}
+    ~direction{1}
+    ~destination{603}
+    ~return{135}
+    ~type{2}
     ~rgdesc{
     ~enUS{north}
     ~esUS{norte}}
@@ -1393,7 +1693,7 @@ the east and west appear to be more of the hostel's grounds.}}
     ~enUS{north}
     ~esUS{norte}}
     ~rnouns{{~enUS{north}~esUS{norte}}}
-    ~rflags{2}}
+    ~rflags{3}}
   ~weight{2000}
   ~volume{1000000}
   ~length{1000}
@@ -1461,6 +1761,20 @@ small clear area before the woods and the swamp begin to the southeast.}}
   ~article{0}
   ~nouns{{~enUS{porch}}}
   ~adjectives{{~enUS{hostel,hostel's,faded,dull,worn}}}
+  ~newexit{
+    ~rnumber{135}
+    ~direction{2}
+    ~destination{600}
+    ~return{134}
+    ~type{2}
+    ~rgdesc{
+    ~enUS{south}
+    ~esUS{sur}}
+    ~rldesc{
+    ~enUS{south}
+    ~esUS{sur}}
+    ~rnouns{{~enUS{south}~esUS{sur}}}
+    ~rflags{3}}
   ~weight{2000}
   ~volume{1000000}
   ~length{1000}

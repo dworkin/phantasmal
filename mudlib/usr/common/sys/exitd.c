@@ -281,7 +281,6 @@ private void add_complex_exit_by_unq(int roomnum1, mixed value) {
   mixed nouns, adjectives;
 
   exit1 = clone_object(SIMPLE_EXIT);
-  exit2 = clone_object(SIMPLE_EXIT);
   room1 = MAPD->get_room_by_num(roomnum1);
   exit1->set_from_location(room1);
 
@@ -290,57 +289,39 @@ private void add_complex_exit_by_unq(int roomnum1, mixed value) {
       exit1->set_number(value[ctr][1]);
     } else if (value[ctr][0]=="direction") {
       exit1->set_direction(value[ctr][1]);
-      exit2->set_direction(opposite_direction(value[ctr][1]));
     } else if (value[ctr][0]=="destination") {
         room2 = MAPD->get_room_by_num(value[ctr][1]);
         exit1->set_destination(room2);
 	exit1->set_from_location(room1);
-	exit2->set_destination(room1);
-	exit2->set_from_location(room2);
     } else if (value[ctr][0]=="return") {
-      exit2->set_number(value[ctr][1]);
       exit1->set_link(value[ctr][1]);
-      exit2->set_link(exit1->get_number());
     } else if (value[ctr][0]=="type") {
       exit1->set_exit_type(value[ctr][1]);
-      exit2->set_exit_type(value[ctr][1]);
     } else if (value[ctr][0]=="rdetail") {
       /* what to do? */
     } else if (value[ctr][0]=="rbdesc") {
       exit1->set_brief(value[ctr][1]);
-      exit2->set_brief(value[ctr][1]);
     } else if (value[ctr][0]=="rgdesc") {
       exit1->set_glance(value[ctr][1]);
-      exit2->set_glance(value[ctr][1]);
     } else if (value[ctr][0]=="rldesc") {
       exit1->set_look(value[ctr][1]);
-      exit2->set_look(value[ctr][1]);
     } else if (value[ctr][0]=="redesc") {
       exit1->set_examine(value[ctr][1]);
-      exit2->set_examine(value[ctr][1]);
     } else if (value[ctr][0]=="rflags") {
       exit1->set_all_flags(value[ctr][1]);
-      exit2->set_all_flags(value[ctr][1]);
     } else if(value[ctr][0]=="rnouns") {
       for(ctr2 = 0; ctr2 < sizeof(value[ctr][1]); ctr2++) {
         exit1->add_noun(value[ctr][1][ctr2]);
-        exit2->add_noun(value[ctr][1][ctr2]);
       }
     } else if(value[ctr][0]=="radjectives") {
       for(ctr2 = 0; ctr2 < sizeof(value[ctr][1]); ctr2++) {
         exit1->add_adjective(value[ctr][1][ctr2]);
-        exit2->add_adjective(value[ctr][1][ctr2]);
       }
     }
   }
 
   room1->add_exit(exit1->get_direction(), exit1);
   num1 = allocate_exit_obj(exit1->get_number(), exit1);
-
-  if (exit1->get_exit_type()>1) {
-    room2->add_exit(exit2->get_direction(), exit2);
-    num2 = allocate_exit_obj(exit2->get_number(), exit2);
-  }
 }
 
 /* note:  caller must make sure not to override existing exits!!! */
@@ -400,8 +381,8 @@ void add_twoway_exit_between(object room1, object room2, int direction,
      || exit2->get_number() < 0)
     error("Exit numbers not assigned successfully!");
 
-  exit1->set_brief(PHRASED->new_simple_english_phrase("Exit #" + num1));
-  exit2->set_brief(PHRASED->new_simple_english_phrase("Exit #" + num2));
+  exit1->set_brief(PHRASED->new_simple_english_phrase("exit"));
+  exit2->set_brief(PHRASED->new_simple_english_phrase("exit"));
 }
 
 /* note:  caller must make sure not to override existing exits!!! */
@@ -440,7 +421,7 @@ void add_oneway_exit_between(object room1, object room2, int direction,
   if(exit1->get_number() < 0)
     error("Exit number not assigned successfully!");
 
-  exit1->set_brief(PHRASED->new_simple_english_phrase("Exit #" + num1));
+  exit1->set_brief(PHRASED->new_simple_english_phrase("exit"));
 }
 
 void fix_exit(object exit, int type, int link) {
@@ -466,29 +447,33 @@ void fix_exit(object exit, int type, int link) {
 }
 
 void remove_exit(object room, object exit) {
-  object other_exit, dest;
-
-  if (exit->get_exit_type()==ET_TWOWAY) { /* two-way door, remove other side first */
-    other_exit = EXITD->get_exit_by_num(exit->get_link());
-    dest = other_exit->get_from_location();
-    dest->remove_exit(other_exit);
-    destruct_object(other_exit);
-  }
   room->remove_exit(exit);
+}
+
+void clear_exit(object exit) {
+  object exit2;
+  if (exit->get_exit_type() == ET_TWOWAY) {
+    exit2 = EXITD->get_exit_by_num(exit->get_link());
+    destruct_object(exit2);
+  }
   destruct_object(exit);
 }
 
 void clear_all_exits(object room) {
-  object exit;
+  object exit, exit2;
 
   if(!room)
     error("Passed nil to clear_all_exits!");
 
   while(exit = room->get_exit_num(0)) {
-    remove_exit(room, exit);
+    if (exit->get_exit_type() == ET_TWOWAY) {
+      exit2 = EXITD->get_exit_by_num(exit->get_link());
+      destruct_object(exit2);
+    }
+    destruct_object(exit);
   }
 
-  room->clear_exits();
+/*  room->clear_exits(); */
 }
 
 object get_exit_by_num(int num) {
