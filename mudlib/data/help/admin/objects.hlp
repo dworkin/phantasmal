@@ -254,25 +254,71 @@ Phantasmal.
 }}
 
 
-~name{~enUS{set_object_parent, set_object_par,
-            set_obj_parent, set_obj_par, set_parent, set_par,
-            parent, inherit, inheritance, data inheritance, urobject,
-            urobjects, ur_object, ur_object, ur object, ur objects}}
+
+~name{~enUS{parent, inherit, inheritance, data inheritance, urobject,
+            urobjects, ur_object, ur_object, ur object, ur objects,
+            archetype }}
 ~keywords{admin}
 ~desc{
   ~enUS{
 
-The @set_obj_par (or @set_object_parent, or @set_parent) command sets
-the parent of an object for data inheritance.  This means the child
-object will inherit various data, including details, from the parent
-object.  The syntax is "@set_obj_parent <child> <parent>" where
-"<child>" and "<parent>" are portable or room numbers prefixed with
-a pound ("#") sign.
+Phantasmal uses data inheritance to make certain properties of an
+object pass from parent to child.  An object may inherit from a list
+of parents, and properties will be inherited from some or all of
+those parents.
 
-If "<parent>" is #-1 or the word 'none', the parent is cleared, and
-the object will be set to have no parent.
+The descriptions, like look and brief, will be inherited from the
+first parent on the list.  Nouns, adjectives and details will all be
+inherited from all parents in the list, and combined into a single
+large grouping.  Weight, volume, height, and capacities for the same
+will be inherited from the first parent.
 
-You can check an object's current parent using the 'stat' command.
+Other properties, including tags, may be inherited similarly or
+differently.
+
+Note that this is different from code inheritance in LPC.  It is, in
+fact, almost opposite.
+
+See also:  @set_obj_parent
+
+}}
+
+
+~name{~enUS{set_object_parent, set_object_par,
+            set_obj_parent, set_obj_par, set_parent, set_par }}
+~keywords{admin}
+~desc{
+  ~enUS{
+
+The @set_obj_par (or @set_object_parent, or @set_parent) command adds
+or removes parents of an object for data inheritance.  This means the
+child object will inherit various data, including details, from the
+parent object(s).  The syntax is "@set_obj_parent <child> <parent>" where
+"<child>" and "<parent>" are portable or room numbers prefixed with a
+pound ("#") sign.
+
+If "<parent>" is the word 'none', all parents are cleared, and the
+object will be set to have no parents.  If the word "add" or "remove"
+precedes the list of parents, those parents will be added or removed.
+If the word is "set" then the object's list of parents will be set
+to that list of objects.
+
+The "set" keyword may be used to change the order of parents in the
+list.  In that case, just include all the old parents in the "set"
+call.  If the set call actually changes *which* parents (not just the
+order) then the details, nouns and adjectives are recalculated to
+reflect the new inheritance.  If the parents are set to the same
+objects in a different order, only the order-dependent settings are
+changed -- removed nouns, adjectives and details from the parent list
+will still be removed.
+
+Usage: @set_obj_par #791 none
+       @set_object_parent #947 set #322 #741 #909
+       @set_obj_parent #947 remove #322 #741
+
+You can check an object's current parents using the 'stat' command.
+
+See also:  inheritance
 
 }}
 
