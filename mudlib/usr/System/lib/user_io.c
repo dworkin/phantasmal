@@ -8,24 +8,19 @@
 /* User-state processing stack */
 private object* state_stack;
 
-static  mapping state;		/* state for a connection object */
 private object  scroll_state;
 
 /* Saved by save_object? */
 int    num_lines;               /* how many lines on terminal */
 
 /* Prototypes */
-static  int    process_message(string str);
-static  void   print_prompt(void);
-        void   push_state(object state);
-        void   upgraded(varargs int clone);
+void   push_state(object state);
+void   upgraded(varargs int clone);
 
 /* Macros */
 #define NEW_PHRASE(x) PHRASED->new_simple_english_phrase(x)
 
 static void create(void) {
-    state = ([ ]);
-
     state_stack = ({ });
 
     /* More defaults */
@@ -37,7 +32,8 @@ static void create(void) {
 void upgraded(varargs int clone) {
   if(SYSTEM()) {
     if(!find_object(US_SCROLL_TEXT)) { compile_object(US_SCROLL_TEXT); }
-  }
+  } else
+    error("Non-System code called upgraded!");
 }
 
 
@@ -52,19 +48,6 @@ static void set_num_lines(int new_num) {
   if(SYSTEM()) {
     num_lines = new_num;
   }
-}
-
-void set_state(object key_obj, int new_state) {
-  if(SYSTEM() || COMMON() || GAME()) {
-    state[key_obj] = new_state;
-  }
-}
-
-int get_state(object key_obj) {
-  if(!SYSTEM() && !COMMON() && !GAME())
-    return -1;
-
-  return state[key_obj];
 }
 
 
@@ -201,8 +184,7 @@ static void message_all_users(string str)
     users = users();
     for (i = sizeof(users); --i >= 0; ) {
 	user = users[i];
-	if (user != this_object() &&
-	    sscanf(object_name(user), SYSTEM_USER + "#%*d") != 0) {
+	if (user && user != this_object()) {
 	    user->message(str);
 	}
     }
@@ -224,8 +206,7 @@ static void system_phrase_all_users(string str)
     users = users();
     for (i = sizeof(users); --i >= 0; ) {
 	user = users[i];
-	if (user != this_object() &&
-	    sscanf(object_name(user), SYSTEM_USER + "#%*d") != 0) {
+	if (user != this_object()) {
 	    user->send_system_phrase(str);
 	}
     }

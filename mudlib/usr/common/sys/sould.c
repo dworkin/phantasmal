@@ -103,12 +103,9 @@ void from_dtd_unq(mixed* unq) {
   }
 
   num_soc = map_sizeof(sould_strings);
-
-  /* And now we need to update USER's command set */
-  SYSTEM_USER->set_social_commands();
 }
 
-int is_valid(string verb) {
+int is_social_verb(string verb) {
   if(SYSTEM() || COMMON() || GAME())
     return !!sould_strings[verb];
 

@@ -10,7 +10,6 @@ private mixed* command_sets;
 
 /* Prototypes */
 private mixed* load_command_sets_file(string filename);
-private mixed* add_socials_cmd_set(mixed* cmd_set, int which);
 
 
 static void create(void) {
@@ -23,14 +22,8 @@ void upgraded(varargs int clone) {
     if(!command_sets) {
       LOGD->write_syslog("Command_sets is Nil!", LOG_FATAL);
     }
-  }
-}
-
-void set_social_commands(void) {
-  if(previous_program() != SOULD)
-    error("Only SOULD can call commandsetlib::set_social_commands!");
-
-  add_socials_cmd_set(command_sets, 1);
+  } else
+    error("Non-System code called upgraded!");
 }
 
 int num_command_sets(int loc) {
@@ -165,31 +158,4 @@ private mixed* load_command_sets_file(string filename) {
   }
 
   return tmp_cmd;
-}
-
-private mixed* add_socials_cmd_set(mixed* cmd_set, int which) {
-  int     loc, num, ctr;
-  string *soc;
-
-  if(!SYSTEM())
-    return nil;
-
-  loc = PHRASED->language_by_name("enUS");
-
-  /* Make sure that cmd_set[enUS] is large enough to handle
-     which+1 elements */
-  while(sizeof(cmd_set[loc]) <= which) {
-    cmd_set[loc] += ({ ([ ]) });
-  }
-
-  /* Clear out the old social commands */
-  cmd_set[loc][which] = ([ ]);
-
-  soc = SOULD->all_socials();
-  num = sizeof(soc);
-  for(ctr = 0; ctr < num; ctr++) {
-    cmd_set[loc][which][soc[ctr]] = ({ soc[ctr], "social" });
-  }
-
-  return cmd_set;
 }

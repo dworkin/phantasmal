@@ -23,9 +23,8 @@ static void create(varargs int clone) {
 }
 
 void init(object new_user, object new_next_state) {
-  if(previous_program() != SYSTEM_USER
-     && previous_program() != SYSTEM_USER_IO)
-    error("Only privileged code can call USER_STATE:init()!");
+  if(previous_program() != SYSTEM_USER_IO)
+    error("Use push_state and pop_state functions for user states!");
 
   user = new_user;
   next_state = new_next_state;
@@ -43,7 +42,7 @@ void to_user(string output) {
   if(next_state) {
     next_state->to_user(output);
   } else {
-    user->send_string(output);
+    user->ustate_send_string(output);
   }
 }
 
@@ -56,7 +55,7 @@ void switch_from(int popp) {
 }
 
 static int send_string(string str) {
-  return user->send_string(str);
+  return user->ustate_send_string(str);
 }
 
 static void pop_state(void) {

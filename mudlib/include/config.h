@@ -25,8 +25,12 @@
 /* Kernel lib tie-in objects -- must be in these dirs to be recognized
    as privileged */
 #define INITD               "/usr/System/initd"
-#define SYSTEM_USER         "/usr/System/obj/user"
+#define DEFAULT_USER_OBJ    "/usr/System/obj/user"
 #define SYSTEM_WIZTOOL      "/usr/System/obj/wiztool"
+
+
+/* Game tie-in objects */
+#define PHANTASMAL_USER     "/usr/System/open/lib/userlib"
 
 
 /* Libraries -- inheritable, not clonable */
@@ -69,7 +73,7 @@
 
 
 /* Storage directories */
-#define SYSTEM_USER_DIR     "/usr/System/users"
+#define SYSTEM_USER_DIR     "/usr/game/users"
 #define LOGDIR              "/log"
 
 
@@ -83,7 +87,6 @@
 #define SOULD_DTD           "/usr/common/sys/sould.dtd"
 
 /* Other data files */
-#define CONFIG_FILE         "/data/system/config.unq"
 #define ROOM_DIR            "/usr/game/object/stuff"
 #define MOB_FILE            "/usr/game/object/mobfile.unq"
 #define ZONE_FILE           "/usr/game/object/zonefile.unq"
@@ -98,15 +101,12 @@
 #define SYSTEM_PHRASES      "/usr/System/obj/system.phr"
 #define EXITD_PHRASES       "/usr/common/sys/exitd.phr"
 #define NL_PARSE_FILE       "/usr/common/sys/nl_parser.dpd"
-#define USER_COMMANDS_FILE  "/data/system/user_cmds.unq"
-#define SOULD_FILE          "/data/system/sould.unq"
 
 
 /* Random inherited stuff */
 #define SYSTEM_WIZTOOLLIB      "/usr/System/lib/wiztoollib"
 #define SYSTEM_ROOMWIZTOOLLIB  "/usr/System/lib/room_wiztool"
 #define SYSTEM_OBJWIZTOOLLIB   "/usr/System/lib/obj_wiztool"
-#define SYSTEM_COMMANDSETLIB   "/usr/System/lib/commandsetlib"
 #define SYSTEM_USER_IO         "/usr/System/lib/user_io"
 
 

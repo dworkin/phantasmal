@@ -21,7 +21,7 @@ void upgraded(varargs int clone) {
   if(!SYSTEM())
     return;
 
-  if(!find_object(SYSTEM_USER)) { compile_object(SYSTEM_USER); }
+  if(!find_object(DEFAULT_USER_OBJ)) { compile_object(DEFAULT_USER_OBJ); }
 }
 
 void suspend_input(int shutdownp) {
@@ -48,10 +48,17 @@ void release_input(void) {
 
 object select(string str)
 {
+  object game_driver;
+
   if(!SYSTEM() && !KERNEL())
     return nil;
 
-  return clone_object(SYSTEM_USER);
+  game_driver = CONFIGD->get_game_driver();
+
+  if(game_driver)
+    return game_driver->new_user_connection(str);
+
+  return clone_object(DEFAULT_USER_OBJ);
 }
 
 int query_timeout(object connection)

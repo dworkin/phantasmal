@@ -1,4 +1,4 @@
-/* $Header: /cvsroot/phantasmal/mudlib/usr/System/obj/user.c,v 1.74 2003/12/05 11:07:08 angelbob Exp $ */
+/* $Header: /cvsroot/phantasmal/mudlib/usr/game/obj/user.c,v 1.1 2003/12/05 11:07:10 angelbob Exp $ */
 
 #include <kernel/kernel.h>
 #include <kernel/user.h>
@@ -408,17 +408,6 @@ int process_command(string str)
 
   /* All is well, just print a prompt and wait for next command */
   return -1;
-}
-
-
-/************** Security Cheats *****************************/
-
-object clone_wiztool_as(string str) {
-  if(previous_program() == PHANTASMAL_USER) {
-    return clone_object(SYSTEM_WIZTOOL, str);
-  }
-
-  return nil;
 }
 
 
