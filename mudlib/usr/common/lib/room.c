@@ -91,6 +91,11 @@ void upgraded(varargs int clone) {
   obj::upgraded();
 }
 
+
+/*
+ * Get and set functions for fields
+ */
+
 void set_number(int new_num) {
   if(previous_program() == MAPD) {
     tr_num = new_num;
@@ -107,6 +112,54 @@ void enum_room_mobiles(string cmd, object *except, mixed *args) {
       call_other(mobiles[i], cmd, args);
     }
   }
+}
+
+float get_weight(void) {
+  return weight;
+}
+
+float get_volume(void) {
+  return volume;
+}
+
+float get_length(void) {
+  return length;
+}
+
+float get_weight_capacity(void) {
+  return weight_capacity;
+}
+
+float get_volume_capacity(void) {
+  return volume_capacity;
+}
+
+float get_length_capacity(void) {
+  return length_capacity;
+}
+
+void set_weight(float new_weight) {
+  weight = new_weight;
+}
+
+void set_volume(float new_volume) {
+  volume = new_volume;
+}
+
+void set_length(float new_length) {
+  length = new_length;
+}
+
+void set_weight_capacity(float new_weight_capacity) {
+  weight_capacity = new_weight_capacity;
+}
+
+void set_volume_capacity(float new_volume_capacity) {
+  volume_capacity = new_volume_capacity;
+}
+
+void set_length_capacity(float new_length_capacity) {
+  length_capacity = new_length_capacity;
 }
 
 
@@ -400,6 +453,15 @@ string to_unq_flags(void) {
 
   ret += exits_to_unq();
 
+  ret += "  ~weight{" + weight + "}\n";
+  ret += "  ~volume{" + volume + "}\n";
+  ret += "  ~length{" + length + "}\n";
+  if(is_container()) {
+    ret += "  ~weight_capacity{" + weight_capacity + "}\n";
+    ret += "  ~volume_capacity{" + volume_capacity + "}\n";
+    ret += "  ~length_capacity{" + length_capacity + "}\n";
+  }
+
   if(get_removed_details()) {
     rem = get_removed_details();
 
@@ -494,6 +556,18 @@ void from_dtd_tag(string tag, mixed value) {
     } else {
       error("Can't parse as exit desc: '" + value + "'");
     }
+  } else if(tag == "weight") {
+    weight = value;
+  } else if(tag == "volume") {
+    volume = value;
+  } else if(tag == "length") {
+    length = value;
+  } else if(tag == "weight_capacity") {
+    weight_capacity = value;
+  } else if(tag == "volume_capacity") {
+    volume_capacity = value;
+  } else if(tag == "length_capacity") {
+    length_capacity = value;
   } else if(tag == "removed_details") {
     if(typeof(value) == T_INT) {
       pending_removed_details = ({ value });
