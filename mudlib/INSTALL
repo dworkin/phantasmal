@@ -39,30 +39,36 @@ You'll need a .dgd file for Phantasmal.  Edit the phantasmal.dgd file
 in your Phantasmal top-level directory.  Change the "directory" entry
 to the correct one where you installed Phantasmal.  Remember that the
 directory needs to be absolute, not relative.  That means it should
-*start* with a slash or a drive letter, not with a dot.  You can
-change the port number as well, if you want.  The binary port is for
-administrator login if something goes drastically wrong.  You'll never
-ordinarily use it.  Eventually you may want to change more stuff in
-the .dgd file, but you should know enough about DGD by the time it's
-necessary.
+*start* with a slash or a drive letter, not with a dot or a directory
+name.  You can change the port number as well, if you want.  The
+binary port is for administrator login if something goes drastically
+wrong.  You'll never ordinarily use it.  Eventually you may want to
+change more stuff in the .dgd file, but you'll want to learn more
+about DGD by the time it's necessary.  That's a DGD thing, not a
+Phantasmal thing.
 
 
                         Making Accounts
 
 Once you have the MUD running, you should first log in as admin, then
-make yourself a non-admin account to use.  I'll call the non-admin
-account "me" in the follwing paragraph, though it could be almost any
-word.  When you make your new non-admin account, you can grant it full
-adminstrative access by typing "%grant me access" and "%grant me /
-full".  That's "%grant", space, your account name, space, slash,
-space, "full", space, but without the quotes.  The "me" account can
-now be your main administrator account so you don't have to be called
-"admin", and so you can test better later.  The second grant command
-makes the account able to pretty much crash your MUD or destroy your
-data if the account owner feels like it, so use it only with very
-trusted people.  Full access is very powerful.  There will eventually
-be a less-privileged admin class suitable for builders, but that's not
-really in place yet.
+make yourself a non-admin account to use.  That's because admin can do
+anything, so set a pretty secure password on it!  It's not even
+possible to remove admin's privileges, so *never* let another staff
+member learn the admin password.  Well, or change that password if you
+ever demote or fire them.
+
+I'll call the non-admin account "me" in the follwing paragraph, though
+it could be almost any word.  When you make your new non-admin
+account, you can grant it full adminstrative access by typing "%grant
+me access" and "%grant me / full".  That's "%grant", space, your
+account name, space, slash, space, "full", space, but without the
+quotes.  The "me" account can now be your main administrator account
+so you don't have to be called "admin", and so you can test better
+later.  The second grant command makes the account able to pretty much
+crash your MUD or destroy your data if the account owner feels like
+it, so use it only with very trusted people.  Full access is very
+powerful.  There will eventually be a less-privileged admin class
+suitable for builders, but that's not done yet.
 
 
                             More Help
