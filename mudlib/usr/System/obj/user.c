@@ -1,4 +1,4 @@
-/* $Header: /cvsroot/phantasmal/mudlib/usr/System/obj/user.c,v 1.34 2003/02/25 01:34:14 angelbob Exp $ */
+/* $Header: /cvsroot/phantasmal/mudlib/usr/System/obj/user.c,v 1.35 2003/02/27 05:00:35 angelbob Exp $ */
 
 #include <kernel/kernel.h>
 #include <kernel/user.h>
@@ -334,43 +334,6 @@ void notify_moved(object obj) {
   location = body->get_location();
 }
 
-
-private object* find_object_in_room(object user, object room, string namestr) {
-  string  noun, *words;
-  object* ret;
-  mixed*  objs;
-  int     ctr;
-
-  words = explode(namestr, " ");
-
-  /* Trim */
-  for(ctr = 0; ctr < sizeof(words); ctr++) {
-    if(!words[ctr] || STRINGD->is_whitespace(words[ctr])) {
-      words = words[..ctr-1] + words[ctr+1..];
-    } else {
-      words[ctr] = STRINGD->to_lower(STRINGD->trim_whitespace(words[ctr]));
-    }
-  }
-
-  if(sizeof(words) == 0)
-    return nil;
-
-  ret = ({ });
-  noun = words[sizeof(words) - 1];
-  words = words[..sizeof(words)-2];  /* words is now a list of adjectives */
-
-  objs = room->objects_in_container();
-  for(ctr = 0; ctr < sizeof(objs); ctr++) {
-    if(objs[ctr]->match_description(user, words, ({ noun }))) {
-      ret += ({ objs[ctr] });
-    }
-  }
-
-  if(sizeof(ret))
-    return ret;
-
-  return nil;
-}
 
 
 /*
@@ -817,7 +780,7 @@ static void cmd_social(object user, string cmd, string str) {
   }
 
   if(str && str != "") {
-    targets = find_object_in_room(user, location, str);
+    targets = location->find_contained_objects(user, str);
     if(!targets) {
       message("You don't see any objects matching '" + str
 	      + "' here.\r\n");
@@ -1094,9 +1057,9 @@ static void cmd_look(object user, string cmd, string str) {
      || sscanf(str, "within %s", str) || sscanf(str, "into %s", str)) {
     /* Look inside container */
     str = STRINGD->trim_whitespace(str);
-    tmp = find_object_in_room(user, body, str);
+    tmp = body->find_contained_objects(user, str);
     if(!tmp) {
-      tmp = find_object_in_room(user, location, str);
+      tmp = location->find_contained_objects(user, str);
     }
     if(!tmp) {
       user->message("You don't find any '" + str + "'.\r\n");
@@ -1123,9 +1086,9 @@ static void cmd_look(object user, string cmd, string str) {
     return;
   }
 
-  tmp = find_object_in_room(user, body, str);
+  tmp = body->find_contained_objects(user, str);
   if(!tmp || !sizeof(tmp)) {
-    tmp = find_object_in_room(user, location, str);
+    tmp = location->find_contained_objects(user, str);
     if(!tmp || !sizeof(tmp)) {
       user->message("You don't find any '" + str + "'.\r\n");
       return;
@@ -1182,18 +1145,18 @@ static void cmd_put(object user, string cmd, string str) {
     return;
   }
 
-  portlist = find_object_in_room(user, body, obj1);
+  portlist = body->find_contained_objects(user, obj1);
   if(!portlist || !sizeof(portlist)) {
-    portlist = find_object_in_room(user, location, obj1);
+    portlist = location->find_contained_objects(user, obj1);
     if(!portlist || !sizeof(portlist)) {
       user->message("You can't find any '" + obj1 + "' here.\r\n");
       return;
     }
   }
 
-  contlist = find_object_in_room(user, body, obj2);
+  contlist = body->find_contained_objects(user, obj2);
   if(!contlist || !sizeof(contlist)) {
-    contlist = find_object_in_room(user, location, obj2);
+    contlist = location->find_contained_objects(user, obj2);
     if(!contlist || !sizeof(contlist)) {
       user->message("You can't find any '" + obj2 + "' here.\r\n");
       return;
@@ -1239,9 +1202,9 @@ static void cmd_remove(object user, string cmd, string str) {
     return;
   }
 
-  contlist = find_object_in_room(user, body, obj2);
+  contlist = body->find_contained_objects(user, obj2);
   if(!contlist || !sizeof(contlist)) {
-    contlist = find_object_in_room(user, location, obj2);
+    contlist = location->find_contained_objects(user, obj2);
     if(!contlist || !sizeof(contlist)) {
       user->message("You can't find any '" + obj2 + "' here.\r\n");
       return;
@@ -1254,7 +1217,7 @@ static void cmd_remove(object user, string cmd, string str) {
   }
   cont = contlist[0];
 
-  portlist = find_object_in_room(user, cont, obj1);
+  portlist = cont->find_contained_objects(user, obj1);
   if(!portlist || !sizeof(portlist)) {
     user->message("You can't find any '" + obj1 + "' in ");
     user->send_phrase(cont->get_brief());
@@ -1464,7 +1427,7 @@ static void cmd_get(object user, string cmd, string str) {
     return;
   }
 
-  tmp = find_object_in_room(user, location, str);
+  tmp = location->find_contained_objects(user, str);
   if(!tmp || !sizeof(tmp)) {
     message("You don't find any '" + str + "'.\r\n");
     return;
@@ -1497,7 +1460,7 @@ static void cmd_drop(object user, string cmd, string str) {
     return;
   }
 
-  tmp = find_object_in_room(user, body, str);
+  tmp = body->find_contained_objects(user, str);
   if(!tmp || !sizeof(tmp)) {
     message("You're not carrying any '" + str + "'.\r\n");
     return;
