@@ -2,14 +2,21 @@
   ~number{1}
   ~location{0}
   ~bdesc{
-    ~enUS{a room}}
+    ~enUS{Meat locker}}
   ~gdesc{
-    ~enUS{a room}}
+    ~enUS{Meat locker}}
   ~ldesc{
-    ~enUS{You see a room here.}}
+    ~enUS{This room is very cold, and you can smell iron in the air.  Hooks come
+down from the ceiling almost everywhere, and hanging carcasses and
+intervening walls block your view.  You're not sure how far away the
+walls are.}}
   ~article{0}
   ~nouns{{}}
   ~adjectives{{}}
+  ~exit{w: #1 114 115}
+  ~exit{n: #1 116 117}
+  ~exit{nw: #1 118 119}
+  ~exit{ne: #1 120 121}
 }
 ~room{
   ~number{2}

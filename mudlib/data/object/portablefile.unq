@@ -109,6 +109,20 @@ Wombat fumes.  About the usual, you hope.}}
   ~adjectives{{}}
 }
 ~portable{
+  ~number{208}
+  ~location{0}
+  ~bdesc{
+    ~enUS{Angelbob}}
+  ~gdesc{
+    ~enUS{Angelbob}}
+  ~ldesc{
+    ~enUS{Angelbob wanders the MUD.}}
+  ~article{0}
+  ~flags{0}
+  ~nouns{{~enUS{angelbob}}}
+  ~adjectives{{}}
+}
+~portable{
   ~number{400}
   ~location{300}
   ~bdesc{
