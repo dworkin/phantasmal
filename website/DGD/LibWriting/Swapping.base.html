@@ -89,6 +89,20 @@
   </p>
 
   <p>
+    You'll find that the in-RAM memory use of your library, measured
+    in sectors, is driven by several things.  Roughly in order of
+    importance, those things are: 1) the number of rooms and portable
+    items in your world.  2) The time your MUD has been running
+    &mdash; DGD is disk-based, so content is loaded as it is visited.
+    3) The number of active, moving users.  Active users will continue
+    to load content by seeing and using it.  It would otherwise be
+    swapped out.  And 4) the aggressiveness of your cleanup routines,
+    including things like swapping.  The more aggressively you clean
+    up, the shorter the time that 'transient' memory (memory that is
+    used briefly and discarded) will take up space after it is used.
+  </p>
+
+  <p>
     If you ever wish to explicitly request a swap-out, there's a kfun
     called swapout() which will swap <i>every</i> object out.
   </p>

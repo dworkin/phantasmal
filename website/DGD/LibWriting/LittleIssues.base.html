@@ -3,41 +3,7 @@
   <h2> Miscellaneous Issues in MUD Library Authoring </h2>
 
   <p>
-    Have a set of core objects that define basic behaviour and
-    limitations which cannot be rewritten from within the mud, not
-    even by the mud administrator.  The Kernel Library puts these in
-    the &frasl;kernel directory.  This is to enforce security limits.
-  </p>
-
-  <p>
-    Never keep the config file (the one ending in .dgd) inside the MUD
-    code tree.  It could be overwritten and used to give an attacker
-    access to files outside the mudlib, such as the password file on
-    the host system.  Changing it can also allow your MUD to
-    masquerade as a different service, and potentially open different
-    incoming ports.  If you're using the network package, it can
-    easily cause your MUD to be usable as a relay or a zombie for a
-    distributed attack on other systems.
-  </p>
-
-  <p>
-    Don't put the swapfile in the mudlib directory, either, since
-    information which is otherwise hidden inside objects will be
-    readable from it.
-  </p>
-
-  <p>
-    You'll find that the in-RAM memory use of your library, measured
-    in sectors, is driven by several things.  Roughly in order of
-    importance, those things are: 1) the number of rooms and portable
-    items in your world.  2) The time your MUD has been running
-    &mdash; DGD is disk-based, so content is loaded as it is visited.
-    3) The number of active, moving users.  Active users will continue
-    to load content by seeing and using it.  It would otherwise be
-    swapped out.  And 4) the aggressiveness of your cleanup routines,
-    including things like swapping.  The more aggressively you clean
-    up, the shorter the time that 'transient' memory (memory that is
-    used briefly and discarded) will take up space after it is used.
+    (Nothing here currently)
   </p>
 
   <p style="text-size: 150%"> <a href="../index.html"> Back to top level
