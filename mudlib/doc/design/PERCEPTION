@@ -1,0 +1,14 @@
+It's important to be able to tag descriptions with a perception value,
+and to have a heirarchy of what is seen based on perceptual acuity and
+skill values.  For instance, a vase might appear to be nothing
+(invisible, it's dark, etc), a vague shape (very dark, very far away),
+a vase (decent light and no knowledge skill or poor light and some
+knowledge), a beautiful and valuable vase (decent light, some
+knowledge skill), a valuable old Chinese vase (good light, decent
+knowledge), or a tremendously valuable Ming-dynasty vase.
+
+It's important to be able to have separate perception for sight,
+sound, smell, etc.  That way an invisible rose still smells of roses,
+a motor inside a box still makes noise, a far-away shadowy figure can
+still shout clearly (and perhaps have its voice recognized), and so
+on.
