@@ -100,7 +100,8 @@ static void create(varargs int clone)
   /* Compile the Objnumd */
   if(!find_object(OBJNUMD)) { compile_object(OBJNUMD); }
 
-  /* Set up Mapd & Exitd */
+  /* Set up ZoneD, Mapd & Exitd */
+  if(!find_object(ZONED)) { compile_object(ZONED); }
   if(!find_object(MAPD)) { compile_object(MAPD); }
   if(!find_object(EXITD)) { compile_object(EXITD); }
 
@@ -140,9 +141,8 @@ static void create(varargs int clone)
     LOGD->write_syslog("Can't read portable file!  Starting blank!", LOG_WARN);
   }
 
+  /* Start up ChannelD and ConfigD */
   if(!find_object(CHANNELD)) compile_object(CHANNELD);
-
-  /* Start up configD */
   if(!find_object(CONFIGD)) compile_object(CONFIGD);
 }
 
