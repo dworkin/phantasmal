@@ -1,0 +1,31 @@
+FILE
+	/usr/common/lib/dtd_unqable.c
+
+NAME
+	set_dtd_file - set the DTD's filename for the UNQable object
+
+PROTOTYPE
+	void set_dtd_file(string new_dtd_filename)
+
+CALLED BY
+	Anybody
+
+DESCRIPTION
+	Set the filename of the DTD of the object to the one specified.
+	That's so the UNQable object can parse that file as a DTD, and
+	reread the file automatically on upgrade.  This allows you to
+	transparently update the DTD, though you'll have to manually
+	make the rest of the object respond to upgraded().
+
+	This function isn't access-protected.  You should access-protect
+	your version of this and all other inherited functions, including
+	upgraded() and destructed().
+
+RETURN VALUE
+	Nothing.
+
+ERRORS
+	Usually none.
+
+SEE ALSO
+	set_dtd, set_dtd_file

@@ -1,0 +1,28 @@
+FILE
+	/usr/common/lib/dtd_unqable.c
+
+NAME
+	to_unq_text - serialize the UNQable object into UNQ text
+
+PROTOTYPE
+	string to_unq_text(void)
+
+CALLED BY
+	Anybody
+
+DESCRIPTION
+	Serialize the object to text.  The default implementation of this
+	function calls to_dtd_unq(), which must be defined.
+
+	This function isn't access-protected.  You should access-protect
+	your version of this and all other inherited functions, including
+	upgraded() and destructed().
+
+RETURN VALUE
+	Nothing.
+
+ERRORS
+	Usually none.
+
+SEE ALSO
+	to_dtd_unq, from_unq_text

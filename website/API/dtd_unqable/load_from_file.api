@@ -1,0 +1,30 @@
+FILE
+	/usr/common/lib/dtd_unqable.c
+
+NAME
+	load_from_file - parse the UNQable object from a text UNQ file
+
+PROTOTYPE
+	void load_from_file(string filename)
+
+CALLED BY
+	Anybody
+
+DESCRIPTION
+	This is the most automated way to load your object from an UNQ
+	file in the appropriate DTD format.  It requires support functions
+	such as from_dtd_unq() to be defined.  The file you supply must
+	be readable by an LPC object in /usr/common.
+
+	This function isn't access-protected.  You should access-protect
+	your version of this and all other inherited functions, including
+	upgraded() and destructed().
+
+RETURN VALUE
+	Nothing.
+
+ERRORS
+	Usually none.
+
+SEE ALSO
+	from_dtd_unq, set_dtd

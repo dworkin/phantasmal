@@ -1,0 +1,30 @@
+FILE
+	/usr/common/lib/dtd_unqable.c
+
+NAME
+	to_dtd_unq - serialize the UNQable object into a data structure
+
+PROTOTYPE
+	mixed *to_dtd_unq(void)
+
+CALLED BY
+	Anybody
+
+DESCRIPTION
+	Serialize the object to the equivalent of DTD-parsed UNQ.  This
+	object has a default stub that causes an error, so you'll need
+	to implement it if you want it.  For more about the format of
+	preparsed UNQ, see parse_to_dtd in the UNQ_DTD object.
+
+	This function isn't access-protected.  You should access-protect
+	your version of this and all other inherited functions, including
+	upgraded() and destructed().
+
+RETURN VALUE
+	Nothing.
+
+ERRORS
+	Usually none.
+
+SEE ALSO
+	to_unq_text, from_unq, parse_to_dtd

@@ -1,0 +1,29 @@
+FILE
+	/usr/common/lib/dtd_unqable.c
+
+NAME
+	set_dtd_text - set the DTD's text for the UNQable object
+
+PROTOTYPE
+	void set_dtd_text(string new_dtd_text)
+
+CALLED BY
+	Anybody
+
+DESCRIPTION
+	Set the text of the DTD of the object to the text specified.
+	That's so the UNQable object can use that DTD for parsing
+	and for automatic upgrade.
+
+	This function isn't access-protected.  You should access-protect
+	your version of this and all other inherited functions, including
+	upgraded() and destructed().
+
+RETURN VALUE
+	Nothing.
+
+ERRORS
+	Usually none.
+
+SEE ALSO
+	set_dtd, set_dtd_file

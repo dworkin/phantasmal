@@ -1,0 +1,29 @@
+FILE
+	/usr/common/lib/dtd_unqable.c
+
+NAME
+	get_parse_error_stack - get the most recent errors in parsing
+
+PROTOTYPE
+	string get_parse_error_stack(void)
+
+CALLED BY
+	Anybody
+
+DESCRIPTION
+	This function returns the most recent parsing errors.  Remember
+	that parsing occurs when you read the object from UNQ, and possibly
+	also when you upgrade the object automatically.
+
+	This function isn't access-protected.  You should access-protect
+	your version of this and all other inherited functions, including
+	upgraded() and destructed().
+
+RETURN VALUE
+	Nothing.
+
+ERRORS
+	Usually none.
+
+SEE ALSO
+	to_dtd_unq, from_unq_text
