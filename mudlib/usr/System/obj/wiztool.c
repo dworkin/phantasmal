@@ -91,7 +91,9 @@ void upgraded(void) {
 	"@add_room"            : ({ "cmd_new_room" }),
 	"@delete_room"         : ({ "cmd_delete_room" }),
 
-	"@make_room"           : ({ "cmd_make_room" }),
+	"@make_room"           : ({ "cmd_make_obj" }),
+	"@make_port"           : ({ "cmd_make_obj" }),
+	"@make_portable"       : ({ "cmd_make_obj" }),
 	"@delete"              : ({ "cmd_delete_obj" }),
 	"@delete_obj"          : ({ "cmd_delete_obj" }),
 	"@delete_object"       : ({ "cmd_delete_obj" }),
