@@ -1,0 +1,114 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+  <html>
+    <head>
+      <title> Phantasmal MUDLib Tutorial: Basic Objects (old way) </title>
+    </head>
+
+    <body text="#000000" bgcolor="#DDDDDD" link="#0000EF" vlink="#51188E"
+	  alink="#FF0000">
+
+      <h2 align="center"> Basic Objects the Old Way </h2>
+
+      <font size="4">
+
+	<p> Phantasmal originally did its creation and editing of new
+	  objects with a command-line syntax for setting all the
+	  individual fields.  Phantasmal has started the sea-change
+	  to the newer, easier way but it can still be a good idea
+	  to know the old syntax.  The new way may not have the
+	  to-die-for absolute latest feature you're looking for, or
+	  you may just find the old one more convenient for minor
+	  edits.
+	</p>
+
+	<p> Go ahead and type &quot;@new_room #2&quot;.  It doesn't have
+	  to be room number 2, but this example will assume you cleared a
+	  bunch of stuff out.  If you didn't, pick a free number other
+	  than two, or just type &quot;@new_room&quot; and let the MUD
+	  assign you a new room in whatever zone you're currently
+	  standing in. </p>
+
+      <p> So let's make it more interesting.  Type &quot;@stat #2&quot;
+	which will show you some things about your room.  It probably looks
+	pretty generic at this point.  Mine looks like this:
+<pre>
+> @stat #2
+Location:  (none)
+Descriptions (enUS)
+Brief:
+  'a room'
+Glance:
+  'a room'
+Look:
+  'You see a room here.'
+Examine:
+  (defaults to Look desc)
+Nouns (enUS): 
+Adjectives (enUS): 
+
+Contains objects [0]: 
+Contains 0 mobiles.
+
+Registered with MAPD as a room.
+</pre>
+	That means it's nowhere, it contains nothing, its descriptions
+	are quite generic, it has no nouns or adjectives.
+	And what's &quot;enUS&quot;? </p>
+
+      <p> Patience, grasshopper.  Type &quot;@goto #2&quot;  You'll
+	show up in your room.  For me, it looks like this:
+<pre>
+> @goto #2
+You teleport to a room.
+a room
+You see a room here.
+*****
+
+Exits: 
+</pre>
+	Now type &quot;@set_brief #2 my boudoir&quot;.  And then
+	type &quot;look&quot;  You'll notice the room's name changed.
+	You can also type &quot;@stat #2&quot; to see the same change. </p>
+
+      <p> Type &quot;@set_look #2&quot;.  You'll see something like
+	this:
+<pre>
+> @set_look #2
+Locale is US english
+Enter text at the prompt.  Enter ~ on a line by itself to end.
+ >
+</pre>
+
+	Type several lines of description for your room.  Then, after
+	hitting return on the last one, go ahead and type a tilde (~)
+	and hit return.  That should finish off the description,
+	which you're now stuck with until next time you change it.
+	In addition to @set_brief and @set_look, there's @set_glance
+	and @set_examine.  I highly recommend their @help files.
+      </p>
+
+      <p> Okay, so now you can give an object a basic description.
+	  Fair enough.  What else can you do with it?   Well, you can
+	  move it around.  Go ahead and move it to wherever you're standing --
+	  type &quot;@move #2 here&quot;, which will teleport it to be inside
+	  whatever room you're standing in.  You can also teleport it
+	  somewhere else -- for instance &quot;@move #2 #0&quot; will move
+	  it into The Void.  You can teleport there (&quot;@goto #0&quot;)
+	  to make sure it arrived okay. </p>
+
+      <p> You can also add nouns and adjectives to it, but we'll
+	cover that in the section on <a href="Portables.html">portables</a>.
+	If you haven't
+	had a look at the build help yet by typing &quot;@help builder&quot;
+	I highly recommend it. </p>
+
+      <p> You can also read some more <a href="../index.html">
+	    tutorials</a>. </p>
+
+      </font>
+
+      <a href="http://sourceforge.net">
+	<img src="http://sourceforge.net/sflogo.php?group_id=48659&type=3"
+	     width="125" height="37" border="0" alt="SourceForge.net Logo"></a>
+    </body>
+  </html>

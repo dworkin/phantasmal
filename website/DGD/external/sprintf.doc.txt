@@ -1,0 +1,159 @@
+NAME
+        sprintf - string formatter
+
+SYNOPSIS
+        string sscanf(string format, ...)
+
+
+DESCRIPTION
+        Process the format string and other arguments to produce a
+	formatted result string.  Characters in the format string are
+	appended to the result.  A % character marks the start of a
+	formatted field.
+
+	    %%          append a '%' character
+	    %<flags>s   take a string from the arguments, format it, and
+			append it to the result.
+	    %<flags>a   take an array from the arguments, format it, and
+			append it to the result.
+	    %<flags>d   take an int from the arguments, format it, and
+			append it to the result.
+	    %<flags>f   take a float from the arguments, format it, and
+			append it to the result.
+
+        The <flags> are used to specify how the argument is to be
+	formatted.
+
+	    <number>    Specifies the total width of the field
+	    .<number>	%s: amount of field to use
+			%a: column width(s) or number of columns
+			%d: amount of field to use
+	    	   	%f: number of digits after the decimal point
+			This flag may be repeated to specify the widths
+			of several of columns for an array argument.
+	    i<number>	Specifies the paragraph indent
+	    p<char>	Specifies the character used to pad fields to the
+			given width
+	    *		Fetch the total field width from the argument list
+	    .*		Fetch the amount of field to use, number of
+	    		columns, column widths, or floating point precision
+			from the argument list
+	    u*		Fetch the paragraph indent from the argument list
+	    p*		Fetch the pad character or string from the argument
+			list
+	    >		Indicates that the field is to be right aligned
+	    !		Indicates that the field is to be centred
+	    |		Indicates that the field is to be justified
+	    =		Indicates column mode for string arguments (see
+	    		below)
+	    #		Indicates table mode for array arguments (see
+	    		below)
+
+	In column mode, a string that is too wide to fit in the field is
+	formatted into a word-wrapped column.  '\n' characters in the string
+	indicate new paragraphs.  If the paragraph indent is positive, the
+	first line of each paragraph will be indented by this amount.  If it
+	is negative, all lines except the first of each paragraph will be
+	indented.  If the '|' (justified) flag is used, the last line of each
+	paragraph is not justified.
+
+	In table mode, the contents of the array argument are laid out in a
+	table.  The first element is placed at the left end of the first line,
+	the second element at the left edge of the second line, and so on.
+	If only one '.' flag was given, this is taken as the number of columns.
+	If several are given, they are taken as individual column widths.  If
+	no '.' flags are given, the number and widths of the columns will be
+	calculated automatically.
+
+EXAMPLES
+
+	s1="Hello world!";
+	s2="A relatively long string used to demonstrate how long strings "+
+	   "are formatted into columns.\n"+
+	   "This is the second paragraph.  Like the first, it is only for "+
+	   "demonstration.  No great significance should be read into its "+
+	   "words.";
+	
+
+	sprintf("A simple format string with no arguments.\n")
+
+	A simple format string with no arguments.
+	
+
+	sprintf("A message: %s\n", s1)
+
+	A message:Hello world!
+	
+
+	sprintf("%60=>s\n", s2)
+
+	       A relatively long string used to demonstrate how long
+	                         strings are formatted into columns.
+	   This is the second paragraph.  Like the first, it is only
+	    for demonstration.  No great significance should be read
+	                                             into its words.
+	
+
+	printf("%30.28=!s%*i2|=s\n", s2, 25, s2)
+
+	  A relatively long string      A     relatively   long
+	used to demonstrate how long  string       used      to
+	 strings are formatted into   demonstrate    how   long
+	          columns.            strings    are  formatted
+	     This is the second       into columns.
+	paragraph.  Like the first,     This   is   the  second
+	       it is only for         paragraph.      Like  the
+	  demonstration.  No great    first,   it  is  only for
+	significance should be read   demonstration.   No great
+	      into its words.         significance   should  be
+	                              read into its words.
+	
+
+	a=get_dir("/doc/man/kfun/*")[0];
+	sprintf("%50#a\n", a)
+
+	acos                     map_values
+	allocate                 millitime
+	allocate_float           modf
+	...
+	make_dir                 users
+	map_indices              write_file
+	map_sizeof
+	
+
+	sprintf("%.20.20.20#a\n", a)
+
+	acos                find_object         remove_call_out
+	allocate            floor               remove_dir
+	allocate_float      fmod                remove_file
+	atan                get_dir             save_object
+	...
+	exp                 query_ip_number     write_file
+	explode             random
+	fabs                read_file
+	
+
+	sprintf("The number is %d.\n", 5)
+
+	The number is 5.
+	
+
+	sprintf("%5>p0d\n", 5)
+
+	00005
+	
+
+	sprintf("%% %8f %12p0f %>20.3p*f %8.5f %10.3f\n", 12345.6789, 
+	        12345.6789, "hi", 12345.6789, 12345.6789, 12345.6789)
+
+	% 12345.68 12345.678900 hihihihihih12345.679 12345.67 12345.679
+
+ERRORS
+	An error is caused if the format string is malformed, or if too few
+	arguments are given, or if any arguments are of the wrong type.
+	If an error is detected, the function debug_message() will be
+	called and sprintf will return nil.  debug_message() takes a single
+	string argument, which contains a short description of the error.
+
+SEE ALSO
+	kfun/sscanf

@@ -1,0 +1,31 @@
+From: "Markus Tippmann" <Markus.Tippmann@Informatik.Uni-Oldenburg.DE>
+To: jcone@cs.tamu.edu, dgd@list.imaginary.com
+Subject: [DGD] Re: Networking package
+
+Hi Qi ;)
+
+This is an lpc implementation of sqrt, without taking to much performance...
+
+float
+sqrt(mixed x)
+{
+    float r, store;
+    
+    x = (float)x;
+    r = 1.0;
+    
+    while (store != r)
+    {
+	store = r;
+	r = 0.5 * (r + (x / r));
+    }
+    return r;
+}
+
+
+regards,
+ Markus aka Manwe@tta
+
+ __________________________________________________
+/email: Markus.Tippmann@Informatik.Uni-Oldenburg.de
+ voice:  +49-441-69661

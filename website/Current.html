@@ -1,0 +1,98 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title> Phantasmal - Current Features </title>
+  </head>
+
+  <body text="#000000" bgcolor="#DDDDDD" link="#0000EF" vlink="#51188E"
+	alink="#FF0000">
+
+    <h3 align="center"> Phantasmal's Current Features </h3>
+
+    <font size="4">
+
+    <p> Phantasmal builds on the code of the DGD Kernel MUDLib and
+      borrows specific tricks and concepts from several other
+      MUDLibs.  Don't expect it to have a combat or skill system
+      yet, nor many other luxuries.  It's a good base to begin
+      construction from, but not at all a game yet.  The combat
+      system in particular is low-priority. </p>
+
+    <p> It allows logins and talking, chatting on channels and emote.
+      There's a SoulD to handle social commands (like giggle, burp and
+      so on).
+      The usual basic MUD
+      commands for playing with objects, containers and rooms are
+      implemented.  There's a quite
+      usable set of Online Creation (OLC) commands which allow an
+      administrator to create and destroy rooms, portables and exits
+      and set their various attributes.  It uses a set of object
+      descriptions inspired by Skotos'
+      series of Building Blocks
+      <a href="http://www.skotos.net/articles">articles</a>. </p>
+
+    <p> There are simple autonomous mobiles that can wander about,
+      and enough hooks that it's possible to get them to respond
+      to reasonable stimuli, though getting them to do so usefully
+      is still in development. </p>
+
+    <p> Portables can be gotten, dropped and generally manipulated.
+      They work fine as containers.  See the tutorials for examples
+      of online creation.  Objects save and load happily in any
+      topology, stacked to any depth, and there are permanent
+      bodies and inventory. </p>
+
+    <p> There is a convenient online help system.  It reads directories
+      recursively and registers online help files localized to any
+      or all supported locales.  It does Soundex
+      matching (only in English currently) for words without explicit
+      help
+      entries.  The help system is well populated and quite
+      adequate
+      to the needs of a starting MUD. </p>
+
+    <p> Phantasmal is localized.  That means object and room
+      descriptions use Phrase
+      structures rather than simple strings so that any such description
+      is automatically localizable to any supported language.  Note
+      that unicode characters are not yet supported.  Spanish is the
+      only current suggested locale, and many
+      messages still need to be localized.  It's a good test
+      for the various systems nonetheless.  Wish I was a
+      better translator! </p>
+
+    <p> In case of problems the binary port is still
+      configured for emergency administrator login, and all the old
+      wiz commands work just like the
+      <a href="DGD/Kernel/Commands.html">unmodified Kernel MUDLib</a>.
+      Normally (on the regular port) most of them have a % on the
+      front, so they have names like %grant, %compile and so on. </p>
+
+    <p> <a href="http://plunq.sourceforge.net/name.html">UNQ</a>
+      files supply non-statedump structured data storage very
+      similar to XML in many ways, including Document Type Definitions
+      to simplify parsing.  Localized structures and help
+      files are stored this way.  The UNQ parsing system is doing
+      well and supports backslash escaping but not (yet) markup.
+      UNQ Document Type Definitions (DTDs) are
+      well supported and greatly aid parsing most of the
+      objects that Phantasmal stores in files. </p>
+
+    <p> There's a simple object manager
+      to handle in-place upgrades.  This is
+      one of the requirements for a persistent MUD.
+      The ObjectD uses
+      DGD's lightweight objects (LWOs) to keep its footprint reasonable,
+      and manages them heirarchically to permit future expansion to
+      very large number of objects.  Its current form tracks
+      objects but doesn't help with partial rebuilds, only
+      whole-hog AUTO upgrades.  Until Phantasmal gets significantly
+      larger that's unlikely to be a real problem. </p>
+
+  </font>
+
+    <a href="http://sourceforge.net">
+      <img src="http://sourceforge.net/sflogo.php?group_id=48659&type=3"
+	   width="125" height="37" border="0" alt="SourceForge.net Logo"></a>
+  </body>
+</html>

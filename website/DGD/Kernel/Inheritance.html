@@ -1,0 +1,173 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Inheritance in the Kernel MUDLib </title>
+  </head>
+
+  <body text="#000000" bgcolor="#DDDDDD" link="#0000EF" vlink="#51188E"
+	alink="#FF0000">
+
+    <h3> Inheritance in the Kernel MUDLib </h3>
+
+    <p> The main limitation the Kernel MUDLib imposes on inheritance
+      is the division of objects into inheritables, clonables, and
+      objects from which LWOs can be created </p>
+
+    <p> They're primarily distinguished from each other by what directory
+      the files are in -- if the path contains a &quot;/lib/&quot; then
+      the program is an inheritable, and may not be cloned, but may
+      be inherited by other programs.  If it contains a &quot;/data/&quot;
+      then it's for LightWeight Objects (LWOs) and can be instantiated
+      with new_object(), but may not be cloned or inherited from.
+      Note that a file with &quot;/data/&quot; in the path may inherit
+      from inheritables just like clonables and other inheritables do.
+      Anything else (without either &quot;/data/&quot; or &quot;/lib/&quot;
+      in the path) is assumed to be clonable.  You can use clone_object()
+      to make clones of it, but other programs can't inherit from it
+      and you can't call new_object() on it to make an LWO. </p>
+
+    <p> Okay, so why?  Seems like a pretty serious limitation if you
+      think about it a bit -- it means that every parent class is an
+      abstract parent class rather than being instantiable (to use some
+      fancy Object Oriented terminology).  The answer has everything
+      to do with the way DGD allows you to recompile everything on the
+      fly. </p>
+
+    <p> You can recompile an object with clones and at the end of that
+      thread, all the clones get upgraded.  That's pretty cool.  You
+      can recompile a library, and from then on any new objects that
+      inherit it get the new version.  Also cool.  Unfortunately, old
+      objects can't just switch which version of the code they use,
+      so they're stuck with the old version of the library.  In the
+      Kernel MUDLib you can deal with that -- just destruct the old
+      version and recompile the clonable (see Issues, below, for
+      an example).  That'll upgrade all the clones, give you the
+      library, and everything stays copacetic. </p>
+
+    <p> So what if you <i>don't</i> do that -- Melville and 2.4.5
+      both get away without doing any of this.  The answer is that
+      you can't upgrade some objects when the MUD is running, so
+      you can kiss full-on persistence goodbye.  To understand
+      why, think about what an object which is both inheritable
+      <i>and</i> clonable would be like to upgrade.  In OO-speak,
+      that's a concrete (non-abstract) parent class. </p>
+
+    <p> If the object were both inheritable and clonable then it
+      could have some objects that inherited from it, plus a bunch
+      of clones.  If you wanted to upgrade it, you'd need to be
+      able to destruct it and compile a new one so that the classes
+      that inherit from it could get a new version.  But that's a
+      problem...  You'd have to lose all the data in all the clones
+      when you destructed it!  That's a disaster... </p>
+
+    <p> Could you make a different tradeoff to avoid having both
+      child objects and clones?  Probably.  For instance, you could
+      make an object be both inheritable and clonable, but make it
+      destroy all its clones to upgrade.  That'd be a massive pain,
+      but you could do it.  There are a lot of compromises like
+      that, but the Kernel MUDLib's is simple, reliable and
+      it works.  If you want a different one, you can write a
+      different MUDLib (or modify the Kernel MUDLib) to show us
+      all how much better the world would be with your version... </p>
+
+    <p> With great power comes great responsibility, to quote an old
+      comic book character you've all heard of.  So the Kernel MUDLib
+      makes a tradeoff -- you can recompile the whole hog if you want
+      to, but in return you have this set of restrictions. </p>
+
+    <hr> </hr>
+
+    <h3> Recompilation and Object Issues </h3>
+
+    <p> Each time an object is destructed and then compiled again from
+      scratch, a new copy of it shows up.  The old copy will silently
+      go away when nobody's using it any more.  This means that old
+      versions of
+      objects can float around for a very, very long time (remember
+      that &quot;Persistent MUD&quot; idea?) in some cases. </p>
+
+    <p> How can you tell how it works?  Well, when no existing object
+      uses an old issue, it goes away.  This uses Reference Counting,
+      so when the reference count drops to zero, DGD knows that nobody's
+      using it.  So it has to have no clones (if clonable) and nobody
+      can inherit from it (if inheritable).  In either case, it must
+      also have been destructed before it can go away from lack of
+      references. </p>
+
+    <p>Here's an example: </p>
+    <p>If A inherits B, and B inherits C,
+      <pre>
+  A -> B -> C
+      </pre>
+      If I destruct C and recompile it, B is out of date with C and
+      using a previous issue of C - meaing C has two issues.  If I
+      destruct B, recompile it and then recompile A, I would then only
+      have one issue of C. </p>
+
+    <p>To spell that out further, let's arbitrarily assign some
+      instance numbers to the issues. </p>
+
+    <p> Say the old A is issue #1, old B is #2, old C is #3.  So,
+      <pre>
+  A(#1) -> B(#2) -> C(#3)
+      </pre>
+Now you recompile C (#3).  So we have
+      <pre>
+  A(#1) -> B(#2) -> C(#3)
+
+                    C(#4)
+      </pre></p>
+
+    <p>That extra issue of C is just sitting off by itself.  Nobody
+      inherits from it.  Then you destruct and recompile B:
+      <pre>
+  A(#1) -> B(#2) -> C(#3)
+
+           B(#5) -> C(#4)
+      </pre></p>
+
+    <p>When B is recompiled, it looks up C to inherit from it.  Issue
+      #4 is the current non-destroyed one, so it finds that instead of
+      #3.  Then, if you recompile A in-place (for instance, if A is
+      clonable so you don't *want* to destroy it):
+      <pre>
+  A(#1) -> B(#5) -> C(#4)
+      </pre>
+      This assumes there's no other objects around.  If that's true
+      then recompiling A (so it looks up B again) gets rid of the last
+      reference to B(#2), which is destroyed.  That removes the last
+      ref to C(#3), which is also destroyed.  A is now linked to the
+      new ones.  If there <i>are</i> other objects that reference the
+      old B(#5) or C(#4), then A will still be recompiled as above,
+      but the old B and C won't immediately go away. </p>
+
+    <p>Note that since A is recompiled in-place instead of destructed
+      and compiled, its issue number stays the same.  You can find out
+      the issue number in the Kernel MUDLib using either:
+      <pre>
+  status(obj)[O_INDEX];
+
+or
+
+  status(path)[O_INDEX];
+      </pre></p>
+
+    <p>In the first version, status() takes an object pointer which is
+    for a clonable.  The Kernel MUDLib will never give you an object
+    pointer to an inheritable, so the second version takes the path
+    string for the inheritable.  I don't think the second version can
+    look up destroyed objects, only current non-destroyed ones.  If
+    you write an object manager, you have to take that into account
+    and keep track.</p>
+
+    <hr> </hr>
+      <a href="http://sourceforge.net">
+	<img src="http://sourceforge.net/sflogo.php?group_id=48659&type=3"
+	     width="125" height="37" border="0" alt="SourceForge.net Logo"></a>
+    <address><a href="mailto:angelbob-remove-spamfree@spamfree.monkeyspeak.com">Noah Gibbs</a></address>
+    <!-- Created: Mon Jun 11 21:50:30 PDT 2001 -->
+    <!-- hhmts start -->
+Last modified: Tue Mar 12 23:18:33 PST 2002
+<!-- hhmts end -->
+  </body>
+</html>

@@ -1,0 +1,74 @@
+
+You might want to check out and extend the piece of code I've included.
+It's purpose is to setup a grammar to break a string and replace
+color codes by the sequences (tune the get_colors to return sequences,
+switch is fastest way to do this inside it). parse_colors() returns an
+array where the string is split by '*' or *color-code*, the color codes
+are replaced in get_colors function. By imploding the returned array to a
+string with "" delimiter you get a colored string. 
+
+example:
+--
+compile color.c
+code return $1->parse_string("zyx**yellow* \n  *   *green*");
+$1 = ({ "zyx","*","COLOR-*yellow*"," \n  ","*","   ","COLOR-*green*" })
+--
+
+To optimize your color code further, you might want to use some less often
+separator for marking colors, maybe @^ or something like that.
+
+If you wish, it's also easy to split the lines by \n in the same
+grammar.
+
+Notice that the grammar is compiled on first time the code is called, only
+one grammar can be simultanously compiled on one object. So if you start
+using parse_string, you should have one parse_string grammar per object to
+keep it fast.
+
+--- cuticuti, code here ---
+ 
+string *get_color(string *s)
+{
+    switch(s[0]) {
+    case "*yellow*":
+    case "*red*":
+    case "*black*":
+    case "*green*":
+    case "*blue*":
+    case "*magenta*":
+    case "*cyan*":
+    case "*gray*":
+    case "*orange*":
+	return ({ "COLOR-"+s[0] });
+	break;
+    default:
+	error("This code should not be reached");
+	break;
+    }
+}
+
+string *parse_colors(string input)
+{
+    return parse_string("\
+anystr = /[^*]+/ \
+"+"\
+prod: sub_color               \
+prod: anystr                  \
+prod: '*'                     \
+prod: prod prod               \
+"+"\
+color: '*yellow*'   \
+color: '*red*'      \
+color: '*black*'    \
+color: '*green*'    \
+color: '*blue*'     \
+color: '*magenta*'  \
+color: '*cyan*'     \
+color: '*gray*'     \
+color: '*orange*'   \
+"+"\
+sub_color: color ? get_color \
+",input,0);
+}
+
+--- cuticuti ---

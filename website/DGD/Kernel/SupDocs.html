@@ -1,0 +1,74 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Supplementary Documentation</title>
+  </head>
+
+  <body text="#000000" bgcolor="#DDDDDD" link="#0000EF" vlink="#51188E"
+	alink="#FF0000">
+
+    <h3> DGD Documentation </h3>
+
+    <p> Of course, you've already read the DGD documentation which
+      comes in &quot;dgd/doc&quot; (<i>haven't</i> you?), but just in
+      case I'll do a little overview.
+      <ul>
+	<li>Commercial: this file tells you about using DGD
+	  commercially.  This is important only if you ever plan to make
+	  money off a DGD MUD.  While it's involved and requires
+	  licensing, making money off any *other* flavor of LPMUD is
+	  forbidden entirely by the license, so this is more generous of
+	  Dworkin than you think.</li>
+
+	<li>Extensions: this tells you how to modify DGD itself in
+	  some specific, pretty clean ways.  Don't do this until you
+	  have a pretty good grasp of everything you'll need for a
+	  MUDLib.  Even then, you'll want to be on the mailing list
+	  since this stuff isn't guaranteed to work right and operates
+	  very differently than you might think.</li>
+
+	<li>Introduction: an excellent introduction to the interface
+	  between DGD and the Kernel MUDLib.  You won't interact with
+	  this stuff directly, but it's good to know.  Also, the Kernel
+	  tends to pass this interface on in a slightly-modified way, so
+	  knowing the original is helpful.  This is an excellent
+	  programmer's introduction to what a driver and an auto object
+	  are, and how DGD uses them.</li>
+
+	<li>Platforms: getting DGD compiled in the first place.
+	  You've already done that, right?</li>
+
+	<li>editor: help on using DGD's built-in editor.  You'll
+	  eventually want a better editor, but not necessarily in DGD or
+	  your MUDLib.  In general, getting your editor entirely on the
+	  client side is best, building it into your MUDLib is
+	  next-best, and building it directly into DGD is worst.  Feel
+	  free to ask Dworkin about this on the newsgroup, or just read
+	  through the archives and discover his opinions for yourself.</li>
+
+	<li>parser: help on using DGD's built in parse_string
+	  facility.  It's neat, it'll do good things, but it's not (yet)
+	  relevant to your MUDLib.  It will let you build fine features
+	  later, but first you'll need to get stuff up and running.</li>
+
+	<li>The kfun directory: up-to-date documentation on DGD's
+	  interface (through the auto object) to your program.  This is
+	  roughly the same as documentation on OS system calls, and in
+	  the same way as system calls, your standard library (the
+	  Kernel MUDLib) can override them.  If you try to use a kfun
+	  and it doesn't work right, check the Kernel MUDLib's auto
+	  object and see if it overrides it.</li>
+      </ul>
+    </p>
+
+    <hr> </hr>
+      <a href="http://sourceforge.net">
+	<img src="http://sourceforge.net/sflogo.php?group_id=48659&type=3"
+	     width="125" height="37" border="0" alt="SourceForge.net Logo"></a>
+    <address><a href="mailto:angelbob-remove-spamfree@spamfree.monkeyspeak.com">Noah Gibbs</a></address>
+    <!-- Created: Mon Jun 11 21:50:30 PDT 2001 -->
+    <!-- hhmts start -->
+Last modified: Tue Mar 12 23:19:12 PST 2002
+<!-- hhmts end -->
+  </body>
+</html>

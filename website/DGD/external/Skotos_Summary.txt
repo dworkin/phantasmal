@@ -1,0 +1,196 @@
+
+DGD - Dworkin's Generic Driver
+==============================
+DGD is an Internet server designed for extremely stable, high-
+performance, multi-user Internet applications. DGD offers an object-
+oriented run-time environment for a C/C++-like language known as LPC,
+as well as an integrated, persistent object database. DGD benefits
+from a highly efficient design; it runs on any modern Unix system and
+has been ported to Win32, BeOS, and the Macintosh OS. Each of these
+features makes DGD an ideal rapid-prototyping environment.
+
+DGD has a long track record of proven performance in commercial and
+non-commercial settings. DGD formed the foundation of iChat's ROOMS
+system and powered Yahoo! Chat, which served thousands of users. DGD was
+developed by and is maintained by Felix Croes since 1993; he continues
+to update it with new features.
+
+Architecturally DGD has a number of distinct parts:
+
+   * an object-oriented dialect of C/C++ named LPC, which supports rapid
+     prototyping;
+   * a compiler that translates LPC source code into internal minimalist
+     byte-code;
+   * a runtime environment that supports a tight interpreter loop for
+     said byte-code;
+   * an integrated, persistent database for gigabyte-sized object state
+     spaces;
+   * a built-in I/O API for file and network operations;* an extremely
+     powerful generic string parser; and
+   * a kernel LPC library that maintains security, stability and
+     extensibility
+
+
+The LPC Language
+----------------
+The LPC language (also known as Pike) is an object-oriented dialect of
+C/C++ designed to be intuitive yet powerful. LPC has a type system that
+helps you write structured and disciplined code, yet is flexible enough
+not to be constraining.
+
+   * object-oriented dialect of C/C++ supports multiple and private
+     inheritance
+   * LPC values have run-time type: int, float, string, array, mapping,
+     object
+      - strings are null-safe binary byte arrays
+      - dynamically resizable arrays support concatenation,
+        subtraction, union, and intersection; arrays are passed by
+        pointer, i.e. call-by-name
+      - mappings are associative arrays with O(lg N) look-up and
+        insertion complexities; mappings are passed by pointer, i.e.
+        call-by-name
+      - objects reference classes [programs] or instances [clones]
+      - objects are persistent and must be explicitly destructed, which
+        turns referencing values to nil
+
+
+The LPC Compiler
+----------------
+LPC classes are compiled at run-time, and DGD supports in-place
+recompilation. This means the server never needs to be shut down for
+maintenance: all object code is "hot-swappable". For even higher
+performance, the driver allows the compilation of LPC objects into raw C
+source, which may then in turn be compiled and linked with DGD itself.
+
+   * peephole-optimizing run-time LPC compiler generates internal byte
+     code
+   * ability to recompile programs in-place with automatic data space
+     upgrading
+   * off-line LPC pre-compiler generates high-performance C source for
+     linking with the DGD binary itself
+
+
+Runtime Environment
+-------------------
+DGD's runtime environment is built on stability and persistence. It
+offers full system-state rollback and garbage collection via reference
+counting deallocation mechanisms. Programs and clones can be compiled,
+cloned, destroyed, and interrogated at runtime.
+
+   * atomic function calls allow full system-state rollback in the event
+     of a run-time error
+   * stack-machine interpreter loop executes byte code in many single
+     threads of short, restricted execution time
+   * reference-counting deallocation mechanism complemented by copying
+     garbage collection and periodic swap-outs of all objects to disk
+     with subsequent freeing of any remaining (circular) data structures
+   * global object namespace allow for named reference of programs and
+     their clones
+
+
+SMP Support
+-----------
+The system design of DGD includes the planned capability to support
+Symmetric Multi Processing (SMP) in near future. This allows for
+development of code today that will work with multiple processors in the
+future.
+
+   * multi-threaded execution of the single-threaded LPC environment
+   using the 'atomic' functionality to rollback system-wide changes when
+   threads conflict in resource usage
+
+
+Database
+--------
+DGD maintains persistence as a characteristic of its runtime
+environment. It does this through an integral database without any
+internal or external separation of functionality. Object swapping allows
+for gigabyte-sized databases.
+
+   * full system state dump files implement persistence across reboots
+     as well as snapshot-style state backups using fast database copy
+     without forking
+   * seamless object swapping mechanisms allow for smoothly running
+     systems with states exceeding machine capacity by orders of magnitude
+   * the mapping data type allows for rapid (O(lg N)) data lookup within
+     objects
+
+
+I/O API
+-------
+DGD's built-in I/O functionality provides for network and file
+operations. TCP and UDP are fully supported; ports and sockets are
+associated with DGD objects. All standard file access functions are
+available, including the ability to modify and query files and
+directories.
+
+   * networking functionality includes ability to:
+      - open a TCP port and associate it with an object; asynchronous
+        connection attempts communicated through a call-back system
+      - accept a connection, create a socket, and associate it with an
+        object; similarly call-back based
+      - open a UDP port and associate it with an object; asynchronous
+        datagram input communicated through a call-back system
+      - create outbound TCP connection attempts
+      - send outbound UDP datagrams
+   * file access functionality includes ability to:
+      - write/read a range of bytes from/into a file
+      - read the names, modification times, and sizes of the contents of
+        a directory
+      - delete or rename a file or directory
+      - create a directory
+
+
+String Parsing
+--------------
+DGD's string parser deconstructs text input according to the rules of a
+given formal grammar. The parser is more powerful than programming
+language compilers; its ability to accept a potentially ambiguous
+grammar makes it ideal for analyzing natural languages e.g. English
+sentences.
+
+   * Tomita general LR parsing technique
+   * generic run-time parsing ability based on BNF-style formal grammars
+   * lazy construction of tokenization DFA and compressed parser PDAs
+   * ambiguous grammars allowed, yielding parse trees generated in
+     parallel
+   * LPC functions called run-time, allowing for run-time
+     context-sensitive pruning
+
+
+Kernel Library
+--------------
+A kernel library is distributed along with the driver itself; this
+library is written in LPC and sits as a layer between DGD and
+higher-level LPC. It deals with resource control, file and object
+security, and user management, and offer basic functionality in the form
+of events.
+
+   * self-contained low-level LPC layer meant to constitute the
+     foundation of developers' own LPC systems
+   * restricts clonable programs to reside in /obj/ directories,
+     inheritables in /lib/ ; this discipline makes upgrading of inherited
+     programs easier
+   * an object ownership system
+   * linked lists of objects per owner
+   * an extensible resource control system with quotas
+   * a file security system
+   * a "thread-local storage" mechanism for data; vital for
+     multi-processor performance
+   * It guarantees a maintenance-level logon even in the event of an
+     emergency malfunction in other parts of the LPC library.
+
+
+Availability
+------------
+DGD is Copyright 1993 - 2000 BeeHive Internet Technologies, Inc.
+
+The primary distribution site for the non-commercial version of DGD is
+at <ftp://ftp.imaginary.com/pub/LPC/servers/DGD/>. Patches for the
+experimental branch are at <ftp://ftp.dworkin.nl/pub/dgd/experimental/>.
+
+A commercial version of DGD is available under a license from Skotos
+Tech <http://www.skotos.net> -- contact <mailto:sales@skotos.net> for
+more information. Skotos holds its commercial rights by a license from
+Acuity Corporation (formerly iChat and now a wholly owned subsidiary of
+Quintus Corporation).

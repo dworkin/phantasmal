@@ -1,0 +1,138 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title> Phantasmal - Developing From It </title>
+  </head>
+
+  <body text="#000000" bgcolor="#DDDDDD" link="#0000EF" vlink="#51188E"
+	alink="#FF0000">
+
+    <h3 align="center"> Developing With Phantasmal </h3>
+
+    <font size="4">
+
+    <h4 align="center"> Documentation </h4>
+
+    <p> Maybe you're helping to add features to Phantasmal.  Maybe
+      you're developing your own MUDLib and you're starting from
+      Phantasmal.  Both work pretty much exactly the same way, and
+      either way this document has some tips for you. </p>
+
+    <p> First off, you <i>need</i> to read the documentation.  I'm
+      aware there's a lot of it out there, at least compared to
+      similar Open Source projects.  I consider that a good thing.
+      This web site (
+      <a href="http://phantasmal.sourceforge.net">
+	http://phantasmal.sourceforge.net</a>), the DGD-specific
+      sister site (
+      <a href="http://phantasmal.sourceforge.net/DGD">
+	http://phantasmal.sourceforge.net/DGD </a>), those are
+      obvious.  Also, read the documentation directory within
+      Phantasmal itself.  You'll find it in /doc/design and
+      /doc/api.  It's often out-of-date, but it documents
+      several things that are simply not mentioned anywhere
+      else.  Feel free to submit improvements and updates to it,
+      you're helping the larger community by doing so. </p>
+
+    <p> The SETUP text file in Phantasmal's root directory
+      contains a bit about its overall architecture, and
+      you'll get a bit in README and INSTALL as well.  Make
+      sure to look through them.  These files are prominently
+      placed specifically because Phantasmal aims at
+      developers rather than &quot;end-users&quot; who will
+      use the MUD as supplied. </p>
+
+    <p> The final sources of documentation are that community
+      itself -- the DGD mailing list, the Phantasmal Sourceforge
+      forums.  While I try to fold the information from these
+      sources into the other web sites and text files, nothing beats
+      the original source for detail and elaboration.  And speaking
+      of &quot;the original source&quot;, remember that the DGD
+      community is still small.  That means there are limits to what
+      you can find within it, but it also means that basically
+      anybody you can still find is happy to answer questions.  I
+      love to do so (I can steal my answers back and put them on the
+      web site), and Steve, the Melville author, is also quite
+      pleasant and polite, and is still active on the DGD mailing
+      list.  If you've got a question related to MUDLibs generally
+      or to Phantasmal or Melville specifically you'll find the DGD
+      Mailing List is an appreciative forum. </p>
+
+    <p> In the extended DGD community is Skotos -- they keep
+      Dworkin fed, they keep DGD humming along and they occasionally
+      contribute to the mailing list.  They frequently write
+      new <a href="http://www.skotos.net/articles">articles</a>.
+      You can find a little &quot;Phantasmal's Best Of&quot; for
+      those articles <a href="Articles.html">here</a>. </p>
+
+    <h4 align="center"> The Source Tree </h4>
+
+    <p> After you've read the documentation, it's time to grab
+      some sources and play with them.  Before you start
+      developing a MUDLib or DGD itself, make sure you can use
+      the regular code-drops.  That means making an experimental
+      version of DGD from 1.2 and a massive number of patches at
+      the moment, and grabbing the latest release number of
+      Phantasmal from SourceForge.  There's a lot of documentation
+      on how to do that on the DGD site and in the INSTALL text
+      file in Phantasmal. </p>
+
+    <p> There's a choice you're going to have to make if you're
+      developing your own MUDLib -- will you keep up with
+      mainstream Phantasmal, or will you branch off at some
+      point and do stuff on your own?  Phantasmal is in the
+      public domain so you can legally do either, or you can
+      do a hybrid of both.  If you're keeping up with Phantasmal
+      or taking a hybrid approach, you'll need to keep a
+      Phantasmal source tree around and see how the diffs work.
+      Features that you want to keep, you can fold right in.
+      Anything that conflicts with your own work, you'll need
+      to adapt or discard. </p>
+
+    <p> To do that, you'll want to get the latest CVS version of
+      Phantasmal and keep it well-updated.  Once you've set up the
+      repository, make sure to run &quot;cvs update -Pd&quot;
+      regularly, though you'll note that any empty directories not
+      in CVS you have will go away when you do -- that pesky
+      &quot;-d&quot; option prunes empty directories.  You'll still
+      want to update periodically, and if the directory deletion
+      bothers you, you can always put an empty
+      &quot;.cvsignore&quot; file into the directory or something
+      similar to keep it from going away. </p>
+
+    <p> There are a lot of other things that may be useful for
+      a clean project.  You may want to do some or all of
+      them.  To see my version of those things, check out
+      the document for <a href="SFDevelopment.html">SourceForge
+	Phantasmal Development</a>, especially the things
+      about adding new types of objects, new commands and so
+      on. </p>
+
+    <p> There can be problems with using the Win32 native CVS
+      client.  As a non-Windows-user I'm just quoting another
+      developer on this, but try the Cygnus CVS version as an
+      alternative if you're having troubles.  Check out the
+      PROBLEMS text file that comes with Phantasmal for a more
+      complete description of how this problem manifests. </p>
+
+    <p> This last bit is just a matter of courtesy, but I'd love
+      to know how you're doing with Phantasmal.  Let me know
+      what parts you like, what parts you hate, and where you
+      think I was obviously smoking something illegal with my
+      head up various of my orifices.  If you have problems
+      that you think might be caused by what I wrote instead
+      of what you wrote, or especially problems you fix, let
+      me know about it.  I'll put you on the Credits page if
+      you ask, or if I happen to think about it :-) </p>
+
+    <p> And bear in mind -- more than anything else, development
+      is <a href="http://www.sinfest.net/comics/sf20030303.gif">
+	a state of mind</a>. </p>
+
+  </font>
+
+    <a href="http://sourceforge.net">
+      <img src="http://sourceforge.net/sflogo.php?group_id=48659&type=3"
+	   width="125" height="37" border="0" alt="SourceForge.net Logo"></a>
+  </body>
+</html>

@@ -1,0 +1,163 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Layers of DGD</title>
+  </head>
+
+  <body text="#000000" bgcolor="#DDDDDD" link="#0000EF" vlink="#51188E"
+	alink="#FF0000">
+    <h1> The Layers Beneath the MUD </h1>
+
+    <h3> The DGD Driver and the basics of the MUDLib </h3>
+    <p> The DGD driver presents a series of layers of functionality.  What
+      kind of stuff <i>you</i> think DGD does depends on what layer you see.
+      Lets briefly dissect the layers between the DGD Kernel MUDLib and the
+      OS you're running on. </p>
+
+    <p> At the lowest, scariest, hardwariest level that you can still call
+      DGD, you have the DGD driver itself.  You can write extensions for the
+      driver or even just directly hack the source code if you don't care
+      about being compatible or getting Dworkin's updates.  That means
+      hacking DGD just like any other application on your OS of choice.
+      If you don't <i>fully</i> understand what I mean by all this or if
+      you don't have much experience writing programs on the machine you're
+      sitting in front of, then this isn't
+      the level you want to work at.  Even if you do, it probably still
+      isn't. </p>
+
+    <p> At the next level up, you have the DGD kernel functions, also called
+      kfuns.  These are the functions that the lowest-level MUDLib code uses
+      to present more interesting services to you.  Kernel functions do things
+      like allocate memory, generate random numbers, give security
+      information, return basic driver constants and do network I/O.  They
+      don't look much like a game, MUD or otherwise.  In fact, it's more like
+      a little Operating System and its system calls.  Here's the list of
+      them as of DGD 1.2.33:
+      <pre>
+acos            crypt            hash_md5         previous_program  sinh
+allocate        ctime            implode          query_editor      sizeof
+allocate_float  destruct_object  ldexp            query_ip_name     sqrt
+allocate_int    dump_state       log              query_ip_number   sscanf
+asin            editor           log10            random            status
+atan            error            make_dir         read_file         strlen
+atan2           exp              map_indices      remove_call_out   swapout
+block_input     explode          map_sizeof       remove_dir        tan
+call_other      fabs             map_values       remove_file       tanh
+call_out        find_object      millitime        rename_file       this_object
+call_trace      floor            modf             restore_object    this_user
+ceil            fmod             new_object       save_object       time
+clone_object    frexp            object_name      send_datagram     typeof
+compile_object  function_object  parse_string     send_message      users
+cos             get_dir          pow              shutdown          write_file
+cosh            hash_crc16       previous_object  sin
+      </pre> </p>
+
+    <p> If you use an LPC driver other than DGD such as MudOS you'll find
+      that these functions are very different and look more like you'd
+      expect a game driver to.  DGD is designed to work as pretty much
+      any kind of network server, not just as a MUD, so its MUDLibs have
+      to do a lot more to give a game environment.  Of course, that also
+      means that if you want to make a MUD that doesn't act at all like
+      traditional MUDs, say with no object or room data structures at all
+      (maybe you just have particles everywhere and you figure it all out
+      from that!), DGD is the driver for you -- it doesn't force you to
+      use any of the regular MUD functions that you no don't need or want.
+    </p>
+
+    <p> Above the DGD driver kfuns, your MUDLib will start translating this
+      set of operations into something you can use more easily.  There's
+      nothing wrong with the kfuns above, but you probably don't want to
+      write any old application -- you want to write a game, and this API
+      isn't the most helpful thing in the world for that.  That's where
+      the DGD Kernel MUDLib can help you. </p>
+    <p> You may find that if you try to write code that uses the
+      kernel functions above in the way they're documented by DGD that
+      you can't -- you may be denied permission, or you may even
+      be told you're calling with the wrong number of arguments.  That's
+      because the only part of a MUDLib that can directly use DGD's driver
+      kfuns are special objects called the driver object and the auto object.
+      If the driver or auto object decides to change how a function works
+      then all the other code gets their version, not version from the
+      DGD driver.  The Kernel
+      MUDLib overrides a number of these so that it can perform more
+      security
+      checking, which is good for the MUD administrator -- it can keep the
+      builders and other wizards from being able to do Bad Things, at least
+      if you use it consistently and intelligently. </p>
+    <p> The Kernel MUDLib, like basically every MUDLib, overrides some
+      of these and
+      provides new ones.  The Kernel MUDLib <i>still</i> doesn't look very
+      much like a MUD because it's really designed to let you build
+      a MUDLib
+      on top of, not to be the primary MUDLib for your game.  Some MUDLibs,
+      such as the 2.4.5 MUDLib and Melville, provide you more of a game.
+      With the Kernel MUDLib, you'll need to build it. That's okay.  The
+      Skotos folks do just exactly that, so do
+      <a href="http://phantasmal.sourceforge.net">I</a>, and you
+      can too. </p>
+    <p> In fact, for everything I'm writing here, I'm assuming you'll
+      be building on top of the Kernel MUDLib.  That'll mean that if
+      you're using Melville or 2.4.5 there will be differences, and if
+      you're just building on top of raw DGD there'll be even more.
+      Those are all fine places to start, but in <i>this</i> document
+      it's all Kernel. </p>
+    <p> And that's why you're here.  At least, that's why you're reading this
+      page.  It's because you want to write a MUD and you're
+      brave enough to start from the best around (DGD and the kernel
+      MUDLib) even if that's much harder than using something that's already
+      written and polished for you.  Congratulations! </p>
+
+    <hr> </hr>
+
+    <h3> DGD Kernel Functions </h3>
+    <p> First off, these will be documented in your DGD distribution in
+      doc/kfun.  Second, for whatever MUDlib you're using, these documents
+      may be inaccurate.  Read the overview above to find out why DGD's
+      raw kernel functions may not be the same ones that you use from
+      the Kernel MUDLib. </p>
+    <p> So first, we should have a look at the functions that the Kernel
+      MUDLib overrides and the new ones it provides.  You can find it
+      for yourself in directories under &quot;mud/doc/kernel&quot;, but
+      here's a quick list, up-to-date for 1.2.33:
+      <pre>
+Lfuns:
+allow_subscribe  create  query_owner
+
+Efuns:
+add_event     compile_object   find_object             remove_event
+call_limited  destruct_object  get_dir                 status
+call_other    event            new_object              subscribe_event
+call_trace    event_except     query_events            unsubscribe_event
+clone_object  file_info        query_subscribed_event
+      </pre> </p>
+    <p> If you're paying attention, you'll have figured out that that means
+      the functions the Kernel MUDLib actually overrides are:
+      <pre>
+call_other            compile_object         get_dir
+call_trace            destruct_object        new_object
+clone_object          find_object            status
+      </pre> The other ones are all new. </p>
+
+    <a name="hooks">
+      <p> There are also special interfaces called hooks.  Certain
+	methods, such as set_object_manager, can be called on particular
+	objects and later on, that object will call functions within the
+	object manager you provided it.  That means it needs to call
+	functions it knows all about, so you'll need to have given it
+	an object manager with all the functions it needs.  That's how
+	hooks work.  Luckily, the Kernel MUDLib documents the different
+	hooks and what kind of object you'll need to give them pretty well.
+	You can find the documentation in mud/doc/kernel/hook. </p>
+    </a>
+
+    <hr> </hr>
+      <a href="http://sourceforge.net">
+	<img src="http://sourceforge.net/sflogo.php?group_id=48659&type=3"
+	     width="125" height="37" border="0" alt="SourceForge.net Logo"></a>
+    <address><a href="mailto:angelbob-remove-spamfree@spamfree.monkeyspeak.com">Noah Gibbs</a></address>
+    <!-- Created: Mon Jun 11 21:50:30 PDT 2001 -->
+    <!-- hhmts start -->
+Last modified: Tue Mar 12 23:18:41 PST 2002
+<!-- hhmts end -->
+  </body>
+</html>

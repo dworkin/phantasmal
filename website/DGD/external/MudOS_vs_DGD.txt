@@ -1,0 +1,123 @@
+-------------------- John "West" McKenna wrote: --------------------
+
+>    Now for my main question..  What are the main advantages and 
+>disadvantages of the MudOS vs. DGD drivers?
+
+The biased answer: DGD is infinitely superior in every way :-)
+
+It's a personal preference thing, I think.  They're both quite capable of
+running MUDs.  MudOS does a lot more work in the driver, where DGD leaves
+it all for you.  LPC isn't the fastest language in the world, so doing more
+work in the driver might be a good idea.  Of course, DGD's precompiling
+(compiling LPC to C and linking it into the driver) does very good things
+to performance.  Has anyone done any performance comparisions?
+
+The use of 'nil' instead of zero for not-an-object or not-a-string etc
+makes a bigger difference than you'd think.
+
+I'm also in love with the object upgrading: unless MudOS has picked up some
+new features since I last played with it, you have the destruct-update-
+clone cyle every time you make a change to anything.  If you've changed
+something fundamental like the user object, you might as well just take the
+whole MUD down.  DGD can replace the code of existing (and running) objects
+on the fly.  I've written myself a handy little "upgrade" command that
+looks for modified files, and automagically recompiles everything that
+depends on them.  I find it painful to go back to MudOS development.
+
+Personal preference again: DGD has far fewer built-in functions, and the
+ones that are there are very simple.  This means that anything tricky is
+done in LPC, and you don't have to go reading driver source to find out
+what it does (who trusts documentation?).  More importantly, you can change
+it.
+
+DGD doesn't have closures or lambdas or anything like that.  I don't miss
+them - I never used them on MudOS (because I'd never found any decent
+documentation, or had someone tell me what they're actually for).
+
+I'm not all that keen on DGD's method for adding extension packages.
+Patching the driver source just doesn't feel right.  MudOS's "stick the
+file in the directory and it will happen" is nice.
+
+DGD doesn't have snoop() or shadow().  As far as I can see, these are
+nothing but security holes.  Does anyone know what they're actually good
+for?  What possessed whoever was responsible to include them in the first
+place?
+
+There's more, but I'm a bit hazy on the details.  DGD supports saving the
+entire MUD state to a file, so you can restart as if nothing had happened.
+I've never used this.  It also has compile-time and run-time type checking,
+which makes debugging that little bit less unpleasant.
+
+
+-------------------- Stephen Schmidt wrote: --------------------
+
+On Sun, 23 Apr 2000 BladeDarkmour@aol.com wrote:
+>     Now for my main question..  What are the main advantages and 
+> disadvantages of the MudOS vs. DGD drivers?  
+
+Perhaps a prior question is, what are the main differences?
+The question asks only about drivers, but it's probably worth
+considering the mudlibs available for each driver as well.
+I've never worked on any driver, and have written one mudlib
+for each (well, only part of one for MudOS) and hope I can
+be considered unbiased as far as that goes :)
+
+The main difference, as I see it, is that MudOS and its mudlibs are
+older, much more developed, more complex, and intended, generally,
+to work with a fantasy adventure type of game. That last point is
+more true of the mudlibs than of the driver itself, but I think it
+holds true in both cases. Other types of games can be made to
+work with the MudOS system, and have been - sci-fi adventures,
+for instance - but it takes work, and the more you diverge 
+from that framework, the harder it gets. For example, the
+MudOS setup assumes that environment() is a nearly sufficient
+way to describe all location relationships between objects.
+If you want a grid system, or other more complex relationships,
+it's harder under MudOS - not impossible, but harder. DGD and
+its mudlibs, by constrast, are more recent, less developed, and
+presuppose less about what your game looks like and plays like. 
+On the other hand, they offers fewer pre-existing features, and
+require more core-level work by the mudlib programmer.
+
+Thus, my answer tends to be: If you want to do a fantasy
+adventure mud, or something real similar, then MudOS is the
+better choice, because that's pretty much what it and its
+extant mudlibs are meant to do. (Disclaimer - I haven't
+worked with MudOS mudlibs since 1995, at which time TMI-2
+and Nightmare were the main libs for it, with one more
+major lib in development. Something new and different
+may have come out since then.) You could use DGD and the
+2.4.5 lib, but I think you'd usually be better off with
+MudOS if that's your goal.
+
+On the other hand, if you want to do a wargame, or detective
+mystery type thing, or something very different from the
+customary fantasy adventure, then you'll have less to undo
+under DGD, and in that case I'd recommend it.
+
+The point is less true if you're willing to start with a
+minimal MudOS mudlib (Basis was the one that was standard
+in 1995) but still essentially correct, IMO. It's probably
+easier to tweak DGD with a minimal mudlib in substantial
+ways than to tweak MudOS and a minimal mudlib, just because
+you have more under your control if you use DGD. (Assuming
+you're not willing to hack the driver code to ribbons.)
+
+
+-------------------- Felix Croes wrote: --------------------
+
+I wrote DGD, so I won't even keep up a pretense of being unbiased.
+I'll just mention two major points:
+
+ - DGD has persistence.  MudOS users claim that persistence is just
+   something that you can program yourself in LPC, and they're almost
+   correct; if handled in LPC, every object has to make sure that it
+   can save and reinitialize itself.  Buggy objects are out of luck.
+   The basic functions underlying the saving mechanism in MudOS are
+   marred by a number of limitations which further restrict the sort
+   of object that can have persistance.
+ - DGD is being actively maintained and developed.  MudOS has seen
+   no more than a handful of bugfixes since November 1997, out of
+   the hundreds of bugs that have been reported, and no new
+   development at all.  In practice this means that if you use MudOS,
+   you must be prepared to do your own driver hacking.

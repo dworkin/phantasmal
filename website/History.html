@@ -1,0 +1,90 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title> Phantasmal - A History </title>
+  </head>
+
+  <body text="#000000" bgcolor="#DDDDDD" link="#0000EF" vlink="#51188E"
+	alink="#FF0000">
+
+    <h3 align="center"> A Brief History of Phantasmal </h3>
+
+    <font size="4">
+
+    <p> I've done a number of MUD projects before Phantasmal, and
+      a great many TCP/IP servers in C.  I had switched to a C/Perl
+      hybrid and was trying to figure out how to safely interrupt
+      Perl code after it had overrun its processor allotment and
+      gotten itself all tangled up.  I could control its operations,
+      functions and memory usage with the excellent Sandbox
+      module, but the processor thing was eluding me.  I'd worked
+      out a solution involving an external Perl process which
+      could be fully killed and restarted if anything went badly
+      wrong, but I had no way to limit the maximum latency... </p>
+
+    <p> And then, during a random web search, it hit me.  DGD.
+      A server that already <i>did</i> everything I wanted.
+      It looked good.  The feature list was beautiful.  The
+      additional stuff it did like recompile-in-place and
+      atomic functions was awe-inspiring.  It was very actively
+      maintained.  It had an intelligent author and the code
+      was lean, svelte and secure. </p>
+
+    <p> On June 18th, I started building an experimental DGD-based
+      MUD to replace my all-custom C-and-perl hybrid MUD (called
+      &quot;Black Oyster&quot;).  It was my first work on DGD. </p>
+
+    <p> I dug deeper into DGD.  There wasn't much documentation.
+      &quot;Read
+      the mailing list&quot; was pretty much what it boiled down
+      to.  I did.  Then I arranged salient bits into an early
+      prototype web site.  And I kept building. </p>
+
+    <p> After awhile, I realized that not only was there no good
+      MUDLib, people had been asking for one for <i>years</i>, and
+      nobody was seriously working on one.  So I cobbled some stuff
+      together, built a new public domain ObjectD, released it, and
+      added a simple MUDLib on top.  Thus, on February 8, 2002 was
+      Phantasmal 0.001 released.  I follow Linus Torvalds' lead on
+      object numbers -- start very, very small, with the assumption that
+      you can always have a version 1.0 when it's bug-free :-) </p>
+
+    <p> Early on, it lived in my personal BitKeeper repository and
+      I'd periodically make releases FTPable from my personal
+      machine.  I didn't bother to keep statistics, and I don't
+      know if anybody bothered to download the early releases.
+      It was more learning code for folks on the DGD mailing list,
+      and that was plenty for me. </p>
+
+    <p> On March 12th, about a month later, I put it up on
+      SourceForge.  Development had been pretty wild at the beginning
+      and Phantasmal version 0.001 through 0.005 were all before I moved
+      to SourceForge.  You can find them there now, but the listed
+      downloads are all people that downloaded them as a historical
+      curiosity or because some later release didn't work :-) </p>
+
+    <ul>
+      <li> 2001-06-18:  First proto-Phantasmal development </li>
+      <li> 2002-02-08:  Phantasmal 0.001 release </li>
+      <li> 2002-03-12:  Phantasmal sets up on SourceForge </li>
+      <li> 2002-03-18:  First SourceForge-specific release, 0.006 </li>
+      <li> 2002-06-18:  Phantasmal turns one year old.  Over 100
+	SourceForge downloads, over 150 CVS checkins, and Neil
+	McBride (sarak) was developer number two. </li>
+      <li> 2002-07-05 to 2003-02-03:  Seven-month hiatus between
+	0.009 and 0.010.  First major code contributions, which came
+	from Jay Shaffstall and Keith Dunwoody </li>
+      <li> 2003-03-17:  Dan Parks first shows up and offers help </li>
+      <li> 2003-03-31:  Phantasmal's past week is ranked #9 in
+	&quot;most active&quot;
+	top ten games in SourceForge games foundry and as the
+	absolute most active MUD on SourceForge. </li>
+    </ul>
+
+  </font>
+
+    <a href="http://sourceforge.net">
+      <img src="http://sourceforge.net/sflogo.php?group_id=48659&type=3"
+	   width="125" height="37" border="0" alt="SourceForge.net Logo"></a>
+  </body>
+</html>

@@ -1,0 +1,41 @@
+If you want more consistent results using explode() and implode():
+(exploded strings consisting of only separators, or having them in the
+beginning and at the end doesn't give a consistent "backwards" compatible
+result with implode()..)
+
+NOTE: THIS CODE IS AS-IS, as it is found in the MudOSa4DGD library.
+
+/* big_explode(str, separator)
+   This function works like explode(), except that it also counts
+   separators at the start and end of the string. Basically that means
+   that the array returned is more practical to parse. And big_implode()
+   will return the original string if needed be.
+*/
+static string *big_explode(string str, string sep) {
+  int stlen, seplen;
+  string *expl;
+  expl = ::explode(str, sep);
+  if ((stlen=strlen(str)) > (seplen=strlen(sep)) && seplen > 0) {
+    if (str[..seplen-1] == sep)
+      /* matching separator found at beginning */
+      expl = ({ "" }) + expl;
+    if (str[stlen-seplen..] == sep && ::sizeof(expl - ({ "" })))
+      /* matching separator found at end */
+      expl += ({ "" });
+  }
+  /* got correct array now, return */
+  return expl;
+}
+
+/* big_implode(str, separator)
+   fully implodes an array of strings, regaining the string from
+   big_explode(), unlike the relation between explode() and implode()
+   of certain strings.
+*/
+static string big_implode(string *arr, string sep) {
+  if (!::sizeof(arr - ({ "" }))) {
+    /* special array consisting only of separators, add one extra */
+    arr += ({ "" });
+  }
+  return ::implode(arr, sep);
+}

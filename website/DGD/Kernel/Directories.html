@@ -1,0 +1,102 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Adding Stuff to your MUDLib: Directory Structure</title>
+  </head>
+
+  <body text="#000000" bgcolor="#DDDDDD" link="#0000EF" vlink="#51188E"
+	alink="#FF0000">
+
+    <font size="4">
+
+    <h1> Your MUDLib's Directory Structure </h1>
+
+    <p> Where do I <b>put</b> all this stuff? </p>
+
+    <p> You've probably asked yourself that several times already, just
+      getting started.  When you make a new library, or a new clonable,
+      or a new data file, where do you <i>put</i> it?  You've got a
+      number of choices, and many of them we won't even touch on here.
+      Don't treat this as being the be-all and end-all on this subject,
+      but it can get you started. </p>
+
+    <p> Where you put stuff is surprisingly important.  The Kernel MUDLib
+      hardcodes a <i>lot</i> of stuff according to paths, including a lot
+      of information about who has access to what, and whether an object
+      is inheritable, clonable or an LWO.  So let's hit some basic
+      guidelines. </p>
+
+    <h2> Where do specific object types go? </h2>
+
+    <p> You'll need to put a &quot;/lib/&quot; directory somewhere in the
+      path to every library (inheritable).  The Kernel MUDLib requires it.
+      It's good
+      practice.  It's good documentation.  Do it. </p>
+
+    <p> If you're using lightweight objects, or LWOs, you'll need to do
+      the same with a &quot;/data/&quot; directory in the path.  Note
+      that this isn't required for the libraries that the LWO object
+      inherits.  Those use &quot;/lib/&quot; just like any other
+      library. </p>
+
+    <p> There's a strong convention that clonables should have
+      &quot;/obj/&quot; in their path in the same way.  You don't have
+      to do it.  In fact, daemons (below) are a common, specific
+      exception.  Still, I highly recommend it in general.  It's good
+      documentation for other people looking at your MUDLib, and the
+      Kernel MUDLib <i>does</i> do a few things differently depending on
+      whether you have it. </p>
+
+    <p> Daemons are clonables like any others, but they're meant to be
+      used by doing a find_object on them and calling their methods with
+      call_other.  They may be technically clonable, or may have guards
+      in their create() routines that prevent cloning.  They often
+      wind up in a directory with &quot;/sys/&quot; in the name instead
+      of &quot;/lib/&quot; or &quot;/obj/&quot;.  This is purely
+      optional, mostly a form of documentation.  You're just saying that
+      you plan to use objects in that directory as a daemon. </p>
+
+    <h2> What about Data? </h2>
+
+    <p> This one's important too, but for different reasons.  The
+      Kernel MUDLib doesn't explicitly prevent paths from being opened
+      with read_file(), which is the way pretty much any data file is
+      accessed.  But different paths require different permissions to
+      access.  For instance, stuff in &quot;/usr/System&quot; is
+      writable only by the privileged System user by default. </p>
+
+    <p> You may not want to keep the user data there.  While passwords
+      are encrypted, you may need to give certain wizards read access
+      to System but not want them to be able to read all the
+      save files.  If so, or out of sense of following
+      conventions you should probably move it to /save, which is not
+      only not world-readable, but has specific guards in the Kernel
+      MUDLib for additional security.  It's a great place to put private
+      stuff that only very privileged code can access.  It's meant to
+      be. </p>
+
+    <hr> </hr>
+
+    <h2> Specific Projects </h2>
+
+    <p> This is part of the Adding Stuff section, so what kind of stuff
+      should you add?  One simple answer is &quot;everything&quot;, since
+      this document tells you where everything goes.  But there are also
+      some projects you can undertake to improve your MUDLib. </p>
+
+    <p> For instance, a simple thing you can do is to move your user
+      data from its current save location to &quot;/save&quot;, as
+      we suggest above.  Mainly you'll need to modify &quot;user.c&quot;.
+      Go give it a try! </p>
+
+    <hr> </hr>
+      <a href="http://sourceforge.net">
+	<img src="http://sourceforge.net/sflogo.php?group_id=48659&type=3"
+	     width="125" height="37" border="0" alt="SourceForge.net Logo"></a>
+    <address><a href="mailto:angelbob-remove-spamfree@spamfree.monkeyspeak.com">Noah Gibbs</a></address>
+    <!-- Created: Mon Jun 11 21:50:30 PDT 2001 -->
+    <!-- hhmts start -->
+Last modified: Tue Mar 12 23:18:16 PST 2002
+<!-- hhmts end -->
+  </body>
+</html>

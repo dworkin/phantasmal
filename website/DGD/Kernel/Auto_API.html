@@ -1,0 +1,827 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>MUDLib Not-So-Basics: Driver & Auto APIs</title>
+  </head>
+
+  <body text="#000000" bgcolor="#DDDDDD" link="#0000EF" vlink="#51188E"
+	alink="#FF0000">
+
+    <font size="4">
+
+    <h2> Specific Operations </h2>
+
+    <p> Note:  all specifics given here are current as of DGD 1.2.35.
+      While the Kernel MUDLib tends to change very little, these
+      operations are, in fact, subject to change at any time by Dworkin.
+    </p>
+
+    <p> Also, this page details only exported APIs -- static and private
+      functions of the Driver object, for instance, aren't listed
+      here even though DGD or the Driver itself may call them. </p>
+
+    <h3> Driver Operations </h3>
+
+    <p> Your Driver object is the first object that exists, the one
+      DGD creates before absolutely anything else.  The Kernel MUDLib
+      writes it for you, but you'll still want to know what it does.
+      You can look at its code in /kernel/sys/driver. </p>
+
+    <p> Any of these operations may be called as DRIVER->operation()
+      like a normal call_other.  You can also use an explicit
+      call_other, naturally.  Operations you don't have access to
+      perform will usually fail silently, so *check your results*. </p>
+
+    <p> Some operations are described as system-only.  That means they
+      can be called by any .c file under the /kernel or /usr/System
+      directories, but anybody else silently gets no useful result. </p>
+
+    <p>Operations:</p>
+
+    <dl>
+      <dt><b>string creator(string file)</b></dt>
+
+      <dd> This simple operation is publicly accessible.  It tells you
+	the creator of an object, which it figures out entirely from its
+	path.  Anything in the /kernel or /usr/System directories or
+	their subdirectories has a creator of &quot;System&quot;.
+	Anything in a /usr/XXX/ directory or one of its subdirectories
+	has a creator of XXX.  Anything not in a /usr/blah/ subdirectory
+	has no creator at all: some operations, like, cloning, may be
+	forbidden from such files. </dd>
+
+      <dt><b>string normalize_path(string file, string dir,
+	  varargs string creator)</b></dt>
+
+      <dd> This publicly accessible operation allows you to resolve a
+	path like &quot;~System/obj/user.c&quot; into
+	&quot;/usr/System/obj/user.c&quot;.  It's a convenience
+	function, also used for security -- if there's only one kind of
+	path, you only need to check one kind of thing.  So you run your
+	paths through DRIVER->normalize_path first to make sure you're
+	good.  File is the filename you're checking out, dir is the
+	current directory (if any) and creator is the username that
+	&quot;~&quot; resolves to.  So if creator is &quot;butch&quot;
+	then ~/obj/goblin.c resolves to
+	&quot;/usr/butch/obj/goblin.c&quot;. </dd>
+
+
+      <dt><b>int file_size(string file, varargs int dir)</b></dt>
+
+      <dd> This system-only call returns the size of the file, or 0 if
+	it doesn't exist.  You'll normally want to call get_dir instead.
+	The second, optional arg should be 1 if the supplied file name
+	is that of a directory.  This call is system-only since it
+	returns information about the file without doing any further
+	security checking. </dd>
+
+      <dt><b> void set_object_manager(object obj) </b></dt><dd> This
+	system-only operation sets the object manager.  What that means
+	is documented elsewhere. </dd>
+
+      <dt><b> void set_error_manager(object obj) </b></dt>
+
+      <dd> This system-only operation sets the error manager.  What
+	that means is documented elsewhere. </dd>
+
+      <dt><b> compiling, compile, compile_lib, compile_failed, clone,
+	  destruct, destruct_lib </b></dt>
+
+      <dd> All these operations may be called only by AUTO.  That
+	means you just can't.  If you want to get the same information
+	usefully, read up on the object manager which receives more
+	useful (to you) versions of each of these.
+      </dd>
+
+      <dt><b> string query_owner() </b></dt>
+
+      <dd> For completeness and to avoid errors, even the Driver
+	responds to query_owner() (see AUTO).  Its owner is System.</dd>
+
+      <dt><b> set_tls_size, query_tls_size, get_tlvar, set_tlvar </b></dt>
+
+      <dd> these query and affect Thread-Local Storage.  While
+	query_tls_size is publicly accessible, this stuff is very Deep
+	Voodoo.  If you genuinely need a document like the one you're
+	reading here instead of just skimming the source code I
+	<i>highly</i> recommend you not mess with this. </dd>
+
+      <dt><b> void message(string str) </b></dt>
+
+      <dd> This system-only function sends a time-tagged message to
+	the console.  Look at the messages you get on bootup that say
+	things like &quot;Jan 27 17:26:17 ** DGD 1.2.35&quot;.  The
+	format looks like that. </dd>
+
+      <dt><b> prepare_reboot </b></dt>
+
+      <dd> These calls are kernel-only.  Since you're not modifying
+	the Kernel MUDLib (<i>right?</i>) that means you'll never call
+	them.  Fuhgeddaboudit. </dd>
+      
+      <dt><b> mixed* query_wfile() </b></dt>
+
+      <dd> This publicly accessible function gives you the name and
+	size of the editor file last written.  However, since it always
+	wipes out the file afterwards and AUTO always calls it after
+	calling editor(), you can't do anything useful with it.
+    
+    </dl>
+
+    <hr> </hr>
+
+    <h3> AUTO Object Operations </h3>
+
+    <p> Your AUTO object is automatically inherited by every other
+      object in the MUD except the Driver.  Any operation it defines
+      can be used on any other object in the MUD as though it were
+      a Kernel Function.  In fact, this is how the Kernel MUDLib
+      alters the Kernel Functions that it alters. </p>
+
+    <p> Public (including nomask) or static function may be called on
+      any object inheriting from AUTO, but private functions may not, so
+      I don't bother to list them here.  For the same reason, I don't
+      bother to list access controlled functions which must be called by
+      specific Kernel MUDLib programs.  Technically you could call these
+      by modifying the Kernel MUDLib, but that makes this whole security
+      overview moot. </p>
+
+    <p> Many comments here are by direct inspection of the code.  That
+      means several things.  For one, it means that all these comments
+      may be <i>very</i> specific to DGD 1.2.35, especially since I've
+      submitted some of them to Dworkin for possible alteration or
+      correction.  It also means that if you try things and the code
+      just doesn't behave the way I say it does, I'm probably wrong.
+      Don't treat the COMMENTS sections especially as canon. </p>
+
+    <p> <i>None</i> of these may be called directly on a
+      library, only on a clone, clonable or LWO.  That's because
+      <i>no</i> function may be directly called on a library, only on a
+      clone, clonable or LWO. </p>
+
+    <p> Things labelled &quot;From the docs&quot; refer to the
+      /doc/kernel/efun/XXX file for a given function XXX. </p>
+
+    <p> Operations: </p>
+
+    <dl>
+
+      <dt> <b> nomask string query_owner() </b></dt><dd> This publicly
+	accessible
+	function returns the owner of the object.  It overrides nothing
+	and is undocumented. </dd>
+
+      <dt> <b> find_object </b></dt>
+      <dd> From the docs: <br></br>
+
+	The string argument is resolved as a file path, and the object with
+	the resulting name is searched for.  Either the object, if found, or
+	zero is returned.<br></br>
+
+	Objects with &quot;lib&quot; as a path component cannot be found
+	with this function.
+      </dd>
+
+      <dt> <b> destruct_object </b></dt>
+      <dd> From the docs: <br></br>
+	Destruct the object given as the argument, which can be an
+	object or the name of an object.  Any value holding the object
+	will immediately change into nil, and the object will cease to
+	exist. <br></br>
+
+	If an object destructs itself, it will cease to exist as soon
+	as execution leaves it.  If the last reference to a master
+	object is removed (including cloned objects and inheriting
+	objects), the function remove_program(objname) will be called
+	in the driver object.  <br></br>
+
+	Return 1 if the object existed and was destructed, 0
+	otherwise.  <br></br>
+
+	ACCESS: Unless the creator of the current object is
+	&quot;System&quot;, an object can only be destructed if it has
+	the same owner as the current object. <br></br>
+
+	COMMENTS: You can't call this from (or on) a destructed
+	object.  You can call it with a string as an argument, which
+	will be looked up for you with find_object.  You can't call it
+	on a non-persistent (i.e. LWO) object.  Only Kernel objects
+	can destruct clonable objects under /kernel.
+      </dd>
+
+      <dt><b>compile_object</b></dt>
+      <dd> From the docs: <br></br>
+	Compile an object from a LPC file, specified by the first
+	argument with &quot;.c&quot; appended.  If the optional source
+	argument
+	is supplied, the object is compiled from that string, instead.
+	The returned object will have the file string as name. <br></br>
+
+	If the object to be compiled already exists and is not
+	inherited by any other object, it and all of its clones will
+	be upgraded to the new version.  Variables will be preserved
+	only if they also exist in the new version and have the same
+	type; new variables will be initialized to nil.  The actual
+	upgrading is done immediately upon completion of the current 
+	thread. <br></br>
+
+	If the new object has &quot;lib&quot; as a path component, it
+	can only be inherited and nil is returned.  Otherwise, if the
+	object has &quot;obj&quot; as a path component, it can be
+	cloned.  <br></br>
+
+	ACCESS: The current object must have write access to the file
+	to be compiled. <br></br>
+
+	COMMENTS: Note the phrase &quot;write access&quot; under
+	ACCESS.  It's important. <br></br>
+
+	This call will fail with an &quot;Access denied&quot; error in
+	a number of cases, often for quite good reason.  If you call
+	it from a destructed object, or if you're a non-System file
+	and don't have write access it'll happen.  You'll get a
+	&quot;Too many objects&quot; error if the wizard exceeds
+	his/her RSRC object quota.  For clonables, the wizard must
+	have appropriate &quot;create stack&quot; and &quot;create
+	ticks&quot; RSRCD quotas.  A non-library will then be
+	initialized immediately with a call_other call.
+      </dd>
+
+      <dt><b>clone_object</b></dt>
+      <dd> From the docs: <br></br>
+	Create a clone of the specified object with an unique name of
+	the form &quot;object_name#1234&quot;.  The cloned object must
+	not itself be a clone.  The new object is returned.  The create()
+	function will be called in the cloned object immediately. <br></br>
+
+	If the optional second argument is specified and non-zero, and
+	the owner of the current object is &quot;System&quot;, the new
+	object will have the specified owner.  Otherwise, it will have
+	the same owner as the current object. <br> </br>
+
+	ACCESS: The current object must have read access to the file
+	of the object to be cloned. <br></br>
+
+	COMMENTS: This call will fail with an &quot;Access
+	denied&quot; error in a number of cases, often for quite good
+	reason.  If you call it from a destructed object, or if you're
+	a non-System file and don't have read access it'll happen.  If
+	you're a non-Kernel program trying to clone a Kernel object
+	it'll happen. <br></br>
+
+	There's a different &quot;Cannot clone XXX&quot; error which
+	occurs under a different set of conditions.  It'll happen if
+	the object calling clone_object has no owner, or if the object
+	being cloned doesn't exist, or if the path being cloned
+	doesn't contain &quot;/obj/&quot;, or if it contains
+	&quot;/data/&quot; or &quot;/lib/&quot;.  Note this error
+	message is likely to be changed <i>very</i> soon, though the
+	same circumstances will cause errors. <br></br>
+
+	Every wizard gets a RSRCD object quota.  If cloning would
+	exceed that, a &quot;Too many objects&quot; error occurs.  The
+	wizard must also have enough &quot;create stack&quot; and
+	&quot;create ticks&quot; quota.
+      </dd>
+
+      <dt><b>new_object</b></dt>
+      <dd> From the docs: <br></br>
+
+	Create a new light-weight instance of the specified object
+	with a name of the form &quot;object_name#-1&quot;.  If the
+	master object is itself a light-weight object, it will be
+	copied.  Light-weight objects cannot be destructed and are
+	automatically deallocated once the last reference to them is
+	removed.  The new object is returned.  The create() function
+	will be called in the new object immediately. <br> </br>
+
+	If the optional second argument is specified and non-zero and
+	the owner of the current object is &quot;System&quot;, the new
+	object will have the specified owner.  Otherwise, it will have
+	the same owner as the current object. <br> </br>
+
+	ACCESS: Unless the master object is itself a light-weight
+	object to be copied, the current object must have read access
+	to the file of the object to be created. <br></br>
+
+	COMMENTS: You cannot call this function from a destructed
+	object.  If the object is being created from a path rather
+	than an existing LWO, there are a number of other
+	restrictions: The owner of the current object must exist, the
+	object being compiled from must exist, the path to that object
+	must contain &quot;/data/&quot;, and it must contain neither
+	&quot;/obj&quot; nor &quot;/lib/&quot;.  If any of these is
+	violated the error &quot;Cannot create new instance of
+	XXX&quot; will occur. <br></br>
+
+	LWOs don't count against a wizard's RSRCD object count, but
+	the wizard must have enough &quot;create stack&quot; and
+	&quot;create ticks&quot; to create the new object.
+      </dd>
+
+      <dt><b>call_trace</b></dt>
+      <dd> From the docs: <br></br>
+	Return the function call trace as an array.  The elements are of
+        the following format: <br> </br>
+
+	({ objname, progname, function, line, extern, arg1, ..., argn })
+	<br> </br>
+
+	The line number is 0 if the function is in a compiled object.
+        Extern is 1 if the function was called with call_other(), and 0
+        otherwise. <br></br>
+
+	The offsets in the array are named in the include file
+	&lt;trace.h&gt;.
+        The last element of the returned array is the trace of the
+	current function.<br></br>
+
+	ACCESS: If the owner of the current object is not the same as
+	the creator of the program containing a function, the
+	arguments are omitted. <br></br>
+
+	COMMENTS: If called by a non-System program, this returns an
+	abbreviated stack.
+      </dd>
+
+      <dt><b>status</b></dt>
+      <dd> From the docs: <br></br>
+
+	Called without an argument, this kfun returns information
+	about resources used by the system.  With an object as
+	argument, resource usage by that object is given.  The
+	returned value is an array, the fields of which are described
+	in the include file &lt;status.h&gt;.
+
+	ACCESS: If the current object is not the owner of the argument
+	object, if any, callout arguments are omitted in the returned
+	status array. <br></br>
+
+	COMMENTS: The calling object may not be destructed.  Arguments
+	are, of course, checked for validity and security.  The
+	callouts shown for objects have some restrictions: kernel
+	object callouts are never shown.  Ownerless objects may only
+	see the arguments of their own callouts.  Owned objects may
+	only see arguments of callouts of objects owned by their owner
+	(&quot;sibling objects&quot; if you will).
+      </dd>
+
+      <dt><b>object this_user()</b></dt>
+      <dd> This publicly available API returns the user object
+	currently active, or nil. No access control.  Overrides a Kernel
+	Function of the same name.
+      </dd>
+
+      <dt><b>object* users()</b></dt>
+      <dd> This publicly available API calls query_users() on the
+	USERD for you.  Access to the regular Kernel Function ::users()
+	call is filtered through USERD.
+      </dd>
+
+      <dt><b>void swapout(), void shutdown()</b></dt>
+      <dd> In the Kernel MUDLib, these calls are system-only but
+	otherwise basically identical.
+      </dd>
+
+      <dt><b>void dump_state(void)</b></dt>
+      <dd> In the Kernel MUDLib, this call is system-only.  It also
+	calls prepare_reboot on your initd if you have one. </dd>
+
+      <dt><b>mixed call_limited(string function, mixed args...)</b></dt>
+      <dd> From the docs: <br></br>
+	Call a function in the current object, using the resource
+	limits of the current object's owner. <br></br>
+
+	ACCESS: Publicly available. <br></br>
+
+	COMMENTS: the Kernel MUDLib does a little extra stuff here --
+	sets up thread-local storage (TLS), manages ticks and stack
+	usage -- but the result should look the same as the
+	non-overridden call_out other than being resource-limited.
+      </dd>
+
+      <dt><b>int call_out(string function, mixed delay, mixed args...)</b></dt>
+      <dd> From the Kernel Function (<b>not</b> Kernel MUDLib) docs: <br></br>
+
+	Call a function in the current object with a delay.  The
+	function to be called must not be private.  The delay is
+	specified in seconds.  The minimum delay is 0 seconds, for a
+	function that is to be called as soon as possible after
+	termination of the current thread. <br></br>
+
+	If the delay is an integer, the function will be called after
+	approximately the specified number of seconds.  Otherwise, the
+	delay must be a floating point number less than or equal to
+	60.0, and the function will be called with a millisecond
+	resolution. <br></br>
+
+	The returned value is the callout handle, an integer > 0 which
+	must be used if the callout is to be removed. <br></br>
+
+	COMMENTS: The Kernel MUDLib docs don't seem to mention this,
+	but there are several things it alters in its version (which
+	calls the original).  It checks the arguments for permissions.
+	It makes sure you're not trying to call_out from a
+	non-persistent object (i.e. a LWO).  It also does resource
+	tracking via RSRCD to make sure that there aren't more
+	callouts than currently allowed for the current user.
+      </dd>
+
+      <dt><b>mixed call_out(int handle)</b></dt>
+      <dd> From the Kernel Function (<b>not</b> Kernel MUDLib) docs: <br></br>
+
+	Remove the callout associated with handle.  The delay after
+	which the function would have been called is returned.  The
+	delay is an integer or a floating point number, depending on
+	how the callout was started.  If there is no scheduled call
+	associated with the handle in the current object, return
+	-1. <br> </br>
+
+	COMMENTS: This is another call that the Kernel MUDLib
+	overrides without it being documented.  It looks like the
+	Kernel MUDLib will return 0 rather than a delay when callouts
+	are suspended by RSRCD.
+      </dd>
+
+      <dt><b>add_event</b></dt>
+      <dd> From the docs: <br></br>
+	Define a new event type for which this object can broadcast
+	events.  If the event type already existed, nothing is
+	changed. <br></br>
+
+	ACCESS: (not documented) <br></br>
+
+	COMMENTS: Looks like this is publicly available and it
+	directly affects only the object it gets called on.
+      </dd>
+
+      <dt><b>remove_event</b></dt>
+      <dd> From the docs: <br></br>
+	Remove an event type defined by the current object,
+	automatically unsubscribing all objects that are subscribed to
+	it.  If the event type did not exist, nothing is
+	changed. <br></br>
+
+	ACCESS: (not documented) <br></br>
+
+	COMMENTS: Looks like this is publicly available and it
+	directly affects only the object it gets called on.
+      </dd>
+
+      <dt><b>query_events</b></dt>
+      <dd> From the docs: <br></br>
+
+	Return an array with names of events defined by the current
+	object. <br></br>
+
+	ACCESS: (not documented) <br></br>
+
+	COMMENTS: Looks like this is publicly available and it
+	directly affects only the object it gets called on.
+      </dd>
+
+      <dt><b>subscribe_event</b></dt>
+      <dd> From the docs: <br></br>
+	Subscribe to an event in the given object.  The object
+	defining the event subscribed to controls access to events
+	with the allow_subscribe(obj, name) function, which must
+	return 0 to block object `obj' from subscribing to event
+	`name'. <br></br>
+
+	ACCESS: (not documented) <br> </br>
+
+	COMMENTS: Looks like this is publicly available and it
+	directly affects only the object it gets called on.  A
+	&quot;Cannot subscribe to event&quot; error can be generated
+	by this function for a number of reasons.  The object being
+	subscribed to may not define the allow_subscribe method, that
+	method may have returned false, the object may not exist, or
+	the calling object may be non-persistent (i.e. an LWO).  All
+	of these yield the same &quot;Cannot subscribe to event&quot;
+	error. <br></br>
+
+	A number of other errors can be generated by either this or
+	unsubscribe_event(below).  &quot;No such event&quot;,
+	&quot;Already subscribed to event&quot;, &quot;Not subscribed
+	to event&quot; (for unsubscribe) are all what they sound like.
+	&quot;Too many events&quot; means that the owner of the object
+	trying to subscribe doesn't have enough RSRCD quota for events
+	left.
+      </dd>
+
+      <dt><b>unsubscribe_event</b></dt>
+      <dd> From the docs: <br></br>
+	Unsubscribe to an event in the given object. <br></br>
+
+	ACCESS: (not documented) <br> </br>
+
+	COMMENTS: Looks like this is publicly available and it
+	directly affects only the object it gets called on.  See
+	subscribe_event for some errors that can occur when this is
+	called.
+      </dd>
+
+      <dt><b>query_subscribed_event</b></dt>
+      <dd> From the docs: <br></br>
+
+	Return an array containing the objects subscribed to the given
+	event. <br></br>
+
+	ACCESS: (not documented)<br> </br>
+
+	COMMENTS: Looks like this is publicly available and it
+	directly affects only the object it gets called on.
+      </dd>
+
+      <dt><b>event</b></dt>
+      <dd> From the docs: <br></br>
+
+	Immediately after termination of the current thread, the
+	function &quot;evt_&quot; + name is called in all objects
+	subscribed to the named event, with the current object as
+	first argument.  Each call is done using the tick and stack
+	resources of the subscribed object. <br></br>
+
+	ACCESS: (not documented)<br> </br>
+
+	COMMENTS: Looks like this is publicly available and it
+	directly affects only the object it gets called on.  It can
+	generate a &quot;Too many callouts&quot; error if the owner of
+	the object calling event() has exceeded his/her RSRCD callouts
+	quota.
+      </dd>
+
+      <dt><b>event_except</b></dt>
+      <dd> From the docs: <br></br>
+
+	Immediately after termination of the current thread, the
+	function &quot;evt_&quot; + name is called in all objects
+	subscribed to the named event, with the current object as
+	first argument.  Each call is done using the tick and stack
+	resources of the subscribed object.  Objects in the exclude
+	list will be skipped. <br></br>
+
+	ACCESS: (not documented) <br> </br>
+
+	COMMENTS: Looks like this is publicly available and it
+	directly affects only the object it gets called on.  It can
+	generate a &quot;Too many callouts&quot; error if the owner of
+	the object calling event() has exceeded his/her RSRCD callouts
+	quota.
+      </dd>
+
+      <dt><b>read_file</b></dt>
+      <dd> From the Kernel Function (<b>not</b> Kernel MUDLib) docs: <br></br>
+
+	Read a file.  The optional second and third arguments specify
+	an offset in the file and the maximum length of the string to
+	be read, and default to the whole file from the beginning.
+	The offset may be specified as negative, to read from the end
+	of a file. <br></br>
+
+	COMMENTS: This is another call that the Kernel MUDLib
+	overrides without it being documented.  This call will fail
+	with an &quot;Access denied&quot; error in a number of cases,
+	often for quite good reason.  If you call it from a destructed
+	object, or if you don't have read access to the file you're
+	reading and aren't a program in the System directory this will
+	happen.
+      </dd>
+
+      <dt><b>write_file</b></dt>
+      <dd> From the Kernel Function (<b>not</b> Kernel MUDLib) docs: <br></br>
+
+	Write a string to a file.  If the optional third argument is
+	specified and non-zero, write the string at the given offset
+	in the file; otherwise, append to the file.  The offset may be
+	negative to offset backwards from the end of the file.  To
+	write a string to the beginning of a file, let the offset be
+	equal to minus the length of the file. <br></br>
+
+	The return value is 1 for success, 0 for failure.<br></br>
+
+	COMMENTS: This is another call that the Kernel MUDLib
+	overrides without it being documented.  This call will fail
+	with an &quot;Access denied&quot; error in a number of cases,
+	often for quite good reason.  If you call it from a destructed
+	object, or if you're a non-System file and don't have write
+	access it'll happen.  You can get a &quot;File quota
+	exceeded&quot; if you're not created by System and you've
+	alread exceeded your file quota.  You can get a similar error
+	if this write would bring you above your quota.
+      </dd>
+
+      <dt><b>remove_file</b></dt>
+      <dd> From the Kernel Function (<b>not</b> Kernel MUDLib) docs: <br></br>
+
+	Remove a file.  1 is returned if the file could be removed, 0
+	otherwise. <br></br>
+
+	COMMENTS: This is another call that the Kernel MUDLib
+	overrides without it being documented.  This call will fail
+	with an &quot;Access denied&quot; error in a number of cases,
+	often for quite good reason.  If you call it from a destructed
+	object, or or if you're a non-System file and don't have write
+	access it'll happen.
+      </dd>
+
+      <dt><b>rename_file</b></dt>
+      <dd> From the Kernel Function (<b>not</b> Kernel MUDLib) docs: <br></br>
+
+	Rename a file.  The destination file must not yet exist.  1 is
+	returned if the file could be renamed, 0 otherwise. <br></br>
+
+	COMMENTS: This is another call that the Kernel MUDLib
+	overrides without it being documented.  This call will fail
+	with an &quot;Access denied&quot; error in a number of cases,
+	often for quite good reason.  If you call it from a destructed
+	object, or if you're a non-System file and don't have write
+	access it'll happen.  If you try to rename to or from a file
+	under /kernel or /include/kernel, it'll happen.  If you try to
+	rename from a file in /include, it'll happen.  You'll also
+	need write access to both locations to make it happen.  If you
+	rename somebody else's file that you have write access to, it
+	correctly gets tallied to your filequota instead of theirs.
+      </dd>
+
+      <dt><b>get_dir</b></dt>
+      <dd> From the docs: <br></br>
+
+	Get information about a file or files in a directory.  The
+	return value is of the form <br></br>
+
+	({ ({ file names }), ({ file sizes }), ({ file mod times }),
+	({ objects }) }) <br></br>
+
+	If a file is a directory, the file size will be given as -2.
+	If the last path component of the specified file can be
+	interpreted as a regular expression, all files which match
+	this regular expression are collected.  Otherwise, only the
+	file itself is taken.  If no files match, or if the file is
+	not present, the return value of get_dir() will be ({ ({ }),
+	({ }), ({ }), ({ }) }). <br></br>
+
+	Objects that have &quot;lib&quot; as a path component are
+	replaced with 1 in the object array. <br></br>
+
+	The following characters have a special meaning in a regular
+	expression:
+	<pre>
+            ?       any single character
+            *       any (possibly empty) string
+            [a-z]   any character in the range a-z
+            [^a-z]  any character not in range a-z
+            \c      the character c, not interpreted as having a special
+                    meaning
+	</pre>
+	The files will be sorted by file name.  Only as many files as
+	specified by status()[ST_ARRAYSIZE], with ST_ARRAYSIZE defined
+	in the include file &lt;status.h&gt;, will be
+	collected. <br></br>
+
+	ACCESS: (not documented)<br> </br>
+
+	COMMENTS: This call will fail with an &quot;Access
+	denied&quot; error in a number of cases, often for quite good
+	reason.  If you call it from a destructed object, or if you're
+	a non-System file and don't have read access to the file(s)
+	it'll happen.  Inheritable (library) objects are treated
+	specially in the Kernel MUDLib version, and will be returned
+	with different information available.
+      </dd>
+
+      <dt><b>file_info</b></dt>
+      <dd> From the docs: <br></br>
+
+	Get information about a file.  The return value is of the
+	form<br></br>
+
+	({ file size, file modification time, object }) <br></br>
+
+	If a file is a directory, the file size will be given as -2.
+	The object value is set to 1 if the object exists and has
+	&quot;lib&quot; as a path component. <br></br>
+
+	If the file doesn't exist, nil is returned. <br></br>
+
+	ACCESS: (not documented)<br> </br>
+
+	COMMENTS: This call will fail with an &quot;Access
+	denied&quot; error in a number of cases, often for quite good
+	reason.  If you call it from a destructed object, or if you're
+	a non-System file and don't have read access to the file it'll
+	happen.  Some information isn't available for inheritable
+	(library) objects, those with &quot;/lib/&quot; in the path.
+      </dd>
+
+      <dt><b>make_dir</b></dt>
+      <dd> From the Kernel Function (<b>not</b> Kernel MUDLib) docs: <br></br>
+
+	Create a new directory.  1 is returned if the directory could
+	be created, 0 otherwise. <br></br>
+
+	COMMENTS: This is another call that the Kernel MUDLib
+	overrides without it being documented.  It will fail with an
+	&quot;Access denied&quot; error in a number of cases, often
+	for quite good reason.  If you call it from a destructed
+	object, or if you're a non-System file and don't have write
+	access to the file it'll happen.  If you try to make a
+	subdirectory of /include/kernel or /kernel, it'll happen.  If
+	you've already exceeded your file quota or would with this
+	operation, a different error will occur to let you know.
+      </dd>
+
+      <dt><b>remove_dir</b></dt>
+      <dd> From the Kernel Function (<b>not</b> Kernel MUDLib) docs: <br></br>
+
+	Remove a directory, which must be empty.  1 is returned if the
+	directory could be removed, 0 otherwise. <br></br>
+
+	COMMENTS: This is another call that the Kernel MUDLib
+	overrides without it being documented.  It will fail with an
+	&quot;Access denied&quot; error in a number of cases, often
+	for quite good reason.  If you call it from a destructed
+	object, or if you're a non-System file and don't have write
+	access to the file it'll happen.  If you try to remove the
+	/kernel or /include/kernel directories it'll happen.
+      </dd>
+
+      <dt><b>restore_object</b></dt>
+      <dd> From the Kernel Function (<b>not</b> Kernel MUDLib) docs: <br></br>
+
+	Restore all global variables in an object that are not private
+	or static from a file.  All variables which qualify, but were
+	not restored and do not contain object values, will be set to
+	0.  1 is returned if the variables could be restored, 0
+	otherwise. <br></br>
+
+	COMMENTS: This is another call that the Kernel MUDLib
+	overrides without it being documented.  It will fail with an
+	&quot;Access denied&quot; error in a number of cases, often
+	for quite good reason.  If you call it from a destructed
+	object, or if you're a non-System file and don't have read
+	access to the file it'll happen.
+      </dd>
+
+      <dt><b>save_object</b></dt>
+      <dd> From the Kernel Function (<b>not</b> Kernel MUDLib) docs: <br></br>
+
+	Save all global variables in an object that are not private or
+	static to a file.  Only non-zero and non-object values are
+	actually saved. <br></br>
+
+	COMMENTS: This is another call that the Kernel MUDLib
+	overrides without it being documented.  It will fail with an
+	&quot;Access denied&quot; error in a number of cases, often
+	for quite good reason.  If you call it from a destructed
+	object, or if you're a non-System file and don't have write
+	access to the file it'll happen.  If you try to save a
+	non-kernel object under the /kernel directory, it'll happen.
+	If you try to save anything into /include/kernel, it'll
+	happen.  Saved objects also count against your file quota, so
+	you have all the usual file quota errors that can occur.
+      </dd>
+
+      <dt><b>editor</b></dt>
+      <dd> From the Kernel Function (<b>not</b> Kernel MUDLib) docs: <br></br>
+	Execute an editor command for the current object.  If the
+	editor command is the first for this object, an editor
+	instance will be created for it.  The editor instance will
+	remain active until an editor command is specified that
+	terminates it, or until the object is destructed.  Editor
+	output will be returned as a string.  The editor status of an
+	object can be queried with the kfun query_editor().  File
+	paths for reading and writing will be translated by
+	path_read() and path_write(), respectively, in the driver
+	object. <br></br>
+
+	COMMENTS: This is another call that the Kernel MUDLib
+	overrides without it being documented.  Only a persistent,
+	non-destructed System object may start an editor instance.
+	There is an editor RSRCD quota for wizards determining how
+	many editor instances they can keep going at once.  Editing
+	files, naturally, affects one's filequota.
+      </dd>
+
+      <dt><b>connect, open_port, ports</b></dt>
+      <dd> These only work if you've installed the net package, since
+	it opens outbound connections.  It's not ever expected to work
+	with vanilla DGD for reasons explained
+	<a href="../Misc_DGD.html#DGDUnsupported">elsewhere</a>. <br></br>
+      </dd>
+
+    </dl>
+
+    </font>
+
+    <hr> </hr>
+      <a href="http://sourceforge.net">
+	<img src="http://sourceforge.net/sflogo.php?group_id=48659&type=3"
+	     width="125" height="37" border="0" alt="SourceForge.net Logo"></a>
+    <address><a href="mailto:angelbob-remove-spamfree@spamfree.monkeyspeak.com">Noah Gibbs</a></address>
+    <!-- Created: Mon Jun 11 21:50:30 PDT 2001 -->
+    <!-- hhmts start -->
+Last modified: Wed Apr  3 09:14:44 PST 2002
+<!-- hhmts end -->
+  </body>
+</html>
