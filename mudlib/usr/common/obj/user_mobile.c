@@ -40,26 +40,26 @@ void notify_moved(object obj) {
  * Hook function overrides
  */
 
-void hook_say(mixed *args) {
+void hook_say(object body, string message) {
   if (user) {
-    user->send_phrase(args[0]->get_brief());
-    user->message(" says: " + args[1] + "\r\n");
+    user->send_phrase(body->get_brief());
+    user->message(" says: " + message + "\r\n");
   }
 }
 
-void hook_emote(mixed *args) {
+void hook_emote(object body, string message) {
   if(user) {
-    user->send_phrase(args[0]->get_brief());
-    user->message(" " + args[1] + "\r\n");
+    user->send_phrase(body->get_brief());
+    user->message(" " + message + "\r\n");
   }
 }
 
 /* Args -- body, target, verb */
-void hook_social(mixed *args) {
+void hook_social(object body, object target, string verb) {
   string ret;
 
   if(user) {
-    ret = SOULD->get_social_string(user, args[0], args[1], args[2]);
+    ret = SOULD->get_social_string(user, body, target, verb);
     if(!ret) {
       user->message("Error getting social string!\r\n");
     } else {
@@ -68,66 +68,66 @@ void hook_social(mixed *args) {
   }
 }
 
-void hook_whisper(mixed *args) {
+void hook_whisper(object body, string message) {
   if (user) {
-    user->send_phrase(args[0]->get_brief());
-    user->message(" whispers to you: " + args[1] + "\r\n");
+    user->send_phrase(body->get_brief());
+    user->message(" whispers to you: " + message + "\r\n");
   }
 }
 
-void hook_whisper_other(mixed *args) {
+void hook_whisper_other(object body, object target) {
   if (user) {
-    user->send_phrase(args[0]->get_brief());
+    user->send_phrase(body->get_brief());
     user->message(" whispers something to ");
-    user->send_phrase(args[1]->get_brief());
+    user->send_phrase(target->get_brief());
     user->message("\r\n");
   }
 }
 
-void hook_ask(mixed *args) {
+void hook_ask(object body, string message) {
   if (user) {
-    user->send_phrase(args[0]->get_brief());
-    user->message(" asks you: " + args[1] + "\r\n");
+    user->send_phrase(body->get_brief());
+    user->message(" asks you: " + message + "\r\n");
   }
 }
 
-void hook_ask_other(mixed *args) {
+void hook_ask_other(object body, object target, string message) {
   if (user) {
-    if (args[1]) {
-      user->send_phrase(args[0]->get_brief());
+    if (target) {
+      user->send_phrase(body->get_brief());
       user->message(" asks ");
-      user->send_phrase(args[1]->get_brief());
-      user->message(": " + args[2] + "\r\n");
+      user->send_phrase(target->get_brief());
+      user->message(": " + message + "\r\n");
     } else {
-      user->send_phrase(args[0]->get_brief());
-      user->message(" asks: " + args[2] + "\r\n");
+      user->send_phrase(body->get_brief());
+      user->message(" asks: " + message + "\r\n");
     }
   }
 }
 
-void hook_leave(mixed *args) {
+void hook_leave(object body, int dir) {
   if (user) {
-    if (args[1] == DIR_TELEPORT) {
-      user->send_phrase(args[0]->get_brief());
+    if (dir == DIR_TELEPORT) {
+      user->send_phrase(body->get_brief());
       user->message(" disappears into thin air.\r\n");
     } else {
-      user->send_phrase(args[0]->get_brief()) ;
+      user->send_phrase(body->get_brief()) ;
       user->message(" leaves going ");
-      user->send_phrase(EXITD->get_name_for_dir(args[1]));
+      user->send_phrase(EXITD->get_name_for_dir(dir));
       user->message("\r\n");
     }
   }
 }
 
-void hook_enter(mixed *args) {
+void hook_enter(object body, int dir) {
   if (user) {
-    if (args[1] == DIR_TELEPORT) {
-      user->send_phrase(args[0]->get_brief());
+    if (dir == DIR_TELEPORT) {
+      user->send_phrase(body->get_brief());
       user->message(" appears from thin air.\r\n");
     } else {
-      user->send_phrase(args[0]->get_brief()) ;
+      user->send_phrase(body->get_brief()) ;
       user->message(" enters from the ");
-      user->send_phrase(EXITD->get_name_for_dir(args[1]));
+      user->send_phrase(EXITD->get_name_for_dir(dir));
       user->message("\r\n");
     }
   }

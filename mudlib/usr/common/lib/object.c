@@ -90,6 +90,9 @@ static void create(varargs int clone) {
 void destructed(int clone) {
   int index;
 
+  if(!SYSTEM())
+    return;
+
   if(clone && location) {
     location->remove_from_container(this_object());
   }
@@ -101,10 +104,15 @@ void destructed(int clone) {
 }
 
 void upgraded(varargs int clone) {
+  if(SYSTEM() || COMMON()) {
 
+  }
 }
 
 object get_location(void) {
+  if(!SYSTEM() && !COMMON() && !GAME())
+    return nil;
+
   return location;
 }
 

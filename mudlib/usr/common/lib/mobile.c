@@ -71,9 +71,8 @@ void set_number(int new_num) {
 }
 
 void notify_moved(object obj) {
-  /* Since only privileged code can reassign a body, this is fine
-     for anybody to call -- it's just a cache update. */
-  location = body->get_location();
+  if(SYSTEM() || COMMON())
+    location = body->get_location();
 }
 
 /*
@@ -90,9 +89,11 @@ void notify_moved(object obj) {
  */
 
 nomask void say(string msg) {
-  location->enum_room_mobiles("hook_say", ({ this_object() }),
-			      ({ body, msg }) );
-  
+  if(!SYSTEM() && !COMMON() && !GAME())
+    return;
+
+  location->enum_room_mobiles("hook_say", ({ this_object() }), body, msg );
+
   if (get_user()) {
     get_user()->message("You say: " + msg + "\r\n");
   }
@@ -106,10 +107,12 @@ nomask void say(string msg) {
  */
 
 nomask void emote(string str) {
+  if(!SYSTEM() && !COMMON() && !GAME())
+    return;
+
   /* For an emote, show the user the same message everybody else sees.
      For instance "Bob sits still." rather than "You sits still.". */
-  location->enum_room_mobiles("hook_emote", ({ }),
-			      ({ body, str  }));
+  location->enum_room_mobiles("hook_emote", ({ }), body, str);
 }
 
 /*
@@ -120,10 +123,12 @@ nomask void emote(string str) {
  * parameter should point to the target's body.
  */
 
-nomask int social(string verb, object target) {
-  location->enum_room_mobiles("hook_social", ({ }),
-			      ({ body, target, verb  }));
-  return 0;
+nomask void social(string verb, object target) {
+  if(!SYSTEM() && !COMMON() && !GAME())
+    return;
+
+  location->enum_room_mobiles("hook_social", ({ }), body, target, verb);
+  return;
 }
 
 /*
@@ -133,16 +138,19 @@ nomask int social(string verb, object target) {
  *
  * Whisper to someone or something.  They must be in the same location as you.
  */
-nomask int whisper(object to, string str) {
+nomask void whisper(object to, string str) {
   object mob;
 
+  if(!SYSTEM() && !COMMON() && !GAME())
+    return;
+
   if (to->get_location() != location) {
-    return 0;
+    return;
   }
 
   mob = to->get_mobile();
   if (mob == nil) {
-    return 0;
+    return;
   }
   mob->hook_whisper(body, str);
   if (get_user()) {
@@ -151,9 +159,9 @@ nomask int whisper(object to, string str) {
     get_user()->message(": " + str + "\r\n");
   }
   location->enum_room_mobiles("hook_whisper_other",
-			      ({ this_object(), mob }), ({ body, to }) );
+			      ({ this_object(), mob }), body, to);
   
-  return 1;
+  return;
 }
 
 /* 
@@ -163,14 +171,17 @@ nomask int whisper(object to, string str) {
  * ask.
  */
 
-nomask int ask(object to, string str) {
+nomask void ask(object to, string str) {
   object user;
   object mob;
+
+  if(!SYSTEM() && !COMMON() && !GAME())
+    return;
 
   user = get_user();
 
   if (to->get_location() != location) {
-    return 0;
+    return;
   }
 
   if (to == nil) {
@@ -179,11 +190,11 @@ nomask int ask(object to, string str) {
     }
 
     location->enum_room_mobiles("hook_ask_other", ({ this_object() }),
-				({ body, nil, str }) );
+				body, nil, str);
   } else {
     mob = to->get_mobile();
     if (mob == nil) {
-      return 0;
+      return;
     }
     mob->hook_ask(body, str);
     if (user) {
@@ -193,10 +204,10 @@ nomask int ask(object to, string str) {
     }
 
     location->enum_room_mobiles("hook_ask_other", ({ this_object(), mob }),
-				({ body, to, str }) );
+				body, to, str);
   }
   
-  return 1;
+  return;
 }
 
 /*
@@ -269,6 +280,9 @@ nomask string place(object obj, object to) {
   string err;    
   object user;
   int i;
+
+  if(!SYSTEM() && !COMMON() && !GAME())
+    return "Access denied!";
 
   /* find out how many rooms this object can be removed from, ending 
    * when we find the mobile's location.
@@ -357,6 +371,9 @@ nomask string open(object obj) {
   object link_exit, obj2;
   int isexit, objnum;
 
+  if(!SYSTEM() && !COMMON() && !GAME())
+    return "Access denied!";
+
   isexit = 0;
 
   objnum = obj->get_number();
@@ -407,6 +424,9 @@ nomask string close(object obj) {
   object link_exit, obj2;
   int isexit, objnum;
 
+  if(!SYSTEM() && !COMMON() && !GAME())
+    return "Access denied!";
+
   isexit = 0;
 
   objnum = obj->get_number();
@@ -454,6 +474,9 @@ nomask string move(int dir) {
   object dest;
   object exit;
   string reason;
+
+  if(!SYSTEM() && !COMMON() && !GAME())
+    return "Access Denied!";
 
   exit = location->get_exit(dir);
   if (!exit) {
@@ -507,6 +530,9 @@ nomask string move(int dir) {
 nomask string teleport(object dest, int force) {
   string reason;
 
+  if(!SYSTEM() && !COMMON() && !GAME())
+    return "Access Denied!";
+
   if (!force) {
     if (location) {
       if (reason = location->can_leave(get_user(), body, DIR_TELEPORT)) {
@@ -541,78 +567,31 @@ nomask string teleport(object dest, int force) {
  * they're here as documentation, nothing else.
  */
 
-/*
- * first arg: body who said
- * second arg: what they said
- */
-
-void hook_say(mixed *args) {
+void hook_say(object body, string message) {
 }
 
-/*
- * first arg: body who said
- * second arg: what they said
- */
-
-void hook_emote(mixed *args) {
+void hook_emote(object body, string message) {
 }
 
-/*
- * first arg (object): body who acted out the social
- * second arg (object): target body or nil
- * third arg (string): the name of the social
- */
-
-void hook_social(mixed *args) {
+void hook_social(object body, object target, string verb) {
 }
 
-/*
- * first arg: body that whispered
- * second arg: what they whispered
- */
-
-void hook_whisper(mixed *args) {
+void hook_whisper(object body, string message) {
 }
 
-/*
- * first arg: body that whispered
- * second arg: who they whispered to
- */
-
-void hook_whisper_other(mixed *args) {
+void hook_whisper_other(object body, object target) {
 }
 
-/*
- * first arg: body that asked
- * second arg: what they asked
- */
-
-void hook_ask(mixed *args) {
+void hook_ask(object body, string message) {
 }
 
-/*
- * first arg: body that asked
- * second arg: body they asked
- * third arg: what they asked
- */
-
-void hook_ask_other(mixed *args) {
+void hook_ask_other(object body, object target, string message) {
 }
 
-/*
- * first arg: the body that left
- * second arg: the direction they left
- */
-
-void hook_leave(mixed *args) {
+void hook_leave(object leaving_body, int direction) {
 }
 
-/*
- * first arg: the body that entered
- * second arg: the direction they entered from
- */
-
-void hook_enter(mixed *args) {
+void hook_enter(object entering_body, int direction) {
 }
 
 
@@ -623,6 +602,9 @@ void hook_enter(mixed *args) {
 string to_unq_text(void) {
   string ret;
   int    bodynum;
+
+  if(!SYSTEM() && !COMMON() && !GAME())
+    return nil;
 
   if(body) {
     bodynum = body->get_number();

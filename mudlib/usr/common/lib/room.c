@@ -117,14 +117,14 @@ void set_number(int new_num) {
   } else error("Only MAPD can set room numbers!");
 }
 
-void enum_room_mobiles(string cmd, object *except, mixed *args) {
+void enum_room_mobiles(string cmd, object *except, mixed args...) {
   object *mobiles;
   int i;
 
   mobiles = mobiles_in_container();
   for (i = sizeof(mobiles); --i >= 0; ) {
     if (sizeof( ({ mobiles[i] }) & except ) == 0) {
-      call_other(mobiles[i], cmd, args);
+      call_other(mobiles[i], cmd, args...);
     }
   }
 }
@@ -458,7 +458,7 @@ void leave(object leave_object, int dir) {
    * any user mobiles are then responsable for writing this to the 
    * user's terminal
    */
-  enum_room_mobiles("hook_leave", ({ mob }), ({ leave_object, dir }) );
+  enum_room_mobiles("hook_leave", ({ mob }), leave_object, dir );
 }
 
 /* enter_object is the body entering, dir is the direction */
@@ -467,7 +467,7 @@ void enter(object enter_object, int dir) {
 
   mob = enter_object->get_mobile();
 
-  enum_room_mobiles("hook_enter", ({ mob }), ({ enter_object, dir }) );
+  enum_room_mobiles("hook_enter", ({ mob }), enter_object, dir );
 }
 
 
