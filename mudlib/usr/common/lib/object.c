@@ -63,20 +63,6 @@ mixed*  objects;
 /* Mobiles of objects contained in this one */
 mixed*  mobiles;
 
-/* Object flags uses flag values in obj_flags.h */
-private int objflags;
-
-/* how hard is this lock to pick? */
-#define LH_VERY_EASY          0
-#define LH_EASY               1
-#define LH_MEDIUM             2
-#define LH_HARD               3
-#define LH_VERY_HARD          4
-#define LH_IMPOSSIBLE         5
-private int lockhardness;
-
-/* object # required to unlock */
-private int key_number;
 
 /* Prototypes */
 void prepend_to_container(object obj);
@@ -668,72 +654,6 @@ void set_number(int num) {
   }
 }
 
-/*
- * flag overrides
- */
-
-int is_container() {
-  return objflags & OF_CONTAINER;
-}
-
-int is_open() {
-  return objflags & OF_OPEN;
-}
-
-int is_openable() {
-  return objflags & OF_OPENABLE;
-}
-
-int is_locked() {
-  return objflags & OF_LOCKED;
-}
-
-int is_lockable() {
-  return objflags & OF_LOCKABLE;
-}
-
-private void set_flags(int flags, int value) {
-  if(value) {
-    objflags |= flags;
-  } else {
-    objflags &= ~flags;
-  }
-}
-
-void set_container(int value) {
-  if(!SYSTEM() && !COMMON())
-    error("Only SYSTEM code can currently set an object as a container!");
-
-  set_flags(OF_CONTAINER, value);
-}
-
-void set_open(int value) {
-  if(!SYSTEM() && !COMMON())
-    error("Only SYSTEM code can currently set an object as open!");
-
-  set_flags(OF_OPEN, value);
-}
-
-void set_openable(int value) {
-  if(!SYSTEM() && !COMMON())
-    error("Only SYSTEM code can currently set an object as openable!");
-
-  set_flags(OF_OPENABLE, value);
-}
-
-void set_locked(int value) {
-  if(!SYSTEM() && !COMMON())
-    error("Only SYSTEM code can currently set an object as lockable!");
-
-  set_flags(OF_LOCKED, value);
-}
-
-void set_lockable(int value) {
-  if(!SYSTEM() && !COMMON())
-    error("Only SYSTEM code can currently set an object as lockable!");
-
-  set_flags(OF_LOCKABLE, value);
-}
 
 /* Function for use by other OBJECTs */
 
