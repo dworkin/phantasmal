@@ -19,6 +19,8 @@ Release 0.012:
 	* Merged object flags into ROOM from SIMPLE_PORTABLE, preparatory
 	  to merge of SIMPLE_ROOM and SIMPLE_PORTABLE.
 	* Removed unnecessary cmd_social from the SYSTEM_USER object.
+	* Fixed bug in path_place...  How long have put and remove not
+	  been working?
 
 Release 0.011b:
 	* Added @make_portable command, very similar to @make_room.
