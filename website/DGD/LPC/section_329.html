@@ -300,22 +300,24 @@ void func_2(string data);
 	Boolean operators</a></h4>
 
     <p>
-      Boolean operators are applicable only to integers with
-      the exception of the <code>&amp;</code> operator which also
-      works on arrays. Internally an integer is 32 bits long. However,
-      in the following examples I will only show the ten last bits as
-      the others are 0 and can be ignored with the one exception of
-      the <code>~</code>-operator.
+      Boolean operators are applicable only to integers with the
+      exception of the <code>&amp;</code> and <code>|</code>
+      operators, which also work on arrays.  Internally an integer is
+      32 bits long.  However, in the following examples I will only
+      show the ten last bits as the others are 0 and can be ignored
+      with the one exception of the <code>~</code>-operator.
+    </p>
 
-</p>
+    <dl compact>
 
-<ol>
+      <dt>E1 &amp; E2 </dt>
 
-<li>E1 &amp; E2
+      <dd>
+	<a name="IDX22"></a>
 
-<a name="IDX22"></a>
-E1 and E2.
-
+	E1 and E2.  Every bit which is set in both E1 and E2 will also
+	be set in the result.  Any bit which is zero in either one
+	will be zero in the result.
 
 <pre>
 1011101001   (= 745)
@@ -324,14 +326,20 @@ E1 and E2.
 1000100000   (= 544) =&gt; 745 &amp; 546 = 544
 </pre>
 
-Used on two arrays, this function will return a new array that holds all
-elements that are members of both of the argument arrays.
-		
-<li>E1 | E2
+	Used on two arrays, this function will return a new array that
+	holds all elements that are members of both of the argument
+	arrays.  Thus, it performs a kind of set-intersection on the
+	arrays.
+      </dd>
 
-<a name="IDX23"></a>
-E1 or E2.
+      <dt>E1 | E2 </dt>
 
+      <dd>
+	<a name="IDX23"></a>
+
+	E1 or E2.  Every bit which is set in either E1 or E2 will be
+	set in the result.  Any bit which is zero in both E1 and E2
+	will be zero in the result.
 
 <pre>
 1011101001   (= 745)
@@ -340,11 +348,20 @@ E1 or E2.
 1011101011   (= 747) =&gt; 745 | 546 = 747
 </pre>
 
-<li>E1 ^ E2
+	Used on two arrays, this function will return an array
+	containing any element which is in either one of the
+	original two arrays.  If E1 and E2 share no members in
+	common, this is the same as E1 + E2.
+      </dd>
 
-<a name="IDX24"></a>
-E1 xor (exclusive or) E2.
+      <dt>E1 ^ E2</dt>
 
+      <dd>
+	<a name="IDX24"></a>
+
+	E1 xor (exclusive or) E2.  A bit which is zero in both or
+	one in both is zero in the result.  A bit which is set in
+	either E1 or E2, but not both, is one in the result.
 
 <pre>
 1011101001   (= 745)
@@ -352,12 +369,16 @@ E1 xor (exclusive or) E2.
 ------------
 0011001011   (= 203) =&gt; 745 ^ 546 = 203
 </pre>
+      </dd>
 
-<li>~E
+      <dt>~E</dt>
 
-<a name="IDX25"></a>
-1-complement of E (invert E).
+      <dd>
+	<a name="IDX25"></a>
 
+	1-complement of E (invert E).  This is a unary operator,
+	meaning it takes only one argument.  A bit which is one in the
+	argument will be zero in the result and vice-versa.
 
 <pre>
 00000000000000000000001011101001 ~ (= 745)
@@ -365,230 +386,279 @@ E1 xor (exclusive or) E2.
 11111111111111111111110100010110   (= -746) =&gt; ~745 = -746
 </pre>
 
-<b>NB!</b> The above example might be hard to understand unless you
-really know your binary arithmetic. However, trust me when I say that
-this is <i>not</i> a typo, it's the way it should look. Read a book
-on boolean algebra (the section on two-complement binary arithmentic)
-and all will be clear.
+	The above example might be hard to understand unless you
+	really know your binary arithmetic. However, trust me when I
+	say that this is <i>not</i> a typo, it's the way it should
+	look.  ~745 is different from -745 -- one is a one's
+	complement and the other is a two's complement.  Read about
+	twos-complement binary arithmetic and all will be made clear.
+      </dd>
 
-<li>E1 &lt;&lt; E2
+      <dt>E1 &lt;&lt; E2 </dt>
 
-<a name="IDX26"></a>
-E1 is shifted left E2 steps.
+      <dd>
+	<a name="IDX26"></a>
 
+	E1 is shifted left E2 steps.  This multiplies the value of E1
+	by two to the power of E2.  For instance, if E2 was three,
+	<code>E1 &lt;&lt; E2</code> would be <code>E1 * 8</code>.
 
-<pre>
+	<pre>
 5 &lt;&lt; 4 =&gt; 101(b) &lt;&lt; 4 = 1010000(b) = 80
-</pre>
+	</pre>
+      </dd>
 
-<li>E1 &gt;&gt; E2
+      <dt>E1 &gt;&gt; E2 </dt>
 
-<a name="IDX27"></a>
-E1 is shifted right E2 steps.
+      <dd>
+	<a name="IDX27"></a>
 
+	E1 is shifted right E2 steps.  This divides the value of E1 by
+	two to the power of E2, rounded down.  For instance, if E2 was
+	five, <code>E1 &gt;&gt; E2</code> would be equal to <code>E1 /
+	32</code>.
 
-<pre>
+	<pre>
 1054 &gt;&gt; 5 =&gt; 10000011110(b) &gt;&gt; 5 = 100000(b) = 32
-</pre>
-
-</ol>
-
-
-
-<h4><a name="SEC31" href="index.html#SEC31">Conditional (logical) operators</a></h4>
+	</pre>
+      </dd>
+    </dl>
 
 
-<ol>
+    <h4><a name="SEC3.2.7.4" href="index.html#SEC3.2.7.4">
+	Conditional (logical) operators</a></h4>
 
-<li>E1 || E2
+    <dl compact>
 
-<a name="IDX28"></a>
-Returns true if E1 or E2 evaluates as true. Will not evaluate E2 if E1
-is true.
+      <dt>E1 || E2 </dt>
 
-<li>E1 &amp;&amp; E2
+      <dd>
+	<a name="IDX28"></a>
 
-<a name="IDX29"></a>
-Returns true if both E1 and E2 evaluates as true.  Will not evaluate E2
-if E1 is false.
+	Returns true if E1 or E2 evaluates as true. Will not evaluate
+	E2 if E1 is true.  The fact that it won't evaluate the second
+	argument if the first is true is called &quot;short circuit
+	evaluation&quot;.
+      </dd>
 
-<li>!E
+      <dt>E1 &amp;&amp; E2 </dt>
 
-<a name="IDX30"></a>
-Returns true if E is false &amp; vice versa.
+      <dd>
+	<a name="IDX29"></a>
 
-</ol>
+	Returns true if both E1 and E2 evaluates as true.  Will not
+	evaluate E2 if E1 is false.  The fact that it won't evaluate
+	the second argument if the first is false is called
+	&quot;short circuit evaluation&quot;.
+      </dd>
 
+      <dt>!E</dt>
 
+      <dd>
+	<a name="IDX30"></a>
 
-<h4><a name="SEC32" href="index.html#SEC32">Comparative operators</a></h4>
+	Returns true if E is false and vice versa.
+      </dd>
 
-
-<ol>
-
-<li>E1 == E2
-
-<a name="IDX31"></a>
-Returns true if E1 is equal to E2, can be used on all kinds of types,
-but see the special section later on arrays and mappings, it works
-differently on them from what you might think.
-
-<li>E1 != E2
-
-<a name="IDX32"></a>
-Returns true if E1 isn't equal to E2, can be used on all kinds of types,
-but see the special section later on arrays and mappings, it works
-differently om them from what you might think.
-
-<li>E1 &gt; E2
-
-<a name="IDX33"></a>
-Returns true if E1 is greater than E2, can be used on all types except
-arrays and mappings.
-
-<li>E1 &lt; E2
-
-<a name="IDX34"></a>
-Returns true if E1 is less than E2, can be used on all types except
-arrays and mappings.
-
-<li>E1 &gt;= E2
-
-<a name="IDX35"></a>
-Returns true if E1 is greater or equal to E2, can be used on all types
-except arrays and mappings.
-
-<li>E1 &lt;= E2
-
-<a name="IDX36"></a>
-Returns true if E1 is less or equal to E2, can be used on all types
-except arrays and mappings.
-
-</ol>
+    </dl>
 
 
+    <h4><a name="SEC3.2.7.5" href="index.html#SEC3.2.7.5">
+	Comparative operators</a></h4>
 
-<h3><a name="SEC33" href="index.html#SEC33">Prefix allocation</a></h3>
-<p>
-<a name="IDX37"></a>
+    <dl compact>
 
-</p>
-<p>
-All of the arithmetic and boolean operator expressions can be written in a
-shorter way if all you want to do is compute one variable with any other
-expression and then store the result in the variable again.
+      <dt>E1 == E2</dt>
 
-</p>
-<p>
-Say that what you want to do is this <code>a = a + 5;</code>, a much neater
-way of writing that is <code>a += 5;</code>. The value of the second
-expression is added to the first and then stored in the first which
-happens to be a variable.
+      <dd>
+	<a name="IDX31"></a>
 
-</p>
-<p>
-You write all the others in the same way, i.e. the variable, then the
-operator directly followed by <code>=</code> and then the expression.
+	Returns true if E1 is equal to E2.  This operator can be used
+	on all types, but see the special section later on arrays and
+	mappings.  Equality works differently on them than you might
+	think.
+      </dd>
 
-</p>
+      <dt>E1 != E2</dt>
+
+      <dd>
+	<a name="IDX32"></a>
+
+	Returns true if E1 isn't equal to E2.  This operator can be
+	used on all kinds of types, but see the special section later
+	on arrays and mappings.  It works differently on them than you
+	might think.
+      </dd>
+
+      <dt>E1 &gt; E2 </dt>
+
+      <dd>
+	<a name="IDX33"></a>
+
+	Returns true if E1 is greater than E2.  This operator can be
+	used on all types except arrays and mappings.
+      </dd>
+
+      <dt>E1 &lt; E2</dt>
+
+      <dd>
+	<a name="IDX34"></a>
+
+	Returns true if E1 is less than E2.  Can be used on all types
+	except arrays and mappings.
+      </dd>
+
+      <dt>E1 &gt;= E2 </dt>
+
+      <dd>
+	<a name="IDX35"></a>
+
+	Returns true if E1 is greater or equal to E2.  This operator
+	can be used on all types except arrays and mappings.
+      </dd>
+
+      <dt>E1 &lt;= E2 </dt>
+
+      <dd>
+	<a name="IDX36"></a>
+
+	Returns true if E1 is less or equal to E2.  This operator can
+	be used on all types except arrays and mappings.
+      </dd>
+
+    </dl>
+
+
+    <h3><a name="SEC3.2.8" href="index.html#SEC3.2.8">
+	Prefix allocation</a></h3>
+
+    <p>
+      <a name="IDX37"></a>
+
+      All of the arithmetic and boolean operator expressions can be
+      written in a shorter way if what you want to do is use an
+      operator on a variable and a value (or two variables) and then
+      store the result in the variable.
+    </p>
+
+    <p>
+      Say that what you want to do is this <code>a = a + 5;</code>.  A
+      much neater way of writing that is <code>a += 5;</code>.  This
+      does exactly the same thing with less keystrokes and less chance
+      of error in typing.  Many people also find it more readable.
+    </p>
+
+    <p>
+      You write all the others in the same way.  So the result
+      variable comes first, then the operator directly followed by
+      <code>=</code> and then the value to operate on.  Make sure not
+      to put a space between the operator and the equals sign, and
+      make sure to put the operator before the equals sign.
+    </p>
 
 <pre>
 a &gt;&gt;= 5;       /* a = a &gt;&gt; 5; */
 b %= d + 4;    /* b = b % (d + 4); */
 c ^= 44 &amp; q;   /* c = c ^ (44 &amp; q); */
+
+c =+ 7;      /* c = (+7), probably not what you wanted. */
+c + = 7;     /* Error!  Don't use the extra space. */
 </pre>
 
 
+    <h3><a name="SEC3.2.9" href="index.html#SEC3.2.9">
+	Precedence and Order of evaluation</a></h3>
 
-<h3><a name="SEC34" href="index.html#SEC34">
-      Precedence and Order of evaluation</a></h3>
+    <p>
+      The table below summarizes the rules for precedence and
+      associativity of all operators, including those which we have
+      not yet discussed.  Operators on the same line have the same
+      precedence, rows are in order of decreasing precedence, so, for
+      example, <code>*</code>, <code>/</code> and <code>%</code> all
+      have the same precedence, which is higher than that of
+      <code>+</code> and <code>-</code>.
+    </p>
 
-<p>
-The table below summarizes the rules for precedence and associativity
-of all operators, including those which we have not yet discussed. 
-Operators on the same line have the same precedence, rows are in order
-of decreasing precedence, so, for example, <code>*</code>, <code>/</code> and <code>%</code>
-all have the same precedence, which is higher than that of <code>+</code> and
-<code>-</code>.
-
-</p>
-<p>
-Note that the precedence of the bitwise logical operators <code>&amp;</code>,
-<code>^</code> and <code>|</code> falls below <code>==</code> and <code>!=</code>. This implies
-that bit-testing expressions like
-
-</p>
-
-<pre>
+    <p>
+      Note that the precedence of the bitwise logical operators
+      <code>&amp;</code>, <code>^</code> and <code>|</code> falls
+      below <code>==</code> and <code>!=</code>. This implies that
+      bit-testing expressions like the one below must be fully
+      parenthesized to give proper results.
+    <pre>
 if ((x &amp; MASK) == 0) ...
-</pre>
+    </pre>
+  </p>
 
-<p>
-must be fully parenthesized to give proper results.
+    <dl compact>
+      <dt>() [] </dt>
 
-</p>
+      <dd> Left to right </dd>
 
-<ol>
-<li>() []
+      <dt>! ~ ++ -- - (type) * &amp; </dt>
 
-Left to right
+      <dd> Right to left </dd>
 
-<li>! ~ ++ -- - (type) * &amp;
+      <dt>* / %</dt>
 
-Right to left
+      <dd>Left to right</dd>
 
-<li>* / %
+      <dt>+ -</dt>
 
-Left to right
+      <dd>Left to right</dd>
 
-<li>+ -
+      <dt>&lt;&lt; &gt;&gt; </dt>
 
-Left to right
+      <dd> Left to right </dd>
 
-<li>&lt;&lt; &gt;&gt;
+      <dt>&lt; &lt;= &gt; &gt;=</dt>
 
-Left to right
+      <dd> Left to right </dd>
 
-<li>&lt; &lt;= &gt; &gt;=
+      <dt>== != </dt>
 
-Left to right
+      <dd> Left to right </dd>
 
-<li>== !=
+      <dt>&amp; </dt>
 
-Left to right
+      <dd> Left to right </dt>
 
-<li>&amp;
+      <dt>^</dt>
 
-Left to right
+      <dd> Left to right </dd>
 
-<li>^
+      <dt>|</dt>
 
-Left to right
+      <dd> Left to right </dd>
 
-<li>|
+      <dt>&amp;&amp;</dt>
 
-Left to right
+      <dd> Left to right </dd>
 
-<li>&amp;&amp;
+      <dt>||</dt>
 
-Left to right
+      <dd> Left to right </dd>
 
-<li>||
+      <dt>?:</dt>
 
-Left to right
+      <dd> Right to left </dd>
 
-<li>?:
+      <dt>= += == etc. </dt>
 
-Right to left
+      <dd> Right to left </dd>
 
-<li>= += == etc.
+      <dt>,</dt>
 
-Right to left
+      <dd> Left to right </dd>
+    </dl>
 
-<li>,
-
-Left to right
-</ol>
+    <p>
+      Note that in the list, <code>(type)</code> denotes a typecast.
+      Note also that in every case, a unary operator is higher
+      precedence than its binary equivalent.  So the expression
+      <code>-7 - 5</code> is equal to <code>(-7) - 5</code> instead
+      of <code>-(7-5)</code>.
+    </p>
 
     <hr>
     <a href="http://sourceforge.net">
@@ -598,7 +668,7 @@ Left to right
     </address>
     <!-- Created: Mon Jun 11 21:50:30 PDT 2001 -->
     <!-- hhmts start -->
-Last modified: Tue Apr  8 21:20:13 PDT 2003
+Last modified: Tue Apr  8 22:13:17 PDT 2003
 <!-- hhmts end -->
   </body>
 </html>
