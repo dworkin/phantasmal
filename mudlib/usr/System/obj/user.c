@@ -1,4 +1,4 @@
-/* $Header: /cvsroot/phantasmal/mudlib/usr/System/obj/user.c,v 1.12 2002/06/06 18:54:08 angelbob Exp $ */
+/* $Header: /cvsroot/phantasmal/mudlib/usr/System/obj/user.c,v 1.13 2002/06/07 23:04:58 angelbob Exp $ */
 
 #include <kernel/kernel.h>
 #include <kernel/user.h>
@@ -740,13 +740,11 @@ private void player_login(void)
 
     location = body->get_location();
     mobile = body->get_mobile();
-    mobile->set_user(this_object());
     if(!mobile) {
-      /* Deleted mobile but not body -- fix later */
-      error("Body but not mobile deleted!  Deleting body, log in again.");
-      message("Internal error, try logging in again.");
-      destruct_object(body);
+      mobile = clone_object(SIMPLE_MOBILE);
+      mobile->assign_body(body);
     }
+    mobile->set_user(this_object());
   }
 
   /* Show room to player */
