@@ -38,19 +38,30 @@ mixed* basic_unq_parse(string block) {
   return tmp;
 }
 
-mixed* unq_parse_with_dtd(string block, object dtd) {
+mixed* unq_parse_with_dtd(string block, object dtd, varargs string filename) {
   mixed* unq;
   mixed* struct;
 
   unq = basic_unq_parse(block);
   if(!unq) {
-    error ("Can't tokenize/match as unq in unq_parse_with_dtd!");
+    if(filename) {
+      error ("Can't tokenize/match file '" + filename
+	     + "' as UNQ in UNQ_PARSER::unq_parse_with_dtd!");
+    } else {
+      error ("Can't tokenize/match as UNQ in UNQ_PARSER::unq_parse_with_dtd!");
+    }
   }
 
   struct = dtd->parse_to_dtd(unq);
   if(!struct) {
-    error("UNQ input doesn't fit DTD in unq_parse_with_dtd!\n"
-	  + dtd->get_parse_error_stack());
+    if(filename) {
+      error("*** UNQ from file '" + filename
+	    + "' doesn't fit DTD in unq_parse_with_dtd:\n"
+	    + dtd->get_parse_error_stack());
+    } else {
+      error("*** UNQ input doesn't fit DTD in unq_parse_with_dtd:\n"
+	    + dtd->get_parse_error_stack());
+    }
   }
 
   return struct;

@@ -382,7 +382,8 @@ mixed* parse_to_dtd(mixed* unq) {
       continue;
     }
 
-    error("Unrecognized...");
+    accum_error += "Don't recognize label '" + label + "' in DTD.\n";
+    return nil;
   }
 
   return ret;
