@@ -159,5 +159,14 @@ system("cp -r $testgamedir/bundled/* $outdir/");
 # Get rid of CVS dir we picked up from $testgamedir/bundled
 system("rm -rf $outdir/CVS");
 
+print "Copying version information...\n";
+system("rm -f $outdir/VERSIONS");
+system("echo 'DGD Version:' >> $outdir/VERSIONS");
+system("cat $driverdir/src/version.h >> $outdir/VERSIONS");
+system("echo 'Phantasmal Version:' >> $outdir/VERSIONS");
+system("cat $phantasmaldir/include/phantasmal/version.h >> $outdir/VERSIONS");
+system("echo 'Test Game Version:' >> $outdir/VERSIONS");
+system("cat $testgamedir/include/version.h >> $outdir/VERSIONS");
+
 print "*** Finished! ***\n";
 print "New bundled Phantasmal should be available in '../$outdir'.\n";
