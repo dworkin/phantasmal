@@ -1,14 +1,69 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<html>
-  <head>
-    <title> Downloading, Compiling and Configuring DGD </title>
-  </head>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+                      "http://www.w3.org/TR/xhtml1/DTD/strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<title>DGD and LPC: Downloading, Compiling and Configuring</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<link href="../../phantasmal.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<table width="95%" border="0" cellspacing="0" cellpadding="4">
+  <tr>
+    <td colspan="2"> <table width="100%" border="0" cellspacing="1"
+        cellpadding="0" class="main">
+        <tr>
+          <td class="banner">The DGD Driver</td>
+        </tr>
+      </table></td>
+  </tr>
+  <tr>
+    <td valign="top">
+      <table width="25%"  border="0" cellspacing="1"
+             cellpadding="0"  class="main">
+        <tr>
+          <td class="content" style="font-size: 120%">
 
-  <body text="#000000" bgcolor="#DDDDDD" link="#0000EF" vlink="#51188E"
-	alink="#FF0000">
+          <ul style="margin: 0; padding-left: 10%">
+            <li> <a href="index.html">DGD &amp; LPC Page</a> </li>
+	    <li> <a href="LPC">LPC Textbook</a> </li>
+	    <li> <a href="../index.html">Phantasmal MUDLib </a> </li>
+	    <li> <a href="http://www.sf.net/projects/phantasmal">Phantasmal
+	      SourceForge</a> </li>
+          </ul>
+
+        </td>
+        </tr>
+        <tr>
+          <td class="content" align="center">
+            <a href="http://validator.w3.org/check/referer">
+            <img src="../images/valid-xhtml10.gif" alt="Valid XHTML 1.0!"
+             style="border:0;width:88px;height:31px" /></a><br />
+            <img src="../images/pixel.gif"
+             style="border:0;width:88px;height:1px" alt="" /><br />
+            <a href="http://jigsaw.w3.org/css-validator/check/referer">
+            <img src="http://jigsaw.w3.org/css-validator/images/vcss"
+             alt="Valid CSS!" style="border:0;width:88px;height:31px" />
+            </a><br />
+            <a href="http://sourceforge.net">
+            <img src="http://sourceforge.net/sflogo.php?group_id=48659&amp;type=6"
+             style="border: 0; width: 210; height: 62;"
+	     alt="SourceForge.net Logo" /></a>
+          </td>
+        </tr>
+      </table></td>
+    <td> <table width="100%"  border="0" cellspacing="1" cellpadding="0" 
+          class="main">
+        <tr>
+          <td class="heading">&nbsp;&nbsp;&middot;&nbsp;
+	    <a href="http://phantasmal.sf.net/DGD">DGD Page</a> &gt;
+            <a href="">Downloading, Compiling and Configuring</a>
+          </td>
+        </tr>
+        <tr>
+          <td class="content">
+    
+
     <h1> Downloading, Compiling and Configuring DGD </h1>
-
-    <font size="4">
 
     <ul>
       <li> <a href="#DGDPackages">
@@ -50,9 +105,9 @@
       doing a lot of programming before this is all over.
     </p>
 
-    <hr> </hr>
+    <hr />
 
-    <a name="DGDPackages">
+    <a name="DGDPackages"> </a>
     <h2> DGD Stuff, and How to Get It: </h2>
 
     <h3> The DGD server: </h3>
@@ -88,17 +143,15 @@
       of DGD.  They're all pretty stable.
     </p>
 
-  </a>
+    <hr />
 
-    <hr> </hr>
-
-    <a name="MUDLibs">
+    <a name="MUDLibs"> </a>
     <h2> DGD-Compatible MUDLibs </h2>
 
-    (Have you already read the <a href="http://dgd.is-here.com/dgd/faq">
+    <p> (Have you already read the <a href="http://dgd.is-here.com/dgd/faq">
       DGD FAQ </a> section on
     <a href="http://dgd.is-here.com/dgd/faq/faq4.html"> MUDLibs? </a>
-    You should.)
+    You should.) </p>
 
     <ul>
       <li> <a href="http://phantasmal.sourceforge.net">Phantasmal</a>
@@ -178,11 +231,10 @@
       MUDs have made much anything public.  But hey, these links will be
       around for awhile so they may have more information available
       when you click on them. </p>
-  </a>
-    
-    <hr> </hr>
 
-    <a name="Tools">
+    <hr />
+
+    <a name="Tools"> </a>
     <h2> Tools for working on DGD </h2>
 
     <h3> Tools on Unix </h3>
@@ -218,11 +270,10 @@
 	not the regular distributions, consider using the Cygwin
 	CVS client instead of the Win32 native client. </li>
     </ul>
-  </a>
 
-    <hr> </hr>
+    <hr />
 
-    <a name="DGDExperimental">
+    <a name="DGDExperimental"> </a>
     <h2> Making an Experimental Version of DGD </h2>
 
     <p>To patch up to an experimental version of DGD, say one of
@@ -240,7 +291,7 @@
       utility) you'll want to type in a whole lot of lines like
       the ones below.  When you type them you should be in the
       same directory where you first untarred or unzipped the DGD
-      source:
+      source: </p>
     <pre>
 patch -p 0 < 1.2-1.2.1
 patch -p 0 < 1.2.1-1.2.2
@@ -250,6 +301,7 @@ patch -p 0 < 1.2.4-1.2.5
       [...]
 patch -p 0 < 1.2.21-1.2.22
     </pre>
+    <p>
     You'll need all those files on the right, the ones with
     names like &quot;1.2.1-1.2.2&quot;.  Be sure to unzip or
     ungzip them if they're compressed when you download them.
@@ -265,7 +317,7 @@ patch -p 0 < 1.2.21-1.2.22
     <p>Note that you'll need to do all of this patching
       <i>before</i> you build DGD to be sure everything works.  On
       the bright side, under Unix you may be able to avoid typing
-      all those lines -- try just typing &quot;patch -p 0 < 1.2.*"
+      all those lines -- try just typing &quot;patch -p 0 < 1.2.*&quot;
       in a directory containing the unzipped patchfiles.  If you try
       it and it starts giving you rejected patches then something's
       wrong.  If that happens, you should go back to trying it the
@@ -281,16 +333,14 @@ patch -p 0 < 1.2.21-1.2.22
       to make it output the appropriate filename.  For me, that
       command line winds up being &quot;make YACC='bison -o y.tab.c'&quot; </p>
 
-  </a>
+    <hr />
 
-    <hr> </hr>
-
-    <a name="DGDCygwin">
+    <a name="DGDCygwin"> </a>
     <h2> Making an Experimental Version of DGD with Cygwin</h2>
 
     <p>This is Will Shattuck's set of instructions for compiling
       DGD version 1.2.47 under Cygwin.  It should be pretty adaptable
-      for other DGD versions.
+      for other DGD versions. </p>
     <pre>
 download dgd-1.2.tar.gz
 untar dgd-1.2.tar.gz
@@ -367,13 +417,10 @@ patch -p 0 < patches/1.2.46-1.2.47
 
 == End patchit script ==
 </pre>
-  </p>
 
-  </a>
+    <hr />
 
-    <hr> </hr>
-
-    <a name="ANSIColor">
+    <a name="ANSIColor"> </a>
     <h2> How do I set up DGD to work with ANSI color? </h2>
 
     <p>First, you should get and configure DGD without ANSI color.
@@ -434,11 +481,10 @@ patch -p 0 < patches/1.2.46-1.2.47
       through, and you're still compatible with stock DGD rather
       than requiring patches.
     </p>
-  </a>
 
-    <hr> </hr>
+    <hr />
 
-    <a name="StringSize">
+    <a name="StringSize"> </a>
     <h2> Compiling DGD with a larger maximum string size </h2>
 
     <p>By default the largest allowable string in DGD is 64kb.  If
@@ -452,11 +498,9 @@ patch -p 0 < patches/1.2.46-1.2.47
     <p>Old state dump files with a smaller ssizet type can be restored
       safely.</p>
 
-  </a>
+    <hr />
 
-    <hr> </hr>
-
-    <a name="NumObjects">
+    <a name="NumObjects"> </a>
     <h2> Compiling DGD with a larger maximum number of objects </h2>
 
     <p>Plain vanilla DGD has a maximum of 65536 objects at once.
@@ -483,17 +527,14 @@ patch -p 0 < patches/1.2.46-1.2.47
 
   </a>
 
-    <h2> <a href="index.html"> Back to top level </a> </h2>
-
-  </font>
-
-    <hr> </hr>
-      <a href="http://sourceforge.net">
-	<img src="http://sourceforge.net/sflogo.php?group_id=48659&type=3"
-	     width="125" height="37" border="0" alt="SourceForge.net Logo"></a>
-    <!-- Created: Mon Jun 11 21:50:30 PDT 2001 -->
-    <!-- hhmts start -->
-Last modified: Wed Jun 18 00:36:37 PDT 2003
-<!-- hhmts end -->
-  </body>
+    <p style="font-size: 150%"> <a href="index.html"> Back to top level
+      </a> </h2>
+            <address>
+            <span><a href="mailto:angelbob-remove-spamfree@spamfree.users.sf.net">Noah Gibbs</a></span>
+            </address></td>
+        </tr>
+      </table></td>
+  </tr>
+</table>
+</body>
 </html>

@@ -1,14 +1,69 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<html>
-  <head>
-    <title>DGD LPC Reference Page </title>
-  </head>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+                      "http://www.w3.org/TR/xhtml1/DTD/strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<title>DGD and LPC: DGD LPC Reference</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<link href="../../phantasmal.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<table width="95%" border="0" cellspacing="0" cellpadding="4">
+  <tr>
+    <td colspan="2"> <table width="100%" border="0" cellspacing="1"
+        cellpadding="0" class="main">
+        <tr>
+          <td class="banner">The DGD Driver</td>
+        </tr>
+      </table></td>
+  </tr>
+  <tr>
+    <td valign="top">
+      <table width="25%"  border="0" cellspacing="1"
+             cellpadding="0"  class="main">
+        <tr>
+          <td class="content" style="font-size: 120%">
 
-  <body text="#000000" bgcolor="#DDDDDD" link="#0000EF" vlink="#51188E"
-	alink="#FF0000">
+          <ul style="margin: 0; padding-left: 10%">
+            <li> <a href="index.html">DGD &amp; LPC Page</a> </li>
+	    <li> <a href="LPC">LPC Textbook</a> </li>
+	    <li> <a href="../index.html">Phantasmal MUDLib </a> </li>
+	    <li> <a href="http://www.sf.net/projects/phantasmal">Phantasmal
+	      SourceForge</a> </li>
+          </ul>
+
+        </td>
+        </tr>
+        <tr>
+          <td class="content" align="center">
+            <a href="http://validator.w3.org/check/referer">
+            <img src="../images/valid-xhtml10.gif" alt="Valid XHTML 1.0!"
+             style="border:0;width:88px;height:31px" /></a><br />
+            <img src="../images/pixel.gif"
+             style="border:0;width:88px;height:1px" alt="" /><br />
+            <a href="http://jigsaw.w3.org/css-validator/check/referer">
+            <img src="http://jigsaw.w3.org/css-validator/images/vcss"
+             alt="Valid CSS!" style="border:0;width:88px;height:31px" />
+            </a><br />
+            <a href="http://sourceforge.net">
+            <img src="http://sourceforge.net/sflogo.php?group_id=48659&amp;type=6"
+             style="border: 0; width: 210; height: 62;"
+	     alt="SourceForge.net Logo" /></a>
+          </td>
+        </tr>
+      </table></td>
+    <td> <table width="100%"  border="0" cellspacing="1" cellpadding="0" 
+          class="main">
+        <tr>
+          <td class="heading">&nbsp;&nbsp;&middot;&nbsp;
+	    <a href="http://phantasmal.sf.net/DGD">DGD Page</a> &gt;
+            <a href="">DGD LPC Reference</a>
+          </td>
+        </tr>
+        <tr>
+          <td class="content">
+    
+
     <h1> An LPC Reference for DGD </h1>
-
-    <font size="4">
 
     <p>This page is all about DGD's version of LPC.  If you're using
       MudOS, LDMUD, Amylaar or any other flavor of LPMUD then don't
@@ -27,7 +82,7 @@
       be sure about one thing or another, check the mailing list
       archives. </p>
 
-    <hr> </hr>
+    <hr />
 
     <p>
       I'm editing a web book on LPC by Ronnie Wikh to use with DGD.
@@ -36,9 +91,10 @@
       that I have available.
     </p>
 
-    <hr> </hr>
+    <hr />
 
-    <a name="CodeInfo">
+    <a name="CodeInfo"> </a>
+
     <h2> The LPC Language in DGD </h2>
 
     <ul>
@@ -122,9 +178,9 @@
 	<a href="http://www.lysator.liu.se/nanny/docs/manual/manual.html">
 	  NannyMUD LPC Manual</a> is about an older dialect of LPC. </li>
     </ul>
-  </a>
 
-    <a name="CodeSnippets">
+    <a name="CodeSnippets"> </a>
+
     <h2> Code Examples </h2>
 
     <ul>
@@ -178,18 +234,17 @@
 
     <hr> </hr>
 
-    <a name="CallByRef">
+    <a name="CallByRef"> </a>
     <h2> Call-By-Reference vs Call-By-Value in LPC </h2>
 
     <p>
       Here's a link to this topic in the
       <a href="LPC/section_42.html#SEC4.2.1.3">LPC textbook</a>.
     </p>
-  </a>
 
-    <hr> </hr>
+    <hr />
 
-    <a name="FunVarModifiers">
+    <a name="FunVarModifiers"> </a>
     <h2> Function and Variable Modifiers </h2>
     <p> Note: these are properly called function or variable <i>classes</i>
       to distinguish them from function and variable <i>types</i>. </p>
@@ -199,11 +254,9 @@
         href="LPC/section_42.html#SEC4.2.4">LPC textbook</a>.
       </p>
 
-    </a>
+    <hr />
 
-    <hr> </hr>
-
-    <a name="AtomicFunc">
+    <a name="AtomicFunc"> </a>
     <h2> How do Atomic Functions work? </h2>
 
     <p>
@@ -218,7 +271,7 @@
       addition to LPC since mappings.  I'll give two examples to explain
       how it affects code. </p>
 
-    <center> <hr width="10%"> </hr> </center>
+    <hr style="width: 30%" />
 
     <p> The 2.4.5 mudlib for DGD contains the following code in
       /dgd/lib/inventory.c: </p>
@@ -267,7 +320,7 @@
       all, of course.  The atomic function feature could be used to guard
       such code from inconsistencies with only minimal rearrangement. </p>
 
-    <center> <hr width="10%"> </hr> </center>
+    <hr style="width: 30%" />
 
     <p>Another example, not as low-level but still involving movement: </p>
 
@@ -287,7 +340,7 @@
       low-level object movement and player-level movement can be made
       atomic. </p>
 
-    <center> <hr width="10%"> </hr> </center>
+    <hr style="width: 30%" />
 
     <p>So when do we use atomic, and when do we encapsulate code with
       rlimits (-1; -1) instead?  Use rlimits if you are sure that the
@@ -300,11 +353,9 @@
       mudlib.  This makes using atomic functions the best solution in
       cases where rlimits might be preferred, but is unavailable.</p>
 
-  </a>
+    <hr />
 
-    <hr> </hr>
-
-    <a name="Inheritance">
+    <a name="Inheritance"> </a>
     <h2> How does inheritance work in DGD's LPC? </h2>
 
     <p>Basic inheritance is pretty simple.  Conceptually if one program
@@ -375,17 +426,23 @@ foo::inherited_A_func("bob", "spam");
     <pre>
 private inherited foo "/usr/System/obj/A";
     </pre>
-  </a>
 
-    <hr> </hr>
+    <p>
+      For more about one more complicated take on inheritance and how
+      it should work in DGD, see the <a
+      href="Kernel/Inheritance.html"> Kernel Library </a> inheritance
+      docs.
 
-    <a name="ArrayOps">
+    <hr />
+
+    <a name="ArrayOps"> </a>
+
     <h2> LPC Array and Mapping Operations </h2>
     <p> LPC has two nifty types that C doesn't really have:  array and
       mapping.  While C <i>does</i> have an array type, LPC's version is
       much niftier for MUD coding. </p>
     <p> The mapping (hash table) type is called, simply enough, mapping.
-      Assigning it can look like this:
+      Assigning it can look like this: </p>
     <pre>
 mapping dinner_schedule;
 dinner_schedule = ([ "Monday" : "Meatloaf",
@@ -395,30 +452,45 @@ dinner_schedule = ([ "Monday" : "Meatloaf",
                      "Friday" : "Leftovers",
                    ]);
     </pre>
+
+    <p>
     That comma on the last line is optional, like in Perl.  To query
-    the mapping, you'd say something like:
+    the mapping, you'd say something like: </p>
     <pre>
 message("My dinner on Tuesday is " + dinner_schedule["Tuesday"] + "\n");
     </pre>
+
+    <p>
     To add an element to the mapping, you'd assign a value to it.  For
-    instance:
+    instance: </p>
+
     <pre>
 dinner_schedule["Saturday"] = "Prime Rib";
-    </pre> <br> </br>
+
+
+    </pre>
+
+    <p>
     To remove an element from the mapping, you can assign nil to it.  For
-    instance:
+    instance: </p>
+
     <pre>
 dinner_schedule["Wednesday"] = nil;  /* No dinner on Wednesday!  :( */
     </pre>
+
+    <p>
     You can also subtract an array of indices from a mapping to remove
     those elements, so another way to do the same thing as above
-    would be:
+    would be: </p>
     <pre>
 dinner_schedule -= ({"Wednesday"});
+
+
     </pre>
-    <br></br>
+
+    <p>
     To shallow-copy an array or mapping, the following code from the
-    Melville MUDLib should work:
+    Melville MUDLib should work: </p>
     <pre>
 nomask mixed copy (mixed a) {
     mixed b ;
@@ -430,6 +502,7 @@ nomask mixed copy (mixed a) {
     return b ;
 }
     </pre>
+  <p>
     Note that a &quot;shallow copy&quot; just means a one-level copy.
     The elements of the mapping are copied, but if they point to something
     like an object, then both copies still point to the same object.
@@ -444,21 +517,19 @@ nomask mixed copy (mixed a) {
     </p>
     <p>
       The copy operation above, incidentally, is a great example of
-      array-slice notation, much like in Perl.  The notation
+      array-slice notation, much like in Perl.  The notation </p>
     <pre>
 b = a[..];
     </pre>
-    means to copy the whole array.  The notation
+    <p> means to copy the whole array.  The notation </p>
     <pre>
 b = a[1..4];
     </pre>
-    would copy only the second through fifth array elements.
-  </p>
-  </a>
+    <p> would copy only the second through fifth array elements. </p>
 
-    <hr> </hr>
+    <hr />
 
-    <a name="StringOps">
+    <a name="StringOps"> </a>
     <h2> LPC String Operations </h2>
     <p>LPC has an integrated string type, but no character type.  This is
       a little confusing if you're coming from a C background.  You can
@@ -473,11 +544,10 @@ b = a[1..4];
       I don't know a better way of getting a character value in DGD
       in a fast, transparent way.
     </p>
-  </a>
 
-    <hr> </hr>
+    <hr />
 
-    <a name="Varargs">
+    <a name="Varargs"> </a>
     <h2> LPC Varargs and &quot;...&quot; functions </h2>
 
     <p> There are two ways in LPC to call functions with a variable
@@ -551,11 +621,10 @@ void print_some_stuff(string format, mixed stuff)
     like the original one -- one with four arguments in the example
     above.  So the array is expanded back into the individual
     arguments.</p>
-  </a>
 
-    <hr> </hr>
+    <hr />
 
-    <a name="NilOps">
+    <a name="NilOps"> </a>
     <h2> What's nil?  How does DGD use it? </h2>
 
     <p> If you check the DGD mailing list in roughly the March 1999
@@ -595,11 +664,10 @@ void print_some_stuff(string format, mixed stuff)
 	types mentioned above when the
 	function caller doesn't supply those parameters. </li>
     </ul> </p>
-  </a>
 
-    <hr> </hr>
+    <hr />
 
-    <a name="MiscDiff">
+    <a name="MiscDiff"> </a>
     <h2> Miscellaneous Differences Between LPC and C </h2>
 
     <h3> Floating-point Differences </h3>
@@ -642,11 +710,10 @@ dinner_schedule = ([ ]);
       characters of another string in order, are a little different
       as a result of this.
     </p>
-  </a>
 
-    <hr> </hr>
+    <hr />
 
-    <a name="ErrCatch">
+    <a name="ErrCatch"> </a>
     <h2> Catching Errors in LPC Code </h2>
 
     <p> In some cases you know that a chunk of LPC code may cause an
@@ -734,11 +801,9 @@ dinner_schedule = ([ ]);
       correct header to use the call_trace and TRACE_FIRSTARG you
       see above.  That header is &lt;trace.h&gt;. </p>
 
-  </a>
+    <hr />
 
-    <hr> </hr>
-
-    <a name="ParseString">
+    <a name="ParseString"> </a>
     <h2> Using the parse_string DGD kfun </h2>
 
     <p> The parse_string kfun is a very powerful parser to which
@@ -773,11 +838,10 @@ dinner_schedule = ([ ]);
       find it
       <a href="external/parse_string.html">here</a>.
     </p>
-  </a>
 
-    <hr> </hr>
+    <hr />
 
-    <a name="CalloutTiming">
+    <a name="CalloutTiming"> </a>
     <h2> How does call_out timing in DGD work? </h2>
 
     <p> In DGD, &quot;call_out&quot; is the kernel function that you use
@@ -796,11 +860,9 @@ dinner_schedule = ([ ]);
     <p> This change substantially speeds up DGD on a multi-processor
       system. </p>
 
-  </a>
+    <hr />
 
-    <hr> </hr>
-
-    <a name="StatusFunc">
+    <a name="StatusFunc"> </a>
     <h2> Can I use values from the DGD config file in
       the code? </h2>
 
@@ -852,11 +914,10 @@ dinner_schedule = ([ ]);
 # define CO_DELAY       2       /* delay */
 # define CO_FIRSTXARG   3       /* first extra argument */
     </pre>
-  </a>
 
-    <hr> </hr>
+    <hr />
 
-    <a name="MemManagement">
+    <a name="MemManagement"> </a>
     <h2> DGD Memory Management Tidbits </h2>
 
     <p>DGD uses reference counting as its primary method of garbage
@@ -878,11 +939,10 @@ FREE(0010c644/48), array.c line 1109:
     in the 1.2 series, Dworkin added extra code to fix the same problem
     silently, so you don't even need to fix your circularities if you
     don't care about backwards compatibility. </p>
-  </a>
 
-    <hr> </hr>
+    <hr />
 
-    <a name="DGDCodeLimits">
+    <a name="DGDCodeLimits"> </a>
     <h2> Limits on Quantities in DGD </h2>
     <pre>
 DGD has a number of builtin limits:
@@ -911,11 +971,10 @@ changes in dgd/src/config.h:
     <p> You should note that you can get around the limit on functions
       per program listed above by separating the functions into two or more
       programs (.c files) and inheriting them. </p>
-  </a>
 
-    <hr> </hr>
+    <hr />
 
-    <a name="ThreadLocal">
+    <a name="ThreadLocal"> </a>
     <h2> What is thread-local storage? </h2>
 
     <p>Dworkin says:</p>
@@ -944,11 +1003,10 @@ changes in dgd/src/config.h:
       [ed: in the kernel MUDLib], this can be done safely and
       efficiently. </p>
 
-  </a>
 
-    <hr> </hr>
+    <hr />
 
-    <a name="LightWeightObjs">
+    <a name="LightWeightObjs"> </a>
     <h2> What are DGD LightWeight Objects (LWOs)? </h2>
 
     <p>In 1.2.18, Dworkin released the first implementation of
@@ -985,19 +1043,15 @@ Dworkin
     </pre>
     <p> For an example of lightweight objects in action you can
       check out the Phantasmal MUDLib and its Object Manager. </p>
-  </a>
 
-    <h2> <a href="index.html"> Back to top level </a> </h2>
-
-  </font>
-
-    <hr> </hr>
-    <a href="http://sourceforge.net">
-      <img src="http://sourceforge.net/sflogo.php?group_id=48659&type=3"
-	   width="125" height="37" border="0" alt="SourceForge.net Logo"></a>
-     <!-- Created: Mon Jun 11 21:50:30 PDT 2001 -->
-    <!-- hhmts start -->
-Last modified: Tue Apr  8 22:25:23 PDT 2003
-<!-- hhmts end -->
-  </body>
+    <p style="text-size: 150%"> <a href="index.html"> Back to top level
+      </a> </h2>
+            <address>
+            <span><a href="mailto:angelbob-remove-spamfree@spamfree.users.sf.net">Noah Gibbs</a></span>
+            </address></td>
+        </tr>
+      </table></td>
+  </tr>
+</table>
+</body>
 </html>
