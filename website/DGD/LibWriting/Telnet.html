@@ -227,6 +227,150 @@ the protocol.  Besides changing settings, you might want to try another
 client as well.
 </pre>
 
+<hr />
+
+<pre>
+Date: Tue Mar 30 12:30:03 2004
+Subject: [DGD] ansi colours
+
+Assuming you're just talking about ANSI escape sequences in general and 
+not a DGD-specific thing, I have a list of the ansi escape sequences on 
+my web-site.  It's not wildly accurate (in terms of which sequences came 
+from which specific standards), but it's what I used for the muds I've 
+worked on and my mud client.
+
+http://bluesock.org/~willg/dev/ansi.html
+
+/will
+</pre>
+
+<hr />
+
+<pre>
+From: dgd at list.imaginary.com (Erwin Harte)
+Date: Tue Mar 30 13:45:01 2004
+Subject: [DGD] Re: ansi colours
+
+Have you considered the possibility that the \e is not an escape
+supported by LPC and it really _is_ an 'e' that you send to the
+client?
+
+    > @code "\e"[0]
+    $28 = 101
+
+This is what you want, however:
+
+    > @code "\033"[0]
+    $29 = 27
+
+Hope that helps,
+
+\033[36mErwin\033[0m.
+-- 
+Erwin Harte
+
+
+From: dgd at list.imaginary.com (Michael McKiel)
+Date: Tue Mar 30 17:39:07 2004
+Subject: [DGD] ansi colours
+
+These might be of some use to you, when using the escape \033 sequence in
+files the editors or mor'ing interprets the colours and not the codes so
+You can't see the codes used like that in a file, these are visible as
+colours in the mud as well as being editable:
+
+"\x1B[0m"
+"\x1B[1m"
+"\x1B[31m"
+"\x1B[32m"
+"\x1B[33m"
+"\x1B[34m"
+"\x1B[35m"
+"\x1B[36m"
+"\x1B[37m"
+"\x1B[41m"
+"\x1B[42m"
+"\x1B[43m"
+"\x1B[44m"
+"\x1B[45m"
+"\x1B[46m"
+"\x1B[47m"
+
+Also of note, if you enable ansi in DGD, you should consider stripping escape
+sequences in a user's issued command. Else they can change colour on other's
+screen by just sending a 'realescape'<colorcode>. I imagine other strange
+things are possible if you don't strip escape sequences. 
+
+Did this in my old modified melville:
+	result = strlen(str);
+	for (i=0; i < result; i++)
+	{
+		if (str[i] < 32) { str[i] = ' '; }
+	}
+
+Happy Colouring! 
+</pre>
+
+<hr />
+
+<pre>
+From: dgd at list.imaginary.com (dgd@list.imaginary.com)
+Date: Tue Mar 30 18:05:08 2004
+Subject: [DGD] ANSI Patch for DGD 1.2.87
+
+I decided to update the ansi patch, no reason why other than I was fiddling 
+with various stuff which broke dgd badly and got tired of hand editing files 
+after the fifth time I had to repatch from .85 up. 
+
+The patch is now 1 file long and should patch in exactly like the 
+experimental patches do (patch -p 0 < patchname) so long as you put it in 
+the same directory.  It explains that in the top of the patch and all of the 
+old files that were included in the older ansi patch are now included in 
+this one and created in the dgd/doc/ansi directory. 
+
+You can download it at: 
+
+http://psychoticdelusions.net/dgd-patch/ansi-0.99.5-dgd-1.2.87.gz 
+
+It's no better than the old patch it just applies cleanly with the patch 
+command instead of requiring hand editing.  So if you've already patched 
+THIS DOES NOTHING DIFFERENT LEAVE IT BE! :)  I've not tested it with the net 
+patch or epp or any other patches, just vanilla 1.2.87. 
+
+Anywho, 
+
+Shadus
+</pre>
+
+<hr />
+
+<pre>
+From: dgd at list.imaginary.com (Josh Dady)
+Date: Wed Mar 31 09:43:10 2004
+Subject: [DGD] ansi colours
+
+On Mar 30, 2004, at 6:38 PM, Michael McKiel wrote:
+
+> Also of note, if you enable ansi in DGD, you should consider stripping 
+> escape
+> sequences in a user's issued command. Else they can change colour on 
+> other's
+> screen by just sending a 'realescape'<colorcode>. I imagine other 
+> strange
+> things are possible if you don't strip escape sequences.
+
+In college, I had a friend who would shout the following when he found 
+a MUD that didn't strip incoming commands:
+   - [clear screen]
+   - [cursor movement] [big/bold/blink] <banner text> [repeat]
+   - [reset scroll region]
+   - [move cursor into new, smaller scroll region]
+
+--
+Joshua P. Dady
+http://www.indecisive.com/
+</pre>
+
   <p style="text-size: 150%"> <a href="../index.html"> Back to top level
     </a> </p>
             <address>
