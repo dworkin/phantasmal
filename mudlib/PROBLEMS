@@ -38,3 +38,22 @@ client on an appropriate port.  If you're unfamiliar with how the
 whole process works, you may find you're more comfortable trying out
 CircleMUD or another fully developed MUD before trying DGD and
 Phantasmal, which are definitely intended for the experienced crowd.
+
+
+
+Q: I run DGD and it gives me error messages about the version I'm using.
+   What do I do?
+
+A: If it says that this version of Phantasmal is not tested with DGD
+beyond some version then you've either got a slightly old Phantasmal
+or Felix has gotten a little ahead of me with his constant improvement
+of DGD.  You can either use the recommended DGD version (look at
+/usr/System/initd.c for the version check), or if things keep working
+you can just ignore the error message, or remove it from
+/usr/System/initd.c.
+
+If it gives you an error when you start up that your version of DGD
+just isn't cool enough for it, you're going to need to upgrade to a
+higher version of DGD, probably an experimental one.  Check out
+http://phantasmal.sourceforge.net/DGD and click on a link called
+something like "Downloading, Compiling and Configuring DGD".
