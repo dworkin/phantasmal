@@ -918,9 +918,10 @@ void include(string from, string path)
     LOGD->write_syslog("include " + path + " from " + from,
 		       LOG_ULTRA_VERBOSE);
 
-    if(path != "AUTO" && path != "/include/AUTO"
+    if(path != "AUTO" && path != "/include/AUTO" && path != nil
+       && path != ""
        && sscanf(path, "%*s\.h") == 0)
-      LOGD->write_syslog("Including non-header file " + path, LOG_ERR);
+      LOGD->write_syslog("Including non-header file '" + path + "'", LOG_ERR);
 
     comp_dep += ({ path });
   }
@@ -1269,5 +1270,7 @@ void recompile_auto_object(object output) {
 void set_path_special(object new_manager) {
   if(SYSTEM()) {
     path_special_object = new_manager;
+  } else {
+    error("Only System objects can set the path_special object!");
   }
 }

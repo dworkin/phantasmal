@@ -1,4 +1,4 @@
-/* $Header: /cvsroot/phantasmal/mudlib/usr/System/obj/user.c,v 1.68 2003/11/18 15:00:21 angelbob Exp $ */
+/* $Header: /cvsroot/phantasmal/mudlib/usr/System/obj/user.c,v 1.69 2003/11/19 21:56:04 angelbob Exp $ */
 
 #include <kernel/kernel.h>
 #include <kernel/user.h>
@@ -550,9 +550,9 @@ private int name_is_forbidden(string name) {
 
   if(filename == "game")
     return 1;
-  if(filename == "common")
+  if(sscanf(filename, "common"))
     return 1;
-  if(filename == "system")
+  if(sscanf(filename, "system"))
     return 1;
 }
 
