@@ -1,0 +1,67 @@
+/*
+** This 'shadows' variable is local to the object in which
+** you call the 'shadow' function. You seem to assume it's
+** shared among the inheritors; that it exists in only one
+** instance. That's not so. This way the information will
+** be spread out throughout the object space, when it ought
+** to be collected in the shadowed objects.
+**
+** This is utterly untested, but I'd do something like:
+*/
+
+private object *shadows;
+
+static
+void create() {
+  /* stuff */
+  shadows = ({ });
+  /* stuff */
+}
+
+static
+void shadow(object ob, object trg) {
+  ::call_other(trg, "_F_shadow", ob);
+}
+
+nomask
+void _F_shadow(object ob) {
+  if (previous_program() == AUTO) {
+    shadows |= ({ ob });
+  }
+}
+
+/*
+** Incidentally, it is a very bad idea to grant all call_other()s
+** automatic rlimits(-1; -1) status as you do in your code -- the
+** use of rlimits at all is pointless; you modify no state in the
+** redefined function.
+*/
+
+static
+mixed call_other(mixed obj, string func, mixed args...) {
+  object shadow;
+
+  if (shadow = ::call_other(obj, "_Q_shadow_by_function", func)) {
+    return ::call_other(shadow, func, args...);
+  }
+  return ::call_other(obj, func, args...);
+}
+
+nomask
+object _Q_shadow_by_function(string func) {
+  if (previous_program() == AUTO) {
+    int dirty, i;
+
+    for (i = 0; i < sizeof(shadows); i ++) {
+      if (!shadows[i]) {
+	dirty = TRUE;
+      } else if (function_object(func, shadows[i])) {
+	return shadows[i];
+      }
+    }
+    if (dirty) {
+      shadows -= ({ nil });
+    }
+  }
+  return nil;
+}

@@ -1,0 +1,134 @@
+Date: Sun, 23 May 1999 18:44:36 +0200 (CEST)
+From: "Felix A. Croes" <felix@dworkin.nl>
+Message-Id: <199905231644.SAA28679@pattern.dworkin.nl>
+To: dgd@list.imaginary.com
+Subject: Re: [DGD]parse_string() problems
+
+Geir Harald Hansen <geirhans@ifi.uio.no> wrote:
+
+> finally I'm starting to work on my command parser.  And being a
+> parse_string() newbie, I'm running into some problems.  I include
+> a minimal piece of code to illustrate my problem:
+>
+> static create()
+> {
+>   grammar = "\
+> whitespace = / +/ \
+> word = /[^ ]+/ \
+> verbrule: 'say' str \
+> substr: word \
+> substr: word substr \
+> str: substr ? parse_str \
+> ";
+> }
+>
+> static mixed *parse_str(string *str)
+> {
+>   return ({ ({ "_str", implode(str, " ") }) });
+> }
+>
+> What I'm having trouble with at the moment is this:
+> I intended for the str rule to include any string.
+> The problem is that tokens are implicitly created from string constants,
+> like 'say' above, and these take precedence over the 'word' token rule.
+> >From the parser documentation:
+>
+>    String constants take precedence over regular expressions, and any
+>    token that matches both a string constant and a regular expression
+>    will always match the string constant, only.
+>                                           ^^^^
+> The result is that my str production can never contain a 'say'.
+> So I cannot parse commands like:
+>   "say If only I could say what I want."
+> Any suggestions how to solve this?
+
+Replace the substr rules with:
+
+    substr: wordorsay
+    substr: wordorsay substr
+    wordorsay: word
+    wordorsay: 'say'
+
+Further comments: verbs like say which take arbitrary arguments that
+do not follow rules established elsewhere in the grammar are handled
+most easily by a single token, /say .*/
+
+Left-recursive rules are parsed more efficiently than right-recursive
+ones, so other things being equal the following should be preferred:
+
+    substr: word
+    substr: substr word
+
+
+> Another question:
+> I want to have a verb production rule, that should match all known verbs.
+> I can see two ways of doing this, either:
+>   verb: 'look' verb: 'say' verb: 'get' verb: 'drop' etc. etc.
+> Or:
+>   verb: word ? check_verb
+> Where check_verb() would check whether the word is part of some verb
+> array, returning the word unchanged if it is, otherwise nil.
+>
+> The last option would make the grammar smaller, but result in more execution
+> of LPC code.  Since the function does not modify the word, perhaps
+> the first solution is best?
+
+Which one is best depends on other things.  I'll assume that the
+rule considered is the only one in which explicit verbs actually
+occur, i.e. elsewhere in the grammar the verb rule is used rather
+than 'look'.
+
+The first rule is good in a grammar where verbs may occur in places
+where other words can occur as well, since knowing early on that
+something is a verb reduces the cost of parsing.  As an example,
+consider the following partial grammar:
+
+    command: verb
+    command: verb object
+    command: adverb verb
+    command: adverb verb object
+
+    verb: word    ? check_verb
+    adverb: word  ? check_adverb
+    object: word  ? check_object
+
+A command consisting of two words can match either "verb object"
+or "adverb verb", meaning that the parser internally has to
+construct the parse trees for both of them before it can call
+an LPC function to determine if the first word is a verb or an
+adverb.  By making the verbs explicit in the grammar, the
+ambiguity disappears and the cost of parsing drops.  The
+cost of parsing an ambiguous grammar can be exponentially
+higher than that of parsing a non-ambiguous grammar.
+
+The cost of parse_string() can be measured in ticks.
+Parsing with ambiguous grammars takes more ticks than
+parsing with equivalent non-ambiguous grammars.
+
+If verbs only occur non-ambiguously in the grammar (for instance,
+if the first word of every command is the verb), then your
+second way is cheaper as far as the parser is concerned --
+whether it is more efficient overall depends on the cost
+of the LPC function called.
+
+
+> For adjectives pretty much the same thing, although I may want to
+> allow abbreviations.  ("smile hap")  Which means I need an LPC function.
+>
+> As an aside, what is the fastest way to check whether something is an
+> element of an array?  Is "if (sizeof(({ element }) & array))" faster
+> than those loops that compare with every element?
+
+Slower for arrays with only a few elements, faster to much faster
+for large arrays.  Mapping lookup is faster yet.
+
+
+> Finally; if anyone knows of publicly released DGD parser code/grammars or
+> would let me see theirs, just to get some idea of how things can be done,
+> it would be greatly appreciated. :)
+
+There is an example grammar that parses LPC (though it doesn't handle
+nil yet) in the list archive, posting date Wed Feb 11 1998.
+
+Regards,
+Dworkin
