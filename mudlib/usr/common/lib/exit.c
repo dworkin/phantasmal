@@ -1,5 +1,11 @@
-#include <config.h>
 #include <exit.h>
+#include <config.h>
+#include <type.h>
+#include <log.h>
+#include <phrase.h>
+#include <map.h>
+
+#include <kernel/kernel.h>
 
 inherit OBJECT;
 
@@ -14,6 +20,16 @@ int    type;           /* one-way, two-way, etc. */
 int    link_to;             /* exit # that a two-way links to */
 object from_location;
 object destination;
+
+/* Flags */
+/* The objflags field contains a set of boolean object flags */
+#define OF_CONTAINER          1
+#define OF_OPEN               2
+#define OF_OPENABLE           8
+#define OF_LOCKED             16
+#define OF_LOCKABLE           32
+
+private int objflags;
 
 static void create(varargs int clone) {
   ::create(clone);
@@ -88,6 +104,111 @@ object get_from_location() {
 
 object get_destination() {
   return destination;
+}
+
+/*
+ * flag overrides
+ */
+
+int is_container() {
+  return objflags & OF_CONTAINER;
+}
+
+int is_open() {
+  return objflags & OF_OPEN;
+}
+
+int is_openable() {
+  return objflags & OF_OPENABLE;
+}
+
+int is_locked() {
+  return objflags & OF_LOCKED;
+}
+
+int is_lockable() {
+  return objflags & OF_LOCKABLE;
+}
+
+private void set_flags(int flags, int value) {
+  if(value) {
+    objflags |= flags;
+  } else {
+    objflags &= ~flags;
+  }
+}
+
+/* These may seem a little weird.  The problem is, we need to access
+ * a different objects private function.  The recursion takes care
+  * of this for us */
+void set_container(int value) {
+  object link_exit;
+
+  if(!SYSTEM() && !COMMON())
+    error("Only SYSTEM code can currently set an object as a container!");
+
+  if (get_link()!=-1 && previous_program() != EXIT) {
+    link_exit = EXITD->get_exit_by_num(get_link());
+    link_exit->set_container(value);
+  }
+
+  set_flags(OF_CONTAINER, value);
+}
+
+void set_open(int value) {
+  object link_exit;
+
+  if(!SYSTEM() && !COMMON())
+    error("Only SYSTEM code can currently set an object as open!");
+
+  if (get_link()!=-1 && previous_program() != EXIT) {
+    link_exit = EXITD->get_exit_by_num(get_link());
+    link_exit->set_open(value);
+  }
+
+  set_flags(OF_OPEN, value);
+}
+
+void set_openable(int value) {
+  object link_exit;
+
+  if(!SYSTEM() && !COMMON())
+    error("Only SYSTEM code can currently set an object as openable!");
+
+  if (get_link()!=-1 && previous_program() != EXIT) {
+    link_exit = EXITD->get_exit_by_num(get_link());
+    link_exit->set_openable(value);
+  }
+
+  set_flags(OF_OPENABLE, value);
+}
+
+void set_locked(int value) {
+  object link_exit;
+
+  if(!SYSTEM() && !COMMON())
+    error("Only SYSTEM code can currently set an object as a container!");
+
+  if (get_link()!=-1 && previous_program() != EXIT) {
+    link_exit = EXITD->get_exit_by_num(get_link());
+    link_exit->set_locked(value);
+  }
+
+  set_flags(OF_LOCKED, value);
+}
+
+void set_lockable(int value) {
+  object link_exit;
+
+  if(!SYSTEM() && !COMMON())
+    error("Only SYSTEM code can currently set an object as open!");
+
+  if (get_link()!=-1 && previous_program() != EXIT) {
+    link_exit = EXITD->get_exit_by_num(get_link());
+    link_exit->set_lockable(value);
+  }
+
+  set_flags(OF_LOCKABLE, value);
 }
 
 /* Return nil if a user can pass through a door, the reason if they cannot */

@@ -705,14 +705,17 @@ static void cmd_list_exit(object user, string cmd, string str) {
   /* Show "link" location as number or commentary */
   tmpstr += " link #";
   tmpstr += exit->get_link();
-   
+
   if (exit->is_open())
     tmpstr += " Open";
   else
     tmpstr += " Closed";
-  
+
   if (exit->is_openable())
     tmpstr += " Openable";
+
+  if (exit->is_container())
+    tmpstr += " Container";
 
   if (exit->is_locked())
     tmpstr += " Locked";

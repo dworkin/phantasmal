@@ -1,4 +1,4 @@
-/* $Header: /cvsroot/phantasmal/mudlib/usr/System/obj/user.c,v 1.57 2003/03/28 20:52:18 dbd22 Exp $ */
+/* $Header: /cvsroot/phantasmal/mudlib/usr/System/obj/user.c,v 1.58 2003/03/29 00:04:04 dbd22 Exp $ */
 
 #include <kernel/kernel.h>
 #include <kernel/user.h>
