@@ -1,0 +1,4 @@
+~bind{
+  ~tag{wander}
+  ~code{/usr/common/obj/wander_mobile}
+}
