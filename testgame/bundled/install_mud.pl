@@ -6,10 +6,12 @@ use Cwd;
 my @lines;
 my $line;
 
-open(CONFIGFILE, "testgame.dgd") or die "Can't open testgame.dgd: $!";
+my $filename = "testgame.dgd";
+
+open(CONFIGFILE, $filename) or die "Can't open $filename: $!";
 @lines = <CONFIGFILE>;
 
-open(OUTFILE, ">new_testgame.dgd") or die "Can't open new_testgame.dgd: $!";
+open(OUTFILE, ">new_$filename") or die "Can't open new_$filename: $!";
 
 while(@lines) {
     $line = shift @lines;
@@ -24,13 +26,12 @@ close(CONFIGFILE);
 close(OUTFILE);
 
 print "New .dgd file created.  Copying it into place.\n";
-system("mv new_testgame.dgd testgame.dgd");
+system("mv new_$filename $filename");
 
 print "Installation done.  If you get an error saying to run the install\n";
-print "script, you should type \"mv new_testgame.dgd testgame.dgd\" to fix\n";
+print "script, you should type \"mv new_$filename $filename\" to fix\n";
 print "it.  Otherwise, you're good to go.\n\n";
 
-print "To run the MUD, try typing \"./start_mud.pl\".  If that doesn't work\n";
-print "then type \"perl start_mud.pl\".  If you don't have Perl installed,\n";
-print "you'll need to either install it or learn to run the MUD by hand.\n";
-print "It's pretty easy either way.  Enjoy!\n";
+print "To run the MUD, try typing \"./start_mud\".  If that doesn't work\n";
+print "then type \"bin\\driver $filename\" on Windows, or the same thing\n";
+print "with a slash instead of a backslash on Unix.\n";
