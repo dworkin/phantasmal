@@ -60,6 +60,53 @@ html_for_index();
 # Helper Functions
 ##############################################################
 
+sub link_to_html {
+    my $link = shift;
+
+    if($link =~ /(\w+)\:(\w+)/) {
+	my ($obj, $func) = ($1, $2);
+	my ($fileref, $filename);
+
+	if($priv_objs{$obj}) {
+
+	    foreach $fileref (@{$priv_objs{$obj}}) {
+		if($fileref->{func_name} eq $func) {
+		    return "<a href=\"" . $fileref->{output_html}
+		    . "\"> $link </a>";
+		}
+	    }
+	    print "Warning:  cannot find function $func in $obj!\n";
+	    return $link;
+	} else {
+	    # SLOW...  This code is more convenient, but it also
+	    # makes building the HTML much slower.  Remove if you need
+	    # to, or convert these links to use the full filenames.
+
+	    foreach $filename (keys %priv_objs) {
+		if($filename =~ /$obj/) {
+
+		    foreach $fileref (@{$priv_objs{$filename}}) {
+			if($fileref->{func_name} eq $func) {
+			    return "<a href=\"" . $fileref->{output_html}
+			    . "\"> $link </a>";
+			}
+		    }
+
+		}
+	    }
+	    print "Warning:  cannot find function $func in $obj!\n";
+	    return $link;
+	}
+    }
+
+    if(defined($func_names{$link})) {
+	return "<a href=\"" . $func_names{$link} . "\"> $link </a>";
+    }
+
+    print "Warning:  cannot find function $link in any object!\n";
+    return $link;
+}
+
 sub read_all_files {
     #Open each .api file in turn
     my @api_files = @_;
@@ -168,7 +215,7 @@ sub set_new_fields {
 	$fileref->{def_file} = $1;
 
 	unless($fileref->{def_file}
-	       =~ /\/(([a-zA-Z0-9]+\/)+)([a-zA-Z0-9]+)\.c/) {
+	       =~ /\/((\w+\/)+)(\w+)\.c/) {
 	    die "Filename '$fileref->{def_file}' doesn't parse in API file "
 		. "'$fileref->{filename}'!";
 	}
@@ -286,12 +333,9 @@ EOF
 
     @see_also = map {s/^\s+//; $_} map {s/\s+$//; $_} @see_also;
     @see_also = map {s/\s+/ /; $_} @see_also;
+    @see_also = grep {defined($_) and $_ ne ""} @see_also;
 
-    @see_also = map {
-	if(defined($func_names{$_})) {
-	    "<a href=\"" . $func_names{$_} . "\"> $_ </a>";
-	} else { $_ }
-    } @see_also;
+    @see_also = map { link_to_html($_); } @see_also;
     print FILE join(",\n      ", @see_also);
 
     print FILE "</dd>\n";
