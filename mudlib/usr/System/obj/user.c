@@ -1,4 +1,4 @@
-/* $Header: /cvsroot/phantasmal/mudlib/usr/System/obj/user.c,v 1.13 2002/06/07 23:04:58 angelbob Exp $ */
+/* $Header: /cvsroot/phantasmal/mudlib/usr/System/obj/user.c,v 1.14 2002/06/10 19:46:12 angelbob Exp $ */
 
 #include <kernel/kernel.h>
 #include <kernel/user.h>
@@ -25,6 +25,7 @@ string password;		/* user password */
 int    locale;                  /* chosen output locale */
 int    channel_subs;            /* user channel subscriptions */
 int    body_num;                /* portable number of body */
+int    num_lines;               /* number of terminal lines */
 
 /* User-state processing stack */
 private object* state_stack;
@@ -71,10 +72,13 @@ static void create(int clone)
     state = ([ ]);
 
     state_stack = ({ });
+    command_sets = nil;
 
     /* Default to enUS locale */
     locale = PHRASED->language_by_name("english");
-    command_sets = nil;
+
+    /* More defaults */
+    num_lines = 25;
   } else {
     upgraded();
   }
@@ -225,6 +229,10 @@ object get_location(void) {
 
 int get_idle_time(void) {
   return time() - timestamp;
+}
+
+int get_num_lines(void) {
+  return num_lines;
 }
 
 int is_admin(void)  {
