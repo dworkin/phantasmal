@@ -67,7 +67,8 @@ int get_segment_zone(int segment) {
     return seg[2];
   }
 
-  return -1;
+  /* unzoned */
+  return 0;
 }
 
 /* atomic */
@@ -137,7 +138,8 @@ int allocate_new_segment(void) {
   if(get_segment_owner(seg)) {
     error("Internal error -- attempting to reassign segment!");
   }
-  set_segment_owner(seg, owner, -1);
+  /* Set as unzoned (zone #0) */
+  set_segment_owner(seg, owner, 0);
 
   return seg;
 }
@@ -181,8 +183,8 @@ void allocate_in_segment(int segment, int tr_num, object obj) {
   offs = tr_num % 100;
   seg = segments[segment];
   if(!seg) {
-    /* Allocate a new segment for caller */
-    set_segment_owner(segment, owner, -1);
+    /* Allocate a new segment for caller, unzoned */
+    set_segment_owner(segment, owner, 0);
     seg = segments[segment];
     if(!seg)
       error("Cannot allocate segment -- why?");
