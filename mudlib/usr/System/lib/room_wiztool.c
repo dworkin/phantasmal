@@ -47,29 +47,66 @@ static void cmd_list_room(object user, string cmd, string str) {
   int     ctr;
   string  tmp;
 
-  if(str && !STRINGD->is_whitespace(str)) {
-    user->message("Usage: " + cmd + "\r\n");
+  if(str) {
+    str = STRINGD->trim_whitespace(str);
+    str = STRINGD->to_lower(str);
+  }
+
+  /* Just @list_rooms with no argument */
+  if(str && (str == "all" || str == "world" || str == "mud")) {
+    user->message("Rooms in MUD:\r\n");
+
+    rooms = MAPD->rooms_in_zone(0);
+    for(ctr = 0; ctr < sizeof(rooms); ctr++) {
+      object room, phr;
+ 
+      tmp = "";
+      room = MAPD->get_room_by_num(rooms[ctr]);
+      phr = room->get_glance();
+      tmp += "  " + rooms[ctr] + "   ";
+      tmp += phr->to_string(user);
+      tmp += "\r\n";
+
+      /* Output as each line finishes for debugging */
+      user->message(tmp);
+    }
+    user->message("-----\r\n");
+
     return;
   }
 
-  user->message("Rooms:\r\n");
+  if(!str || str == "" || str == "zone") {
+    object room;
+    int    zone;
+    int*   rooms;
 
-  rooms = MAPD->rooms_in_zone(0);
-  tmp = "";
-  for(ctr = 0; ctr < sizeof(rooms); ctr++) {
-    object room, phr;
+    user->message("Rooms in zone:\r\n");
 
-    room = MAPD->get_room_by_num(rooms[ctr]);
-    phr = room->get_glance();
-    tmp += "  " + rooms[ctr] + "   ";
-    tmp += phr->to_string(user);
-    tmp += "\r\n";
+    room = user->get_location();
+    zone = ZONED->get_zone_for_room(room);
+    if(zone == -1)
+      zone = 0;  /* Unzoned rooms */
 
-    /* Output as each line finishes for debugging */
-    user->message(tmp);
-    tmp = "";
+    rooms = MAPD->rooms_in_zone(zone);
+    for(ctr = 0; ctr < sizeof(rooms); ctr++) {
+      object room, phr;
+
+      tmp = "";
+      room = MAPD->get_room_by_num(rooms[ctr]);
+      phr = room->get_glance();
+      tmp += "  " + rooms[ctr] + "   ";
+      tmp += phr->to_string(user);
+      tmp += "\r\n";
+
+      /* Output as each line finishes for debugging */
+      user->message(tmp);
+    }
+
+    user->message("-----\r\n");
+    return;
   }
-  user->message("-----\r\n");
+
+  user->message("Usage: " + cmd + "\r\n");
 }
 
 
@@ -500,5 +537,18 @@ static void cmd_check_deferred_exits(object user, string cmd, string str) {
 
 
 static void cmd_add_detail(object user, string cmd, string str) {
+  int objnum, detailnum;
 
+  if(str)
+    str = STRINGD->trim_whitespace(str);
+
+  detailnum = -1;
+  if(sscanf(str, "#%*d #%*d %*s") == 3
+     || (sscanf(str, "#%d #%d", objnum, detailnum) != 2
+	 && sscanf(str, "#%d", objnum) != 1)) {
+    user->message("Usage: " + cmd + " #<objnum> [#<detailnum>]\r\n");
+    return;
+  }
+
+  
 }
