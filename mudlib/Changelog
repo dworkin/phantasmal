@@ -10,6 +10,7 @@ Release 0.013:
 	* The help system now treats space, minus and underscore as
 	  equivalent.  That'll save us some more help entries and
 	  generate more useful responses.
+	* @stat now uses the new object binding functions.
 
 Release 0.012:
 	* More logging and stuff in ObjectD.  And fixed a bug that
