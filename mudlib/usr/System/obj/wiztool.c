@@ -161,7 +161,6 @@ void upgraded(varargs int clone) {
 	"@remove_exit"         : ({ "cmd_remove_exit" }),
 	"@list_exit"           : ({ "cmd_list_exits" }),
 	"@list_exits"          : ({ "cmd_list_exits" }),
-	"@fix_exits"           : ({ "cmd_fix_exits" }),
 	"@add_deferred_exits"  : ({ "cmd_add_deferred_exits" }),
 	"@add_deferred"        : ({ "cmd_add_deferred_exits" }),
 	"@check_deferred"      : ({ "cmd_check_deferred_exits" }),

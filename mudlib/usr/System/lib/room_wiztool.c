@@ -589,54 +589,6 @@ static void cmd_remove_exit(object user, string cmd, string str) {
   user->message("Exit " + str + " destroyed.\r\n");
 }
 
-static void cmd_fix_exits(object user, string cmd, string str) {
-  int   *tmp, *segs, *exits;
-  int    ctr, ctr2;
-  string tmpstr;
-
-  if(str && !STRINGD->is_whitespace(str)) {
-    user->message("Usage: " + cmd + "\r\n");
-    return;
-  }
-
-  user->message("Fixing up exits...\r\n");
-
-  segs = EXITD->get_exit_segments();
-
-  tmp = ({ });
-  exits = ({ });
-  for(ctr = 0; ctr < sizeof(segs); ctr++) {
-    tmp = EXITD->exits_in_segment(segs[ctr]);
-    if(tmp && sizeof(tmp))
-      exits += tmp;
-  }
-
-  for(ctr = 0; ctr < sizeof(exits); ctr++) {
-    object exit, from;
-    exit = EXITD->get_exit_by_num(exits[ctr]);
-
-    if (exit->get_exit_type()==0) {
-      from = exit->get_from_location();
-      for(ctr2 = 0; ctr2 < sizeof(exits); ctr2++) {
-        object exit2, dest2;
-        exit2 = EXITD->get_exit_by_num(exits[ctr2]);
-        dest2 = exit->get_destination();
-        if (dest2)
-          if (dest2->get_number() == from->get_number())
-             if (exit2->get_direction()
-		 == EXITD->opposite_direction(from->get_direction()))
-               EXITD->fix_exit(exit, 2, exit2->get_number());
-      }
-    } else if (exit->get_exit_type()==1) {
-      EXITD->fix_exit(exit, 1, -1);
-    } else {
-      EXITD->fix_exit(exit, 2, exit->get_link());
-    }
-  }
-
-  user->message("Done.\r\n");
-}
-
 static void cmd_list_exits(object user, string cmd, string str) {
   int   *tmp, *segs, *exits;
   int    ctr;
