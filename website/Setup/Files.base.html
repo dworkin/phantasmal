@@ -15,7 +15,15 @@
       include it, and use its GAME_INITD definition to find your
       game's Init object.  A common value for GAME_INITD is
       &quot;/usr/game/initd&quot;.  Note the lack of a &quot;.c&quot;
-      on the end.  That's important.
+      on the end.  That's because it's an object name, not a filename.
+    </p>
+
+    <p>
+      It's standard practice to put similar definitions into
+      gameconfig.h, constants that give filenames or object names for
+      important game modules.  However, GAME_INITD is the only one
+      that's absolutely mandatory (or at least, mandatory without
+      changes to Phantasmal proper).
     </p>
 
     <h3> GAME_INITD </h3>
@@ -24,17 +32,18 @@
       When DGD starts up, it hands off control to the Kernel Library.
       That hands off control to Phantasmal, which hands off control to
       your game.  It seems complicated, but you can ignore most of it.
-      Just pretend that Phantasmal and the Kernel are the same thing,
-      because from your point of view, they are.
+      Just pretend that Phantasmal, the Kernel and DGD are all one
+      thing &mdash; from your point of view, they are.
     </p>
 
     <p>
-      Your GAME_INITD object, as specified by gameconfig.h, should
-      have a function with the signature <tt> &quot;static void
-      create(void)&quot; </tt>.  When you start your MUD server, the
-      create() function of the GAME_INITD will get called.  So if you
-      want to do things on startup, you should make sure the create()
-      function exists.
+      Your GAME_INITD object is the one specified by gameconfig.h.
+      Usually, that will be /usr/game/initd, which means the code is
+      in /usr/game/initd.c.  It should have a function with the
+      signature <tt> &quot;static void create(void)&quot; </tt>.  When
+      you start your MUD server, the create() function of the
+      GAME_INITD will get called.  So if you want to do things on
+      startup, you should make sure the create() function exists.
     </p>
 
     <p>
@@ -44,16 +53,21 @@
       be much more careful.  So create() is a good place to load large
       files, create large data structures and otherwise do
       preprocessing.  Be careful, though.  If the create() function
-      fails, so does the startup of the whole MUD.
+      fails, so does the startup of the whole MUD.  And if create()
+      runs forever, the MUD will hang without ever letting anybody
+      connect.  So avoid infinite loops!
     </p>
 
     <p>
-      Your create() function could configure the ConfigD, SoulD and
-      HelpD.  If you want to configure a heart beat function or one or
-      more special AUTO objects, create() is the place to do that,
-      too.  Your GAME_INITD has privileges that no other object in
-      your game does, such as setting ConfigD's path_special object.
-      See the API documentation on specific daemons for details.
+      Your create() function can configure the various Phantasmal
+      daemons and services.  For instance, common ones to configure
+      are SoulD and HelpD.  If you want to configure a heart
+      beat function or one or more special AUTO objects, create() is
+      the place to do that, too.  Your GAME_INITD has privileges that
+      no other object in your game does, such as setting ConfigD's
+      path_special object.  See the API documentation on specific
+      daemons for details of how to configure them, or look at a good
+      example like Seas of Night.
     </p>
 
     <p>
@@ -61,21 +75,27 @@
       register a driver object with Phantasmal.  This uses ConfigD's
       set_game_driver() function, which takes a single object pointer
       as an argument.  The driver object is how Phantasmal will send
-      signals, events and various input to your game.
+      signals, events and various other input to your game.
     </p>
 
     <h3> The Driver Object </h3>
 
     <p>
+      The object you passed to set_game_driver() is now your game
+      driver object.
+    </p>
+
+    <p>
       Phantasmal will call various functions on your driver object
-      when events (like new connections) happen.  Specifically, the
-      driver object must define functions for Phantasmal to call.  The
-      functions include new_user_connection, get_welcome_message,
-      get_suspended_message, and get_shutdown_message.  See the API
-      documentation for /usr/System/sys/gamedriver for details.  Your
-      driver object does not have to use that pathname.  Your driver
-      only required to be a valid DGD object that defines functions
-      with the correct names.
+      when events (like new connections) happen.  The driver object
+      must define functions with the correct names for Phantasmal to
+      call.  The functions include new_user_connection,
+      get_welcome_message, get_suspended_message, and
+      get_shutdown_message.  See the API documentation for
+      /usr/game/sys/gamedriver for details.  Your driver object does
+      not have to use that object name.  Your driver only required to
+      be a valid DGD object that defines functions with the correct
+      names.
     </p>
 
     <p>
@@ -129,12 +149,13 @@
     </p>
 
     <p>
-      Your User Object's code should start by including
+      Your User object's code should start by including
       &lt;config.h&gt;.  That defines the symbol PHANTASMAL_USER.
-      Your User Object must inherit from PHANTASMAL_USER, and it may
+      Your User object must inherit from PHANTASMAL_USER, and it may
       not be private inheritance.  That's because Phantasmal will need
-      to call functions from PHANTASMAL_USER, and your User Object
-      isn't allowed to prevent it from doing so.
+      to call functions from PHANTASMAL_USER, and your User object
+      isn't allowed to prevent it from doing so.  At least, if it does
+      then things will go badly wrong...
     </p>
 
     <p>
@@ -143,9 +164,9 @@
       like message() and send_phrase() may be used to pass information
       back across the network connection to be viewed by the human
       user.  See the API documentation for the /usr/game/obj/user
-      object for details on what functions your User Object may call,
+      object for details on what functions your User object may call,
       and what functions will be automatically called upon it.  Note
-      that your User Object doesn't need to be called
+      that your User object doesn't need to be called
       /usr/game/obj/user.  It can be located at any path, as long as
-      your User Object inherits from the PHANTASMAL_USER library.
+      your User object inherits from the PHANTASMAL_USER library.
     </p>
