@@ -48,15 +48,29 @@ void upgraded(varargs int clone) {
   }
 }
 
-mixed* channel_list(int is_admin) {
+mixed* channel_list(object user) {
   mixed* ret, *tmp;
-  int    ctr;
+  int    ctr, is_admin;
 
   ret = ({ });
+  is_admin = user->is_admin();
+
   for(ctr = 0; ctr < num_channels; ctr++) {
     if(is_admin || !(channel_attributes[ctr][1] & ATTRIB_ADMIN)) {
       tmp = channel_attributes[ctr];
-      ret += ({ ({ PHRASED->new_simple_english_phrase(tmp[0]), ctr }) });
+
+      /* Add entry with or without extra log/err info */
+      if(ctr == CHANNEL_LOG || ctr == CHANNEL_ERR) {
+	if(channels[ctr][user->get_name()]) {
+	  ret += ({ ({ PHRASED->new_simple_english_phrase(tmp[0]), ctr,
+			 channels[ctr][user->get_name()][1]}) });
+	} else {
+	  ret += ({ ({ PHRASED->new_simple_english_phrase(tmp[0]), ctr, 0 })
+		      });
+	}
+      } else {
+	ret += ({ ({ PHRASED->new_simple_english_phrase(tmp[0]), ctr, 0 }) });
+      }
     }
   }
 
