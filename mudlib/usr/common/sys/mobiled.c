@@ -269,7 +269,8 @@ private object add_struct_for_mobile(mixed* unq) {
   }
   if(!type) {
     /* There doesn't seem to be a "type" field in the UNQ passed in */
-    error("Can't find type in UNQ in add_struct_for_mobile!");
+    error("Can't find 'type' field in mobfile!  "
+	  + "Do you need to delete or update it?");
   }
 
   if(!tag_code[type]) {
