@@ -224,6 +224,40 @@ string mixed_sprint(mixed data) {
   }
 }
 
+string tree_sprint(mixed data, int indent) {
+  string strInd, tmp;
+  int iter;
+
+  strInd = "";
+
+  for (iter = 0; iter < indent; ++iter) {
+    strInd += " ";
+  }
+  
+  switch (typeof(data)) {
+  case T_ARRAY:
+    if (data == nil) {
+      return strInd + "array/nil";
+    }
+    if (sizeof(data) == 0) {
+      return strInd + "({ })";
+    }
+
+    tmp = "";
+    for(iter = 0; iter < sizeof(data); iter++) {
+      tmp += tree_sprint(data[iter], indent+2);
+
+      if(iter < sizeof(data) - 1) {
+	tmp += ",\r\n";
+      }
+    }
+
+    return strInd + "({ " + tmp[indent+2..] + " })";
+  default:
+    return strInd + mixed_sprint(data);
+  }
+}
+
 string unq_escape(string str) {
   string ret;
   int    index;
