@@ -2,7 +2,7 @@
                       "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
-<title>DGD and LPC: Writing a Library</title>
+<title>DGD and LPC: Object Management</title>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
 <link href="../../phantasmal.css" rel="stylesheet" type="text/css" />
 </head>
@@ -54,28 +54,65 @@
         <tr>
           <td class="heading">&nbsp;&nbsp;&middot;&nbsp;
 	    <a href="http://phantasmal.sf.net/DGD">DGD Page</a> &gt;
-            <a href="">Writing a Library</a>
+            <a href="">Object Management</a>
           </td>
         </tr>
         <tr>
           <td class="content">
   
 
-  <h1> Writing a MUD Library DGD </h1>
+  <h2> Managing and Upgrading DGD Objects </h2>
 
   <p>
-    Actually, all advice here applies just fine to writing general
-    DGD applications, but there's certainly a focus on writing a
-    MUD-type networked game.
+    DGD is impressive in the degree of upgradeability and <a
+    href="Persistence.html">persistence</a> that it offers.  However,
+    to take full advantage of the upgradeability, you'll need to
+    observe some ground rules.
   </p>
 
-  <ul>
-    <li> <a href="ObjectManagement.html">Managing and Upgrading Objects</a>
-      </li>
-    <li> <a href="Persistence.html">Persistent MUD Libraries</a> </li>
-    <li> <a href="../Kernel">Getting Started with the Kernel Library</a> </li>
-    <li> <a href="Releasing.html">Should You Release Your Code?</a></li>
-  </ul>
+  <p>
+    DGD's <a href="../Kernel/Inheritance.html">inheritance</a>
+    features aren't quite the same as a regular LPMUD, though they're
+    far more powerful if used correctly.
+  </p>
+
+  <p>
+    You'd like to be able to upgrade all your code while leaving your
+    data in place.  For instance, you'd like to be able to write a new
+    feature for your MUD, and enable it while players are logged in.
+    Before the recompile, the feature isn't there.  After the
+    recompile, it is.  Players don't see any difference until they try
+    the new command, which works after the recompile.  This is less of
+    a pipe-dream than it sounds.  <a
+    href="http://phantasmal.sf.net">Phantasmal</a> already does it
+    using the %full_rebuild command, and the Kernel Library has a less
+    automated, more awkward way to do it, but it can work.  Sadly, few
+    other DGD libraries (except the closed-source <a
+    href="http://www.skotos.net">Skotos</a> servers) seem to do this.
+  </p>
+
+  <p>
+    One reason that few libraries bother to do this is that it
+    requires tracking all object compilation and inheritance.  The
+    Kernel Library makes this slightly easier by encapsulating that
+    functionality into an Object Manager (see the LPC Examples section
+    for several Object Managers, or download Phantasmal and look at
+    that one).
+  </p>
+
+  <p>
+    There are some other related tricks you can do.  It's usually very
+    convenient to call a function on objects that are recompiled but
+    also have data.  The data may need to be updated after the change
+    in code.  Phantasmal calls an &quot;upgraded&quot; function in any
+    recompiled master object, if it exists (if clones or LWOs need to
+    be updated, the master must keep a list of them or they must be
+    looked up using the Kernel Library tracking facilities).  <a
+    href="http://www.skotos.net">Skotos'</a> libraries use a different
+    method based on the call_touch kfun to update objects as they are
+    used.  This makes a great deal of sense, given the quantities of
+    objects that Skotos' libraries deal with.
+  </p>
 
   <p style="text-size: 150%"> <a href="../index.html"> Back to top level
     </a> </p>

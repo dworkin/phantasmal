@@ -1,0 +1,251 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+                      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<title>DGD and LPC: Persistent MUDLibs</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<link href="../../phantasmal.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<table width="95%" border="0" cellspacing="0" cellpadding="4">
+  <tr>
+    <td colspan="2"> <table width="100%" border="0" cellspacing="1"
+        cellpadding="0" class="main">
+        <tr>
+          <td class="banner">The DGD Driver</td>
+        </tr>
+      </table></td>
+  </tr>
+  <tr>
+    <td valign="top">
+      <table width="25%"  border="0" cellspacing="1"
+             cellpadding="0"  class="main">
+        <tr>
+          <td class="content" style="font-size: 120%">
+
+          <ul style="margin: 0; padding-left: 10%">
+            <li> <a href="index.html">DGD &amp; LPC Page</a> </li>
+	    <li> <a href="../LPC">LPC Textbook</a> </li>
+	    <li> <a href="../Book">New LPC Introduction</a> </li>
+          </ul>
+
+        </td>
+        </tr>
+        <tr>
+          <td class="content" align="center">
+            <a href="http://validator.w3.org/check/referer">
+            <img src="../../images/valid-xhtml10.gif" alt="Valid XHTML 1.0!"
+             style="border:0;width:88px;height:31px" /></a><br />
+            <img src="../../images/pixel.gif"
+             style="border:0;width:88px;height:1px" alt="" /><br />
+            <a href="http://jigsaw.w3.org/css-validator/check/referer">
+            <img src="http://jigsaw.w3.org/css-validator/images/vcss"
+             alt="Valid CSS!" style="border:0;width:88px;height:31px" />
+            </a><br /><br /><br />
+            <a href="http://sourceforge.net">
+            <img src="http://sourceforge.net/sflogo.php?group_id=48659&amp;type=2"
+             style="border: 0; width: 125; height: 37;"
+	     alt="SourceForge.net Logo" /></a>
+          </td>
+        </tr>
+      </table></td>
+    <td> <table width="100%"  border="0" cellspacing="1" cellpadding="0" 
+          class="main">
+        <tr>
+          <td class="heading">&nbsp;&nbsp;&middot;&nbsp;
+	    <a href="http://phantasmal.sf.net/DGD">DGD Page</a> &gt;
+            <a href="">Persistent MUDLibs</a>
+          </td>
+        </tr>
+        <tr>
+          <td class="content">
+  
+
+  <h2> Persistent MUD Libraries &mdash; Yes or No? </h2>
+
+  <p>
+    One of DGD's stated goals, and one thing that really sets it apart
+    from other LP-descended MUDs, is its ability to upgrade in place.
+    The idea behind this capability is to allow you to run your MUD
+    full-time, never taking it down for code or data maintenance for
+    longer than a few seconds.  The other ability that this enables is
+    persistence &mdash; the ability to have data remain on your MUD
+    forever without having to be refreshed.  Persistence in a MUD
+    Library has many repercussions, some obvious and some subtle.
+  </p>
+
+  <p>
+    DGD's definition of Persistence involves being able to keep actual
+    LPC-language objects around, potentially forever.  The way it
+    implements this goal is the State Dump.  A State Dump dumps a copy
+    of all your LPC objects, whether in memory or swapped out, with
+    all connections between them, to a file.  You may then, later,
+    start DGD from that State Dump file and it will pick up precisely
+    where it left off.  There are some things that necessarily change
+    (the time, what network connections are active), but mostly this
+    keeps all objects around forever.
+  </p>
+
+  <p>
+    Doing this requires an <a href="ObjectManagement.html">object
+    management</a> solution.  You need to be able to find old objects
+    that are no longer in use and destruct them.  An object leak will
+    eventually, over weeks or years, bring your MUD down because old
+    leaked objects will never go away.  Rebooting no longer helps
+    because all your old objects will stick around across reboots (if
+    you use the State Dump, anyway).
+  </p>
+
+  <p>
+    However, that curse is also a disguised blessing.  You can save a
+    lot of code if you don't need to rebuild all your object
+    structures when you reboot.  You no longer need to write your data
+    to disk, and if you make a change in an object, it stays around
+    even if you don't have a way to turn that change into a data file.
+    That can be a big, big change.
+  </p>
+
+  <h3> Game Design Concerns </h3>
+
+  <p>
+    But why would any of this matter in a MUD?  In a MUD, you normally
+    clean up old items to avoid inflation (well, okay, to avoid even
+    <i>more</i> inflation).  You reset objects and monsters
+    constantly.  When the old stuff isn't going to be kept around for
+    any time anyway, why bother to make it persist for years?  Why
+    would you care?
+  </p>
+
+  <p>
+    The answer is that you can make a much better game with
+    persistence, but only if you abandon the constant resets that
+    define so much of current hack-and-slash MUD-dom.  Imagine a game
+    where monsters are spawned in some more dynamic way and wander
+    around more freely.  Imagine a game where a monster, when you
+    killed it, were to actually <i>die</i> and not pop back up in the
+    same spot a few minutes later.
+  </p>
+
+  <p>
+    But wouldn't your world be entirely depopulated after a few days?
+    Not if there were another way to spawn monsters.  Normally, MUD
+    monsters spawn in a single location and stay there unless they're
+    molested.  However, if animals were to wander randomly in from the
+    far edges of the forest, if orcs were to spawn in tunnels and only
+    come to the surface from there, if townsmen had to train to become
+    guards rather than having guards spring fully-formed from the
+    dust...  Then a few clever players, by carefully placing NPCs and
+    traps, would be able to <i>change</i> the balance of the world.
+    Those orcs could be beaten back and the tunnels guarded by
+    powerful NPCs or players, and there would be no orcs for some time
+    (until the gamemasters intervened, perhaps).  Or the orcs could be
+    herded toward the forest, making it more dangerous.  There are
+    many variations, and the interesting combinations would increase
+    exponentially as the world grew larger and more varied.
+  </p>
+
+  <p>
+    That's the concept.  It's not the only concept.  The idea of a MUD
+    being able to upgrade in place so that you never have to bring it
+    down has a lot of charm on its own.  There are other alluring
+    possibilities that persistence allows, including simple things
+    like burying a treasure in the forest and being able to dig it up
+    months or years later.  And there are more complex and subtle
+    issues, like being able to avoid ever writing code to save and
+    load your data, which can be good, bad or both.
+  </p>
+
+  <h3> The Kernel Library and Persistence </h3>
+
+  <p>
+    There was an e-mail exchange between Frank Schmidt and Dworkin
+    about the suitability of the Kernel Library as a general-use MUD
+    Library.  Some of it is excerpted below.
+  </p>
+
+  <pre>
+> The main idea is that it requires mudlib code ontop of it, I haven't said
+> anything else. But the kernel lib is far from what I see 'fit' for MUD
+> programmers world wide, when lacking lots of "general" functionality to
+> handle arrays, strings, mappings, math, sorting algorithms, etc, etc,
+> which in my opinion belongs in the auto object. (Previous mailinglists
+> explains why) And that's just one of the issues, each time you need
+> something special (which you know DGD can offer), a General kernel lib
+> will probably not support it.
+
+Your view of what a kernel library should be seems to agree perfectly
+with the function of the objects in the /dgd directory tree in the
+2.4.5 mudlib -- which is certainly not that of DGD's kernel library.
+Beyond that, I think you also fail to understand what the kernel
+library can do, as evinced by your earlier comment that it "occupies"
+the auto object and driver object.  If there is one thing that the
+kernel library is good at, it is modifying or completely overriding
+the behaviour of those two objects.
+
+I think that some of this blindness is caused by the extraordinary
+success of LPmud 2.4.5.  To get beyond that, let's take a look at
+a completely different mud, Ultima Online, comparing features with
+those of traditional LPmuds:
+
+ - UO is persistent.
+
+   Persistence is DGD's most important single feature (I like the
+   term "continuous mud" better, but "persistent mud" is the
+   standard term these days).  A persistent mud needs a design
+   radically different from that of a traditional LPmud:
+
+    - There has to be a way to change the behaviour of existing
+      objects.  The kernel library is designed in such a way that
+      upgrading objects -- that is, recompiling them without first
+      destructing them -- is possible for all objects, given the
+      limitations imposed by LPC inheritance.
+    - If you have guest-programmer wizards like traditional
+      LPmuds, you need a way to limit the resources available to
+      individual wizards, since rebooting the mud to get rid of
+      undesirable objects is not an option.  The kernel library
+      has a generic resource management system which manages
+      such things as number of objects or number of callouts by
+      default, and to which new mudlib-specific resources can be
+      added at will.
+    - Such functionality as string formatting should not be in the
+      auto object.  Having to recompile the 3D space code because
+      a change was made in string formatting is ridiculous.
+
+ - UO has a custom client.
+
+   The kernel library cannot make any assumptions about what sort
+   of client is being used.  It cannot even assume that everyone
+   uses the same client.  It merely attempts to be as little in
+   the way as possible -- not only in the matter of communications.
+
+ - UO has no traditional rooms, add_actions, etc.
+
+   All such things have no place in the kernel library's auto object.
+   Similarly, nothing that is not needed in <all> muds within its
+   target range has a place in the kernel library.
+
+ - UO supports up to 2500 players per server.
+
+   The kernel library is prepared for DGD's multithreading future.
+   Ideally, it should be possible to build a mud on top of the
+   kernel library and upgrade the kernel library every time that DGD
+   is changed, without letting this have an impact on your mud.
+
+The kernel library would be a fairly good fit for implementing UO on
+top of DGD.  It would not have to be changed in any way (I have
+verified that this is the case).  It would have some superfluous
+functionality, such as the wizard support.  On the other hand, adding
+guest programmers to UO is an interesting possibility.
+  </pre>
+
+<p style="text-size: 150%"> <a href="../index.html"> Back to top level
+    </a> </p>
+            <address>
+            <span><a href="mailto:angelbob-remove-spamfree@spamfree.users.sf.net">Noah Gibbs</a></span>
+            </address></td>
+        </tr>
+      </table></td>
+  </tr>
+</table>
+</body>
+</html>

@@ -7,6 +7,8 @@
     the LPC dialect that DGD implements is loosely based on Amylaar
     version 3.1.2.  This document describes some differences between
     the LPC dialects, and between the capabilities of the two servers.
+    Not everything is listed &mdash; DGD has a <i>lot</i> of features
+    that most LPMUDs, and specifically version 3.1.2, don't have.
   </p>
 
   <p>
@@ -224,8 +226,7 @@
       The default state of any object is swapped out.  Strings and
       arrays are only shared inside objects.  If an array is exported
       from one object to another, it will be copied into the new
-      object as soon as the old object is swapped out (this is
-      guaranteed never to happen during execution).
+      object as soon as execution of the current thread finishes.
     </p>
 
     <p>
@@ -292,6 +293,25 @@
     <p>
       Destructing a destructed object gives an error, rather than a
       fatal error.
+    </p>
+
+    <p>
+      DGD has an ellipsis (...) operator which can be used to make
+      function calls with an arbitrary number of arguments.  It also
+      has the ability to declare a function with an ellipsis
+      afterward, which will allow the function to take an arbitrary
+      number of arguments.
+    </p>
+
+    <p>
+      The LPMUD alarm/timeout interface has been replaced by
+      call_out() statements.
+    </p>
+
+    <p>
+      The rlimits() construct exists.  It allows for
+      resource-constrained execution.  Specifically, ticks (processor
+      time) and stack depth may be constrained.
     </p>
 
     <p style="text-size: 150%"> <a href="../index.html"> Back to LPC &amp; DGD

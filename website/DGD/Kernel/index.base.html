@@ -1,76 +1,85 @@
-    <titledef text="Top" />
+  <titledef text="Top" />
 
-    <h1> DGD Kernel Library Information </h1>
+  <h1> DGD Kernel Library Information </h1>
 
-      <p>This document includes information from correspondence on the
-        <a href="http://list.imaginary.com/mailman/listinfo/dgd">
-        dgd@list.imaginary.com </a> mailing list.  Further information
-        of many kinds is available on the <a
-        href="http://www.dworkin.nl/dgd/"> official DGD homepage </a>.
-        This documents is current as of Kernel library 1.2.35, an
-        experimental version.  Little information should be more
-        obsolete than that, but much information may be different
-        because of the quirks of an experimental version of DGD.
-        Don't assume that this is fully accurate for your version,
-        whether it's newer or older than the one above.
-      </p>
+  <h2>The Basics</h2>
 
-      <p> This document aims to get you started dealing with the Kernel
-	MUDLib, and eventually explain vast amounts about it.  Any of the
-	pages linked under here may be assumed to deal with the Kernel
-	MUDLib, and will thus likely be different when dealing with
-	Melville, 2.4.5 or other MUDLibs not based on the Kernel
-	MUDLib.  Other people are welcome to document such things, but
-	the part of my site under the Kernel subdirectory makes
-	a point of not doing so. </p>
+  <ul>
+    <li> <a href="SoYouWanna.html">So You Want to Write a MUDLib...
+      </a></li>
+    <li> <a href="Commands.html">Basic Kernel MUDLib Commands</a></li>
+    <li> <a href="Layers.html">Layers of the Driver and Lib</a></li>
+    <li> <a href="SupDocs.html">DGD's Documentation</a></li>
+  </ul>
 
-      <p> These directories grow organically.  Feel free to request
-	that I expand any section and I will give it correspondingly
-	higher priority than would otherwise be the case.  All
-	information under the Kernel subdirectory may be assumed to
-	be in the public domain,
-	and I reserve no rights to it nor do I provide a warranty of
-	any kind. </p>
+  <h2>The Not-So-Basics</h2>
 
-    <h2>The Basics</h2>
-    <ul>
-      <li> <a href="SoYouWanna.html">So You Want to Write a MUDLib...
-	</a></li>
-      <li> <a href="Commands.html">Basic Kernel MUDLib Commands</a></li>
-      <li> <a href="Layers.html">Layers of the Driver and Lib</a></li>
-      <li> <a href="SupDocs.html">DGD's Documentation</a></li>
-    </ul>
+  <ul>
+    <li> <a href="Inheritance.html">The Kernel MUDLib and Inheritance
+      </a> </li>
+    <li> <a href="Modifying.html">Getting Started Modifying the
+	Kernel MUDLib</a> </li>
+    <li> <a href="Security.html">Kernel MUDLib Security</a> </li>
+    <li> <a href="ObjectOwners.html">Object Creators and Owners</a> </li>
+    <li> <a href="Debugging.html">Debugging a MUDLib </a> </li>
+  </ul>
 
-    <h2>The Not-So-Basics</h2>
-    <ul>
-      <li> <a href="Inheritance.html">The Kernel MUDLib and Inheritance
-	</a> </li>
-      <li> <a href="Modifying.html">Getting Started Modifying the
-	  Kernel MUDLib</a> </li>
-      <li> <a href="Security.html">Kernel MUDLib Security</a> </li>
-      <li> <a href="ObjectOwners.html">Object Creators and Owners</a> </li>
-      <li> <a href="Debugging.html">Debugging a MUDLib </a> </li>
-    </ul>
+  <h2>Adding Stuff to your MUDLib</h2>
 
-    <h2>Adding Stuff to your MUDLib</h2>
-    <ul>
-      <li> <a href="Adding.html">Overview</a></li>
-      <li> <a href="Directories.html">Directory Structure</a></li>
-      <li> <a href="Errord.html">Adding an Errord</a></li>
-      <li> <a href="Threading.html">Multiple-thread Functions</a></li>
-    </ul>
+  <ul>
+    <li> <a href="Adding.html">Overview</a> </li>
+    <li> <a href="Directories.html">Directory Structure</a> </li>
+    <li> <a href="Errord.html">Adding an Errord</a> </li>
+    <li> <a href="Threading.html">Multiple-thread Functions</a> </li>
+    <li> <a href="SecondAuto.html">Additional AUTO Objects</a> </li>
+  </ul>
 
-    <h2> Related Topics in the Phantasmal MUDLib </h2>
+  <h2> Related Topics in the Phantasmal MUDLib </h2>
 
-    <p>Note: Phantasmal prepends a % sign to most Kernel Library command
-      names, but leaves them otherwise basically unmodified. </p>
+  <p>Note: Phantasmal prepends a % sign to most Kernel Library command
+    names, but leaves them otherwise basically unmodified. </p>
 
-    <ul>
-      <li> <a href="http://phantasmal.sf.net/Tutorial/Admin/Compiling.html">
-	  Compiling Objects</a> (note: Kernel lib has no %full_rebuild
-	command) </li>
-      <li> <a href="http://phantasmal.sf.net/Tutorial/Admin/Evaluating.html">
-	  Evaluating Arbitrary Code </a> </li>
-      <li> <a href="http://phantasmal.sf.net/Tutorial/Admin/Resources.html">
-	  Access, Resources and Quotas </a> </li>
-    </ul>
+  <ul>
+    <li> <a href="http://phantasmal.sf.net/Tutorial/Admin/Compiling.html">
+	Compiling Objects</a> (note: Kernel lib has no %full_rebuild
+      command) </li>
+    <li> <a href="http://phantasmal.sf.net/Tutorial/Admin/Evaluating.html">
+	Evaluating Arbitrary Code </a> </li>
+    <li> <a href="http://phantasmal.sf.net/Tutorial/Admin/Resources.html">
+	Access, Resources and Quotas </a> </li>
+  </ul>
+
+  <p>
+    These directories grow organically.  Feel free to request that I
+    expand any section and I will give it correspondingly higher
+    priority than would otherwise be the case.  All information under
+    the Kernel subdirectory may be assumed to be in the public domain,
+    and I reserve no rights to it nor do I provide a warranty of any
+    kind.
+  </p>
+
+  <p style="font-size: 90%">
+    This document aims to get you started dealing with the Kernel
+    MUDLib, and eventually explain vast amounts about it.  Any of the
+    pages linked under here may be assumed to deal with the Kernel
+    MUDLib, and will thus likely be different when dealing with
+    Melville, 2.4.5, Gurba or other MUDLibs not based on the Kernel
+    MUDLib.  Other people are welcome to document such things, but the
+    part of my site under the Kernel subdirectory makes a point of not
+    doing so.
+  </p>
+
+  <p style="font-size: 75%">
+    This document includes information from correspondence on the
+    <a href="http://list.imaginary.com/mailman/listinfo/dgd">
+      dgd@list.imaginary.com </a> mailing list.  Further information
+    of many kinds is available on the <a
+      href="http://www.dworkin.nl/dgd/"> official DGD homepage </a>.
+    This documents is current as of Kernel library 1.2.35, an
+    experimental version.  Little information should be more
+    obsolete than that, but much information may be different
+    because of the quirks of an experimental version of DGD.  Don't
+    assume that this is fully accurate for your version, whether
+    it's newer or older than the one above.
+  </p>
+
