@@ -1,6 +1,13 @@
-Release 0.015:
+Release 0.016:
+
+Release 0.015pre2:
+	* Tagged OBJECTs and MOBILEs
+	* Added a 'Tagged' library to manage tags
+	* Added a TagD to track tag types
+	* Moved scripting stuff into Phantasmal from testgame/SoN
 	* Added toggle for first-ever login attempt to player_login()
 	* Minor fix to cmd_help
+	* More debugging on user/userlib interface.
 
 Release 0.015pre1:
 	* Separated user object into a user and a userlib, with the user

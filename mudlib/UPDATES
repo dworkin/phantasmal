@@ -9,18 +9,18 @@ large?
 Everywhere:
   Remove CVS directories, #files#, .#files and files~
 
-include/version.h
+include/phantasmal/version.h
   New version number
 
 usr/System/initd.c
   Check for Kernel MUDLib version and DGD version -- allow the widest
   range of DGD versions that seems reasonable.
 
-data/object/stuff/zone*, data/object/mobfile, data/object/zonefile
+usr/game/object/stuff/zone*, usr/game/object/mobfile, usr/game/object/zonefile
   Remove player data, remove .old and safe_* files.  Remove *~ files
   again after editing.  Remove objects that were in inventory.
 
-data/user/*.pwd
+usr/game/users/*.pwd
   Remove all .pwd files
 
 include/*.h

@@ -11,8 +11,8 @@ related projects, including the original design of the UNQ format
 - Dan Parks for the new exits code, for a bugfix with user login and
 password changing, and for some miscellaneous other bugfinding
 
-- Gary (muphicks at mups dot co dot united-kingdom) for a useful patch
-for the zonefile and general brainstorming
+- Gary Preston (muphicks at mups dot co dot united-kingdom) for a useful
+patch for the zonefile and general brainstorming and debugging
 
 - Neil McBride for miscellaneous code and ideas
 
@@ -26,7 +26,7 @@ simple object code.
 
 
 Other MUDLib authors, who provide ideas and competition.  Thanks to
-Steve (Melville) and Erlend (GurbaLib)!
+Steve (Melville), Erlend (GurbaLib) and Beek (Lima)!
 
 And naturally, no set of credits for a DGD MUDLib would be complete
 without mentioning Felix Croes (Dworkin), who wrote and maintains DGD
