@@ -131,7 +131,8 @@ static void cmd_new_room(object user, string cmd, string str) {
 
   segown = OBJNUMD->get_segment_owner(roomnum / 100);
   if(roomnum >= 0 && segown && segown != MAPD) {
-    user->message("That number is in a segment reserved for non-rooms!\r\n");
+    user->message("Room number " + roomnum
+		  + " is in a segment reserved for non-rooms!\r\n");
     return;
   }
 
