@@ -23,6 +23,8 @@ help @add_adjectives
 help @clear_nouns
 help @clear_adjectives
 
+help @set_object_value       (This is a family of commands)
+
 help @delete
 
 See also commands for portables, rooms and so on for certain operations
