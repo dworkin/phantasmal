@@ -1,0 +1,39 @@
+~name{~enUS{portable,portables,item,items,carryable,carryables}}
+~keywords{admin}
+~desc{
+  ~enUS{
+
+Portables are basic carryable, movable and manipulable objects.  In
+Phantasmal they are manipulated, from an admin viewpoint, by the room
+commands.  The only commands specific to portables is the following:
+
+@make_portable            Make a new portable by answering questions
+
+Even that command actually makes a room, it just makes it with more
+portable-like default settings.
+
+See also:  rooms, MAPD
+}}
+
+
+~name{~enUS{make_portable, makeportable, make_portables,
+            makeportables, portablemake, portable_make
+            make_port, makeport, make_ports,
+            makeports, portmake, port_make }}
+~keywords{admin}
+~desc{
+  ~enUS{
+
+The @make_portable command asks a series of questions about the new
+object to be created.  It then creates the object that the questions
+describe.  It asks about descriptions, nouns, adjectives and so on.
+
+Experimental object attributes aren't necessarily asked or set by this
+command when first implemented.  As they become useful and mainstream
+in Phantasmal they are added to the various @make commands.  For that
+reason, certain settings may require using the standard OLC commands
+rather than this one.
+
+See also:  @make_room, @make_detail
+
+}}

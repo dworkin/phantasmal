@@ -1,0 +1,18 @@
+~name{~enUS{credits}}
+~desc{~enUS{
+This MUD runs on the DGD MUD Server and the Phantasmal MUDLib.
+
+The DGD Server is written by Felix Croes and is well-documented at
+"http://phantasmal.sf.net/DGD/".  It's free for noncommercial use.
+
+The Phantasmal MUDLib is in the public domain.  You can find out more
+at "http://phantasmal.sf.net/".
+
+For further Phantasmal credits, see
+"http://phantasmal.sf.net/Credits.html".
+
+However, your actual MUD administrator hasn't bothered to edit even
+*this* help file.  And this is the obvious one for egomaniacs to start
+with!
+
+}}

@@ -1,0 +1,54 @@
+~name{~enUS{help}}
+~desc{~enUS{
+For help about a command, just type "help XXX" and hit return or enter,
+but replace XXX with the word you want help about.  Make sure to type the
+word help, then a space, then the word you want help with, then hit the
+return or enter key.  Or you can just type help by itself for an overview.
+
+In many help entries you'll see things like "help <topic>" or
+"help <keyword>".  They don't really mean for you to put in the
+greater-than and less-than signs or to really type the word "topic" or 
+"keyword".  They mean you should type the name of the topic or keyword
+you're curious about.
+
+Sometimes you'll see that there's more than one help entry on a given topic,
+especially if you misspell it a little and the system looks for a close
+match.  To read the later help entries, type things like "help 2 linkded"
+for the second help entry that could match "linkded".  If there's more than
+one, the help system will tell you so.  You'll see it when you ask for help
+without specifying a number, for instance "help linkded".
+
+If that went too fast and you can't read it, try setting your rows
+lower with set_num_lines 10.  Then get help on the set_num_lines
+function to figure out how you want to set it eventually.
+
+}}
+
+
+~name{~enUS{lines, set_lines, scrolling, scroll, terminal, row, rows,
+            set_num_lines, num_lines}}
+~desc{~enUS{
+
+You can use the set_num_lines command to set the number of lines of output
+Phantasmal will display in a help entry before it begins scrolling.
+The default is 20 lines.  Scrolling is primarily used in the display of
+help entries though certain other situations may call for the scrolling
+of output.
+
+}}
+
+
+~name{~enUS{keyword,<keyword>,topic,<topic>}}
+~desc{~enUS{
+When a helpfile says "help <keyword>" or "help <topic>", they're not
+really talking about typing that literally.  They mean you should type
+the word "help", without the quotes, then a space, then the keyword or
+topic you're interested in.
+
+If the help screen you were referring to when you typed "help
+keyword" had a bunch of other help commands listed, then you should
+typing one of those.  Which one depends entirely on what you want help
+about.  Similarly, if there was a vertical list of words there, you
+could try getting help by typing "help" and a space and one of those
+words.
+}}

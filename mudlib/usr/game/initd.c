@@ -17,7 +17,7 @@ static void create(void) {
     CONFIGD->set_game_driver(find_object(GAME_DRIVER));
 
   /* Register a help directory for the HelpD to use */
-  HELPD->new_help_directory("/data/help");
+  HELPD->new_help_directory("/usr/game/help");
 
   load_sould();
 

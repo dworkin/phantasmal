@@ -1,0 +1,52 @@
+~name{
+  ~enUS{bug,typo,idea}
+}
+~desc{
+  ~enUS{
+If you've found a typographical error ('typo') in a description of a MUD
+object, use the typo command.  For example:
+
+  typo In this room, "their" should be "there".  Yur mud rox!
+
+If you've found a bug other than a typo, you can use the bug command.
+Give a significant description.  For example:
+
+  bug When I attack the dented lamp with my sledgehammer, it gets less dented!
+
+Feel free to contact an implementor directly to describe a more
+complicated bug.
+
+If you've got an idea or feature request, use the idea command:
+
+  idea You should be able to buy calcium tablets at the market.
+
+Thanks!
+
+For what happens when you exploit a bug on this MUD, see "help exploits".
+}}
+
+
+~name{~enUS{exploit,exploits}}
+~desc{~enUS{
+
+Exploiting bugs in the game is a good way to lose your account or
+otherwise lose all benefits gained that way.  You'll also lose enough
+extra that we don't think you'll ever do it again.  Be warned.
+
+If you report bugs (see the "bug" and "typo" commands) you may be
+rewarded in-game for preventing an exploitable bug from being
+exploited.  You also get the warm fuzzy feeling of having improved the
+MUD.  Good job!
+
+}}
+
+
+~name{~enUS{feedback}}
+~desc{~enUS{
+
+Some commands to help you give us feedback:
+help bug                Report general problems with the MUD world
+help typo               Report problems in in-room descriptions
+help impbug             Speak in real-time with any admins logged in
+
+}}

@@ -1,0 +1,239 @@
+~name{~enUS{builder, builders}}
+~keywords{admin}
+~desc{
+  ~enUS{
+
+The builder commands play with rooms, exits, mobiles and portables.
+Help on the following major topics is available:
+
+help objects
+help rooms
+help zones
+help exits
+help mobiles
+help portables
+help segments
+
+}}
+
+
+~name{~enUS{exit,exits,door,doors,passage,passages}}
+~keywords{admin}
+~desc{
+  ~enUS{
+
+Exits are objects registered with EXITD, and thus with objregd.  As
+such, they are numbered and object commands work fine on them.  Note:
+an exit must be open (default) for mobiles to go through them.
+
+Some commands for exits:
+@new_exit          Creates a new exit between existing rooms
+@new_oneway_exit   Creates a new one-way exit from this room to another
+@new_twoway_exit   Creates a new two-way exit from this room to another
+@list_exit         Shows exits in the MUD
+@remove_exit       Removes an exit from the current room
+@clear_exits       Remove all exits attached to current room
+@fix_exits         Repairs exits (aka upgrades)
+@stat              Shows information about an object
+
+@check_deferred    Check for deferred exits
+@add_deferred      Attempt to resolve deferred exits
+}}
+
+~name{~enUS{@new_exit, new_exit, newexit, @newexit, new exit,
+            @exit_new, exitnew, exit_new, @exitnew, exit new}}
+~keywords{admin}
+~desc{
+  ~enUS{
+
+@new_exit will create a new exit from the room you currently occupy to
+another one elsewhere.  For instance:
+
+  @new_exit nw #75 oneway (or one-way or 1)
+
+will create a new exit leading northwest into room #75.
+
+  @new_exit nw #75 twoway (or two-way or 2)
+
+will create a new exit leading northwest into room #75.  It will also
+create an exit leading from room #75 southeast into the room you're
+standing in when you type the command.
+
+Note that the room the exit leads to must be registered with objregd,
+though the room you're standing in doesn't.
+
+}}
+
+~name{~enUS{@new_twoway_exit, new_twoway_exit, newtwowayexit,
+            @newtwowayexit, new twoway exit, new two way exit}}
+~keywords{admin}
+~desc{
+  ~enUS{
+
+@new_twoway_exit will create a new exit from the room you currently occupy to
+another one elsewhere.  The exit will be accompanied by a return exit
+in the opposite direction leaving the destination room and arriving back
+at the room you currently occupy.  For instance:
+
+  @new_twoway_exit nw #75
+
+will create a new exit leading northwest into room #75.  It will also
+create an exit leading from room #75 southeast into the room you're
+standing in when you type the command.  Note that the room the exit
+leads to must be registered with objregd, though the room you're
+standing in doesn't.
+
+}}
+
+~name{~enUS{@new_oneway_exit, new_oneway_exit, newonewayexit,
+            @newonewayexit, new oneway exit, new one way exit}}
+~keywords{admin}
+~desc{
+  ~enUS{
+
+@new_oneway_exit will create a new exit from the room you currently
+occupy to another one elsewhere.  The exit will be NOT accompanied by
+a return exit in the opposite direction. For instance:
+
+  @new_oneway_exit nw #75
+
+will create a new exit leading northwest into room #75.  Note that the
+room the exit leads to must be registered with objregd, though the room
+you're standing in doesn't.
+
+}}
+
+
+~name{~enUS{@clear_exit, clear_exit, clearexit, @clearexit, clear exit,
+            @clear_exits, clear_exits, clearexits, @clearexits, clear exits,
+            @exit_clear, exitclear, exit_clear, @exitclear, exit clear}}
+~keywords{admin}
+~desc{
+  ~enUS{
+
+@clear_exit will remove all exits attached to the current room.  That
+means not only those that go from the current room to attached rooms,
+but also the return exits for each such exit.  One-way exits leading
+to the room won't be affected, but those leading from it will be
+removed.
+
+}}
+
+~name{~enUS{@remove_exit, remove_exit, removeexit, @removeexit, remove exit,
+            @exit_remove, exitremove, exit_remove, @exitremove, exit remove}}
+~keywords{admin}
+~desc{
+  ~enUS{
+
+The command @remove_exit takes a single argument, a direction, and
+removes the exit leading in that direction as well as its return exit,
+if any.
+
+}}
+
+~name{~enUS{@list_exit, list_exit, @listexit, listexit, list exit,
+            @exit_list, @exitlist, exitlist, exit_list, exit list,
+	    @list_exits, list_exits}}
+~keywords{admin}
+~desc{
+  ~enUS{
+
+@list_exit lists all exits currently known to the Map Daemon and displays
+their number and brief description, as well as the rooms they lead from
+and to by number (if numbered) and the type (one-way, two-way, or other).
+
+}}
+
+~name{~enUS{@fix_exit, fix_exit, @fixexit, fixexit, fix exit,
+            @fix_exits, fix_exits, @fixexits, fixexits, fix exits}}
+~keywords{admin}
+~desc{
+  ~enUS{
+
+@fix_exits repairs the exits.  Fixes one-way vs. two-way, links, etc.
+
+}}
+
+~name{~enUS{@check_deferred,check_deferred,check deferred,
+            @check_deferred_exits,check_deferred_exits,
+            check deferred exits}}
+~keywords{admin}
+~desc{
+  ~enUS{
+
+@check_deferred will print out the current number of deferred exits.
+
+See @add_deferred.
+
+}}
+
+~name{~enUS{@add_deferred,add_deferred,add deferred,
+            @add_deferred_exits,add_deferred_exits,
+            add deferred exits}}
+~keywords{admin}
+~desc{
+  ~enUS{
+
+@add_deferred will say whether there are current deferred exits and if
+so, attempt to resolve them.  It will then print out the number of
+remaining deferred exits after the resolve.
+
+Deferred exits occur when a loaded room attempts to create an exit to
+a room that doesn't yet exist.  They are useful when you wish to load
+one or more areas from multiple files even though they have exits
+connecting them.  This way, you can load the files for the areas you
+want and then attempt to resolve the deferred exits.  Note that after
+a file load, Phantasmal is likely to try to resolve any deferred exits
+itself -- don't expect a deferred exit to stay deferred once its
+destination room has been loaded.
+
+}}
+
+~name{~enUS{zone,zones}}
+~keywords{admin}
+~desc{
+  ~enUS{
+Zones are units of building and of administration.  Zone borders will
+be in-game limits for some mobiles' movement.  A zone consists of a
+number of segments.  Here are some zone-related help topics:
+
+@segmap           Shows information about segments, including their zone
+segment           How to manage segments
+@set_seg_zone     Sets the zone for a given segment
+@zonemap          Show the current zones
+@new_zone         Adds a new zone to the @zonemap
+
+To manipulate things within a zone such as rooms, see their
+individual help topics.
+}}
+
+
+~name{~enUS{@new_zone,new_zone,%new_zone,new zone,
+            @add_zone,add_zone,%add_zone,add zone,
+            @newzone,newzone,%newzone,
+            @addzone,addzone,%addzone,new}}
+~keywords{admin}
+~desc{
+  ~enUS{
+The @new_zone command adds a zone to the @zonemap.  After you add it
+you can add new objects to it.  The usage is:
+
+@new_zone New Fredslund
+
+See also: @zonemap
+}}
+
+~name{~enUS{wiz,wiztool,wizzes,wizards,immort,immortals}}
+~keywords{admin}
+~desc{
+  ~enUS{
+
+Many MUDs use the word "wizard" or "wiz", or "immortal" or "immort" to
+refer to those who make more MUD and keep it running on a day to day
+basis.  Since "wizard" sounds suspiciously like an in-game player
+class, Phantasmal prefers to call them admins, builders, or
+implementors depending on what they actually do.  We try to
+consistently maintain such usage in the MUD and in the help files.
+When we don't, report it as a bug.
+}}
+
