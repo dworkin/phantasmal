@@ -5,7 +5,7 @@
 #include <limits.h>
 
 #define INDENT_LEVEL 4
-#define LOG_FILE ("/usr/common/bob.txt")
+#define LOG_FILE ("/log/unq_dtd_log.txt")
 
 private mapping dtd;
 private int     is_clone;
@@ -14,7 +14,12 @@ private string  accum_error;
 /* base type of a type -- for inheritance */
 private mapping base_type;
 
-/* #define USE_LOG to write to a log file */
+/* #define USE_LOG */
+/* You can #define USE_LOG to write to a log file.  This doesn't
+   use the standard LOGD logging because LOGD requires UNQ DTD
+   functionality to successfully start up, so this may all occur
+   before you *can* use LOGD.
+*/
 
 #ifdef USE_LOG
 #define write_log(str) write_file(LOG_FILE, (str) + "\n")
@@ -38,6 +43,7 @@ static int create(varargs int clone) {
     builtins = ([ "string" : 1,
 		  "int" : 1,
 		  "float" : 1,
+		  "unq" : 1,
 		  "phrase" : 1 ]);
   }
 }
@@ -351,6 +357,15 @@ private string serialize_to_builtin(string type, mixed unq, int indent) {
     return "{" + unq->to_unq_text() + "}";
   }
 
+  if(type == "unq") {
+    if(typeof(unq) == T_STRING
+       || typeof(unq) == T_INT
+       || typeof(unq) == T_FLOAT)
+      return "{" + unq + "}";
+
+    error("Can't yet serialize arbitrary UNQ, implement now!");
+  }
+
   accum_error += "Don't recognize type " + type + " serializing builtins!\n";
   return nil;
 }
@@ -574,11 +589,6 @@ private mixed parse_to_builtin(string type, mixed unq) {
     if(typeof(unq) != T_ARRAY)
       error("Don't recognized parsed UNQ object in parse_to_builtin(phrase)!");
 
-    /* previous code here doesn't work, since the kernel strips the arguments
-     * from the call trace if this object isn't created by System (which
-     * it isn't 
-     */
-
     err = catch(tmp = PHRASED->unq_to_phrase(unq));
     
     if (err != nil) {
@@ -589,11 +599,24 @@ private mixed parse_to_builtin(string type, mixed unq) {
     return tmp;
   }
 
+  if(type == "unq") {
+    if(typeof(unq) != T_ARRAY) {
+      accum_error += "Builtin 'unq' object is not an array!\n";
+      return nil;
+    }
+
+    if(sizeof(unq) != 2) {
+      accum_error += "Builtin 'unq' array is not size 2!\n";
+      return nil;
+    }
+
+    return unq[1];
+  }
+
   error("Builtins array modified without modifying parse_to_builtin!");
 }
 
 /* Parse_to_dtd_struct assumes some input preprocessing -- label is
-  int repmin, repmax;
    whitespace-trimmed and unq's top level is empty-tag-trimmed.  Label
    is also validated to point to an UNQ DTD structure.  UNQ may or may
    not be a valid structure, but has already had the tag corresponding
