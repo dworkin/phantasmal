@@ -19,8 +19,10 @@ mixed* basic_unq_parse(string block) {
   catch {
     tmp = parse_string(parser, block);
     /* replace a nil return with a return of an empty array */
+    /* -- Tentatively changed this to just log if tmp == nil. */
     if (tmp == nil) {
-      tmp = ({ });
+      /* tmp = ({ }); */
+      LOGD->write_syslog("Warning: parse_string() returned nil in basic_unq_parse()");
     }
   } : {
     if (block == nil) {
