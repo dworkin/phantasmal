@@ -90,7 +90,8 @@ void notify_moved(object obj) {
  */
 
 nomask void say(string msg) {
-  location->enum_room_mobiles("hook_say", ({ this_object() }), ({ body, msg }) );
+  location->enum_room_mobiles("hook_say", ({ this_object() }),
+			      ({ body, msg }) );
   
   if (get_user()) {
     get_user()->message("You say: " + msg + "\r\n");
@@ -105,12 +106,23 @@ nomask void say(string msg) {
  */
 
 nomask void emote(string str) {
-  location->enum_room_mobiles("hook_emote", ({ this_object() }),
+  /* For an emote, show the user the same message everybody else sees.
+     For instance "Bob sits still." rather than "You sits still.". */
+  location->enum_room_mobiles("hook_emote", ({ }),
 			      ({ body, str  }));
+}
 
-  if (get_user()) {
-    get_user()->message("You " + str + ".\r\n");
-  }
+/*
+ * social()
+ *
+ * Does a social/soul action.  This will be visible to everyone in the
+ * room and may appear different to the (optional) target.  The "target"
+ * parameter should point to the target's body.
+ */
+
+nomask int social(string str, object target) {
+  location->enum_room_mobiles("hook_social", ({ }),
+			      ({ body, nil, str  }));
 }
 
 /*
@@ -118,7 +130,7 @@ nomask void emote(string str) {
  *
  * object to: body of the object to whisper to.
  *
- * Whisper to someone or someone.  They must be in the same location as you.
+ * Whisper to someone or something.  They must be in the same location as you.
  */
 nomask int whisper(object to, string str) {
   object mob;
@@ -137,7 +149,8 @@ nomask int whisper(object to, string str) {
     get_user()->send_phrase(to->get_brief());
     get_user()->message(": " + str + "\r\n");
   }
-  location->enum_room_mobiles("hook_whisper_other", ({ this_object(), mob }), ({ body, to }) );
+  location->enum_room_mobiles("hook_whisper_other",
+			      ({ this_object(), mob }), ({ body, to }) );
   
   return 1;
 }
@@ -164,7 +177,8 @@ nomask int ask(object to, string str) {
       user->message("You ask: " + str + "\r\n");
     }
 
-    location->enum_room_mobiles("hook_ask_other", ({ this_object() }), ({ body, nil, str }) );
+    location->enum_room_mobiles("hook_ask_other", ({ this_object() }),
+				({ body, nil, str }) );
   } else {
     mob = to->get_mobile();
     if (mob == nil) {
@@ -177,7 +191,8 @@ nomask int ask(object to, string str) {
       user->message(": " + str + "\r\n");
     }
 
-    location->enum_room_mobiles("hook_ask_other", ({ this_object(), mob }), ({ body, to, str }) );
+    location->enum_room_mobiles("hook_ask_other", ({ this_object(), mob }),
+				({ body, to, str }) );
   }
   
   return 1;
@@ -425,6 +440,23 @@ nomask string teleport(object dest, int force) {
  */
 
 void hook_say(mixed *args) {
+}
+
+/*
+ * first arg: body who said
+ * second arg: what they said
+ */
+
+void hook_emote(mixed *args) {
+}
+
+/*
+ * first arg: body who acted out the social
+ * second arg: target body or nil
+ * third arg: the name of the social
+ */
+
+void hook_social(mixed *args) {
 }
 
 /*
