@@ -28,7 +28,6 @@
 #define INITD               "/usr/System/initd"
 #define SYSTEM_USER         "/usr/System/obj/user"
 #define SYSTEM_WIZTOOL      "/usr/System/obj/wiztool"
-#define SYSTEM_WIZTOOLLIB   "/usr/System/lib/wiztoollib"
 
 
 /* Libraries -- inheritable, not clonable */
@@ -62,6 +61,7 @@
 #define US_ENTER_DATA       "/usr/common/obj/ustate/enter_data"
 #define US_OBJ_DESC         "/usr/common/obj/ustate/set_obj_desc"
 #define US_SCROLL_TEXT      "/usr/common/obj/ustate/scroll_text"
+#define US_MAKE_ROOM        "/usr/common/obj/ustate/makeroom"
 
 
 /* Specific objects (clonable) */
@@ -113,6 +113,15 @@
 #define WELCOME_MESSAGE     "/data/text/welcome.msg"
 #define SUSPENDED_MESSAGE   "/data/text/suspended.msg"
 #define SHUTDOWN_MESSAGE    "/data/text/shutdown.msg"
+
+
+/* Random inherited stuff */
+#define SYSTEM_WIZTOOLLIB      "/usr/System/lib/wiztoollib"
+#define SYSTEM_ROOMWIZTOOLLIB  "/usr/System/lib/room_wiztool"
+#define SYSTEM_OBJWIZTOOLLIB   "/usr/System/lib/obj_wiztool"
+#define SYSTEM_COMMANDSETLIB   "/usr/System/lib/commandsetlib"
+#define SYSTEM_USER_IO         "/usr/System/lib/user_io"
+
 
 # undef SYS_PERSISTENT
 # undef SYS_DATAGRAMS	    /* off by default */
