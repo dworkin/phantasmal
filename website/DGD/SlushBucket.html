@@ -1,0 +1,322 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+                      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<title>DGD and LPC: Slush Bucket</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<link href="../phantasmal.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<table width="95%" border="0" cellspacing="0" cellpadding="4">
+  <tr>
+    <td colspan="2"> <table width="100%" border="0" cellspacing="1"
+        cellpadding="0" class="main">
+        <tr>
+          <td class="banner">The DGD Driver</td>
+        </tr>
+      </table></td>
+  </tr>
+  <tr>
+    <td valign="top">
+      <table width="25%"  border="0" cellspacing="1"
+             cellpadding="0"  class="main">
+        <tr>
+          <td class="content" style="font-size: 120%">
+
+          <ul style="margin: 0; padding-left: 10%">
+            <li> <a href="index.html">DGD &amp; LPC Page</a> </li>
+	    <li> <a href="LPC">LPC Textbook</a> </li>
+	    <li> <a href="../index.html">Phantasmal MUDLib </a> </li>
+	    <li> <a href="http://www.sf.net/projects/phantasmal">Phantasmal
+	      SourceForge</a> </li>
+          </ul>
+
+        </td>
+        </tr>
+        <tr>
+          <td class="content" align="center">
+            <a href="http://validator.w3.org/check/referer">
+            <img src="../images/valid-xhtml10.gif" alt="Valid XHTML 1.0!"
+             style="border:0;width:88px;height:31px" /></a><br />
+            <img src="../images/pixel.gif"
+             style="border:0;width:88px;height:1px" alt="" /><br />
+            <a href="http://jigsaw.w3.org/css-validator/check/referer">
+            <img src="http://jigsaw.w3.org/css-validator/images/vcss"
+             alt="Valid CSS!" style="border:0;width:88px;height:31px" />
+            </a><br /><br /><br />
+            <a href="http://sourceforge.net">
+            <img src="http://sourceforge.net/sflogo.php?group_id=48659&amp;type=2"
+             style="border: 0; width: 125; height: 37;"
+	     alt="SourceForge.net Logo" /></a>
+          </td>
+        </tr>
+      </table></td>
+    <td> <table width="100%"  border="0" cellspacing="1" cellpadding="0" 
+          class="main">
+        <tr>
+          <td class="heading">&nbsp;&nbsp;&middot;&nbsp;
+	    <a href="http://phantasmal.sf.net/DGD">DGD Page</a> &gt;
+            <a href="">Slush Bucket</a>
+          </td>
+        </tr>
+        <tr>
+          <td class="content">
+    
+
+  <h2> Other Random Email </h2>
+
+  <p>
+    This is a repository for 'other' email - stuff that doesn't
+    specifically fit in any other category, yet.
+  </p>
+
+<pre>
+Date: Tue, 31 Oct 2000 13:00:06 +0100 (CET)
+From: "Felix A. Croes"
+Subject: Re: [DGD]inherit_program() called twise
+
+> I wondering if it is normal for inherit_program() in driver object to be called twise each time an object (that inherits something) is compiled.
+
+Twice, or more often: that is normal.  DGD's compiler is not reentrant,
+so if an inherited object is discovered not to exist, the current
+compilation is aborted and the non-existing object is compiled first.
+After that, the original object is compiled again, and inherit_program()
+is called again.
+
+Regards,
+Dworkin
+
+List config page:  http://list.imaginary.com/mailman/listinfo/dgd
+</pre>
+
+<hr />
+
+<pre>
+From: dgd at list.imaginary.com (Felix A. Croes)
+Date: Mon May 19 08:41:00 2003
+Subject: [DGD] Mapping size
+
+> When I get an error that says, "Mapping too large to grow", does that mean 
+> that I've run out of dynamic memory entirely?  Or is there a setting 
+> specific to mappings that gives a maximum size, similar to the array_size 
+> setting?
+
+The array_size config parameter controls the maximum size of both
+arrays and mappings.
+
+Regards,
+Dworkin
+</pre>
+
+<hr />
+
+<pre>
+From: DGD Mailing List (Thomas Rice)
+Date: Wed Aug 25 07:16:01 2004
+Subject: [DGD] Virtual Rooms
+
+Hi,
+
+I was wondering if anyone knew how I could implement 'virtual rooms'
+in DGD. Specifically the type that would let me generate a large
+two-dimensional terrain where the room description would be set by
+some equation.
+
+Here is how a previous version of a LpMUD derivative I once used
+accomplished this.
+
+When you tried to go to a particular location or load a particular
+object, such as "thomas/room/hallway.c" it would do 3 things, in this
+order:
+
+1. It would check if it's already loaded in memory. If so, it would use that.
+2. If not, it would load up hallway.c and use that.
+3. If hallway.c didn't exist, it would check to see if "thomas/room.c"
+existed, and if so call the GetVirtualObject function within
+"thomas/room.c" with the full string as an argument. If this function
+existed, it would return a room object, and in memory rename it to
+"thomas/room/hallway.c" so that future references to this would refer
+to the loaded room.
+4. If hallway.c didn't exist, or the GetVirtualObject function didn't
+return a room, it would fail.
+
+With this method you could easily create a large wilderness area by
+creating a file like "thomas/wilderness.c" and referring to rooms like
+"thomas/wilderness/1,1,1" and having the GetVirtualObject parse the
+string to work out the coordinates and then set up the room by cloning
+it and returning it.
+
+Does anyone know if it's possible to do something similar in DGD, and
+if so, how? I'm pretty new to DGD, I should point out, but so far it
+looks pretty good! :)
+
+Thanks,
+
+Thomas.
+</pre>
+
+<hr />
+
+<pre>
+From: DGD Mailing List (Felix A. Croes)
+Date: Wed Aug 25 08:42:01 2004
+Subject: [DGD] Virtual Rooms
+
+Thomas Rice wrote:
+
+> I was wondering if anyone knew how I could implement 'virtual rooms'
+> in DGD. Specifically the type that would let me generate a large
+> two-dimensional terrain where the room description would be set by
+> some equation.
+>[...]
+> With this method you could easily create a large wilderness area by
+> creating a file like "thomas/wilderness.c" and referring to rooms like
+> "thomas/wilderness/1,1,1" and having the GetVirtualObject parse the
+> string to work out the coordinates and then set up the room by cloning
+> it and returning it.
+
+Simple enough.  Either clone rooms in the area and refer to them using
+your own custom naming scheme (e.g. "thomas/wilderness"->room_at(1,1,1))
+or compile the room from a string instead of a file, and then
+configure it as a clone:
+
+    room = compile_object("thomas/wilderness/1,1,1",
+			  read_file("thomas/wilderness.c"));
+    room->set_long(etc);
+
+The latter will require a recent version of DGD.
+
+Regards,
+Dworkin
+</pre>
+
+<hr />
+
+<pre>
+From: dgd at list.imaginary.com (Noah Gibbs)
+Date: Wed Nov 20 01:34:01 2002
+Subject: [DGD] Using MySQL C++ API
+
+  Hi.  First, let me echo Keith Dunwoody's excellent sentiments.  He's
+basically right.  Then let me summarize why quickly.
+
+  DGD is really, really cool.  It does a couple of things that no other
+language (except maybe the Cold server) does.  Unfortunately, those same
+really cool tricks keep it from doing good callout to other, less-cool
+languages.
+
+  DGD allows atomic functions -- if DGD runs out of ticks or an error
+occurs partway through, it just rolls the whole thing back, including
+global variable writes, as though it never happened.  If you've been
+calling out to code that doesn't do that, you can't roll it back because
+you don't know all the half-assed stuff it's not finished doing yet.  If
+you roll back in some obvious way and leave stuff half-done then chances
+are really good that it'll crash when you next play with it.
+  Believe me, I spent a long time trying to get Perl to be interruptible
+in this way without constantly crashing the interpreter.  The only way I
+figured out how to do it is one I'll recommend to you, but it boils down
+to starting (and restarting, probably) a new server in a separate process
+and never using it inside any atomic functions.  Your MySQL stuff isn't
+currently atomic-able, so you can't mix it with DGD.
+
+  DGD has exception handling that can cause similar problems, and most
+speicifically the way it times out when it runs out of cycles -- again,
+it's that interruptability problem.
+
+  DGD's multithreading works the same way that its atomic functions do,
+with speculative execution.  So that's right out as well.
+
+  Essentially DGD is just really unfriendly to calling out to libraries in
+other languages.  You can get around some of this by writing simple things
+as chunks of DGD itself, but that doesn't necessarily mean it's trivial
+(or easy, or reasonable) to do.  It also means that you now have to
+distribute your own modified DGD for other people to run your
+code.  That's a bad thing, especially in a community this small and
+close-knit, who you'll be asking for help with debugging :-)
+
+-- 
+See my page of DGD documentation at
+"http://phantasmal.sourceforge.net/DGD/"
+If you post to the DGD list, you may see yourself there!
+</pre>
+
+<hr />
+
+<pre>
+From: dgd at list.imaginary.com (Felix A. Croes)
+Date: Thu Mar 28 09:42:01 2002
+Subject: [DGD] parse_string()
+
+Erwin Harte wrote:
+
+> Since the archive is (still?) offline, I'm digging this one up from my
+> own email garbage dump a.k.a archive:
+>
+>[...]
+
+The only change since the posting of this grammar is the addition of
+nil:
+
+    primary_p1_exp: 'nil'
+
+Regards,
+Dworkin
+</pre>
+
+<hr />
+
+<pre>
+From: dgd at list.imaginary.com (Par Winzell)
+Date: Thu Mar 28 21:29:01 2002
+Subject: [DGD] parse_string()
+
+ > parse_string(LPC_grammar, "void x(){if(0)if(1)y();else z();}", 1)
+
+I love that grammar. :-)   I think maybe 'private inherit' is also new, 
+though?  And, of course, somebody needs to write a LPC pre-processor... 
+which is probably a bit of a chore. A day's work or three.
+
+Zell
+</pre>
+
+<hr />
+
+<pre>
+From: Josh Dady
+Subject: [DGD] LPC parse_string grammar
+Date: Sun, 26 Sep 2004 18:59:04 -0400
+
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
+
+One of my little side projects is to start generating reference 
+documentation using doxygen.  Since there's not native support for LPC 
+there, it seemed like the simplest way to get there was to use 
+parse_string() and spit out C++ declarations equivalent to the LPC 
+originals and use doxygen on that.
+
+To that end, while trying to parse our player object, I found the 
+following change to the grammar was needed (and Erwin seemed to agree 
+that it was something that happened since the grammar was originally 
+written) -- one of the varargs cases.  It is legal to use varargs in 
+the list of arguments to a function, and the original grammar doesn't 
+permit this.  I added the following production to make it happy:
+
+	formal_declaration: 'varargs' type_specifier data_dcltr
+
+- --
+Joshua P. Dady
+http://www.indecisive.com/
+</pre>
+
+  <p style="font-size: 150%"> <a href="index.html"> Back to DGD
+      Documentation </a> </p>
+            <address>
+            <span><a href="mailto:angelbob-remove-spamfree@spamfree.users.sf.net">Noah Gibbs</a></span>
+            </address></td>
+        </tr>
+      </table></td>
+  </tr>
+</table>
+</body>
+</html>
