@@ -180,6 +180,272 @@
     Kernel Library supplies.
   </p>
 
+<pre>
+From: John "West" McKenna
+Subject: Re: [DGD]compile_object() kfun
+Date: Wed, 14 Mar 2001 17:15:30 +0800 (WST)
+
+The auto-upgrader builds a dependancy tree from inherits, includes,
+and calls from the object to a depends() function.  The object can
+declare its dependance on any files or directories.  Directory
+dependence allows the object to be re-initialised when, for example, a
+new soul command file is added.
+</pre>
+
+<hr />
+
+<pre>
+From: dgd at list.imaginary.com (Felix A. Croes)
+Date: Mon Jan 12 07:24:01 2004
+Subject: [DGD] Re: Recursion in recompile(), is this correct?
+
+Bart van Leeuwen wrote:
+
+> On Sat, 10 Jan 2004, Noah Gibbs wrote:
+>
+> > --- Erwin Harte wrote:
+> > > Which is where the 'block_input' kfun might come in
+> > > handy. ;)
+> >
+> >   Yeah.  I do it during the recompile, I just don't do
+> > it 'til all of the upgraded() call_out statements are
+> > done.  I need to.
+>
+> I was thinking a bit about this and am wondering how safe this is.
+> Of course if you rely on everything on your mud being upgraded, you will
+> need some mechanism for upgrading everything before anything else happens
+> on the mud.
+>
+> Will it work to do this in call_outs and just block input untill you are
+> done?
+> I can imagine that this will still allow for other call_outs to run in
+> between your upgrade call_outs, and as a result, other threads can run
+> while you are doing your upgrade still.
+>
+> My take would be that you really need to do this all at once, and just
+> ensure you do not run out of ticks by properly using rlimits
+>
+> Also, I do not see what you get from splitting it up over multiple
+> call_outs, you are going to block the entire mud anyway, and imho it would
+> be more efficient to finish the task at hand as quickly as possible.
+>
+> What I am suggesting is to use unlimited ticks for a 'main loop' that goes
+> through all the objects that need to be upgraded, and use a limit only for
+> each individual upgrade.
+
+This works fine as long as all of your objects with programs can be held
+in memory together.  In some muds, that is not feasible.  In such a case,
+you have to break up the upgrading process in order to let DGD swap out
+objects between LPC threads.
+
+You do have to block callouts as well as input from users, in order to
+prevent interruptions.  These are both dangerous operations, since an
+error can effectively halt the mud without a way to restart it.  But it
+can be done.
+
+Regards,
+Dworkin
+</pre>
+
+<hr />
+
+<pre>
+From: dgd at list.imaginary.com (Noah Gibbs)
+Date: Mon Jan 12 08:42:01 2004
+Subject: [DGD] Re: Recursion in recompile(), is this correct?
+
+--- Bart van Leeuwen wrote:
+> > You do have to block callouts as well
+> > as input from users, in order to
+> > prevent interruptions.  These are both
+> > dangerous operations, since an
+> > error can effectively halt the mud without
+> > a way to restart it.  But it
+> > can be done.
+
+  Yeah.  It's not actually so bad...  It's just a
+matter of making sure you've got strategically-placed
+catch() statements so that an error can be recovered
+from.  At least, that's been my experience.
+
+> Yep, call_outs, input of any kind... sounds like
+> lots of fun to me..
+
+  Yup.  There's an easy way to block call_outs, it
+turns out, in the Kernel Library resource manager. 
+Ditto for input.  I don't think the input-blocking
+thing works for connections, so I actually have a
+separate "suspended" message that you get when you try
+to connect to the MUD while it's upgrading.  It tells
+you to try back in about ten seconds.  It doesn't take
+nearly a full ten seconds to rebuild, but I figure a
+conservative estimate is better :-)
+
+  But yeah, as Felix notes, make sure you have catch
+blocks in the right locations so that an error will
+cancel everything (or at least, cancel the operation
+that just had the error and not reschedule it) and
+restore call_outs and input and new connections.
+
+  I actually do this when doing my %datadump operation
+too...  Since I'm saving all the objects in the MUD, I
+have to keep people and critters from moving around
+and giving me an inconsistent state.  That would be
+yet *another* disadvantage of data files compared to
+state dumps, alas.  So for periodic backups, I
+recommend statedumps :-)
+</pre>
+
+<hr />
+
+<pre>
+From: dgd at list.imaginary.com (Felix A. Croes)
+Date: Mon Jan 12 14:26:01 2004
+Subject: [DGD] Re: Recursion in recompile(), is this correct?
+
+Noah Gibbs wrote:
+
+> --- Bart van Leeuwen wrote:
+> > Hmm. has anyone ever tried a setup where
+> > upgrades of 'children' of a
+> > recompiled library are delayed untill the
+> > next time the child is
+> > referenced?
+>
+>   I guess you could use the (very new) call_touch for
+> this...  Prior to call_touch there was no real way to
+> tell when the object was referenced so you couldn't do
+> it that way.
+
+Don't forget that a recompiled program is not replaced until the end
+of the current LPC thread.  You can use call_touch() in the upgrade
+of object dataspaces, though.  For example, to initialize a new
+variable that has been added.
+
+Regards,
+Dworkin
+</pre>
+
+<hr />
+
+<pre>
+From: dgd at list.imaginary.com (Felix A. Croes)
+Date: Tue Jan 13 16:08:01 2004
+Subject: [DGD] 1.2.71
+
+What I forgot to mention: the 1.2.71 patch includes a change to the
+driver object in the kernel library.  To upgrade this object to the
+new version in a persistent mud, you have to recompile it and then
+immediately reboot the mud.
+
+The upgrade to the auto object is safe and can be performed at any
+time.
+
+Regards,
+Dworkin
+</pre>
+
+<hr />
+
+<pre>
+From: dgd at list.imaginary.com (Felix A. Croes)
+Date: Sat Feb 14 10:46:01 2004
+Subject: [DGD] 1.2.77
+
+diff -c dgd/src/Changelog:1.314 dgd/src/Changelog:1.315
+*** dgd/src/Changelog:1.314     Thu Feb  5 15:01:00 2004
+--- dgd/src/Changelog   Sat Feb 14 17:32:13 2004
+***************
+*** 1573,1575 ****
+--- 1573,1577 ----
+   - Make sure that a callout handle is not truncated to 16 bits before an
+     attempt is made to remove it.
+   - Include system files before DGD files on Windows.
++  - Rather than causing an error, let the callout and precompiled object lists
++    returned by status() be nil if they would not fit in an array.
+
+ftp://ftp.dworkin.nl/pub/dgd/experimental/patches/1.2.76-1.2.77.gz
+
+This patch includes the promised changes to the kernel library.  It
+also simplifies upgrading a persistent mud from kernel library version
+1.2.21 (included with DGD 1.2.71); rebooting immediately after the
+driver object is recompiled is no longer necessary.
+
+Regards,
+Dworkin
+</pre>
+
+<hr />
+
+<pre>
+From: dgd at list.imaginary.com (Felix A. Croes)
+Date: Wed Aug  4 17:51:02 2004
+Subject: [DGD] Object handling
+
+Steve Wooster wrote:
+>      I'm trying to plan writing an object handler, but I've come across an 
+> issue (pardon the pun) where I'm not sure what would be better... I'm 
+> trying to decide whether or not updating the auto object and doing a full 
+> recompile should be unnoticeable, or whether it should affect inheritance 
+> "trees" (is hierarchy a better word?).
+>
+>      Let's say you have ObjectA which inherits ObjectB, and they both 
+> inherit Auto. You make a change to ObjectB, so now there's ObjectB_Issue2 
+> which inherits Auto, but ObjectA is still inheriting the old version of 
+> ObjectB. Now, let's say you make a new version of the auto object and do a 
+> full recompile... Should ObjectA still inherit the old issue of ObjectB 
+> (but with both now inheriting the new auto object), or should it inherit 
+> ObjectB_Issue2? It'd be much simpler to do the latter, but I worry about if 
+> that could make updating the auto object less transparent, as it would 
+> bring inheritance "trees" up-to-date as a side effect (and possibly an 
+> undesirable one). Any opinions? Thanks!
+
+If bringing all objects involved up to date can cause problems, then not
+doing so can cause problems as well.  For example, suppose that the
+change in ObjectB anticipated a change in the auto object.  In that case,
+reverting back to the older ObjectB issue would be an error.
+
+Regards,
+Dworkin
+</pre>
+
+<hr />
+
+<pre>
+From: dgd at list.imaginary.com (Erwin Harte)
+Date: Wed Mar 20 23:21:01 2002
+Subject: [DGD] Inherits.
+
+On Wed, Mar 20, 2002 at 10:44:45PM -0600, Erwin Harte wrote:
+> On Thu, Mar 21, 2002 at 04:19:09AM +0100, Vladimir I. Lazarenko wrote:
+> > Hello DGD,
+> > 
+> >   Hmm. I'm a bit puzzled here. Let's say I'm making changes to a
+> >   files, that is inherited to some kind of other file. If i try to
+> >   update inherit itself, it says that i can't update inherited file.
+> 
+> Right.
+> 
+> >   If i dest the object that inherits that file, update the inherit and
+> >   clone object back, my changes do not work.
+
+Forgot to finish a sentence here:
+
+> If you destructed and compiled both objetcts (in the right order) it
+> should now be effective for new clones, at least.  However
+                                                             if you
+  never destructed the inherited object and only destructed and compiled
+  the inheriting object, that won't do you any good and actually means
+  that any clones already made of the object now use code that you can't
+  replace anymore.
+
+Cheers,
+
+Erwin.
+-- 
+Erwin Harte
+</pre>
+
   <p style="text-size: 150%"> <a href="../index.html"> Back to top level
     </a> </p>
             <address>

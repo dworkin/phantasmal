@@ -131,6 +131,111 @@
 	MUDLib's auto object can override any, all or none of them.
       </li>
     </ul>
+
+<pre>
+From: dgd at list.imaginary.com (Par Winzell)
+Date: Wed May 14 13:32:01 2003
+Subject: [DGD] Grammar question
+
+Dworkin's documentation is like a good novel or classical textbooks: 
+they are so dense with information that even after multiple readings and 
+a high degree of proficiency with the system, a fresh read-through will 
+yield new insights.
+
+Zell
+</pre>
+
+<hr />
+
+<pre>
+From: dgd at list.imaginary.com (Jay Shaffstall)
+Date: Mon May 19 22:14:01 2003
+Subject: [DGD] Any advice?
+
+I did spend some time trying to learn DGD without writing any code by 
+examining the kernel lib.  For me, this didn't work, which is why I took 
+the approach of writing nearly everything from scratch.  I can highly 
+recommend the Phantasmal mudlib for some excellent utility classes (string 
+functions, UNQ encoding/decoding, and a great help system are the features 
+I used from Phantasmal), as well as the kernel auto object for some great 
+utility functions.
+
+Jay
+</pre>
+
+<hr />
+
+<pre>
+From: dgd at list.imaginary.com (Felix A. Croes)
+Date: Tue May 20 06:20:01 2003
+Subject: [DGD] Any advice?
+
+"Kirk Smith" wrote:
+
+> <quote who="Ben Chambers">
+> > The one biggest issue that I have with the kernel library is lack of
+> documentation.
+>
+> This is one of my biggest issues with almost everything DGD. Myself and
+> another coder I work with have been wrestling with the extension interface for
+> weeks to implement what could have been a very easy project. Why? Lack of
+> documentation. In fact, this is one of the reasons I have chosen to write my
+> own mudlib from the ground up (but even this is not possible without using
+> existing code as reference material).
+
+This is a valid complaint.  I do intend to document DGD's LPC fully at
+one point (the driver internals have less priority) but keep pushing
+that moment forward.  It's not as if I am lacking other DGD things to
+work on, of course.
+
+Having said that, some things in DGD are just mind-bogglingly complex.
+Take the string parser for instance -- it wasn't created to make
+parsing easy, it was created to make parsing really efficient.  The
+documentation for it I consider to be of good quality, but nevertheless
+making a good parser with it is as hard, or perhaps harder, than doing
+so in LPC.
+
+Another example would be atomic functions.  I still wrestle to find a
+good way of explaining what they are, which can be understood by
+everyone.
+
+Regards,
+Dworkin
+</pre>
+
+<hr />
+
+<pre>
+From: DGD Mailing List (Michael McKiel)
+Date: Sat Apr  3 09:15:02 2004
+Subject: [DGD] modifying DGD
+
+ --- Ragnar Lonn wrote:
+> Hi all,
+> 
+> Is there any documentation whatsoever, except for the source code, that
+> describes DGD's guts for people who might want to modify it?
+> 
+> Cheers,
+> 
+>   /Ragnar
+
+I did a modification which changes the directory structure KernelLIB will run
+under, called reload.#.tar.gz
+though the changes aren't documented as such, you could grep for the defines
+in /include/krn.h which amount to almost all the changes.
+It's available on dgd.illiji.net/downloads/mudlibs
+and www.orpgs.com
+Though if you mean the driver itself, I believe thats fairly undocumented as
+such, and for most intents and purposes probably not recommended to modify to
+any extent. I know its not even recommended to modify the Kernel heh.
+
+Noah's phantasmal.sourceforge.com site is one of the better sources for
+documentation on DGD, and believe is-here.com has some FAQ's and kfun docs.
+
+If that helps at all, though neither of those document how/what to go about
+changing the driver or kernel lib.
+</pre>
             <address>
             <span><a href="mailto:angelbob-remove-spamfree@spamfree.users.sf.net">Noah Gibbs</a></span>
             </address></td>
