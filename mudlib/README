@@ -10,9 +10,10 @@ speed.  Its primary focus is on features not commonly found in MUDs,
 especially those that should be.  It currently competes primarily with
 Melville and with GurbaLib.  Melville is simpler to use and competes
 for implementors who would build mostly from scratch.  GurbaLib is
-more complex and competes for implementors who mainly just want to
-build new areas.  See "http://phantasmal.sourceforge.net/Compare.html"
-for a detailed comparison of Phantasmal to other current DGD MUDLibs.
+more complete and competes for implementors who want a game with the
+rules already coded and pretty standard.  See
+"http://phantasmal.sourceforge.net/Compare.html" for a detailed
+comparison of Phantasmal to other current DGD MUDLibs.
 
 Phantasmal is designed primarily for low-volume MUDs (those with a
 small number of simultaneously-connected players) and to allow
@@ -25,7 +26,7 @@ concerns about memory usage and processor speed are misplaced, and
 have been for years.  Naturally this would be different if 3D graphics
 or even 2D bitmaps were involved in large quantity, or if large
 numbers of NPCs were to be reasonably simulated.  Still, the age where
-DikuMUDs are all we can afford to run are over.
+DikuMUDs are all we can afford to run is over.
 
 Phantasmal hopes to serve geographically small, dense MUDs with a
 lower number of more complex rooms rather than sprawling but simple
