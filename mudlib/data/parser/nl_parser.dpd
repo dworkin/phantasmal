@@ -6,7 +6,7 @@ digit3 = /[0-9][0-9][0-9]/
 digits = /([0-9]+)/
 wnum = /((zero)|(one)|(two)|(three)|(four)|(five)|(six)|(seven)|(eight)|(nine))/
 teens = /((ten)|(eleven)|(twelve)|(thirteen)|(fourteen)|(fifteen)|(sixteen)|(seventeen)|(eighteen)|(ninteen))/
-wtens = /((twenty)|(thirty)|(fourty)|(fifty)|(sixty)|(seventy)|(eighty)|(ninty))/
+wtens = /((twenty)|(thirty)|(forty)|(fourty)|(fifty)|(sixty)|(seventy)|(eighty)|(ninty))/
 
 prep = /((on)|(from)|(into)|(at)|(towards))/
 
@@ -154,14 +154,20 @@ adject: itbv_adj
 adject: tbv_n_adj
 adject: tbv_adj
 
-possess: noun '\'s'
-possess: noun '\''
+possess: npr '\'s'
+possess: npr '\''
 
+npr: 'all'
+npr: 'everything'
+npr: adjp noun
 npr: possess adjp noun
 npr: pronoun
 npr: det adjp noun
+npr: num adjp noun
 npr: possess det adjp noun
-npr: det 'of' possess adjp noun
+npr: possess num adjp noun
+npr: det possess adjp noun
+npr: num 'of' possess adjp noun
 
 np: npr
 np: np 'and' npr
@@ -172,31 +178,34 @@ adjp: adjp adject
 
 pp: prep np
 
-det: num
-det: 'all' 'but' num ? all_but_num
 det: 'all' ? num_all
-det: 'all' 'the' ? num_all
 det: 'no' ? num0
 det: 'a' ? num1
 det: 'the' ? num1
 
+num: 'all' ? num_all
+num: 'none' ? num0
+num: 'all' 'but' num ? all_but_num
 num: number
 num: hundreds
 num: thousands
 num: thousands
 
 ones: wnum ? one2num
-ones: digit ? dig2num
+ones: odigit
+odigit: digit ? dig2num
 
+tdigit: digit2 ?dig2num
 tens: ones
-tens: digit2 ? dig2num
+tens: tdigit ? dig2num
 tens: teens ? ten2num
 tens: wtens ? ten2num
 tens: wtens '-' ones ? ten2num
 tens: wtens ones ? ten2num
 
+hdigit: digit3 ? dig2num
 hundreds: tens
-hundreds: digit3 ? dig2num
+hundreds: hdigit
 hundreds: tens 'hundred' ? hun2num
 hundreds: tens 'hundred' tens ? hun2num
 hundreds: tens 'hundred' 'and' tens ? hun2num
@@ -207,4 +216,12 @@ thousands: hundreds 'thousand' hundreds ? thou2num
 thousands: hundreds 'thousand' 'and' hundreds ? thou2num
 
 number: digits ? dig2num
-number: number digits ? cat_num
+number: ngroup digits ? cat_num
+number: ngroup odigit ? cat_num
+number: ngroup tdigit ? cat_num
+number: ngroup hdigit ? cat_num
+
+ngroup: number
+ngroup: odigit
+ngroup: tdigit
+ngroup: hdigit
