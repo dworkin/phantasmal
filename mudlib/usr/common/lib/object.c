@@ -515,6 +515,24 @@ void set_mobile(object new_mob) {
 /* Detail functions */
 
 object* get_details(void) {
+  object* parent_details;
+
+  if(archetype) {
+    parent_details = archetype->get_details();
+  }
+  if(!parent_details)
+    parent_details = ({ });
+
+  if(details && sizeof(details)) {
+    return parent_details + details[..];
+  } else {
+    return sizeof(parent_details) ? parent_details : nil;
+  }
+}
+
+/* This returns only the details that are specific to this
+   object, not any that are inherited. */
+object* get_immediate_details(void) {
   if(details && sizeof(details)) {
     return details[..];
   } else {
