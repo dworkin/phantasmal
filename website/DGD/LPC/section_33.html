@@ -1,0 +1,1111 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title> DGD LPC Textbook </title>
+  </head>
+
+  <body text="#000000" bgcolor="#DDDDDD" link="#0000EF" vlink="#51188E"
+	alink="#FF0000">
+
+    <h1> LPC:  The LPMUD Programming Language </h1>
+    <h2> DGD edition </h2>
+
+    <p> Copyright 1996, 2003 Ronny Wikh and Noah Gibbs </p>
+
+    <hr size="4">
+
+    <h3><a name="SEC3.2.10" href="index.html#SEC3.2.10">
+	Conditionals</a></h3>
+
+    <p>
+      Conditional statements are used a lot in LPC, and there are
+      several ways of writing them. A very important concept is that
+      <code>0</code> and <code>nil</code> are considered as
+      <b>false</b> and any other value as <b>true</b> in tests. This
+      means that empty listings <code>({})</code>, empty strings
+      <code>""</code> and empty mappings <code>([])</code> also are
+      evaluated as <b>true</b> since they aren't <code>0</code> or
+      <code>nil</code>. You have to use special functions to compute
+      their size or determine content if you want test them.
+    </p>
+
+
+    <h4><a name="SEC3.2.10.1" href="index.html#SEC3.2.10.1">
+	The if and else statements</a></h4>
+
+    <p>
+      <a name="IDX38"></a>
+
+      The most common conditional statement is the <code>if</code>
+      statement. It's easy to use and can be combined with an
+      <code>else</code> clause to do two different things based on a
+      variable's value.  It's written like this:
+
+    <pre>
+if (expression) statement;
+e.g.
+    if (a == 5)
+        a -= 4;
+    </pre>
+  </p>
+
+    <p>
+      If you want to handle the false case, you can add an
+      <code>else</code> statement like this:
+
+    <pre>
+if (expression) true-statement else false-statement;
+e.g.
+    if (a == 5)
+        a -= 4;
+    else
+        a += 18;
+
+or
+
+    if(a > 10)
+      a -= 10;
+    else {
+      a += 100;
+      b--;
+      a -= 10;
+    }
+    </pre>
+  </p>
+
+
+    <h4><a name="SEC3.2.10.2" href="index.html#SEC3.2.10.2">
+	The switch statement</a></h4>
+    <p>
+      <a name="IDX39"></a>
+      <a name="IDX40"></a>
+
+      If one variable has to be tested for a lot of different values,
+      the resulting list of <tt>`if-else-if-else'</tt> statements soon
+      gets very long and hard to read. However, if the type of the
+      value you are testing is an integer, a float or a string you can
+      use a much denser and neater way of coding. Assume you have the
+      following code you want to write:
+
+    <pre>
+if (name == "fatty")
+{
+    nat = "se";
+    desc = "blimp";
+}
+else if (name == "plugh")
+{
+    nat = "no";
+    desc = "warlock";
+}
+else if (name == "olorin")
+{
+    nat = "de";
+    desc = "bloodshot";
+}
+else
+{
+    nat = "x";
+    desc = "unknown";
+}
+    </pre>
+  </p>
+
+    <p>
+      A better way of writing this is:
+
+    <pre>
+switch (name)
+{
+case "fatty":
+    nat = "se";
+    desc = "blimp";
+    break;
+
+case "plugh":
+    nat = "no";
+    desc = "warlock";
+    break;
+
+case "olorin":
+    nat = "de";
+    desc = "bloodshot";
+    break;
+
+default:
+    nat = "x";
+    desc = "unknown";
+}
+    </pre>
+  </p>
+
+    <p>
+      The workings of this statement is simple: <code>switch</code>
+      sets up the expression value within the parenthesis for
+      matching. Then every expression following a <code>case</code> is
+      compared to find a match.
+    </p>
+
+    <p>
+      Note that the <code>case</code> expression <b>must</b> be a
+      constant value.  It can't be a variable, function call or other
+      expression.
+    </p>
+
+    <p>
+      After a match has been found the following statements are
+      executed until a <code>break</code> statement is found. If no
+      matching value can be found, the <code>default</code> statements
+      are executed instead.
+    </p>
+
+    <p>
+      While it's not mandatory to have a <code>default</code> section,
+      it's highly recommended since that usually means that something
+      has happened that wasn't predicted when writing the program.
+      It's usually very good to have an error message to notify the
+      user (or you) that something unexpected happened.
+    </p>
+
+    <p>
+      If you forget to put in a 'break' statement the following 'case'
+      expression will be executed. This might sound like something you
+      don't want, but if in the example above the names
+      <tt>`fatty'</tt> and <tt>`plugh'</tt> both should generate the
+      same result you could write:
+
+    <pre>
+case "fatty":
+    /* FALLTHROUGH */
+case "plugh":
+    &lt; code &gt;
+    break;
+</pre>
+
+    <p>
+      ... and save a bit of space. Writing code with switch doesn't
+      make it any quicker to execute.  It <i>does</i> make it a lot
+      easier to read, which reduces the chance of making mistakes
+      while coding. Remember to put the <code>/* FALLTHROUGH */</code>
+      comment there though, or it might be hard to remember later if
+      it was intentional or an omission of a <code>break</code>
+      statement.  If you have code that's executed before falling
+      through to the next case, this is especially important.  A good
+      idea is usually to add an extra linefeed after a
+      <code>break</code> statement just to give some extra 'breathing
+      space' to improve on legibility.
+    </p>
+
+
+    <h4><a name="SEC3.2.10.3" href="index.html#SEC3.2.10.3">
+	The ?: expression</a></h4>
+
+    <p>
+      <a name="IDX41"></a>
+
+      This is a very condensed way of writing an <code>if/else</code>
+      statement and return a value depending on how the test turned
+      out. The <code>?:</code> operator isn't a statement, it's an
+      expression since it returns a value.  It's listed here instead
+      of being listed among the expressions because it's effectively
+      a conditional, though.
+    </p>
+
+    <p>
+      Suppose you want to write the following:
+
+    <pre>
+if (test_expression)
+    var = if_expression;
+else
+    var = else_expression;
+    </pre>
+  </p>
+
+    <p>
+      You can write that in a much more condensed way:
+
+    <pre>
+var = test_expression ? if_expression : else_expression;
+e.g.
+    name = day == 2 ? "tuesday" : "another day";
+    </pre>
+
+    <p>
+      Opinions vary as to whether writing the conditional with this
+      operator makes the code easier or harder to read. A common rule
+      of thumb is that one use of the <code>?:</code> operator makes
+      code clearer, but that several in a single statement only makes
+      it worse. Something like this <i>definitely</i> isn't an
+      improvement:
+
+    <pre>
+name = day == 2 ? time == 18 ? "miller time" : "tuesday" : "another day";
+    </pre>
+  </p>
+
+
+    <h3><a name="SEC3.2.11" href="index.html#SEC3.2.11">
+	Loop statements</a></h3>
+
+    <p>
+      There are two loop statements in LPC which incorporate the use
+      of conditional statements within them.  That means they can be
+      programmed to execute only until a certain condition is true.
+    </p>
+
+
+    <h4><a name="SEC3.2.11.1" href="index.html#SEC3.2.11.1">
+	The for statement</a></h4>
+
+    <p>
+      If you want a counter or an iterator, you should usually use the
+      <b>for</b> statement. The syntax is as follows:
+
+    <pre>
+for (initalize_statement ; test_expression ; end_of_loop_statement)
+    body_statement;
+    </pre>
+
+    When first entered, the <code>for</code> statement executes the
+    <b>initialize_statement</b> part. This part usually is used to
+    initialize counters or values for the loop itself. Then the first
+    loop starts. Every loop starts by executing the
+    <b>test_expression</b> and examining the result. This is a truth
+    conditional, so any answer not equal to <code>0</code> or
+    <code>nil</code> will cause the loop to be run. If the test
+    expression is true then the <b>body_statement</b> is executed,
+    immediately followed by the <b>end_of_loop_statement</b>. In the
+    <b>body_statement</b> you usually do what you want to have done
+    for this iteration.  In the <b>end_of_loop_statement</b> you
+    usually increment or decrement counters as needed to prepare them
+    for the <b>test_expression</b> in the next loop.
+  </p>
+
+    <p>
+      Throughout the previous section I used the word <i>usually</i> a
+      lot. This is because you don't <i>have</i> to do it that way,
+      there's no rule forcing you to make use of the statements in the
+      way I said.  For the moment let's stick to the regular way of
+      using the <b>for-statement</b>. Later on I'll describe more
+      refined techniques, and you can discover your own as well.
+    </p>
+
+    <p>
+      Assume you want to compute the sum of all integers from 7 to 123
+      and don't know the formula ((x2^2 + x1^2) / 2). The most
+      straightforward way of doing that is a loop.
+    </p>
+
+    <pre>
+result = 0;
+for (count = 7 ; count &lt; 124 ; count++)
+    result += count;
+    </pre>
+
+    <p>
+      First of all, <code>result</code> is set to 0.  Then the actual
+      <code>for</code> statement is entered. It begins by setting the
+      variable count to 7. Then the loop is entered, beginning by
+      testing if count (= 7) is less than 124.  It is, so
+      <code>result</code> has count added to it.  Then count is
+      incremented and the loop is entered again.  This goes on until
+      the count value reaches 124. Since that isn't less than 124 the
+      loop is ended.
+    </p>
+
+    <p>
+      The loop form above is pretty standard in C, but you may have
+      realized there's another way you can write the same thing:
+    <pre>
+result = 0;
+for (count = 7 ; count &lt;= 123 ; count++)
+    result += count;
+    </pre>
+    This way works fine too, and you may find it more understandable.
+    Then again, you may not.
+  </p>
+
+    <p>
+      Please note that the value of count after the <code>for</code>
+      statement will be 124 and <i>not</i> 123.  The
+      <b>test_expression</b> must evaluate to <b>false</b> in order
+      for the loop to end, and in this case the value for count then
+      must be 124.  This is true for <i>both</i> ways of writing the
+      loop above!
+    </p>
+
+
+    <h4><a name="SEC3.2.11.2" href="index.html#SEC3.2.11.2">
+	The while statement</a></h4>
+
+    <p>
+      <a name="IDX42"></a>
+
+      The <b>while</b> statement is pretty straightforward.  You can
+      probably guess from its name what it does. The statement will
+      perform another statement over and over until a given
+      <code>while</code> expression returns false. The syntax is:
+
+    <pre>
+while (&lt;test expression&gt;)
+    </pre>
+  </p>
+
+    <p>
+      Note carefully that the test expression is checked first of all,
+      before running the statement the first time. If it evaluates as
+      false the first time, the body is never executed.
+    </p>
+
+    <pre>
+a = 0;
+while (a != 4)
+{
+    a += 5;
+    a /= 2;
+}
+    </pre>
+  </p>
+
+
+    <h3><a name="SEC3.2.12" href="index.html#SEC3.2.12">
+	The break and continue statement</a></h3>
+
+    <p>
+      <a name="IDX43"></a>
+      <a name="IDX44"></a>
+
+      Sometimes during the execution of <code>switch</code>,
+      <code>for</code> or <code>while</code> statements it becomes
+      necessary to abort execution of the block code, and continue
+      execution outside. To do that you use the <code>break</code>
+      statement.  It stops the execution of that block and continues
+      after it.
+    </p>
+
+    <pre>
+while (end_condition &lt; 9999)
+{
+    /* If the time() function returns 29449494, abort execution */
+    if (time() == 29449494)
+        break;
+
+    &lt; code &gt;
+}
+
+/* Continue here both after a break or when the full loop is done. */
+&lt; code &gt;
+    </pre>
+
+    <p>
+      Sometimes you merely want to start over from the top of the
+      <code>for</code> or <code>while</code> loop you're running.  To
+      do that, you use the <code>continue</code> statement.
+
+    <pre>
+/* Add all even numbers */
+sum = 0;
+for (i = 0 ; i &lt; 10000 ; i++)
+{
+    /* Start from the top of the loop if 'i' is an odd number */
+    if (i % 2)
+         continue;
+
+    sum += i;
+}
+    </pre>
+    Notice that the <code>i++</code> is executed when the loop
+    is continued.  Only the <code>sum += i;</code> is skipped.
+  </p>
+
+
+    <h3><a name="SEC3.2.13" href="index.html#SEC3.2.13">
+	Arrays and Mappings</a></h3>
+
+    <p>
+      It's time to dig deeper into the special types <b>array</b> and
+      <b>mapping</b>.  For each of these data types there exist a
+      number of useful functions that manipulate them and extract
+      information from them. Those functions will be described in
+      detail later.  Only a few are mentioned in this section.
+    </p>
+
+    <h4><a name="SEC3.2.13.1" href="index.html#SEC3.2.13.1">
+	How to declare and use arrays</a></h4>
+    <p>
+      <a name="IDX45"></a>
+
+      Arrays really aren't arrays in the proper sense of the
+      word. They can better be seen as lists with fixed order. The
+      difference is that arrays aren't usually manipulated easily,
+      while LPC arrays have sets of operators that are fairly
+      similar to Perl lists.
+    </p>
+
+    <p>
+      Arrays are type-specific. This means that an array of a certain
+      type only can contain variables of that single type.  Another
+      restrictions is that all arrays are one-dimensional.  You can't
+      have an array of arrays. However, the <code>mixed</code> type
+      takes care of these limitations.  A mixed variable can act as an
+      array containing any data type, even other arrays. As a rule you
+      should try to use properly typed arrays to minimize the
+      probabilities of programming mistakes.  When that's not possible,
+      though, you can use the mixed type.
+    </p>
+
+<p>
+You declare an array like this:
+
+</p>
+
+<pre>
+&lt;type&gt; *&lt;array name&gt;;
+e.g.
+    int *my_arr, *your_arr;
+    float *another_arr;
+    object *ob_arr;
+</pre>
+
+<p>
+The initial values of these declared arrays is '0', <i>not</i> an empty
+array. I repeat: they are initialized to 0 and <i>not</i> to an empty
+array. Keep this in mind!
+
+</p>
+<p>
+You can allocate and initialize an array like this:
+
+</p>
+
+<pre>
+&lt;array&gt; = ({ elem1, elem2, elem3, ..., elemN });
+e.g.
+    my_arr = ({ 1, 383, 5, 391, -4, 6 });
+</pre>
+
+<p>
+You access members of the array using brackets on the variable name.
+(Assume <VAR>val</VAR> here is declared to be an integer).
+
+</p>
+
+<pre>
+&lt;data variable&gt; = &lt;array&gt;[&lt;index&gt;];
+e.g.
+    val = my_arr[3];
+</pre>
+
+<p>
+LPC, like C, starts counting from 0, making the index to
+the fourth value = 3.
+
+</p>
+<p>
+To set the value of an existing position to a new value, simply set it
+using the <code>=</code> operator.
+
+</p>
+
+<pre>
+    my_arr[3] = 22;	/* =&gt; ({ 1, 383, 5, 22, -4, 6 }) */
+    my_arr[3] = 391;	/* =&gt; ({ 1, 383, 5, 391, -4, 6 }) */
+</pre>
+
+<p>
+If you want to make a subset of an array you can specify a range of indices
+within the brackets.
+
+</p>
+
+<pre>
+&lt;array variable&gt; = &lt;array&gt;[&lt;start_range&gt;..&lt;end_range&gt;];
+e.g.
+    your_arr = my_arr[1..3];
+</pre>
+
+<p>
+... will result in <code>your_arr</code> becoming the new array <code>({ 383, 5,
+391 });</code> If you give a new value to an old array, the previous array is
+lost.
+
+</p>
+
+<pre>
+e.g.
+    my_arr = ({ });
+</pre>
+
+<p>
+... will result in <code>my_arr</code> holding an empty array. The old array is
+deallocated and the memory previously used is reclaimed by the driver.
+
+</p>
+<p>
+If you index outside an array, an error occurs and execution of the object
+is aborted. However, range indexing outside the array does not result in an
+error, the range is then only constrained to fall within the array.
+
+</p>
+<p>
+If you want to create an empty array, initialized to 0 (no matter the type
+of the array, all positions will be set to 0 anyway) of a given length, you
+use the efun <code>allocate()</code>.
+
+</p>
+<p>
+<a name="IDX46"></a>
+
+<pre>
+&lt;array&gt; = allocate(&lt;length&gt;);
+e.g.
+    your_arr = allocate(3);	/* =&gt; your_arr = ({ 0, 0, 0 }); */
+</pre>
+
+<p>
+Concatenating (adding) arrays to each other is most easily done with the
+<code>+</code> operator. Simply add them as you would numbers. The <code>+=</code>
+operator works fine as well.
+
+</p>
+
+<pre>
+my_arr = ({ 9, 3 }) + ({ 5, 10, 3 }); /* =&gt; ({ 9, 3, 5, 10, 3 }) */
+</pre>
+
+<p>
+Removing elements from an array is easiest done with the <code>-/-=</code>
+operator, however, be aware that it is a general operator that will
+remove <i>all</i> items found that match the item you want to remove.
+
+</p>
+
+<pre>
+my_arr -= ({ 3, 10 }); /* =&gt; ({ 9, 5 }) */
+</pre>
+
+<p>
+If you want to remove a single item in the middle somewhere that might have
+been repeated, you have to use the range operator of course.
+
+</p>
+
+<pre>
+my_arr = ({ 9, 3, 5, 10, 3 });
+my_arr = my_arr[0..0] + my_arr[2..4]; /* =&gt; ({ 9, 5, 10, 3 }) */
+</pre>
+
+<p>
+<b>NB!</b> Beware this difference!!!! One is a list, the other an integer!
+
+</p>
+
+<pre>
+    &lt;array&gt; my_arr[0..0]   /* = ({ 9 }) */
+    &lt;int&gt;   my_arr[0]      /* = 9 */
+</pre>
+
+
+
+<h4><a name="SEC45" href="index.html#SEC45">How to declare and use Mappings</a></h4>
+<p>
+<a name="IDX47"></a>
+
+</p>
+<p>
+Mappings are lists of associated values. They are <code>mixed</code> by
+default, meaning that the index part of the associated values doesn't
+have to be of the same type all the time, even though this is encouraged
+for the same reason as before in regard to the mixed data type.
+
+</p>
+<p>
+Mappings can use any kind of data type both as index and value. The index
+part of the mapping in a single mapping must consist of unique
+values. There can <i>not</i> be two indices of the same value.
+
+</p>
+<p>
+This all sounds pretty complicated, but in reality it's pretty simple to
+use. However, it will be a lot easier to understand once we get down to
+actually seeing it used.
+
+</p>
+<p>
+You declare a mapping just like any other variable, so let's just start up
+with a few declarations for later use:
+
+</p>
+
+<pre>
+mapping my_map;
+int     value;
+</pre>
+
+<p>
+Allocating and initializing can be done in three different ways:
+
+</p>
+
+<pre>
+1:	&lt;mapping_var&gt; = ([ &lt;index1&gt;:&lt;value1&gt;, &lt;index2&gt;:&lt;value2&gt;, ... ]);
+
+2:	&lt;mapping_var&gt;[&lt;index&gt;] = value;
+
+3:	&lt;mapping_var&gt; = mkmapping(&lt;list of indices&gt;, &lt;list of values&gt;);
+</pre>
+
+<p>
+The first is straight-forward and easy.
+
+</p>
+
+<pre>
+1: my_map = ([ "adam":5, "bertil":8, "cecar":-4 ]);
+</pre>
+
+<p>
+The second works so that in case a given mapping pair doesn't exist, it is
+created when referenced. If it does exist the value part is replaced.
+
+</p>
+
+<pre>
+2: my_map["adam"] = 1;    /* Creates the pair "adam":1 */
+   my_map["bertil"] = 8;  /* Creates the pair "bertil":8 */
+   my_map["adam"] = 5;    /* Replaces the old value in "adam" with 5. */
+	...
+</pre>
+
+<p>
+The third requires two arrays, one containing the indices and one
+containing the values. How to create arrays was described in the previous
+chapter.
+
+</p>
+
+<pre>
+3: my_map = mkmapping(({ "adam", "bertil", "cecar" }), ({ 5, 8, -4 }));
+</pre>
+
+<p>
+Unlike arrays there's no order in a mapping. The values are stashed in a
+way that makes finding the values as quick as possible. There are functions
+that will allow you to get the component lists (the indices or values) from
+a mapping but keep in mind that they can be in <i>any</i> order and are not
+guaranteed to remain the same from call to call. In practice though, they
+only change order when you add or remove an element.
+
+</p>
+<p>
+Merging mappings can be done with the <code>+/+=</code> operator just as with
+mappings.
+
+</p>
+
+<pre>
+my_map += ([ "david":5, "erik":33 ]);
+</pre>
+
+<p>
+<a name="IDX48"></a>
+
+</p>
+<p>
+Removing items in a mapping, however, is a bit trickier. That has to be
+done by using the special efun <code>m_delete()</code> (also described later).
+
+</p>
+
+<pre>
+my_map = m_delete(my_map, "bertil");
+my_map = m_delete(my_map, "david");
+</pre>
+
+<p>
+As you see the mapping pairs has to be removed one by one using the index
+as an identifier of which pair you want to remove. Another thing you now
+realize quite clearly is that the indices in a mapping has to be unique,
+you can't have two identical 'handles' to different values. The values
+however can naturally be identical.
+
+</p>
+<p>
+Individual values can be obtained through simple indexing.
+
+</p>
+
+<pre>
+value = my_map["cecar"]; /* =&gt; -4 */
+</pre>
+
+<p>
+Indexing a value that doesn't exist will <i>not</i> generate an error,
+only the value 0. Be <i>very</i> careful of this since you might indeed
+have legal values of 0 in the mapping as well. i.e. a value of 0 might
+mean that the index has no value part but also that the value indeed
+<i>is</i> 0.
+
+</p>
+
+<pre>
+value = my_map["urk"]; /* =&gt; 0 */
+</pre>
+
+
+
+<hr size=2><h2><a name="SEC46" href="index.html#SEC46">The preprocessor</a></h2>
+
+<p>
+The preprocessor is <i>not</i> a part of the LPC language proper. It's a
+special process that is run before the actual compilation of the program
+occurs.  Basically it can be seen as a very smart string substitutor;
+Specified strings in the code is replaced by other strings.
+
+</p>
+<p>
+All preprocessor directives are given as strings starting with the
+character <tt>`#'</tt> on the first column of the line. You can put them
+anywhere, but as you'll be told later most of them do belong in the
+beginning of the code.
+
+</p>
+
+<ul>
+<li><a href="lpc.html#SEC47">#include</a>: The #include statement
+<li><a href="lpc.html#SEC48">#define</a>: The #define and undef statement
+<li><a href="lpc.html#SEC49">#if etc</a>: The #if, #ifdef, #ifndef, #else and #elseif statements
+</ul>
+
+
+
+<h3><a name="SEC47" href="index.html#SEC47">The #include statement</a></h3>
+<p>
+<a name="IDX49"></a>
+
+</p>
+<p>
+This is by far the most used preprocessor command. It simply tells the
+preprocessor to replace that line with the contents of an <i>entire</i>
+other file before going any further.
+
+</p>
+<p>
+Data you put in <b>include-files</b> is usually data that won't ever
+change and that you want to put into several files. Instead of having to
+write those same lines over and over with the cumulative chance of
+putting in copying errors as you go, you simply collect that data into
+one or more files and include them into the program files as necessary.
+
+</p>
+<p>
+The syntax is very easy:
+
+</p>
+
+<pre>
+#include &lt;standard_file&gt;
+#include "special_file"
+</pre>
+
+<p>
+<b>NB!</b> Note the absence of a <code>;</code> after the line!
+
+</p>
+<p>
+The two different ways you write this depend on where the file you want to
+include exists. There's a number of standard include files in the game,
+spread around in a number of different directories. Rather than having to
+remember exactly where they are, you can just give the name of the file you
+want to include then.
+
+</p>
+
+<pre>
+#include &lt;stdproperties.h&gt;
+#include &lt;adverbs.h&gt;
+</pre>
+
+<p>
+If you want to include files that aren't part of the standard setup, for
+example files of your own, you have to specify where they are. You do that
+either relative to the position of the file that uses it or by an absolute
+path.
+
+</p>
+
+<pre>
+#include "/d/Genesis/login/login.h"
+#include "my_defs.h"
+#include "/sys/adverbs.h"	/* Same as the shorter one above */
+</pre>
+
+<p>
+When you include standard files, <i>always</i> use the &lt;&gt;-path
+notation. The reason isn't only that it becomes shorter and easier to
+distingues but also that if the files move around your program will stop
+working. If you use the &lt;&gt;-notation they will always be found anyway.
+
+</p>
+<p>
+Include files can have any name, but as a rule they are given the '.h'
+suffix to clearly distinguish them as include files.
+
+</p>
+<p>
+It is even possible to include <code>c</code>-files, i.e. to include entire
+files full of code. However, doing that is <code>very</code> bad form. Do
+<i>not</i> do that <b>EVER</b>! Why? Well, for one thing error
+handling usually has a bad time tracing errors in included files, the
+line numbers gets wrong. Also, since you include the uncompiled code
+into several different objets, you will waste memory and CPU since
+these identical included parts has to be compiled and stored separately
+for each object that uses them. Apart from all this just reading the
+code will be a chore better not even contemplated.
+
+</p>
+<p>
+What has the extension of the file name <i>really</i> to do with the
+contents then? Well...  actually nothing at all. However, the convention
+is to keep code, functions that are to be executed, in <code>c</code>-files
+and definitions in <code>h</code>-files. Usually the mudlib reflects on this
+convention and might not recognize anything but <code>c</code>-files as code
+sources.
+
+</p>
+
+
+<h3><a name="SEC48" href="index.html#SEC48">The #define statement</a></h3>
+<p>
+<a name="IDX50"></a>
+<a name="IDX51"></a>
+
+</p>
+<p>
+This is a very powerful <b>macro</b> or substitute preprocessor command
+that can be abused endlessly. You are wise if you use it with caution
+and only for simple tasks.
+
+</p>
+<p>
+The syntax is as follows:
+
+</p>
+
+<pre>
+#define &lt;pattern&gt; &lt;substitute pattern&gt;
+#undef &lt;pattern&gt;
+</pre>
+
+<p>
+Any text in the file that matches <code>&lt;pattern&gt;</code> will be substituted for
+<code>&lt;substitute pattern&gt;</code> before compilation occurs. A <code>#define</code>
+is valid from the line it is found on until the end of the file or an
+<code>#undef</code> command that removes it.
+
+</p>
+<p>
+Although defines can be written just as any kind of text, it is the custom
+(do this!) to use only capitals when writing them. This is so that they
+will be easily distinguishable for what they are since no one (not you
+either!) ever writes function or variable names with capitals.
+
+</p>
+<p>
+Place all defines in the beginning of the file, or the poor chum who next
+tries to look at your code will have the devil's own time of locating
+them. If it's someone you asked for help (since your badly written code
+most likely won't work) he probably will tell you to stick the file
+someplace very unhygienic and come back later when you've learned to write
+properly.
+
+</p>
+<p>
+Simple defines are for example paths, names and above all constants of any
+kind that you don't want to write over and over.
+
+</p>
+
+<pre>
+#define MAX_LOGIN  100          /* Max logged on players */
+#define LOGIN_OB   "/std/login" /* The login object      */
+#define GREET_TEXT "Welcome!"   /* The login message     */
+</pre>
+
+<p>
+Wherever the pattern strings above occur, they will be replaced by whatever
+is followed by the pattern until the end of the line. That includes the
+comments above, but they are removed anyway later.
+
+</p>
+
+<pre>
+tell_object(player, GREET_TEXT + "\n");
+</pre>
+
+<p>
+If a macro extends beyond the end of the line you can terminate the
+lines with a <code>\</code> which signifies that it continues on the next
+line. However, you <i>must</i> break the string right after the <code>\</code>,
+there must <b>NOT</b> be any spaces or other characters there, just
+the linebreak.
+
+</p>
+
+<pre>
+#define LONG_DEFINE  "beginning of string \
+                      and end of the same"	
+</pre>
+
+<p>
+Function-like defines are fairly common and often abused. The only really
+important rule is that any argument to the macro <i>must</i> be written
+so that they are used enclosed in parenthesis. If you don't do that you
+can end up with some very strange results.
+
+</p>
+
+<pre>
+1: #define MUL_IT(a, b) a * b        /* Wrong */
+2: #define MUL_IT(a, b) (a * b)      /* Not enough */
+3: #define MUL_IT(a, b) ((a) * (b))  /* Correct */
+</pre>
+
+<p>
+What's the big difference you may ask? Well, look at this example:
+
+</p>
+
+<pre>
+result = MUL_IT(2 + 3, 4 * 5) / 5;
+
+   Expanded this becomes:
+
+1: result = 2 + 3 * 4 * 5 / 5;       /* = 14, Wrong */
+2: result = (2 + 3 * 4 * 5) / 5      /* = 12, Just as wrong */
+3: result = ((2 + 3) * (4 * 5)) / 5  /* = 20, Correct! */
+</pre>
+
+<p>
+Abuse of defines usually involves badly formulated macros, complicated
+macros used inside other macros (making the code almost impossible to
+understand) or humungous arrays or mappings in defines that are used
+often. The basic rule is to keep macros short and fairly simple. Do that
+and you'll never have any problems.
+
+</p>
+
+
+<h3><a name="SEC49" href="index.html#SEC49">The #if, #ifdef, #ifndef, #else and #elseif statements</a></h3>
+<p>
+<a name="IDX52"></a>
+<a name="IDX53"></a>
+<a name="IDX54"></a>
+<a name="IDX55"></a>
+<a name="IDX56"></a>
+
+</p>
+<p>
+These are all preprocessor directives aimed at selecting certain parts of
+code and removing other depending on the state of a preprocessor variable.
+
+</p>
+<p>
+The <code>#if</code> statement looks very much like a normal if statement,
+just written a bit differently.
+
+</p>
+<p>
+Assume you <i>may</i> have the following define somewhere:
+
+</p>
+
+<pre>
+#define code_VAR  2
+
+or
+	
+#define code_VAR  3
+</pre>
+
+<p>
+Then you can write
+
+</p>
+
+<pre>
+#if code_VAR == 2
+    &lt;code that will be kept only if code_VAR == 2&gt;
+#else
+    &lt;code that will be kept only if code_VAR != 2&gt;
+#endif
+</pre>
+
+<p>
+You don't have to have the <code>#else</code> statement there at all if you
+don't want to.
+
+</p>
+<p>
+It's sufficient to have the following statement to 'define' a preprocessor
+pattern as existing:
+
+</p>
+
+<pre>
+#define code_VAR    /* This defines the existance of code_VAR */
+</pre>
+
+<p>
+Then you can write like this:
+
+</p>
+
+<pre>
+#ifdef code_VAR
+    &lt;code that will be kept only if code_VAR is defined&gt;
+#else
+    &lt;code that will be kept only if code_VAR isn't defined&gt;
+#endif
+</pre>
+
+<p>
+or
+
+</p>
+
+<pre>
+#ifndef code_VAR
+    &lt;code that will be kept only if code_VAR isn't defined&gt;
+#else
+    &lt;code that will be kept only if code_VAR is defined&gt;
+#endif
+</pre>
+
+<p>
+Again, the <code>#else</code> part is optional.
+
+</p>
+<p>
+The <code>#if/#ifdef/#ifndef</code> preprocessor commands are almost only used
+to add debug code that you don't want to have activated all of the time,
+or code that will work differently depending on other very rarely
+changing parameters. Since the conditions have to be hard-coded in the
+file and can't change during the course of the use of the object this is
+something you very rarely do.
+
+</p>
+
+    <hr>
+    <a href="http://sourceforge.net">
+      <img src="http://sourceforge.net/sflogo.php?group_id=48659&type=6"
+	   width="210" height="62" border="0" alt="SourceForge.net Logo"></a>
+    <address><a href="mailto:noah_gibbs@yaNOSPAMhoo.com">Noah Gibbs</a>
+    </address>
+    <!-- Created: Mon Jun 11 21:50:30 PDT 2001 -->
+    <!-- hhmts start -->
+Last modified: Tue Apr  8 23:37:30 PDT 2003
+<!-- hhmts end -->
+  </body>
+</html>
