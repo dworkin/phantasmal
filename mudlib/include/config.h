@@ -102,6 +102,7 @@
 #define ROOM_BIND_FILE      "/data/system/room_binder.unq"
 #define MOBILE_BIND_FILE    "/data/system/mobile_binder.unq"
 #define BUG_DATA            "/data/text/bug_reports.txt"
+#define IDEA_DATA           "/data/text/idea_reports.txt"
 #define TYPO_DATA           "/data/text/typo_reports.txt"
 #define LOG_CHANNELS        "/data/system/logd_channels.unq"
 #define SYSTEM_PHRASES      "/data/phrase/system.phr"
