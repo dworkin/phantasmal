@@ -563,6 +563,5 @@ static void cmd_make_room(object user, string cmd, string str) {
   }
 
   state = clone_object(US_MAKE_ROOM);
-  state->init(user);
   user->push_state(state);
 }
