@@ -3,6 +3,7 @@
 #include <type.h>
 #include <phrase.h>
 #include <trace.h>
+#include <log.h>
 
 #include <kernel/kernel.h>
 
@@ -59,6 +60,41 @@ void destructed(int clone) {
 void upgraded(void) {
   clear_help_entries();
   reread_help_files();
+}
+
+
+private string normalize_help_query(string query) {
+  int     ctr, ctr2;
+  string *words;
+  string  word;
+
+  query = STRINGD->to_lower(STRINGD->trim_whitespace(query));
+
+  words = explode(query, " ");
+  query = "";
+  for(ctr = 0; ctr < sizeof(words); ctr++) {
+    if(words[ctr]) {
+      word = "";
+      for(ctr2 = 0; ctr2 < strlen(words[ctr]); ctr2++) {
+	if((words[ctr][ctr2] >= "A"[0] && words[ctr][ctr2] <= "Z"[0])
+	   || (words[ctr][ctr2] >= "a"[0] && words[ctr][ctr2] <= "z"[0])
+	   || (words[ctr][ctr2] >= "0"[0] && words[ctr][ctr2] <= "9"[0])) {
+	  word += words[ctr][ctr2..ctr2];
+	}
+      }
+
+      if(strlen(word)) {
+	query += " " + word;
+      }
+    }
+  }
+
+  /* Remove extra leading space */
+  query = query[1..];
+
+  LOGD->write_syslog("Help query is '" + query + "'.");
+
+  return query;
 }
 
 void clear_help_entries(void) {
@@ -208,6 +244,8 @@ mixed* query_exact(string key, object user) {
 
   locale = user->get_locale();
 
+  key = normalize_help_query(key);
+
   ent = exact_entries[locale][key];
   if(!ent) {
     ent = exact_entries[LANG_englishUS][key];
@@ -252,6 +290,11 @@ private void new_unq_entry(string path, object names, object desc,
     kw_arr = explode(keywords, ",");
     for(ctr = 0; ctr < sizeof(kw_arr); ctr++) {
       kw_arr[ctr] = STRINGD->trim_whitespace(kw_arr[ctr]);
+
+      if(kw_arr[ctr] != "admin") {
+	LOGD->write_syslog("Unknown help keyword '" + kw_arr[ctr]
+			   + "' loading helpfiles!", LOG_WARN);
+      }
     }
   } else {
     kw_arr = ({ });
@@ -271,10 +314,10 @@ private void new_unq_entry(string path, object names, object desc,
     len = sizeof(keys);
 
     for(ctr = 0; ctr < len; ctr++) {
-      keys[ctr] = STRINGD->trim_whitespace(keys[ctr]);
+      keys[ctr] = normalize_help_query(keys[ctr]);
       if(STRINGD->string_has_char('\n', keys[ctr])) {
 	LOGD->write_syslog("Embedded newline in name(s) of help entry \""
-				  + keys[0] + "\"");
+				  + keys[0] + "\"", LOG_ERR);
       }
 
       /* If no entry, init array */
