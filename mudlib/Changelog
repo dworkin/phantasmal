@@ -1,4 +1,6 @@
 Release 0.012:
+	* More logging and stuff in ObjectD.  And fixed a bug that
+	  caused log messages on rebuild.
 
 Release 0.011b:
 	* Added @make_portable command, very similar to @make_room.
