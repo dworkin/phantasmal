@@ -13,7 +13,7 @@
 
 inherit obj OBJECT;
 
-mixed* exits;
+private mixed* exits;
 
 private int  pending_location;
 private int  pending_parent;
@@ -40,12 +40,12 @@ private int objflags;
    no more than the capacity -- a quiver of arrows can accept a very
    large number of arrows, even though they're all of the maximum
    acceptable length. */
-float weight, volume, length;
-float weight_capacity, volume_capacity, length_capacity;
+private float weight, volume, length;
+private float weight_capacity, volume_capacity, length_capacity;
 
 /* These are the total current amount of weight and volume
    being held in the object. */
-float current_weight, current_volume;
+private float current_weight, current_volume;
 
 
 #define PHR(x) PHRASED->new_simple_english_phrase(x)
