@@ -1,4 +1,4 @@
-/* $Header: /cvsroot/phantasmal/mudlib/usr/System/obj/user.c,v 1.38 2003/03/04 23:56:49 angelbob Exp $ */
+/* $Header: /cvsroot/phantasmal/mudlib/usr/System/obj/user.c,v 1.39 2003/03/05 22:35:28 angelbob Exp $ */
 
 #include <kernel/kernel.h>
 #include <kernel/user.h>
@@ -152,7 +152,7 @@ static void save_user_to_file(void) {
   mixed*  chanlist;
   int     subcode, ctr;
 
-  chanlist = CHANNELD->channel_list(is_admin());
+  chanlist = CHANNELD->channel_list(this_object());
   subcode = 0;
   for(ctr = 0; ctr < sizeof(chanlist); ctr++) {
     if(CHANNELD->is_subscribed(this_object(), chanlist[ctr][1])) {
@@ -1432,7 +1432,7 @@ static void cmd_channels(object user, string cmd, string str) {
   if(str)
     str = STRINGD->trim_whitespace(str);
   if(!str || str == "") {
-    chanlist = CHANNELD->channel_list(user->is_admin());
+    chanlist = CHANNELD->channel_list(user);
     user->message("Channels:\r\n");
     for(ctr = 0; ctr < sizeof(chanlist); ctr++) {
       if(CHANNELD->is_subscribed(user, ctr)) {
@@ -1441,6 +1441,10 @@ static void cmd_channels(object user, string cmd, string str) {
 	user->message("  ");
       }
       user->send_phrase(chanlist[ctr][0]);
+
+      if(chanlist[ctr][2] > 0) {
+	user->message("  " + chanlist[ctr][2]);
+      }
 
       user->message("\r\n");
     }
