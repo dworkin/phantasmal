@@ -1,4 +1,4 @@
-/* $Header: /cvsroot/phantasmal/mudlib/usr/System/obj/user.c,v 1.11 2002/06/04 22:28:03 angelbob Exp $ */
+/* $Header: /cvsroot/phantasmal/mudlib/usr/System/obj/user.c,v 1.12 2002/06/06 18:54:08 angelbob Exp $ */
 
 #include <kernel/kernel.h>
 #include <kernel/user.h>
@@ -43,7 +43,6 @@ static int timestamp;           /* Last network input */
 static string hostname;         /* Hostname they're logging in from */
 
 /* Cached vars */
-static object account;          /* Account this login belongs to */
 static object body;             /* Body object */
 static object mobile;           /* Mobile for body object */
 static object location;         /* Location of body */
@@ -691,39 +690,63 @@ int login(string str)
  */
 private void player_login(void)
 {
+  int    start_room_num;
+  object start_room;
+
   body = nil;
 
   /* Set up location, body, etc */
-  location = MAPD->get_room("start room");
-  if(location) {
-    if(body_num > 0) {
-      body = PORTABLED->get_portable_by_num(body_num);
-    }
-    if(!body) {
-      body = clone_object(SIMPLE_PORTABLE);
-      if(!body)
-	error("Can't clone simple portable!");
-      PORTABLED->add_portable_number(body, -1);
-      if(!PORTABLED->get_portable_by_num(body->get_number())) {
-	LOGD->write_syslog("Error making new body!", LOG_ERR);
-      }
-      body_num = body->get_number();
+  start_room_num = CONFIGD->get_start_room();
+  start_room = MAPD->get_room_by_num(start_room_num);
 
-      /* Set descriptions and add noun for new name */
-      body->set_brief(NEW_PHRASE(Name));
-      body->set_glance(NEW_PHRASE(Name));
-      body->set_look(NEW_PHRASE(Name + " wanders the MUD."));
-      body->set_examine(nil);
-      body->add_noun(NEW_PHRASE(name));
+  if(body_num > 0) {
+    body = PORTABLED->get_portable_by_num(body_num);
+  }
+  if(!body) {
+    location = start_room;
+
+    body = clone_object(SIMPLE_PORTABLE);
+    if(!body)
+      error("Can't clone simple portable!");
+    PORTABLED->add_portable_number(body, -1);
+    if(!PORTABLED->get_portable_by_num(body->get_number())) {
+      LOGD->write_syslog("Error making new body!", LOG_ERR);
     }
+    body_num = body->get_number();
+    LOGD->write_syslog("Set body to number " + body_num + ".");
+
+    if(!PORTABLED->get_portable_by_num(body_num)) {
+      LOGD->write_syslog("Can't find new body number!", LOG_ERR);
+    }
+
+    /* Set descriptions and add noun for new name */
+    body->set_brief(NEW_PHRASE(Name));
+    body->set_glance(NEW_PHRASE(Name));
+    body->set_look(NEW_PHRASE(Name + " wanders the MUD."));
+    body->set_examine(nil);
+    body->add_noun(NEW_PHRASE(name));
 
     mobile = clone_object(SIMPLE_MOBILE);
     mobile->assign_body(body);
     mobile->set_user(this_object());
 
     location->add_to_container(body);
+
+    /* We just set a body number, so we need to save the player data
+       file again... */
+    save_user_to_file();
   } else {
-    error("No start room!");
+    /* Move body to start room? */
+
+    location = body->get_location();
+    mobile = body->get_mobile();
+    mobile->set_user(this_object());
+    if(!mobile) {
+      /* Deleted mobile but not body -- fix later */
+      error("Body but not mobile deleted!  Deleting body, log in again.");
+      message("Internal error, try logging in again.");
+      destruct_object(body);
+    }
   }
 
   /* Show room to player */
@@ -738,16 +761,7 @@ private void player_login(void)
  */
 private void player_logout(void)
 {
-  if(location) {
-    if(body) {
-      destruct_object(body);
-      body = nil;
-    }
-    if(mobile) {
-      destruct_object(mobile);
-      mobile = nil;
-    }
-  }
+  /* TODO: Teleport body to meat locker */
 
   CHANNELD->unsubscribe_user_from_all(this_object());
 }
