@@ -21,657 +21,76 @@
     central grammar, which parses and dispatches them wiztool-style.
   </p>
 
-<pre>
-From: "Tim Vernum" <tpv@acay.com.au>
-Sender: tpv@acay.com.au
-To: <dgd@list.imaginary.com>
-Date: Fri, 25 May 2001 14:41:24 -1000
-Subject: Re: [DGD]Inherit and include
-
->I have a little question regarding inherits and includes.... It's probably
->going to seem really dumb but here goes:
-
-No, it sounds perfectly sensible.
-(ie, the questions you're asking are good questions to ask)
-
->The way I understand it (and I may embarrass myself by being totally wrong)
-
->when you include a file into a file you are effectively copying the code in
-
->the include file into your other file.
-
-Pretty much.
-There some tiny differences (like the error messages will point you to the correct
-line in the ".h" file), but the don't really effect the outcome of your question.
-
-
->When you inherit a file does it do the same thing?
-
-No.
-You don't technically inherit a file.
-You inherit a program.
-The program is defined by a file containing LPC code, but
-   inherit "/usr/darkcide/frobnaz" ;
-doesn't actually mean to inherit the file, it means to inherit the program that
-is produced by compiling that file.
-
-> For example if I inherit
->file Y in file Z is it the same as writing all the code in the
-> Y file into my Z file. 
-
-No.
-
->Or does it make a reference to the functions in Y.
-
-Yes (more or less)
-
->Each command file inherits tools.c
->
->So ... Is each command file copying the tools.c file into itself thus
->creating essentially loads of copies of the tools.c code?
-
-Not quite.
-If tools.c contains lost of variables, then they are copied, because each object
-needs its own copy of the variable, but the code is not copied.
-It's much like using clone_object(), each time you clone it, you recreate the
-variables, but there's only 1 copy of the code.
-
-
->Would it be better to have all the commands in one .c file that inherits
->tools.c?
-
-Possibly, but that's a design question that relates to the way your mudlib will
-operate.
-You probably don't need to worry from an efficiency point of view.
-
-
-
-Date: Fri, 16 Feb 2001 15:53:15 -0500 (EST)
-From: Stephen Schmidt <schmidsj@union.edu>
-To: dgd@list.imaginary.com
-Subject: Re: [DGD]Default Wiztool not loaded ?
-
-On Fri, 16 Feb 2001, Par Winzell wrote:
-> If you implemented it using a /cmds directory, I would ask you
-> what the advantage is of that :-)
-
-Good point. I guess the main thing is that it's easier
-to maintain commands if each one is in a separate file
-that doesn't do anything else. I was kinda struck by the
-length of receive_message in the kernel's user; it's
-quite long because the basic commands (say, tell, passwd,
-users, that sort of thing) are hard-coded in user.c.
-If you want to change the tell command, and you make
-a mistake and the file won't load, with the /cmds
-system, all that breaks is the tell command. With
-the kernel system, user.c would stop compiling. Similarly
-with the wiztool, although if you had a clone of the
-old wiztool already, nothing bad would happen as long
-as no one tried to clone a new wiztool.
-
-There are also some parsing advantages to knowing that
-the code for the foo command can be found in /cmds/foo.c,
-although not much, and of course there are parsing advantages
-to knowing that commands are found only in the wiztool also.
-
-I agree that command objects should not be instantiated.
-In DGD it's not hard to prevent that, although Melville
-does not bother.
-
-> The 'most mudlibs'
-> statement you make is, I think, both wrong and irrelevant...
-
-Perhaps so. I should perhaps have said LPMud mudlibs and
-variants, as I don't know much about other types. Within
-that group, LP 3.x, TMI-2, Nightmare, and Melville use the
-command file system, LP 2.4.5 and the kernel lib use the
-wiztool system (IIRC - haven't used any of them except
-the kernel and Melville for years). That's not a complete
-list of those mudlibs either but it's the only ones I am
-even passingly familiar with. Do mudlibs from a broader
-category tend to use other systems? I am sure there are
-more than two ways to solve the problem.
-
-> Why -should-, say, 'ls', exist as an object? What does it do
-> that it needs to be able to be referenced through an object
-> pointer?
- 
-Nothing particularly much. The advantages, as I see it, are
-being able to access it as a separate file, and are primarily
-organizational. The system of having each command in its
-own file, but then be inherited into user.c, would also
-derive most of the benefits, except for the handling of
-a failed compile.
-
-Steve 
-
-Date: Fri, 16 Feb 2001 22:32:23 +0100 (CET)
-From: "Felix A. Croes" <felix@dworkin.nl>
-Message-Id: <200102162132.WAA04987@dworkin.nl>
-To: dgd@list.imaginary.com
-Subject: Re: [DGD]Default Wiztool not loaded ?
-
-Stephen Schmidt <schmidsj@union.edu> wrote:
-
-> On Fri, 16 Feb 2001, Par Winzell wrote:
-> > If you implemented it using a /cmds directory, I would ask you
-> > what the advantage is of that :-)
->
-> Good point. I guess the main thing is that it's easier
-> to maintain commands if each one is in a separate file
-> that doesn't do anything else. I was kinda struck by the
-> length of receive_message in the kernel's user; it's
-> quite long because the basic commands (say, tell, passwd,
-> users, that sort of thing) are hard-coded in user.c.
-> If you want to change the tell command, and you make
-> a mistake and the file won't load, with the /cmds
-> system, all that breaks is the tell command. With
-> the kernel system, user.c would stop compiling. Similarly
-> with the wiztool, although if you had a clone of the
-> old wiztool already, nothing bad would happen as long
-> as no one tried to clone a new wiztool.
-
-Recompiling without first destructing has been a feature in DGD
-for 4 years now. :-)
-
-Many things in the kernel lib are the way they are for the sake
-of simplicity and efficiency.  Also, the kernel library is not
-intended to be changed, but rather to be extended, so I can
-reasonably assume that the only person who changes the code is
-myself; and I have no problems at all with maintaining 26
-commands in the same file.
-
-There is a peculiarity in the /cmds model which I was anxious to
-avoid: the commands are not just in separate files, but they are
-even in separate instantiated <objects>.  This has led to a near-
-endless stream of security problems.
-
-Regards,
-Dworkin
-
-Date: Sun, 18 Feb 2001 17:08:01 +0100 (CET)
-From: "Felix A. Croes" <felix@dworkin.nl>
-Message-Id: <200102181608.RAA00246@dworkin.nl>
-To: dgd@list.imaginary.com
-Subject: Re: [DGD]Default Wiztool not loaded ?
-
-"Tim Vernum" <tpv@acay.com.au> wrote:
-
-> Dworkin wrote:
->
-> >There is a peculiarity in the /cmds model which I was anxious to
-> >avoid: the commands are not just in separate files, but they are
-> >even in separate instantiated <objects>.  This has led to a near-
-> >endless stream of security problems.
->
-> The reverse is also true.
-> If you put all commands into a small number of objects, and then
-> need to allow command X high privileges, you usually end up
-> giving it to command Y.
-> Which means your command objects need to have the highest level
-> of security, and you can let anyone other than your most trusted
-> developers touch them.
-
-Quite so, but you've missed the point of my argument: the problem is
-not one versus many command objects, but that these command objects
-are <shared> between all players.  Shared command objects indeed
-require a high access level.  They may have this always, or they
-may acquire a specific player's privileges for each command; each
-of these methods has its problems.
-
-In the kernel library, each player with wizard-level access has his
-or her own wiztool, with its own privileges.  /kernel/lib/wiztool
-masks all functions that are relevant to security, so that any
-inheriting object only has the level of access appropriate for the
-owner of that object.
-
-As a result, command security is handled by only three objects:
-/kernel/sys/driver, /kernel/lib/auto and /kernel/lib/wiztool.  An
-enormous improvement, in my view.
-
-Regards,
-Dworkin
-
-List config page:  http://list.imaginary.com/mailman/listinfo/dgd
-
-Date: Sun, 18 Feb 2001 12:08:18 -0500 (EST)
-From: Stephen Schmidt <schmidsj@union.edu>
-To: dgd@list.imaginary.com
-Subject: Re: [DGD]Default Wiztool not loaded ?
-
-On Sun, 18 Feb 2001, Felix A. Croes wrote:
-> In the kernel library, each player with wizard-level access has his
-> or her own wiztool, with its own privileges.  /kernel/lib/wiztool
-> masks all functions that are relevant to security, so that any
-> inheriting object only has the level of access appropriate for the
-> owner of that object.
-> As a result, command security is handled by only three objects:
-> /kernel/sys/driver, /kernel/lib/auto and /kernel/lib/wiztool.  An
-> enormous improvement, in my view.
-
-Could one do something similar by having a /kernel/lib/command,
-which would handle all security concerns for command access,
-and then have all command files inherit that? It's not quite
-parallel to the wiztool method, but it's not terribly
-different.
-
-Steve
-
-
-Date: Sun, 18 Feb 2001 18:39:38 +0100 (CET)
-From: "Felix A. Croes" <felix@dworkin.nl>
-Message-Id: <200102181739.SAA00299@dworkin.nl>
-To: dgd@list.imaginary.com
-Subject: Re: [DGD]Default Wiztool not loaded ?
-
-Stephen Schmidt <schmidsj@union.edu> wrote:
-
-> On Sun, 18 Feb 2001, Felix A. Croes wrote:
-> > In the kernel library, each player with wizard-level access has his
-> > or her own wiztool, with its own privileges.  /kernel/lib/wiztool
-> > masks all functions that are relevant to security, so that any
-> > inheriting object only has the level of access appropriate for the
-> > owner of that object.
-> > As a result, command security is handled by only three objects:
-> > /kernel/sys/driver, /kernel/lib/auto and /kernel/lib/wiztool.  An
-> > enormous improvement, in my view.
->
-> Could one do something similar by having a /kernel/lib/command,
-> which would handle all security concerns for command access,
-> and then have all command files inherit that? It's not quite
-> parallel to the wiztool method, but it's not terribly
-> different.
-
-That would concentrate security-related code in fewer objects, but it
-would still require different privileges for commands performed by
-the same object, depending on what player is executing the command.
-I consider this a possible weakness, and it has been an actual
-weakness for many mudlibs in the past.
-
-I wrote the above assuming that you meant it as a minimal change to
-the /cmds system.  It doesn't apply if you want to let all commands
-be inherited by a single object, unique for each player.
-
-Regards,
-Dworkin
-
-Date: Mon, 19 Feb 2001 15:34:40 +0100 (CET)
-From: "Felix A. Croes" <felix@dworkin.nl>
-Message-Id: <200102191434.PAA01612@dworkin.nl>
-To: dgd@list.imaginary.com
-Subject: Re: [DGD]Default Wiztool not loaded ?
-
-Stephen Schmidt <schmidsj@union.edu> wrote:
-
-> On Sun, 18 Feb 2001, Felix A. Croes wrote:
-> > That would concentrate security-related code in fewer objects, but it
-> > would still require different privileges for commands performed by
-> > the same object, depending on what player is executing the command.
-> > I consider this a possible weakness, and it has been an actual
-> > weakness for many mudlibs in the past.
->
-> Agreed - but doesn't the wiztool have a similar weakness?
-> For instance, consider the set_global_access() function
-> in /kernel/lib/wiztool.c. That function requires different
-> privileges depending on who invokes it. The main difference
-> that I see is that each different wizard will have a 
-> different clone of the wiztool (perhaps each wizard
-> having a different file inheriting the kernal wiztool,
-> perhaps extending it, perhaps not), but with the command
-> bin, all players use the master copy. But why does that
-> make a difference? The set_global_access() function does
-> not check any of the internal data of the object, except
-> for the owner; but how is checking the owner of each individual
-> clone so different than checking the identity of the user that
-> invoked a command, assuming one uses previous_program()
-> to secure each command against being invoked by anything
-> other than a user? Surely it is just as easy to fake
-> the one as to fake the other?
-
-The "owner" of an object in the kernel library is very similar to a
-"uid" in older mudlibs, but there are some differences.  The owner
-of an object is not changable.  Once a wiztool object has been created,
-it is tied to a particular wizard for its lifetime.  Of course, even a
-uid system can eventually be made secure, but it is good for a security
-system to have as few points of attack as possible.  
-
-
->[...]
-> (Side note: Melville appears not to check whether the
-> object invoking a call is a user object; it only checks
-> whether the user has "admin" privileges. However, "admin"
-> privileges can only be assigned to a user object, so
-> in fact Melville is restricting access to user objects,
-> and indeed, only a subset of those.)
-
-I just checked, and it appears to be fairly simple to break Melville's
-security.
-
- - The function set_creator() is not nomask.
- - Arrange for some code to be executed during another player's
-   command (for example, he walks into your room) and you can change
-   the creator of an object you made to that player.
- - The creator of any object can be reset to "Driver" from a callout.
- - Call user->set_privileges() from a callout, and the privileges
-   are reset to "login".
- - valid_read() does not first resolve the path it checks.
- - valid_write() only resolves the path it checks if called from
-   a function called "log_file".
-
-All this from checking /system/auto/security.c -- I'm sure there is
-more, but at this point I can already arbitrarily rewrite LPC source
-files :-)
-
-Making a mudlib secure is not a trivial task.  General guidelines are:
-
- - Define the basic system in a small set of mostly static source
-   files.  Especially do not put security-related code in often-changed
-   files.
- - Have as few points of attack as possible, and make sure you know
-   where these are.  Avoid complexity.
- - For new mudlibs, design your security system before anything else.
-
-Regards,
-Dworkin
-
-
-
-From dgd at list.imaginary.com  Thu Oct 16 10:34:01 2003
-From: dgd at list.imaginary.com (Kris Van Hees)
-Date: Thu Oct 16 10:34:01 2003
-Subject: [DGD] First of many methodology questions
-In-Reply-To: <.127.0.0.1.1066316845.squirrel@www.nihilxaos.com>; from nihilxaos@nihilxaos.com on Thu, Oct 16, 2003 at 11:07:25AM -0400
-References: <.127.0.0.1.1066316845.squirrel@www.nihilxaos.com>
-Message-ID: <20031016113353.A27700@alchar.org>
-
-Regardless of the memory usage issue (which is probably quite moot these days
-with memory prices being as they are), you might want to consider the impact
-of your design on runtime changes.  With a modular setup you can more easily
-update specific functionality without requiring people to e.g. logout and back
-in in order for the changes to apply to them.  The ability to upgrade objects
-gets you a long way, but being able to change functionality in the most
-flexible ways is powerful (especially when it comes to bug fixing).  The extra
-cost storing a few pointers here and there is really worth it :)
-
-	Kris
-
-On Thu, Oct 16, 2003 at 11:07:25AM -0400, nihilxaos@nihilxaos.com wrote:
-> Ok. I've gotten my base Mudlib to do a couple things. I've added a command
-> to the user object, I've modified a couple of the other daemons just to
-> make sure the modifications take and that I can clone the objects that I
-> need to such as the wiztool (basically a step past the tutorial).
-> 
-> So now I'm thinking of a couple base methodology issues before I start
-> overhauling the whole thing.
-> 
-> Here's one that's been bothering me a bit.
-> 
-> On some muds that I've seen the base user object handles absolutely
-> everything about the user. Thus it has all of the commands, stats, query
-> functions, and operations pertaining to anything a user may do based on
-> what class/race/level they may be. As best I can tell this means you only
-> have one pointer to handle in terms of anything dealing with the user, but
-> the object is kind of big, and pretty slow.
-> 
-> The other option is creating sub-objects (kind of like the wiztool) that
-> handle specific commands and operations dependent on what kind of
-> character we're dealing with. Thus the only stuff in user.c pertains to
-> all users regardless of position or setup. The rest is stored in other
-> sub-character objects (or tools, or souls). Thus wiz commands are in the
-> wiztool, and different guild commands are in guild souls &c.
-> 
-> The later should ultimately take up more space in memory on the whole, but
-> each segment would be smaller. Ultimately, once the mudlib is fully
-> fleshed out I'd think that would be advantageous, especially in terms of
-> cloning objects here and there, and being able to swap out parts of the
-> character object that aren't in use (for instance if nobody from guild G
-> are in that guild object lies dormant if cloned at all).
-> 
-> Which do you guys prefer to do?
-> _________________________________________________________________
-> List config page:  http://list.imaginary.com/mailman/listinfo/dgd
-
--- 
-Never underestimate a Mage with:
- - the Intelligence to cast Magic Missile,
- - the Constitution to survive the first hit, and
- - the Dexterity to run fast enough to avoid being hit a second time.
-
-From dgd at list.imaginary.com  Thu Oct 16 10:49:01 2003
-From: dgd at list.imaginary.com (Stephen Schmidt)
-Date: Thu Oct 16 10:49:01 2003
-Subject: [DGD] First of many methodology questions
-In-Reply-To: <.127.0.0.1.1066316845.squirrel@www.nihilxaos.com>
-Message-ID: <Pine.OSF.4.40.0310161136450.384431-100000@idol.union.edu>
-
-On Thu, 16 Oct 2003 nihilxaos@nihilxaos.com wrote:
-> On some muds that I've seen the base user object handles absolutely
-> everything about the user.
-
-Back in the bad old days before there was DGD, the most serious
-problem with this method was updating the code. If you wanted
-to change (say) a command, and the command code was in the player
-object, then you could update player.c, and player.c would have
-the new command. But all existing clones kept the old code, ie
-the old version of the command. The only way you could get the
-new command to the players was to make them all quit and log back
-in. Players complain about such things.
-
-The reason to move the command to a separate command object was
-so that you could update the command object, then when players
-typed the command, the thread would be passed to the (now updated)
-command object and would work properly. No need to force all the
-players to log out and back in.
-
-With DGD this may be less of an issue because it may be possible
-to update the code of existing clones of player.c. I am not expert
-in this matter and will encourage others to comment on whether
-this strategy is feasible or not.
-
-But if DGD can update code in existing player clones, which I think
-it can, then that removes the main problem of a big user file. A big
-object is not a problem as long as you inherit correctly, and the
-rumors that big objects are slower objects are greatly exaggerated.
-Larger objects are very slightly slower due to longer lookup times,
-but my memory (again, experts please correct me if I'm wrong) is
-that lookup times for functions and variables are order log(N) and
-so it's really not a big deal. And, passing a thread to a command
-object also takes time.
-
-All that said, I prefer command objects, primarily because it
-means you can edit commands without having to edit player.c.
-If you make a typo and screwup give.c, then no one can use the
-give command until you fix it, but for a few minutes they can
-cope with that. If you make a typo and screw up player.c, then
-no one can log in until you fix it, and that's Bad. Also, just
-for organizational purposes I like the idea of having a directory
-of commands, with subdirectories, so I can control command
-access with the path structure. It also means you can allow
-users who are less privileged than top administrators to edit
-some of your commands. Only top administrators should have
-edit access to player.c, for obvious reasons. You also need to
-make sure that only top adminstrators have access to file
-handling commands, but you can allow lower wizards to handle
-other commands, such as guild commands.
-
-And that said, I'm sure my preference is based 90% on the fact that,
-as a longtime MudOS/TMI-2 user, I'm used to a command directory
-method. Wiztools freak me out, for no good reason. Most people
-who use DGD seem to be more used to the wiztool method. I'm
-sure it's equally good, and it's better if that's what you're
-used to, but command bins are what I'm used to, so that's what
-I use.
-
-Steve
-
-
-
-From dgd at list.imaginary.com  Thu Oct 16 11:41:00 2003
-From: dgd at list.imaginary.com (Noah Gibbs)
-Date: Thu Oct 16 11:41:00 2003
-Subject: [DGD] First of many methodology questions
-In-Reply-To: <.127.0.0.1.1066316845.squirrel@www.nihilxaos.com>
-Message-ID: <20031016164036.26652.qmail@web12812.mail.yahoo.com>
-
---- nihilxaos@nihilxaos.com wrote:
-> On some muds that I've seen the base user object
-> handles absolutely
-> everything about the user.
-
-  Yup.  This method is probably actually faster than
-breaking it up into smaller objects -- you'll find
-that the objects wind up having to send a lot of
-information back and forth to the main object since
-there's a lot of shared state that everybody cares
-about.  That means that the modular method uses more
-function calls, so the extra overhead in calling a
-top-level function once is less than the extra
-overhead of extra between-object function calls.
-
-  So the one-object approach is actually faster if you
-do it right.  However, it's also far less modular and
-convenient.  More to the point, the total speed hit is
-really, really small.  If your MUD is maxing out the
-processor (and it shouldn't be for any normal kind of
-MUD), this isn't going to be real problem.  Instead
-you'll have something else that is either really,
-really inefficient or just really, really hard to
-calculate in realtime.  Modern processors are scarily
-fast, even on cheapo desktop boxes.
-
-> The other option is creating sub-objects (kind of
-> like the wiztool) that
-> handle specific commands and operations dependent on
-> what kind of
-> character we're dealing with.
-
-  Yup.  Phantasmal does some of this, but not as much
-as Melville.  I separate out big areas of
-functionality (like say/emote/tell/gossip/etc) that
-are related to each other into wiztool-like objects,
-but I don't separate out each individual command.  I
-find that this is the best compromise, for me
-personally, when it comes to maintenance.  I like all
-the related commands to be near each other in case I
-have to fix a bug in all the communications commands,
-but I don't want to have to sift through all the
-non-communications commands.
-
-  Melville's method is pretty damn cool for command
-modularity, though.  Eventually I plan to do something
-similar, but not as fine-grained.  The Phantasmal
-social/soul commands do something like that, in fact.
-
-> The later should ultimately take up more space in
-> memory on the whole, but
-> each segment would be smaller.
-
-  Yup.  Because of the way DGD does swapping and
-memory management, this means they'll be significantly
-larger.  On the other hand, say you take an extra 8kb
-penalty for every player...  Dude, it's 8kb.  Suck it
-up and deal.  If you have 200 simultaneous players,
-that's 1.6MB.  And if you have 200 players, the extra
-buck and a half spent on memory shouldn't be a big
-deal :-)
-
-  I'll respond to Steve Schmidt in a minute -- he made
-some good points.
-
-
-=====
-------
-noah_gibbs@yahoo.com
-
-__________________________________
-Do you Yahoo!?
-The New Yahoo! Shopping - with improved product search
-http://shopping.yahoo.com
-
-From dgd at list.imaginary.com  Thu Oct 16 11:51:00 2003
-From: dgd at list.imaginary.com (Noah Gibbs)
-Date: Thu Oct 16 11:51:00 2003
-Subject: [DGD] First of many methodology questions
-In-Reply-To: <Pine.OSF.4.40.0310161136450.384431-100000@idol.union.edu>
-Message-ID: <20031016164958.36422.qmail@web12801.mail.yahoo.com>
-
---- Stephen Schmidt <schmidsj@union.edu> wrote:
-> Back in the bad old days before there was DGD, the
-> most serious
-> problem with this method was updating the code.
-
-  As you speculate later, DGD removes this problem. 
-You can update the whole user object in-place without
-a hitch.  You can also update any module in-place
-without a hitch.  So both ways do this perfectly now
-if your upgrade code works.  Phantasmal's, for
-instance, does this just fine.
-
-> A big
-> object is not a problem as long as you inherit
-> correctly, and the
-> rumors that big objects are slower objects are
-> greatly exaggerated.
-
-  This is correct.  Again, I believe that the cost for
-modularity will actually make a large user object
-*faster* in almost every case.  However, the total
-difference is so small that you should ignore it.
-
-> If you make a typo and screwup give.c, then no one
-> can use the
-> give command until you fix it, but for a few minutes
-> they can
-> cope with that. If you make a typo and screw up
-> player.c, then
-> no one can log in until you fix it, and that's Bad.
-
-  Yup.  What he said.  This is one reason that I'm
-working to make Phantasmal more modular.  When I screw
-up the socials file, nobody cares.  When I screw up
-player.c, I may not be able to log in to fix it!
-
-> Also, just
-> for organizational purposes I like the idea of
-> having a directory
-> of commands, with subdirectories, so I can control
-> command
-> access with the path structure.
-
-  I'm actually against this, but I prefer to control
-command access in the command code and with keywords
-or attribute bits.  Matter of personal preference. 
-His way works much more painlessly for simple
-differences, my way extends better to complicated
-stuff.
-
-> It also means you can allow
-> users who are less privileged than top
-> administrators to edit
-> some of your commands.
-
-  This is a big one.  It's one more reason I'm working
-on more modularity.  Letting random admins add new
-socials is a fine idea.  Letting them edit abusable
-commands like "give" and "say" is less secure.
-
-  I handle this by having configuration files for
-certain commands.  For instance, social commands use a
-text configuration file.  The cmd_social() function is
-still off limits to everybody but implementors, but
-lesser admins could edit the existing social file
-and/or add new social files.  However, it's also nice
-to be able to let other admins write actual code, not
-just text config files.  I'm working on that -- DGD
-actually has some pretty cool sandboxing facilities if
-you know how to use them.  I've never seen anything
-really use them, though.
-
-
-=====
-------
-noah_gibbs@yahoo.com
-</pre>
+  <h3> Advantages of the Wiztool model </h3>
+
+  <p>
+    In the kernel library, each player with wizard-level access has
+    his or her own wiztool, with its own privileges.
+    &frasl;kernel&frasl;lib&frasl;wiztool masks all functions that are
+    relevant to security, so that any inheriting object only has the
+    level of access appropriate for the owner of that object.
+  </p>
+
+  <p>
+    As a result, command security is handled by only three objects:
+    &frasl;kernel&frasl;sys&frasl;driver,
+    &frasl;kernel&frasl;lib&frasl;auto and
+    &frasl;kernel&frasl;lib&frasl;wiztool.  This reduces the number of
+    locations where security problems can occur to a very small
+    number.
+  </p>
+
+  <p>
+    The wiztool model allows commands with similar functionality to
+    share code easily.  It also makes it easy to see what commands use
+    what variables and functions.  This can aid debugging and security
+    auditing.
+  </p>
+
+  <p>
+    The Kernel Library prevents any object from ever changing its
+    owner once it is created.  This allows a wiztool to be sure on
+    whose behalf it acts, and prevents security problems.
+  </p>
+
+  <h3> Problems with the Wiztool model </h3>
+
+  <p>
+    By storing a lot of functionality in a small number of files, the
+    wiztool model may make it more likely that an error will cause
+    more problems.  Storing all commands in user.c may cause problems
+    in logging in if it disrupts some vital part of user
+    functionality, for instance.
+  </p>
+
+  <h3> Advantages of the &frasl;cmds model </h3>
+
+  <p>
+    The &frasl;cmds model has the aesthetic appeal of putting
+    different commands' code in different files, which can be a large
+    maintenance improvement.  It can also make it possible for only
+    certain admins to edit certain commands, rather than all commands
+    being necessarily ultra-high-security.
+  </p>
+
+  <p>
+    The &frasl;cmds model is already familiar to a lot of LPMUD
+    programmers.  They generally have more trouble adapting to the
+    Wiztool model.  The Diku model, while different from both Wiztool
+    and &frasl;cmds models, is more similar to the &frasl;smds model.
+  </p>
+
+  <h3> Problems with the &frasl;cmds model </h3>
+
+  <p>
+    There is a peculiarity in the &frasl;cmds model: the commands are
+    not just in separate files, but they are even in separate
+    instantiated <i>LPC objects</i>.  This has been known to lead to
+    security problems.  Shared command objects require a high access
+    level.  They may have this always, or they may acquire a specific
+    player's privileges for each command; each of these methods has
+    its problems.
+  </p>
 
   <p style="text-size: 150%"> <a href="../index.html"> Back to top level
     </a> </p>

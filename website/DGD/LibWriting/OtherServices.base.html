@@ -3,6 +3,55 @@
   <h2> Implementing Less-Common MUD Protocols in DGD </h2>
 
 <pre>
+Date: Tue, 16 May 2000 15:37:37 -0400
+From: Ho-Sheng Hsiao <hhh@lost-realities.org>
+To: dgd@list.imaginary.com
+Subject: Re: [DGD]DGD HTML?
+Message-ID: <20000516153737.E32043@lost-realities.org>
+
+
+On Tue, May 16, 2000 at 03:22:36PM +0930, Gregory D Lewis wrote:
+> > But how will you handle a second request of the same client? Rely on the data
+> > the client sends about his current position? Or even who he is? You _have_ to
+> > keep information about the connected clients somewhere, and assign some kind of
+> > session information to the clients so that they can identify themselves on
+> > reload. 
+
+> But to answer your question(s):  Trust nothing sent by the client.
+
+There's a third option: XMLterm
+
+I've heard of an Xterm implemented to use streaming HTML/XML tags instead of
+VT* codes. Think, Pueblo. This was a modification to the current Mozilla
+browser. Or more precisely, it uses the XUL toolset in Mozilla and some
+other stuff to create the Xterm.
+
+You can check out the site at http://www.xmlterm.com
+
+Considering that Mozilla has a built in IRC client written mostly in
+Javascript et. al., adapting that serve this. 
+
+I've been contemplating doing something like that for years now, ever since
+I heard of Pueblo. Which, btw, though discontinued, the source to that is
+floating around somewhere.
+
+Let me know if any of you are interested in collaborating in doing such a
+project. I have a spare server on a semi-static connection available on a
+limited basis.
+
+-- 
+---hhh                                              Hosh Enterprises
+                                                (General Specialist)
+Time flows only once. 
+Life is a suicide mission: you gotta do what you should.
+--
+73 9B 42 8E 2A 23 DF C0  2B 52 9F ED 1A 07 64 EF
+[ http://www.lost-realities.org/~hhh/pgpkey.asc ]
+</pre>
+
+<hr />
+
+<pre>
 MCP - MUD Client Protocol
   http://www.moo.mud.org/mcp/
 
@@ -118,51 +167,51 @@ From the FireClient site:
   IMP is now offically enabled and detected for both sides of the connection.
 
   o A non-required third step is for the server to acknowledge the receipt
-    of the IMP client's version by sending the IMP command <IMPDEMO> which
+    of the IMP client's version by sending the IMP command &lt;IMPDEMO&gt; which
     triggers a demo on the client's computer.
 
 * Recognized Commands
-  o <IMPDEMO> - Triggers a display determined the completes at a minimum
+  o &lt;IMPDEMO&gt; - Triggers a display determined the completes at a minimum
     acknowledging enabled IMP capabilities
-  o <A HREF="http:// to signal a URL or anything else for a command to
-    get sent to the MUD">text to display</A> - Format for inline links in
+  o &lt;A HREF="http:// to signal a URL or anything else for a command to
+    get sent to the MUD"&gt;text to display&lt;/A&gt; - Format for inline links in
     the client window
-  o <IP> - Replaces text with your IP address
-  o <D | DEFAULT FACE=fontname SIZE=fontsize COLOR=acolor BACK=acolor
-    COMMAND=acolor> - Allows you to set defaults for the client to return
-    to after a </F> command or before text is even altered.
-  o <DEFSHOW> - Displays current defaults in client window
-  o <HEIGHT SUPER|SUB=#> - Superscripts or subscripts text by # pixels
-  o <S> | <STRIKETHRU> / </S> | </STRIKETHRU> - Enables/disables strikethru
-  o <C> | <CENTER> / </C> | </CENTER> - Enables/disables text centering
+  o &lt;IP&gt; - Replaces text with your IP address
+  o &lt;D | DEFAULT FACE=fontname SIZE=fontsize COLOR=acolor BACK=acolor
+    COMMAND=acolor&gt; - Allows you to set defaults for the client to return
+    to after a &lt;/F&gt; command or before text is even altered.
+  o &lt;DEFSHOW&gt; - Displays current defaults in client window
+  o &lt;HEIGHT SUPER|SUB=#&gt; - Superscripts or subscripts text by # pixels
+  o &lt;S&gt; | &lt;STRIKETHRU&gt; / &lt;/S&gt; | &lt;/STRIKETHRU&gt; - Enables/disables strikethru
+  o &lt;C&gt; | &lt;CENTER&gt; / &lt;/C&gt; | &lt;/CENTER&gt; - Enables/disables text centering
     (usually better to append a line break to function properly)
-  o <B> | <BOLD> / </B> | </BOLD> - Enables/disables bold text
-  o <I> | <ITALIC> / </I> | </ITALIC> - Enables/disables italic text
-  o <U> | <UNDERLINE> / </U> | </UNDERLINE> - Enables/disables underlined text
-  o <FONT | F  SIZE="point size" COLOR=<red/orange/yellow/green/etc>
-    FACE="font name"> / </FONT> | </F> - Enables/disables font effects
-  o <CT> - Clears the active text window
-  o <CS> - Clears the status window
-  o <AUDIO FILE=filename or URL> - Plays an audio file
-  o <STOPAUDIO> - Halts playback of audio
-  o <WINDOW SIZE=[MIN/MAX] NEW=title TITLE=title - Maximizes, minimizes,
+  o &lt;B&gt; | &lt;BOLD&gt; / &lt;/B&gt; | &lt;/BOLD&gt; - Enables/disables bold text
+  o &lt;I&gt; | &lt;ITALIC&gt; / &lt;/I&gt; | &lt;/ITALIC&gt; - Enables/disables italic text
+  o &lt;U&gt; | &lt;UNDERLINE&gt; / &lt;/U&gt; | &lt;/UNDERLINE&gt; - Enables/disables underlined text
+  o &lt;FONT | F  SIZE="point size" COLOR=&lt;red/orange/yellow/green/etc&gt;
+    FACE="font name"&gt; / &lt;/FONT&gt; | &lt;/F&gt; - Enables/disables font effects
+  o &lt;CT&gt; - Clears the active text window
+  o &lt;CS&gt; - Clears the status window
+  o &lt;AUDIO FILE=filename or URL&gt; - Plays an audio file
+  o &lt;STOPAUDIO&gt; - Halts playback of audio
+  o &lt;WINDOW SIZE=[MIN/MAX] NEW=title TITLE=title - Maximizes, minimizes,
     creates a new window with a certain title, or changes the active
     window title
-  o <CONNECT> / <DISCONNECT> / <RECONNECT> - Connects, disconnects, or
+  o &lt;CONNECT&gt; / &lt;DISCONNECT&gt; / &lt;RECONNECT&gt; - Connects, disconnects, or
     reconnects with the active window's host and port
-  o <CONNECTION HOST=host PORT=port> - Changes active host and port for
+  o &lt;CONNECTION HOST=host PORT=port&gt; - Changes active host and port for
     active window if disconnected, and then creates a new window bound to
     new host and port
-  o <ST | STATUS MSG=statusmsg BOX=msgbox INP=popupquestion
-    INIT=init commands to do before answer to popup question> - Creates
+  o &lt;ST | STATUS MSG=statusmsg BOX=msgbox INP=popupquestion
+    INIT=init commands to do before answer to popup question&gt; - Creates
     any or all of the following: a status message, a message box, or a
     popup input box that will send back to the server the INIT commands
     followed by the user's response to the INP question
-  o <IMG SRC=file/URL ALT=description text> - Displays a file in the current
+  o &lt;IMG SRC=file/URL ALT=description text&gt; - Displays a file in the current
     active window location and sends an ALT message to the status window
-  o <BACK COLOR=<red/orange/yellow/etc>> / </BACK> - Sets the background to
+  o &lt;BACK COLOR=&lt;red/orange/yellow/etc&gt;&gt; / &lt;/BACK&gt; - Sets the background to
     a solid color or returns background to original color
-  o <BR> - Inserts a line break into the text stream
+  o &lt;BR&gt; - Inserts a line break into the text stream
 
 * Notes: The following abbreviations are recognized... F for FONT, F again
   for FACE, S for SIZE, C for COLOR, O for OFFBIOS. All IMP commands are
@@ -198,12 +247,12 @@ exactly sure at the moment why this happens.
 Upon receiving this PUEBLOCLIENT command, the World may send the
 following sequence, to tell the Pueblo client to begin interpreting
 the World's output as HTML:
-     </xch_mudtext><img xch_mode=html>
+     &lt;/xch_mudtext&gt;&lt;img xch_mode=html&gt;
 You may want to send the "This world is Pueblo 2.50 enhanced" line and
 accept the PUEBLOCLIENT command before the user logs in, so that you
 can send HTML from the outset.  You may also want to provide special
 commands for sending HTML-formatted text and convert other text to
-escaped HTML (converting < to &lt;, etc.).
+escaped HTML (converting &lt; to &lt;, etc.).
 
 At present, the version number you supply in the "This world is Pueblo
 2.50 enhanced" line is not used by the Pueblo client; it sends its own
@@ -249,9 +298,9 @@ trailing semicolons inside the strings are important.)
 
         Character:
                             HTML sequence:
-             <
+             &lt;
                                  &lt;
-             >
+             &gt;
                                  &gt;
              &
                                 &amp;
@@ -276,31 +325,31 @@ around the HTML escaping you did in step 3.
 5. Add HTML anchors for exits. When you list the obvious exits in a
 room, you might want to have each exit be an anchor, like this:
 
-    <a xch_cmd="east" xch_hint="Go east">east</a>
+    &lt;a xch_cmd="east" xch_hint="Go east"&gt;east&lt;/a&gt;
     In LP-MUD, this was in room/room.c and looked like:
-        while (i < sizeof(dest_dir)) {
-          if (this_player()->query_is_html()) {
+        while (i &lt; sizeof(dest_dir)) {
+          if (this_player()-&gt;query_is_html()) {
             /* Write the exit as an anchor */
-            write_html(" " + "<a xch_cmd=");
+            write_html(" " + "&lt;a xch_cmd=");
             write(dest_dir[i]);
             write_html(" xch_hint=\"Go ");
             write(dest_dir[i]);
-            write_html("\">");
+            write_html("\"&gt;");
             write(dest_dir[i]);
-            write_html("</a>");
+            write_html("&lt;/a&gt;");
           } else {
             write(" " + dest_dir[i]);
           }
         }
 
     Note that we mix the use of write() and write_html(). If the exit
-    name has one of <>&" in it, you'll need those characters to be
-    escaped, but you don't want the "<a", ">", or "</a>" to be
+    name has one of &lt;&gt;&" in it, you'll need those characters to be
+    escaped, but you don't want the "&lt;a", "&gt;", or "&lt;/a&gt;" to be
     escaped.
 
 6. Add VRML URL support to rooms. When a user walks into a room, if
 that room has the URL of a VRML file associated with it, you want to
-send them a <img xch_graph=load href="<the URL>">. Note: don?t do this
+send them a &lt;img xch_graph=load href="&lt;the URL&gt;"&gt;. Note: don?t do this
 for new implementations, as VRML is not supported by Pueblo/UE.
 
     [...]
@@ -310,7 +359,7 @@ for new implementations, as VRML is not supported by Pueblo/UE.
 7. Do the same, for MIDI background sounds. This is just like the VRML
 URL support in #6, only for a sound URL.
 
-8. If no VRML_URL is set on the room, send <img xch_graph=hide>
+8. If no VRML_URL is set on the room, send &lt;img xch_graph=hide&gt;
 9. Build away!
 
 If you're building VRML files, and want to put them on your own Web
@@ -344,50 +393,50 @@ just a choppy version with a lot of small HTML pages (bastards!).
 
  Document Structure Elements
 
-  <!-- Comments -->  <body>  <head>  <html>  <title>
+  &lt;!-- Comments --&gt;  &lt;body&gt;  &lt;head&gt;  &lt;html&gt;  &lt;title&gt;
 
 
  Anchor Element
 
-  <a>
+  &lt;a&gt;
 
 
  Embed Element
 
-  <embed> 
+  &lt;embed&gt; 
 
 
  Image Element
 
-  <img>
+  &lt;img&gt;
 
 
  Block Formatting Elements
 
-  <address>  <basefont>  <blockquote>  <br>  <center>  <h1>  <h2>  <h3>
-  <h4>  <h5>  <h6>  <hr>  <listing>  <p>  <plaintext>  <pre>  <samp>
-  <xmp>
+  &lt;address&gt;  &lt;basefont&gt;  &lt;blockquote&gt;  &lt;br&gt;  &lt;center&gt;  &lt;h1&gt;  &lt;h2&gt;  &lt;h3&gt;
+  &lt;h4&gt;  &lt;h5&gt;  &lt;h6&gt;  &lt;hr&gt;  &lt;listing&gt;  &lt;p&gt;  &lt;plaintext&gt;  &lt;pre&gt;  &lt;samp&gt;
+  &lt;xmp&gt;
 
 
  Character Formatting Elements
 
-  <b>  <cite>  <code>  <em>  <font>  <i>  <strike>  <strong>
-  <tt>  <u> 
+  &lt;b&gt;  &lt;cite&gt;  &lt;code&gt;  &lt;em&gt;  &lt;font&gt;  &lt;i&gt;  &lt;strike&gt;  &lt;strong&gt;
+  &lt;tt&gt;  &lt;u&gt; 
 
 
  List Elements
 
-  <dl>  <dir>  <li>  <menu>  <ol>  <ul> 
+  &lt;dl&gt;  &lt;dir&gt;  &lt;li&gt;  &lt;menu&gt;  &lt;ol&gt;  &lt;ul&gt; 
 
 
  Form Elements
 
-  <form>  <input>  <option>  <select>  <textarea> 
+  &lt;form&gt;  &lt;input&gt;  &lt;option&gt;  &lt;select&gt;  &lt;textarea&gt; 
 
 
  Unsupported HTML elements
 
-  <isindex>  <kbd>  <link>  <meta>  <nextid>  <table>  <var>
+  &lt;isindex&gt;  &lt;kbd&gt;  &lt;link&gt;  &lt;meta&gt;  &lt;nextid&gt;  &lt;table&gt;  &lt;var&gt;
 
 
 ======================
