@@ -2,18 +2,21 @@
 
                       INTRODUCTION
 
-At the moment, Phantasmal probably isn't as usable as 2.4.5 or,
-according to its web page, GurbaLib.  That's fine, it's experimental.
-If you're serious about building your own MUDlib, though, you should
-realize that Phantasmal builds on the Kernel library for a reason --
-you may wish to do so instead of using this, and simply treat
-Phantasmal as one more example MUDLib.
+For getting a normal MUD going, Phantasmal isn't as usable as 2.4.5 or
+GurbaLib.  That's fine, it's experimental.  If you're serious about
+building your own MUDlib, though, you should realize that Phantasmal
+builds on the Kernel library for a reason -- you may wish to do so
+instead of using this, and simply treat Phantasmal as one more example
+MUDLib.
 
 Phantasmal provides some useful bits, such as an improved user object
 and error handler.  There are, of course, a number of other very
 useful objects and commands it doesn't yet provide.  I'll keep working
 on infrastructure, but you're likely to do better building any given
 feature for yourself than waiting for me to do it for you.
+
+Note: you can find more stuff about developing based on Phantasmal at
+the following URL: "http://phantasmal.sourceforge.net/Developing.html"
 
 
                  OVERALL ORGANIZATION
@@ -67,7 +70,10 @@ back to me, please!)
 Currently new commands go into "/usr/System/obj/user.c" or
 "/usr/System/lib/wiztoollib.c", usually at the end of the file.  These
 commands run at that file's full privilege level so you shouldn't
-allow anyone without absolute full trust to write new commands.
+allow anyone without absolute full trust to write new commands.  There
+are a couple of sub-libraries of wiztoollib, also in
+"/usr/System/lib/".  Some commands are better added there.
+
 You'll also need to add a name for the commands which can be done in
 "/usr/System/obj/wiztool.c" for admin commands and
 "/data/phrase/user_cmds.unq" for player commands.  Make sure to add
@@ -143,6 +149,11 @@ If you can't find code for a given object, it may be because it has no
 explicit, spelled-out LPC code at all, and is instead created based on
 a simple template and a data file.  See simple_room for an example of
 code that supports this.
+
+There's a full binding system for associating UNQ templates with room
+code.  You can find the binder files in "/data/system/".  Look for
+files like "room_binder.unq" and "mobile_binder.unq".  From there,
+look through the code until you understand what they do.
 
 Know the Kernel MUDLib.  Phantasmal does my humble best to conform to
 its requirements, and may do even better in the future.  Understand
