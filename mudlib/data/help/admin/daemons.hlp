@@ -31,6 +31,32 @@ with MAPD is likely to use the OBJREGD numbering scheme.
 }}
 
 
+~name{~enUS{CONFIGD,config daemon}}
+~keywords{admin}
+~desc{
+  ~enUS{
+
+The Config Daemon, or ConfigD, exists only to read some settings from
+a file and keep them around.  You can see the results by typing
+%get_config.
+
+See also:  daemons, %get_config
+
+}}
+
+
+~name{~enUS{get configuration, configuration, get config, get_config}}
+~keywords{admin}
+~desc{
+  ~enUS{
+
+The %get_config command shows the data currently in the ConfigD.
+
+See also: ConfigD
+
+}}
+
+
 ~name{~enUS{EXITD,exitd,exit daemon,EXIT daemon}}
 ~keywords{admin}
 ~desc{
@@ -84,5 +110,6 @@ MAPD
 MOBILED
 OBJREGD
 OBJECTD
+CONFIGD
 
 }}
