@@ -21,6 +21,21 @@ private string directory;	/* current directory */
 private object port_dtd;        /* DTD for portable def'n */
 
 
+#define SPACE16 "                "
+
+/*
+ * NAME:	ralign()
+ * DESCRIPTION:	return a number as a right-aligned string
+ */
+private string ralign(mixed num, int width)
+{
+    string str;
+
+    str = SPACE16 + (string) num;
+    return str[strlen(str) - width ..];
+}
+
+
 /*
  * NAME:	create()
  * DESCRIPTION:	initialize variables
@@ -169,7 +184,6 @@ static void cmd_get_config(object user, string cmd, string str) {
 }
 
 
-#define SPACE16 "                "
 static void cmd_people(object user, string cmd, string str)
 {
   object *users, usr;
@@ -510,7 +524,10 @@ static void cmd_segment_map(object user, string cmd, string str) {
   user->message("Segments:\r\n");
   hs = OBJNUMD->get_highest_segment();
   for(ctr = 0; ctr <= hs; ctr++) {
-    user->message(ctr + "   " + OBJNUMD->get_segment_owner(ctr) + "\r\n");
+    user->message((ctr + SPACE16)[..6]
+		  + (OBJNUMD->get_segment_owner(ctr) + SPACE16)[..30]
+		  + OBJNUMD->get_segment_zone(ctr)
+		  + "\r\n");
   }
   user->message("--------\r\n");
 }
