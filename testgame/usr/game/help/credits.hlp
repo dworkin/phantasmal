@@ -3,21 +3,16 @@
 This MUD runs on the DGD MUD Server and the Phantasmal MUDLib.
 
 The DGD Server is written by Felix Croes and is well-documented at
-www.angelbob.com/projects/DGD_Page.html.  It's free for noncommercial
-use.
+"http://phantasmal.sf.net/DGD/".  It's free for noncommercial use.
 
-The Phantasmal MUDLib is currently in early pre-alpha and as such is
-not yet available to the public.  For more information, please contact
-angelbob@monkeyspeak.com and check www.angelbob.com/projects/mudlib/
+The Phantasmal MUDLib is in the public domain.  You can find out more
+at "http://phantasmal.sf.net/".
 
-Much of the MUD is inspired by other MUDs.  Credit goes to Armageddon
-and CthulhuMUD, and tremendous credit to Adam Wiggins' truly excellent
-Blood Dusk (http://dusk.org/BloodDusk), a MUD without peer.  Several
-policies and systems from Blood Dusk were taken specifically because
-of the impressive theme and atmosphere that they helped Blood Dusk to
-foster.
+I took some lovely ideas for this MUD from Armageddon and CthulhuMUD.
+Tremendous credit also goes to Adam Wiggins' excellent Blood Dusk
+(http://mud.dusk.org), a MUD without peer.  Several policies and
+systems from Blood Dusk were taken specifically because they helped
+Blood Dusk maintain such an impressive theme and atmosphere.
 
-Many of this MUD's and Phantasmal's ideas were nurtured with the
-help of Tom Lokovic and of the MUD-Dev mailing list at kanga.nu.
-Thanks, all!
+For further credits, see "http://phantasmal.sf.net/Credits.html".
 }}
