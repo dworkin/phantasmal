@@ -40,22 +40,43 @@ static void create(varargs int clone)
 
   /* First things first -- this release needs one of the
      latest versions of DGD, so let's make sure. */
-  
-  if(!sscanf(status()[ST_VERSION], "DGD %d.%d.%d", major, minor, patch)) {
+
+  /* Phantasmal specifically requires a fix from DGD version 1.2.57.  This
+     checks for that fix. */
+  if(sscanf(status()[ST_VERSION], "DGD %d.%d.%d", major, minor, patch) != 3) {
     error("Don't recognize DGD driver version as being of the"
 	  + " form DGD X.Y.ZZ!");
   }
   if((major == 1 && minor < 2)
      || (major == 1 && minor == 2 && patch < 57)) {
     error("Need to upgrade to DGD version 1.2.57 or higher!");
-  } else if (major == 1 && minor == 2 && patch > 57) {
-    DRIVER->message("This is a very new DGD version, or at\n");
+  } else if (major > 1 || (major == 1 && minor > 2)) {
+    DRIVER->message("This version of Phantasmal is not tested\n");
+    DRIVER->message("with DGD beyond 1.2.XX.  Please upgrade Phantasmal!\n");
+  }
+
+  /* DGD currently runs with Kernel Library version 16.  We check for
+     this instead of the specific DGD patch number so that Phantasmal
+     doesn't give a big nasty error message every time a new tiny
+     bugfix comes out. */
+  if(sscanf(KERNEL_LIB_VERSION, "%d.%d.%d", major, minor, patch) != 3) {
+    error("Don't recognize Kernel Library version as being of the"
+	  + " form X.Y.ZZ!");
+  }
+  if((major == 1 && minor < 2)
+     || (major == 1 && minor == 2 && patch < 15)) {
+    /* This used to be 1.2.55, but we specifically need a patch
+       from 1.2.57 */
+    error("Need to upgrade to DGD version 1.2.57 or higher!");
+  } else if (major == 1 && minor == 2 && patch > 16) {
+    DRIVER->message("This is a very new Kernel Library version, or at\n");
     DRIVER->message("  least newer than this version of Phantasmal.  If\n");
     DRIVER->message("  you have problems, please upgrade Phantasmal!\n");
   } else if (major > 1 || (major == 1 && minor > 2)) {
     DRIVER->message("This version of Phantasmal is not tested\n");
     DRIVER->message("with DGD beyond 1.2.XX.  Please upgrade Phantasmal!\n");
   }
+
 
   access::create();
   rsrc::create();
@@ -66,7 +87,7 @@ static void create(varargs int clone)
 
   driver = find_object(DRIVER);
 
-  driver->message("Loading system objects...\n");
+  /* driver->message("Loading system objects...\n"); */
 
   /* Start LOGD and log MUD startup */
   if(!find_object(LOGD)) { compile_object(LOGD); }
@@ -101,7 +122,7 @@ static void create(varargs int clone)
   /* Load command parser */
   if (!find_object(PARSED)) { compile_object(PARSED); }
 
-  driver->message("Parsing help file...\n");
+  /* driver->message("Parsing help file...\n"); */
 
   /* Set up online help */
   if(!find_object(HELPD)) { compile_object(HELPD); }
@@ -113,7 +134,7 @@ static void create(varargs int clone)
   HELPD->load_help_dtd(help_dtd);
   HELPD->new_help_directory("/data/help");
 
-  driver->message("Loading phantasmal object system...\n");
+  /* driver->message("Loading phantasmal object system...\n"); */
 
   /* Compile the Objnumd */
   if(!find_object(OBJNUMD)) { compile_object(OBJNUMD); }
@@ -165,7 +186,7 @@ static void create(varargs int clone)
     rooms_loaded = 0;
   }
 
-  driver->message("Loading mobiles...\n");
+  /* driver->message("Loading mobiles...\n"); */
 
   /* Set up the MOBILED */
   MOBILED->init();
