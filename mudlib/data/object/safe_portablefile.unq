@@ -1,0 +1,417 @@
+~portable{
+  ~number{200}
+  ~location{202}
+  ~bdesc{
+    ~enUS{a turnip}}
+  ~gdesc{
+    ~enUS{a juicy turnip}}
+  ~ldesc{
+    ~enUS{You see a plump, juicy turnip.  Well, I mean, plump and juicy for a turnip.}}
+  ~article{0}
+  ~flags{0}
+  ~nouns{{~enUS{turnip}}}
+  ~adjectives{{~enUS{juicy,plump,large}}}
+}
+~portable{
+  ~number{201}
+  ~location{0}
+  ~bdesc{
+    ~enUS{a limp weasel}}
+  ~gdesc{
+    ~enUS{a limp, motionless weasel}}
+  ~ldesc{
+    ~enUS{You see a limp, motionless weasel.  It's just lying there.
+You're not sure, exactly, if it's dead, dying, or just
+_very_ relaxed.  Its facial expression, being that of a weasel,
+doesn't give you any clues.}}
+  ~article{0}
+  ~flags{0}
+  ~nouns{{~enUS{weasel}}}
+  ~adjectives{{~enUS{lifeless,limp}}}
+}
+~portable{
+  ~number{202}
+  ~location{4}
+  ~bdesc{
+    ~enUS{a breadbox}}
+  ~gdesc{
+    ~enUS{a largish breadbox}}
+  ~ldesc{
+    ~enUS{You see an old breadbox, apparently meant to contain bread.  A faded logo
+on the side may once have advertised the box's maker.}}
+  ~article{0}
+  ~flags{3}
+  ~nouns{{~enUS{breadbox,box}}}
+  ~adjectives{{~enUS{bread,large,largish}}}
+}
+~portable{
+  ~number{203}
+  ~location{6}
+  ~bdesc{
+    ~enUS{a ceremonial dagger}}
+  ~gdesc{
+    ~enUS{a ceremonial dagger}}
+  ~ldesc{
+    ~enUS{The blade is curved, and more jagged than it has any right to be.
+It was clearly designed to frighten before cutting, and tear while
+cutting.}}
+  ~article{0}
+  ~flags{0}
+  ~nouns{{~enUS{knife,dagger}}}
+  ~adjectives{{~enUS{ceremonial,curved,jagged}}}
+}
+~portable{
+  ~number{204}
+  ~location{6}
+  ~bdesc{
+    ~enUS{wombat}}
+  ~gdesc{
+    ~enUS{a stuffed wombat}}
+  ~ldesc{
+    ~enUS{The stuffed wombat is sitting against the wall.  It looks quite stuffed.
+The mouth gapes uninvitingly.  At least, you sure don't feel invited.
+Maybe you could put stuff into the wombat through it.  Or take it back out.
+Ew.}}
+  ~edesc{
+    ~enUS{Glinting in the wombatty depths, you see...  Nothing special.  Darkness.
+Wombat fumes.  About the usual, you hope.}}
+  ~article{0}
+  ~flags{7}
+  ~nouns{{~enUS{wombat,mouth}}}
+  ~adjectives{{~enUS{stuffed,immobile}}}
+}
+~portable{
+  ~number{205}
+  ~location{6}
+  ~bdesc{
+    ~enUS{an open sarcophagus}}
+  ~gdesc{
+    ~enUS{an open sarcophagus}}
+  ~ldesc{
+    ~enUS{It's old and sarcophariffic.}}
+  ~article{0}
+  ~flags{7}
+  ~nouns{{~enUS{sarcophagus,coffin}}}
+  ~adjectives{{}}
+}
+~portable{
+  ~number{206}
+  ~location{204}
+  ~bdesc{
+    ~enUS{the wombat's uvula}}
+  ~gdesc{
+    ~enUS{the wombat's uvula}}
+  ~ldesc{
+    ~enUS{It's dangly, in the slimy way that only uvulas can dangle.}}
+  ~article{0}
+  ~flags{4}
+  ~nouns{{~enUS{uvula}}}
+  ~adjectives{{}}
+}
+~portable{
+  ~number{207}
+  ~location{305}
+  ~bdesc{
+    ~enUS{Angelbob}}
+  ~gdesc{
+    ~enUS{Angelbob}}
+  ~ldesc{
+    ~enUS{Angelbob wanders the MUD.}}
+  ~article{0}
+  ~flags{0}
+  ~nouns{{~enUS{angelbob}}}
+  ~adjectives{{}}
+}
+~portable{
+  ~number{208}
+  ~location{1}
+  ~bdesc{
+    ~enUS{Noah}}
+  ~gdesc{
+    ~enUS{Noah}}
+  ~ldesc{
+    ~enUS{Noah wanders the MUD.}}
+  ~article{0}
+  ~flags{0}
+  ~nouns{{~enUS{noah}}}
+  ~adjectives{{}}
+}
+~portable{
+  ~number{209}
+  ~location{302}
+  ~bdesc{
+    ~enUS{NewBoy}}
+  ~gdesc{
+    ~enUS{NewBoy}}
+  ~ldesc{
+    ~enUS{NewBoy wanders the MUD.}}
+  ~article{0}
+  ~flags{0}
+  ~nouns{{~enUS{NewBoy}}}
+  ~adjectives{{}}
+}
+~portable{
+  ~number{210}
+  ~location{1}
+  ~bdesc{
+    ~enUS{Tdl}}
+  ~gdesc{
+    ~enUS{Tdl}}
+  ~ldesc{
+    ~enUS{Tdl wanders the MUD.}}
+  ~article{0}
+  ~flags{0}
+  ~nouns{{~enUS{tdl}}}
+  ~adjectives{{}}
+}
+~portable{
+  ~number{400}
+  ~location{300}
+  ~bdesc{
+    ~enUS{floor}}
+  ~gdesc{
+    ~enUS{carpeted floor}}
+  ~ldesc{
+    ~enUS{The old, stained carpet has been here for a very long time.  It hasn't
+been cleaned nearly often enough.  You can see places near the walls where
+the carpet is pulled thin and has begun fraying.  The heavy threads
+are quite dirty and worn.  The carpet looks like it was once red or orange.}}
+  ~article{1}
+  ~flags{4}
+  ~nouns{{~enUS{carpet,threads,floor,rug}}}
+  ~adjectives{{~enUS{old,worn,heavy,threadbare,carpeted,red,orange,stained,frayed,fraying}}}
+}
+~portable{
+  ~number{401}
+  ~location{300}
+  ~bdesc{
+    ~enUS{couches}}
+  ~gdesc{
+    ~enUS{old couches}}
+  ~ldesc{
+    ~enUS{The three old couches have been in the room for quite some time.  They've
+faded and lost their original colors which seem to have been red, green
+and indeterminate.  A cheap wooden chair sits anonymously in the corner
+next to one of them.  All of the furnishings are faded, worn, nicked,
+scratched and generally what you'd expect in a student lounge.}}
+  ~article{0}
+  ~flags{4}
+  ~nouns{{~enUS{couch,couches,sofa,sofas,chair,chairs}}}
+  ~adjectives{{~enUS{old,large,stained,red,green,faded,nicked,scratched,worn}}}
+}
+~portable{
+  ~number{402}
+  ~location{300}
+  ~bdesc{
+    ~enUS{table}}
+  ~gdesc{
+    ~enUS{table}}
+  ~ldesc{
+    ~enUS{The table has been built as a piece with the floor somehow, and is quite
+solid-looking.  It has a dark wooden top and sides which have seen better
+days.  The whole thing is nicked, scratched, gouged and generally the
+sort of furniture you'd expect to find in a student lounge.}}
+  ~article{2}
+  ~flags{4}
+  ~nouns{{~enUS{table}}}
+  ~adjectives{{~enUS{nicked,scratched,old,worn,stained,faded,large,gouged}}}
+}
+~portable{
+  ~number{403}
+  ~location{301}
+  ~bdesc{
+    ~enUS{floor}}
+  ~gdesc{
+    ~enUS{floor}}
+  ~ldesc{
+    ~enUS{The floor has permanent dust and grime ground into checkerboard tiles,
+attached even more securely by sticky and decaying floor polish.  It
+reminds you of other educational institutions.}}
+  ~article{1}
+  ~flags{4}
+  ~nouns{{~enUS{floor,tiles,checkerboard,tile,checker,checkers,dust,grime,polish}}}
+  ~adjectives{{~enUS{tile,tiled,checker,checkered,checkerboard,dusty,grimy,polished,floor,sticky,decaying,decayed}}}
+}
+~portable{
+  ~number{404}
+  ~location{302}
+  ~bdesc{
+    ~enUS{academic halls}}
+  ~gdesc{
+    ~enUS{academic halls}}
+  ~ldesc{
+    ~enUS{To the east is the Peabody Hall of Economics, which also contains the
+student lounge.  North of here is Marsh Hall which covers Modern History
+and Languages, while to the south looms the oddly angular Telman Hall
+of Mathematics and Science.}}
+  ~article{0}
+  ~flags{4}
+  ~nouns{{~enUS{hall,halls}}}
+  ~adjectives{{~enUS{peabody,telman,math,science,mathematics,sciences,history,languages,humanities,academic}}}
+}
+~portable{
+  ~number{405}
+  ~location{302}
+  ~bdesc{
+    ~enUS{the Tower}}
+  ~gdesc{
+    ~enUS{the Tower}}
+  ~ldesc{
+    ~enUS{To the west, in a square in the middle of campus, is The Tower.  The
+small two-story wooden building has been a fixture of campus life
+for as long as anybody can remember.  It's a place for procrastinating
+students to socialize out in the fresh air.}}
+  ~article{0}
+  ~flags{4}
+  ~nouns{{~enUS{tower}}}
+  ~adjectives{{}}
+}
+~portable{
+  ~number{406}
+  ~location{302}
+  ~bdesc{
+    ~enUS{front steps}}
+  ~gdesc{
+    ~enUS{front steps}}
+  ~ldesc{
+    ~enUS{The wooden steps have seen the tread of many feet over the years, and are
+dark and weatherstained.}}
+  ~edesc{
+    ~enUS{The wooden steps have seen the tread of many feet over the years, and are
+dark and weatherstained.  Apparently they're quite waterproof since they
+are barely warped at all.  Their uneven coloration suggests that now and
+then a board is replaced as an old one wears out.}}
+  ~article{0}
+  ~flags{4}
+  ~nouns{{~enUS{steps,step}}}
+  ~adjectives{{~enUS{front,old,maintained,well-maintained,wood,wooden}}}
+}
+~portable{
+  ~number{407}
+  ~location{302}
+  ~bdesc{
+    ~enUS{hallway}}
+  ~gdesc{
+    ~enUS{hallway}}
+  ~ldesc{
+    ~enUS{Looking into Peabody Hall, you can see dusty doors leading in several
+directions from its front hallway.}}
+  ~article{0}
+  ~flags{4}
+  ~nouns{{~enUS{hall,hallway}}}
+  ~adjectives{{~enUS{peabody,inside,front}}}
+}
+~portable{
+  ~number{408}
+  ~location{304}
+  ~bdesc{
+    ~enUS{gaslamp}}
+  ~gdesc{
+    ~enUS{a defunct gaslamp}}
+  ~ldesc{
+    ~enUS{The old gaslamp no longer works, and probably hasn't for a number of years.
+It was all the rage once.  You have to snicker at the irony of the poor
+old thing outside the Modern History building rather than, say, the
+Ancient History hall.}}
+  ~article{0}
+  ~flags{4}
+  ~nouns{{~enUS{lamp,gaslamp,lantern,post,lamppost,lightpost,light}}}
+  ~adjectives{{~enUS{light,lamp,lantern,gas}}}
+}
+~portable{
+  ~number{409}
+  ~location{304}
+  ~bdesc{
+    ~enUS{the Block and the Tower}}
+  ~gdesc{
+    ~enUS{the Block and the Tower}}
+  ~ldesc{
+    ~enUS{Off to the southwest you can see the Block, an open area in the middle
+of campus, and the Tower within it.  The Tower is an old two-story open
+building where idle students hang out.}}
+  ~article{0}
+  ~flags{4}
+  ~nouns{{~enUS{block,tower}}}
+  ~adjectives{{}}
+}
+~portable{
+  ~number{410}
+  ~location{304}
+  ~bdesc{
+    ~enUS{academic halls}}
+  ~gdesc{
+    ~enUS{academic halls}}
+  ~ldesc{
+    ~enUS{North is the entrance to the Marsh Hall of Modern History and Languages.
+To the south is Peabody Hall and Telman beyond it.  To the West you can
+see the gardener's shed just south of Pickford Engineering Hall.  Further
+East is the home of the English and Literature departments, Merritt Hall.}}
+  ~article{0}
+  ~flags{4}
+  ~nouns{{~enUS{hall,halls}}}
+  ~adjectives{{~enUS{academic,telman,peabody,merritt,pickford,engineering,literature,english,humanities,economics,marsh,history,modern,languages}}}
+}
+~portable{
+  ~number{411}
+  ~location{304}
+  ~bdesc{
+    ~enUS{shed}}
+  ~gdesc{
+    ~enUS{the gardener's shed}}
+  ~ldesc{
+    ~enUS{To the west, you can see an old shed used by the gardener hiding in the
+trees.  North of it is Pickford Hall, and south is the Block and the
+Tower.}}
+  ~article{0}
+  ~flags{4}
+  ~nouns{{~enUS{shed,building}}}
+  ~adjectives{{~enUS{old,gardener's,decrepit,tool}}}
+}
+~portable{
+  ~number{412}
+  ~location{305}
+  ~bdesc{
+    ~enUS{not-quite-spiral steps}}
+  ~gdesc{
+    ~enUS{some not-quite-spiral steps}}
+  ~ldesc{
+    ~enUS{The steps are individually weirdly angular, and together they make an
+irregular spiral up to the sculpture outside the doors of Telman Hall.
+The pattern makes your head hurt if you look at it too long.}}
+  ~article{0}
+  ~flags{4}
+  ~nouns{{~enUS{step,steps,stair,stairs}}}
+  ~adjectives{{~enUS{spiral,not-quite-spiral,not,quite}}}
+}
+~portable{
+  ~number{413}
+  ~location{305}
+  ~bdesc{
+    ~enUS{ugly sculpture}}
+  ~gdesc{
+    ~enUS{an ugly orange sculpture}}
+  ~ldesc{
+    ~enUS{This sculpture is made of several ugly bright orange blocks arranged
+roughly into the shape of a "w".  It's not clear what it's supposed to
+be.}}
+  ~article{0}
+  ~flags{4}
+  ~nouns{{~enUS{sculpture,w,doubleyou,dubya,double-u}}}
+  ~adjectives{{~enUS{ugly,orange,w,doubleyou,dubya,double-u}}}
+}
+~portable{
+  ~number{414}
+  ~location{305}
+  ~bdesc{
+    ~enUS{academic halls}}
+  ~gdesc{
+    ~enUS{academic halls}}
+  ~ldesc{
+    ~enUS{You can see Peabody Hall to the north, and Marsh hall beyond it.  The
+Block, a clearing in the center of campus, is barely visible through the
+trees to the northwest.}}
+  ~article{0}
+  ~flags{4}
+  ~nouns{{~enUS{hall,halls,peabody,marsh,clearing,block}}}
+  ~adjectives{{~enUS{academic,peabody,marsh,distant}}}
+}
