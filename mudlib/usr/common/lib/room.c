@@ -171,18 +171,50 @@ float get_length_capacity(void) {
   return length_capacity;
 }
 
+float get_current_weight(void) {
+  return current_weight;
+}
+
+float get_current_volume(void) {
+  return current_volume;
+}
+
 void set_weight(float new_weight) {
+  object loc;
+
   if(!SYSTEM() && !COMMON())
     error("Only SYSTEM code can set weights!");
 
+  /* Remove from container and add back -- that way the weight
+     will be correct */
+  loc = obj::get_location();
+  if(loc && !obj::get_detail_of()) {
+    loc->remove_from_container(this_object());
+  } else loc = nil;
+
   weight = new_weight;
+
+  if(loc)
+    loc->add_to_container(this_object());
 }
 
 void set_volume(float new_volume) {
+  object loc;
+
   if(!SYSTEM() && !COMMON())
     error("Only SYSTEM code can set volumes!");
 
+  /* Remove from container and add back -- that way the weight
+     will be correct */
+  loc = obj::get_location();
+  if(loc && !obj::get_detail_of()) {
+    loc->remove_from_container(this_object());
+  } else loc = nil;
+
   volume = new_volume;
+
+  if(loc)
+    loc->add_to_container(this_object());
 }
 
 void set_length(float new_length) {
