@@ -1,0 +1,763 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title> DGD LPC Textbook </title>
+  </head>
+
+  <body text="#000000" bgcolor="#DDDDDD" link="#0000EF" vlink="#51188E"
+	alink="#FF0000">
+
+    <h1> LPC:  The LPMUD Programming Language </h1>
+    <h2> DGD edition </h2>
+
+    <p> Copyright 1996, 2003 Ronny Wikh and Noah Gibbs </p>
+
+    <hr size="4">
+
+    <h1><a name="SEC4.0" href="index.html#SEC4.0">
+	Essential LPC and Mudlib</a></h1>
+
+    <p>
+      This chapter will teach you what you need to know in order to
+      actually produce code in the game environment. It will avoid the
+      more complicated or inessential subjects, leaving them for
+      chapter three.  This chapter contains more about the mudlib and
+      the workings of the driver, knowledge necessary to produce
+      working code in real situations.
+    </p>
+
+    <hr size=2>
+
+    <h2><a name="SEC4.1" href="index.html#SEC4.1">
+	4.1 A Peek at things to come</a></h2>
+
+    <p>
+      This section explains several functions.  They will be repeated
+      in their correct context later, but are mentioned here as
+      background for discussion.
+    </p>
+
+    <p>
+      To present things on the screen for the player to read,
+      the <code>message()</code> function is called on that player's
+      user object.  Different mudlibs supply the user object in
+      different ways.
+    </p>
+
+    <p>
+      There are two special characters that are often used to format
+      text, <tt>tab</tt> and <tt>newline</tt>.  They are written as
+      <code>\t</code> and <code>\n</code> respectively within DGD
+      strings.  The <tt>tab</tt> character inserts 8 space characters
+      and <tt>newline</tt> breaks the line.
+    </p>
+
+    <pre>
+void message(string text);
+e.g.
+    user->message("Hello there!\n");
+    user->message("\tThis is an indented string.\n");
+    user->message("This is a string\non several lines\n\tpartly\nindented.\n");
+
+    /* The result is:
+
+       Hello there!
+
+               This is an indented string.
+
+       This is a string
+       on several lines
+               partly
+       indented.
+     */
+    </pre>
+
+    <p>
+      If you have an array, mapping, or variable of any kind that you
+      want displayed on the screen for debugging purposes the sfun
+      <code>dump_array()</code> is very handy. You simply give the
+      variable you want displayed as an argument and the contents (any
+      kind) will be displayed for you.
+    </p>
+
+<pre>
+void dump_array(mixed data)
+e.g.
+    string *name = ({ "fatty", "fido", "relic" });
+    dump_array(name);
+
+    /* The result is
+
+       (Array)
+       [0] = (string) "fatty"
+       [1] = (string) "fido"
+       [2] = (string) "relic"
+     */
+</pre>
+
+
+
+<hr size=2><h2><a name="SEC52" href="index.html#SEC52">LPC revisited</a></h2>
+
+<p>
+Let's start by ripping off the rest of the LPC that was avoided in the
+first chapter. We need this in order to be able to actually create working
+objects in the game environment.
+
+</p>
+
+
+
+<h3><a name="SEC53" href="index.html#SEC53">Function calls</a></h3>
+
+<p>
+There are two kinds of function calls, internal and external. The only kind
+we have discussed so far is the internal one even though the external call
+has been displayed a few times.
+
+</p>
+
+<ul>
+<li><a href="lpc.html#SEC54">Internal calls</a>: Making object-internal function calls
+<li><a href="lpc.html#SEC55">External single calls</a>: Making object-external single function calls
+<li><a href="lpc.html#SEC56">External multiple calls</a>: Making object-external multiple function calls
+</ul>
+
+
+
+<h4><a name="SEC54" href="index.html#SEC54">Making object-internal function calls</a></h4>
+<p>
+<a name="IDX57"></a>
+[call_self]
+
+</p>
+<p>
+Making an internal function call is as simple as writing the function name
+and putting any arguments within parentheses afterwards. The argument list 
+is simply a list of expressions, or nothing. (A function call is naturally 
+an expression as well).
+
+</p>
+
+<pre>
+&lt;function&gt;(&lt;argument list&gt;);
+e.g.
+    pie = atan(1.0) * 4;
+</pre>
+
+<p>
+There is another way of doing this as well. If you have the function name
+stored in a string and wish to call the function, you use the efun
+<code>call_self()</code>:
+
+</p>
+
+<pre>
+call_self(&lt;"function name"&gt;, &lt;argument list&gt;);
+e.g.
+    pie = call_self("atan", 1.0) * 4;
+</pre>
+
+<p>
+If you use <code>call_self()</code> and specify a function that doesn't exist,
+you will get an error message and the execution of the object will be
+aborted.
+
+</p>
+
+
+<h4><a name="SEC55" href="index.html#SEC55">Making single object-external function calls</a></h4>
+<p>
+<a name="IDX58"></a>
+[call_other]
+
+</p>
+<p>
+An external call is a call from one object to another. In order to do
+that you need an object reference to the object you want to call. We
+haven't discussed exactly how you acquire an object reference yet, but
+assume for the moment that it already is done for you.
+
+</p>
+
+<pre>
+mixed &lt;object reference/object path&gt;-&gt;&lt;function&gt;(&lt;argument list&gt;);
+mixed call_other(&lt;ob ref/ob path&gt;, "&lt;function&gt;", &lt;arg list&gt;);
+e.g.
+    /*
+     * Assume that I want to call the function 'compute_pie' in the
+     * object "/d/Mydom/thewiz/math_ob", and that I also have the
+     * proper object pointer to it stored in the variable 'math_ob'
+     */
+    pie = math_ob-&gt;compute_pie(1.0);
+    pie = "/d/Mydom/thewiz/math_ob"-&gt;compute_pie(1.0);
+    pie = call_other(math_ob, "compute_pie", 1.0);
+    pie = call_other("/d/Mydom/thewiz/math_ob", "compute_pie", 1.0);
+</pre>
+
+<p>
+As you can see, the efun <code>call_other()</code> works analogous to
+<code>call_self()</code>.
+
+</p>
+<p>
+If you make an external call using the object path, the so called 
+<b>master object</b> will be called. If the object you call hasn't been
+loaded into memory yet, it will be. If an external call is made to a
+function that doesn't exist in the object you call, 0 will be returned
+without any error messages. Calls to objects that have bugs in the code 
+<i>will</i> result in an error message and the execution of the object 
+that made the call is aborted.
+
+</p>
+<p>
+What's the big deal with <code>call_self()</code> then? Why can't you just use
+<code>call_other()</code> all the time with the same result? Well, it has to do
+with access to functions in an object, a part of LPC that I haven't gotten
+around to explaining yet. However, the difference is that <code>call_self</code>
+really works just like any internal call in regard to function modifiers
+and function access, while <code>call_other()</code> is a pure external call.
+Remember this for the future when differences between internal and
+external access to functions are discussed.
+
+</p>
+
+
+<h4><a name="SEC56" href="index.html#SEC56">Making multiple object-external function calls</a></h4>
+
+<p>
+You can call several objects at once just as easily as a single one.
+If you have an array of path strings or object pointers, or a mapping
+where the value part are path strings or object pointers you can call
+all the referenced objects in one statement. The result will be an
+array with the return values if you call using an array and a mapping
+with the same index values as the calling mapping if you give a mapping.
+
+</p>
+
+<pre>
+(array/mapping)	&lt;array/mapping&gt;-&gt;&lt;function&gt;(&lt;argument list&gt;);
+e.g.
+    /*
+     * I want a mapping where the indices are the names of the players
+     * in the game, and the values are their hitpoints.
+     */
+    object *people, *names;
+    mapping hp_map;
+
+    /* Get a list of all players. */
+    people = users();
+
+    /* Get their names. */
+    names = people-&gt;query_real_name();
+
+    /* Make a mapping to call with. Item = name:pointer */
+    hp_map = mkmapping(names, people)
+
+    /* Replace the pointers with hitpoint values. */
+    hp_map = hp_map-&gt;query_hp();
+
+    /* All this could also have been done simpler as: */
+    hp_map = mkmapping(users()-&gt;query_real_name(), users()-&gt;query_hp());
+</pre>
+
+
+
+<h3><a name="SEC57" href="index.html#SEC57">Inheriting object classes</a></h3>
+
+<p>
+Assume that you want to code an item like a door, for example. Doing
+that means that you have to create functionality that allows the opening
+and closing of a passage between two rooms. Perhaps you want to be able
+to lock and unlock the door, and perhaps you want the door to be
+transparent. All of this must be taken care of in your
+code. Furthermore, you have to copy the same code and make small
+variations in description and use <i>every time</i> you want to make a
+new door.
+
+</p>
+<p>
+After a while you'll get rather tired of this, particularly as you'll find
+that other wizards has created doors of their own that work almost - but
+not quite - the same way your does, rendering nifty objects and features
+useless anywhere but in your domain. 
+
+</p>
+<p>
+The object oriented way of thinking is that instead of doing things over
+and over you create a basic door object that can do all the things you want
+any door to be able to do. Then you just inherit this generic door into a 
+specialized door object where you configure exactly what <i>it</i> should
+be able to do from the list of available options in the <b>parent</b> door.
+
+</p>
+<p>
+It is even possible to inherit several different objects where you can
+combine the functionality of several objects into one. However, be aware
+that if the objects you inherit define functions with the same names, they
+will indeed clash. Just be aware of what you are doing and why, and you
+won't have any problems.
+
+</p>
+<p>
+The syntax for inheriting objects is very simple. In the top of the file
+you write this:
+
+</p>
+
+<pre>
+inherit "&lt;file path&gt;";
+e.g.
+	inherit "/std/door";
+	inherit "/std/room.c";
+</pre>
+
+<p>
+	
+<b>NB!</b> This is <b>NOT</b> a preprocessor command, it is a statement,
+so it does <b>NOT</b> have a <code>#</code> in front of it, and it is ended
+with a <code>;</code>.  As you see you may specify that it's a c-file if you
+wish, but that's not necessary.
+
+</p>
+<p>
+The <b>child</b> will inherit all functions and all variables that are declared
+in such a way as to permit inheriting. If you have a function with the same
+name as a function in the parent, your function will <b>mask</b> the parent
+one. When the function is called by an external call, your function will be
+executed. Internal calls in the parent will still go to the parent function.
+Often you need to call the parent function anyway from the child, you do 
+that by adding <code>::</code> to the internal function call.
+
+</p>
+
+<pre>
+void
+my_func()
+{
+    /* 
+     * This function exists in the parent, and I need to
+     * call it from here.
+     */
+    ::my_func();        /* Call my_func() in the parent. */
+}
+</pre>
+
+<p>
+It is not possible to call a masked function in the parent by an
+external call, it is only available from within the object itself. If an
+object inherits an object that has inherited another object, e.g. C
+inherits B that inherits A, then masked functions in A is only available
+from B, not from C.
+
+</p>
+
+
+
+<h3><a name="SEC59" href="index.html#SEC59">Type identification</a></h3>
+<p>
+<a name="IDX59"></a>
+<a name="IDX60"></a>
+<a name="IDX61"></a>
+<a name="IDX62"></a>
+<a name="IDX63"></a>
+<a name="IDX64"></a>
+<a name="IDX65"></a>
+[intp, floatp, functionp, stringp, objectp, mappingp, pointerp]
+
+</p>
+<p>
+Due to the fact that all variables are initialized to 0, and that
+many functions return 0 when failing, it's desirable to be able
+to determine what kind of value type you actually have received.
+Also, if you use the <code>mixed</code> type it's virtually essential to be
+able to test what the variable contains at times. For this purpose
+there's a special test function for each type that will return
+1 (true) if the tested value is of the asked for type, and 0 if not.
+
+</p>
+<dl compact>
+
+<dt>@bullet{int intp(mixed)}
+<dd>
+Test if given value is an integer
+
+<dt>@bullet{int floatp(mixed)}
+<dd>
+Test if given value is a float
+
+<dt>@bullet{functionp(mixed)}
+<dd>
+Test if given value is a function pointer
+
+<dt>@bullet{int stringp(mixed)}
+<dd>
+Test if given value is a string
+
+<dt>@bullet{int objectp(mixed)}
+<dd>
+Test if given value is an object pointer
+
+<dt>@bullet{int mappingp(mixed)}
+<dd>
+Test if given value is a mapping
+
+<dt>@bullet{int pointerp(mixed)}
+<dd>
+Test if given value is an array
+
+</dl>
+
+<p>
+<b>NB!</b> These functions test the type of the value, <b>NOT</b>
+the value itself in the sense of truth functionality. In other words
+<code>intp(0)</code> will always evaluate as true, as will
+<code>mappingp(([]))</code>.
+
+</p>
+
+
+<h3><a name="SEC60" href="index.html#SEC60">Type qualifiers</a></h3>
+
+<p>
+The very types you assign variables and function can have qualifiers
+changing the way they work. It's very important to keep them in mind
+and use the proper qualifier at the proper time. Most work differently
+when applied to variables rather than functions, so a bit of confusion
+about how they work usually is quite common among the programmers. Try
+to get this straight now and you'll have no problems later
+
+</p>
+
+<ul>
+<li><a href="lpc.html#SEC61">static (variable)</a>: The static variable qualifier
+<li><a href="lpc.html#SEC62">static (function)</a>: The static function qualifier
+<li><a href="lpc.html#SEC63">private</a>: The private function/variable qualifier
+<li><a href="lpc.html#SEC64">nomask</a>: The nomask function/variable qualifier
+<li><a href="lpc.html#SEC65">public</a>: The public function/variable qualifier
+<li><a href="lpc.html#SEC66">varargs</a>: The varargs function qualifier
+</ul>
+
+
+
+<h4><a name="SEC61" href="index.html#SEC61">The static variable qualifier</a></h4>
+<p>
+<a name="IDX66"></a>
+
+</p>
+<p>
+This is a problematic qualifier in the respect that it works differently
+even for variables depending on where they are! Global variables, to
+begin with, are (as you know) variables that are defined in the top of
+the file <i>outside</i> any function. These variables are available in all
+functions i.e. their <b>scope</b> is object-wide, not just limited to one
+function.
+
+</p>
+<p>
+It is possible to save all global variables in an object with a special
+efun (described later). However, if the global variable is declared as
+<code>static</code>, it is <i>not</i> saved along with the rest.
+
+</p>
+
+<pre>
+static string   TempName;        /* A non-saved global var. */
+</pre>
+
+
+
+<h4><a name="SEC62" href="index.html#SEC62">The static function qualifier</a></h4>
+<p>
+<a name="IDX67"></a>
+
+</p>
+<p>
+A function that is declared <code>static</code> can not be called using
+external calls, only internal. This makes the function 'invisible' and
+inaccessable for other objects.
+
+</p>
+
+
+<h4><a name="SEC63" href="index.html#SEC63">The private function/variable qualifier</a></h4>
+<p>
+<a name="IDX68"></a>
+
+</p>
+<p>
+A variable or function that has been declared as <code>private</code> will not be
+inherited down to another object. They can only be accessed within
+the object that defines it.
+
+</p>
+
+
+<h4><a name="SEC64" href="index.html#SEC64">The nomask function/variable qualifier</a></h4>
+<p>
+<a name="IDX69"></a>
+
+</p>
+<p>
+Functions and variables that are declared as <code>nomask</code> can not be
+masked in any way, neither by shadowing nor inheriting. If you try you
+will be given an error message.
+
+</p>
+
+
+<h4><a name="SEC65" href="index.html#SEC65">The public function/variable qualifier</a></h4>
+<p>
+<a name="IDX70"></a>
+
+</p>
+<p>
+This is the default qualifier for all functions. It means there is no
+limits other than those which the language imposes on accessing, saving
+and masking.
+
+</p>
+
+
+<h4><a name="SEC66" href="index.html#SEC66">The varargs function qualifier</a></h4>
+<p>
+<a name="IDX71"></a>
+
+</p>
+<p>
+Sometimes you want a function to be able to receive a variable amount
+of arguments. There's two ways of doing this and it can be discussed
+if it's correct to put both explanations in this chapter, but it's
+sort of logical to do so and not too hard to find.
+
+</p>
+<p>
+A function that is defined <code>varargs</code> will be able to receive a
+variable amount of arguments. The variables that aren't specified
+at the call will be set to 0.
+
+</p>
+
+<pre>
+varargs void
+myfun(int a, string str, float c);
+{
+}
+</pre>
+
+<p>
+The call <code>myfun(1);</code> will set <code>a</code> to <code>1</code>, <code>str</code> and 
+<code>c</code> to <code>0</code>. Make sure you test the potentially unused variables
+before you try to use them so that they do contain a value you can use.
+
+</p>
+<p>
+There's another way as well. You can specify default values to the
+variables that you're uncertain about. Then you don't have to declare
+the function <code>varargs</code> and you will have proper default values
+in the unused argument variables as well.
+
+</p>
+
+<pre>
+void
+myfun(int a, string str = "pelle", float c = 3.0);
+{
+}
+</pre>
+
+<p>
+This function must be called with at least one argument, the first, as
+it wasn't given a default value. The call <code>myfun(1, "apa");</code> will
+set <code>a</code> to <code>1</code>, <code>str</code> to <code>"apa"</code> and <code>c</code> to 
+<code>3.0</code>.
+
+</p>
+
+
+<h3><a name="SEC68" href="index.html#SEC68">switch/case part 2</a></h3>
+<p>
+<a name="IDX73"></a>
+<a name="IDX74"></a>
+
+</p>
+<p>
+The LPC switch statement is very intelligent, it can also use ranges in
+integers:
+
+</p>
+
+<pre>
+public void
+wheel_of_fortune()
+{
+    int i;
+
+    i = random(10);     /* Get a random number 0 - 9
+                           Strictly speaking, this local variable isn't
+                           necessary, it's just there to demonstrate the
+                           use and make things clearer. I could have 
+                           switched on 'random(10)' directly instead if
+                           I had wanted to. */
+
+    switch (i)
+    {
+    case 0..4:
+        write("Try again, sucker!\n");
+        break;
+
+    case 5..6:
+        write("Congrats, third prize!\n");
+        break;
+
+    case 7..8:
+        write("Yes! Second prize!\n");
+        break;
+
+    case 9:
+        write("WOOOOPS! You did it!\n");
+        break;
+
+    default:
+        write("Someone has tinkered with the wheel... Call 911!\n");
+        break;
+    }
+}
+</pre>
+
+
+
+<h3><a name="SEC69" href="index.html#SEC69">catch/throw: Error handling during runtime</a></h3>
+<p>
+<a name="IDX75"></a>
+
+</p>
+<p>
+It happens now and then that you need to make function calls you know 
+<i>might</i> result in a runtime error. For example you might try to
+clone an object (described later) or read a file. If the files aren't
+there or your privileges are wrong you will get a runtime error and
+execution will stop. In these circumstances it is desireable to be able
+to intercept the error and either display some kind of message or
+perform other actions instead. The special LPC function operator
+<code>catch()</code> will do this for you. It returns 1 (true) if an error
+occurs during evaluation of the given function and 0 (false) otherwise.
+
+</p>
+
+<pre>
+int catch(function)
+e.g.
+    if (catch(tail("/d/Relic/fatty/hidden_donut_map")))
+    {
+        write("Sorry, not possible to read that file.\n");
+        return;
+    }
+</pre>
+
+<p>
+<a name="IDX76"></a>
+It's also possible to cause error interrupts. This is particularly useful
+when you want to notify the user of an unplanned for event that occured
+during execution. Typically you want to do this in the 'default' case of a
+switch statement, unless (naturally) you use default as a sort of catch-it-all
+position. In any case <code>throw()</code> will generate a runtime error
+with the message you specify. A <code>catch()</code> statement issued prior to
+calling the function that uses <code>throw()</code> will naturally intercept the
+error as usual.
+
+</p>
+
+<pre>
+throw(mixed info)
+e.g.
+    if (test &lt; 5)
+        throw("The variable 'test' is less than 5\n");
+</pre>
+
+
+
+<h3><a name="SEC70" href="index.html#SEC70">Array &amp; Mapping references</a></h3>
+<p>
+<a name="IDX77"></a>
+<a name="IDX78"></a>
+
+</p>
+<p>
+In comp sci terms, arrays and mappings are used as <b>reference by pointer</b>
+and the other types as <b>reference by value</b>. This means that arrays and
+mappings, unlike other variables, aren't copied every time they are moved
+around. Instead, what is moved is a reference to the original array or
+mapping. What does this mean then?
+
+</p>
+<p>
+Well... simply this:
+
+</p>
+
+<pre>
+object *arr, *copy_arr;
+
+arr = ({ 1, 2, 3, 4 });    /* An array */
+
+copy_arr = arr;	             /* Assume (wrongly) that a copy_arr becomes
+                                a copy of arr. */
+
+/* Change the first value (1) into 5. */
+copy_arr[0] = 5;
+</pre>
+
+<p>
+... Now... this far down the code it's logical to assume that the first
+value of <code>copy_arr</code> is 5 while the first value or <code>arr</code> is 1.
+That's not so however, because what got copied into <code>copy_arr</code> was
+not the array itself, but a reference to the same array as <code>arr</code>.
+This means that your operation later where you changed an element,
+changed that element in the original array which both variables refer
+to.  <code>copy_arr</code> and <code>arr</code> will both seem to have changed,
+while in fact it was only the original array that both refered to that
+changed.
+
+</p>
+<p>
+Exactly the same thing will happen if you use mappings since they work
+the same way in this respect.
+
+</p>
+<p>
+So... how do you get around this then? I mean... most times you really want
+to work on a copy and not the original array or mapping. The solution is
+very simple actually. You just make sure that the copy is created from
+another array or mapping instead.
+
+</p>
+
+<pre>
+              _ This is just an empty array
+             /
+copy_arr = ({ }) + arr;
+                    \_ This is the one we want to make unique
+</pre>
+
+<p>
+In this example <code>copy_arr</code> becomes the sum of the empty array and
+the <code>arr</code> array created as an entirely new array. This leaves
+the original unchanged, just as we wanted. You can do exactly the same
+thing with mappings. It doesn't matter if you add the empty array or
+mapping first or last, just as long as you do it.
+
+</p>
+
+    <hr>
+    <a href="http://sourceforge.net">
+      <img src="http://sourceforge.net/sflogo.php?group_id=48659&type=6"
+	   width="210" height="62" border="0" alt="SourceForge.net Logo"></a>
+    <address><a href="mailto:noah_gibbs@yaNOSPAMhoo.com">Noah Gibbs</a>
+    </address>
+    <!-- Created: Mon Jun 11 21:50:30 PDT 2001 -->
+    <!-- hhmts start -->
+Last modified: Wed Apr  9 10:33:24 PDT 2003
+<!-- hhmts end -->
+  </body>
+</html>
