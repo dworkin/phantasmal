@@ -48,6 +48,16 @@
       will be discussed in chapter 6.
     </p>
 
+    <p>
+      The latest updates on DGD configuration files and the interface
+      to the driver object can be found in DGD's &quot;doc&quot;
+      directory, in a file called &quot;Introduction&quot;.  If there
+      is any conflict between what you read here and that file in your
+      copy of DGD, that file is correct.  Some details change from
+      version to version of DGD, and their Introduction file will give
+      the details.
+    </p>
+
     <h2> <a name="SEC5.1" href="index.html#SEC5.1">
 	5.1 DGD's Configuration File </a> </h2>
 
@@ -307,9 +317,9 @@ binary_port = ({ 8889, 8890, 9725 })
       delay.  After the delay is up, the call happens.  This is called
       a call_out.  The number of these that can be stacked up and
       waiting to happen is given by the call_outs entry.
-      Multiprocessor and very recent versions of DGD don't limit the
-      number of call_outs by default, so this entry may not make any
-      difference for those versions of DGD.
+      Multiprocessor and versions of DGD after the late 1.2 series
+      don't necessarily limit the number of call_outs.  This entry may
+      not make any difference for those versions of DGD.
     </p>
 
     <h2> <a name="SEC5.2" href="index.html#SEC5.2">
@@ -323,7 +333,7 @@ binary_port = ({ 8889, 8890, 9725 })
     </address>
     <!-- Created: Mon Jun 11 21:50:30 PDT 2001 -->
     <!-- hhmts start -->
-Last modified: Mon Jun 16 20:54:56 PDT 2003
+Last modified: Mon Jun 16 20:58:58 PDT 2003
 <!-- hhmts end -->
   </body>
 </html>
