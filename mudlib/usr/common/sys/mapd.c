@@ -157,6 +157,13 @@ void destructed(int clone) {
 }
 
 
+/* ZoneD calls this function to notify MapD of new zone additions. */
+void notify_new_zones(void) {
+  if(previous_program() == ZONED)
+    upgraded(0);
+}
+
+
 void set_segment_zone(int segment, int newzone, int oldzone) {
   if(previous_program() != OBJNUMD)
     error("Only objnumd can notify MAPD of a segment zone change!");

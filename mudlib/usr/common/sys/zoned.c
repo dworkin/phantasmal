@@ -6,7 +6,7 @@
 #include <type.h>
 #include <limits.h>
 
-/* ZoneD -- daemon that tracks zones -- currently mostly hardcoded */
+/* ZoneD -- daemon that tracks zones */
 
 inherit dtd DTD_UNQABLE;
 
@@ -57,6 +57,9 @@ void init_from_file(string file) {
     error("Zonefile is too large in ZONED->init_from_file!");
   load_type = 1;
   from_unq_text(file);
+
+  if(find_object(MAPD))
+    MAPD->notify_new_zones();
 }
 
 /* Load in the available zones */
@@ -68,6 +71,9 @@ void init_zonelist_from_file(string file) {
     error("Zonefile is too large in ZONED->init_from_file!");
   load_type = 2;
   from_unq_text(file);
+
+  if(find_object(MAPD))
+    MAPD->notify_new_zones();
 }
 
 /******* Functions for DTD_UNQABLE *************************/
@@ -168,9 +174,9 @@ void from_dtd_unq(mixed* unq) {
       }
       zones = zones[1..];    
     }
-    
+
   } else if( load_type == 2) {
-    
+
     zones = unq[1]; /* load zonelist values */
     while(sizeof(zones)) {
       if( zones[0][0] == "zone" ){
@@ -288,7 +294,7 @@ int add_new_zone( string zonename ){
     zone_table += ({ ({ zonename, ([ ]) }) });
 
     /* And tell MAPD to update its zone table, too */
-    MAPD->upgraded(0);
+    MAPD->notify_new_zones();
 
     return num_zones()-1;
   } else {
