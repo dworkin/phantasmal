@@ -1,4 +1,4 @@
-/* $Header: /cvsroot/phantasmal/mudlib/usr/System/obj/user.c,v 1.36 2003/03/01 04:43:53 angelbob Exp $ */
+/* $Header: /cvsroot/phantasmal/mudlib/usr/System/obj/user.c,v 1.37 2003/03/04 01:06:20 angelbob Exp $ */
 
 #include <kernel/kernel.h>
 #include <kernel/user.h>
@@ -857,7 +857,7 @@ static void cmd_emote(object user, string cmd, string str) {
 }
 
 static void cmd_help(object user, string cmd, string str) {
-  mixed *hlp;
+  mixed *hlp, *kw;
   int index;
   int exact;
 
@@ -872,13 +872,24 @@ static void cmd_help(object user, string cmd, string str) {
     exact = 1;
     index = index - 1;  /* User sees as 1-indexed, we see 0-indexed */
   } else if (!str || STRINGD->is_whitespace(str)) {
-    str = "main";
+
+    if(wiztool) {
+      str = "main_admin";
+    } else {
+      str = "main";
+    }
+
     index = 0;
   } else if (str) {
     index = 0;
   }
 
-  hlp = HELPD->query_exact_with_keywords(str, this_object(), ({ }));
+  if(wiztool) {
+    kw = ({ "admin" });
+  } else {
+    kw = ({ });
+  }
+  hlp = HELPD->query_exact_with_keywords(str, this_object(), kw);
   if(hlp) {
     if((exact && (sizeof(hlp) <= index)) || (sizeof(hlp) < 0)
        || (index < 0)) {
