@@ -113,7 +113,7 @@ This is used most frequently by MOOs, MUSHes and company.
 ===========================================================================
 
 MCCP - MUD Client Compression Protocol
-  <a href="http://www.randomly.org/projects/MCCP/">http://www.randomly.org/projects/MCCP/</a>
+  <a href="http://mccp.afkmud.com/">Mirror of http://www.randomly.org/projects/MCCP/</a>
 
 This uses ZLib to compress information going out to the client.
 Conceivably useful, but probably not the real problem in most cases.
@@ -334,13 +334,13 @@ trailing semicolons inside the strings are important.)
         Character:
                             HTML sequence:
              &lt;
-                                 &lt;
+                                 &amp;lt;
              &gt;
-                                 &gt;
+                                 &amp;gt;
              &
-                                &amp;
+                                &amp;amp;
              "
-                                &quot;
+                                &amp;quot;
 
     In LP-MUD, we did this in dgd/lib/player.c's catch_tell().
 
