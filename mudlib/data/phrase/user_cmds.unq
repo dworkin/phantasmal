@@ -69,6 +69,8 @@ inventory / cmd_inventory,
 put       / cmd_put,
 place     / cmd_put,
 remove    / cmd_remove,
+open      / cmd_open,
+close     / cmd_close,
 }
 
 ~esUS{
@@ -138,4 +140,6 @@ inventory / cmd_inventory,
 pon       / cmd_put,
 place     / cmd_put,
 remove    / cmd_remove,
+abra      / cmd_open,
+cierra    / cmd_close,
 }
