@@ -2,6 +2,7 @@
 #include <trace.h>
 #include <log.h>
 #include <kernel/kernel.h>
+#include <channel.h>
 
 private object log;
 private string comp_err;
@@ -94,6 +95,9 @@ void runtime_error(string error, int caught, mixed** trace)
     send_message("Runtime error: " + str);
     if(caught == 0 && this_user() && (obj=this_user()->query_user())) {
       obj->message(str);
+    }
+    if(!caught && find_object(CHANNELD)) {
+      CHANNELD->string_to_channel(CHANNEL_ERR, str);
     }
   }
 }
