@@ -18,20 +18,35 @@
     <h3 align="center"> Directory Structure in a Phantasmal-based Game </h3>
 
     <p>
-      When you're building your MUD, you'd like to change stuff in
-      /data and /usr/game a lot.  You'd like to change stuff in
-      /usr/common very little.  And you'd like to not change stuff in
-      /usr/System at all, if you can manage.  And you should never,
-      never change stuff in /kernel.  There's no reason to do it, and
-      you'll break compatibility and security if you try.
+      When you're building your MUD, you'd like to change /usr/game a
+      lot.  You'd like to change stuff in /usr/common and /usr/System
+      very little, if at all, if you can manage.  And you should
+      never, never change stuff in /kernel.  There's no reason to do
+      it, and you'll break compatibility and security if you try.
     </p>
 
     <p>
-      The /data directory doesn't have much in it any more, and it'll
-      keep having less and less there.  That's intentional.
-      Everything is moving under the /usr directories, because the
-      Kernel Library doesn't give you any file security for stuff in
-      /data.
+      The idea is that /usr/game is where your game's rules are kept.
+      That's the part that <i>you</i> supply, the details of your
+      MUD's world.  Phantasmal doesn't need to know what you name your
+      skills or classes (if any), what you name your commands or even
+      how you handle things like scripting.  Phantasmal just keeps
+      track of zones, rooms, exits and NPCs, and supplies you a
+      standard library of functions to play with.  You use what you
+      want and leave the rest alone.  But most especially, you
+      concentrate on what makes your game special, unique and
+      different, and let Phantasmal quibble about the basics of
+      getting one object to fit inside another and what file format is
+      best for separating English strings from French.
+    </p>
+
+    <p>
+      For MUDs with more than one staff member, you'll probably want
+      different amounts of privilege.  Phantasmal doesn't really do
+      that for you, yet.  The idea is that you can put each staff
+      member's stuff in a separate directory, and then link zones into
+      the main MUD when they work correctly.  That's not fully spelled
+      out yet, though.
     </p>
 
     <a href="http://sourceforge.net">
