@@ -1,0 +1,4 @@
+~DTD{
+  ~meat_locker{int}
+  ~start_room{int}
+}

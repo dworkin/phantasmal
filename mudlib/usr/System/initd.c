@@ -83,7 +83,6 @@ static void create(varargs int clone)
   /* Compile, find and install the Telnetd */
   if(!find_object(TELNETD)) { compile_object(TELNETD); }
   "/kernel/sys/userd"->set_telnet_manager(0,find_object(TELNETD));
-  /* "/kernel/sys/userd"->set_telnet_manager(find_object(TELNETD)); */
 
   /* Compile the Phrase manager (before Helpd) */
   if(!find_object(PHRASED)) { compile_object(PHRASED); }
@@ -116,7 +115,6 @@ static void create(varargs int clone)
   if(!the_void)
     error("Can't clone void object!");
   MAPD->add_room_number(the_void, 0);
-  MAPD->set_room_alias("start room", the_void);
 
   /* Set up the PortableD */
   if(!find_object(PORTABLED)) { compile_object(PORTABLED); }
@@ -143,7 +141,9 @@ static void create(varargs int clone)
   }
 
   if(!find_object(CHANNELD)) compile_object(CHANNELD);
-  
+
+  /* This should be done by the config file when it's loaded */
+  MAPD->set_room_alias("start room", the_void);
 }
 
 void save_mud_data(object user, string callback) {
