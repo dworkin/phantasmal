@@ -32,7 +32,7 @@ static void __shutdown_callback(void);
 static void create(varargs int clone)
 {
   object driver, obj, the_void;
-  string mapd_dtd, help_dtd, objs_file;
+  string zone_file, mapd_dtd, help_dtd, objs_file;
   int major, minor, patch, rooms_loaded;
 
   /* First things first -- this release needs one of the
@@ -144,6 +144,10 @@ static void create(varargs int clone)
     DRIVER->message("Can't read portable file!\n");
     LOGD->write_syslog("Can't read portable file!  Starting blank!", LOG_WARN);
   }
+
+  /* Load zone/segment mapping information */
+  zone_file = read_file(ZONE_FILE);
+  ZONED->init_from_file(zone_file);
 
   /* Start up ChannelD and ConfigD */
   if(!find_object(CHANNELD)) compile_object(CHANNELD);
