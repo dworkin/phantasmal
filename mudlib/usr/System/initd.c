@@ -35,11 +35,15 @@ static void create(varargs int clone)
      latest versions of DGD, so let's make sure. */
   if(!sscanf(KERNEL_LIB_VERSION, "%d.%d.%d", major, minor, patch)) {
     error("Don't recognize Kernel Library version as being of the"
-	  + " form 1.2.XX!");
+	  + " form X.Y.ZZ!");
   }
   if((major == 1 && minor < 2)
      || (major == 1 && minor == 2 && patch < 13)) {
     error("Need to upgrade to DGD version 1.2.41 or higher!");
+  } else if (major == 1 && minor == 2 && patch > 14) {
+    DRIVER->message("This is a very new Kernel Library version, or at\n");
+    DRIVER->message("  least newer than this version of Phantasmal.  If\n");
+    DRIVER->message("  you have problems, please upgrade!\n");
   } else if (major > 1 || (major == 1 && minor > 2)) {
     DRIVER->message("This version of Phantasmal is not tested");
     DRIVER->message("with DGD beyond 1.2.XX.  Please upgrade!\n");
