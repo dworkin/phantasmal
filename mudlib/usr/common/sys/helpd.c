@@ -90,9 +90,9 @@ private string normalize_help_query(string query) {
   }
 
   /* Remove extra leading space */
-  query = query[1..];
-
-  LOGD->write_syslog("Help query is '" + query + "'.");
+  if(strlen(query)) {
+    query = query[1..];
+  }
 
   return query;
 }
