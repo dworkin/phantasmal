@@ -22,7 +22,7 @@ walls are.}}
     ~enUS{west}
     ~esUS{oeste}}
     ~rnouns{{~enUS{west}~esUS{oeste}}}
-    ~rflags{3}}
+    ~rflags{2}}
   ~newexit{~rnumber{116} ~direction{1} ~destination{1} ~return{117} ~type{2}
     ~rgdesc{
     ~enUS{north}
@@ -31,7 +31,7 @@ walls are.}}
     ~enUS{north}
     ~esUS{norte}}
     ~rnouns{{~enUS{north}~esUS{norte}}}
-    ~rflags{3}}
+    ~rflags{2}}
   ~newexit{~rnumber{118} ~direction{7} ~destination{1} ~return{119} ~type{2}
     ~rgdesc{
     ~enUS{northwest}
@@ -40,7 +40,7 @@ walls are.}}
     ~enUS{northwest}
     ~esUS{noroeste}}
     ~rnouns{{~enUS{northwest}~esUS{noroeste}}}
-    ~rflags{3}}
+    ~rflags{2}}
   ~newexit{~rnumber{120} ~direction{5} ~destination{1} ~return{121} ~type{2}
     ~rgdesc{
     ~enUS{northeast}
@@ -49,7 +49,7 @@ walls are.}}
     ~enUS{northeast}
     ~esUS{nordeste}}
     ~rnouns{{~enUS{northeast}~esUS{nordeste}}}
-    ~rflags{3}}
+    ~rflags{2}}
   ~weight{0}
   ~volume{0}
   ~length{0}
@@ -83,7 +83,7 @@ It looks very cozy.
     ~enUS{out}
     ~esUS{fuera}}
     ~rnouns{{~enUS{out}~esUS{fuera}}}
-    ~rflags{3}}
+    ~rflags{2}}
   ~weight{0}
   ~volume{0}
   ~length{0}
@@ -115,7 +115,7 @@ fur here and there in different colors.}}
     ~enUS{south}
     ~esUS{sur}}
     ~rnouns{{~enUS{south}~esUS{sur}}}
-    ~rflags{3}}
+    ~rflags{2}}
   ~weight{0}
   ~volume{0}
   ~length{0}
@@ -146,7 +146,7 @@ can be found in the east and west walls.}}
     ~enUS{south}
     ~esUS{sur}}
     ~rnouns{{~enUS{south}~esUS{sur}}}
-    ~rflags{3}}
+    ~rflags{2}}
   ~weight{0}
   ~volume{0}
   ~length{0}
@@ -298,7 +298,7 @@ see opalescent light filtering in through the petals.
     ~enUS{out}
     ~esUS{fuera}}
     ~rnouns{{~enUS{out}~esUS{fuera}}}
-    ~rflags{3}}
+    ~rflags{2}}
   ~weight{0}
   ~volume{0}
   ~length{0}
@@ -335,7 +335,7 @@ see opalescent light filtering in through the petals.
     ~enUS{west}
     ~esUS{oeste}}
     ~rnouns{{~enUS{west}~esUS{oeste}}}
-    ~rflags{3}}
+    ~rflags{2}}
   ~weight{0}
   ~volume{0}
   ~length{0}
@@ -372,7 +372,7 @@ see opalescent light filtering in through the petals.
     ~enUS{north}
     ~esUS{norte}}
     ~rnouns{{~enUS{north}~esUS{norte}}}
-    ~rflags{3}}
+    ~rflags{2}}
   ~weight{0}
   ~volume{0}
   ~length{0}
@@ -437,9 +437,9 @@ on the side may once have advertised the box's maker.}}
   ~weight{0}
   ~volume{0}
   ~length{0}
-  ~weight_capacity{0}
-  ~volume_capacity{0}
-  ~length_capacity{0}
+  ~weight_capacity{3.5}
+  ~volume_capacity{2}
+  ~length_capacity{15}
 }
 ~room{
   ~number{203}
@@ -545,7 +545,7 @@ the middle of the room seems to be built directly into the floor somehow.}}
     ~enUS{south}
     ~esUS{sur}}
     ~rnouns{{~enUS{south}~esUS{sur}}}
-    ~rflags{3}}
+    ~rflags{2}}
   ~weight{0}
   ~volume{0}
   ~length{0}
@@ -603,7 +603,7 @@ the west.}}
     ~enUS{east}
     ~esUS{este}}
     ~rnouns{{~enUS{east}~esUS{este}}}
-    ~rflags{3}}
+    ~rflags{2}}
   ~newexit{~rnumber{124} ~direction{1} ~destination{304} ~return{125} ~type{2}
     ~rgdesc{
     ~enUS{north}
@@ -612,7 +612,7 @@ the west.}}
     ~enUS{north}
     ~esUS{norte}}
     ~rnouns{{~enUS{north}~esUS{norte}}}
-    ~rflags{3}}
+    ~rflags{2}}
   ~newexit{~rnumber{126} ~direction{2} ~destination{305} ~return{127} ~type{2}
     ~rgdesc{
     ~enUS{south}
@@ -621,7 +621,7 @@ the west.}}
     ~enUS{south}
     ~esUS{sur}}
     ~rnouns{{~enUS{south}~esUS{sur}}}
-    ~rflags{3}}
+    ~rflags{2}}
   ~weight{0}
   ~volume{0}
   ~length{0}
@@ -675,7 +675,7 @@ Tower off to the southwest.  A defunct lamp stands beside you.}}
     ~enUS{east}
     ~esUS{este}}
     ~rnouns{{~enUS{east}~esUS{este}}}
-    ~rflags{3}}
+    ~rflags{2}}
   ~weight{0}
   ~volume{0}
   ~length{0}
@@ -708,7 +708,7 @@ academic halls beyond.  The rest of campus stretches out around you.}}
     ~enUS{east}
     ~esUS{este}}
     ~rnouns{{~enUS{east}~esUS{este}}}
-    ~rflags{3}}
+    ~rflags{2}}
   ~weight{0}
   ~volume{0}
   ~length{0}
@@ -741,7 +741,7 @@ south.}}
     ~enUS{south}
     ~esUS{sur}}
     ~rnouns{{~enUS{south}~esUS{sur}}}
-    ~rflags{3}}
+    ~rflags{2}}
   ~weight{0}
   ~volume{0}
   ~length{0}
@@ -798,7 +798,7 @@ Arkham through the trees to the north and east.}}
 }
 ~room{
   ~number{309}
-  ~location{600}
+  ~location{300}
   ~bdesc{
     ~enUS{Angelbob}}
   ~gdesc{
@@ -832,49 +832,9 @@ Arkham through the trees to the north and east.}}
   ~weight{0}
   ~volume{0}
   ~length{0}
-  ~weight_capacity{0}
-  ~volume_capacity{0}
-  ~length_capacity{0}
-}
-~room{
-  ~number{311}
-  ~location{304}
-  ~bdesc{
-    ~enUS{Dan}}
-  ~gdesc{
-    ~enUS{Dan}}
-  ~ldesc{
-    ~enUS{Dan wanders the MUD.}}
-  ~flags{3}
-  ~article{0}
-  ~nouns{{~enUS{dan}}}
-  ~adjectives{{}}
-  ~weight{0}
-  ~volume{0}
-  ~length{0}
-  ~weight_capacity{0}
-  ~volume_capacity{0}
-  ~length_capacity{0}
-}
-~room{
-  ~number{312}
-  ~location{300}
-  ~bdesc{
-    ~enUS{Dan}}
-  ~gdesc{
-    ~enUS{Dan}}
-  ~ldesc{
-    ~enUS{Dan wanders the MUD.}}
-  ~flags{3}
-  ~article{0}
-  ~nouns{{~enUS{dan}}}
-  ~adjectives{{}}
-  ~weight{80}
-  ~volume{45}
-  ~length{180}
   ~weight_capacity{50}
   ~volume_capacity{20}
-  ~length_capacity{50}
+  ~length_capacity{200}
 }
 ~room{
   ~number{313}
@@ -910,40 +870,6 @@ washing machine back home.}}
   ~flags{0}
   ~article{0}
   ~nouns{{~enUS{dog}}}
-  ~adjectives{{}}
-  ~weight{0}
-  ~volume{0}
-  ~length{0}
-}
-~room{
-  ~number{315}
-  ~location{1}
-  ~bdesc{
-    ~enUS{Thedarque}}
-  ~gdesc{
-    ~enUS{Thedarque}}
-  ~ldesc{
-    ~enUS{Thedarque wanders the MUD.}}
-  ~flags{0}
-  ~article{0}
-  ~nouns{{~enUS{thedarque}}}
-  ~adjectives{{}}
-  ~weight{0}
-  ~volume{0}
-  ~length{0}
-}
-~room{
-  ~number{316}
-  ~location{1}
-  ~bdesc{
-    ~enUS{Tangent}}
-  ~gdesc{
-    ~enUS{Tangent}}
-  ~ldesc{
-    ~enUS{Tangent wanders the MUD.}}
-  ~flags{0}
-  ~article{0}
-  ~nouns{{~enUS{tangent}}}
   ~adjectives{{}}
   ~weight{0}
   ~volume{0}
@@ -1027,26 +953,6 @@ even from here.}}
   ~weight{0}
   ~volume{0}
   ~length{0}
-}
-~room{
-  ~number{321}
-  ~location{300}
-  ~bdesc{
-    ~enUS{Admin}}
-  ~gdesc{
-    ~enUS{Admin}}
-  ~ldesc{
-    ~enUS{Admin wanders the MUD.}}
-  ~flags{3}
-  ~article{0}
-  ~nouns{{~enUS{admin}}}
-  ~adjectives{{}}
-  ~weight{80}
-  ~volume{45}
-  ~length{180}
-  ~weight_capacity{50}
-  ~volume_capacity{20}
-  ~length_capacity{50}
 }
 ~room{
   ~number{400}
@@ -1521,13 +1427,25 @@ here.}}
     ~enUS{You're around a hundred feet south of an old, battered hostel.  You can see
 faded furniture on its porch.  Forest and swamp engulf the south, while
 the east and west appear to be more of the hostel's grounds.}}
-  ~flags{0}
+  ~flags{3}
   ~article{0}
   ~nouns{{}}
   ~adjectives{{}}
+  ~newexit{~rnumber{134} ~direction{1} ~destination{603} ~return{135} ~type{2}
+    ~rgdesc{
+    ~enUS{north}
+    ~esUS{norte}}
+    ~rldesc{
+    ~enUS{north}
+    ~esUS{norte}}
+    ~rnouns{{~enUS{north}~esUS{norte}}}
+    ~rflags{2}}
   ~weight{0}
   ~volume{0}
   ~length{0}
+  ~weight_capacity{0}
+  ~volume_capacity{0}
+  ~length_capacity{0}
 }
 ~room{
   ~number{601}
@@ -1547,7 +1465,73 @@ building looks like it was once painted green.}}
   ~article{0}
   ~nouns{{~enUS{hostel,porch,building}}}
   ~adjectives{{~enUS{worn,faded,battered,grey,green,red,gray,old,worn,wraparound,wrap-around,wrap,around}}}
+  ~weight{1000.05}
+  ~volume{0}
+  ~length{0}
+}
+~room{
+  ~number{602}
+  ~detail{601}
+  ~bdesc{
+    ~enUS{furniture}}
+  ~gdesc{
+    ~enUS{the porch furniture}}
+  ~ldesc{
+    ~enUS{The old tables and chairs are cheap, and were probably donated to the
+hostel many years ago.  You can see the weathering and the final strips
+of peeling paint even from here.}}
+  ~edesc{
+    ~enUS{It's too far to see closely.}}
+  ~flags{0}
+  ~article{0}
+  ~nouns{{~enUS{furniture,table,tables,chair,chairs}}}
+  ~adjectives{{~enUS{porch,old,worn,faded,weathered}}}
   ~weight{0}
   ~volume{0}
   ~length{0}
+}
+~room{
+  ~number{603}
+  ~location{0}
+  ~bdesc{
+    ~enUS{the porch}}
+  ~gdesc{
+    ~enUS{the hostel's porch}}
+  ~ldesc{
+    ~enUS{The porch of the hostel has three old tables and a scattering of chairs
+around each.  The old boards of the ceiling and floor still look sturdy
+and serviceable though they haven't been repainted in far too long.
+The door into the hostel leads north.  To the south you can see a
+small clear area before the woods and the swamp begin to the southeast.}}
+  ~flags{3}
+  ~article{0}
+  ~nouns{{~enUS{porch}}}
+  ~adjectives{{~enUS{hostel,hostel's,faded,dull,worn}}}
+  ~weight{2000}
+  ~volume{1000000}
+  ~length{1000}
+  ~weight_capacity{2000000}
+  ~volume_capacity{27000000}
+  ~length_capacity{1500}
+}
+~room{
+  ~number{604}
+  ~location{603}
+  ~bdesc{
+    ~enUS{a sword}}
+  ~gdesc{
+    ~enUS{a sword}}
+  ~ldesc{
+    ~enUS{You see a sword.}}
+  ~flags{11}
+  ~parent{603}
+  ~article{0}
+  ~nouns{{~enUS{sword}}}
+  ~adjectives{{}}
+  ~weight{10}
+  ~volume{-1}
+  ~length{91.5}
+  ~weight_capacity{-1}
+  ~volume_capacity{1.5}
+  ~length_capacity{-1}
 }

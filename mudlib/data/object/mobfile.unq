@@ -7,9 +7,9 @@
 
 ~mobile{
   ~type{user}
-  ~name{Dan}
+  ~name{Noah}
   ~number{501}
-  ~body{311}
+  ~body{310}
 }
 
 ~mobile{
@@ -27,19 +27,5 @@
   ~data{
     ~aggression{0}
   }
-}
-
-~mobile{
-  ~type{user}
-  ~name{Dan}
-  ~number{504}
-  ~body{312}
-}
-
-~mobile{
-  ~type{user}
-  ~name{Admin}
-  ~number{505}
-  ~body{321}
 }
 
