@@ -1,6 +1,7 @@
 #include <kernel/kernel.h>
 
 #include <phantasmal/lpc_names.h>
+#include <phantasmal/tagd.h>
 
 #include <type.h>
 
@@ -36,6 +37,9 @@ void new_mobile_tag(string name, int type,
   if(mobile_tags[name])
     error("Mobile tag type '" + name + "' already exists!");
 
+  if(type <= T_NIL || type > T_MAPPING)
+	error(type + " is not a valid type for a tag!");
+
   mobile_tags[name] = ({ type, get_function, set_function });
 }
 
@@ -47,6 +51,16 @@ void new_object_tag(string name, int type,
 
   if(object_tags[name])
     error("Object tag type '" + name + "' already exists!");
+
+  if(type <= T_NIL || type > T_MAPPING)
+	error(type + " is not a valid type for a tag!");
+
+  if(inherit_type < TAG_INHERIT_NONE || inherit_type > TAG_INHERIT_MAX)
+    error("Don't recognize TAG_INHERIT number " + inherit_type + " as a valid type!");
+
+  if(inherit_type == TAG_INHERIT_MERGE && type == T_OBJECT) {
+	error("Can't automatically merge two or more objects.  Change object type or inherit type!");
+  }
 
   object_tags[name] = ({ type, get_function, set_function, inherit_type });
 }
@@ -86,8 +100,9 @@ void mobile_set_tag_value(object mobile, string name, mixed value) {
 }
 
 mixed object_get_tag_value(object obj, string name) {
-  mixed *tag_arr;
-  mixed tag_val;
+  mixed  *tag_arr;
+  mixed   tag_val, tmp;
+  object *parents;
 
   if(!GAME() && !COMMON() && !SYSTEM())
     error("Only Game code can get object tag values!");
@@ -101,10 +116,37 @@ mixed object_get_tag_value(object obj, string name) {
 
   tag_val = call_other(obj, (tag_arr[1] ? tag_arr[1] : "get_tag"), name);
   if(tag_val) return tag_val;
+  
+  parents = obj->get_archetypes();
+  if(!parents || !sizeof(parents)) {
+	  return nil;
+  }
 
-  
-  
-  return nil;
+  switch(tag_arr[3]) {
+	case TAG_INHERIT_NONE:
+	  return nil;
+	case TAG_INHERIT_FIRST:
+	  return object_get_tag_value(parents[0], name);
+	case TAG_INHERIT_MERGE:
+	  tag_val = (tag_arr[0] == T_INT ? 0
+	             : (tag_arr[3] == T_FLOAT ? 0.0
+	             : (tag_arr[3] == T_STRING ? ""
+	             : nil);
+	  for(ctr = 0; ctr < sizeof(parents); ctr++) {
+		switch(tag_arr[0]) {
+		  case T_INT:
+		  case T_FLOAT:
+		  case T_STRING:
+		    tag_val += tmp;
+		    break;
+		  case T_ARRAY:
+		  case T_MAPPING:
+		  	tag_val = tag_val | tmp;
+		  	break;
+		}
+	  }
+  }
+  return tag_val;
 }
 
 void object_set_tag_value(object obj, string name, mixed value) {
