@@ -29,3 +29,17 @@
   }
 }
 
+~mobile{
+  ~type{user}
+  ~name{Dan}
+  ~number{504}
+  ~body{312}
+}
+
+~mobile{
+  ~type{user}
+  ~name{Admin}
+  ~number{505}
+  ~body{321}
+}
+

@@ -14,10 +14,48 @@ walls are.}}
   ~article{0}
   ~nouns{{~enUS{locker}}}
   ~adjectives{{~enUS{meat}}}
-  ~exit{w: #1 114 115}
-  ~exit{n: #1 116 117}
-  ~exit{nw: #1 118 119}
-  ~exit{ne: #1 120 121}
+  ~newexit{~rnumber{114} ~direction{4} ~destination{1} ~return{115} ~type{2}
+    ~rgdesc{
+    ~enUS{west}
+    ~esUS{oeste}}
+    ~rldesc{
+    ~enUS{west}
+    ~esUS{oeste}}
+    ~rnouns{{~enUS{west}~esUS{oeste}}}
+    ~rflags{3}}
+  ~newexit{~rnumber{116} ~direction{1} ~destination{1} ~return{117} ~type{2}
+    ~rgdesc{
+    ~enUS{north}
+    ~esUS{norte}}
+    ~rldesc{
+    ~enUS{north}
+    ~esUS{norte}}
+    ~rnouns{{~enUS{north}~esUS{norte}}}
+    ~rflags{3}}
+  ~newexit{~rnumber{118} ~direction{7} ~destination{1} ~return{119} ~type{2}
+    ~rgdesc{
+    ~enUS{northwest}
+    ~esUS{noroeste}}
+    ~rldesc{
+    ~enUS{northwest}
+    ~esUS{noroeste}}
+    ~rnouns{{~enUS{northwest}~esUS{noroeste}}}
+    ~rflags{3}}
+  ~newexit{~rnumber{120} ~direction{5} ~destination{1} ~return{121} ~type{2}
+    ~rgdesc{
+    ~enUS{northeast}
+    ~esUS{nordeste}}
+    ~rldesc{
+    ~enUS{northeast}
+    ~esUS{nordeste}}
+    ~rnouns{{~enUS{northeast}~esUS{nordeste}}}
+    ~rflags{3}}
+  ~weight{0}
+  ~volume{0}
+  ~length{0}
+  ~weight_capacity{0}
+  ~volume_capacity{0}
+  ~length_capacity{0}
 }
 ~room{
   ~number{2}
@@ -37,7 +75,21 @@ It looks very cozy.
   ~article{0}
   ~nouns{{}}
   ~adjectives{{}}
-  ~exit{out: #3 106 107}
+  ~newexit{~rnumber{106} ~direction{20} ~destination{3} ~return{107} ~type{2}
+    ~rgdesc{
+    ~enUS{out}
+    ~esUS{fuera}}
+    ~rldesc{
+    ~enUS{out}
+    ~esUS{fuera}}
+    ~rnouns{{~enUS{out}~esUS{fuera}}}
+    ~rflags{3}}
+  ~weight{0}
+  ~volume{0}
+  ~length{0}
+  ~weight_capacity{0}
+  ~volume_capacity{0}
+  ~length_capacity{0}
 }
 ~room{
   ~number{3}
@@ -55,7 +107,21 @@ fur here and there in different colors.}}
   ~article{0}
   ~nouns{{}}
   ~adjectives{{}}
-  ~exit{s: #4 108 109}
+  ~newexit{~rnumber{108} ~direction{2} ~destination{4} ~return{109} ~type{2}
+    ~rgdesc{
+    ~enUS{south}
+    ~esUS{sur}}
+    ~rldesc{
+    ~enUS{south}
+    ~esUS{sur}}
+    ~rnouns{{~enUS{south}~esUS{sur}}}
+    ~rflags{3}}
+  ~weight{0}
+  ~volume{0}
+  ~length{0}
+  ~weight_capacity{0}
+  ~volume_capacity{0}
+  ~length_capacity{0}
 }
 ~room{
   ~number{4}
@@ -72,7 +138,21 @@ can be found in the east and west walls.}}
   ~article{0}
   ~nouns{{}}
   ~adjectives{{}}
-  ~exit{s: #5 110 111}
+  ~newexit{~rnumber{110} ~direction{2} ~destination{5} ~return{111} ~type{2}
+    ~rgdesc{
+    ~enUS{south}
+    ~esUS{sur}}
+    ~rldesc{
+    ~enUS{south}
+    ~esUS{sur}}
+    ~rnouns{{~enUS{south}~esUS{sur}}}
+    ~rflags{3}}
+  ~weight{0}
+  ~volume{0}
+  ~length{0}
+  ~weight_capacity{0}
+  ~volume_capacity{0}
+  ~length_capacity{0}
 }
 ~room{
   ~number{5}
@@ -94,6 +174,12 @@ dust from the walls settled on the floor -- it's quite clean here.}}
   ~article{0}
   ~nouns{{}}
   ~adjectives{{}}
+  ~weight{0}
+  ~volume{0}
+  ~length{0}
+  ~weight_capacity{0}
+  ~volume_capacity{0}
+  ~length_capacity{0}
 }
 ~room{
   ~number{6}
@@ -113,6 +199,12 @@ Rumor has it that he's Messy-In-A-Hideous-Way.}}
   ~article{0}
   ~nouns{{~enUS{tomb}}}
   ~adjectives{{~enUS{peaceful}}}
+  ~weight{0}
+  ~volume{0}
+  ~length{0}
+  ~weight_capacity{0}
+  ~volume_capacity{0}
+  ~length_capacity{0}
 }
 ~room{
   ~number{7}
@@ -135,6 +227,12 @@ an incomplete droid, facing the ceiling.  Its head is open.}}
   ~article{0}
   ~nouns{{}}
   ~adjectives{{}}
+  ~weight{0}
+  ~volume{0}
+  ~length{0}
+  ~weight_capacity{0}
+  ~volume_capacity{0}
+  ~length_capacity{0}
 }
 ~room{
   ~number{8}
@@ -151,6 +249,9 @@ Ghak'La must have been Messy-In-A-Hideous-Way.}}
   ~article{0}
   ~nouns{{~enUS{ghakla,ghak'la,statue}}}
   ~adjectives{{~enUS{messy,hideous}}}
+  ~weight{0}
+  ~volume{0}
+  ~length{0}
 }
 ~room{
   ~number{9}
@@ -168,6 +269,9 @@ one place, but it's otherwise unremarkable.}}
   ~article{0}
   ~nouns{{~enUS{ball}}}
   ~adjectives{{~enUS{red,rubber}}}
+  ~weight{0}
+  ~volume{0}
+  ~length{0}
 }
 ~room{
   ~number{77}
@@ -186,7 +290,21 @@ see opalescent light filtering in through the petals.
   ~article{0}
   ~nouns{{~enUS{room,test}}}
   ~adjectives{{~enUS{test}}}
-  ~exit{out: #0 104 105}
+  ~newexit{~rnumber{104} ~direction{20} ~destination{0} ~return{105} ~type{2}
+    ~rgdesc{
+    ~enUS{out}
+    ~esUS{fuera}}
+    ~rldesc{
+    ~enUS{out}
+    ~esUS{fuera}}
+    ~rnouns{{~enUS{out}~esUS{fuera}}}
+    ~rflags{3}}
+  ~weight{0}
+  ~volume{0}
+  ~length{0}
+  ~weight_capacity{0}
+  ~volume_capacity{0}
+  ~length_capacity{0}
 }
 ~room{
   ~number{79}
@@ -209,7 +327,21 @@ see opalescent light filtering in through the petals.
   ~article{0}
   ~nouns{{~enUS{room,test}}}
   ~adjectives{{~enUS{test}}}
-  ~exit{w: #77 100 101}
+  ~newexit{~rnumber{100} ~direction{4} ~destination{77} ~return{101} ~type{2}
+    ~rgdesc{
+    ~enUS{west}
+    ~esUS{oeste}}
+    ~rldesc{
+    ~enUS{west}
+    ~esUS{oeste}}
+    ~rnouns{{~enUS{west}~esUS{oeste}}}
+    ~rflags{3}}
+  ~weight{0}
+  ~volume{0}
+  ~length{0}
+  ~weight_capacity{0}
+  ~volume_capacity{0}
+  ~length_capacity{0}
 }
 ~room{
   ~number{81}
@@ -232,7 +364,21 @@ see opalescent light filtering in through the petals.
   ~article{0}
   ~nouns{{~enUS{room,test}}}
   ~adjectives{{~enUS{test}}}
-  ~exit{n: #79 102 103}
+  ~newexit{~rnumber{102} ~direction{1} ~destination{79} ~return{103} ~type{2}
+    ~rgdesc{
+    ~enUS{north}
+    ~esUS{norte}}
+    ~rldesc{
+    ~enUS{north}
+    ~esUS{norte}}
+    ~rnouns{{~enUS{north}~esUS{norte}}}
+    ~rflags{3}}
+  ~weight{0}
+  ~volume{0}
+  ~length{0}
+  ~weight_capacity{0}
+  ~volume_capacity{0}
+  ~length_capacity{0}
 }
 ~room{
   ~number{200}
@@ -247,6 +393,9 @@ see opalescent light filtering in through the petals.
   ~article{0}
   ~nouns{{~enUS{turnip}}}
   ~adjectives{{~enUS{juicy,plump,large}}}
+  ~weight{0}
+  ~volume{0}
+  ~length{0}
 }
 ~room{
   ~number{201}
@@ -264,6 +413,12 @@ doesn't give you any clues.}}
   ~article{0}
   ~nouns{{~enUS{weasel}}}
   ~adjectives{{~enUS{lifeless,limp}}}
+  ~weight{0}
+  ~volume{0}
+  ~length{0}
+  ~weight_capacity{0}
+  ~volume_capacity{0}
+  ~length_capacity{0}
 }
 ~room{
   ~number{202}
@@ -279,6 +434,12 @@ on the side may once have advertised the box's maker.}}
   ~article{0}
   ~nouns{{~enUS{breadbox,box}}}
   ~adjectives{{~enUS{bread,large,largish}}}
+  ~weight{0}
+  ~volume{0}
+  ~length{0}
+  ~weight_capacity{0}
+  ~volume_capacity{0}
+  ~length_capacity{0}
 }
 ~room{
   ~number{203}
@@ -295,6 +456,9 @@ cutting.}}
   ~article{0}
   ~nouns{{~enUS{knife,dagger}}}
   ~adjectives{{~enUS{ceremonial,curved,jagged}}}
+  ~weight{0}
+  ~volume{0}
+  ~length{0}
 }
 ~room{
   ~number{204}
@@ -315,6 +479,12 @@ Wombat fumes.  About the usual, you hope.}}
   ~article{0}
   ~nouns{{~enUS{wombat,mouth}}}
   ~adjectives{{~enUS{stuffed,immobile}}}
+  ~weight{0}
+  ~volume{0}
+  ~length{0}
+  ~weight_capacity{0}
+  ~volume_capacity{0}
+  ~length_capacity{0}
 }
 ~room{
   ~number{205}
@@ -329,6 +499,12 @@ Wombat fumes.  About the usual, you hope.}}
   ~article{0}
   ~nouns{{~enUS{sarcophagus,coffin}}}
   ~adjectives{{}}
+  ~weight{0}
+  ~volume{0}
+  ~length{0}
+  ~weight_capacity{0}
+  ~volume_capacity{0}
+  ~length_capacity{0}
 }
 ~room{
   ~number{206}
@@ -343,6 +519,9 @@ Wombat fumes.  About the usual, you hope.}}
   ~article{0}
   ~nouns{{~enUS{uvula}}}
   ~adjectives{{}}
+  ~weight{0}
+  ~volume{0}
+  ~length{0}
 }
 ~room{
   ~number{300}
@@ -358,7 +537,21 @@ the middle of the room seems to be built directly into the floor somehow.}}
   ~article{1}
   ~nouns{{~enUS{lounge}}}
   ~adjectives{{}}
-  ~exit{s: #301 112 113}
+  ~newexit{~rnumber{112} ~direction{2} ~destination{301} ~return{113} ~type{2}
+    ~rgdesc{
+    ~enUS{south}
+    ~esUS{sur}}
+    ~rldesc{
+    ~enUS{south}
+    ~esUS{sur}}
+    ~rnouns{{~enUS{south}~esUS{sur}}}
+    ~rflags{3}}
+  ~weight{0}
+  ~volume{0}
+  ~length{0}
+  ~weight_capacity{0}
+  ~volume_capacity{0}
+  ~length_capacity{0}
 }
 ~room{
   ~number{301}
@@ -377,6 +570,12 @@ and east.}}
   ~article{0}
   ~nouns{{}}
   ~adjectives{{}}
+  ~weight{0}
+  ~volume{0}
+  ~length{0}
+  ~weight_capacity{0}
+  ~volume_capacity{0}
+  ~length_capacity{0}
 }
 ~room{
   ~number{302}
@@ -396,9 +595,39 @@ the west.}}
   ~article{0}
   ~nouns{{}}
   ~adjectives{{}}
-  ~exit{e: #301 122 123}
-  ~exit{n: #304 124 125}
-  ~exit{s: #305 126 127}
+  ~newexit{~rnumber{122} ~direction{3} ~destination{301} ~return{123} ~type{2}
+    ~rgdesc{
+    ~enUS{east}
+    ~esUS{este}}
+    ~rldesc{
+    ~enUS{east}
+    ~esUS{este}}
+    ~rnouns{{~enUS{east}~esUS{este}}}
+    ~rflags{3}}
+  ~newexit{~rnumber{124} ~direction{1} ~destination{304} ~return{125} ~type{2}
+    ~rgdesc{
+    ~enUS{north}
+    ~esUS{norte}}
+    ~rldesc{
+    ~enUS{north}
+    ~esUS{norte}}
+    ~rnouns{{~enUS{north}~esUS{norte}}}
+    ~rflags{3}}
+  ~newexit{~rnumber{126} ~direction{2} ~destination{305} ~return{127} ~type{2}
+    ~rgdesc{
+    ~enUS{south}
+    ~esUS{sur}}
+    ~rldesc{
+    ~enUS{south}
+    ~esUS{sur}}
+    ~rnouns{{~enUS{south}~esUS{sur}}}
+    ~rflags{3}}
+  ~weight{0}
+  ~volume{0}
+  ~length{0}
+  ~weight_capacity{0}
+  ~volume_capacity{0}
+  ~length_capacity{0}
 }
 ~room{
   ~number{303}
@@ -414,6 +643,12 @@ room for outdoor rooms on the Miskatonic University campus.}}
   ~article{0}
   ~nouns{{}}
   ~adjectives{{}}
+  ~weight{0}
+  ~volume{0}
+  ~length{0}
+  ~weight_capacity{0}
+  ~volume_capacity{0}
+  ~length_capacity{0}
 }
 ~room{
   ~number{304}
@@ -432,7 +667,21 @@ Tower off to the southwest.  A defunct lamp stands beside you.}}
   ~article{0}
   ~nouns{{}}
   ~adjectives{{}}
-  ~exit{e: #308 132 133}
+  ~newexit{~rnumber{132} ~direction{3} ~destination{308} ~return{133} ~type{2}
+    ~rgdesc{
+    ~enUS{east}
+    ~esUS{este}}
+    ~rldesc{
+    ~enUS{east}
+    ~esUS{este}}
+    ~rnouns{{~enUS{east}~esUS{este}}}
+    ~rflags{3}}
+  ~weight{0}
+  ~volume{0}
+  ~length{0}
+  ~weight_capacity{0}
+  ~volume_capacity{0}
+  ~length_capacity{0}
 }
 ~room{
   ~number{305}
@@ -451,7 +700,21 @@ academic halls beyond.  The rest of campus stretches out around you.}}
   ~article{0}
   ~nouns{{}}
   ~adjectives{{}}
-  ~exit{e: #306 128 129}
+  ~newexit{~rnumber{128} ~direction{3} ~destination{306} ~return{129} ~type{2}
+    ~rgdesc{
+    ~enUS{east}
+    ~esUS{este}}
+    ~rldesc{
+    ~enUS{east}
+    ~esUS{este}}
+    ~rnouns{{~enUS{east}~esUS{este}}}
+    ~rflags{3}}
+  ~weight{0}
+  ~volume{0}
+  ~length{0}
+  ~weight_capacity{0}
+  ~volume_capacity{0}
+  ~length_capacity{0}
 }
 ~room{
   ~number{306}
@@ -470,7 +733,21 @@ south.}}
   ~article{0}
   ~nouns{{}}
   ~adjectives{{}}
-  ~exit{s: #307 130 131}
+  ~newexit{~rnumber{130} ~direction{2} ~destination{307} ~return{131} ~type{2}
+    ~rgdesc{
+    ~enUS{south}
+    ~esUS{sur}}
+    ~rldesc{
+    ~enUS{south}
+    ~esUS{sur}}
+    ~rnouns{{~enUS{south}~esUS{sur}}}
+    ~rflags{3}}
+  ~weight{0}
+  ~volume{0}
+  ~length{0}
+  ~weight_capacity{0}
+  ~volume_capacity{0}
+  ~length_capacity{0}
 }
 ~room{
   ~number{307}
@@ -489,6 +766,12 @@ dry and tufted.}}
   ~article{0}
   ~nouns{{}}
   ~adjectives{{}}
+  ~weight{0}
+  ~volume{0}
+  ~length{0}
+  ~weight_capacity{0}
+  ~volume_capacity{0}
+  ~length_capacity{0}
 }
 ~room{
   ~number{308}
@@ -506,6 +789,12 @@ Arkham through the trees to the north and east.}}
   ~article{0}
   ~nouns{{}}
   ~adjectives{{}}
+  ~weight{0}
+  ~volume{0}
+  ~length{0}
+  ~weight_capacity{0}
+  ~volume_capacity{0}
+  ~length_capacity{0}
 }
 ~room{
   ~number{309}
@@ -520,6 +809,12 @@ Arkham through the trees to the north and east.}}
   ~article{0}
   ~nouns{{~enUS{angelbob}}}
   ~adjectives{{}}
+  ~weight{0}
+  ~volume{0}
+  ~length{0}
+  ~weight_capacity{0}
+  ~volume_capacity{0}
+  ~length_capacity{0}
 }
 ~room{
   ~number{310}
@@ -534,6 +829,12 @@ Arkham through the trees to the north and east.}}
   ~article{0}
   ~nouns{{~enUS{noah}}}
   ~adjectives{{}}
+  ~weight{0}
+  ~volume{0}
+  ~length{0}
+  ~weight_capacity{0}
+  ~volume_capacity{0}
+  ~length_capacity{0}
 }
 ~room{
   ~number{311}
@@ -548,6 +849,32 @@ Arkham through the trees to the north and east.}}
   ~article{0}
   ~nouns{{~enUS{dan}}}
   ~adjectives{{}}
+  ~weight{0}
+  ~volume{0}
+  ~length{0}
+  ~weight_capacity{0}
+  ~volume_capacity{0}
+  ~length_capacity{0}
+}
+~room{
+  ~number{312}
+  ~location{300}
+  ~bdesc{
+    ~enUS{Dan}}
+  ~gdesc{
+    ~enUS{Dan}}
+  ~ldesc{
+    ~enUS{Dan wanders the MUD.}}
+  ~flags{3}
+  ~article{0}
+  ~nouns{{~enUS{dan}}}
+  ~adjectives{{}}
+  ~weight{80}
+  ~volume{45}
+  ~length{180}
+  ~weight_capacity{50}
+  ~volume_capacity{20}
+  ~length_capacity{50}
 }
 ~room{
   ~number{313}
@@ -564,6 +891,12 @@ washing machine back home.}}
   ~article{0}
   ~nouns{{~enUS{turnip,vegetable}}}
   ~adjectives{{~enUS{mobile,vibrating,gently,gently-vibrating,moving}}}
+  ~weight{0}
+  ~volume{0}
+  ~length{0}
+  ~weight_capacity{0}
+  ~volume_capacity{0}
+  ~length_capacity{0}
 }
 ~room{
   ~number{314}
@@ -578,6 +911,9 @@ washing machine back home.}}
   ~article{0}
   ~nouns{{~enUS{dog}}}
   ~adjectives{{}}
+  ~weight{0}
+  ~volume{0}
+  ~length{0}
 }
 ~room{
   ~number{315}
@@ -592,6 +928,9 @@ washing machine back home.}}
   ~article{0}
   ~nouns{{~enUS{thedarque}}}
   ~adjectives{{}}
+  ~weight{0}
+  ~volume{0}
+  ~length{0}
 }
 ~room{
   ~number{316}
@@ -606,6 +945,9 @@ washing machine back home.}}
   ~article{0}
   ~nouns{{~enUS{tangent}}}
   ~adjectives{{}}
+  ~weight{0}
+  ~volume{0}
+  ~length{0}
 }
 ~room{
   ~number{317}
@@ -621,6 +963,9 @@ guess it's some form of manufacturing artifact.}}
   ~article{0}
   ~nouns{{~enUS{blemish,spot}}}
   ~adjectives{{~enUS{small,swirly}}}
+  ~weight{0}
+  ~volume{0}
+  ~length{0}
 }
 ~room{
   ~number{318}
@@ -639,6 +984,9 @@ out what looks like a picture of a pineapple.  Why a pineapple?}}
   ~article{0}
   ~nouns{{~enUS{logo,label,insignia}}}
   ~adjectives{{~enUS{old,faded}}}
+  ~weight{0}
+  ~volume{0}
+  ~length{0}
 }
 ~room{
   ~number{319}
@@ -656,6 +1004,9 @@ pineapple.}}
   ~article{0}
   ~nouns{{~enUS{pineapple,outline,picture}}}
   ~adjectives{{~enUS{faint,faded}}}
+  ~weight{0}
+  ~volume{0}
+  ~length{0}
 }
 ~room{
   ~number{320}
@@ -673,6 +1024,29 @@ even from here.}}
   ~article{0}
   ~nouns{{~enUS{street,streets,road,city}}}
   ~adjectives{{~enUS{city,surrounding,arkham}}}
+  ~weight{0}
+  ~volume{0}
+  ~length{0}
+}
+~room{
+  ~number{321}
+  ~location{300}
+  ~bdesc{
+    ~enUS{Admin}}
+  ~gdesc{
+    ~enUS{Admin}}
+  ~ldesc{
+    ~enUS{Admin wanders the MUD.}}
+  ~flags{3}
+  ~article{0}
+  ~nouns{{~enUS{admin}}}
+  ~adjectives{{}}
+  ~weight{80}
+  ~volume{45}
+  ~length{180}
+  ~weight_capacity{50}
+  ~volume_capacity{20}
+  ~length_capacity{50}
 }
 ~room{
   ~number{400}
@@ -690,6 +1064,9 @@ are quite dirty and worn.  The carpet looks like it was once red or orange.}}
   ~article{1}
   ~nouns{{~enUS{carpet,threads,floor,rug}}}
   ~adjectives{{~enUS{old,worn,heavy,threadbare,carpeted,red,orange,stained,frayed,fraying}}}
+  ~weight{0}
+  ~volume{0}
+  ~length{0}
 }
 ~room{
   ~number{401}
@@ -708,6 +1085,9 @@ scratched and generally what you'd expect in a student lounge.}}
   ~article{0}
   ~nouns{{~enUS{couch,couches,sofa,sofas,chair,chairs}}}
   ~adjectives{{~enUS{old,large,stained,red,green,faded,nicked,scratched,worn}}}
+  ~weight{0}
+  ~volume{0}
+  ~length{0}
 }
 ~room{
   ~number{402}
@@ -725,6 +1105,9 @@ sort of furniture you'd expect to find in a student lounge.}}
   ~article{2}
   ~nouns{{~enUS{table}}}
   ~adjectives{{~enUS{nicked,scratched,old,worn,stained,faded,large,gouged}}}
+  ~weight{0}
+  ~volume{0}
+  ~length{0}
 }
 ~room{
   ~number{403}
@@ -741,6 +1124,9 @@ reminds you of other educational institutions.}}
   ~article{1}
   ~nouns{{~enUS{floor,tiles,checkerboard,tile,checker,checkers,dust,grime,polish}}}
   ~adjectives{{~enUS{tile,tiled,checker,checkered,checkerboard,dusty,grimy,polished,floor,sticky,decaying,decayed}}}
+  ~weight{0}
+  ~volume{0}
+  ~length{0}
 }
 ~room{
   ~number{404}
@@ -758,6 +1144,9 @@ of Mathematics and Science.}}
   ~article{0}
   ~nouns{{~enUS{hall,halls}}}
   ~adjectives{{~enUS{peabody,telman,math,science,mathematics,sciences,history,languages,humanities,academic}}}
+  ~weight{0}
+  ~volume{0}
+  ~length{0}
 }
 ~room{
   ~number{405}
@@ -775,6 +1164,9 @@ students to socialize out in the fresh air.}}
   ~article{0}
   ~nouns{{~enUS{tower}}}
   ~adjectives{{}}
+  ~weight{0}
+  ~volume{0}
+  ~length{0}
 }
 ~room{
   ~number{406}
@@ -795,6 +1187,9 @@ then a board is replaced as an old one wears out.}}
   ~article{0}
   ~nouns{{~enUS{steps,step}}}
   ~adjectives{{~enUS{front,old,maintained,well-maintained,wood,wooden}}}
+  ~weight{0}
+  ~volume{0}
+  ~length{0}
 }
 ~room{
   ~number{407}
@@ -810,6 +1205,9 @@ directions from its front hallway.}}
   ~article{0}
   ~nouns{{~enUS{hall,hallway}}}
   ~adjectives{{~enUS{peabody,inside,front}}}
+  ~weight{0}
+  ~volume{0}
+  ~length{0}
 }
 ~room{
   ~number{408}
@@ -827,6 +1225,9 @@ Ancient History hall.}}
   ~article{0}
   ~nouns{{~enUS{lamp,gaslamp,lantern,post,lamppost,lightpost,light}}}
   ~adjectives{{~enUS{light,lamp,lantern,gas}}}
+  ~weight{0}
+  ~volume{0}
+  ~length{0}
 }
 ~room{
   ~number{409}
@@ -843,6 +1244,9 @@ building where idle students hang out.}}
   ~article{0}
   ~nouns{{~enUS{block,tower}}}
   ~adjectives{{}}
+  ~weight{0}
+  ~volume{0}
+  ~length{0}
 }
 ~room{
   ~number{410}
@@ -860,6 +1264,9 @@ East is the home of the English and Literature departments, Merritt Hall.}}
   ~article{0}
   ~nouns{{~enUS{hall,halls}}}
   ~adjectives{{~enUS{academic,telman,peabody,merritt,pickford,engineering,literature,english,humanities,economics,marsh,history,modern,languages}}}
+  ~weight{0}
+  ~volume{0}
+  ~length{0}
 }
 ~room{
   ~number{411}
@@ -876,6 +1283,9 @@ Tower.}}
   ~article{0}
   ~nouns{{~enUS{shed,building}}}
   ~adjectives{{~enUS{old,gardener's,decrepit,tool}}}
+  ~weight{0}
+  ~volume{0}
+  ~length{0}
 }
 ~room{
   ~number{412}
@@ -892,6 +1302,9 @@ The pattern makes your head hurt if you look at it too long.}}
   ~article{0}
   ~nouns{{~enUS{step,steps,stair,stairs}}}
   ~adjectives{{~enUS{spiral,not-quite-spiral,not,quite}}}
+  ~weight{0}
+  ~volume{0}
+  ~length{0}
 }
 ~room{
   ~number{413}
@@ -908,6 +1321,9 @@ be.}}
   ~article{0}
   ~nouns{{~enUS{sculpture,w,doubleyou,dubya,double-u}}}
   ~adjectives{{~enUS{ugly,orange,w,doubleyou,dubya,double-u}}}
+  ~weight{0}
+  ~volume{0}
+  ~length{0}
 }
 ~room{
   ~number{414}
@@ -924,6 +1340,9 @@ trees to the northwest.}}
   ~article{0}
   ~nouns{{~enUS{hall,halls,peabody,marsh,clearing,block}}}
   ~adjectives{{~enUS{academic,peabody,marsh,distant}}}
+  ~weight{0}
+  ~volume{0}
+  ~length{0}
 }
 ~room{
   ~number{415}
@@ -944,6 +1363,9 @@ the expected small bugs, dirt and weeds.}}
   ~article{0}
   ~nouns{{~enUS{ground,grass,green}}}
   ~adjectives{{~enUS{green,grassy,long}}}
+  ~weight{0}
+  ~volume{0}
+  ~length{0}
 }
 ~room{
   ~number{416}
@@ -959,6 +1381,9 @@ north and the side of Telman to the south.}}
   ~article{0}
   ~nouns{{~enUS{halls,dorms}}}
   ~adjectives{{~enUS{academic,school}}}
+  ~weight{0}
+  ~volume{0}
+  ~length{0}
 }
 ~room{
   ~number{417}
@@ -984,6 +1409,9 @@ they're twisting in their sockets.  It's not comfortable.}}
   ~article{0}
   ~nouns{{~enUS{hall,telman}}}
   ~adjectives{{~enUS{telman,engineering,mathematics,science}}}
+  ~weight{0}
+  ~volume{0}
+  ~length{0}
 }
 ~room{
   ~number{418}
@@ -1002,6 +1430,9 @@ formed below the windows.}}
   ~article{0}
   ~nouns{{~enUS{peabody,hall,windows}}}
   ~adjectives{{~enUS{peabody,painted,brick,humanities,economics}}}
+  ~weight{0}
+  ~volume{0}
+  ~length{0}
 }
 ~room{
   ~number{419}
@@ -1020,6 +1451,9 @@ is very unusual in any case.}}
   ~article{0}
   ~nouns{{~enUS{hall,telman,walls,windows}}}
   ~adjectives{{~enUS{telman,hall,angular,odd,mathematics,science}}}
+  ~weight{0}
+  ~volume{0}
+  ~length{0}
 }
 ~room{
   ~number{420}
@@ -1035,6 +1469,9 @@ The ground underneath is quite hard.}}
   ~article{0}
   ~nouns{{~enUS{tufts,grasses,clumps,ground}}}
   ~adjectives{{~enUS{grassy,tufts,dry,long,hard,tufted}}}
+  ~weight{0}
+  ~volume{0}
+  ~length{0}
 }
 ~room{
   ~number{421}
@@ -1050,6 +1487,9 @@ of campus.  It looks long and comfortable to walk through or lie in.}}
   ~article{0}
   ~nouns{{~enUS{grasses}}}
   ~adjectives{{~enUS{green,long}}}
+  ~weight{0}
+  ~volume{0}
+  ~length{0}
 }
 ~room{
   ~number{422}
@@ -1066,9 +1506,13 @@ here.}}
   ~article{0}
   ~nouns{{~enUS{marsh,peabody,halls}}}
   ~adjectives{{~enUS{telman,marsh,halls,economics,humanities,history,languages,modern}}}
+  ~weight{0}
+  ~volume{0}
+  ~length{0}
 }
 ~room{
   ~number{600}
+  ~location{0}
   ~bdesc{
     ~enUS{Near a Hostel}}
   ~gdesc{
@@ -1081,6 +1525,9 @@ the east and west appear to be more of the hostel's grounds.}}
   ~article{0}
   ~nouns{{}}
   ~adjectives{{}}
+  ~weight{0}
+  ~volume{0}
+  ~length{0}
 }
 ~room{
   ~number{601}
@@ -1100,4 +1547,7 @@ building looks like it was once painted green.}}
   ~article{0}
   ~nouns{{~enUS{hostel,porch,building}}}
   ~adjectives{{~enUS{worn,faded,battered,grey,green,red,gray,old,worn,wraparound,wrap-around,wrap,around}}}
+  ~weight{0}
+  ~volume{0}
+  ~length{0}
 }
