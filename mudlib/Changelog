@@ -21,6 +21,7 @@ Release 0.012:
 	* Removed unnecessary cmd_social from the SYSTEM_USER object.
 	* Fixed bug in path_place...  How long have put and remove not
 	  been working?
+	* MAPD now lists problem objects when it can't resolve rooms.
 
 Release 0.011b:
 	* Added @make_portable command, very similar to @make_room.
