@@ -78,6 +78,41 @@ private string backslash_escape_string(string tmp) {
 	ret += tmp[ctr..ctr];
 	continue;
       }
+
+      if(tmp[ctr] == 'n') {
+	ret += "\n";
+	continue;
+      }
+
+      if(tmp[ctr] == 'b') {
+	ret += "\b";
+	continue;
+      }
+
+      if(tmp[ctr] == 't') {
+	ret += "\t";
+	continue;
+      }
+
+      if(tmp[ctr] == 'r') {
+	ret += "\r";
+	continue;
+      }
+
+      if(tmp[ctr] == 'a') {
+	ret += "\a";
+	continue;
+      }
+
+      if(tmp[ctr] == 'f') {
+	ret += "\f";
+	continue;
+      }
+
+      if(tmp[ctr] == 'v') {
+	ret += "\v";
+	continue;
+      }
     } else {
       ret += tmp[ctr..ctr];
     }
