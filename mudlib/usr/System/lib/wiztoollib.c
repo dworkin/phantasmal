@@ -233,22 +233,6 @@ static mixed evaluate_lpc_code(object user, string lpc_code)
 }
 
 
-static void cmd_get_config(object user, string cmd, string str) {
-  object configd;
-
-  configd = find_object(CONFIGD);
-  if(!configd) {
-    user->message("Can't find the CONFIGD!\n\r");
-    return;
-  }
-
-  user->message("Configuration parameters:\n\r");
-  user->message("   Start Room:     " + configd->get_start_room() + "\n\r");
-  user->message("  Meat Locker:     " + configd->get_meat_locker() + "\n\r");
-  user->message("-----\n\r");
-}
-
-
 static void cmd_people(object user, string cmd, string str)
 {
   object *users, usr;
