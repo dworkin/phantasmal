@@ -800,6 +800,37 @@ Erwin.
 Erwin Harte
 </pre>
 
+<hr />
+
+<pre>
+From: dgd at list.imaginary.com (Erwin Harte)
+Date: Thu Dec 13 17:35:01 2001
+Subject: [DGD] Mappings
+
+On Thu, Dec 13, 2001 at 03:12:56PM -0800, Chooser Fireman wrote:
+> I was wondering if there is a function similar to sscanf that I can
+> find a match for partial input in a mapping?
+> 
+> ie. match attack with the user input of atta with a mapping?
+
+Not in the general case but for that particular one you could use
+mapping-subranges:
+
+    string  verb, verb0, *matches;
+    mapping verbs;
+
+    verb0 = verb;
+    verb0[strlen(verb0) - 1]++;
+
+    matches = map_indices(verbs[verb..verb0]) - ({ verb0 });
+
+This is untested code, so the usual disclaimers apply. ;-)
+
+Erwin.
+-- 
+Erwin Harte
+</pre>
+
   <p style="text-size: 150%"> <a href="index.html"> Back to LPC &amp; DGD
       Page
     </a> </p>

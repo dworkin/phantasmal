@@ -1,0 +1,165 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+                      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<title>DGD and LPC: call_out</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<link href="../../phantasmal.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<table width="95%" border="0" cellspacing="0" cellpadding="4">
+  <tr>
+    <td colspan="2"> <table width="100%" border="0" cellspacing="1"
+        cellpadding="0" class="main">
+        <tr>
+          <td class="banner">The DGD Driver</td>
+        </tr>
+      </table></td>
+  </tr>
+  <tr>
+    <td valign="top">
+      <table width="25%"  border="0" cellspacing="1"
+             cellpadding="0"  class="main">
+        <tr>
+          <td class="content" style="font-size: 120%">
+
+          <ul style="margin: 0; padding-left: 10%">
+            <li> <a href="../index.html">DGD &amp; LPC Page</a> </li>
+	    <li> <a href="../LPC">LPC Textbook</a> </li>
+	    <li> <a href="../Book/html/">New LPC Introduction</a> </li>
+          </ul>
+
+        </td>
+        </tr>
+        <tr>
+          <td class="content" align="center">
+            <a href="http://validator.w3.org/check/referer">
+            <img src="../../images/valid-xhtml10.gif" alt="Valid XHTML 1.0!"
+             style="border:0;width:88px;height:31px" /></a><br />
+            <img src="../../images/pixel.gif"
+             style="border:0;width:88px;height:1px" alt="" /><br />
+            <a href="http://jigsaw.w3.org/css-validator/check/referer">
+            <img src="http://jigsaw.w3.org/css-validator/images/vcss"
+             alt="Valid CSS!" style="border:0;width:88px;height:31px" />
+            </a><br /><br /><br />
+            <a href="http://sourceforge.net">
+            <img src="http://sourceforge.net/sflogo.php?group_id=48659&amp;type=2"
+             style="border: 0; width: 125; height: 37;"
+	     alt="SourceForge.net Logo" /></a>
+          </td>
+        </tr>
+      </table></td>
+    <td> <table width="100%"  border="0" cellspacing="1" cellpadding="0" 
+          class="main">
+        <tr>
+          <td class="heading">&nbsp;&nbsp;&middot;&nbsp;
+	    <a href="http://phantasmal.sf.net/DGD">DGD Page</a> &gt;
+            <a href="">call_out</a>
+          </td>
+        </tr>
+        <tr>
+          <td class="content">
+  
+
+  <h3> Using call_out() </h3>
+
+<pre>
+From: dgd at list.imaginary.com (Felix A. Croes)
+Date: Fri Feb 21 21:47:01 2003
+Subject: [DGD] call_out delay
+
+Jay Shaffstall wrote:
+
+> I'm using call_out with a delay to trigger events in my mud that need to 
+> happen at specific intervals.  The call_out docs say, "If the delay is an 
+> integer, the function will be called after approximately the specified 
+> number of seconds".
+
+DGD handles timing for integer-delay callouts using the POSIX time.
+That means that a one-second callout started at time T will be executed
+(the rest of the MUD allowing) when the time turns into T+1, measured
+in POSIX seconds since 1970.  So the actual delay can be between 0 and 1
+seconds, and that's ignoring delays due to other callouts trying to
+run at that same moment.
+
+For callouts with a floating point delay, more care is taken that they
+run precisely at the intended moment.  A 1.0 delay callout started at
+T + 0.23 will be executed at T + 1.23.
+
+
+> How approximate is approximate?  On my Windows PC, things seem to work as 
+> I'd expect.  One of my builders is using a Linux laptop, and has seen the 
+> delays decrease until events are being fired continually (the actual value 
+> being passed in for the delay hasn't changed).  However on his Linux PC, it 
+> seems to work fine.
+
+This may legitimately (appear to) happen if each one second callout takes
+.95 seconds to process.  Perhaps the laptop is fairly old, and a lot
+slower than the desktop machine?  Otherwise, this may be a bug in DGD
+which I would like to learn more about.
+
+Regards,
+Dworkin
+</pre>
+
+<hr />
+
+<pre>
+From: dgd at list.imaginary.com (Erwin Harte)
+Date: Sat Mar 15 19:30:02 2003
+Subject: [DGD] Skills
+
+On Sat, Mar 15, 2003 at 08:25:44PM -0500, Ben Chambers wrote:
+> If you put a call_out with a time of 0, will it be executed during this loop
+> of execution or during the next loop of execution?
+
+As soon as possible after the current thread ends.  Having it execute
+_during_ this loop of execution (thread) would make it a call_other()
+effectively, which wouldn't be very useful.
+
+The only thing that could cause the 0-call_out not to be execute
+right after the current thread is if there are other 0-callouts
+waiting to be executed.
+
+Hope that helps,
+
+Erwin.
+-- 
+Erwin Harte
+</pre>
+
+<hr />
+
+<pre>
+From: dgd at list.imaginary.com (Erwin Harte)
+Date: Tue Nov  6 10:59:01 2001
+Subject: [DGD] call_outs to destructed objects
+
+On Tue, Nov 06, 2001 at 04:07:31PM +0000, Soja wrote:
+> 
+> Hi !
+> I wonder if it is a good thing to remove all call_outs you know are 
+> directed to a specific object, before you destruct the object?
+> Or is it taken care of by the dest function?  Or is it just not necessary,
+> as the call_out will die by itself when it has nothing to call?
+
+All call_out()s started in object A are removed from the system
+automatically when object A is destroyed.
+
+Erwin.
+-- 
+Erwin Harte
+</pre>
+
+  <p style="text-size: 150%"> <a href="index.html"> Back to LPC &amp; DGD
+      Page
+    </a> </p>
+            <address>
+            <span><a href="mailto:angelbob-remove-spamfree@spamfree.users.sf.net">Noah Gibbs</a></span>
+            </address></td>
+        </tr>
+      </table></td>
+  </tr>
+</table>
+</body>
+</html>
