@@ -156,7 +156,29 @@ static string editor(varargs string cmd) {
   error("Scripts can't use the editor!");
 }
 
+static string query_editor(object obj) {
+  error("Scripts can't use the editor!");
+}
+
+static string query_ip_name(object user) {
+  error("Scripts can't check network data!");
+}
+
+static string query_ip_number(object user) {
+  error("Scripts can't check network data!");
+}
+
+static void block_input(int flag) {
+  error("Scripts can't block network input!");
+}
+
 /* Test function -- scripts should do *something*... */
 static void write_log(string msg) {
   ::find_object(LOGD)->write_syslog("Script: " + msg);
+}
+
+static mixed call_other(mixed obj, string function, mixed args...) {
+  /* May want to restrict or error-check call_other later. */
+
+  return ::call_other(obj, function, args...);
 }
