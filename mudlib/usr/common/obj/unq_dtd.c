@@ -566,7 +566,8 @@ private mixed parse_to_builtin(string type, mixed unq) {
     int val;
 
     if(typeof(unq) != T_STRING) {
-      accum_error += "Type " + typeof(unq) + " is not a string\n";
+      accum_error += "Type " + typeof(unq)
+	+ " is not a string while parsing int\n";
       return nil;
     }
     unq = STRINGD->trim_whitespace(unq);
@@ -579,7 +580,20 @@ private mixed parse_to_builtin(string type, mixed unq) {
   }
 
   if(type == "float") {
-    error("Type float not yet implemented");
+    float val;
+
+    if(typeof(unq) != T_STRING) {
+      accum_error += "Type " + typeof(unq)
+	+ " is not a string while parsing float\n";
+      return nil;
+    }
+
+    if(!sscanf(unq, "%f", val)) {
+      accum_error += unq + " is not a float.\n";
+      return nil;
+    }
+
+    return val;
   }
 
   if(type == "phrase") {
