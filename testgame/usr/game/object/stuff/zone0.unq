@@ -435,26 +435,6 @@ one place, but it's otherwise unremarkable.}}
   ~length{4}
 }
 ~room{
-  ~number{10}
-  ~location{302}
-  ~bdesc{
-    ~enUS{Admin}}
-  ~gdesc{
-    ~enUS{Admin}}
-  ~ldesc{
-    ~enUS{Admin wanders the MUD.}}
-  ~flags{3}
-  ~article{0}
-  ~nouns{{~enUS{admin}}}
-  ~adjectives{{}}
-  ~weight{80}
-  ~volume{45}
-  ~length{180}
-  ~weight_capacity{50}
-  ~volume_capacity{20}
-  ~length_capacity{50}
-}
-~room{
   ~number{77}
   ~location{0}
   ~bdesc{
