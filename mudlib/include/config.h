@@ -59,6 +59,7 @@
 
 /* User State types */
 #define US_ENTER_DATA       "/usr/common/obj/ustate/enter_data"
+#define US_ENTER_YN         "/usr/common/obj/ustate/enter_yn"
 #define US_OBJ_DESC         "/usr/common/obj/ustate/set_obj_desc"
 #define US_SCROLL_TEXT      "/usr/common/obj/ustate/scroll_text"
 #define US_MAKE_ROOM        "/usr/common/obj/ustate/makeroom"
