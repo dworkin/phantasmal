@@ -53,9 +53,9 @@ walls are.}}
   ~weight{0}
   ~volume{0}
   ~length{0}
-  ~weight_capacity{0}
-  ~volume_capacity{0}
-  ~length_capacity{0}
+  ~weight_capacity{10000000}
+  ~volume_capacity{10000000}
+  ~length_capacity{10000}
 }
 ~room{
   ~number{2}
@@ -84,12 +84,12 @@ It looks very cozy.
     ~esUS{fuera}}
     ~rnouns{{~enUS{out}~esUS{fuera}}}
     ~rflags{2}}
-  ~weight{0}
-  ~volume{0}
-  ~length{0}
-  ~weight_capacity{0}
-  ~volume_capacity{0}
-  ~length_capacity{0}
+  ~weight{2000}
+  ~volume{1000000}
+  ~length{1000}
+  ~weight_capacity{2000000}
+  ~volume_capacity{27000000}
+  ~length_capacity{1500}
 }
 ~room{
   ~number{3}
@@ -116,12 +116,12 @@ fur here and there in different colors.}}
     ~esUS{sur}}
     ~rnouns{{~enUS{south}~esUS{sur}}}
     ~rflags{2}}
-  ~weight{0}
-  ~volume{0}
-  ~length{0}
-  ~weight_capacity{0}
-  ~volume_capacity{0}
-  ~length_capacity{0}
+  ~weight{2000}
+  ~volume{1000000}
+  ~length{1000}
+  ~weight_capacity{2000000}
+  ~volume_capacity{27000000}
+  ~length_capacity{1500}
 }
 ~room{
   ~number{4}
@@ -147,12 +147,12 @@ can be found in the east and west walls.}}
     ~esUS{sur}}
     ~rnouns{{~enUS{south}~esUS{sur}}}
     ~rflags{2}}
-  ~weight{0}
-  ~volume{0}
-  ~length{0}
-  ~weight_capacity{0}
-  ~volume_capacity{0}
-  ~length_capacity{0}
+  ~weight{2000}
+  ~volume{1000000}
+  ~length{1000}
+  ~weight_capacity{2000000}
+  ~volume_capacity{27000000}
+  ~length_capacity{1500}
 }
 ~room{
   ~number{5}
@@ -174,12 +174,12 @@ dust from the walls settled on the floor -- it's quite clean here.}}
   ~article{0}
   ~nouns{{}}
   ~adjectives{{}}
-  ~weight{0}
-  ~volume{0}
-  ~length{0}
-  ~weight_capacity{0}
-  ~volume_capacity{0}
-  ~length_capacity{0}
+  ~weight{2000}
+  ~volume{1000000}
+  ~length{1000}
+  ~weight_capacity{2000000}
+  ~volume_capacity{27000000}
+  ~length_capacity{1500}
 }
 ~room{
   ~number{6}
@@ -199,12 +199,12 @@ Rumor has it that he's Messy-In-A-Hideous-Way.}}
   ~article{0}
   ~nouns{{~enUS{tomb}}}
   ~adjectives{{~enUS{peaceful}}}
-  ~weight{0}
-  ~volume{0}
-  ~length{0}
-  ~weight_capacity{0}
-  ~volume_capacity{0}
-  ~length_capacity{0}
+  ~weight{2000}
+  ~volume{1000000}
+  ~length{1000}
+  ~weight_capacity{2000000}
+  ~volume_capacity{27000000}
+  ~length_capacity{1500}
 }
 ~room{
   ~number{7}
@@ -227,12 +227,12 @@ an incomplete droid, facing the ceiling.  Its head is open.}}
   ~article{0}
   ~nouns{{}}
   ~adjectives{{}}
-  ~weight{0}
-  ~volume{0}
-  ~length{0}
-  ~weight_capacity{0}
-  ~volume_capacity{0}
-  ~length_capacity{0}
+  ~weight{2000}
+  ~volume{1000000}
+  ~length{1000}
+  ~weight_capacity{2000000}
+  ~volume_capacity{27000000}
+  ~length_capacity{1500}
 }
 ~room{
   ~number{8}
@@ -269,9 +269,9 @@ one place, but it's otherwise unremarkable.}}
   ~article{0}
   ~nouns{{~enUS{ball}}}
   ~adjectives{{~enUS{red,rubber}}}
-  ~weight{0}
-  ~volume{0}
-  ~length{0}
+  ~weight{0.1}
+  ~volume{0.3}
+  ~length{4}
 }
 ~room{
   ~number{77}
@@ -299,12 +299,12 @@ see opalescent light filtering in through the petals.
     ~esUS{fuera}}
     ~rnouns{{~enUS{out}~esUS{fuera}}}
     ~rflags{2}}
-  ~weight{0}
-  ~volume{0}
-  ~length{0}
-  ~weight_capacity{0}
-  ~volume_capacity{0}
-  ~length_capacity{0}
+  ~weight{2000}
+  ~volume{1000000}
+  ~length{1000}
+  ~weight_capacity{2000000}
+  ~volume_capacity{27000000}
+  ~length_capacity{1500}
 }
 ~room{
   ~number{79}
@@ -336,12 +336,12 @@ see opalescent light filtering in through the petals.
     ~esUS{oeste}}
     ~rnouns{{~enUS{west}~esUS{oeste}}}
     ~rflags{2}}
-  ~weight{0}
-  ~volume{0}
-  ~length{0}
-  ~weight_capacity{0}
-  ~volume_capacity{0}
-  ~length_capacity{0}
+  ~weight{2000}
+  ~volume{1000000}
+  ~length{1000}
+  ~weight_capacity{2000000}
+  ~volume_capacity{27000000}
+  ~length_capacity{1500}
 }
 ~room{
   ~number{81}
@@ -373,12 +373,12 @@ see opalescent light filtering in through the petals.
     ~esUS{norte}}
     ~rnouns{{~enUS{north}~esUS{norte}}}
     ~rflags{2}}
-  ~weight{0}
-  ~volume{0}
-  ~length{0}
-  ~weight_capacity{0}
-  ~volume_capacity{0}
-  ~length_capacity{0}
+  ~weight{2000}
+  ~volume{1000000}
+  ~length{1000}
+  ~weight_capacity{2000000}
+  ~volume_capacity{27000000}
+  ~length_capacity{1500}
 }
 ~room{
   ~number{200}
@@ -393,9 +393,9 @@ see opalescent light filtering in through the petals.
   ~article{0}
   ~nouns{{~enUS{turnip}}}
   ~adjectives{{~enUS{juicy,plump,large}}}
-  ~weight{0}
-  ~volume{0}
-  ~length{0}
+  ~weight{0.3}
+  ~volume{0.5}
+  ~length{7}
 }
 ~room{
   ~number{201}
@@ -409,16 +409,13 @@ see opalescent light filtering in through the petals.
 You're not sure, exactly, if it's dead, dying, or just
 _very_ relaxed.  Its facial expression, being that of a weasel,
 doesn't give you any clues.}}
-  ~flags{3}
+  ~flags{0}
   ~article{0}
   ~nouns{{~enUS{weasel}}}
   ~adjectives{{~enUS{lifeless,limp}}}
-  ~weight{0}
-  ~volume{0}
-  ~length{0}
-  ~weight_capacity{0}
-  ~volume_capacity{0}
-  ~length_capacity{0}
+  ~weight{1.5}
+  ~volume{2}
+  ~length{15}
 }
 ~room{
   ~number{202}
@@ -434,9 +431,9 @@ on the side may once have advertised the box's maker.}}
   ~article{0}
   ~nouns{{~enUS{breadbox,box}}}
   ~adjectives{{~enUS{bread,large,largish}}}
-  ~weight{0}
-  ~volume{0}
-  ~length{0}
+  ~weight{0.2}
+  ~volume{2}
+  ~length{20}
   ~weight_capacity{3.5}
   ~volume_capacity{2}
   ~length_capacity{15}
@@ -546,12 +543,12 @@ the middle of the room seems to be built directly into the floor somehow.}}
     ~esUS{sur}}
     ~rnouns{{~enUS{south}~esUS{sur}}}
     ~rflags{2}}
-  ~weight{0}
-  ~volume{0}
-  ~length{0}
-  ~weight_capacity{0}
-  ~volume_capacity{0}
-  ~length_capacity{0}
+  ~weight{2000}
+  ~volume{1000000}
+  ~length{1000}
+  ~weight_capacity{2000000}
+  ~volume_capacity{27000000}
+  ~length_capacity{1500}
 }
 ~room{
   ~number{301}
@@ -570,12 +567,12 @@ and east.}}
   ~article{0}
   ~nouns{{}}
   ~adjectives{{}}
-  ~weight{0}
-  ~volume{0}
-  ~length{0}
-  ~weight_capacity{0}
-  ~volume_capacity{0}
-  ~length_capacity{0}
+  ~weight{2000}
+  ~volume{1000000}
+  ~length{1000}
+  ~weight_capacity{2000000}
+  ~volume_capacity{27000000}
+  ~length_capacity{1500}
 }
 ~room{
   ~number{302}
@@ -622,12 +619,12 @@ the west.}}
     ~esUS{sur}}
     ~rnouns{{~enUS{south}~esUS{sur}}}
     ~rflags{2}}
-  ~weight{0}
-  ~volume{0}
-  ~length{0}
-  ~weight_capacity{0}
-  ~volume_capacity{0}
-  ~length_capacity{0}
+  ~weight{2000}
+  ~volume{1000000}
+  ~length{1000}
+  ~weight_capacity{2000000}
+  ~volume_capacity{27000000}
+  ~length_capacity{1500}
 }
 ~room{
   ~number{303}
@@ -643,12 +640,12 @@ room for outdoor rooms on the Miskatonic University campus.}}
   ~article{0}
   ~nouns{{}}
   ~adjectives{{}}
-  ~weight{0}
-  ~volume{0}
-  ~length{0}
-  ~weight_capacity{0}
-  ~volume_capacity{0}
-  ~length_capacity{0}
+  ~weight{2000}
+  ~volume{1000000}
+  ~length{1000}
+  ~weight_capacity{2000000}
+  ~volume_capacity{27000000}
+  ~length_capacity{1500}
 }
 ~room{
   ~number{304}
@@ -676,12 +673,12 @@ Tower off to the southwest.  A defunct lamp stands beside you.}}
     ~esUS{este}}
     ~rnouns{{~enUS{east}~esUS{este}}}
     ~rflags{2}}
-  ~weight{0}
-  ~volume{0}
-  ~length{0}
-  ~weight_capacity{0}
-  ~volume_capacity{0}
-  ~length_capacity{0}
+  ~weight{2000}
+  ~volume{1000000}
+  ~length{1000}
+  ~weight_capacity{2000000}
+  ~volume_capacity{27000000}
+  ~length_capacity{1500}
 }
 ~room{
   ~number{305}
@@ -709,12 +706,12 @@ academic halls beyond.  The rest of campus stretches out around you.}}
     ~esUS{este}}
     ~rnouns{{~enUS{east}~esUS{este}}}
     ~rflags{2}}
-  ~weight{0}
-  ~volume{0}
-  ~length{0}
-  ~weight_capacity{0}
-  ~volume_capacity{0}
-  ~length_capacity{0}
+  ~weight{2000}
+  ~volume{1000000}
+  ~length{1000}
+  ~weight_capacity{2000000}
+  ~volume_capacity{27000000}
+  ~length_capacity{1500}
 }
 ~room{
   ~number{306}
@@ -742,12 +739,12 @@ south.}}
     ~esUS{sur}}
     ~rnouns{{~enUS{south}~esUS{sur}}}
     ~rflags{2}}
-  ~weight{0}
-  ~volume{0}
-  ~length{0}
-  ~weight_capacity{0}
-  ~volume_capacity{0}
-  ~length_capacity{0}
+  ~weight{2000}
+  ~volume{1000000}
+  ~length{1000}
+  ~weight_capacity{2000000}
+  ~volume_capacity{27000000}
+  ~length_capacity{1500}
 }
 ~room{
   ~number{307}
@@ -766,12 +763,12 @@ dry and tufted.}}
   ~article{0}
   ~nouns{{}}
   ~adjectives{{}}
-  ~weight{0}
-  ~volume{0}
-  ~length{0}
-  ~weight_capacity{0}
-  ~volume_capacity{0}
-  ~length_capacity{0}
+  ~weight{2000}
+  ~volume{1000000}
+  ~length{1000}
+  ~weight_capacity{2000000}
+  ~volume_capacity{27000000}
+  ~length_capacity{1500}
 }
 ~room{
   ~number{308}
@@ -789,52 +786,12 @@ Arkham through the trees to the north and east.}}
   ~article{0}
   ~nouns{{}}
   ~adjectives{{}}
-  ~weight{0}
-  ~volume{0}
-  ~length{0}
-  ~weight_capacity{0}
-  ~volume_capacity{0}
-  ~length_capacity{0}
-}
-~room{
-  ~number{309}
-  ~location{300}
-  ~bdesc{
-    ~enUS{Angelbob}}
-  ~gdesc{
-    ~enUS{Angelbob}}
-  ~ldesc{
-    ~enUS{Angelbob has obviously set his own description.  How odd!}}
-  ~flags{3}
-  ~article{0}
-  ~nouns{{~enUS{angelbob}}}
-  ~adjectives{{}}
-  ~weight{0}
-  ~volume{0}
-  ~length{0}
-  ~weight_capacity{0}
-  ~volume_capacity{0}
-  ~length_capacity{0}
-}
-~room{
-  ~number{310}
-  ~location{1}
-  ~bdesc{
-    ~enUS{Noah}}
-  ~gdesc{
-    ~enUS{Noah}}
-  ~ldesc{
-    ~enUS{Noah wanders the MUD.}}
-  ~flags{3}
-  ~article{0}
-  ~nouns{{~enUS{noah}}}
-  ~adjectives{{}}
-  ~weight{0}
-  ~volume{0}
-  ~length{0}
-  ~weight_capacity{50}
-  ~volume_capacity{20}
-  ~length_capacity{200}
+  ~weight{2000}
+  ~volume{1000000}
+  ~length{1000}
+  ~weight_capacity{2000000}
+  ~volume_capacity{27000000}
+  ~length_capacity{1500}
 }
 ~room{
   ~number{313}
@@ -847,16 +804,13 @@ Arkham through the trees to the north and east.}}
     ~enUS{This turnip is vibrating slightly, and that motion is moving it around
 the floor.  You wonder if it'd be able to win a race with your old
 washing machine back home.}}
-  ~flags{3}
+  ~flags{0}
   ~article{0}
   ~nouns{{~enUS{turnip,vegetable}}}
   ~adjectives{{~enUS{mobile,vibrating,gently,gently-vibrating,moving}}}
-  ~weight{0}
-  ~volume{0}
-  ~length{0}
-  ~weight_capacity{0}
-  ~volume_capacity{0}
-  ~length_capacity{0}
+  ~weight{0.1}
+  ~volume{0.5}
+  ~length{6}
 }
 ~room{
   ~number{314}
@@ -871,9 +825,9 @@ washing machine back home.}}
   ~article{0}
   ~nouns{{~enUS{dog}}}
   ~adjectives{{}}
-  ~weight{0}
-  ~volume{0}
-  ~length{0}
+  ~weight{6}
+  ~volume{5}
+  ~length{30}
 }
 ~room{
   ~number{317}
@@ -1440,12 +1394,12 @@ the east and west appear to be more of the hostel's grounds.}}
     ~esUS{norte}}
     ~rnouns{{~enUS{north}~esUS{norte}}}
     ~rflags{2}}
-  ~weight{0}
-  ~volume{0}
-  ~length{0}
-  ~weight_capacity{0}
-  ~volume_capacity{0}
-  ~length_capacity{0}
+  ~weight{2000}
+  ~volume{1000000}
+  ~length{1000}
+  ~weight_capacity{2000000}
+  ~volume_capacity{27000000}
+  ~length_capacity{1500}
 }
 ~room{
   ~number{601}
@@ -1465,7 +1419,7 @@ building looks like it was once painted green.}}
   ~article{0}
   ~nouns{{~enUS{hostel,porch,building}}}
   ~adjectives{{~enUS{worn,faded,battered,grey,green,red,gray,old,worn,wraparound,wrap-around,wrap,around}}}
-  ~weight{1000.05}
+  ~weight{0}
   ~volume{0}
   ~length{0}
 }
@@ -1513,25 +1467,4 @@ small clear area before the woods and the swamp begin to the southeast.}}
   ~weight_capacity{2000000}
   ~volume_capacity{27000000}
   ~length_capacity{1500}
-}
-~room{
-  ~number{604}
-  ~location{603}
-  ~bdesc{
-    ~enUS{a sword}}
-  ~gdesc{
-    ~enUS{a sword}}
-  ~ldesc{
-    ~enUS{You see a sword.}}
-  ~flags{11}
-  ~parent{603}
-  ~article{0}
-  ~nouns{{~enUS{sword}}}
-  ~adjectives{{}}
-  ~weight{10}
-  ~volume{-1}
-  ~length{91.5}
-  ~weight_capacity{-1}
-  ~volume_capacity{1.5}
-  ~length_capacity{-1}
 }
