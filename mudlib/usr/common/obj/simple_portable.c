@@ -108,7 +108,7 @@ void set_container(int value) {
 }
 
 void set_open(int value) {
-  if(!SYSTEM())
+  if(!SYSTEM() && previous_program() != MOBILE)
     error("Only SYSTEM code can currently set an object as open!");
 
   set_flags(OF_OPEN, value);
