@@ -153,26 +153,42 @@ check in anything that has Win32 line endings.
 
 
 
-Q: I run DGD and Phantasmal seems to run fine until I try to telnet to
-the server.  Then I get an error that looks like this:
-
-Nov 17 02:54:10 ** DGD 1.2.52
-Nov 17 02:54:10 ** Initializing...
-Nov 17 02:54:13 ** Initialization complete.
-
-Fatal error: cannot create swap file "../tmp/swap"
-Abort
-
-A: Remember that the swapfile path is from the MUDLib directory.
-Specifically, it's from Phantasmal's MUDLib directory.  You may want
-to change it from "../tmp/swap" to "tmp/swap" and create a tmp
-directory next to your kernel, usr, log and so on directories.  Or you
-may just want to change into your phantasmal directory, type "cd ..",
-then "mkdir tmp".  That will create a "../tmp" directory in which DGD
-can create a "../tmp/swap" file.
-
 Q: When I start DGD, Phantasmal seems to start fine, but when I telnet in I
 can't log on!
 
 A: There is a bug in DGD versions before 1.2.57 which causes Phantasmal to hang
 for a while on start up.  Please upgrade to DGD version 1.2.57 or higher.
+
+
+
+
+Q: I can log into Phantasmal by telnetting to localhost on the correct
+port, but if I try from another machine it won't let me!
+
+A: Your machine almost certainly has a firewall.  Any recent version
+of Linux, for instance, comes with this automatically.  You'll need to
+edit the configuration files for your firewall to let you log into
+whatever port Phantasmal is running on.  You can find Phantasmal's
+port numbers in phantasmal.dgd, but you'll need to check the
+documentation for your firewall or Operating System to figure out how
+to change the firewall.
+
+
+
+Q: People on my local network can log into Phantasmal, but people far
+away can't!
+
+A: Your network administrator almost certainly runs a firewall.
+Whatever port you're using for Phantasmal isn't being allowed through,
+which isn't surprising.  Firewalls are often used specifically to stop
+unauthorized, possibly-insecure servers like MUDs from working.  If
+you're setting up Phantasmal for some authorized purpose, talk to your
+network administrator about letting requests through on the
+appropriate port.  If you're *not* running it with appropriate
+permission, you'll need to either figure out how to defeat the
+firewall, or hang your head in shame.
+
+Or you could run your MUD on a machine that's not at your place of
+work.  Getting some kind of broadband at home would work, as would
+using a professional MUD hosting or colocation service.  Any of those
+will cost money, though.
