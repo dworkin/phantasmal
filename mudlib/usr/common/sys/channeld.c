@@ -30,7 +30,6 @@ void upgraded(varargs int clone) {
   channel_attributes = ({ ({ "OOC", 0 }),
 			    ({ "Log", ATTRIB_ADMIN }),
 			    ({ "Error", ATTRIB_ADMIN }),
-			    ({ "Gossip", 0 }),
 			    });
 
   if(!channels) {
@@ -118,7 +117,7 @@ void string_to_channel(int channel, string str, varargs int modifiers) {
 int subscribe_user(object user, int channel, varargs int arg) {
   int    attrib, ctr;
 
-  if(channel < 0 || channel > num_channels) {
+  if(channel < 0 || channel >= num_channels) {
     return -1;
   }
   attrib = channel_attributes[channel][1];
