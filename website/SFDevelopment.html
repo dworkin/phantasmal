@@ -149,6 +149,11 @@
 	check previous_program() so that only the expected caller
 	can call the function.  Functions that only the current
 	object calls should be marked private. </li>
+      <li> <i>Every</i> Phantasmal function should be one of: static,
+        private, checks SYSTEM/COMMON/GAME, or documented to say
+	exactly why not.  The only functions that don't need to be
+	access-protected are utility functions like the ones in
+	STRINGD that have no access to any Phantasmal data. </li>
       <li> Never call anything in a publicly writable directory.  Never
         call a method of any object in a writable directory if you don't
 	trust all possible writers.  Remember who has access to what.
