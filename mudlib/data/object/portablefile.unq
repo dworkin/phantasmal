@@ -110,7 +110,7 @@ Wombat fumes.  About the usual, you hope.}}
 }
 ~portable{
   ~number{207}
-  ~location{300}
+  ~location{308}
   ~bdesc{
     ~enUS{Angelbob}}
   ~gdesc{
@@ -371,7 +371,7 @@ Tower.}}
   ~number{412}
   ~location{305}
   ~bdesc{
-    ~enUS{not-quite-spiral steps}}
+    ~enUS{spiral steps}}
   ~gdesc{
     ~enUS{some not-quite-spiral steps}}
   ~ldesc{
@@ -414,4 +414,146 @@ trees to the northwest.}}
   ~flags{4}
   ~nouns{{~enUS{hall,halls,peabody,marsh,clearing,block}}}
   ~adjectives{{~enUS{academic,peabody,marsh,distant}}}
+}
+~portable{
+  ~number{415}
+  ~location{306}
+  ~bdesc{
+    ~enUS{grass}}
+  ~gdesc{
+    ~enUS{the grass}}
+  ~ldesc{
+    ~enUS{You suppose the gardener must not make it here very often, and since
+this isn't on the beaten path from the academic halls to the dorms,
+students don't walk over it as much.  It looks very comfortable and
+inviting.}}
+  ~edesc{
+    ~enUS{You search through the long grass, but you don't find anything beyond
+the expected small bugs, dirt and weeds.}}
+  ~article{0}
+  ~flags{4}
+  ~nouns{{~enUS{ground,grass,green}}}
+  ~adjectives{{~enUS{green,grassy,long}}}
+}
+~portable{
+  ~number{416}
+  ~location{306}
+  ~bdesc{
+    ~enUS{academic halls}}
+  ~gdesc{
+    ~enUS{the academic halls}}
+  ~ldesc{
+    ~enUS{The only halls you can see from here are Peabody immediately to the
+north and the side of Telman to the south.}}
+  ~article{0}
+  ~flags{4}
+  ~nouns{{~enUS{halls,dorms}}}
+  ~adjectives{{~enUS{academic,school}}}
+}
+~portable{
+  ~number{417}
+  ~location{306}
+  ~bdesc{
+    ~enUS{Telman Hall}}
+  ~gdesc{
+    ~enUS{Telman Hall}}
+  ~ldesc{
+    ~enUS{The entrance of Telman Hall is to the west of here, and the side of
+it sprawls out to your south.  Telman's walls and roof always seem to be
+at odd angles relative to each other and the ground, though it's never
+quite obvious why.}}
+  ~edesc{
+    ~enUS{The entrance of Telman Hall is to the west of here, and the side of
+it sprawls out to your south.  Telman's walls and roof always seem to be
+at odd angles relative to each other and the ground, though it's never
+quite obvious why.
+
+Staring at it too long makes your head hurt, and your eyes feel like
+they're twisting in their sockets.  It's not comfortable.}}
+  ~article{0}
+  ~flags{4}
+  ~nouns{{~enUS{hall,telman}}}
+  ~adjectives{{~enUS{telman,engineering,mathematics,science}}}
+}
+~portable{
+  ~number{418}
+  ~location{306}
+  ~bdesc{
+    ~enUS{Peabody Hall}}
+  ~gdesc{
+    ~enUS{Peabody Hall}}
+  ~ldesc{
+    ~enUS{To the north you can see Peabody Hall.  There are four windows each
+on the first and second floor, each one painted over and painted
+shut.  The building is made of brick and you can see the sloped roof
+up above.  Peabody is an older building, and streaks of grime have
+formed below the windows.}}
+  ~article{0}
+  ~flags{4}
+  ~nouns{{~enUS{peabody,hall,windows}}}
+  ~adjectives{{~enUS{peabody,painted,brick,humanities,economics}}}
+}
+~portable{
+  ~number{419}
+  ~location{307}
+  ~bdesc{
+    ~enUS{Telman's wall}}
+  ~gdesc{
+    ~enUS{Telman's wall}}
+  ~ldesc{
+    ~enUS{Telman hall has smooth, stony walls.  You'd guess they're made of cement
+of some kind.  There are no windows on the northern wall at all.  There's
+something odd about the angle the wall makes with the ground -- you can't
+tell if it's looming over you or receding away from you, but the angle
+is very unusual in any case.}}
+  ~article{0}
+  ~flags{4}
+  ~nouns{{~enUS{hall,telman,walls,windows}}}
+  ~adjectives{{~enUS{telman,hall,angular,odd,mathematics,science}}}
+}
+~portable{
+  ~number{420}
+  ~location{307}
+  ~bdesc{
+    ~enUS{dry grass}}
+  ~gdesc{
+    ~enUS{tufts of dry grass}}
+  ~ldesc{
+    ~enUS{The grass here is in dry clumps and doesn't look particularly healthy.
+The ground underneath is quite hard.}}
+  ~article{0}
+  ~flags{4}
+  ~nouns{{~enUS{tufts,grasses,clumps,ground}}}
+  ~adjectives{{~enUS{grassy,tufts,dry,long,hard,tufted}}}
+}
+~portable{
+  ~number{421}
+  ~location{308}
+  ~bdesc{
+    ~enUS{long grass}}
+  ~gdesc{
+    ~enUS{long grass}}
+  ~ldesc{
+    ~enUS{The grass here isn't cut as often as the more frequently-trodden parts
+of campus.  It looks long and comfortable to walk through or lie in.}}
+  ~article{0}
+  ~flags{4}
+  ~nouns{{~enUS{grasses}}}
+  ~adjectives{{~enUS{green,long}}}
+}
+~portable{
+  ~number{422}
+  ~location{308}
+  ~bdesc{
+    ~enUS{academic halls}}
+  ~gdesc{
+    ~enUS{academic halls}}
+  ~ldesc{
+    ~enUS{Peabody Hall stands to the south of you, and Marsh to the northwest.
+Neither side of either building looks particularly interesting from
+here.}}
+  ~article{0}
+  ~flags{4}
+  ~nouns{{~enUS{marsh,peabody,halls}}}
+  ~adjectives{{~enUS{telman,marsh,halls,economics,humanities,history,languages,modern}}}
 }

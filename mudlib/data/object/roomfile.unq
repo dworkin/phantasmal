@@ -281,13 +281,15 @@ room for outdoor rooms on the Miskatonic University campus.}}
   ~gdesc{
     ~enUS{Outside Marsh Hall}}
   ~ldesc{
-    ~enUS{You stand on a wooden walkway leading to Marsh Hall, which is the home
-of the Modern History and Modern Languages departments.  You can see
-academic halls in various directions, and the Block and the Tower off
-to the southwest.  A defunct lamp stands beside you.}}
+    ~enUS{You stand on a wooden walkway leading north into Marsh Hall, which is
+the home of the Modern History and Modern Languages departments.  You
+can see academic halls in various directions, and the Block and the
+Tower off to the southwest.  A defunct lamp stands beside you.}}
+  ~parent{303}
   ~article{0}
   ~nouns{{}}
   ~adjectives{{}}
+  ~exit{e: #308 132 133}
 }
 ~room{
   ~number{305}
@@ -301,6 +303,55 @@ to the southwest.  A defunct lamp stands beside you.}}
 the entrance to Telman Hall.  An ugly sculpture is at the top of the
 steps.  You can see Peabody Hall to the north, and several more
 academic halls beyond.  The rest of campus stretches out around you.}}
+  ~article{0}
+  ~nouns{{}}
+  ~adjectives{{}}
+  ~exit{e: #306 128 129}
+}
+~room{
+  ~number{306}
+  ~location{0}
+  ~bdesc{
+    ~enUS{Beside Peabody Hall}}
+  ~gdesc{
+    ~enUS{Beside Peabody Hall}}
+  ~ldesc{
+    ~enUS{The grass grows long here on the south side of Peabody Hall.  A couple
+of windows on the first and second floor are painted over and presumably
+painted shut.  You can see the oddly-angled side of Telman Hall to the
+south.}}
+  ~article{0}
+  ~nouns{{}}
+  ~adjectives{{}}
+  ~exit{s: #307 130 131}
+}
+~room{
+  ~number{307}
+  ~location{0}
+  ~bdesc{
+    ~enUS{Beside Telman Hall}}
+  ~gdesc{
+    ~enUS{Beside Telman Hall}}
+  ~ldesc{
+    ~enUS{You're standing outside Telman Mathematics and Science Hall.  It's an
+odd, angular building.  The wall to the south of you contains no windows,
+at least on this side of the building.  The grass here is long but
+dry and tufted.}}
+  ~article{0}
+  ~nouns{{}}
+  ~adjectives{{}}
+}
+~room{
+  ~number{308}
+  ~location{0}
+  ~bdesc{
+    ~enUS{Beside Peabody Hall}}
+  ~gdesc{
+    ~enUS{Beside Peabody Hall}}
+  ~ldesc{
+    ~enUS{You're standing just north of Peabody Economics Hall in the long grass.
+Marsh Hall stands just northwest of you and you can see the city of
+Arkham through the trees to the north and east.}}
   ~article{0}
   ~nouns{{}}
   ~adjectives{{}}
