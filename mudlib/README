@@ -34,10 +34,10 @@ Phantasmal is currently suitable for acting as an example DGD MUDLib
 or as a simple MUSH.  There's a lot of infrastructure in place, but a
 lot of it simply isn't demonstrated usefully to the end user.  More is
 available to an administrator than an end user, but it's still far
-from being unpack-and-play, and doesn't have much built-in game.
+from being unpack-and-play, and doesn't have any real built-in game.
 
 The latest information, code and tutorials can be located at
-"http://www.angelbob.com/projects/mudlib/".
+"http://phantasmal.sourceforge.net".
 
 
                            Features
@@ -60,6 +60,6 @@ It sports a powerful help system with rich configuration files, full
 localization, and Soundex matching for near-misses (if they ask for
 help on "polices" instead of "policies", for instance).
 
-See http://www.angelbob.com/projects/mudlib/Current.html for a more
+See "http://phantasmal.sourceforge.net/Current.html" for a more
 complete manifest of the current features of the most up-to-date
 version of Phantasmal.
