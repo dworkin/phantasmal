@@ -144,9 +144,6 @@ static void create(varargs int clone)
 
   /* Start up configD */
   if(!find_object(CONFIGD)) compile_object(CONFIGD);
-
-  /* This should be done by the configd when it's loaded */
-  MAPD->set_room_alias("start room", the_void);
 }
 
 void save_mud_data(object user, string room_filename, string port_filename,
