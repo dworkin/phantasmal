@@ -1,0 +1,26 @@
+FILE
+	/usr/common/sys/exitd.c
+
+NAME
+	opposite_direction - take a numerical direction and return the opposite
+
+PROTOTYPE
+	int opposite_direction(int direction)
+
+CALLED BY
+	Anybody
+
+DESCRIPTION
+	Take a numerical direction and return the opposite.  North would
+	return south, up would return down, etc.  Some directions may
+	not have opposites.
+
+RETURN VALUE
+	A numerical direction, or DIR_ERR if the direction isn't recognized,
+	or has no opposite.
+
+ERRORS
+	Normally none.
+
+SEE ALSO
+	get_short_for_dir, get_name_for_dir, direction_by_string

@@ -1,0 +1,31 @@
+FILE
+	/usr/common/sys/exitd.c
+
+NAME
+	add_deferred_exits - resolve any exits that couldn't be loaded
+	because an endpoint room wasn't available
+
+PROTOTYPE
+	void add_deferred_exits(void)
+
+CALLED BY
+	System, Common, Game
+
+DESCRIPTION
+	When a zone is loaded, it may have exits to other zones, not
+	necessarily yet loaded.  To facilitate zone-by-zone loading,
+	Phantasmal allows cross-zone exits to be "deferred", which
+	means that they aren't resolved and don't appear until
+	specifically requested.  Normally a zone load command will
+	choose to resolve deferred exits as part of normal operation
+	since a new zone may introduce new rooms and thus allow the
+	resolution of new exits.
+
+RETURN VALUE
+	None.
+
+ERRORS
+	Normally none.
+
+SEE ALSO
+	num_deferred_exits, add_twoway_exit_between

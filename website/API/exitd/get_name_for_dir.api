@@ -1,0 +1,27 @@
+FILE
+	/usr/common/sys/exitd.c
+
+NAME
+	get_name_for_dir - get a name (as a Phrase) for a numerical direction
+
+PROTOTYPE
+	object get_name_for_dir(int direction)
+
+CALLED BY
+	Anybody
+
+DESCRIPTION
+	Take a numerical direction and return a Phantasmal Phrase object
+	containing a description of that direction.  Descriptions are
+	strings like "north", "southwest", "down", etc.  Direction numbers
+	are defined in &lt;exit.h&gt;.
+
+RETURN VALUE
+	A Phrase appropriate to the supplied direction, or nil if the
+	direction isn't recognized.
+
+ERRORS
+	Normally none.
+
+SEE ALSO
+	get_short_for_dir, direction_by_string

@@ -1,0 +1,26 @@
+FILE
+	/usr/common/sys/exitd.c
+
+NAME
+	direction_by_string - take a direction name as a string and return
+	a numerical direction, recognized by ExitD.
+
+PROTOTYPE
+	int direction_by_string(string direction_name)
+
+CALLED BY
+	Anybody
+
+DESCRIPTION
+	Take a string naming a direction, such as "nw" or "up" or
+	"northeast", and return a numerical direction recognized by
+	ExitD.  Direction numbers are defined in &lt;exit.h&gt;.
+
+RETURN VALUE
+	A numerical direction, or -1 if the string isn't recognized.
+
+ERRORS
+	Normally none.
+
+SEE ALSO
+	get_short_for_dir, direction_by_string, opposite_direction

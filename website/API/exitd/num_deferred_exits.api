@@ -1,0 +1,25 @@
+FILE
+	/usr/common/sys/exitd.c
+
+NAME
+	num_deferred_exits - return the current number of deferred exits
+
+PROTOTYPE
+	int num_deferred_exits(void)
+
+CALLED BY
+	System, Common, Game
+
+DESCRIPTION
+	See add_deferred_exits for an explanation of deferred exits.
+	This function returns how many of them there are, MUD-wide.
+
+RETURN VALUE
+	The number of deferred exits, or -1 if that information can't
+	be returned.
+
+ERRORS
+	Normally none.
+
+SEE ALSO
+	add_deferred_exits, add_twoway_exit_between
