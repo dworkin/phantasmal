@@ -1,4 +1,4 @@
-How to Deal with Some Common Problems
+How to Deal with Some Common Installation Problems
 
 Q: I try to run DGD, but I get things that look like this:
 
@@ -131,39 +131,3 @@ use the Cygwin version of CVS, or convert all your line endings after
 checkout.  The last solution won't work if you're doing development,
 though, since it's vitally important that you not check in anything to
 the main Phantasmal sources that works only with Win32 line endings.
-
-Q: I try adding my own custom room (or portable), using custom lpc code, but
-when I start the MUD I get the following messages:
-
-Sep  3 20:12:16 ** DGD 1.2.47
-Sep  3 20:12:16 ** Initializing...
-You forgot to register with MAPD in a room object def maybe?
-Config error: initialization failed
-
-The log gives something like this:
-
--*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-
-Starting MUD...
--*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-
-/usr/System/sys/errord(unset) ||| Tue Sep  3 20:12:27 2002 / 0.274 [6]
-  --> Runtime error: You forgot to register with MAPD in a room object def maybe?
- 441 initialize        /kernel/sys/driver
- 429 _initialize       /kernel/sys/driver
- 131 create            /usr/System/initd
- 433 add_unq_text_rooms /usr/common/sys/mapd
- 402 add_dtd_unq_rooms /usr/common/sys/mapd
- 342 add_struct_for_room /usr/common/sys/mapd
-
-What's wrong?
-
-A:  You've probably forgotten to register the room with MAPD in the create()
-function of your custom room.  Just something like the following in
-the create() function of your custom room:
-
-if (clone) {
-  ...
-
-  MAPD->add_room_object(this_object());
-}
-
-(Contributed by Keith Dunwoody <keithdunwoody@yahoo.com>)
