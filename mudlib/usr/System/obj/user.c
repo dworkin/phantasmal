@@ -1,4 +1,4 @@
-/* $Header: /cvsroot/phantasmal/mudlib/usr/System/obj/user.c,v 1.58 2003/03/29 00:04:04 dbd22 Exp $ */
+/* $Header: /cvsroot/phantasmal/mudlib/usr/System/obj/user.c,v 1.59 2003/03/31 00:32:46 dbd22 Exp $ */
 
 #include <kernel/kernel.h>
 #include <kernel/user.h>
@@ -1334,6 +1334,13 @@ static void cmd_put(object user, string cmd, string str) {
   int     ctr;
   string err;
 
+  if(str)
+    str = STRINGD->trim_whitespace(str);
+  if(!str || str == "") {
+    user->message("Usage: " + cmd + " <obj1> in <obj2>\r\n");
+    return;
+  }
+
   if(sscanf(str, "%s inside %s", obj1, obj2) != 2
      && sscanf(str, "%s into %s", obj1, obj2) != 2
      && sscanf(str, "%s in %s", obj1, obj2) != 2) {
@@ -1386,6 +1393,13 @@ static void cmd_remove(object user, string cmd, string str) {
   object  port, cont;
   int     ctr;
   string err;
+
+  if(str)
+    str = STRINGD->trim_whitespace(str);
+  if(!str || str == "") {
+    user->message("Usage: " + cmd + " <obj1> from <obj2>\r\n");
+    return;
+  }
 
   if(sscanf(str, "%s from inside %s", obj1, obj2) != 2
      && sscanf(str, "%s from in %s", obj1, obj2) != 2
