@@ -13,10 +13,6 @@ private mapping builtins;
 private string  accum_error;
 /* base type of a type -- for inheritance */
 private mapping base_type;
-/* list of files that has already been loaded -- automatic double
-   inclusion protection */
-private int *loaded;
-
 
 /* #define USE_LOG to write to a log file */
 
@@ -33,7 +29,6 @@ static int create(varargs int clone) {
 
   dtd = ([ ]);
 
-  loaded = ({ });
   base_type = ([ ]);
 
   if(!is_clone) {
@@ -749,13 +744,6 @@ void load(string new_dtd) {
   mixed* new_unq;
   string import;
 
-  if (sizeof(loaded & ({ new_dtd }) )) {
-    /* this file already loaded */
-    /* log & return */
-    LOGD->write_syslog("File already loaded into dtd");
-    return;
-  }
-
   if(!is_clone)
     error("Can't use non-clone UNQ DTD!  Stop it!");
 
@@ -787,6 +775,10 @@ void load(string new_dtd) {
 
       import = read_file(new_unq[ctr2 + 1]);
 
+      if (import == nil) {
+	error("Could not load file " + new_unq[ctr + 1]);
+      }
+      
       /* recusively call load */
       load(import);
     } else {
