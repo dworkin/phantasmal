@@ -9,3 +9,9 @@ Add necessary symlinks to the usr and kernel directories.  See README
 files in those directories for details.
 
 Change the testgame.dgd file to point to your correct absolute path.
+
+Alternately, you can skip all of this if you make a Bundled release,
+which this MUD is set up to do.  By running the distrib_builder.pl
+script appropriately and giving this MUD's directory as the one for
+the game, you can create a Bundled testgame.  You'll still need DGD
+built and working to build a Bundled release, but not to run one.
