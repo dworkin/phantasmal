@@ -9,37 +9,37 @@ realize that Phantasmal builds on the Kernel library for a reason --
 you may wish to do so instead of using this, and simply treat
 Phantasmal as one more example MUDLib.
 
-Phantasmal provides a few useful bits, such as an improved user object
-and error handler.  It doesn't yet provide a number of other very
-useful objects and commands.  I'll keep working on infrastructure, but
-you're likely to do better building any given feature for yourself
-than waiting for me to do it for you.
+Phantasmal provides some useful bits, such as an improved user object
+and error handler.  There are, of course, a number of other very
+useful objects and commands it doesn't yet provide.  I'll keep working
+on infrastructure, but you're likely to do better building any given
+feature for yourself than waiting for me to do it for you.
 
 
                  OVERALL ORGANIZATION
 
 Phantasmal does its best to conform to the spirit, not just the
 letter, of the Kernel MUDLib's restrictions and recommendations.  It
-puts its libraries in /usr/Whoever/lib, its clonable objects in /obj
-or /usr/Whoever/obj, and its daemons (objects that are technically
-clonable, but that normally simply keep a single copy of their data
-and provide services) in /usr/common/sys/ or /usr/System/sys.
-Lightweight objects are currently in /usr/common/data.
+puts its libraries in /usr/Whoever/lib, its clonable objects in
+/usr/Whoever/obj, and its daemons (objects that are instantiable, but
+that normally simply keep a single copy of their data and provide
+services) in /usr/common/sys/ or /usr/System/sys.  Lightweight objects
+are currently in /usr/common/data.
 
 The data directory contains a variety of data including some kinds of
 structured data and (later) code.  Essentially this is what makes the
 MUD special and different from others, and so this is the directory
-that a production MUD will want to edit when releasing its code --
+that a production MUD will want to censor when releasing its code --
 you'll be storing player data, areas and so on in this directory and
-so you don't want to redistribute most of it.
+so you may not want to redistribute all of it.
 
 Nods in the direction of code security are made by checking the
-previous_program() and similar measures.  There's a document on
+previous_program(), among other ways.  There's a document on
 Phantasmal Security policy on the SourceForge site in the
 documentation section but don't expect Phantasmal to be properly
-secured against your fellow administrators out of the box.  That will
-happen eventually, but it's still in early development.  Security
-against players is quite good even now, and is meant to remain that
+secured against your fellow administrators.  That will happen
+eventually, but it's still in early development.  Security against
+non-admin players is quite good even now, and we hope to keep it that
 way.
 
 
@@ -50,7 +50,7 @@ want to change at least "/include/phrase.h",
 "/usr/System/sys/phrased.c" and the cmd_locales function in
 "/usr/System/obj/user.c".  Phrased's create function sets up a lot of
 data structures -- make sure you understand them and how to change
-them.  Eventually, these structures may be altered to be more dynamic,
+them.  Eventually, we may alter these structures to be more dynamic,
 which should make adding locales easier but involve many objects
 (phrases, helpd, phrase repositories, rooms, etc) being notified of a
 change in locales.  In any case, unicode is not yet supported so
@@ -60,41 +60,48 @@ additional binary ports which will in turn allow unicode support.
 You may want to have a look at "/usr/common/sys/helpd.c" and change
 the exclude_path function.  It determines what directories will not be
 checked during recursive descent to see if they contain helpfiles.
+Particularly if you use a source-control system not based on RCS, CVS
+or SCCS, you're likely to want to add to this (and submit the changes
+back to me, please!)
 
 Currently new commands go into "/usr/System/obj/user.c" or
 "/usr/System/lib/wiztoollib.c", usually at the end of the file.  These
 commands run at that file's full privilege level so you shouldn't
-allow anyone without absolute full trust to write new commands.  This
-may change later, but hasn't yet.
+allow anyone without absolute full trust to write new commands.
+You'll also need to add a name for the commands which can be done in
+"/usr/System/obj/wiztool.c" for admin commands and
+"/data/phrase/user_cmds.unq" for player commands.  Make sure to add
+the commands in all appropriate locales.
 
 
                    SPECIFIC LOCATIONS
 
-A lot of game-specific data goes in "/data/phrase" and in the rest of
-"/data".  You should know the UNQ phrase format before editing things
-in "/data/phrase" on a live MUD.
+A lot of game-specific data goes in "/data".  You should know the UNQ
+phrase format before editing things in "/data" on a live MUD.
 
 If you're serious about making a real MUD happen, look through and
 change (when necessary) absolutely every helpfile entry -- they're all
-found under "/data/help".  Nothing says "unprofessional" (plus "lame",
-"sloppy", and so on) like leaving stock MUDLib stuff unchanged in your
-MUD when it's wrong.  The help files contain a lot of contact
-information, MUD policies and other stuff that's really quite specific
-to my personal server.  Look through and change it or you'll be
-unpleasantly surprised by the contents.  And I mean it -- look through
-and change *every* help file.  Add new ones as you add stuff, too.
-This is very, very important.
+found under "/data/help" and "/data/help/admin".  Nothing says
+"unprofessional" (plus "lame", "sloppy", and so on) like leaving stock
+MUDLib stuff unchanged in your MUD, especially when it's wrong.  The
+help files contain a lot of contact information, MUD policies and
+other stuff that's quite specific to my personal server.  Look through
+and change it or you'll be unpleasantly surprised by the contents.
+And I mean it -- look through and change *every* help file.  Add new
+ones as you add stuff, too.  This is very, very important.  Have I
+said it enough times yet?
 
 There's a system log under the "/log/" directory.  Make sure you know
 what it is, how to use it, and what goes into it.  If you're not sure
 where a particular entry comes from, find it in the code.  Grep is
 your friend, or your editor's "find" feature if you're not using a
-Unix variant.
+Unix variant.  You can alter what gets logged with
+"/data/system/logd_channels.unq".  Figure out how it works.
 
 Managers like stringd.c, phrased.c, logd.c, userd.c and so on live in
 either "/usr/common/sys" or "/usr/System/sys/".  Pretty much any
 manager that can be removed from "/usr/System/sys/" already has been.
-Understand why.
+Understand why.  Hint:  think security.
 
 
                    GENERAL GUIDELINES
@@ -103,7 +110,10 @@ Phantasmal allows for a serious amount of localization.  That means
 the MUD allows reasonable translation to other languages.  At the
 moment there's no unicode or other non-ASCII support, but it's at
 least strongly possible in the infrastructure.  This is unusually good
-by current (lousy) free MUD standards.
+by current (lousy) free MUD standards.  If you want to run a
+Phantasmal-based MUD in a foreign language, let me know.  I'd be very
+happy to get the localization stuff happening better, but I need test
+cases before it feels like it's got a point.
 
 What you can do to take advantage of this is to make sure that as many
 as possible of your descriptions, help files and all other text are
@@ -113,8 +123,8 @@ UNQ phrase format is the easiest way to do this.  See the help files
 in "/data/help/" for examples.  More messages will become localizable
 as time goes on.  You can also find localization in
 /usr/System/obj/user.c, specifically in its use of "system phrases".
-These phrases are stored in UNQ files similar in form to the
-helpfiles.
+These phrases are stored in UNQ files similar in form to the helpfiles
+-- see "/data/phrase/system.phr" and "/data/phrase/exitd.phr".
 
 Phantasmal provides an excellent help system by the same standards I
 mention earlier, which isn't saying much.  It allows multiple names to
@@ -123,7 +133,8 @@ what you typed resembles a known help entry.  The current phonetic
 matching is English-only, which will make sense if you think about it
 a bit -- phonetic matching is seriously different in languages with
 non-English consonants, for instance, or languages not based on the
-Roman alphabet (not that we have any yet).
+Roman alphabet (not that we have any yet).  Additional suggestions for
+how to improve the help system are welcomed.
 
 Understand the difference between objects that are instantiated
 directly from LPC files and objects that are created from big data
