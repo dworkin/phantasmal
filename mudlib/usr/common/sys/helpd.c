@@ -99,7 +99,7 @@ private string* reexplode_wordlist(string *wordlist, string delim) {
 
 private string normalize_help_query(string query) {
   int     ctr, ctr2;
-  string *words;
+  string *words, *querylist;
   string  word;
 
   query = STRINGD->to_lower(STRINGD->trim_whitespace(query));
@@ -110,7 +110,7 @@ private string normalize_help_query(string query) {
   words = reexplode_wordlist(words, "-");
   words = reexplode_wordlist(words, "_");
 
-  query = "";
+  querylist = ({ });
 
   for(ctr = 0; ctr < sizeof(words); ctr++) {
     if(words[ctr]) {
@@ -124,15 +124,15 @@ private string normalize_help_query(string query) {
       }
 
       if(strlen(word)) {
-	query += " " + word;
+	querylist += ({ word });
       }
     }
   }
 
-  /* Remove extra leading space */
-  if(strlen(query)) {
-    query = query[1..];
-  }
+  /* Alphabetize the query list */
+  querylist = STRINGD->alpha_sort_list(querylist);
+
+  query = implode(querylist, " ");
 
   return query;
 }
@@ -298,6 +298,8 @@ mixed* query_exact(string key, object user) {
   locale = user->get_locale();
 
   key = normalize_help_query(key);
+
+  user->message("Normalized: " + key + ".\r\n");
 
   ent = exact_entries[locale][key];
   if(!ent) {
