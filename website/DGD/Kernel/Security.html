@@ -44,7 +44,8 @@
       code is in /kernel, and it's trusted, and you should never, ever
       modify it.  The Kernel MUDLib will do its best to keep you from
       doing this at runtime from a MUDLib written on top of it, but
-      only you can make sure you don't do so when the MUD's not running.
+      only you can make sure you don't do so when the MUD's not
+      running.  You <i>do</i> run the machine after all.
     </p>
 
     <p> Also, trust is delegated in some other ways.  There are
@@ -77,18 +78,17 @@
 	called it</i>.  If anybody can get the list of clones, then
       anybody can remove any exit from any room, thus isolating your
       MUD's rooms from each other.  Instead, you'd want to make sure
-      that only a wizard with full access to the room such as
-      the one who owns the zone the room is in may remove an exit
+      that only a wizard with full access to the room (such as
+      the one who owns the zone the room is in) may remove an exit
       from it. </p>
 
-    <p> As an even more severe example, your object in /usr/System might
-      just keep an array of
-      room clones, so that when you return the room array an unscrupulous
-      or sloppy caller
-      could remove objects from the array without realizing what it would
-      do.  Now whenever somebody else calls the function to get the
-      array of
-      objects, they won't see the objects that were removed! </p>
+    <p> As an even more severe example, your object in /usr/System
+      might just keep an array of room clones, and return it to
+      caller.  So when you return the room array an unscrupulous
+      caller could remove objects from the array.  Now whenever
+      somebody else calls the function to get the array of objects,
+      they won't see the objects that were removed!  Those clones
+      have been entirely gotten rid of. </p>
 
     <p> Security is a big field, and I'm not going to be able to tell
       you everything about it here.  Even just DGD and LPC security

@@ -123,6 +123,16 @@
         regardless of read access. (TEST ME, with and without a '..'
 	in the path) </li>
 
+      <li> Files outside of /usr/System are allowed to have a special
+        nonstandard AUTO object.  If a non-System file includes AUTO
+        from /include/std.h, and an objectd is registered, the Kernel
+        Library will call the path_special() function of the objectd
+        to determine what AUTO object should be used.  If a value
+        other than &quot;&quot; or nil is returned, it is assumed to
+        be the path to the nonstandard AUTO object.  This can be used
+        for scripts or other controlled access since built-in
+        functions can be overridden by an AUTO object. </li>
+
       <li> Objects in /kernel have no maximum rlimits(), so they could
         theoretically loop infinitely or crash for lack of stack
         space.  In practice, this essentially never happens.  Objects
