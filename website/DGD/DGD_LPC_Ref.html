@@ -83,9 +83,6 @@
       <li> <a href="#CalloutTiming">
 	  How does call_out timing work in DGD?
 	</a> </li>
-      <li> <a href="#SendMessage">
-	  The send_message kfun and the message_done hook
-	</a> </li>
       <li> <a href="#StatusFunc">
 	  Can I use values from the DGD configuration file in the code?
 	</a> </li>
@@ -798,37 +795,6 @@ dinner_schedule = ([ ]);
 
     <p> This change substantially speeds up DGD on a multi-processor
       system. </p>
-
-  </a>
-
-    <hr> </hr>
-
-    <a name="SendMessage">
-    <h2> The send_message kfun and message_done
-      in vanilla DGD </h2>
-
-    <p>Note that this section applies to DGD 1.2 and experimental versions
-      of DGD 1.1 starting at 1.1.100.  Anything older does <b>not</b>
-      work this way, so don't expect it to.</p>
-
-    <p>When you call send_message or send_datagram during a thread, what
-      you send will be buffered.  Either will return the number of bytes
-      stored in the buffer for sending.  When the bytes have been sent
-      (after the current Thread terminates), message_done will be called,
-      which can be a great time to buffer more output if you couldn't send
-      everything you wanted the first time.</p>
-
-    <p>The Kernel MUDLib fixes this up for you so if you want to see how
-      these functions interact you should start by looking through the
-      Kernel MUDLib's code for it.  In this MUDLib you can send more than
-      can be immediately buffered through send_message, so
-    <pre>
-	send_message(msg) != strlen(msg)
-    </pre>
-    but the Kernel MUDLib fixes this up for you and buffers the
-    remainder.  Just don't call send_message again until you've received
-    the message_done.  This is the same as the DGD behavior prior
-    to version 1.1.100.</p>
 
   </a>
 
