@@ -60,11 +60,17 @@ void upgraded(varargs int clone) {
 }
 
 void init(string room_dtd_str, string bind_dtd_str) {
-  int    ctr;
+  int    ctr, numzones;
   mixed *unq_data;
   string bind_file, tag, file;
 
   if(!initialized) {
+    /* Number of zones will have loaded dynamically, so update the array */
+    numzones = ZONED->num_zones();
+    for( ctr = 0; ctr < numzones; ctr++){
+      zone_segments += ({ ({ }) }) ;
+    }
+    
     room_dtd = clone_object(UNQ_DTD);
     room_dtd->load(room_dtd_str);
 
