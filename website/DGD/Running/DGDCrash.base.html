@@ -1,0 +1,211 @@
+  <titledef text="DGD Crashes" />
+
+  <h2> When Might DGD Legitimately Crash? </h2>
+
+  <p>
+    There are actually several times that DGD might crash, hang, or
+    otherwise get into an unusable state.
+  </p>
+
+  <p>
+    The simplest times are when you tell it to - if you set the tick
+    limit to -1 and then get into an infinite loop, for instance,
+    that'll do it.  Similarly, if you block input and then never turn
+    it back on, your MUD will be pretty thoroughly unusable.
+  </p>
+
+  <p>
+    DGD is a lot more prone to crash if you have serious problems when
+    you're starting up - if your code doesn't compile originally, for
+    instance, or if you have an uncaught fatal error when initializing
+    your very first object.  'Crash' is perhaps too strong a word, but
+    it will cease running.  You can also get a crash in certain
+    circumstances if you do something funny enough with your error
+    handling.  If your handler for runtime_error gets a runtime error
+    immediately, for instance, you're pretty screwed and DGD will tend
+    to give up and die.
+  </p>
+
+  <p>
+    DGD can also crash if a guest programmer allocates all free
+    memory.  There isn't really a good way around this.  If you're
+    allowing guest programmers full LPC access, they can allocate all
+    your RAM and bring your MUD to its knees.  Some libs, like LPMOO,
+    get around this by allowing guest programming in a language
+    *other* than LPC so there are some restrictions on this.
+  </p>
+
+<pre>
+From: dgd at list.imaginary.com (Felix A. Croes)
+Date: Thu Mar 21 10:57:01 2002
+Subject: [DGD] Printing out nil?
+
+Jay Shaffstall wrote:
+
+> >Crashes?  I find that hard to believe, do you perhaps mean that you
+> >get a runtime error along the lines of  "Bad argument 2 for kfun +"?
+>
+> No, it's a crash.  Full stop, access violation in Windows, the whole 
+> shebang.  From what you say,  I suspect I might have corrupted my 
+> compiler/runtime error handling in some fashion (they were both working 
+> about a week ago, but now I get crashes instead).
+
+When you find out what makes the difference between crashing and not
+crashing, please let me know.  DGD should never crash.
+
+Regards,
+Dworkin
+</pre>
+
+<hr />
+
+<pre>
+From: dgd at list.imaginary.com (Jay Shaffstall)
+Date: Thu Mar 21 12:06:01 2002
+Subject: [DGD] Printing out nil?
+
+>When you find out what makes the difference between crashing and not
+>crashing, please let me know.  DGD should never crash.
+
+Okay, here it is.  It was a silly error on my part, in my logging daemon:
+
+         #include <config.h>
+         #include <std.h>
+
+         private int next;
+
+         void log (string message)
+         {
+                 /* For now, use a generic log file...later use specific ones
+                    for specific types of messages */
+
+                 if (! next)
+                 {
+                         log ("Start of run-------------------\n");
+                         next = 1;
+                 }
+
+                 write_file (LOG_DIR + "/log.txt", "\n" + message + "\n");
+         }
+
+The first time in, a recursive call to itself it made.  However, the flag 
+to stop the recursion isn't set first, so I was getting an infinite 
+recursion, which ended in a DGD crash.  Since I was logging compile and 
+runtime errors to a file, any compile or runtime error would seemingly 
+cause the crash.
+
+Not sure what you can do in DGD about this type of thing, since it's 
+impossible to tell the difference between infinite recursion and a 
+recursion that simply isn't finished yet (at least until you run out of 
+stack space).
+
+Hope this helps,
+Jay
+</pre>
+
+<hr />
+
+<pre>
+From: dgd at list.imaginary.com (Felix A. Croes)
+Date: Thu Mar 21 12:14:01 2002
+Subject: [DGD] Printing out nil?
+
+Jay Shaffstall wrote:
+
+> >When you find out what makes the difference between crashing and not
+> >crashing, please let me know.  DGD should never crash.
+>
+>[...]
+> Not sure what you can do in DGD about this type of thing, since it's 
+> impossible to tell the difference between infinite recursion and a 
+> recursion that simply isn't finished yet (at least until you run out of 
+> stack space).
+
+This is indeed the one case where a crash may "naturally" occur.
+
+Regards,
+Dworkin
+</pre>
+
+<hr />
+
+<pre>
+From: dgd at list.imaginary.com (Felix A. Croes)
+Date: Fri Oct 24 08:07:01 2003
+Subject: [DGD] dgd crashes on fatal errors
+
+Soja wrote:
+
+> I have discovered that dgd crashes (dumps core) after reporting a fatal 
+> error. For example if you remove the binary_connect() function from a driver
+> object, dgd crashes with following messages: 
+>
+>   Oct 23 19:31:34 ** DGD 1.2.66
+>   Oct 23 19:31:34 ** Initializing...
+>   Oct 23 19:31:36 ** Initialization complete. 
+>
+>   Fatal error: missing function in driver object: binary_connect
+>   Aborted (core dumped) 
+
+A momentous discovery.  This is how things are supposed to be :)
+
+Fatal errors are for when something is &lt;really&gt; wrong, and a coredump
+helps debugging such a case.  So why for missing functions in the
+driver object?  Because this may mean that the function table of the
+driver object was trashed (this has happened with some bugs in the
+past), rather than the programmer forgetting to include a function.
+And in the latter case, hopefully the programmer is pointed out the
+error of his ways with additional emphasis.
+
+Regards,
+Dworkin
+</pre>
+
+<hr />
+
+<pre>
+From: dgd at list.imaginary.com (Par Winzell)
+Date: Fri Oct 24 09:06:01 2003
+Subject: [DGD] dgd crashes on fatal errors
+
+> IMHO this is a bug. Even if the driver should go down on a fatal error, it
+> should not go down in flames :) 
+
+I'm pointlessly writing to agree with what Felix has already said. The
+driver object is LPC at the lowest level, and DGD is correct to expect
+consistency from it. Dumping core is not 'going down in flames', it's
+just not high-level cuddly.
+
+Zell
+</pre>
+
+<hr />
+
+<pre>
+From: dgd at list.imaginary.com (Michael McKiel)
+Date: Fri Mar 19 14:50:01 2004
+Subject: [DGD] DGD crashing under Cygwin
+
+For anyone that might run into almost instantaneous odd crashing behaviour of
+the driver under Cygwin, when it previously had been fine - and want to blame
+it on Windows ;) Check for circular function calls.
+
+I wanted to test that receive_message was working for mobs in thing.c before
+I had mobs, so I changed the user's receive_message() which had been working
+fine with its ::receive_message(str); bit, to action(str); which is a
+function in the inheritable thing.c that just calls into receive_message() in
+thing.c
+
+But since its inherited into the user object, it was just calling the user's
+receive_message() which called action() which called...hehe
+
+The only way to test, wound up temporarily making receive_message private, or
+change its name to receive_message2 to get rid of the circular call-crash.
+
+Anyways, unfortunately not everything is Windows fault.
+
+Zam.
+</pre>
+
+  <p style="text-size: 150%"> <a href="../index.html"> Back to top level
+    </a> </p>
