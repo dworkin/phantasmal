@@ -25,3 +25,24 @@ That command isn't usable in this game.  It's from a very, very old text
 adventure game.  The game's still available on the web, naturally -- it's
 open source now, so it'll never die.
 }}
+
+
+~name{~enUS{million, billion, trillion, quadrillion, quintillion,
+            sextillion, hextillion, septillion, octillion, nonillion,
+            nonnillion, decillion, ondecillion, dodecillion, duodecillion,
+            american billion, british billion, uk billion, english billion,
+            US billion, USA billion}}
+~desc{
+  ~enUS{
+
+If it ever matters for any reason, we use the US convention that
+1,000,000 is one million and 1,000,000,000 is one billion.  That is to
+say that a billion is a thousand million, as the Americans do it,
+rather than a million million as the British do.  Similarly, a
+trillion is a thousand billion rather than a million billion.
+
+Note that American numeric conventions are used, so 10.000 means ten
+and 10,000 means ten thousand.  Apologies to our European players.  If
+there's a great outcry, I suppose we could fix that at some point.
+
+}}
