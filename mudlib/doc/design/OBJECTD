@@ -1,0 +1,102 @@
+                    The Phantasmal Object Daemon
+
+Phantasmal's objectd is designed with a number of things in mind.
+First and foremost it aims to be clean, maintainable, and
+well-documented.  Next it aims to be functional, matching and
+exceeding Geir Harald Hansen's objectd (hereafter the Hansen objectd).
+As other free objectds are released, this aim may change.  Finally, it
+aims to be tolerably fast, though this is a lesser priority.
+
+                           APIs
+
+The objectd has various functions that can be called by the rest of
+the world.  The current set is as follows:
+
+void do_initial_obj_setup(void)
+
+This only happens once, and the initd does it.
+This tells the object to do its full-recompile setup thing, and the
+earlier in the MUD startup you do this the less there is to recompile.
+
+string destroyed_obj_list(void)
+
+This returns a string, suitable for showing the user, with the names
+of all objects whose most recent issue is destroyed.  It does *not*
+show objects that still have a destroyed version in circulation but
+have a more recent non-destroyed version.
+
+string report_on_object(string spec)
+
+This returns a string, usually many lines, describing the object
+specified in "spec" as the objectd knows about it.  The spec may be a
+path of the form /usr/common/lib/container or similar, which will give
+the report on that lib or clonable.  It may be a string of the form
+"174" or "#144" which will get the issue ID of that form.  It may also
+be a path string for an object on the destroyed_obj_list.  In any
+case, the objectd will report what it knows about that object.
+
+void recompile_auto_object(void)
+
+Recompiles the auto object, including all descendants being updated as
+well as all clones.  This may only be called from privileged SYSTEM
+code.
+
+
+                 DESIGN NOTES AND PROBLEMS
+
+The objectd solves several interesting problems.  By using DGD
+lightweight objects for its issue tracking, it runs into the problem
+of all tracking information being swapped in all at once.  The Hansen
+objectd has this problem, though it uses arrays rather than LWOs.
+Phantasmal uses a heavy_array object to contain the LWOs, but since
+the LWOs don't interlink, it can separate them into multiple different
+heavy_array clones so they can be swapped in and out in subgroups
+rather than all at once.
+
+The object daemon also avoids the Hansen objectd method of hardcoding
+the objects that are present when the objectd is created.  Instead,
+Phantasmal's objectd recompiles all clonable objects, which are
+tracked by the Kernel MUDLib's objregd.  This gives it the names of
+all untracked libs that the clonables inherit from, which in turn are
+themselves recompiled.  This gives the names of the next higher layers
+of libraries, and so on.  By using this fully-dynamic method
+Phantasmal's objectd can deal with changes in what objects exist prior
+to its own existence.  It *does* need to hardcode the AUTO and driver
+objects since they exist outside the standard inheritance heirarchy.
+
+While this objectd avoids the pitfall of keeping all its issue
+tracking in one object in its address space, it has some similar but
+less severe problems to address.  It is currently unsuitable for being
+added to a large existing MUD at runtime since its initialization and
+bootstrapping structures *are* large and monolithic, exactly as its
+obj_issues heavy array is not.  A MUD capable of being stopped and
+restarted can add it just fine, but the stop and restart is mandatory
+on a MUD with more objects than virtual memory.  The compiling_objs
+and dest_issues arrays are also monolithic, so a MUD with a vast
+number of objects being simultaneous compiled (is this possible?) or
+with many, many objects whose most recent issue is destroyed but still
+have children or clones, will have this problem.  Neither is common,
+but the second, at least, is quite possible in certain circumstances.
+
+The objectd currently also keeps header-file dependency information in
+simple arrays in its dataspace, though those are simple filenames and
+can be easily separated into a heavy_array should the need arise.
+Since the size of this object is proportional to the number of headers
+in use in the MUD, and that number rarely grows significantly in the
+size of the MUD, I'm ignoring the (minor) problem for now.
+
+
+                  TEST CASES
+
+> destruct /usr/System/lib/wiztoollib
+> compile /usr/System/obj/wiztool.c
+
+
+> destruct /usr/System/lib/wiztoollib
+> compile /usr/System/lib/wiztoollib.c
+> compile /usr/System/obj/wiztool.c
+> od_report /usr/System/obj/wiztool
+# Make sure number of clones is correct
+
+
+recompile AUTO object, naturally.

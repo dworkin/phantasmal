@@ -1,0 +1,173 @@
+~name{~enUS{gritty,guts,weird,low-level,low level,recompile}}
+~keywords{admin}
+~desc{
+  ~enUS{
+
+There are a number of commands that deal with LPC programs
+individually.  Note that in LPC, "program" is synonymous with "source
+LPC file", a single LPC file like /usr/System/obj/wiztool.c or
+/usr/common/lib/intl_phrase.c.
+
+Such commands include:
+
+%history         Shows your code/clone/compile history
+%clear           Clears your code/clone/compile history
+
+%clone           Clones the referenced object
+%destruct        Destructs the referenced object
+%compile         Compiles the referenced object
+
+%od_report       Report on an LPC object
+%list_dest       List destroyed LPC objects
+%full_rebuild    Recompiles all objects
+
+%code            The code command runs arbitrary DGD code
+
+daemons          Help on daemons providing MUD services
+
+}}
+
+
+~name{~enUS{history,%history,command history,compile history,clone history,
+            code history}}
+~keywords{admin}
+~desc{
+  ~enUS{
+
+The %history command by itself shows the history of values returned by
+%code, %compile and %clone commands.  You can also follow it with a
+number to show just that history value.  Most of the values listed
+will be shown by object type rather than specific value.  They can be
+further referenced in several low-level MUDLib commands as $0, $1, $2,
+etc.
+
+}}
+
+
+~name{~enUS{clear, %clear, clear history}}
+~keywords{admin}
+~desc{
+  ~enUS{
+
+The %clear command clears the command history.  See %history.
+
+}}
+
+
+~name{~enUS{%clone, clone, clone object}}
+~keywords{admin}
+~desc{
+  ~enUS{
+
+The %clone command clones an object and puts it into your command
+history.  Be careful of causing memory leaks!  The cloned object may
+be specified by object name or by history number.
+
+See %history.
+
+}}
+
+
+~name{~enUS{%destruct, destruct, destruct object}}
+~keywords{admin}
+~desc{
+  ~enUS{
+
+The %destruct command destructs objects by object name or history
+number.  Destructing a library and recompiling it may not be enough to
+fully replace it in the code of its inherited objects.
+
+See %history and "http://www.angelbob.com/projects/Kernel/Inheritance.html".
+
+}}
+
+
+~name{~enUS{%compile, compile, compile object}}
+~keywords{admin}
+~desc{
+  ~enUS{
+
+The %compile command compiles objects by object name or history
+number.  Destructing a library and recompiling it may not be enough to
+fully replace it in the code of its inherited objects, though
+recompiling a clonable will upgrade all clones.  If clonable, the
+compiled object will be added to the command history.
+
+See %history, "http://www.angelbob.com/projects/Kernel/Inheritance.html",
+and %full_rebuild.
+
+}}
+
+
+~name{~enUS{%code, code, arbitrary code}}
+~keywords{admin}
+~desc{
+  ~enUS{
+
+This command will run a bit of DGD LPC code that you specify and return
+a result.  Simple examples include:
+
+%code 3 + 7
+%code destruct_object($3)
+%code (\{"bob", "sam", "fred"\}) & (\{"bob", "william"\})
+
+This code will be run from your directory, and thus with your
+permissions.  The object itself will be called /usr/you/_code where
+"you" is replaced by your username.
+
+See %history and "http://www.angelbob.com/projects/DGD_Page.html".
+
+}}
+
+
+~name{~enUS{objectd report,od_report,%od_report,object report}}
+~keywords{admin}
+~desc{
+  ~enUS{
+
+The %od_report command will give the objectd's view of a particular
+object or issue.  It may be used on an LPC program, or a particular
+issue number or history number (see %history):
+
+%od_report /usr/System/obj/wiztool
+%od_report #47
+%od_report $7
+
+In any of these cases it will report whether the object is clonable
+or inheritable, whether the issue found is destructed, the name,
+index and time of compilation, previous issue if any, and parent
+issues and files the program depends on (other than its direct
+corresponding source file).
+
+}}
+
+
+~name{~enUS{%list_dest,%list_destroyed,list_dest,list_destroyed,list dest,
+            list destroyed,listdest,%listdest,listdestroyed,%listdestroyed}}
+~keywords{admin}
+~desc{
+  ~enUS{
+
+Users who are not debugging the objectd will probably have no need
+ever to use the %list_dest command.  It simply prints out a current
+list of programs whose most recent issue is destroyed (with the
+%destruct command or with destruct_object()).
+
+}}
+
+
+~name{~enUS{rebuild,full_rebuild,%full_rebuild,full rebuild,fullrebuild,
+            full_recompile,%full_recompile,full recompile,fullrecompile}}
+~keywords{admin}
+~desc{
+  ~enUS{
+
+The %full_rebuild command will entirely recompile the LPC sources of the
+MUD with the exception of the Driver object, /kernel/sys/driver.c.
+That may be separately recompiled with the %compile command if you're
+so inclined.
+
+It updates by destructing every library (as with the %destruct command) and
+then rebuilding every clonable.
+
+}}

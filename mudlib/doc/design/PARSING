@@ -1,0 +1,108 @@
+*** Nouns:
+
+  Describe what articles are allowable -- there is no "a King James", only
+"King James" or "the King James".  General a/the/one/some/any parsing.
+
+  look at the King James
+  look at King James
+  look at a King James <- Wrong?
+
+  take a wooden shoe
+  take the wooden shoe
+  slyly take any wooden shoe
+
+
+*** Verbs:
+
+  Lists of allowable adverbs, esp for socials?  Or each adverb inherits
+from an adverb category i.e. the verb can deal with all "happy" words
+at once?
+
+   smile happily
+   smile cheerily
+   smile bubblily
+   smile with vigor
+   smile with good cheer
+   smile with good humor
+
+   grumpily smile
+   wanly smile
+   thinly smile
+
+*** Verbs, Non-2nd person:
+
+  tell mortimer that I should be the one to sink
+  tell mortimer that Bob already sank
+  tell mortimer the ship sunk
+  tell mortimer he'd be a captain by now if he were brave and bold
+
+  A verb object should be able to link (as a word) to other tenses/forms
+of the verb, probably including multiword.  For instance:
+
+stand ----> will stand
+        |-> stands
+        |-> is standing
+        |-> are standing
+        |-> stood
+        |-> has stood
+        |-> standing (gerund)
+
+
+*** Adverbs:
+
+  Break the verb-first parsing order.  Keep a list, and keep track of
+them but keep parsing 'til we hit a verb?
+
+
+*** Weird sentence forms:
+
+  stop looking for contraband
+  don't look down
+  you should avoid the place the monks are standing
+
+*** Conditionals:
+
+  If Sam is looking for contraband, run.
+  If he runs at me, flee.
+  When the man turns toward me, look away.
+  By the time the bandit has stood up, run away.
+
+  This would require many verb tenses, and probably need to be hooked
+into the word graphs.
+
+*** Archetypal sentences:
+
+  With a sufficiently general sentence-parsing facility, the following
+can all be parsed basically identically:
+
+  stand on your head
+  if you're standing on your head, stop
+  If the monks are standing on their heads, jump
+  Is aemilia standing on her head?
+  When aemilia stands on her head, jump.
+
+
+*** Overall Structure
+
+    overall:    | subject (opt, may be implied) | predicate         |
+
+    predicate:  | verb  | direct and/or indirect objects            |
+
+  A noun phrase may be followed by a descriptive clause:
+    My sister, the girl up there on the stump, said "Yes."
+    My sister, who is quite silly, said "Yes."
+    My sister, the oldest, said "Yes."
+
+  A verb may be followed by a descriptive phrase:
+
+    She runs over the sink
+    She runs around the tree
+    She runs like the wind
+    She runs with a will
+    She runs avidly
+
+  Either may be followed by a prepositional phrase:
+
+    She runs into the tree  (note -- two meanings, two parses)
+    The hamster took the bread over the rainbow
+    The stars in the sky looked down

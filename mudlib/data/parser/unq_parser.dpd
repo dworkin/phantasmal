@@ -1,0 +1,16 @@
+regularstring = /((\\\{)|(\\\})|(\\\~)|(\\\\)|([^~{}\\]))*/
+
+unq_document: unq_string
+
+substring: regularstring
+substring: substring regularstring ? concat_strings
+
+unq_tag: '{' unq_string '}' ? anon_tag
+unq_tag: '~' regularstring '{' unq_string '}' ? named_tag
+unq_tag: '{' '}' ? empty_anon_tag
+unq_tag: '~' regularstring '{' '}' ? empty_named_tag
+
+unq_string: substring ? simple_anon_tag
+unq_string: unq_tag
+unq_string: unq_string substring ? concat_ustring_string
+unq_string: unq_string unq_tag

@@ -1,0 +1,27 @@
+~name{~enUS{zork}}
+~desc{~enUS{
+Wow, you _are_ an old-timer.  You're in a maze of twisty little passages
+all different, huh?
+}}
+
+~name{~enUS{zorkmid}}
+~desc{~enUS{
+The currency of the Flathead Empire, now defunct.  Zorkmids are no longer
+worth anything, and never were outside the old text game "Zork".
+}}
+
+~name{~enUS{ire}}
+~desc{~enUS{
+The word "ire" means "anger" or "wrath".
+
+"Do not meddle in the affairs of wizards, for they are subtle and
+ quick to anger."
+                                  -- Tolkien
+}}
+
+~name{~enUS{xyzzy}}
+~desc{~enUS{
+That command isn't usable in this game.  It's from a very, very old text
+adventure game.  The game's still available on the web, naturally -- it's
+open source now, so it'll never die.
+}}

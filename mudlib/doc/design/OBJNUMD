@@ -1,0 +1,61 @@
+                      OBJNUMD
+
+Objnumd is the object number registration daemon.  It is used by
+objects (including rooms, exits and portables) that are visible to
+builders to become properly accessible to standard builder commands.
+Objects may in some cases not be visible to builders and to such
+commands, but such objects should be very rare and have a very good
+reason not to be visible.
+
+Objnumd assumes that other daemons are responsible for tracking
+different classes of object, and segments its own object space into
+chunks of 100 object numbers.  Thus, numbers 0-99 might be for rooms,
+100-199 for portables, 200-299 for triggers, etc.
+
+
+                      API
+
+/* Returns the program name of this segment's owner, or nil if the
+   segment is unallocated. */
+string get_segment_owner(int segment);
+
+/* This allocates a number in a segment, assigning it to object.
+   The tr_num supplied must be equal to segment * 100 + offset,
+   where offset is between 0 and 99, inclusive.  Segment must
+   be positive.  If obj is nil then the segment is still allocated
+   and the segment's storage is still pre-grown to accomodate
+   the object number listed.
+
+   The program calling this function must be an allowed owner.
+   It must own the segment in question, or that segment must
+   not yet exist.
+*/
+void allocate_in_segment(int segment, int tr_num, object obj);
+
+/* Removes an allocated object in a segment.  Even if this is
+   the last object, the segment remains allocated and remains
+   owned by the same program.
+
+   It is not necessary to remove a destructed object's number,
+   nor is it permitted -- remove_from_segment will return an
+   error claiming that the number is unassigned.
+*/
+void remove_from_segment(int segment, int tr_num);
+
+/* Retrieves the object that belongs to a given number.
+   This is permitted only if the requesting program owns
+   the segment the object is in. */
+object get_object(int tr_num);
+
+/* Attempts to allocate a new tracking number in the given
+   segment.  If the segment is full, it returns -1. */
+int new_in_segment(int segment, object obj);
+
+/* Returns a list of object numbers in an owned segment.  Caller
+   must be the segment owner and the segment must be allocated.
+*/
+int* objects_in_segment(int segment);
+
+/* Allocates a currently-unused segment to the caller and returns its
+   segment number. */
+private int allocate_new_segment(void);

@@ -1,0 +1,54 @@
+                     Phantasmal MAPD
+
+The exitd keeps track of exits between rooms.  It works with the MAPD
+as necessary, and registers exits with the objnumd.
+
+API
+
+  get_name_for_dir - takes an integer direction and returns its
+     name as a phrase structure.  "North", for instance, might be
+     in the "English" slot of the phrase.
+
+  get_short_for_dir - takes an integer direction and returns its
+     name as a couple of letters.  "N", or "NW" might be appropriate
+     letters for English directions.
+
+  direction_by_string - returns an integer corresponding to an
+     English name or short name for a direction passed in.  This
+     is meant for use with configuration files, not player input,
+     since it's not localized.
+
+  opposite_direction - returns the direction opposite the one
+     given.  Takes an integer, returns an integer.
+
+  get_exit_by_num - takes a number corresponding to an exit and
+     returns the exit object it indexes, or nil if the number
+     indexes no exit.
+
+  add_simple_exit_between - takes two rooms, a direction from the
+     first to the second and an optional tracking number for the
+     exit.  The function adds a simple two-way exit between
+     them.  The two halves of the exit lead in opposite directions,
+     so north might go from room1 to room2, and south from room2
+     to room1.
+
+  clear_all_exits - takes a room and removes all exits from it
+     and their corresponding return exits.
+
+  remove_exit - takes a room and an exit coming from it.  Removes
+     that exit and its corresponding return exit.
+
+  get_exit_segments - returns a list of the segments that MAPD
+     tracks exits with.
+
+  exits_in_segment - Takes a segment number and returns a list
+     of integers representing the exit numbers contained in the
+     given segment.
+
+  get_all_exits - Takes nothing and returns all registered exits.
+
+  add_deferred_exits - Takes nothing, attempts to resolve all
+     current deferred exits, if any.
+
+  num_deferred_exits - Takes nothing, returns the number of pending
+     deferred exits.

@@ -1,0 +1,6 @@
+~channel{
+  ~name{/usr/System/sys/objectd}
+  ~level{5}
+}
+
+~channel{~name{unq parsing}~level{3}}

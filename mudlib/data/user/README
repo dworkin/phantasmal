@@ -1,0 +1,5 @@
+This directory contains (or will contain) data files for user
+accounts.  You should log in as "admin" to create a new administrative
+account if you haven't already.  Type "@help" to get a list of admin
+help commands, and type "@help <command>" for more help on a given
+admin topic.

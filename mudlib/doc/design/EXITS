@@ -1,0 +1,10 @@
+Eventual requirements for exits collectively:
+
+- Must be possible to identify "other side" of exits -- delete both halves
+  of a two-way exit at once.
+
+- Must be possible to have doors, locks, scripts run when creatures use
+  the exit and other nontrivial complexity.
+
+- Should be possible to have any object -- details, random objects -- be
+  an exit?

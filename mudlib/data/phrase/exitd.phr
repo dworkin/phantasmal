@@ -1,0 +1,119 @@
+~north{
+ ~enUS{north}
+ ~esUS{norte}
+}
+
+~south{
+ ~enUS{south}
+ ~esUS{sur}
+}
+
+~east{
+ ~enUS{east}
+ ~esUS{este}
+}
+
+~west{
+ ~enUS{west}
+ ~esUS{oeste}
+}
+
+~northwest{
+ ~enUS{northwest}
+ ~esUS{noroeste}
+}
+
+~northeast{
+ ~enUS{northeast}
+ ~esUS{nordeste}
+}
+
+~southwest{
+ ~enUS{southwest}
+ ~esUS{sudoeste}
+}
+
+~southeast{
+ ~enUS{southeast}
+ ~esUS{sudeste}
+}
+
+~in{
+  ~enUS{in}
+  ~esUS{dentro}
+}
+
+~out{
+  ~enUS{out}
+  ~esUS{fuera}
+}
+
+~up{
+  ~enUS{up}
+  ~esUS{arriba}
+}
+
+~down{
+  ~enUS{down}
+  ~esUS{abajo}
+}
+
+~n{
+  ~enUS{n}
+  ~esUS{n}
+}
+
+~s{
+  ~enUS{s}
+  ~esUS{s}
+}
+
+~e{
+  ~enUS{e}
+  ~esUS{e}
+}
+
+~w{
+  ~enUS{w}
+  ~esUS{o}
+}
+
+~nw{
+  ~enUS{nw}
+  ~esUS{no}
+}
+
+~ne{
+  ~enUS{ne}
+  ~esUS{ne}
+}
+
+~sw{
+  ~enUS{sw}
+  ~esUS{so}
+}
+
+~se{
+  ~enUS{se}
+  ~esUS{se}
+}
+
+~u{
+  ~enUS{u}
+  ~esUS{ar}
+}
+
+~d{
+  ~enUS{d}
+  ~esUS{ab}
+}
+
+~i{
+  ~enUS{in}
+  ~esUS{den}
+}
+
+~o{
+  ~enUS{out}
+  ~esUS{fue}
+}

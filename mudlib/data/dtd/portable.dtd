@@ -1,0 +1,13 @@
+~DTD{
+  ~portable{number?,location?,bdesc,gdesc,ldesc,edesc?,flags?,
+            nouns,adjectives?}
+  ~number{int}
+  ~location{int}
+  ~bdesc{phrase}
+  ~gdesc{phrase}
+  ~ldesc{phrase}
+  ~edesc{phrase}
+  ~flags{int}
+  ~nouns{phrase+}
+  ~adjectives{phrase*}
+}

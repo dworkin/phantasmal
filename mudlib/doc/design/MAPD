@@ -1,0 +1,59 @@
+                     Phantasmal MAPD
+
+The MAPD keeps track of rooms and zones.  Eventual possible uses
+include path finding and keeping track of cross-zone connections.  It
+isn't privileged, so it can't directly read files or otherwise cause
+trouble, though access to its own global array must be carefully
+controlled to avoid corruption.  It registers rooms with the objnumd
+to permit tracking and avoid namespace conflicts with the EXITD and
+potentially other daemons.
+
+API
+
+  init() - this should always give an error when called by a developer
+
+  add_room_object() - this will allow a developer to add a room object
+     if it's not already registered.  Under normal circumstances, the
+     room definition file will take care of this.  See simple_room's
+     create function.
+
+  add_room_number() - takes an object and a number, and associates them
+     in MAPD's opinion.  The number must be in an existing, valid
+     segment for rooms and the room object must already be known to
+     MAPD as a room object but not yet have its number registered.
+
+  set_room_alias() - adds a new name for an object.  This will be used
+     only very occasionally.  See how the alias "start room" is handled
+     for an example.
+
+  get_room() - this allows a user to check for a room name or
+     alias.  Calling it with the object_name() of your object as an
+     argument can determine whether the room is successfully
+     registered.  Calling it with an alias will also work.  See how
+     "start room" is handled for an example.
+
+  remove_room_object - removes the object_name() of the supplied
+     object.  This does not work on aliases, so if the object is
+     not destructed then the alias will still point to it.
+
+  remove_room_alias - removes a registered alias.
+
+  get_room_by_num - takes an integer room number and returns the
+     associated room object.
+
+  add_unq_rooms - this takes a string containing UNQ text and
+     a filename, nominally the source of that text.  It parses
+     the text and attempts to read it as an UNQ room description.
+
+  segments_in_zone - takes an integer zone and returns a list of
+     integer segment numbes.  If the zone is zero, segments for
+     rooms outside all zones are returned.  If an invalid zone is
+     passed in, nil is returned.
+
+  rooms_in_segment - takes an integer segment identifier and
+     returns a list of integer room numbers.  If an invalid
+     segment is passed in, nil is returned.
+
+  rooms_in_zone - takes an integer zone number and returns a
+     list of integer room numbers.  If an invalid zone is
+     given, nil is returned.

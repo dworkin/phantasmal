@@ -1,0 +1,460 @@
+#include <config.h>
+#include <type.h>
+#include <trace.h>
+
+private mapping dtd;
+private int     is_clone;
+private mapping builtins;
+private string  accum_error;
+
+static int create(varargs int clone) {
+  is_clone = clone;
+  if(!find_object(UNQ_PARSER))
+    compile_object(UNQ_PARSER);
+
+  dtd = ([ ]);
+
+  if(!is_clone) {
+    /* Note: may eventually allow additions to the builtins array
+       for user-defined types -- effectively, that's what Phantasmal
+       does with 'phrase'. */
+    builtins = ([ "string" : 1,
+		  "int" : 1,
+		  "float" : 1,
+		  "phrase" : 1 ]);
+  }
+}
+
+/* Functions for parsing and verifying a DTD */
+private mixed* parse_to_dtd_type(string label, mixed unq);
+private mixed* parse_to_dtd_struct(string label, mixed unq);
+private mixed  parse_to_builtin(string type, mixed unq);
+private mixed  parse_to_string_with_mods(mixed* type, mixed unq);
+
+/* Functions for loading a DTD */
+private void   new_dtd_element(string label, mixed data);
+private mixed* dtd_struct(string* array);
+private mixed* dtd_string_with_mods(string str);
+
+
+/* This function should be called only as UNQ_DTD->is_builtin(...),
+   never locally from a clone.  It won't work if called on a clone.
+   That's mainly because there's only one builtins mapping, and it's
+   stored in a central location.  To save the trouble of making this
+   happen later, I'm doing it now -- if we start adding user-defined
+   types to builtins, we'll need to have only a single instance of it.
+*/
+mixed is_builtin(string label) {
+  if(is_clone)
+    error("Call is_builtin only on shared issue of unq_dtd!");
+
+  return builtins[label];
+}
+
+
+/* Takes arbitrary parsed UNQ input and makes it conform to this DTD
+   if possible */
+mixed* parse_to_dtd(mixed* unq) {
+  int    ctr;
+  string label;
+  mixed* data, ret;
+
+  accum_error = "";
+
+  ret = ({ });
+  unq = UNQ_PARSER->trim_empty_tags(unq);
+
+  for(ctr = 0; ctr < sizeof(unq); ctr+=2) {
+    label = STRINGD->trim_whitespace(unq[ctr]);
+    if(dtd[label]) {
+      data = parse_to_dtd_type(label, unq[ctr + 1]);
+      if(data == nil) {
+	accum_error += "Mismatch on label '" + label + "'\n";
+	return nil;
+      }
+      ret += data;
+      continue;
+    }
+
+    error("Unrecognized...");
+  }
+
+  return ret;
+}
+
+string get_parse_error_stack(void) {
+  return accum_error;
+}
+
+/* Label is an entry in the DTD, unq is a chunk of input to parse
+   assuming it conforms to that label.
+
+   Returns a labelled array.
+*/
+private mixed* parse_to_dtd_type(string label, mixed unq) {
+  mixed* type;
+  mixed  tmp;
+
+  if(typeof(unq) == T_ARRAY) {
+    unq = UNQ_PARSER->trim_empty_tags(unq);
+  }
+
+  type = dtd[label];
+  if(typeof(type) != T_ARRAY)
+    error("Invalid type in DTD in parse_to_dtd_type!");
+
+  /* If it's a struct */
+  if(type[0] == "struct") {
+    return parse_to_dtd_struct(label, unq);
+  }
+
+  /* Else, not a struct. */
+
+  tmp = parse_to_string_with_mods(type, unq);
+  if(tmp == nil) {
+    accum_error += "Couldn't parse " + STRINGD->mixed_sprint(unq)
+      + " as type " + implode(type,"") + "\n";
+    return nil;
+  }
+  return ({ label, tmp });
+}
+
+/* Returns a typed chunk or (with mods) an array of typed chunks
+   fitting the builtin or builtin with modifier. */
+private mixed parse_to_string_with_mods(mixed* type, mixed unq) {
+  if(sizeof(type) != 1 && sizeof(type) != 2)
+    error("Illegal type given to parse_to_string_with_mods!");
+
+  if(unq == nil)
+    return nil;
+
+  if(sizeof(type) == 1) {
+    if(UNQ_DTD->is_builtin(type[0]))
+      return parse_to_builtin(type[0], unq);
+
+    if(dtd[type[0]])
+      return parse_to_dtd_type(type[0], unq);
+
+    accum_error += "Unrecognized type '" + type[0]
+      + "' in parse_to_string_with_mods!";
+    return nil;
+  }
+
+  /* Sizeof(type) == 2, so it's a type/modifier combo */
+  if(type[1] != "?" && type[1] != "+" && type[1] != "*") {
+    accum_error += "Unrecognized modifier " + type[1];
+    return nil;
+  }
+
+  if(UNQ_DTD->is_builtin(type[0])) {
+    mixed* ret;
+    int    ctr;
+    mixed  tmp;
+
+    if(typeof(unq) == T_STRING) {
+      tmp = parse_to_builtin(type[0], unq);
+      if(tmp == nil) return nil;
+
+      /* Only one obj, but since this has modifiers return it as
+	 an array-of-one. */
+      return ({ tmp });
+    }
+
+    if(typeof(unq) != T_ARRAY)
+      error("Unreasonable type parsing UNQ!");
+
+    /* Okay, multiple entries -- typeof(unq) is T_ARRAY */
+    unq = UNQ_PARSER->trim_empty_tags(unq);
+    ret = ({ });
+    for(ctr = 0; ctr < sizeof(unq); ctr+=2) {
+      mixed tmp;
+
+      if(!STRINGD->is_whitespace(unq[ctr])) {
+	accum_error += "Labelled data found parsing "
+	  + type[0] + type[1] + "!";
+	return nil;
+      }
+
+      tmp = parse_to_builtin(type[0], unq[ctr + 1]);
+      if(tmp == nil) return nil;
+
+      ret += ({ tmp });
+    }
+
+    /* "?" support 0 or 1 instance */
+    if(type[1] == "?" && sizeof(ret) > 1) {
+      accum_error += "Doesn't fit ? mod\n";
+      return nil;
+    }
+
+    /* "+" supports 1 or more */
+    if(type[1] == "+" && sizeof(ret) < 1) {
+      accum_error += "Doesn't fit + mod\n";
+      return nil;
+    }
+
+    /* "*" doesn't even need a check - any number's fine */
+
+    return ret;
+  }
+
+  accum_error
+    += "Don't yet support modifier characters on non-builtin types!";
+  return nil;
+}
+
+/* Returns a typed chunk of data which is a string, an int, etc as
+   appropriate */
+private mixed parse_to_builtin(string type, mixed unq) {
+  if(!UNQ_DTD->is_builtin(type))
+    error("Type " + type + " isn't builtin in parse_to_builtin!");
+
+  /* Nil won't parse as anything -- save some checking code below */
+  if(unq == nil)
+    return nil;
+
+  if(type == "string") {
+    if(typeof(unq) != T_STRING) {
+      accum_error += "Type " + typeof(unq) + " is not a string\n";
+      return nil;
+    }
+    return STRINGD->trim_whitespace(unq);
+  }
+
+  if(type == "int") {
+    int val;
+
+    if(typeof(unq) != T_STRING) {
+      accum_error += "Type " + typeof(unq) + " is not a string\n";
+      return nil;
+    }
+    unq = STRINGD->trim_whitespace(unq);
+    if(!sscanf(unq, "%d", val)) {
+      accum_error += unq + " is not an integer.\n";
+      return nil;
+    }
+
+    return val;
+  }
+
+  if(type == "float") {
+    error("Type float not yet implemented");
+  }
+
+  if(type == "phrase") {
+    object tmp;
+
+    if(typeof(unq) == T_STRING)
+      return PHRASED->new_simple_english_phrase(unq);
+
+    if(typeof(unq) != T_ARRAY)
+      error("Don't recognized parsed UNQ object in parse_to_builtin(phrase)!");
+
+    catch {
+      tmp = PHRASED->unq_to_phrase(unq);
+    } : {
+      accum_error += call_trace()[1][TRACE_FIRSTARG][1];
+      return nil;
+    }
+    return tmp;
+  }
+
+  error("Builtins array modified without modifying parse_to_builtin!");
+}
+
+/* Parse_to_dtd_struct assumes some input preprocessing -- label is
+   whitespace-trimmed and unq's top level is empty-tag-trimmed.  Label
+   is also validated to point to an UNQ DTD structure.  UNQ may or may
+   not be a valid structure.
+
+   Returns an array consisting of a label followed by a single array
+   of labelled fields.
+*/
+private mixed* parse_to_dtd_struct(string t_label, mixed unq) {
+  mixed*  type, *instance_tracker, *ret;
+  int     ctr;
+  mapping fields;
+  string  label;
+
+  type = dtd[t_label];
+  if(type[0] != "struct")
+    error("Non-struct passed to parse_to_dtd_struct!");
+
+  /* We need to track how many of each tag in the structure are parsed
+     so we can check to make sure they match our modifiers or lack
+     thereof.  We have one bucket for each type in the struct.  We
+     leave in the spare bucket for the word "struct" to simplify
+     indexing. */
+  instance_tracker = allocate(sizeof(type));
+
+  for(ctr = 0; ctr < sizeof(instance_tracker); ctr++) {
+    instance_tracker[ctr] = ({ });
+  }
+
+  /* Set up fields array to know what bucket of instance_tracker
+     different labels belong in */
+  fields = ([ ]);
+  for(ctr = 1; ctr < sizeof(type); ctr++) {
+    if(typeof(type[ctr]) == T_STRING) {
+      fields[type[ctr]] = ctr;
+    } else if(typeof(type[ctr]) == T_ARRAY) {
+      fields[type[ctr][0]] = ctr;
+    } else
+      error("Unknown type in DTD struct type!");
+  }
+
+  for(ctr = 0; ctr < sizeof(unq); ctr += 2) {
+    int   index;
+    mixed tmp;
+
+    label = STRINGD->trim_whitespace(unq[ctr]);
+    if(fields[label] == nil) {
+      accum_error += "Unrecognized field " + label + " in structure\n";
+      return nil;
+    }
+    index = fields[label];
+
+    tmp = parse_to_dtd_type(label, unq[ctr + 1]);
+    if(tmp == nil) {
+      accum_error += "Error parsing label '" + label + "' of structure.\n";
+      return nil;
+    }
+    instance_tracker[index] += ({ tmp });
+    if(instance_tracker[index] == nil)
+      return nil;
+
+  }
+
+  /* Verify we match the modifiers */
+  for(ctr = 1; ctr < sizeof(type); ctr++) {
+    int num;
+
+    /* If no modifier... */
+    if(typeof(type[ctr]) == T_STRING) {
+      if(sizeof(instance_tracker[ctr]) != 1) {
+	accum_error += "Wrong # of instances of " + type[ctr] + "\n";
+	return nil;
+      }
+      continue;
+    }
+
+    if(type[ctr][1] == "*")
+      continue;  /* Star modifier allows any number of insts */
+
+    num = sizeof(instance_tracker[ctr]);
+    if((type[ctr][1] == "?") && num > 1) {
+      accum_error += "Wrong # of fields of type " + type[ctr] + " in struct\n";
+      return nil;
+    }
+    if((type[ctr][1] == "+") && num == 0) {
+      accum_error += "Wrong # of fields of type " + type[ctr] + " in struct\n";
+      return nil;
+    }
+  }
+
+  /* Reassemble instances into single array to return */
+  ret = ({ });
+  for(ctr = 1; ctr < sizeof(instance_tracker); ctr++) {
+    ret += instance_tracker[ctr];
+  }
+  return ({ t_label, ret });
+}
+
+
+/*** To load in the DTD: ***/
+
+void load(string new_dtd) {
+  int    ctr;
+  string str;
+  mixed* new_unq;
+
+  if(!is_clone)
+    error("Can't use non-clone UNQ DTD!  Stop it!");
+
+  new_unq = UNQ_PARSER->basic_unq_parse(new_dtd);
+
+  if(!new_unq)
+    error("Can't parse UNQ data passed to unq_dtd:load!");
+
+  new_unq = UNQ_PARSER->trim_empty_tags(new_unq);
+
+  str = STRINGD->trim_whitespace(new_unq[0]);
+  if(str != "dtd" && str != "DTD") {
+    error("Can't load file as DTD -- not tagged as DTD!");
+  }
+
+  if(typeof(new_unq[1]) != T_ARRAY)
+    error("This doesn't look complex enough to be a real DTD!");
+
+  if(sizeof(new_unq) > 2) {
+    error("Don't yet support multiple DTDs per file: "
+	  + STRINGD->mixed_sprint(new_unq));
+  }
+
+  new_unq[1] = UNQ_PARSER->trim_empty_tags(new_unq[1]);
+  for(ctr = 0; ctr < sizeof(new_unq[1]); ctr+=2) {
+    new_dtd_element(new_unq[1][ctr], new_unq[1][ctr + 1]);
+  }
+
+}
+
+private void new_dtd_element(string label, mixed data) {
+  string* tmp_arr;
+
+  if(dtd[label] || label == "struct" || UNQ_DTD->is_builtin(label))
+    error("Redefining label " + label + " in UNQ DTD!");
+
+  if(typeof(data) == T_STRING) {
+    data = STRINGD->trim_whitespace(data);
+
+    tmp_arr = explode(data, ",");
+    if(sizeof(tmp_arr) > 1) {
+      dtd[label] = dtd_struct(tmp_arr);
+      return;
+    }
+
+    dtd[label] = dtd_string_with_mods(data);
+    return;
+  } else if (typeof(data) == T_ARRAY) {
+    error("complex subtypes not yet supported!");
+  } else {
+    error("Type error -- problem with UNQ parser?");
+  }
+}
+
+private mixed* dtd_string_with_mods(string str) {
+  string mod;
+
+  if(str == nil)
+    error("Nil passed to dtd_string_with_mods!");
+
+  if(STRINGD->is_alpha(str))
+    return ({ str });
+
+  mod = str[strlen(str)-1..strlen(str)-1];
+  str = str[..strlen(str)-2];
+  if(mod == "?" || mod == "*" || mod == "+")
+    return ({ str, mod });
+
+  error("Don't recognize UNQ type " + str);
+}
+
+private mixed* dtd_struct(string* array) {
+  mixed* ret, *tmp;
+  int    ctr;
+
+  ret = ({ "struct" });
+
+  for(ctr = 0; ctr < sizeof(array); ctr++) {
+    array[ctr] = STRINGD->trim_whitespace(array[ctr]);
+    tmp = dtd_string_with_mods(array[ctr]);
+    ret += sizeof(tmp) > 1 ? ({ tmp }) : tmp;
+  }
+
+  return ret;
+}
+
+
+void clear(void) {
+  dtd = ([ ]);
+}

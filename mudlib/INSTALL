@@ -1,0 +1,53 @@
+                      Installing Phantasmal
+
+This document assumes you've already got DGD installed and working,
+and you've tested it already with the Kernel MUDLib.  A source
+installation is always preferable for debugging, but the important
+thing is that it works and that you've got the source to the Kernel
+MUDLib.
+
+You'll want to install your Kernel MUDLib (the mud/kernel subdirectory
+under your DGD installation) into the kernel subdirectory of
+Phantasmal and copy files from the corresponding include/kernel
+subdirectory into Phantasmal's include/kernel (note -- do *not* simply
+replace Phantasmal's config.h!).  Since the Kernel MUDLib changes with
+successive versions of DGD you should use the one that comes with your
+server and upgrade it when you upgrade the server.
+
+You'll need a version of DGD recent enough to have full support for
+lightweight objects.  This MUDLib is currently well-tested with DGD
+1.2.35 though any recent 1.2.XX version is reasonably likely to work.
+
+More information on DGD, including installation and compilation help,
+can be found at "http://www.angelbob.com/projects/DGD_Page.html" or by
+asking the DGD mailing list.
+
+You'll need to make a .dgd file for Phantasmal.  Copy the mud.dgd file
+in your DGD directory and change a couple of things.  The big ones are
+the directory it runs in and the port number (if you want).  You'll
+eventually want to change more stuff in there, but you'll almost
+certainly know enough about DGD to handle that yourself by the time
+it's necessary.  In any case, *do* remember that the path specified in
+phantasmal.dgd for the directory needs to be absolute, not relative.
+So it should start with a slash, at least under Unix.
+
+Once you have the MUD running, you should first log in as admin, then
+make yourself a non-admin account to use.  When you make your new
+account (referred to as "me" in this paragraph) you can grant it full
+adminstrative access by typing "%grant me access" and "%grant me /
+full".  This will be your main administrator account.  You can also
+trivially make as many new unprivileged accounts as you feel like just
+by logging in without bothering to grant them access.  Note the second
+grant command makes the account able to pretty much crash your MUD or
+destroy your data if the account owner feels like it, so use it
+sparingly and only with people you want to have full administrative
+access.
+
+Many of the standard Kernel MUDLib commands have been altered to have
+a % sign in front of the name.  These should be documented in the
+help.  Type "help" to start using player help, or "@help" to start
+using admin help.  Undocumented commands still exist and probably
+don't have the names changed from the Kernel MUDLib.  Player commands
+have no extra punctuation added and should all be documented.  In case
+of conflict or uncertainty, the lists in /usr/System/lib/wiztoollib.c
+and /usr/System/obj/user.c are definitive.

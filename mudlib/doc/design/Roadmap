@@ -1,0 +1,18 @@
+(Note:  high priorities will be finished or downgraded over time, this
+ is necessarily only a draft)
+
+High Priorities / Cool Features:
+  - Basic NPCs
+  - Command Parser
+  - Object details
+  - UNQ markup
+  - Object data inheritance
+
+Medium priorities:
+  - Object collections (uses object data inheritance)
+  - NPC conversation system (uses Basic NPCs)
+  - Perception/knowledge skills
+
+Explicit Low Priorities:
+  - Combat system and affiliated bits
+  - Well fleshed-out skill system

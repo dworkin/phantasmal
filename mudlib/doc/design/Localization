@@ -1,0 +1,29 @@
+                Localization in Phantasmal
+
+Phantasmal tries to keep localization in the forefront.  While there
+are certainly specific examples of things that localize poorly (like
+Soundex) in it, these things are clearly marked as such and room left
+open for equivalents from other languages.
+
+However, it's worth pointing out that the Localization is, in many
+ways, only skin deep.  Yes, Phrase structures are used for the vast
+bulk of player visible strings.  Yes, objects are defined in ways that
+make them especially easy to localize.  Yes, the current "automatic
+fallback to English" is more a failure mode than planned to stick
+around.
+
+But the configuration files and much of the admin and builder
+environment is basically only in English, and will almost certainly
+stay that way for far longer than the rest of the MUD.  It's a
+reflection of the prejudices (and abilities) of the MUDLib author, and
+the admins basically always get short shrift in terms of the comfort
+and convenience of their working environment.  Localization is
+definitely an example of "comfort an convenience" rather than being
+absolutely mandatory assuming a collaborative group of people
+including a majority of English speakers.
+
+Similarly, if the MUD were being run by French speakers I'd assume
+they'd probably just translate the strings in the builder environment
+in-place.  It's not as nice as localizing it properly but it pretty
+much gets the job done and the builders don't need a pretty
+environment.

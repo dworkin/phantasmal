@@ -1,0 +1,46 @@
+Actions are a family of structures, like phrases.
+
+Simple actions are instantaneous.  They carry information about what different
+characters will perceive when they occur (thus a "to victim" string, a
+"to actor" string, and a "to others" string -- maybe "to oneself" if one
+is both actor and victim.)  They carry information about how perceptible
+they are and what sense (vision, smell, hearing, vibration sense, infrared,
+etc) they occur in.
+
+Continuing actions are actions which occur for a fixed period of time.
+They should occur for a longish period of time, and should have a message
+for when they begin and another for when they end.  They may also have
+actions for people "walking in on them" -- a continuing sound will have
+different messages for when it begins (i.e. to people in the room), when
+somebody walks away from being able to hear it, when they walk back, and
+when it finishes.  That may be four separate instantaneous actions.
+
+More complex continuing actions, those with shorter durations or more
+complex operation (including possible failures or alternate endings),
+will be correspondingly more complex.  The action of drawing a sword
+may appear as one instantaneous event or as two or more:
+
+  > draw sword
+  You draw your sword with a flourish.
+  > sheathe sword
+  You do.
+  Odin enters.
+  > draw sword
+  You reach for your sword.
+  Quick as a flame, Odin wields his spear.
+  You draw your sword with a flourish.
+
+More complex actions may also involve multiple senses, and different
+messages depending on what senses are engaged.  For instance:
+
+  An explosion rocks the hall, the first of many.  It shakes you
+  down to your toes.
+  > close eyes
+  You hear an enormous "boom!" and smell smoke and brimstone.  You are
+  shaken down to your toes.
+  > hold nose
+  You hear an enormous "boom!".  You are shaken down to your toes.
+  > curl up in a ball on the floor
+  You hear yet another enormous "boom!".  You smell smoke and brimstone.
+  > am I holding my nose?
+  No, your arms are around your knees.

@@ -1,0 +1,11 @@
+Details:
+  - Subclass descended from objects, or just any objects?
+  - Full set of object descs
+  - May be exits or otherwise scriptable?
+  - Referred to with possessive form, or with of:
+
+     > look at hilt of sword
+     > look at sword's hilt
+
+  - Set bit in bitfield to indicate object is detail, so we can check
+    the correct "contents list" for an object.

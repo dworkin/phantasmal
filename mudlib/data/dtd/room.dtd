@@ -1,0 +1,12 @@
+~DTD{
+  ~room{number?,location?,bdesc,gdesc,ldesc,edesc?,nouns,adjectives?,exit*}
+  ~number{int}
+  ~location{int}
+  ~bdesc{phrase}
+  ~gdesc{phrase}
+  ~ldesc{phrase}
+  ~edesc{phrase}
+  ~nouns{phrase+}
+  ~adjectives{phrase*}
+  ~exit{string}
+}

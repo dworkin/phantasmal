@@ -1,0 +1,5 @@
+~DTD{
+  ~channel{name,level}
+  ~name{string}
+  ~level{int}
+}

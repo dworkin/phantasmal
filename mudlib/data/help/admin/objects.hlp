@@ -1,0 +1,232 @@
+~name{~enUS{object,objects,obj,objs}}
+~keywords{admin}
+~desc{
+  ~enUS{
+
+Objects in Phantasmal includes not just portables (traditional
+objects) but also rooms, details, exits and others.  There are a
+number of commands for objects, which therefore work on all of those
+object types.  Here are the current crop:
+
+@help @stat
+@help @move
+
+@help @set_glance
+@help @set_brief
+@help @set_look
+@help @set_examine
+
+@help @add_nouns
+@help @add_adjectives
+@help @clear_nouns
+@help @clear_adjectives
+
+See also commands for portables, rooms and so on for certain operations
+specific to those objects.
+
+}}
+
+
+~name{~enUS{segment,segments,seg,segs}}
+~keywords{admin}
+~desc{
+  ~enUS{
+
+Objects are allocated in 100-number segments.  For instance, the range
+#1300-#1399 forms a single segment.  A given segment is managed by
+only one daemon, so for instance if the 1300 segment contains a single
+room (managed by MAPD) then all of that segment must be composed of
+rooms (or empty).
+
+See @segmap.
+
+}}
+
+
+~name{~enUS{@segment_map, @seg_map, @segmap, segment_map, seg_map, segmap,
+            segment map, seg map}}
+~keywords{admin}
+~desc{
+  ~enUS{
+
+The @segment_map (or @segmap) command lists the segments numerically
+in ascending order followed by the daemon managing each.  For instance:
+
+    Segments:
+    0   /usr/common/sys/mapd
+    1   /usr/common/sys/exitd
+    2   /usr/common/sys/portabled
+
+In this case, #0-#99 would be rooms managed by MAPD, #100-#199 would be
+exits managed by ExitD, and #200-#299 would be portables managed by
+PortableD.
+
+}}
+
+
+~name{~enUS{@set_brief,set_brief,set brief,brief,brief desc,
+            brief description}}
+~keywords{admin}
+~desc{
+  ~enUS{
+
+The Brief description is the shortest of all object descriptions and
+is normally used as part of a list of objects so as to minimize length
+and distraction.  It can be set by @set_brief: "@set_brief #75 a
+flower", or simply "@set_brief #75".
+
+If used in the latter form a text-entry mode will begin.  No commands
+may be typed until the tilde (\~) is entered on a line by itself to
+stop entering text.
+
+}}
+
+
+~name{~enUS{@set_glance,set_glance,set glance,glance,glance desc,
+	glance description}}
+~keywords{admin}
+~desc{
+  ~enUS{
+
+The Glance description is given when an object is looked at briefly,
+but not so briefly as the "brief" description.  It can be set by
+@set_glance: "@set_glance #75 a pretty flower", or simply "@set_glance
+#75".
+
+If used in the latter form a text-entry mode will begin.  No commands
+may be typed until the tilde (\~) is entered on a line by itself to
+stop entering text.
+
+}}
+
+
+~name{~enUS{@set_look,set_look,set look,look,look desc,look description}}
+~keywords{admin}
+~desc{
+  ~enUS{
+
+The Look description is given when an object is looked at for a
+significant period of time.  It is the primary room description, or
+the description a player receives when specifically choosing to look
+at a portable, detail or exit.  It can be set by @set_look: "@set_look
+#75 A very pretty flower with petals and leaves", or simply "@set_look
+#75".
+
+If used in the latter form a text-entry mode will begin.  No commands
+may be typed until the tilde (\~) is entered on a line by itself to
+stop entering text.
+
+}}
+
+
+~name{~enUS{@set_examine,set_examine,examine,examine desc,
+            examine description}}
+~keywords{admin}
+~desc{
+  ~enUS{
+
+The Examine description is given when an object is specifically
+examined in a very close-up and time consuming way.  There is
+currently no examine command, rendering it briefly useless.  The
+examine description is optional, unlike the other three.  It can be
+set by @set_examine: "@set_examine #75 You see a bug on the flower!",
+or simply "@set_examine #75".
+
+If used in the latter form a text-entry mode will begin.  No commands
+may be typed until the tilde (\~) is entered on a line by itself to
+stop entering text.
+
+}}
+
+~name{~enUS{@move, move, %move}}
+~keywords{admin}
+~desc{
+  ~enUS{
+
+The @move command takes two object numbers as arguments.  The first is
+the object number to be moved, the second is the room number to move it
+to.  For instance:
+
+@move #200 #0
+
+The above would move object #200 into object #0 (the Void).
+
+}}
+
+~name{~enUS{@stat, stat, %stat}}
+~keywords{admin}
+~desc{
+  ~enUS{
+
+The @stat command gives a reasonably complete summary of everything about
+a particular object number.  For instance you can type "@stat #0" and
+find out the Void's various descriptions, what rooms it contains, that
+it is registered with MAPD, and so on.
+
+}}
+
+
+~name{~enUS{@add_noun,addnoun,add noun,add_noun,@addnoun}}
+~keywords{admin}
+~desc{
+  ~enUS{
+
+The @add_noun command adds one or more one-word nouns to an object's
+noun list.  The object may then be referred to using these nouns.
+
+Syntax: @add_noun #<obj num> noun [noun, noun, noun...]
+
+See also: @stat, @clear_nouns, @add_adjective
+}}
+
+
+
+~name{~enUS{@add_adjective,addadjective,add adjective,add_adjective,
+            @addadjective,@add_adj,addadj,add adj,add_adj,@addadj}}
+~keywords{admin}
+~desc{
+  ~enUS{
+
+The @add_adjective command adds one or more one-word adjectives to an
+object's adjective list.  The object may then be referred to using
+these adjectives.
+
+Syntax: @add_adjective #<obj num> adj [adj, adj, adj...]
+
+See also: @stat, @clear_adjectives, @add_noun
+
+}}
+
+
+
+~name{~enUS{@clear_noun,clearnoun,clear noun,clear_noun,@clearnoun,
+            @clear_nouns,clearnouns,clear nouns,clear_nouns,@clearnouns}}
+~keywords{admin}
+~desc{
+  ~enUS{
+
+The @clear_nouns command clears all current nouns for an object, so more
+should normally be added with @add_noun.
+
+Syntax: @clear_nouns #<obj num>
+
+See Also: @clear_adjectives, @add_noun
+}}
+
+
+~name{~enUS{@clear_adjective,clearadjective,clear adjective,
+            clear_adjective,@clearadjective,@clear_adjectives,
+            clearadjectives,clear adjectives,clear_adjectives,
+            @clearadjectives,@clear_adj,clearadj,clear adj,
+            clear_adj,@clearadj}}
+~keywords{admin}
+~desc{
+  ~enUS{
+
+The @clear_adjectives command clears all current adjectives for an
+object, so more should normally be added with @add_adjective.
+
+Syntax: @clear_adjectives #<obj num>
+
+See Also: @clear_nouns, @add_adjective
+}}

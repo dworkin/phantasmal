@@ -1,0 +1,187 @@
+~name{~enUS{admin,administrator}}
+~keywords{admin}
+~desc{
+  ~enUS{
+
+You can get help on the various commands individually as well.  Many
+require privilege on the caller's part to perform successfully.
+
+%shutdown           Shut down the MUD
+%reboot             Reboot the MUD
+%swapout            Swap out MUD objects
+%statedump          Dump the MUD's full state to a file
+
+%status             Give the status of the MUDLib & server
+
+%who                Show those logged on, with IP addrs
+%log                Writes events to the system log
+%log_subscribe      Choose what log events get written to file
+
+%help               Gets help on various topics
+
+}}
+
+
+~name{~enUS{shutdown,%shutdown,@shutdown,shut down,%shut_down,shut_down}}
+~keywords{admin}
+~desc{
+  ~enUS{
+
+The %shutdown command will save the state of the MUD including things
+like rooms, exits and portables.  Then it will normally cause the MUD
+to stop running and the driver process to exit on the host machine.
+
+If an error occurs during the saving of objects, normally the MUD will
+NOT continue shutting down -- you may correct this error and then shut
+down the MUD again or you may manually kill the driver process on the
+host machine.  Since Phantasmal and DGD allow you to recompile code so
+easily, an error in code to save your objects is insufficient reason
+to give up and die without saving your data.
+
+See also %reboot.
+
+}}
+
+~name{~enUS{reboot,%reboot,restart}}
+~keywords{admin}
+~desc{
+  ~enUS{
+
+The %reboot command will save the state of the MUD including rooms,
+exits, portables, et cetera.  Then it will attempt to reboot the MUD
+and have it reload the same files.  While this may be useful to do
+occasionally, one goal of a persistent MUD is to *never* require this.
+Please use the upgraded() method on objects and the %full_rebuild
+command instead of %reboot where possible.
+
+If an error occurs during the saving of objects, normally the MUD will
+NOT continue shutting down -- you may correct this error and then shut
+down the MUD again or you may manually kill the driver process on the
+host machine.
+
+See also %shutdown.
+
+}}
+
+~name{~enUS{swapout,%swapout,swap out,swap_out,%swap_out}}
+~keywords{admin}
+~desc{
+  ~enUS{
+
+The %swapout command will swap out many or all of the objects
+currently stored in memory.  Since DGD transparently swaps in objects
+as they are used, this shouldn't be visible to users or developers
+beyond a possible delay, nor is it especially useful to do in almost
+any case.
+
+Ordinarily you'd be better served by using the %statedump, %shutdown
+or %reboot command.
+
+See also: %statedump, %shutdown, %reboot
+
+}}
+
+
+~name{~enUS{statedump,%statedump,@statedump,state dump,state_dump,%state_dump}}
+~keywords{admin}
+~desc{
+  ~enUS{
+
+The %statedump command will dump the entire memory state of the MUD's
+LPC environment (supplied by DGD) to a file for loading later.  This
+is a far more complete and far less error-prone way to take the MUD up
+and down than the %shutdown mechanism combined with object autoload.
+However, it may exacerbate certain programming errors since it is a
+persistent MUD model.  For details on persistent MUDs and their
+characteristics see the DGD mailing list and/or MUD-Dev.  Such MUDs
+have been discussed very extensively in both forums and probably many
+more.
+
+See also: %shutdown, %reboot
+
+}}
+
+
+~name{~enUS{%status,@status,status}}
+~keywords{admin}
+~desc{
+  ~enUS{
+
+The %status command gives low-level information about the DGD driver
+process, including what version of DGD it is running, swap and memory
+statistics, how many of its allowed objects, callouts and connections
+it's using, and its start time and uptime.
+
+}}
+
+
+~name{~enUS{who,%who,@who,people,%people,@people}}
+~keywords{admin}
+~desc{
+  ~enUS{
+
+The %who command (synonyms: @who, %people, @people) lists who is
+currently logged into the MUD, along with the IP address they are
+currently logged in from.
+
+}}
+
+~name{~enUS{help,%help,@help}}
+~keywords{admin}
+~desc{
+  ~enUS{
+
+The @help and %help commands are interchangeable and use the same
+database of help entries.  They are used by builders and
+administrators to get help on privileged commands and operations.
+Their syntax is just like the normal help command, though entry
+names must be typed exactly rather than allowing Soundex matching.
+
+All builder and admin help should be available to all builder and
+admins.  This means that some documented operations may not be usable
+by you specifically.
+
+}}
+
+~name{~enUS{write_log,%write_log,@write_log,@log,%log,log,@log_write,
+            %log_write,log_write,writelog,%writelog,@writelog}}
+~keywords{admin}
+~desc{
+  ~enUS{
+
+The @log (called %log and @write_log also, among others) command takes
+a single string argument, much like "say".  However, it will log that
+string along with your name to the system log.  In general, this is a
+very poor way to send the equivalent of e-mail except on the most
+excellently-run MUDs since most of the time the log gets briefly read
+through (or not) and tossed out to make room for the next one.
+
+}}
+
+~name{~enUS{log_subscribe,%log_subscribe,@log_subscribe,subscribe_log,
+	%subscribe_log,@subscribe_log,subscribe log,log subscribe}}
+~keywords{admin}
+~desc{
+  ~enUS{
+
+The %log_subscribe command allows someone with full administrative
+access to determine what gets written to the log file.  This is
+determined by categories or channels, usually named after the
+originating file/program.  The following will cause only warnings and
+errors to be recorded from the object daemon:
+
+   %log_subscribe /usr/System/sys/objectd 4
+
+The levels of messages are:
+
+     Fatal Error              6            fatal
+     Error                    5            error
+     Warning                  4            warning
+     Debug Message            3            debug
+     Normal operation         2            normal
+     Verbose operation        1            verbose
+
+You can type the text string on the right (normal, fatal, etc)
+instead of the number to set the logging level.
+
+}}

@@ -1,0 +1,27 @@
+~name{~enUS{copying,license,pd,public domain}}
+~desc{~enUS{
+This MUDLib is part of the public domain.
+
+Note that it being PD does not require users of the binary such as MUD
+players to be able to request source code.  I choose to make source
+available (only by http or ftp) to such users of the MUD, but I also
+reserve the right to revoke this offer at any time.  For source code
+check "http://www.angelbob.com/projects/mudlib/" or email
+angelbob@monkeyspeak.com.
+
+The server, DGD, makes its source available.  You can find out more at
+"http://www.angelbob.com/projects/DGD_Page.html".  It is *not* public
+domain.
+
+See also: help warranty, help features
+}}
+
+~name{~enUS{warranty}}
+~desc{~enUS{
+
+The MUDLib is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+See also: help copying
+}}

@@ -1,0 +1,121 @@
+~name{~enUS{room,rooms,place,places,area,areas}}
+~keywords{admin}
+~desc{
+  ~enUS{
+Rooms are objects which are registered with MAPD.
+
+Some commands to play with rooms:
+@list_room               Lists existing rooms by number
+@goto_room               Goes to an existing room by number
+@save_rooms              Save rooms to a file
+@load_rooms              Load rooms from a file
+@new_room                Allocates a new room
+@delete_room             Destroys a room
+}}
+
+
+~name{~enUS{@list_room, list_room, listroom, @listroom, list room,
+            @list_rooms, list_rooms, listrooms, @listrooms, list rooms,
+            @roomlist, roomlist, room_list, @room_list, room list,
+            list}}
+~keywords{admin}
+~desc{
+  ~enUS{
+
+The @list_room command lists the numbered rooms in the MUD currently
+registered with the Map Daemon (MAPD).  At the moment it simply lists
+every room by number and "glance" description, and ignores any
+parameters it is passed.
+
+}}
+
+~name{~enUS{@goto_room, goto_room, @gotoroom, @go_to_room, go_to_room,
+            gotoroom, @goto, goto, goto room, go to room, goto, go_to}}
+~keywords{admin}
+~desc{
+  ~enUS{
+
+@goto_room takes a room number as an argument, and teleports you to it.
+It only works on numbered rooms.
+
+}}
+
+~name{~enUS{@save_rooms, @save_room, save_rooms, save_room, @saverooms,
+            @saveroom, saverooms, saveroom, room save, roomsave, room_save,
+            save rooms, save room, @room_save, @roomsave, save}}
+~keywords{admin}
+~desc{
+  ~enUS{
+
+@save_room takes an absolute path and saves rooms to that file in a
+loadable format.  It defaults to saving all rooms in the MUD other
+than #0, The Void.  It can also be given a series of additional
+arguments specifying room numbers to save.
+
+Examples:
+@save_rooms /data/object/whole_mud.unq
+@save_rooms /data/object/my_zone.unq #3 #4 #5 #7 #23 #91 #2
+
+}}
+
+~name{~enUS{@load_rooms, @load_room, load_rooms, load_room, @loadrooms,
+            @loadroom, loadrooms, loadroom, room load, roomload, room_load,
+            load rooms, load room, @room_load, @roomload, load}}
+~keywords{admin}
+~desc{
+  ~enUS{
+
+@load_room's first argument is an absolute path and it loads rooms
+found in that file.  It will either load all the rooms in the file, or
+if a sequence of numbers is given it will load only rooms with those
+numbers from the file.  None of the loaded room numbers must
+correspond to rooms existing in the MUD.  This is one reason the
+"number" field is optional in the room structure.
+
+Use this command with great caution to avoid large numbers of
+duplicate rooms.  Note also that numberless rooms in the file cannot
+be loaded with the second form of this command, the one that specifies
+room numbers.
+
+Examples:
+  @load_rooms /data/object/testload.unq
+  @load_rooms /data/object/numtest.unq #34 #47 #12
+}}
+
+
+~name{~enUS{@new_rooms, @new_room, new_rooms, new_room, @newrooms,
+            @newroom, newrooms, newroom, room new, roomnew, room_new,
+            new rooms, new room, @room_new, @roomnew, new, create,
+            create rooms, create room, @create_room, @createroom,
+            @create_rooms, @createrooms, create_room, create_rooms}}
+~keywords{admin}
+~desc{
+  ~enUS{
+
+The @new_room command allocates a new room.  If supplied a number it
+will attempt to allocate that room number, otherwise it will fail.
+
+The new room will be registered with MAPD, and standard object and
+room commands will work perfectly well on it.  It should immediately
+be visible with @list_rooms, and @goto should take you to it if you
+wish.
+
+}}
+
+
+~name{~enUS{@delete_rooms, @delete_room, delete_rooms, delete_room,
+            @deleterooms, @deleteroom, deleterooms, deleteroom,
+            room delete, roomdelete, room_delete, delete rooms,
+            delete room, @room_delete, @roomdelete, delete, destroy,
+            @destroy_rooms, @destroy_room, destroy_rooms, destroy_room,
+            destroy rooms, destroy room}}
+~keywords{admin}
+~desc{
+  ~enUS{
+
+The @delete_room command will delete a room, removing all exits to and
+from it (see @clear_exits).  It is recommended that all contents be
+removed from the room first as no guarantees are made as to their
+locations afterward.
+
+}}

@@ -1,0 +1,127 @@
+~Phil{~enUS{Phillip}
+      ~esUS{Felipe}
+}
+
+~Exits{~enUS{Exits}
+       ~esUS{Salidas}
+}
+
+~choose new password{
+  ~enUS{Choose a new password: }
+  ~esUS{Escoge una contrasena nueva: }
+}
+
+~you are nowhere{
+  ~enUS{"You're nowhere at all..."}
+  ~esUS{"Estas en ninguna parte..."}
+}
+
+~(unnamed location){
+  ~enUS{(unnamed location)}
+  ~esUS{(lugar sin nombre)}
+}
+
+~(no room desc){
+  ~enUS{(no room description)}
+  ~esUS{(no descripcion de cuarto)}
+}
+
+~Password: {
+  ~enUS{Password: }
+  ~esUS{Contrasena: }
+}
+
+~Old password: {
+  ~enUS{Old password: }
+  ~esUS{Contrasena vieja: }
+}
+
+~New password: {
+  ~enUS{New password: }
+  ~esUS{Contrasena nueva: }
+}
+
+~No match{
+  ~enUS{No match}
+  ~esUS{No pareja}
+}
+
+~logs in.{
+  ~enUS{logs in.}
+  ~esUS{entra.}
+}
+
+~logs out.{
+  ~enUS{logs out.}
+  ~esUS{sale.}
+}
+
+~Bad password.{
+  ~enUS{Bad password.}
+  ~esUS{Contrasena incorrecto.}
+}
+
+~Looks like no password{
+  ~enUS{Looks like no password - disconnecting.}
+  ~esUS{Lo parece que no hay contrasena - Te desconecta.}
+}
+
+~must be four characters{
+  ~enUS{Passwords must be at least four characters.}
+  ~esUS{La contrasena no tiene quatro letras.}
+}
+
+~Retype new password: {
+  ~enUS{Retype new password: }
+  ~esUS{Escribe la contrasena nueva otra vez: }
+}
+
+~Password changed.{
+  ~enUS{Password changed.}
+  ~esUS{Cambie la contrasena.}
+}
+
+~Mismatch; password not changed.{
+  ~enUS{Mismatch;  password not changed.}
+  ~esUS{No pareja; no cambie la contrasena.}
+}
+
+~Usage: {
+  ~enUS{Usage: }
+  ~esUS{Uso: }
+}
+
+~Logged on:{
+  ~enUS{Logged on:}
+  ~esUS{Entraron:}
+}
+
+~(OOC){
+  ~enUS{(OOC)}
+  ~esUS{(FDP)}
+}
+
+~chats{
+  ~enUS{chats}
+  ~esUS{charla}
+}
+
+~You chat{
+  ~enUS{You chat}
+  ~esUS{Charlas}
+}
+
+~You say{
+  ~enUS{You say}
+  ~esUS{Dices}
+}
+
+~says{
+  ~enUS{says}
+  ~esUS{dice}
+}
+
+~<text>{
+  ~enUS{<text>}
+  ~esUS{<texto>}
+}

@@ -1,0 +1,2 @@
+* A good command-parsing system could avoid a lot of the current redundant
+  checking of syntax per-command.
