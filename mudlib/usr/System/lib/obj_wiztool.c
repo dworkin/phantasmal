@@ -393,11 +393,11 @@ static void cmd_stat(object user, string cmd, string str) {
     tmp += "\r\n";
   }
 
-  tmp += "\r\nTag Name: Value\r\n";
   tags = TAGD->object_all_tags(obj);
   if(!sizeof(tags)) {
     tmp += "\r\nNo tags set.\r\n";
   } else {
+    tmp += "\r\nTag Name: Value\r\n";
     for(ctr = 0; ctr < sizeof(tags); ctr+=2) {
       tmp += "  " + tags[ctr] + ": " + STRINGD->mixed_sprint(tags[ctr + 1])
 	+ "\r\n";
