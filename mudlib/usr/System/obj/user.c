@@ -1,4 +1,4 @@
-/* $Header: /cvsroot/phantasmal/mudlib/usr/System/obj/user.c,v 1.41 2003/03/07 07:03:48 angelbob Exp $ */
+/* $Header: /cvsroot/phantasmal/mudlib/usr/System/obj/user.c,v 1.42 2003/03/09 00:04:00 angelbob Exp $ */
 
 #include <kernel/kernel.h>
 #include <kernel/user.h>
@@ -9,6 +9,7 @@
 #include <phrase.h>
 #include <channel.h>
 #include <map.h>
+#include <body_loc.h>
 
 inherit LIB_USER;
 inherit user API_USER;
@@ -349,6 +350,134 @@ void show_room_to_player(object location) {
     message("\r\n");
   }
 }
+
+
+private string* string_to_words(string str) {
+  string *words;
+  int     ctr;
+
+  words = explode(str, " ");
+
+  /* Trim */
+  for(ctr = 0; ctr < sizeof(words); ctr++) {
+    if(!words[ctr] || STRINGD->is_whitespace(words[ctr])) {
+      words = words[..ctr-1] + words[ctr+1..];
+    } else {
+      words[ctr] = STRINGD->to_lower(STRINGD->trim_whitespace(words[ctr]));
+    }
+  }
+
+  return words;
+}
+
+
+/* This function takes the supplied object list and searches it
+   for objects that match the string.  This includes string matching,
+   but also includes things like searching through open containers for any
+   possible matches.  If only_details is true then objects will have
+   their details searched, but not objects inside those details. */
+private object* search_contained_objects(object* objs, string str,
+					 varargs int only_details) {
+  object *ret;
+  string *words;
+
+  words = string_to_words(str);
+
+  ret = ({ });
+  while(sizeof(objs)) {
+    if(!only_details
+       && objs[0]->is_container() && objs[0]->is_open()) {
+      objs += objs[0]->objects_in_container();
+    }
+
+    if(objs[0]->match_words(this_object(), words)) {
+      ret += ({ objs[0] });
+    }
+
+    objs = objs[1..];
+  }
+
+  return sizeof(ret) ? ret : nil;
+}
+
+private object* find_objects_in_loc(int loc, string str) {
+  object *objs;
+
+  if(!location &&
+     (loc == LOC_CURRENT_ROOM || loc == LOC_IMMEDIATE_CURRENT_ROOM
+      || loc == LOC_DETAIL_CURRENT_ROOM))
+    return nil;
+
+  if(!body &&
+     (loc == LOC_INVENTORY || loc == LOC_IMMEDIATE_INVENTORY
+      || loc == LOC_BODY))
+    return nil;
+
+  switch(loc) {
+
+  case LOC_IMMEDIATE_CURRENT_ROOM:
+    return location->find_contained_objects(this_object(), str);
+
+  case LOC_IMMEDIATE_INVENTORY:
+    return body->find_contained_objects(this_object(), str);
+
+  case LOC_CURRENT_ROOM:
+    /* Pass location directly so its details will be searched */
+    return search_contained_objects( ({ location }), str);
+
+  case LOC_INVENTORY:
+    /* Pass objects in body object so that body's details won't be
+       searched */
+    return search_contained_objects(body->objects_in_container(), str);
+
+  case LOC_DETAIL_CURRENT_ROOM:
+    return search_contained_objects( ({ location }), str, 1);
+
+  case LOC_BODY:
+    return search_contained_objects( ({ body }), str, 1);
+
+  default:
+    error("Unrecognized location (" + loc
+	  + ") when finding objects!");
+  }
+
+  /* Never used */
+  return nil;
+}
+
+object* find_objects(string str, int locations...) {
+  int     ctr;
+  object* objs;
+
+  if(!SYSTEM() && !COMMON())
+    error("Only System objects are allowed to call find_objects()!");
+
+  objs = ({ });
+  for(ctr = 0; ctr < sizeof(locations); ctr++) {
+    objs += find_objects_in_loc(locations[ctr], str);
+  }
+
+  return sizeof(objs) ? objs : nil;
+}
+
+
+object* find_first_objects(string str, int locations...) {
+  int     ctr;
+  object* objs;
+
+  if(!SYSTEM() && !COMMON())
+    error("Only System objects are allowed to call find_first_objects()!");
+
+  for(ctr = 0; ctr < sizeof(locations); ctr++) {
+    objs = find_objects_in_loc(locations[ctr], str);
+    if(objs && sizeof(objs)) {
+      return objs;
+    }
+  }
+
+  return nil;
+}
+
 
 void notify_moved(object obj) {
   if(previous_program() != USER_MOBILE) {
@@ -1067,10 +1196,7 @@ static void cmd_look(object user, string cmd, string str) {
      || sscanf(str, "within %s", str) || sscanf(str, "into %s", str)) {
     /* Look inside container */
     str = STRINGD->trim_whitespace(str);
-    tmp = body->find_contained_objects(user, str);
-    if(!tmp) {
-      tmp = location->find_contained_objects(user, str);
-    }
+    tmp = find_first_objects(str, LOC_INVENTORY, LOC_CURRENT_ROOM, LOC_BODY);
     if(!tmp) {
       user->message("You don't find any '" + str + "'.\r\n");
       return;
@@ -1205,6 +1331,7 @@ static void cmd_put(object user, string cmd, string str) {
   } else {
     user->message(err + "\r\n");
   }
+
 }
 
 static void cmd_remove(object user, string cmd, string str) {
@@ -1563,7 +1690,7 @@ static void cmd_open(object user, string cmd, string str) {
     return;
   }
 
-  tmp = location->find_contained_objects(user, str);
+  tmp = find_first_objects(str, LOC_INVENTORY, LOC_CURRENT_ROOM);
   if(!tmp || !sizeof(tmp)) {
     message("You don't find any '" + str + "'.\r\n");
     return;
