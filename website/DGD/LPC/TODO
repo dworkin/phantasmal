@@ -1,0 +1,31 @@
+* General LPC:
+Threads of execution.
+Copying of arrays/mappings/LWOs at thread end (see 4.2.7)
+LWOs
+Varargs parameters and "..."
+Named and private inheritance
+Explanation of nil values
+Type-checking modes
+More on atomic functions (in part 3)
+Floating-point misc, C diffs
+Auto-typecasting, and the fact that LPC mostly doesn't
+Call_out statements, incl timing
+parse_string and other efuns
+Thread-local storage -- why it matters
+Call-by-reference vs call-by-value
+
+
+* DGD Driver/Auto interface:
+Error handler
+Static functions in AUTO object
+
+* DGD General:
+Config files
+Compile options
+Limits on # of objects
+
+
+* Kernel Library:
+Thread-local storage interface
+Modified functions
+Inheritance & Libraries
