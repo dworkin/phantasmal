@@ -115,21 +115,30 @@ system("mv phantest/dgd/mud/kernel/sys phantest/kernel/sys");
 system("mv phantest/dgd/mud/kernel/obj phantest/kernel/obj");
 system("mv phantest/dgd/mud/kernel/lib phantest/kernel/lib");
 
-print("Moving data and include directories...\n");
-system("rm -rf phantest/data phantest/include");
+print "Moving data and include directories...\n";
+system("rm -rf phantest/data");
 system("mv phantest/phantasmal/data phantest/data");
-system("mv phantest/phantasmal/include phantest/include");
+system("mv phantest/phantasmal/include/phantasmal phantest/include/");
+system("mkdir phantest/include/kernel");
 
-print("Moving Kernel Library headers...\n");
+print "Moving Kernel Library headers...\n";
 system("mv phantest/dgd/mud/include/kernel/*.h phantest/include/kernel/");
 
-print("Moving DGD binary directory...\n");
+print "Moving DGD binary directory...\n";
 system("mv phantest/dgd/bin phantest");
 
-print("Cleaning Phantasmal & DGD dirs...\n");
+print "Cleaning Phantasmal & DGD dirs...\n";
 system("rm -rf phantest/phantasmal");
 system("rm -rf phantest/dgd");
 
-print("Cleaning cvs dirs (expect warnings)...\n");
-system("find phantest -name CVS -type d -exec rm -rf \\{\\} \\;");
+print "Cleaning cvs dirs...\n";
+system("find phantest -name CVS -type d -print > /tmp/distrib_tmp.txt");
+system("rm -rf `cat /tmp/distrib_tmp.txt`");
+system("rm -f phantest/README phantest/INSTALL");
 system("rm -f phantest/usr/README phantest/kernel/README phantest/include/README");
+
+print "Moving bundle-specific files...\n";
+system("mv phantest/bundled/* phantest/");
+system("rmdir phantest/bundled");
+
+print "*** Finished! ***\n";
