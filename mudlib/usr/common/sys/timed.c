@@ -8,47 +8,11 @@ mapping* per_queue;
 mixed*   per_call_out;
 
 /***********************************************************************
- * TIMED exists to keep track of real time, in-MUD time and
- * conversions between them.  It also handles call_outs on behalf of
- * MUD mobiles and objects that need them to avoid using up more than
- * necessary from the small total number of callouts, and gives a
- * heartbeat function more familiar to long-time LPC users.
+ * TIMED handles call_outs on behalf of MUD mobiles and objects.
+ * There is a small maximum total number of call_outs available, and
+ * this uses them sparingly.  TimeD also gives a heartbeat function
+ * interface, which is more familiar to long-time LPC users.
  ***********************************************************************/
-
-/* In-MUD time has a conversion factor associated with it -- that is,
-   it's a multiple of real-world wall-clock time.  How long a
-   real-world day is in the MUD (and vice-versa) depends on that
-   conversion.
-
-   However, there's a problem -- even with statedumps, when the MUD
-   goes down, especially for a long time, there'll be a jump in
-   real-world time.  The question is how the MUD should address that.
-   Currently the TIMED simply keeps ticking away and the real-world
-   time difference doesn't correspond to an in-MUD difference, but
-   that may need to change in the future.
-
-   Some ways we could deal with it:
-     - Keep going forward, running all the call_outs, until we
-       catch up.  That could be *really* slow on startup.
-     - Cancel all the call_outs, but make some way to subscribe
-       for a notification when the time skips to reschedule
-       them.  That requires a lot of code on the part of
-       anybody that uses TIMED to reschedule.
-     - Keep going like nothing happened -- this would require
-       any events that really cared about real-world time to
-       check the time for themselves.
-     - Have some notifications that run at specific times
-       relative to the real world, and others that just run
-       "periodically" -- the period ones would keep ticking away
-       across statedumps.  The real-world ones would be
-       delivered at the right times, but any that would have
-       happened when the MUD was down would all happen at once
-       right after it came back up, probably passing a "late"
-       flag to say that they hadn't happened at the correct
-       time.
-
-  -angelbob
-*/
 
 private mixed* delay_tab;
 
@@ -58,11 +22,7 @@ private void priv_start_call_out(int how_often);
 private void priv_stop_call_out(int how_often);
 
 
-static void create(varargs int clone) {
-  if(clone) {
-    error("Can't clone TIMED!");
-  }
-
+static void create(void) {
   upgraded();
 }
 
