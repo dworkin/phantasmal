@@ -1,9 +1,8 @@
 ~object{
+  ~obj_type{simple room}
   ~number{1}
   ~location{0}
   ~bdesc{
-    ~enUS{Meat locker}}
-  ~gdesc{
     ~enUS{Meat locker}}
   ~ldesc{
     ~enUS{This room is very cold, and you can smell iron in the air.  Hooks come
@@ -11,7 +10,6 @@ down from the ceiling almost everywhere, and hanging carcasses and
 intervening walls block your view.  You're not sure how far away the
 walls are.}}
   ~flags{3}
-  ~article{0}
   ~nouns{{~enUS{locker}}}
   ~adjectives{{~enUS{meat}}}
   ~newexit{
@@ -20,15 +18,6 @@ walls are.}}
     ~destination{1}
     ~return{115}
     ~type{2}
-    ~rbdesc{
-    ~enUS{exit}}
-    ~rgdesc{
-    ~enUS{west}
-    ~esUS{oeste}}
-    ~rldesc{
-    ~enUS{west}
-    ~esUS{oeste}}
-    ~rnouns{{~enUS{west}~esUS{oeste}}}
     ~rflags{3}}
   ~newexit{
     ~rnumber{115}
@@ -36,15 +25,6 @@ walls are.}}
     ~destination{1}
     ~return{114}
     ~type{2}
-    ~rbdesc{
-    ~enUS{exit}}
-    ~rgdesc{
-    ~enUS{east}
-    ~esUS{este}}
-    ~rldesc{
-    ~enUS{east}
-    ~esUS{este}}
-    ~rnouns{{~enUS{east}~esUS{este}}}
     ~rflags{3}}
   ~newexit{
     ~rnumber{116}
@@ -52,15 +32,6 @@ walls are.}}
     ~destination{1}
     ~return{117}
     ~type{2}
-    ~rbdesc{
-    ~enUS{exit}}
-    ~rgdesc{
-    ~enUS{north}
-    ~esUS{norte}}
-    ~rldesc{
-    ~enUS{north}
-    ~esUS{norte}}
-    ~rnouns{{~enUS{north}~esUS{norte}}}
     ~rflags{3}}
   ~newexit{
     ~rnumber{117}
@@ -68,15 +39,6 @@ walls are.}}
     ~destination{1}
     ~return{116}
     ~type{2}
-    ~rbdesc{
-    ~enUS{exit}}
-    ~rgdesc{
-    ~enUS{south}
-    ~esUS{sur}}
-    ~rldesc{
-    ~enUS{south}
-    ~esUS{sur}}
-    ~rnouns{{~enUS{south}~esUS{sur}}}
     ~rflags{3}}
   ~newexit{
     ~rnumber{118}
@@ -84,15 +46,6 @@ walls are.}}
     ~destination{1}
     ~return{119}
     ~type{2}
-    ~rbdesc{
-    ~enUS{exit}}
-    ~rgdesc{
-    ~enUS{northwest}
-    ~esUS{noroeste}}
-    ~rldesc{
-    ~enUS{northwest}
-    ~esUS{noroeste}}
-    ~rnouns{{~enUS{northwest}~esUS{noroeste}}}
     ~rflags{3}}
   ~newexit{
     ~rnumber{119}
@@ -100,15 +53,6 @@ walls are.}}
     ~destination{1}
     ~return{118}
     ~type{2}
-    ~rbdesc{
-    ~enUS{exit}}
-    ~rgdesc{
-    ~enUS{southeast}
-    ~esUS{sudeste}}
-    ~rldesc{
-    ~enUS{southeast}
-    ~esUS{sudeste}}
-    ~rnouns{{~enUS{southeast}~esUS{sudeste}}}
     ~rflags{3}}
   ~newexit{
     ~rnumber{120}
@@ -116,15 +60,6 @@ walls are.}}
     ~destination{1}
     ~return{121}
     ~type{2}
-    ~rbdesc{
-    ~enUS{exit}}
-    ~rgdesc{
-    ~enUS{northeast}
-    ~esUS{nordeste}}
-    ~rldesc{
-    ~enUS{northeast}
-    ~esUS{nordeste}}
-    ~rnouns{{~enUS{northeast}~esUS{nordeste}}}
     ~rflags{3}}
   ~newexit{
     ~rnumber{121}
@@ -132,15 +67,6 @@ walls are.}}
     ~destination{1}
     ~return{120}
     ~type{2}
-    ~rbdesc{
-    ~enUS{exit}}
-    ~rgdesc{
-    ~enUS{southwest}
-    ~esUS{sudoeste}}
-    ~rldesc{
-    ~enUS{southwest}
-    ~esUS{sudoeste}}
-    ~rnouns{{~enUS{southwest}~esUS{sudoeste}}}
     ~rflags{3}}
   ~weight{0}
   ~volume{0}
@@ -153,13 +79,12 @@ walls are.}}
 }
 
 ~object{
+  ~obj_type{simple room}
   ~number{2}
   ~location{0}
   ~bdesc{
     ~enUS{burrow}
     ~esUS{burrow}}
-  ~gdesc{
-    ~enUS{a cozy burrow}}
   ~ldesc{
     ~enUS{This burrow has been around for a long time, and has been enlarged a couple
 of times.  The walls are entirely dirt, and the floor has tufts of fur
@@ -167,7 +92,6 @@ from rabbits sleeping here at one time and another.
 It looks very cozy.
 }}
   ~flags{3}
-  ~article{0}
   ~nouns{{}}
   ~adjectives{{}}
   ~newexit{
@@ -176,15 +100,6 @@ It looks very cozy.
     ~destination{3}
     ~return{107}
     ~type{2}
-    ~rbdesc{
-    ~enUS{exit}}
-    ~rgdesc{
-    ~enUS{out}
-    ~esUS{fuera}}
-    ~rldesc{
-    ~enUS{out}
-    ~esUS{fuera}}
-    ~rnouns{{~enUS{out}~esUS{fuera}}}
     ~rflags{3}}
   ~weight{2000}
   ~volume{1000000}
@@ -197,19 +112,17 @@ It looks very cozy.
 }
 
 ~object{
+  ~obj_type{simple room}
   ~number{3}
   ~location{0}
   ~bdesc{
     ~enUS{burrow}}
-  ~gdesc{
-    ~enUS{a cozy burrow}}
   ~ldesc{
     ~enUS{This tunnel leads inward toward an old common burrow.  South of
 here you can see a larger tunnel leading away.  The smell is warm and
 cozy.  An old root pokes out through the west wall.  You can see bits of
 fur here and there in different colors.}}
   ~flags{3}
-  ~article{0}
   ~nouns{{}}
   ~adjectives{{}}
   ~newexit{
@@ -218,15 +131,6 @@ fur here and there in different colors.}}
     ~destination{2}
     ~return{106}
     ~type{2}
-    ~rbdesc{
-    ~enUS{exit}}
-    ~rgdesc{
-    ~enUS{in}
-    ~esUS{dentro}}
-    ~rldesc{
-    ~enUS{in}
-    ~esUS{dentro}}
-    ~rnouns{{~enUS{in}~esUS{dentro}}}
     ~rflags{3}}
   ~newexit{
     ~rnumber{108}
@@ -234,15 +138,6 @@ fur here and there in different colors.}}
     ~destination{4}
     ~return{109}
     ~type{2}
-    ~rbdesc{
-    ~enUS{exit}}
-    ~rgdesc{
-    ~enUS{south}
-    ~esUS{sur}}
-    ~rldesc{
-    ~enUS{south}
-    ~esUS{sur}}
-    ~rnouns{{~enUS{south}~esUS{sur}}}
     ~rflags{3}}
   ~weight{2000}
   ~volume{1000000}
@@ -255,18 +150,16 @@ fur here and there in different colors.}}
 }
 
 ~object{
+  ~obj_type{simple room}
   ~number{4}
   ~location{0}
   ~bdesc{
     ~enUS{tunnel}}
-  ~gdesc{
-    ~enUS{an old tunnel}}
   ~ldesc{
     ~enUS{This tunnel runs north-south between an old burrow system north and larger,
 newer digging to the south.  Bits of multicolored fur and small root tips
 can be found in the east and west walls.}}
   ~flags{3}
-  ~article{0}
   ~nouns{{}}
   ~adjectives{{}}
   ~newexit{
@@ -275,15 +168,6 @@ can be found in the east and west walls.}}
     ~destination{3}
     ~return{108}
     ~type{2}
-    ~rbdesc{
-    ~enUS{exit}}
-    ~rgdesc{
-    ~enUS{north}
-    ~esUS{norte}}
-    ~rldesc{
-    ~enUS{north}
-    ~esUS{norte}}
-    ~rnouns{{~enUS{north}~esUS{norte}}}
     ~rflags{3}}
   ~newexit{
     ~rnumber{110}
@@ -291,15 +175,6 @@ can be found in the east and west walls.}}
     ~destination{5}
     ~return{111}
     ~type{2}
-    ~rbdesc{
-    ~enUS{exit}}
-    ~rgdesc{
-    ~enUS{south}
-    ~esUS{sur}}
-    ~rldesc{
-    ~enUS{south}
-    ~esUS{sur}}
-    ~rnouns{{~enUS{south}~esUS{sur}}}
     ~rflags{3}}
   ~weight{2000}
   ~volume{1000000}
@@ -312,12 +187,11 @@ can be found in the east and west walls.}}
 }
 
 ~object{
+  ~obj_type{simple room}
   ~number{5}
   ~location{0}
   ~bdesc{
     ~enUS{tunnel}}
-  ~gdesc{
-    ~enUS{a worn tunnel}}
   ~ldesc{
     ~enUS{This tunnel has been worn quite smooth by the passage of many over a long
 time.  At the moment, though, the grey-brown walls are quite dry and
@@ -328,7 +202,6 @@ time.  At the moment, though, the grey-brown walls are quite dry and
 slightly crumbly with disuse.  It's surprising there isn't more dirt and
 dust from the walls settled on the floor -- it's quite clean here.}}
   ~flags{3}
-  ~article{0}
   ~nouns{{}}
   ~adjectives{{}}
   ~newexit{
@@ -337,15 +210,6 @@ dust from the walls settled on the floor -- it's quite clean here.}}
     ~destination{4}
     ~return{110}
     ~type{2}
-    ~rbdesc{
-    ~enUS{exit}}
-    ~rgdesc{
-    ~enUS{north}
-    ~esUS{norte}}
-    ~rldesc{
-    ~enUS{north}
-    ~esUS{norte}}
-    ~rnouns{{~enUS{north}~esUS{norte}}}
     ~rflags{3}}
   ~weight{2000}
   ~volume{1000000}
@@ -358,12 +222,11 @@ dust from the walls settled on the floor -- it's quite clean here.}}
 }
 
 ~object{
+  ~obj_type{simple room}
   ~number{6}
   ~location{0}
   ~bdesc{
     ~enUS{tomb}}
-  ~gdesc{
-    ~enUS{a tomb}}
   ~ldesc{
     ~enUS{Against the wall of the room, a stuffed wombat's mouth gapes eternally.
 I mean, there's the rest of the wombat too, but it doesn't properly gape.
@@ -372,7 +235,6 @@ Sits, more.  Still.  Peaceful, even.  At least.  Well.  Y'know.  Still.
 There's also a large sarcopha- sarca --  a coffin.  And a statue of Ghak'La.
 Rumor has it that he's Messy-In-A-Hideous-Way.}}
   ~flags{3}
-  ~article{0}
   ~nouns{{~enUS{tomb}}}
   ~adjectives{{~enUS{peaceful}}}
   ~weight{2000}
@@ -386,11 +248,10 @@ Rumor has it that he's Messy-In-A-Hideous-Way.}}
 }
 
 ~object{
+  ~obj_type{simple room}
   ~number{7}
   ~location{0}
   ~bdesc{
-    ~enUS{awakening room}}
-  ~gdesc{
     ~enUS{awakening room}}
   ~ldesc{
     ~enUS{At first glance, this room seems like the less tidy end of
@@ -403,7 +264,6 @@ In the center of the mess sits an operating table, connected
 to the rest by thick braided cables.  On the table lies
 an incomplete droid, facing the ceiling.  Its head is open.}}
   ~flags{3}
-  ~article{0}
   ~nouns{{}}
   ~adjectives{{}}
   ~weight{2000}
@@ -417,18 +277,16 @@ an incomplete droid, facing the ceiling.  Its head is open.}}
 }
 
 ~object{
+  ~obj_type{simple room}
   ~number{8}
   ~location{6}
   ~bdesc{
     ~enUS{statue of Ghak'La The Messy-In-A-Hideous-Way}}
-  ~gdesc{
-    ~enUS{a statue of Ghak'La The Messy-In-A-Hideous-Way}}
   ~ldesc{
     ~enUS{This imposing figure looms over the room.  At its base are scattered
 baskets, half-eaten fruit, and several dead animals, all set in stone.
 Ghak'La must have been Messy-In-A-Hideous-Way.}}
   ~flags{4}
-  ~article{0}
   ~nouns{{~enUS{ghakla, ghak'la, statue}}}
   ~adjectives{{~enUS{messy, hideous}}}
   ~weight{0}
@@ -439,19 +297,17 @@ Ghak'La must have been Messy-In-A-Hideous-Way.}}
 }
 
 ~object{
+  ~obj_type{simple room}
   ~number{9}
   ~location{308}
   ~bdesc{
     ~enUS{a rubber ball}}
-  ~gdesc{
-    ~enUS{a red rubber ball}}
   ~ldesc{
     ~enUS{It's a red rubber ball.}}
   ~edesc{
     ~enUS{It's a simple red rubber ball.  There's an odd swirly spot on it in
 one place, but it's otherwise unremarkable.}}
   ~flags{0}
-  ~article{0}
   ~nouns{{~enUS{ball}}}
   ~adjectives{{~enUS{red, rubber}}}
   ~weight{0.1}
@@ -462,11 +318,10 @@ one place, but it's otherwise unremarkable.}}
 }
 
 ~object{
+  ~obj_type{simple room}
   ~number{77}
   ~location{0}
   ~bdesc{
-    ~enUS{a flower}}
-  ~gdesc{
     ~enUS{a flower}}
   ~ldesc{
     ~enUS{You stand, somehow, inside a flower.  It's quite beautiful, and you can
@@ -475,7 +330,6 @@ see opalescent light filtering in through the petals.
   ~edesc{
     ~enUS{You see some bits!}}
   ~flags{3}
-  ~article{0}
   ~nouns{{~enUS{room, test}}}
   ~adjectives{{~enUS{test}}}
   ~newexit{
@@ -484,15 +338,6 @@ see opalescent light filtering in through the petals.
     ~destination{79}
     ~return{100}
     ~type{2}
-    ~rbdesc{
-    ~enUS{exit}}
-    ~rgdesc{
-    ~enUS{east}
-    ~esUS{este}}
-    ~rldesc{
-    ~enUS{east}
-    ~esUS{este}}
-    ~rnouns{{~enUS{east}~esUS{este}}}
     ~rflags{3}}
   ~weight{2000}
   ~volume{1000000}
@@ -505,12 +350,10 @@ see opalescent light filtering in through the petals.
 }
 
 ~object{
+  ~obj_type{simple room}
   ~number{79}
   ~location{0}
   ~bdesc{
-    ~enUS{a flower}
-    ~esUS{un flor}}
-  ~gdesc{
     ~enUS{a flower}
     ~esUS{un flor}}
   ~ldesc{
@@ -522,7 +365,6 @@ see opalescent light filtering in through the petals.
   ~edesc{
     ~enUS{You see some bits!}}
   ~flags{3}
-  ~article{0}
   ~nouns{{~enUS{room, test}}}
   ~adjectives{{~enUS{test}}}
   ~newexit{
@@ -531,15 +373,6 @@ see opalescent light filtering in through the petals.
     ~destination{77}
     ~return{101}
     ~type{2}
-    ~rbdesc{
-    ~enUS{exit}}
-    ~rgdesc{
-    ~enUS{west}
-    ~esUS{oeste}}
-    ~rldesc{
-    ~enUS{west}
-    ~esUS{oeste}}
-    ~rnouns{{~enUS{west}~esUS{oeste}}}
     ~rflags{3}}
   ~newexit{
     ~rnumber{103}
@@ -547,15 +380,6 @@ see opalescent light filtering in through the petals.
     ~destination{81}
     ~return{102}
     ~type{2}
-    ~rbdesc{
-    ~enUS{exit}}
-    ~rgdesc{
-    ~enUS{south}
-    ~esUS{sur}}
-    ~rldesc{
-    ~enUS{south}
-    ~esUS{sur}}
-    ~rnouns{{~enUS{south}~esUS{sur}}}
     ~rflags{3}}
   ~weight{2000}
   ~volume{1000000}
@@ -568,11 +392,10 @@ see opalescent light filtering in through the petals.
 }
 
 ~object{
+  ~obj_type{simple room}
   ~number{81}
   ~location{0}
   ~bdesc{
-    ~enUS{a flower}}
-  ~gdesc{
     ~enUS{a flower}}
   ~ldesc{
     ~enUS{You stand in a beautiful white flower with yellow-pink highlights from
@@ -585,7 +408,6 @@ see opalescent light filtering in through the petals.
   ~edesc{
     ~enUS{You see some bits!}}
   ~flags{3}
-  ~article{0}
   ~nouns{{~enUS{room, test}}}
   ~adjectives{{~enUS{test}}}
   ~newexit{
@@ -594,15 +416,6 @@ see opalescent light filtering in through the petals.
     ~destination{79}
     ~return{103}
     ~type{2}
-    ~rbdesc{
-    ~enUS{exit}}
-    ~rgdesc{
-    ~enUS{north}
-    ~esUS{norte}}
-    ~rldesc{
-    ~enUS{north}
-    ~esUS{norte}}
-    ~rnouns{{~enUS{north}~esUS{norte}}}
     ~rflags{3}}
   ~weight{2000}
   ~volume{1000000}
@@ -615,16 +428,14 @@ see opalescent light filtering in through the petals.
 }
 
 ~object{
+  ~obj_type{simple room}
   ~number{200}
   ~location{302}
   ~bdesc{
     ~enUS{a turnip}}
-  ~gdesc{
-    ~enUS{a juicy turnip}}
   ~ldesc{
     ~enUS{You see a plump, juicy turnip.  Well, I mean, plump and juicy for a turnip.}}
   ~flags{0}
-  ~article{0}
   ~nouns{{~enUS{turnip}}}
   ~adjectives{{~enUS{juicy, plump, large}}}
   ~weight{0.3}
@@ -635,19 +446,17 @@ see opalescent light filtering in through the petals.
 }
 
 ~object{
+  ~obj_type{simple room}
   ~number{201}
   ~location{6}
   ~bdesc{
     ~enUS{a limp weasel}}
-  ~gdesc{
-    ~enUS{a limp, motionless weasel}}
   ~ldesc{
     ~enUS{You see a limp, motionless weasel.  It's just lying there.
 You're not sure, exactly, if it's dead, dying, or just
 _very_ relaxed.  Its facial expression, being that of a weasel,
 doesn't give you any clues.}}
   ~flags{0}
-  ~article{0}
   ~nouns{{~enUS{weasel}}}
   ~adjectives{{~enUS{lifeless, limp}}}
   ~weight{1.5}
@@ -658,17 +467,15 @@ doesn't give you any clues.}}
 }
 
 ~object{
+  ~obj_type{simple room}
   ~number{202}
   ~location{302}
   ~bdesc{
     ~enUS{a breadbox}}
-  ~gdesc{
-    ~enUS{a largish breadbox}}
   ~ldesc{
     ~enUS{You see an old breadbox, apparently meant to contain bread.  A faded logo
 on the side may once have advertised the box's maker.}}
   ~flags{11}
-  ~article{0}
   ~nouns{{~enUS{breadbox, box}}}
   ~adjectives{{~enUS{bread, large, largish}}}
   ~weight{0.2}
@@ -682,18 +489,16 @@ on the side may once have advertised the box's maker.}}
 }
 
 ~object{
+  ~obj_type{simple room}
   ~number{203}
   ~location{0}
   ~bdesc{
-    ~enUS{a ceremonial dagger}}
-  ~gdesc{
     ~enUS{a ceremonial dagger}}
   ~ldesc{
     ~enUS{The blade is curved, and more jagged than it has any right to be.
 It was clearly designed to frighten before cutting, and tear while
 cutting.}}
   ~flags{0}
-  ~article{0}
   ~nouns{{~enUS{knife, dagger}}}
   ~adjectives{{~enUS{ceremonial, curved, jagged}}}
   ~weight{0}
@@ -704,12 +509,11 @@ cutting.}}
 }
 
 ~object{
+  ~obj_type{simple room}
   ~number{204}
   ~detail{6}
   ~bdesc{
     ~enUS{wombat}}
-  ~gdesc{
-    ~enUS{a stuffed wombat}}
   ~ldesc{
     ~enUS{The stuffed wombat is sitting against the wall.  It looks quite stuffed.
 The mouth gapes uninvitingly.  At least, you sure don't feel invited.
@@ -719,7 +523,6 @@ Ew.}}
     ~enUS{Glinting in the wombatty depths, you see...  Nothing special.  Darkness.
 Wombat fumes.  About the usual, you hope.}}
   ~flags{7}
-  ~article{0}
   ~nouns{{~enUS{wombat, mouth}}}
   ~adjectives{{~enUS{stuffed, immobile}}}
   ~weight{0}
@@ -733,16 +536,14 @@ Wombat fumes.  About the usual, you hope.}}
 }
 
 ~object{
+  ~obj_type{simple room}
   ~number{205}
   ~location{6}
   ~bdesc{
     ~enUS{an open sarcophagus}}
-  ~gdesc{
-    ~enUS{an open sarcophagus}}
   ~ldesc{
     ~enUS{It's old and sarcophariffic.}}
   ~flags{13}
-  ~article{0}
   ~nouns{{~enUS{sarcophagus, coffin}}}
   ~adjectives{{}}
   ~weight{0}
@@ -756,16 +557,14 @@ Wombat fumes.  About the usual, you hope.}}
 }
 
 ~object{
+  ~obj_type{simple room}
   ~number{206}
   ~location{204}
   ~bdesc{
     ~enUS{the wombat's uvula}}
-  ~gdesc{
-    ~enUS{the wombat's uvula}}
   ~ldesc{
     ~enUS{It's dangly, in the slimy way that only uvulas can dangle.}}
   ~flags{8}
-  ~article{0}
   ~nouns{{~enUS{uvula}}}
   ~adjectives{{}}
   ~weight{0}

@@ -87,10 +87,15 @@ object get_look(void) {
 }
 
 string *get_nouns(int locale) {
-  string *tmp;
+  string *tmp, loc_str;
   object  dir;
 
   dir = EXITD->get_name_for_dir(direction);
   tmp = ::get_nouns(locale);
-  return (tmp ? tmp : ({ })) + ({ dir->get_content_by_lang(locale) });
+
+  loc_str = dir->get_content_by_lang(locale);
+  if(loc_str)
+    return (tmp ? tmp : ({ })) + ({ loc_str });
+
+  return tmp;
 }

@@ -1,16 +1,14 @@
 ~object{
+  ~obj_type{simple room}
   ~number{600}
   ~location{0}
   ~bdesc{
-    ~enUS{Near a Hostel}}
-  ~gdesc{
     ~enUS{Near a Hostel}}
   ~ldesc{
     ~enUS{You're around a hundred feet south of an old, battered hostel.  You can see
 faded furniture on its porch.  Forest and swamp engulf the south, while
 the east and west appear to be more of the hostel's grounds.}}
   ~flags{3}
-  ~article{0}
   ~nouns{{}}
   ~adjectives{{}}
   ~newexit{
@@ -19,15 +17,6 @@ the east and west appear to be more of the hostel's grounds.}}
     ~destination{603}
     ~return{135}
     ~type{2}
-    ~rbdesc{
-    ~enUS{exit}}
-    ~rgdesc{
-    ~enUS{north}
-    ~esUS{norte}}
-    ~rldesc{
-    ~enUS{north}
-    ~esUS{norte}}
-    ~rnouns{{~enUS{north}~esUS{norte}}}
     ~rflags{3}}
   ~weight{2000}
   ~volume{1000000}
@@ -40,12 +29,11 @@ the east and west appear to be more of the hostel's grounds.}}
 }
 
 ~object{
+  ~obj_type{simple room}
   ~number{601}
   ~detail{600}
   ~bdesc{
     ~enUS{the hostel}}
-  ~gdesc{
-    ~enUS{the battered hostel}}
   ~ldesc{
     ~enUS{The hostel is an old building, battered and worn with age.  The south face
 has a Southern-style wraparound porch with battered chairs and tables.
@@ -54,7 +42,6 @@ building looks like it was once painted green.}}
   ~edesc{
     ~enUS{You can't see any more from here.  It's too far away.}}
   ~flags{0}
-  ~article{0}
   ~nouns{{~enUS{hostel, porch, building}}}
   ~adjectives{{~enUS{worn, faded, battered, grey, green, red, gray, old, worn, wraparound, wrap-around, wrap, around}}}
   ~weight{0}
@@ -65,12 +52,11 @@ building looks like it was once painted green.}}
 }
 
 ~object{
+  ~obj_type{simple room}
   ~number{602}
   ~detail{601}
   ~bdesc{
     ~enUS{furniture}}
-  ~gdesc{
-    ~enUS{the porch furniture}}
   ~ldesc{
     ~enUS{The old tables and chairs are cheap, and were probably donated to the
 hostel many years ago.  You can see the weathering and the final strips
@@ -78,7 +64,6 @@ of peeling paint even from here.}}
   ~edesc{
     ~enUS{It's too far to see closely.}}
   ~flags{0}
-  ~article{0}
   ~nouns{{~enUS{furniture, table, tables, chair, chairs}}}
   ~adjectives{{~enUS{porch, old, worn, faded, weathered}}}
   ~weight{0}
@@ -89,12 +74,11 @@ of peeling paint even from here.}}
 }
 
 ~object{
+  ~obj_type{simple room}
   ~number{603}
   ~location{0}
   ~bdesc{
     ~enUS{the porch}}
-  ~gdesc{
-    ~enUS{the hostel's porch}}
   ~ldesc{
     ~enUS{The porch of the hostel has three old tables and a scattering of chairs
 around each.  The old boards of the ceiling and floor still look sturdy
@@ -102,7 +86,6 @@ and serviceable though they haven't been repainted in far too long.
 The door into the hostel leads north.  To the south you can see a
 small clear area before the woods and the swamp begin to the southeast.}}
   ~flags{3}
-  ~article{0}
   ~nouns{{~enUS{porch}}}
   ~adjectives{{~enUS{hostel, hostel's, faded, dull, worn}}}
   ~newexit{
@@ -111,15 +94,6 @@ small clear area before the woods and the swamp begin to the southeast.}}
     ~destination{600}
     ~return{134}
     ~type{2}
-    ~rbdesc{
-    ~enUS{exit}}
-    ~rgdesc{
-    ~enUS{south}
-    ~esUS{sur}}
-    ~rldesc{
-    ~enUS{south}
-    ~esUS{sur}}
-    ~rnouns{{~enUS{south}~esUS{sur}}}
     ~rflags{3}}
   ~weight{2000}
   ~volume{1000000}
