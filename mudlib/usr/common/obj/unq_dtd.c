@@ -693,7 +693,13 @@ private mixed* parse_to_dtd_struct(string t_label, mixed unq) {
     string match_label;
 
     match_label = label = STRINGD->trim_whitespace(unq[ctr]);
-    while (match_label != nil && fields[match_label][0] == nil) {
+    if (fields[match_label] == nil) {
+      accum_error += "Unrecognized field " + label + " in structure\n";
+      return nil;
+    }
+
+    while (match_label != nil
+	   && fields[match_label][0] == nil) {
       match_label = base_type[match_label];
     }
 
