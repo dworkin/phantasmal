@@ -41,23 +41,15 @@ void upgraded(varargs int clone) {
     return;
 
   set_dtd_file(SOULD_DTD);
+
   unq::upgraded();
-
-  /* Clear out Soul array before reloading */
-  sould_strings = ([ ]);
-  num_soc = 0;
-
-  /* We'll need to load the file's contents... */
-  load_from_file(SOULD_FILE);
-  num_soc = map_sizeof(sould_strings);
-
-  /* And now we need to update USER's command set */
-  SYSTEM_USER->set_social_commands();
 }
 
 mixed* to_dtd_unq(void) {
   error("Not implemented yet");
 }
+
+/* Access protection for from_unq and from_unq_text */
 
 void from_unq_text(string unq_text) {
   if(!SYSTEM() && !COMMON() && !GAME())
@@ -66,9 +58,19 @@ void from_unq_text(string unq_text) {
   unq::from_unq_text(unq_text);
 }
 
+void from_unq(mixed *unq) {
+  if(!SYSTEM() && !COMMON() && !GAME())
+    return;
+
+  unq::from_unq(unq);
+}
+
 void from_dtd_unq(mixed* unq) {
   if(!SYSTEM() && !COMMON() && !GAME())
     return;
+
+  /* Clear out Soul array before reloading */
+  sould_strings = ([ ]);
 
   while(sizeof(unq) > 0) {
     if(unq[0] == "social") {
@@ -99,6 +101,11 @@ void from_dtd_unq(mixed* unq) {
     }
     unq = unq[2..];
   }
+
+  num_soc = map_sizeof(sould_strings);
+
+  /* And now we need to update USER's command set */
+  SYSTEM_USER->set_social_commands();
 }
 
 int is_valid(string verb) {
@@ -136,6 +143,12 @@ string get_social_string(object user, object body,
 
   entry = sould_strings[verb];
   if(!entry) return nil;
+
+  /* Check for reflexive */
+  if(target_body == body) {
+    /* A nil target means it's done to yourself */
+    target_body = nil;
+  }
 
   if(user->get_body() == body) {
     /* Looks like this is done by us... */
