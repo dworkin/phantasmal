@@ -1,4 +1,4 @@
-/* $Header: /cvsroot/phantasmal/testgame/usr/game/obj/user.c,v 1.7 2004/09/14 05:28:57 angelbob Exp $ */
+/* $Header: /cvsroot/phantasmal/testgame/usr/game/obj/user.c,v 1.8 2004/09/30 07:23:38 angelbob Exp $ */
 
 #include <kernel/kernel.h>
 #include <kernel/user.h>
@@ -16,6 +16,11 @@
 #include <type.h>
 
 inherit PHANTASMAL_USER;
+
+/* This zone determines where player bodies wind up.  If you don't put
+   anything else in this file (and you probably shouldn't), then this
+   zone will only contain player body objects. */
+#define PLAYER_BODY_ZONE    2
 
 /* Duplicated in PHANTASMAL_USER, these are the login states */
 #define STATE_NORMAL            0
@@ -44,7 +49,7 @@ static mapping commands_map;
 /* Prototypes */
        void upgraded(varargs int clone);
 static void cmd_social(object user, string cmd, string str);
-static int game_command(string str);
+static int  game_command(string str);
 
 /* Macros */
 #define NEW_PHRASE(x) PHRASED->new_simple_english_phrase(x)
@@ -237,7 +242,18 @@ static void connect_to_body(void) {
     LOGD->write_syslog("User is already set for this mobile!",
 		       LOG_ERROR);
     message("Body and mobile files are misconfigured!  Internal error!\r\n");
+    message("Make sure you landed in the right body...\r\n");
+    other_user->message("Somebody's attempting to take your body.\r\n");
+    other_user->message("If you didn't just log in on another "
+			+ "connection, then talk\r\n");
+    other_user->message("to an admin.  This is a bug!\r\n");
+  }
 
+  if(other_user) {
+    /* Attempt to log out other user.  Note that if other user is a
+       safety-port user (or maybe an SSHD user?) that this won't work
+       right, because this user, from /usr/game, won't be able to
+       destruct a connection object cloned by /usr/System. */
     other_user->message(
 	  "Somebody has entered the game with your name and account!\r\n");
     other_user->message("Closing your connection now...\r\n");
@@ -245,6 +261,7 @@ static void connect_to_body(void) {
   }
 
   if(!body) {
+    message("Internal error connecting you to your body!\r\n");
     error("Can't find body!");
   }
 
@@ -280,7 +297,7 @@ static void create_body(void) {
 
     body = clone_object(SIMPLE_ROOM);
     if(!body)
-      error("Can't clone player's body!");
+      error("Couldn't clone player's body!");
 
     body->set_container(1);
     body->set_open(1);
@@ -304,7 +321,7 @@ static void create_body(void) {
        in your pocket?  Would you want to? */
     body->set_length_capacity(50.0);
 
-    start_zone = ZONED->get_zone_for_room(start_room);
+    start_zone = PLAYER_BODY_ZONE;
     MAPD->add_room_to_zone(body, -1, start_zone);
     if(!MAPD->get_room_by_num(body->get_number())) {
       LOGD->write_syslog("Error making new body!", LOG_ERR);
@@ -382,7 +399,7 @@ void player_login(int first_login)
  * NAME:	player_logout()
  * DESCRIPTION:	Deal with player body, update account info and so on...
  */
-private void player_logout(void)
+static void player_logout(void)
 {
   if(previous_program() != PHANTASMAL_USER)
     return;
@@ -422,13 +439,14 @@ int process_command(string str)
 
   case ASTATE_FIRSTLOGIN:
     account_state = ASTATE_MENU_CONSOLE;
-    message(
-   "You have a new account.  You'll need to create a character for it.\r\n"
+    print_account_menu();
+
+    message_scroll("\r\n\r\n"
+ + "You have a new account.  You'll need to create a character for it.\r\n"
  + "Don't sweat the details too much if this is your first time.  You'll\r\n"
  + "need to get a feel for the game first, and you're very, very likely\r\n"
  + "to wind up creating another, or lots more, in your time here.\r\n");
 
-    print_account_menu();
     return -1;
 
     /* ACCOUNT MENU: */
@@ -469,7 +487,7 @@ int process_command(string str)
       return -1;
     }
 
-    if(str == "G") {
+    if(str == "G" || str == "g") {
       if(!body) {
 	message("You have no body, or you're not connected to yours.\r\n"
 		+ "Create a character first, or contact an admin.\r\n");
@@ -500,11 +518,33 @@ int process_command(string str)
       return -1;
     }
 
-    message("That doesn't seem to be on the menu.\r\n");
-    menu_tally++;
-    if(menu_tally > 2) {
-      print_account_menu();
-      menu_tally = 0;
+    if(str && str[0] == '%' && wiztool) {
+      string err, cmd, arg;
+
+      cmd = str;
+      sscanf(str, "%s %s", cmd, arg);
+      err = catch(wiztool->command(cmd, arg));
+      if(err) {
+	LOGD->write_syslog("Error on admin command '" + (cmd ? cmd : "(nil)")
+			   + "/"
+			   + (str ? str : "(nil)") + "'.  Err text: "
+			   + err);
+
+	message("Your command failed with an internal error.\r\n");
+	message("The error has been logged.\r\n");
+
+	/* Return normal status, print a prompt and continue. */
+	return -1;
+      }
+      /* Success running wiz command!  Return normal status. */
+      return -1;
+    } else {
+      message("That doesn't seem to be on the menu.\r\n");
+      menu_tally++;
+      if(menu_tally > 2) {
+	print_account_menu();
+	menu_tally = 0;
+      }
     }
 
     return -1;
@@ -684,6 +724,7 @@ static int game_command(string str)
 }
 
 
+/************************************************************/
 /************** User-level commands *************************/
 
 static void cmd_set_lines(object user, string cmd, string str) {

@@ -7,6 +7,14 @@
          ~zonenum{1}
          ~name{Anteworld}
      }
+     ~zone{
+         ~zonenum{2}
+         ~name{Transient}
+     }
+     ~zone{
+         ~zonenum{3}
+         ~name{Old Williamsburg}
+     }
 }
 ~zones{
      ~segment{
@@ -20,5 +28,9 @@
      ~segment{
          ~segnum{3}
          ~zonenum{1}
+     }
+     ~segment{
+         ~segnum{4}
+         ~zonenum{2}
      }
 }

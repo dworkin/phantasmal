@@ -62,10 +62,8 @@ static void create(void) {
   /* Load the SoulD with social commands */
   load_sould();
 
-  /* Register a new custom room type.  Compile the custom room object
-     first, since MAPD can't legally do so. */
-  compile_object("/usr/game/obj/custom_room");
-  MAPD->add_unq_binding("custom", "/usr/game/obj/custom_room");
+  compile_object(GAME_ROOM_BINDER);
+  MAPD->set_binding_handler(find_object(GAME_ROOM_BINDER));
 
   /* Load stuff into MAPD and EXITD */
   if(read_object_dir(ROOM_DIR) >= 0) {
