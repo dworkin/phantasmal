@@ -1,4 +1,4 @@
-/* $Header: /cvsroot/phantasmal/mudlib/usr/System/obj/user.c,v 1.50 2003/03/20 00:43:53 angelbob Exp $ */
+/* $Header: /cvsroot/phantasmal/mudlib/usr/System/obj/user.c,v 1.51 2003/03/20 06:37:32 angelbob Exp $ */
 
 #include <kernel/kernel.h>
 #include <kernel/user.h>
@@ -78,7 +78,7 @@ static void create(int clone)
 void upgraded(void) {
   if(!find_object(SYSTEM_WIZTOOL)) { compile_object(SYSTEM_WIZTOOL); }
   if(!find_object(USER_MOBILE)) { compile_object(USER_MOBILE); }
-  if(!find_object(SIMPLE_PORTABLE)) { compile_object(SIMPLE_PORTABLE); }
+  if(!find_object(SIMPLE_ROOM)) { compile_object(SIMPLE_ROOM); }
 
   cmd::upgraded();
   io::upgraded();
@@ -617,9 +617,14 @@ private void player_login(void)
   if(!body) {
     location = start_room;
 
-    body = clone_object(SIMPLE_PORTABLE);
+    body = clone_object(SIMPLE_ROOM);
     if(!body)
       error("Can't clone simple portable!");
+
+    body->set_container(1);
+    body->set_open(1);
+    body->set_openable(0);
+
     MAPD->add_room_to_zone(body, -1, start_zone);
     if(!MAPD->get_room_by_num(body->get_number())) {
       LOGD->write_syslog("Error making new body!", LOG_ERR);
