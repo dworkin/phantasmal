@@ -52,10 +52,10 @@ of DGD.  You can either use the recommended DGD version (look at
 you can just ignore the error message, or remove it from
 /usr/System/initd.c.
 
-If it gives you an error when you start up that your version of DGD
-just isn't cool enough for it, you're going to need to upgrade to a
-higher version of DGD, probably an experimental one.  Check out
-http://phantasmal.sourceforge.net/DGD and click on a link called
+If it gives you a startup error that your version of DGD just isn't
+good enough for it then you're going to need to upgrade to a later
+version of DGD, probably an experimental one.  Check out
+"http://phantasmal.sourceforge.net/DGD" and click on a link called
 something like "Downloading, Compiling and Configuring DGD".
 
 
@@ -66,12 +66,14 @@ A: The Kernel MUDLib stores its listing of who gets wizard privileges
 in the file "kernel/data/access.data".  If you delete this then
 everybody loses all their privileges.  One way to deal with it is to
 manually reinstate everybody.  Another is to grab the file from your
-old DGD install and restore it.
+old copy of DGD and restore it.
 
-If you copy the kernel MUDLib stuff rather than symbolically linking
-it, and you copy the new version *over* the old version, you won't get
-this problem (unless you overwrite the old access.data with the new
-one).  Naturally that approach comes with its own set of problems.
+If you copy the kernel MUDLib stuff to where it should be rather than
+symbolically linking it, and you copy the new version *over* the old
+version, you won't get this problem (unless you overwrite the old
+access.data with the new one).  Naturally that approach comes with its
+own set of problems, including potential incompatibilities between
+future versions of DGD (hey, it could happen).
 
 
 Q: I run DGD and on startup (or %shutdown) I get a Fatal Error that
@@ -89,4 +91,9 @@ device", "sectors" shows you how many sectors your MUD uses and how
 many it can use.  You can also check out memory usage and number of
 objects to see if they need to be increased.  This stuff is all 100%
 the same as for the Kernel MUDLib, so the DGD mailing list is a good
-place to ask about what it means and how you can play with it.
+place to ask about what it means and how you can play with it.  In any
+case, this will tell you how close you are to exceeding your allowed
+usage of various resources.  You may also find that as you come close
+to the limit in them, it takes more ticks to do things.  If this
+happens then you may run out of ticks before you run out of sectors,
+dynamic memory or objects.

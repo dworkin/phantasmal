@@ -43,6 +43,8 @@ ask       / cmd_ask,
 
 channel   / cmd_channels,
 channels  / cmd_channels,
+gossip    / cmd_gossip,
+gos       / cmd_gossip,
 
 g         / cmd_look,
 gl        / cmd_look,
@@ -108,6 +110,8 @@ pregunta  / cmd_ask,
 
 channel   / cmd_channels,
 channels  / cmd_channels,
+gossip    / cmd_gossip,
+gos       / cmd_gossip,
 
 g         / cmd_look,
 gl        / cmd_look,

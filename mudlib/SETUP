@@ -2,13 +2,12 @@
 
                       INTRODUCTION
 
-At the moment, Phantasmal is still coming up to Melville's speed, and
-certainly isn't as usable as 2.4.5 or, according to its web page,
-GurbaLib.  That's fine, it's experimental.  If you're serious about
-building your own MUDlib, though, you should realize that (unlike
-Melville or 2.4.5) Phantasmal builds on the Kernel library for a
-reason -- you may wish to do so instead of using this, and simply
-treat Phantasmal as one more example MUDLib.
+At the moment, Phantasmal probably isn't as usable as 2.4.5 or,
+according to its web page, GurbaLib.  That's fine, it's experimental.
+If you're serious about building your own MUDlib, though, you should
+realize that Phantasmal builds on the Kernel library for a reason --
+you may wish to do so instead of using this, and simply treat
+Phantasmal as one more example MUDLib.
 
 Phantasmal provides a few useful bits, such as an improved user object
 and error handler.  It doesn't yet provide a number of other very
@@ -35,13 +34,13 @@ you'll be storing player data, areas and so on in this directory and
 so you don't want to redistribute most of it.
 
 Nods in the direction of code security are made by checking the
-previous_program() and simply doing nothing if it's incorrect.  Such
-services are designed to be used from one place and one place only --
-normally in the kernel or the System subdirectory.  There's a document
-in docs/design/SECURITY detailing the status of securing the MUDLib,
-but don't expect it to be properly secured against your fellow
-administrators out of the box.  That will happen eventually, but it's
-still in early development.
+previous_program() and similar measures.  There's a document on
+Phantasmal Security policy on the SourceForge site in the
+documentation section but don't expect Phantasmal to be properly
+secured against your fellow administrators out of the box.  That will
+happen eventually, but it's still in early development.  Security
+against players is quite good even now, and is meant to remain that
+way.
 
 
                     SPECIFIC TASKS
@@ -55,8 +54,8 @@ them.  Eventually, these structures may be altered to be more dynamic,
 which should make adding locales easier but involve many objects
 (phrases, helpd, phrase repositories, rooms, etc) being notified of a
 change in locales.  In any case, unicode is not yet supported so
-beware.  Planned DGD changes, when completed, should allow additional
-binary ports which will in turn allow unicode support.
+beware.  Planned Phantasmal changes, when completed, should allow
+additional binary ports which will in turn allow unicode support.
 
 You may want to have a look at "/usr/common/sys/helpd.c" and change
 the exclude_path function.  It determines what directories will not be
@@ -66,29 +65,30 @@ Currently new commands go into "/usr/System/obj/user.c" or
 "/usr/System/lib/wiztoollib.c", usually at the end of the file.  These
 commands run at that file's full privilege level so you shouldn't
 allow anyone without absolute full trust to write new commands.  This
-may change, but hasn't yet.
+may change later, but hasn't yet.
 
 
                    SPECIFIC LOCATIONS
 
-A lot of game-specific data goes in "/data/phrase" and "/data/text".
-You should know the UNQ phrase format before editing things in
-"/data/phrase" on a live MUD.
+A lot of game-specific data goes in "/data/phrase" and in the rest of
+"/data".  You should know the UNQ phrase format before editing things
+in "/data/phrase" on a live MUD.
 
 If you're serious about making a real MUD happen, look through and
-possibly change absolutely every helpfile entry -- they're all found
-under "/data/help".  Nothing says "unprofessional" (plus "lame",
+change (when necessary) absolutely every helpfile entry -- they're all
+found under "/data/help".  Nothing says "unprofessional" (plus "lame",
 "sloppy", and so on) like leaving stock MUDLib stuff unchanged in your
 MUD when it's wrong.  The help files contain a lot of contact
 information, MUD policies and other stuff that's really quite specific
-to my setup.  Look through and change it, or you'll be unpleasantly
-surprised by the contents.  And I mean it -- look through and change
-*every* help file.  Add new ones.  This is very, very important.
+to my personal server.  Look through and change it or you'll be
+unpleasantly surprised by the contents.  And I mean it -- look through
+and change *every* help file.  Add new ones as you add stuff, too.
+This is very, very important.
 
 There's a system log under the "/log/" directory.  Make sure you know
 what it is, how to use it, and what goes into it.  If you're not sure
 where a particular entry comes from, find it in the code.  Grep is
-your friend, or your editor's file find feature if you're not using a
+your friend, or your editor's "find" feature if you're not using a
 Unix variant.
 
 Managers like stringd.c, phrased.c, logd.c, userd.c and so on live in
@@ -111,7 +111,10 @@ localized to multiple languages, and to make sure that anything you
 add to the MUD has that same ability.  Using the UNQ parser and the
 UNQ phrase format is the easiest way to do this.  See the help files
 in "/data/help/" for examples.  More messages will become localizable
-as time goes on.
+as time goes on.  You can also find localization in
+/usr/System/obj/user.c, specifically in its use of "system phrases".
+These phrases are stored in UNQ files similar in form to the
+helpfiles.
 
 Phantasmal provides an excellent help system by the same standards I
 mention earlier, which isn't saying much.  It allows multiple names to
@@ -126,8 +129,9 @@ Understand the difference between objects that are instantiated
 directly from LPC files and objects that are created from big data
 files.  The Void, a room, is the former.  Help files are the latter.
 If you can't find code for a given object, it may be because it has no
-explicit, spelled-out LPC code at all.  See simple_room for an
-example.
+explicit, spelled-out LPC code at all, and is instead created based on
+a simple template and a data file.  See simple_room for an example of
+code that supports this.
 
 Know the Kernel MUDLib.  Phantasmal does my humble best to conform to
 its requirements, and may do even better in the future.  Understand

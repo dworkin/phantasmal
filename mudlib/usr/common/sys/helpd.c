@@ -94,6 +94,10 @@ private int exclude_path(string path) {
   if(sscanf(path, "%*s/RCS%*s") == 2) {
     return 1;
   }
+  /* Don't include CVS directories */
+  if(sscanf(path, "%*s/CVS%*s") == 2) {
+    return 1;
+  }
 
   return 0;
 }

@@ -5,6 +5,7 @@
 #include <type.h>
 #include <log.h>
 #include <phrase.h>
+#include <channel.h>
 
 inherit LIB_USER;
 inherit user API_USER;
@@ -1442,6 +1443,22 @@ static void cmd_movement(object user, string cmd, string str) {
   tell_room(loc, ".\r\n");
 
   show_room_to_player(dest);
+}
+
+
+static void cmd_gossip(object user, string cmd, string str) {
+  str = STRINGD->trim_whitespace(str);
+
+  if(!str || str == "") {
+    send_system_phrase("Usage: ");
+    message(cmd + " <message>\r\n");
+    return;
+  }
+
+  CHANNELD->string_to_channel(CHANNEL_GOSSIP, Name);
+  CHANNELD->phrase_to_channel(CHANNEL_GOSSIP,
+			      PHRASED->new_simple_english_phrase(" gossips "));
+  CHANNELD->string_to_channel(CHANNEL_GOSSIP, "'" + str + "'.\r\n");
 }
 
 
