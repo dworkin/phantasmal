@@ -42,6 +42,12 @@ necessary.  In any case, *do* remember that the path specified in
 phantasmal.dgd for the MUDLib's directory needs to be absolute, not
 relative.  That means it should *start* with a slash.
 
+Also in your phantasmal.dgd file, have a look at ed_tmpfile, swap_file
+and dump_file.  Each of those is a relative path from your root
+Phantasmal MUDLib directory, the one containing this file (INSTALL).
+You may want to create a "../tmp" directory from here, or change those
+paths to point somewhere else.
+
 Once you have the MUD running, you should first log in as admin, then
 make yourself a non-admin account to use.  When you make your new
 account (referred to as "me" in this paragraph) you can grant it full
