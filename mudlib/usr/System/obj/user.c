@@ -1,4 +1,4 @@
-/* $Header: /cvsroot/phantasmal/mudlib/usr/System/obj/user.c,v 1.61 2003/03/31 10:08:44 angelbob Exp $ */
+/* $Header: /cvsroot/phantasmal/mudlib/usr/System/obj/user.c,v 1.62 2003/03/31 10:12:00 angelbob Exp $ */
 
 #include <kernel/kernel.h>
 #include <kernel/user.h>
@@ -645,11 +645,11 @@ private void player_login(void)
     body->set_openable(0);
 
     /* Players are able to lift 50 kilograms */
-    body->set_weight_capacity(50);
+    body->set_weight_capacity(50.0);
     /* Players are able to carry up to 20 cubic decimeters of stuff. */
-    body->set_volume_capacity(20);
+    body->set_volume_capacity(20.0);
     /* Players are able to carry an object up to 2 meters long */
-    body->set_length_capacity(200);
+    body->set_length_capacity(200.0);
 
     MAPD->add_room_to_zone(body, -1, start_zone);
     if(!MAPD->get_room_by_num(body->get_number())) {
