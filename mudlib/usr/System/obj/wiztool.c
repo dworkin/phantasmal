@@ -228,6 +228,9 @@ void upgraded(varargs int clone) {
 	]),
 	});
 
+  if(!find_object(UNQ_DTD))
+    compile_object(UNQ_DTD);
+
   /* Set up room & portable DTDs */
   if(room_dtd)
     room_dtd->clear();
