@@ -294,7 +294,7 @@ static void cmd_stat(object user, string cmd, string str) {
 
   if(function_object("get_weight", obj)) {
     tmp += "Its weight is " + obj->get_weight() + " kilograms.\r\n";
-    tmp += "Its volume is " + obj->get_volume() + " cubic decimeters.\r\n";
+    tmp += "Its volume is " + obj->get_volume() + " liters.\r\n";
     tmp += "Its length is " + obj->get_length() + " centimeters.\r\n";
   }
 
@@ -312,11 +312,11 @@ static void cmd_stat(object user, string cmd, string str) {
       }
       if(function_object("get_weight_capacity", obj)) {
 	tmp += "Its weight capacity is " + obj->get_weight_capacity()
-	  + ".\r\n";
+	  + " kilograms.\r\n";
 	tmp += "Its volume capacity is " + obj->get_volume_capacity()
-	  + ".\r\n";
+	  + " liters.\r\n";
 	tmp += "Its maximum height/length is " + obj->get_length_capacity()
-	  + ".\r\n";
+	  + " centimeters.\r\n";
       }
     } else {
       tmp += "The object is not a container.\r\n";
