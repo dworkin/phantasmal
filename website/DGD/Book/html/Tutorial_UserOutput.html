@@ -88,12 +88,12 @@
 <p>
   Another interesting thing you can do with the user object is to send
   output to it.  For instance try typing
-  <kbd>user-&gt;message(&quot;Bob!\n&quot;);</kbd>.  You should see the
-  word &quot;Bob!&quot; on a line by itself, and the history variable
-  will have a value of <samp>nil</samp>.  If you remember, nil was the
-  value that a string has before it gets initialized.  It's also the
-  value that a function returns if you don't explicitly return
-  anything.
+  <kbd>user-&gt;message(&quot;Bob!\n&quot;);</kbd>.  You should see
+  the word &quot;Bob!&quot; on a line by itself, and the history
+  variable will have a value of <var>nil</var>.  If you remember,
+  <var>nil</var> was the value that a string has before it gets
+  initialized.  It's also the value that a function returns if you
+  don't explicitly return anything.
 </p>
 
 <p>
@@ -118,10 +118,10 @@
   To see more of how the <dfn>newline character</dfn> works, try
   adding more <dfn>\n</dfn> characters.  Type <kbd>code
   user-&gt;message(&quot;Line...\n\n\n\n&quot;)</kbd>.  Note that if
-  you leave the semicolon off, you won't get nil returned, but rather
-  the number 1.  That's because the user-&gt;message function returns
-  an integer, which is either 1 or 0 for whether the entire message
-  could be sent.
+  you leave the semicolon off, you won't get <var>nil</var> returned,
+  but rather the number 1.  That's because the user-&gt;message
+  function returns an integer, which is either 1 or 0 for whether the
+  entire message could be sent.
 </p>
 
 <p>

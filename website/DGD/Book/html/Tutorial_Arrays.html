@@ -72,10 +72,7 @@ mixed count_digits(string str) {
   int    ctr;
   object user;
 
-  num_count = allocate(10);
-  for(ctr = 0; ctr &lt; 10; ctr++) {
-    num_count[ctr] = 0;
-  }
+  num_count = allocate_int(10);
 
   for(ctr = 0; ctr &lt; strlen(str); ctr++) {
     num_count[str[ctr] - '0']++;
@@ -108,7 +105,7 @@ $36 = nil
 
 <p>
   Since the function doesn't explicitly return anything, the history
-  variable result is nil.  But since it uses the
+  variable result is <var>nil</var>.  But since it uses the
   <code>user-&gt;message</code> function to send output to the user,
   the list of number counts is printed out.  Try calling the function
   a few more times with arguments different from
@@ -144,8 +141,87 @@ $36 = nil
   You'll notice that the variable declaration for <var>num_count</var>
   starts with <var>int</var>, but that there's an asterisk in front of
   it.  The asterisk means that <var>num_count</var> isn't an integer,
-  but rather a <dfn>reference</dfn> to an integer.
+  but rather an <dfn>array</dfn> of integers.  That means that it's a
+  list of integers, ten in this case.
 </p>
+
+<p>
+  Defining <var>num_count</var> doesn't give it a value.  Arrays, like
+  strings, are assigned <var>nil</var> by default, and have to be
+  initialized to something.  One way to assign reasonable values to an
+  array of integers is the allocate_int function, which returns an
+  array of zeroes.  The array is as long as the number in parentheses
+  is big.  For the example above, that means ten zeroes.
+</p>
+
+<p>
+  There are a couple of other new things in the code above.  We'll
+  tackle them one at a time.  The first is <code>++</code>, called the
+  <dfn>increment</dfn> operator.  It adds one to whatever variable you
+  use it on.  So if <var>a</var> was a variable, then <code>a++</code>
+  means &quot;add one to <var>a</var>&quot;.
+</p>
+
+<p>
+  Another is the zero in single quotes.  Remember that LPC characters
+  are represented as ASCII-encoded integers.  A character in single
+  quotes will evaluate the that character's integer.  Try typing
+  <kbd>code 'A'</kbd> and you should get a result of 65, just like in
+  the <a href="Tutorial_StringHandling">section on handling
+  strings</a>.
+</p>
+
+<p>
+  The final new feature of the code is the square brackets, called the
+  <dfn>array dereference</dfn> operator.  The idea is that for an
+  array, like a string, you can take a single element from it.  So if
+  an array called <var>arr</var> contains a zero followed by four
+  nines, then the value of <code>arr[0]</code> is zero, and the value
+  of <code>arr[3]</code> is nine.
+</p>
+
+<p>
+  The square brackets are used twice in the code above, one inside the
+  other.  The first is to dereference a particular character of the
+  string, which is the same string dereference you saw before.  Then
+  <code>'0'</code> is subtracted from that character.  The numbers 0
+  through 9, when ASCII encoded, become 48 through 57.  Remember that
+  these codes are for the printable 0 through 9, so it's not the same
+  as the actual numbers.  Since the numbers are in order, starting
+  with zero, you can subtract ASCII zero (which equals the number 48)
+  from an ASCII digit such as the ones you typed in, and get a number
+  0 through 9 for which digit it was.  That's why we subtract the
+  character zero from that character of the string.
+</p>
+
+<p>
+  The second dereference, the one outside, is an array dereference,
+  not a string dereference, but they work the same way if you think of
+  a string as being like an array of ASCII-encoded characters.  Since
+  subtracting the character <code>'0'</code> leaves a number between 0
+  and 9, we can then use that character as the <dfn>offset</dfn>
+  within the array.  Since the array has ten elements, they're
+  numbered 0 through 9.
+</p>
+
+<p>
+  To write an array value in LPC, you surround the entries with
+  parentheses and curly braces and separate the entries with commas.
+  So the array mentioned above would be written <code>({ 0, 9, 9, 9, 9
+  })</code> in LPC.  Instead of the allocate_int call, you could have
+  written <code>num_count = ({ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 });</code>
+</p>
+
+<p>
+  Arrays can also be added to each other like strings.  Adding them
+  will return an array which is as long as the first array's length
+  plus the second array's length.  The first array's elements will be
+  first, followed by those of the second array.  So <kbd>code ({ 1, 2,
+  3 }) + ({ 7, 8, 9 })</kbd> will print a result like <samp>$40 = ({
+  1, 2, 3, 7, 8, 9 })</samp>.
+</p>
+
+
 
 <table style="width: 100%; border: 1px">
   <tr>
@@ -154,7 +230,7 @@ $36 = nil
 
     <td align="center"><a href="Tutorial.html"> Up<br /> A Quick LPC Tutorial </a></td>
 
-    <td align="right"><a href="Misc.html"> Next &mdash;&gt; <br />A Miscellany </a></td>
+    <td align="right"><a href="Tutorial_Mappings.html"> Next &mdash;&gt; <br />Mappings </a></td>
   </tr>
 </table>
             <address>

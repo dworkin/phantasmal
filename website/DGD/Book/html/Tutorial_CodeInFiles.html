@@ -100,6 +100,7 @@
 #include &lt;trace.h&gt;
 #include &lt;type.h&gt;
 
+/* The exec() function, from the code command */
 mixed exec(object user, mixed argv...) {
     mixed a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z;
 
@@ -182,6 +183,17 @@ mixed exec(object user, mixed argv...) {
   at the start of the source file.  In your own code, you'll need to
   specifically include the files for any constants you may wish to
   use.
+</p>
+
+<p>
+  There's also a weird line starting with <code>/*</code> and ending
+  with <code>*/</code>.  That line is called a <dfn>comment</dfn>, and
+  it's designed to let other programmers know things about your code.
+  DGD just skips it, so you can <em>comment</em> on your own code, to
+  humans only.  A comment is allowed to span multiple lines, or it can
+  cover only part of a single line..  It goes from the <code>/*</code>
+  to the <code>*/</code>, whether that's only part of a line, or pages
+  and pages.
 </p>
 
 <p>
