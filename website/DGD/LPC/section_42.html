@@ -274,82 +274,115 @@ void my_func()
 	Type identification</a></h3>
 
     <p>
-      <a name="IDX59"></a>
-      <a name="IDX60"></a>
-      <a name="IDX61"></a>
-      <a name="IDX62"></a>
-      <a name="IDX63"></a>
-      <a name="IDX64"></a>
-      <a name="IDX65"></a>
-      [intp, floatp, functionp, stringp, objectp, mappingp, pointerp]
-
       Due to the fact that all variables are initialized to 0 or nil,
       and that many functions return 0 or nil when failing, it's
       desirable to be able to determine what value you actually have
       received.  Also, if you use the <code>mixed</code> type it's
       essential to be able to test what the variable contains at any
       specific time. For this purpose there's a special function
-      called <code>type_of()</code>.  It uses constants listed in the
+      called <code>typeof()</code>.  It uses constants listed in the
       header file &lt;type.h&gt;.
     </p>
+
+    <p>
+      Calling typeof() on a value returns one of the constants from
+      <tt>type.h</tt>, though you may get a type different from the
+      one the variable has.  For instance, an uninitialized string,
+      array or mapping will return T_NIL rather than T_STRING, T_ARRAY
+      or T_MAPPING.
+    </p>
+
+    <p>
+      One excellent use for typeof() is to write a function which
+      allows multiple possible types for a single parameter and checks
+      the type of that parameter inside.  For instance:
 
     <pre>
 #include &lt;type.h&gt;
 
+string mixed_print_to_string(mixed arg)
+{
+    switch(typeof(arg))
+    {
+        case T_NIL:
+            return "(nil)";
+        case T_STRING:
+            return "\"" + arg + "\"";
+        case T_INT:
+        case T_FLOAT:
+            return "" + arg;
+        case T_OBJECT:
+            return "&lt;" + object_name(arg) + "&gt;";
+        case T_ARRAY:
+            {
+                int    ctr;
+                string tmp;
+
+                tmp = "({ ";
+                for(ctr = 0; ctr < sizeof(arg) - 1; ctr++)
+                {
+                    tmp += mixed_print_to_string(arg[ctr]);
+                    tmp += ", ";
+                }
+                /* We go one less iteration and then add the final
+                   element by hand to avoid a stray comma at the
+                   end. */
+                tmp += mixed_print_to_string(arg[sizeof(arg) - 1]);
+                return tmp;
+            }
+        default:
+            error("We don't print those yet!");
+    }
+}
+    </pre>
+  </p>
+
+
+    <h3><a name="SEC4.2.4" href="index.html#SEC4.2.4">
+	Type qualifiers</a></h3>
+
+    <p>
+      The types you assign to variables and functions can have
+      qualifiers changing the way they work.  It's very important to
+      keep these qualifiers in mind and use the proper ones at the
+      proper times.  Most work differently when applied to variables
+      rather than functions, so try to avoid confusion by remembering
+      that, for instance, a static variable and a static function have
+      little, if anything, to do with each other.
+    </p>
+
+
+    <h4><a name="SEC4.2.4.1" href="index.html#SEC4.2.4.1">
+	The static variable qualifier</a></h4>
+
+    <p>
+      <a name="IDX66"></a>
+
+      This is a confusing qualifier since it works differently even
+      for local variables than for global variables.  Global variables
+      are defined in the file <i>outside</i> any function. These
+      variables are available in all functions defined after they are,
+      so their <b>scope</b> is object-wide rather than limited to one
+      function.
+    </p>
+
+    <p>
+      It is possible to save all global variables in an object with a
+      special function called <code>save_object</code>, described
+      later.  If the global variable is declared as
+      <code>static</code>, it is <i>not</i> saved along with the
+      others.
+    </p>
+
+    <pre>
+static string   TempName;        /* A non-saved global var. */
     </pre>
 
-
-<h3><a name="SEC60" href="index.html#SEC60">Type qualifiers</a></h3>
-
-<p>
-The very types you assign variables and function can have qualifiers
-changing the way they work. It's very important to keep them in mind
-and use the proper qualifier at the proper time. Most work differently
-when applied to variables rather than functions, so a bit of confusion
-about how they work usually is quite common among the programmers. Try
-to get this straight now and you'll have no problems later
-
-</p>
-
-<ul>
-<li><a href="lpc.html#SEC61">static (variable)</a>: The static variable qualifier
-<li><a href="lpc.html#SEC62">static (function)</a>: The static function qualifier
-<li><a href="lpc.html#SEC63">private</a>: The private function/variable qualifier
-<li><a href="lpc.html#SEC64">nomask</a>: The nomask function/variable qualifier
-<li><a href="lpc.html#SEC65">public</a>: The public function/variable qualifier
-<li><a href="lpc.html#SEC66">varargs</a>: The varargs function qualifier
-</ul>
+    <p> (static local vars) </p>
 
 
-
-<h4><a name="SEC61" href="index.html#SEC61">The static variable qualifier</a></h4>
-<p>
-<a name="IDX66"></a>
-
-</p>
-<p>
-This is a problematic qualifier in the respect that it works differently
-even for variables depending on where they are! Global variables, to
-begin with, are (as you know) variables that are defined in the top of
-the file <i>outside</i> any function. These variables are available in all
-functions i.e. their <b>scope</b> is object-wide, not just limited to one
-function.
-
-</p>
-<p>
-It is possible to save all global variables in an object with a special
-efun (described later). However, if the global variable is declared as
-<code>static</code>, it is <i>not</i> saved along with the rest.
-
-</p>
-
-<pre>
-static string   TempName;        /* A non-saved global var. */
-</pre>
-
-
-
-<h4><a name="SEC62" href="index.html#SEC62">The static function qualifier</a></h4>
+<h4><a name="SEC4.2.4.2" href="index.html#SEC4.2.4.2">
+	The static function qualifier</a></h4>
 <p>
 <a name="IDX67"></a>
 
@@ -639,7 +672,7 @@ mapping first or last, just as long as you do it.
     </address>
     <!-- Created: Mon Jun 11 21:50:30 PDT 2001 -->
     <!-- hhmts start -->
-Last modified: Thu Apr 10 09:01:58 PDT 2003
+Last modified: Sat Apr 12 15:31:40 PDT 2003
 <!-- hhmts end -->
   </body>
 </html>
