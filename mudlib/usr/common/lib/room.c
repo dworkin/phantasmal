@@ -6,7 +6,6 @@
    A basic MUD room with standard trimmings
 */
 
-/* inherit cont CONTAINER; */
 inherit obj OBJECT;
 
 /* The objflags field contains a set of boolean flags specific to
