@@ -616,7 +616,7 @@ private mixed parse_to_builtin(string type, mixed unq) {
       return nil;
     }
 
-    return unq[1];
+    return unq;
   }
 
   error("Builtins array modified without modifying parse_to_builtin!");
