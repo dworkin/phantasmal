@@ -41,7 +41,7 @@ void upgraded(varargs int clone) {
 
 string to_unq_text(void) {
   if(SYSTEM() || COMMON() || GAME()) {
-    return "~object{\n  obj_type{simple room}\n" + to_unq_flags() + "\n}\n\n";
+    return "~object{\n  ~obj_type{simple room}\n" + to_unq_flags() + "\n}\n\n";
   }
   return nil;
 }
