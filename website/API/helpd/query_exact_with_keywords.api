@@ -1,0 +1,33 @@
+FILE
+	/usr/System/sys/helpd.c
+
+NAME
+	query_exact_with_keywords - query the HelpD for a specific string
+	matching certain criteria.
+
+PROTOTYPE
+	mixed *query_exact_with_keywords(string key, object user, string *keywords)
+
+CALLED BY
+	System, Common, Game
+
+DESCRIPTION
+	Check the HelpD for an entry matching 'key' exactly.  The
+	supplied user object is necessary to determine locale,
+	so that various languages can be queried as appropriate.
+	If the help entry is protected by keywords (such as "admin",
+	a favorite) then each keyword it is protected by must
+	be listed in the keywords array passed to this function.
+
+RETURN VALUE
+	An array of help entries matching the supplied string is
+	returned.  See query_exact for the format.
+
+	If no entries are found, nil is returned.
+
+ERRORS
+	Normally none
+
+SEE ALSO
+	new_help_file, query_exact, query_soundex,
+	query_soundex_with_keywords

@@ -1,0 +1,25 @@
+FILE
+	/usr/System/sys/helpd.c
+
+NAME
+	clear_registered_help_dirs - unregister all help directories
+
+PROTOTYPE
+	void clear_registered_help_dirs(void)
+
+CALLED BY
+	System, Common, Game
+
+DESCRIPTION
+	When this function is called, the HelpD clears out all existing
+	help directories.  Those directories will no longer be re-read
+	by reread_help_files, nor when upgrading the HelpD.
+
+RETURN VALUE
+	Nothing.
+
+ERRORS
+	Normally none.
+
+SEE ALSO
+	reread_help_files, new_help_directory
