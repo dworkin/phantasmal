@@ -137,7 +137,10 @@ void upgraded(void) {
 	"@people"              : ({ "cmd_people" }),
 	"%who"                 : ({ "cmd_people" }),
 	"@who"                 : ({ "cmd_people" }),
+
 	"%status"              : ({ "cmd_status" }),
+	"%get_config"          : ({ "cmd_get_config" }),
+	"%print_config"        : ({ "cmd_get_config" }),
 
 	"%shutdown"            : ({ "cmd_shutdown" }),
 	"%reboot"              : ({ "cmd_reboot" }),

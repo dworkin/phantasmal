@@ -55,6 +55,9 @@ private void update_dtd_vars(void) {
     string buf;
 
     buf = read_file(dtd_filename);
+    if(!buf) {
+      error("Can't read DTD file " + dtd_filename + "!");
+    }
     if(strlen(buf) > MAX_STRING_SIZE - 3) {
       error("DTD file is too large in update_dtd_vars!");
     }
@@ -91,14 +94,21 @@ mixed* to_dtd_unq(void) {
 	+ object_name(this_object()));
 }
 
-/* This method takes a string of UNQ text as loads it into the
+/* This method takes a chunk of parsed UNQ and loads it into the
    object. */
 void from_unq(mixed* unq) {
+  mixed* dtd_unq;
+
   if(!dtd) {
     error("You must override the default from_unq_text method for "
 	  + object_name(this_object()) + " or supply a DTD!");
   }
 
+  dtd_unq = dtd->parse_to_dtd(unq);
+  if(!dtd_unq)
+    error("Can't parse UNQ according to DTD!");
+
+  from_dtd_unq(dtd_unq);
 }
 
 
@@ -107,4 +117,28 @@ void from_unq(mixed* unq) {
 void from_dtd_unq(mixed* unq) {
   error("You must override the default from_dtd_unq method for "
 	+ object_name(this_object()));
+}
+
+/* This method loads the necessary file, parses it with the supplied
+   DTD, and calls the from_dtd_unq method to load its contents into
+   the object. */
+void load_from_file(string filename) {
+  string str;
+  mixed* unq, *dtd_unq;
+
+  str = read_file(filename);
+  if(!str)
+    error("Can't read file '" + filename + "' in load_from_file!");
+  if(strlen(str) > MAX_STRING_SIZE - 3)
+    error("File '" + filename + "' is too large in load_from_file!");
+
+  unq = UNQ_PARSER->basic_unq_parse(str);
+  if(!unq)
+    error("Can't parse contents to UNQ!");
+
+  dtd_unq = dtd->parse_to_dtd(unq);
+  if(!dtd_unq)
+    error("Can't parse UNQ according to DTD!");
+
+  from_dtd_unq(dtd_unq);
 }

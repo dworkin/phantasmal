@@ -17,6 +17,7 @@
 #define PORTABLED   "/usr/common/sys/portabled"
 #define OBJNUMD     "/usr/common/sys/objnumd"
 #define CHANNELD    "/usr/common/sys/channeld"
+#define CONFIGD     "/usr/common/sys/configd"
 
 
 /* Kernel lib tie-in objects -- must be in these dirs to be recognized
@@ -79,8 +80,10 @@
 #define PORTABLE_DTD        "/data/dtd/portable.dtd"
 #define HELP_DTD            "/data/dtd/help.dtd"
 #define LOGD_DTD            "/data/dtd/logchannel.dtd"
+#define CONFIGD_DTD         "/data/dtd/config.dtd"
 
 /* Other data files */
+#define CONFIG_FILE         "/data/system/config.unq"
 #define ROOM_FILE           "/data/object/roomfile.unq"
 #define PORT_FILE           "/data/object/portablefile.unq"
 #define BUG_DATA            "/data/text/bug_reports.txt"

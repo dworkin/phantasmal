@@ -109,7 +109,7 @@ static void create(varargs int clone)
     error("Can't read file " + MAPD_ROOM_DTD + "!");
   MAPD->init(mapd_dtd);
 
-  /* Set up The Void (room #0) with "start room" alias */
+  /* Set up The Void (room #0) */
   if(!find_object(THE_VOID)) { compile_object(THE_VOID); }
   the_void = clone_object(THE_VOID);
   if(!the_void)
@@ -142,7 +142,10 @@ static void create(varargs int clone)
 
   if(!find_object(CHANNELD)) compile_object(CHANNELD);
 
-  /* This should be done by the config file when it's loaded */
+  /* Start up configD */
+  if(!find_object(CONFIGD)) compile_object(CONFIGD);
+
+  /* This should be done by the configd when it's loaded */
   MAPD->set_room_alias("start room", the_void);
 }
 
