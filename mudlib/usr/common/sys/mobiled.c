@@ -1,6 +1,6 @@
+#include <kernel/kernel.h>
 #include <config.h>
 #include <type.h>
-#include <kernel/kernel.h>
 #include <log.h>
 
 /* MobileD-owned Segments */
@@ -72,6 +72,9 @@ private void load_tag_codes(void) {
 }
 
 void upgraded(varargs int clone) {
+  if(!SYSTEM() && previous_program() != MOBILED)
+    return;
+
   /* Reload the Binder */
   tag_code = ([ ]);
 
@@ -81,14 +84,19 @@ void upgraded(varargs int clone) {
 }
 
 void destructed(int clone) {
-  if(mobfile_dtd)
-    destruct_object(mobfile_dtd);
-  if(binder_dtd)
-    destruct_object(mobfile_dtd);
+  if(SYSTEM()) {
+    if(mobfile_dtd)
+      destruct_object(mobfile_dtd);
+    if(binder_dtd)
+      destruct_object(mobfile_dtd);
+  }
 }
 
 void init(void) {
   string mobfile_dtd_string, binder_dtd_string;
+
+  if(!SYSTEM())
+    return;
 
   if(!initialized) {
     mobfile_dtd_string = read_file(MOB_FILE_DTD);
@@ -115,6 +123,9 @@ void init(void) {
 
 int add_mobile_number(object mobile, int num) {
   int newnum;
+
+  if(!SYSTEM() && !COMMON() && !GAME())
+    return -1;
 
   if(!mobile)
     error("No mobile supplied to MOBILED::add_mobile_number!");
@@ -175,6 +186,9 @@ private int allocate_mobile_obj(int num, object obj) {
    removing their body from a room, destructing the mobile, then
    adding the object back. */
 void remove_mobile(object mobile) {
+  if(!SYSTEM() && !COMMON() && !GAME())
+    return;
+
   if(mobile) {
     object body, location;
 
@@ -196,6 +210,9 @@ void remove_mobile(object mobile) {
 }
 
 object get_mobile_by_num(int num) {
+  if(!SYSTEM() && !COMMON() && !GAME())
+    return nil;
+
   if(num < 0) return nil;
 
   return OBJNUMD->get_object(num);
@@ -203,6 +220,9 @@ object get_mobile_by_num(int num) {
 
 int* mobiles_in_segment(int seg) {
   int* tmp;
+
+  if(!SYSTEM() && !COMMON() && !GAME())
+    return nil;
 
   tmp = OBJNUMD->objects_in_segment(seg);
   if(!tmp)
@@ -214,6 +234,9 @@ int* mobiles_in_segment(int seg) {
 int* all_mobiles(void) {
   int  iter;
   int* ret, *tmp;
+
+  if(!SYSTEM() && !COMMON() && !GAME())
+    return nil;
 
   ret = ({ });
   for(iter = 0; iter < sizeof(mobile_segments); iter++) {
@@ -229,10 +252,14 @@ int* all_mobiles(void) {
 string get_file_by_mobile_type(string mobtype) {
   if(!SYSTEM())
     error("Only SYSTEM code can query the MOBILED for mobile types!");
+
   return tag_code[mobtype];
 }
 
 object clone_mobile_by_type(string mobtype) {
+  if(!SYSTEM() && !COMMON() && !GAME())
+    return nil;
+
   if(!tag_code[mobtype]) return nil;
 
   return clone_object(tag_code[mobtype]);
@@ -240,6 +267,9 @@ object clone_mobile_by_type(string mobtype) {
 
 void add_unq_text_mobiles(string unq_text, string filename) {
   mixed *unq_data;
+
+  if(!SYSTEM() && !COMMON() && !GAME())
+    return;
 
   if(!initialized)
     error("Can't add mobiles to uninitialized MOBILED!");
@@ -260,6 +290,9 @@ void add_unq_text_mobiles(string unq_text, string filename) {
 void add_dtd_unq_mobiles(mixed *unq, string filename) {
   int    iter;
   object mobile;
+
+  if(!SYSTEM() && !COMMON() && !GAME())
+    return;
 
   if(!initialized)
     error("Can't add mobiles to uninitialized MOBILED!");

@@ -176,6 +176,9 @@ void set_segment_zone(int segment, int newzone, int oldzone) {
 void add_room_object(object room) {
   string name;
 
+  if(!SYSTEM() && !COMMON() && !GAME())
+    return;
+
   name = object_name(room);
   if(room_objects[name])
     error("Room already registered in add_room_object!");
@@ -185,6 +188,9 @@ void add_room_object(object room) {
 
 void add_room_to_zone(object room, int num, int req_zone) {
   int seg, allocated, zone;
+
+  if(!SYSTEM() && !COMMON() && !GAME())
+    return;
 
   allocated = 0;
 
@@ -215,28 +221,16 @@ void add_room_to_zone(object room, int num, int req_zone) {
   room->set_number(num);
 }
 
-/* For backwards compatibility */
-void add_room_number(object room, int num) {
-  error("Obsolete function!");
-  add_room_to_zone(room, num, 0);
-}
-
-void set_room_alias(string alias, object room) {
-  error("Obsolete function!");
-
-  if(room_objects[alias] && !SYSTEM())
-    error("Alias '" + alias + "' already registered in add_room_alias!");
-
-  room_objects[alias] = room;
-}
-
 object get_room(string name) {
+  error("Obsolete function!");
   return room_objects[name];
 }
 
 void remove_room_object(object room) {
   string name;
-  int    num;
+
+  if(!SYSTEM() && !COMMON() && !GAME())
+    return;
 
   name = object_name(room);
   if(!room_objects[name]) {
@@ -244,24 +238,13 @@ void remove_room_object(object room) {
   }
   room_objects[name] = nil;
 
-  num = room->get_number();
   room->set_room_number(-1);
-
-}
-
-void remove_room_alias(string name) {
-  error("Obsolete function!");
-
-  if(find_object(name))
-    error("Name is an object, not an alias!");
-
-  if(!room_objects[name]) {
-    error("Removing alias not in room_objects mapping!");
-  }
-  room_objects[name] = nil;
 }
 
 object get_room_by_num(int num) {
+  if(!SYSTEM() && !COMMON() && !GAME())
+    return nil;
+
   if(num < 0) return nil;
 
   return OBJNUMD->get_object(num);
@@ -438,7 +421,10 @@ private int resolve_location(object room) {
 
 
 object *get_deferred_rooms(void) {
-  return unresolved_rooms[..];
+  if(SYSTEM())
+    return unresolved_rooms[..];
+
+  return nil;
 }
 
 
@@ -520,6 +506,9 @@ void add_dtd_unq_rooms(mixed* unq, string filename) {
   if(!initialized)
     error("Can't add rooms to uninitialized mapd!");
 
+  if(!SYSTEM() && !COMMON() && !GAME())
+    return;
+
   /* TODO: we'll need the filename for objectd notify dependencies
      -- we'll need to keep track of the fact that if that file
      changes, these room objects change. */
@@ -543,6 +532,9 @@ void add_unq_text_rooms(string text, string filename) {
   if(!initialized)
     error("Can't add rooms to uninitialized mapd!");
 
+  if(!SYSTEM() && !COMMON() && !GAME())
+    return;
+
   unq_data = UNQ_PARSER->unq_parse_with_dtd(text, room_dtd, filename);
   if(!unq_data)
     error("Cannot parse text in add_unq_text_rooms!");
@@ -551,6 +543,9 @@ void add_unq_text_rooms(string text, string filename) {
 }
 
 int* segments_in_zone(int zone) {
+  if(!SYSTEM() && !COMMON() && !GAME())
+    return nil;
+
   if(zone < 0 || zone >= sizeof(zone_segments)) {
     return nil;
   }
@@ -559,12 +554,18 @@ int* segments_in_zone(int zone) {
 }
 
 int* rooms_in_segment(int segment) {
+  if(!SYSTEM() && !COMMON() && !GAME())
+    return nil;
+
   return OBJNUMD->objects_in_segment(segment);
 }
 
 int* rooms_in_zone(int zone) {
   int *segs, *rooms, *tmp;
   int  iter;
+
+  if(!SYSTEM() && !COMMON() && !GAME())
+    return nil;
 
   segs = segments_in_zone(zone);
   if(!segs) return nil;

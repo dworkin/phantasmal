@@ -34,6 +34,9 @@ static void create(varargs int clone) {
 }
 
 void upgraded(varargs int clone) {
+  if(!SYSTEM() && !COMMON())
+    return;
+
   set_dtd_file(SOULD_DTD);
   unq::upgraded();
 
@@ -54,6 +57,9 @@ mixed* to_dtd_unq(void) {
 }
 
 void from_dtd_unq(mixed* unq) {
+  if(!SYSTEM() && !COMMON())
+    return;
+
   while(sizeof(unq) > 0) {
     if(unq[0] == "social") {
       mixed* entry, *soc_unq;
@@ -86,15 +92,24 @@ void from_dtd_unq(mixed* unq) {
 }
 
 int is_valid(string verb) {
-  return !!sould_strings[verb];
+  if(SYSTEM() || COMMON() || GAME())
+    return !!sould_strings[verb];
+
+  return -1;
 }
 
 int num_socials(void) {
-  return num_soc;
+  if(SYSTEM() || COMMON() || GAME())
+    return num_soc;
+
+  return -1;
 }
 
 string* all_socials(void) {
   mixed* keys;
+
+  if(!SYSTEM() && !COMMON() && !GAME())
+    return nil;
 
   keys = map_indices(sould_strings);
   return keys[..];
@@ -105,6 +120,9 @@ string get_social_string(object user, object body,
   mixed *entry, *unq;
   string result;
   object phr;
+
+  if(!SYSTEM() && !COMMON() && !GAME())
+    return nil;
 
   entry = sould_strings[verb];
   if(!entry) return nil;

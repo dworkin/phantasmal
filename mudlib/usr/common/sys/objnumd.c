@@ -21,14 +21,20 @@ static void create(varargs int clone) {
 }
 
 void upgraded(varargs int clone) {
-  owners = ({ MAPD, EXITD, MOBILED });
+  if(SYSTEM() || COMMON())
+    owners = ({ MAPD, EXITD, MOBILED });
 }
 
 void destructed(varargs int clone) {
+  if(SYSTEM()) {
 
+  }
 }
 
 string get_segment_owner(int segment) {
+  if(!SYSTEM() && !COMMON())
+    return nil;
+
   if(segments[segment]) {
     return owners[segments[segment][0]];
   } else
@@ -36,6 +42,9 @@ string get_segment_owner(int segment) {
 }
 
 int get_highest_segment(void) {
+  if(!SYSTEM() && !COMMON())
+    return -1;
+
   return highest_segment;
 }
 
@@ -61,6 +70,9 @@ private void set_segment_owner(int segment, int owner, int zonenum) {
 
 int get_segment_zone(int segment) {
   mixed* seg;
+
+  if(!SYSTEM() && !COMMON())
+    return -1;
 
   seg = segments[segment];
   if(seg) {
