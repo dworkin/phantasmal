@@ -546,6 +546,13 @@ static void cmd_fix_exits(object user, string cmd, string str) {
   int    ctr, ctr2;
   string tmpstr;
 
+  if(str && !STRINGD->is_whitespace(str)) {
+    user->message("Usage: " + cmd + "\r\n");
+    return;
+  }
+
+  user->message("Fixing up exits...\r\n");
+
   segs = EXITD->get_exit_segments();
 
   tmp = ({ });
@@ -568,7 +575,8 @@ static void cmd_fix_exits(object user, string cmd, string str) {
         dest2 = exit->get_destination();
         if (dest2)
           if (dest2->get_number() == from->get_number())
-             if (exit2->get_direction() == EXITD->opposite_direction(from->get_direction()))
+             if (exit2->get_direction()
+		 == EXITD->opposite_direction(from->get_direction()))
                EXITD->fix_exit(exit, 2, exit2->get_number());
       }
     } else if (exit->get_exit_type()==1) {
@@ -577,6 +585,8 @@ static void cmd_fix_exits(object user, string cmd, string str) {
       EXITD->fix_exit(exit, 2, exit->get_link());
     }
   }
+
+  user->message("Done.\r\n");
 }
 
 static void cmd_list_exits(object user, string cmd, string str) {
