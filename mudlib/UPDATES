@@ -1,0 +1,58 @@
+INTERNAL DOCUMENT
+
+END-USERS:  THIS ISN'T LIKELY TO BE USEFUL TO YOU
+
+What files get updated when we do a release?  What should we check for
+accuracy before releasing a new version of Phantasmal on the public at
+large?
+
+Everywhere:
+  Remove CVS directories, #files#, .#files and files~
+
+include/version.h
+  New version number
+
+usr/System/initd.c
+  Check for Kernel MUDLib version
+
+data/object/roomfile, data/object/mobfile, data/object/zonefile
+  Remove player data
+
+data/user/*.pwd
+  Remove all .pwd files
+
+include/*.h
+  Remove float.h, limits.h, status.h, type.h
+
+include/kernel/*.h
+  Remove all .h files
+
+kernel/
+  Remove all symlinks
+
+log/
+  Remove System.log
+
+doc/
+  Remove kernel MUDLib stuff, update other stuff
+
+tmp/
+  Remove swapfiles and/or statedumps
+
+usr/
+  Remove user dirs for wizards
+
+TESTED_VERSIONS
+  List appropriate DGD versions
+
+README
+  Mention new features
+
+SETUP
+  Check for accuracy, add new features
+
+Credits
+  As needed
+
+Web pages
+  New features, new comparison, new Credits, new Tutorials
