@@ -5,10 +5,10 @@
 
 ~bind{
   ~tag{portable}
-  ~code{/usr/common/obj/simple_portable}
+  ~code{/usr/common/obj/simple_room}
 }
 
 ~bind{
   ~tag{body}
-  ~code{/usr/common/obj/mobile_portable}
+  ~code{/usr/common/obj/simple_room}
 }
