@@ -85,7 +85,7 @@
 #define MOB_FILE_DTD        "/data/dtd/mobile.dtd"
 #define CONFIGD_DTD         "/data/dtd/config.dtd"
 #define ZONED_DTD           "/data/dtd/zoned.dtd"
-#define BIND_DTD            "/data/dtd/bind.dtd"
+#define BIND_DTD            "/usr/common/sys/bind.dtd"
 #define SOULD_DTD           "/data/dtd/sould.dtd"
 
 /* Other data files */
