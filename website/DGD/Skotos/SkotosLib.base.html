@@ -1,0 +1,509 @@
+  <titledef text="Skotos Library" />
+
+  <h2> What is Known About the Skotos Libraries? </h2>
+
+  <p>
+    Skotos' current libraries are closed-source.  However, some
+    information has been released by the company about them.  You can
+    find some of the information in the <a
+    href="http://www.skotos.net">Skotos articles</a>, especially
+    Shannon Appelcline's &quot;Trials, Triumphs and
+    Trivialities&quot;.
+  </p>
+
+  <p>
+    The Skotos library includes a web interface for administration and
+    creation. The basic library includes everything one might need for
+    the base of a next-generation mud.  This includes true <a
+    href="../LibWriting/Persistence.html">persistence</a>, and a more
+    extensive social expression mechanism than even MUSHes contain.
+    The base Skotos library does <i>not</i> have game-specific systems
+    like combat, though.  Those are built individually, per-game.
+  </p>
+
+  <p>
+    There is also XML object import and export.  You can see examples
+    of an <a href="../external/skotos_anvil.txt">anvil</a> and a <a
+    href="../external/skotos_rose.txt">rose</a> rendered as XML from
+    their Skotos LPC objects.
+  </p>
+
+<hr />
+
+<pre>
+From: Par Winzell
+Date: Thu, 22 Jul 1999 14:19:11 -0700 (PDT)
+To: DGD Mailing List
+Subject: Re: [DGD]Melville Mudlib
+
+In response to Dworkin's recent stirring posting about the interesting
+times ahead and a new generation of mudlibs, here's an outline of some
+of the constituent parts of the lib we're writing at Skotos, including
+discussion and motivation.
+
+By far the most influential factor on design has been persistence; the
+idea of a state space that is cold-booted only once and then stays up,
+potentially forever. Core support for this has been in DGD for a long
+time; much of Dworkin's kernel library is designed with these demands
+in mind, and people have been -talking- about peristent Muds for a long
+time. So why aren't there any yet?
+
+Well, it's damn hard. One of the basic problems, a recent topic on this
+list, is program upgrading which requires LPC support in the form of a
+object-database. More generally, the necessity of basic consistency is
+upped brutally. If after a year of precious uptime you find some vital
+datastructure to be corrupted, you're going to be very sad. When this
+happens to the mudlib you wrote, you'll be glad you based it around the
+kernel lib -- which still runs, and lets you do an emergency login and
+poke at the guts of your broken world.
+
+So we use the kernel library, unmodified. Easy decision to make.
+
+Incidentally, the -game- effects of persistency are of course enormous.
+That's another discussion entirely.
+
+The ~System level is small. It has three major components -- the object
+database; a second-level auto object which adds some protection against
+destructing clonable objects that have clones; and some API translation
+to the rest of the lib of kernel services which only ~System is allowed
+to directly access.
+
+The guts are in ~SkotOS. This means they get the benefit of the ~System
+level restrictions and clone book-keeping. Here we have,
+
+ * HTTP service. Text is great, but a browser interface can be used to
+great advantage, especially for administration and development. This is
+especially true in a persistent game, where manipulating state in one
+way or another is much more important than in a rebooting Mud, where it
+is the LPC (and save_object) files that really determine what the world
+is. We're flirting with HTTP 1.1 compliance.
+
+ * Standardized functionality for the export and import of object state
+through XML. To use this system, the object describes its function-call
+interface for query() and set() style operations. With this description
+we are able not only to fetch the object state and transcribe it to XML
+but also to generate for it a true DTD (Document Type Definition). With
+the help of this DTD, which describes precisely the possible structures
+of the state, external XML authoring software will be able to construct
+word-processor quality GUI's for any object that uses the system.
+
+ * An XML parser (and generator) which uses parse_string(). XML is just
+a data storage format, so just parsing it does little. The data may be
+object state as per above, destined to be squeezed back into an object
+somewhere. In addition to this static structure, however, we use XML to
+do an active mark-up of text fields. In SGML/XML terms this is "PCDATA".
+   - In-game descriptions may be marked up to vary depending on server
+state; for example, a room description may vary by light level relative
+to the looker's night-vision stat, or variables associated with players
+or rooms or other objects may be embedded in the text.
+   - We also generate HTML from the XML, and thus automatically have a
+powerful system for server-side generation of dynamic HTML. We'll ship
+the lib with a set of such XML-HTML pages.
+
+ * A decent command parser which should understand a sensible subset of
+English. We have chosen to completely forbid guess-the-verb puzzles, by
+centralizing the parser entirely. If a verb does something anywhere, it
+does something everywhere. Successful commands are turned into actions
+or sequences of actions taken by objects in the virtual world. We tried
+for as much separation between client-interface and world as possible.
+These sequences of actions could equally well be generated by clicking
+on things in some isometric graphical client. While we try to keep that
+door open, we're concentrating on text as the primary interface; though
+we expect ambitious developers to allow for e.g. stat-showing graphical
+client-side panes, scrolling (and clickable) maps, and more.
+
+ * A pretty intricate system for expressive/emotive stuff; while there
+is no emote-command, the social verbs are plentiful and come with lots
+of adverbs. That's nothing new; the interesting stuff are stances and
+poses, which are tied into the world simulation to a higher degree than
+I have seen elsewhere. I am able to e.g. kneel before an altar in quiet
+repose, or lie on a table, or stand next to Dworkin in a room with more
+effect than a transient statement of fact -- these ways in which things
+can relate to each other is used in describing the environment. Certain
+socials break certain stances and poses.
+
+ * There's the idea of a prox -- something one can be in the proximity
+of. Dropped gear will be lying 'near Zell' instead of in the usual big
+collective heap. If I walk away from my battle-axe, it simply lies on
+the floor. One of the things we hope to do is to kill off this ancient
+truth that LPMuds aren't very good for social Mudders.
+
+
+Phew. Then, finally, there is the virtual world itself. We separate the
+world objects from things like command parsing and text generation much
+more than does e.g. 2.4.5; this helps the world state to be independent
+of client interface, as discussed above. We just took a step further in
+this direction and utterly slew the time-honoured sub-classing approach
+to physical objects. There is now only the ur-thing, and it can be room
+or sword or bag of gold -- or all three -- depending only on its state.
+Thus everything is really a clone of /base/obj/thing, everything can be
+eaten (possibly with great discomfort) or used as a weapon (possibly a
+very bad weapon). Of couse, that effect is equally possible to achieve
+with traditional sub-classing. The difference is again the trend toward
+the data-driven, which seems to happen naturally around persistence.
+
+
+It should not be difficult to tell that the early part of this document
+details things that are pretty much settled, while the mutations of the
+/base directory are recent and somewhat shocking.
+
+So. When will all this be available to play with? I'm unsure. October?
+
+Comments requested!
+
+
+Zell
+</pre>
+
+<hr />
+
+<pre>
+From: "Christopher Allen"
+To: DGD Mailing List
+Subject: RE: [DGD]Patches
+Date: Tue, 11 Apr 2000 15:27:07 -0700
+
+The line of demarcation is becoming more specific as we do some architectural
+partitioning out of SkotOS -- we have a number of layers above the kernel
+library:
+
+ -------------------------------------------------------------
+/                          Game                               \
+\                          World                              /
+ -------------------------------------------------------------
+/                          Game                               \
+\                     Specific Mechanics                      /
+ =============================================================
+ -------------------------------------   ---------------------
+/                WorldLib             \ /       IFLib         \
+|   inventory            stance pose   |                      |
+|  proximity  details  faces  desc     |   socials     verbs  |
+\    exits  gender  volition  physics / \   adverbs  errors   /
+ --- - - - - - - - - - - - - - - - --- \ \ -- - - - - - - - --
+/                 DevLib                \ /   ToolLib         \
+|     Services             Interpreters  |                    |
+|                                        |    sam  |   dtd    |
+|  sid  | devd  ||  state | forms | sami |  xmlgen | xmlparse |
+\  logd | helpd ||        |       |     / \                   /
+ -------------------------------------------------------------
+/                                                             \
+|                               System                        |
+|                               Library                       |
+|        Object Services          ||      Net Services        |
+|                                 ||                          |
+|  initd | idd | progdbd |syslogd || nptd | httpd | devuserd@ |
+\        |     |         |        ||      |       |           /
+ -------------------------------------------------------------
+/                                                             \
+|                               Kernel                        |
+|                               Library                       |
+|                                                             |
+|    security  ownership  resources  thread-local  logon      |
+\                                       storage               /
+ -------------------------------------------------------------
+/                                                             \
+|                                D G D 				|
+|                                                             |
+|  LPC Compiler  |  Run-Time  |  Database  |  I/O  |  Parser  |
+\                |            |            |       |          /
+ -------------------------------------------------------------
+
+It is the game world and game specific mechanics (such as the specifics of
+combat) that is the property of the developer using our libraries.
+
+
+------------------------------------------------------------------------
+. Christopher Allen                                 Skotos Tech Inc. ..
+.                           1512 Walnut St., Berkeley, CA 94709-1513 ..
+. &lt;http://www.Skotos.net>               o510/649-4030  f510/649-4034 ..
+</pre>
+
+<hr />
+
+<pre>
+From: dgd at list.imaginary.com (Christopher Allen)
+Date: Sun Feb  2 12:38:06 2003
+Subject: Re[2]: [DGD] Impressed with DGD
+
+"Christopher Darque":
+> If this game I am
+> considering is proposed, and accepted, at Skotos then this
+> might be a real possibility.
+
+If you are considering a game for us, either using your own library (as
+WAP does with Grendel's Revenge and TEC) or Skotos' own library (which
+is used by Castle Marrach), then you'll have access to our clients
+(ActiveX, Java, and Mozilla Javascript) which all use HTML font tags for
+color inside the text window.
+
+You can specify any color you want using hex codes, but the following
+are the default named ones:
+
+{ "black",    0x000000 },
+{ "white",    0xffffff },
+{ "green",    0x00ff00 },
+{ "maroon",   0x800000 },
+{ "olive",    0x008000 },
+{ "navy",     0x000080 },
+{ "purple",   0x800080 },
+{ "gray",     0x808080 },
+{ "red",      0xff0000 },
+{ "yellow",   0xffff00 },
+{ "blue",     0x0000ff },
+{ "teal",     0x008080 },
+{ "lime",     0x808000 },
+{ "aqua",     0x00ffff },
+{ "fuchsia",  0xff00ff },
+{ "silver",   0xc0c0c0 },
+
+In addition, the Alice ActiveX client supports some (but not all) of the
+Pueblo commands:
+
+        &lt;br/>COMPLETELY FUNCTIONAL MARKUP
+        &lt;xch_page clear=text />
+        &lt;body bgcolor=silver text=black alink=red vlink=red link=red />
+        &lt;hr/>
+        &lt;br/>Testing xch_page clear=text Tag.
+        &lt;br/>Testing body Tag.
+        &lt;br/>Testing Header Rule.
+        &lt;br/>Testing img img xch_mode=text Tag &lt;img xch_mode=text/>.
+        &lt;br/>Testing img img xch_mode=purehtml Tag &lt;img
+xch_mode=purehtml/>.
+        &lt;br/>Testing img img xch_mode=html Tag &lt;img xch_mode=html/>.
+        &lt;br/>Testing bgcolor & text & *link Attributes in body Tag.
+       &lt;br/>Testing xch_mudtext &lt;xch_mudtext>I'm using
+Alice&lt;/xch_mudtext>
+        &lt;br/>Testing xch_cmd Attribute &lt;a xch_cmd="scratch my
+ring">Scratch me&lt;/a>.
+        &lt;br/>
+        &lt;br/>Pueblo Forms Test:
+        &lt;form method=xch_cmd >
+                &lt;br/>&lt;select name=sourceselect>
+&lt;option>Select 1&lt;/option>
+&lt;option selected>Select 2&lt;/option>
+&lt;option>Select 3&lt;/option>
+&lt;option>Select 4&lt;/option>
+&lt;option>Select 5&lt;/option>
+&lt;option>Select 6&lt;/option>
+&lt;/select>
+&lt;br/>&lt;textarea name=sourcetextarea rows=5 cols=30 />
+        &lt;br/>&lt;input type=checkbox checked name=sourcecheckbox
+value=checkbox />Checkbox 1
+        &lt;br/>&lt;input type=radio checked name=sourceradio
+value=radio />Radio 1
+        &lt;br/>&lt;input type=number name=sourcenumber size=6
+maxlength=6 />Number 1
+        &lt;br/>&lt;input type=text name=sourcetext size=12
+maxlength=12 />Text 1
+        &lt;br/>&lt;input type=password name=sourcepassword size=12
+maxlength=12 />Password 1
+        &lt;br/>&lt;input type=submit value="Send" />
+        &lt;br/>&lt;input type=reset value="Reset" />
+        &lt;/form>
+        &lt;br/>Character Editing Elements:
+        &lt;br/>Testing &lt;b>Bold&lt;/b>.
+        &lt;br/>Testing &lt;i>Italic&lt;/i>.
+        &lt;br/>Testing &lt;u>Underline&lt;/u>.
+        &lt;br/>Testing &lt;strike>Strike&lt;/strike>.
+        &lt;br/>Testing &lt;strong>Strong&lt;/strong>.
+        &lt;br/>Testing &lt;em>Emphasis&lt;/em>.
+        &lt;br/>Testing &lt;cite>Cite&lt;/cite>.
+        &lt;br/>Testing &lt;tt>Typewriter&lt;/tt>.
+        &lt;br/>Testing &lt;code>Code&lt;/code>.
+        &lt;br/>Testing &lt;samp>Samp&lt;/samp>.
+        &lt;br/>
+        &lt;br/>Block Formatting Elements:
+        &lt;br/>Testing Header Rule:
+&lt;hr size=4 width=50% align=center />
+        &lt;br/>Testing Headers:
+        &lt;h1>Header 1&lt;/h1>
+        &lt;h2>Header 2&lt;/h2>
+        &lt;h3>Header 3&lt;/h3>
+        &lt;h4>Header 4&lt;/h4>
+        &lt;h5>Header 5&lt;/h5>
+        &lt;h6>Header 6&lt;/h6>
+        &lt;br/>&lt;quote>Quote: The quick brown fox jumped over the lazy dog.
+The quick brown fox jumped over the lazy dog. The quick brown fox jumped
+over the lazy dog. &lt;/quote>
+        &lt;address>Address: The quick brown fox jumped over the lazy dog.
+The quick brown fox jumped over the lazy dog. The quick brown fox jumped
+over the lazy dog.&lt;/address>
+        &lt;blockquote>Blockquote: The quick brown fox jumped over the lazy
+dog. The quick brown fox jumped over the lazy dog. The quick brown fox
+jumped over the lazy dog.&lt;/blockquote>
+        Testing Ordered List:&lt;ol>
+       &lt;li>List Item One&lt;/li>
+       &lt;li>List Item Two&lt;/li>
+       &lt;/ol>
+Testing Unordered List:&lt;ul>
+       &lt;li>List Item One&lt;/li>
+       &lt;li>List Item Two&lt;/li>
+       &lt;/ul>
+Testing Directory List:&lt;dir>
+       &lt;li>List Item One&lt;/li>
+       &lt;li>List Item Two&lt;/li>
+       &lt;/dir>
+Testing Menu List:&lt;menu>
+       &lt;li>List Item One&lt;/li>
+       &lt;li>List Item Two&lt;/li>
+       &lt;/menu>
+Testing Definition List&lt;dl>
+&lt;dt>definition term&lt;/dt>
+       &lt;dd>definition data&lt;/dd>
+       &lt;/dl>
+        Testing Font Color &lt;font color=aqua>aqua&lt;/font>.
+       &lt;br/>Testing Font Color &lt;font color=black>black&lt;/font>.
+       &lt;br/>Testing Font Color &lt;font color=blue>blue&lt;/font>.
+       &lt;br/>Testing Font Color &lt;font color=fuchsia>fuchsia&lt;/font>.
+       &lt;br/>Testing Font Color &lt;font color=gray>gray&lt;/font>.
+       &lt;br/>Testing Font Color &lt;font color=green>green&lt;/font>.
+       &lt;br/>Testing Font Color &lt;font color=lime>lime&lt;/font>.
+       &lt;br/>Testing Font Color &lt;font color=maroon>maroon&lt;/font>.
+       &lt;br/>Testing Font Color &lt;font color=navy>navy&lt;/font>.
+       &lt;br/>Testing Font Color &lt;font color=olive>olive&lt;/font>.
+       &lt;br/>Testing Font Color &lt;font color=purple>purple&lt;/font>.
+       &lt;br/>Testing Font Color &lt;font color=red>red&lt;/font>.
+       &lt;br/>Testing Font Color &lt;font color=silver>silver&lt;/font>.
+       &lt;br/>Testing Font Color &lt;font color=teal>teal&lt;/font>.
+       &lt;br/>Testing Font Color &lt;font color=white>white&lt;/font>.
+       &lt;br/>Testing Font Color &lt;font color=yellow>yellow&lt;/font>.
+       &lt;br/>Testing Font Multiset &lt;font fgcolor=red bgcolor=white
+size="+3">Test&lt;/font>.
+        &lt;br/>PARTIALLY FUNCTIONAL MARKUP
+       &lt;br/>Testing Paragraph Tags:
+&lt;br/>&lt;nobr>Testing Nobr. The quick brown fox jumped over the
+lazy dog. The quick brown fox jumped over the lazy dog. The quick brown
+fox jumped over the lazy dog. The quick brown fox jumped over the lazy
+dog.&lt;/nobr>
+&lt;br/>&lt;base>Testing Base. The quick brown fox jumped over the
+lazy dog. The quick brown fox jumped over the lazy dog. The quick brown
+fox jumped over the lazy dog. The quick brown fox jumped over the lazy
+dog.&lt;/base>
+&lt;br/>&lt;xmp>Testing Xmp. The quick brown fox jumped over the lazy
+dog. The quick brown fox jumped over the lazy dog. The quick brown fox
+jumped over the lazy dog. The quick brown fox jumped over the lazy
+dog.&lt;/xmp>
+&lt;br/>&lt;listing>Testing Listing. The quick brown fox jumped over
+the lazy dog. The quick brown fox jumped over the lazy dog. The quick
+brown fox jumped over the lazy dog. The quick brown fox jumped over the
+lazy dog.&lt;/listing>
+&lt;br/>&lt;plaintext>Testing Plaintext. The quick brown fox jumped
+over the lazy dog. The quick brown fox jumped over the lazy dog. The
+quick brown fox jumped over the lazy dog. The quick brown fox jumped
+over the lazy dog.&lt;/plaintext>
+&lt;br/>&lt;pre>Testing Pre. The quick brown fox jumped over the lazy
+dog. The quick brown fox jumped over the lazy dog. The quick brown fox
+jumped over the lazy dog. The quick brown fox jumped over the lazy
+dog.&lt;/pre>
+        &lt;hr/>
+        NOT-FUNCTIONAL PUEBLO MARKUP
+        &lt;br/>Testing Font Color &lt;font color=grey>grey&lt;/font>.
+        &lt;br/>Testing Font Color &lt;font color=brown>brown&lt;/font>.
+        &lt;br/>Testing send Tag &lt;send>touch my ring&lt;/send>.
+        &lt;br/>Testing xch_pane Tag &lt;xch_pane action=open name=map
+xch_panetitle="Map of the City" options="floating persistent fit
+nonsizeable" vspace=5 hspace=5/>
+        &lt;br/>Testing xch_pane Tag &lt;xch_pane action=open name=buttonbar
+options="fit internal" align=bottom href="test.html"/>
+        &lt;br/>Testing href Attribute &lt;a href="test" >Click me&lt;/a>.
+        &lt;br/>Testing img Tag &lt;img src="test" />.
+        &lt;br/>Testing img Tag &lt;img src=\$prop(this.img-url) />.
+        &lt;br/>Testing img img xch_alert Tag &lt;img xch_alert/>.
+        &lt;br/>Testing xch_hint Attributes for xch_cmd links &lt;a
+xch_cmd="scratch my ring" xch_hint="scratch my ring">Scratch me&lt;/a>.
+        &lt;br/>Testing link vlink alink Attributes for xch_cmd links &lt;a
+xch_cmd="scratch my ring" link=red alink=red vlink=red >Scratch me&lt;/a>.
+        &lt;br/>Testing text Attributes for xch_cmd links &lt;a
+xch_cmd="scratch my ring" text=red >Scratch me&lt;/a>.
+        &lt;br/>Testing color Tag &lt;color fore=green back=black > Green on
+Black &lt;/color>.
+        &lt;hr/>
+
+You can also send special SKOOT commands that will command the clients
+to execute Javascript in the window that the client resides in.
+
+The Marrach game uses colors (see the command PROFILE to set default
+colours) and some the Pueblo specific tags (see the command EXITS).
+Grendel's Revenge makes most use of the SKOOT commands. To see these
+features you will need to be using our ActiveX client on Internet
+Explorer.
+
+-- Christopher Allen
+
+------------------------------------------------------------------------
+.. Christopher Allen                                 Skotos Tech Inc. ..
+..                           1512 Walnut St., Berkeley, CA 94709-1513 ..
+.. &lt;http://www.skotos.net>           o510/647-2760x202  f510/647-2761 ..
+</pre>
+
+<hr />
+
+<pre>
+From: dgd at list.imaginary.com (Christopher Allen)
+Date: Sun Feb  2 20:03:01 2003
+Subject: Re[2]: [DGD] Impressed with DGD
+
+"Christopher Darque":
+> > If you are considering a game for us, either using your own library
+>
+> First let me say thanks for the effort of cutting and pasting
+> all that info, I appreciate it and I have saved it for serious
+> study. I am fairly familiar with HTML and Pueblo, but I know
+> very little about ActiveX.
+
+You don't really need to know about the clients, just how to interface
+with them. For instance, in our Marrach client, when an object is
+dropped in a room, it also shows up in a popup menu to the right of the
+of the text area. The way this works is that whenever an object arrives
+in a room, a SKOOT event is sent, basically something like "SKOOT 15 a
+rock". The web page recieves the SKOOT 15 messages, and sends it to
+function 15, which in our case is the javascript:
+
+function addObject(str) {
+  var ix, pos, name;
+
+  pos = str.indexOf(' ');
+  if (pos >= 0) {
+    ix = str.substring(0, pos);
+    name = str.substring(pos+1);
+    if (this["objectSet"] == null) {
+        this["objectSet"] = new Object();
+    }
+    this["objectSet"][ix] = name;
+    updateAll();
+//    alert('object ' + name + ' added');
+  }
+}
+
+The fact that we use 15 for addObject is not relevant -- WAP uses a
+completely different set of SKOOT # messages that call Javascripts that
+they wrote for their client. Whatever you can do in Javascript
+dynamically (i.e. without refreshing the page) can be done using this
+technique.
+
+> Second, where might I find more technical docs on the Skotos
+> systems?  If I do decide to propose this to your Company I
+> would almost certainly use your Lib as the starting point.
+
+There is quite a bit of documentation that you get when you are involved
+with developing for us, however, I'd say though we have alot, is never
+enough ;-)
+
+> Your use of non-telnet clients does open up some interesting
+> possibilities, such as a split screen with the room visual
+> at the top and a scrolling text box below for everything
+> else.
+
+It is even possible to have the client be a 1x1 pixel client, and just
+use it to control the dynamic web page.
+
+-- Christopher Allen
+
+------------------------------------------------------------------------
+.. Christopher Allen                                 Skotos Tech Inc. ..
+..                           1512 Walnut St., Berkeley, CA 94709-1513 ..
+.. &lt;http://www.skotos.net>           o510/647-2760x202  f510/647-2761 ..
+</pre>
+
+  <p style="text-size: 150%"> <a href="../index.html"> Back to top level
+    </a> </p>
