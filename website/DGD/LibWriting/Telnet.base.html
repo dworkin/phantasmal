@@ -80,5 +80,90 @@ Regards,
 Dworkin
   </pre>
 
+  <hr />
+
+<pre>
+From: "Felix A. Croes"
+Subject: Re: [DGD] Telnet Echo / Carriage Returns
+Date: Sat, 4 Sep 2004 13:43:01 +0200
+
+Thomas Rice <thomas.rice@gmail.com> wrote:
+
+> Hmm, I noticed I setting on my telnet client (putty) for "local line
+> editing". I had it on "auto", which makes it not drop to the next line
+> when I press enter. If I switch it to "force on" it will then go to
+> the next line like I want.
+>
+> So it seems this is the option I'm looking for. :) Does anyone know
+> what I need to change in the Kernel lib and/or the driver source so
+> that a client with 'auto' will turn this value to on?
+
+DGD always sends \r\n as a newline on telnet connections.  But it does
+not respond to some of the more advanced settings that putty may be
+attempting.  Your options are to modify dgd/src/comm.c to more fully
+implement telnet option negotiation, to change putty settings instead
+of DGD/LPC code, or to connect to the binary port.
+
+Regards,
+Dworkin
+</pre>
+
+<hr />
+
+<pre>
+From: Dread Quixadhal
+Subject: [DGD] Re: Telnet Protocol
+Date: Sun, 05 Sep 2004 18:02:54 -0400
+
+Not too long ago, Thomas Rice claimed:
+
+>I'm trying to build on the Kernel Lib and am trying to modify how the
+>MUD treats my input when I telnet in and press enter.
+>
+>At the moment, after I press enter the cursor goes to the beginning of
+>the line (but not down one) and then any response to what I typed is
+>written over the same text.
+>
+>This happens with the Kernel lib I downloaded, as well as the
+>Phantasmal lib I downloaded, but doesn't happen with the Gurba lib,
+>but I haven't been able to figure out how to change it.
+>
+>  
+>
+and not long after that, Felix A. Croes replied:
+
+> <>
+>
+>DGD always sends \r\n as a newline on telnet connections.  But it does
+>not respond to some of the more advanced settings that putty may be
+>attempting.  Your options are to modify dgd/src/comm.c to more fully
+>implement telnet option negotiation, to change putty settings instead
+>of DGD/LPC code, or to connect to the binary port.
+>  
+>
+
+As usual, Dworkin answered my question before I could ask it :)
+
+Not too long ago, I was working on a telnet class in C++ and sent mail 
+to a couple of people claiming to have found the oldest and most trivial 
+bug in all of DikuMUD Land... namely, if you look at the source to just 
+about any of the diku variants, you'll see they send text out the socket 
+with "\n\r" as the line termination characters.  According to the telnet 
+specification, all transmissions in line mode must use "\r\n" as the 
+line termination sequence, if you want to send the opposite, it would 
+actually be sent as "\n\r\0".  The telnet server (which DGD acts as) 
+will always send things in this form and expect them in this form.  It's 
+up to the client (putty, your local /bin/telnet, or tinyfugue, etc...) 
+to correctly translate them back and forth between the telnet spec and 
+your local machine's interpretation.  Most unix-like platforms use "\n", 
+most DOS-like platforms use "\r\n", and I think most pre-OSX macs use "\r".
+
+Needless to say, reporting this bug didn't raise many red flags with 
+anyone who noticed... but what Thomas describes is what I would expect 
+to happen if either side (client or server) wasn't correctly honouring 
+the protocol.  Besides changing settings, you might want to try another 
+client as well.
+</pre>
+
   <p style="text-size: 150%"> <a href="../index.html"> Back to top level
     </a> </p>
