@@ -1,4 +1,4 @@
-/* $Header: /cvsroot/phantasmal/mudlib/usr/System/obj/user.c,v 1.39 2003/03/05 22:35:28 angelbob Exp $ */
+/* $Header: /cvsroot/phantasmal/mudlib/usr/System/obj/user.c,v 1.40 2003/03/07 00:18:32 angelbob Exp $ */
 
 #include <kernel/kernel.h>
 #include <kernel/user.h>
@@ -1102,6 +1102,16 @@ static void cmd_look(object user, string cmd, string str) {
     }
     if(sizeof(tmp) > 1) {
       user->message("You see more than one '" + str +"'.  You pick one.\r\n");
+    }
+
+    if(!tmp[0]->is_container()) {
+      user->message("That's not a container.\r\n");
+      return;
+    }
+
+    if(!tmp[0]->is_open()) {
+      user->message("It's closed.\r\n");
+      return;
     }
 
     objs = tmp[0]->objects_in_container();
