@@ -1,4 +1,4 @@
-/* $Header: /cvsroot/phantasmal/mudlib/usr/System/open/lib/userlib.c,v 1.13 2005/03/28 19:18:03 angelbob Exp $ */
+/* $Header: /cvsroot/phantasmal/mudlib/usr/System/open/lib/userlib.c,v 1.14 2005/04/04 07:59:06 angelbob Exp $ */
 
 #include <kernel/kernel.h>
 #include <kernel/user.h>
@@ -345,7 +345,7 @@ static void show_room_to_player(object ROOM location) {
 
   if(!location) {
     send_system_phrase("you are nowhere");
-    message("\r\n");
+    message("\n");
     return;
   }
 
@@ -356,34 +356,34 @@ static void show_room_to_player(object ROOM location) {
     message(tmp);
     if(is_admin())
       message(" [" + location->get_number() + "]");
-    message("\r\n");
+    message("\n");
   } else {
     send_system_phrase("(unnamed location)");
-    message("\r\n");
+    message("\n");
   }
 
   phr = location->get_look();
   tmp = phr ? phr->to_string(this_object()) : nil;
   if(tmp) {
     message(tmp);
-    message("\r\n");
+    message("\n");
   } else {
     send_system_phrase("(no room desc)");
-    message("\r\n");
+    message("\n");
   }
 
-  message("*****\r\n");
+  message("*****\n");
 
   objs = location->objects_in_container();
   for(ctr = 0; ctr < sizeof(objs); ctr++) {
     if(objs[ctr] != body) {
       message("- ");
       send_phrase(objs[ctr]->get_brief());
-      message("\r\n");
+      message("\n");
     }
   }
 
-  message("\r\n");
+  message("\n");
 
   if(function_object("num_exits", location)) {
     send_system_phrase("Exits");
@@ -395,7 +395,7 @@ static void show_room_to_player(object ROOM location) {
       phr = EXITD->get_short_for_dir(exit->get_direction());
       message(phr->to_string(this_object()) + " ");
     }
-    message("\r\n");
+    message("\n");
   }
 }
 
@@ -583,8 +583,8 @@ int login(string str)
     string check_name;
 
     if(this_object()->name_is_forbidden(str)) {
-      previous_object()->message("\r\nThat name is forbidden.\r\n"
-				 + "Please log in with a different one.\r\n");
+      previous_object()->message("\nThat name is forbidden.\n"
+				 + "Please log in with a different one.\n");
       return MODE_DISCONNECT;
     }
 
@@ -608,8 +608,8 @@ int login(string str)
     if(name && STRINGD->stricmp(name, check_name)) {
       LOGD->write_syslog("Internal error restoring player from file!",
 			 LOG_FATAL);
-      previous_object()->message("Something went wrong logging you in.\r\n"
-			       + "Try again, maybe?\r\n");
+      previous_object()->message("Something went wrong logging you in.\n"
+			       + "Try again, maybe?\n");
       return MODE_DISCONNECT;
     }
 
@@ -635,7 +635,7 @@ int login(string str)
 
       message_all_users(Name + " ");
       system_phrase_all_users("logs in.");
-      message_all_users("\r\n");
+      message_all_users("\n");
 
       send_system_phrase("choose new password");
       set_state(previous_object(), STATE_NEWPASSWD1);
@@ -669,9 +669,9 @@ void logout(int quit)
       if (quit) {
 	message_all_users(Name + " ");
 	system_phrase_all_users("logs out.");
-	message_all_users("\r\n");
+	message_all_users("\n");
       } else {
-	message_all_users(Name + " disconnected.\r\n");
+	message_all_users(Name + " disconnected.\n");
       }
     }
     this_object()->player_logout();
@@ -707,17 +707,17 @@ static int process_message(string str)
     if (crypt(str, password) != password) {
       object phr;
 
-      previous_object()->message("\r\n");
+      previous_object()->message("\n");
       phr = PHRASED->file_phrase(SYSTEM_PHRASES, "Bad password.");
       previous_object()->message(phr->to_string(this_object()));
-      previous_object()->message("\r\n");
+      previous_object()->message("\n");
       return MODE_DISCONNECT;
     }
     connection(previous_object());
-    message("\r\n");
+    message("\n");
     message_all_users(Name + " ");
     system_phrase_all_users("logs in.");
-    message_all_users("\r\n");
+    message_all_users("\n");
     if (!wiztool && sizeof(rsrc::query_owners() & ({ name })) != 0) {
       wiztool = SYSTEM_USER_OBJ->clone_wiztool_as(name);
       if(!wiztool)
@@ -727,28 +727,28 @@ static int process_message(string str)
     catch {
       this_object()->player_login(first_login);
     } : {
-      message("Error logging user in!\r\n");
+      message("Error logging user in!\n");
       return MODE_DISCONNECT;
     }
     break;
 
   case STATE_OLDPASSWD:
     if (crypt(str, password) != password) {
-      message("\r\n");
+      message("\n");
       send_system_phrase("Bad password.");
-      message("\r\n");
+      message("\n");
       break;
     }
-    message("\r\n");
+    message("\n");
     send_system_phrase("New password: ");
     set_state(previous_object(), STATE_NEWPASSWD1);
     return MODE_NOECHO;
 
   case STATE_NEWPASSWD1:
     if(strlen(str) == 0) {
-      message("\r\n");
+      message("\n");
       send_system_phrase("Looks like no password");
-      message("\r\n");
+      message("\n");
       if(password && strlen(password)) {
 	send_system_phrase("Password change cancelled");
 	return MODE_NOECHO;
@@ -757,14 +757,14 @@ static int process_message(string str)
       return MODE_DISCONNECT;
     }
     if(strlen(str) < 4) {
-      message("\r\n");
+      message("\n");
       send_system_phrase("must be four characters");
-      message("\r\n");
+      message("\n");
       send_system_phrase("New password: ");
       return MODE_NOECHO;
     }
     newpasswd = str;
-    message("\r\n");
+    message("\n");
     send_system_phrase("Retype new password: ");
     set_state(previous_object(), STATE_NEWPASSWD2);
     return MODE_NOECHO;
@@ -773,13 +773,13 @@ static int process_message(string str)
     if (newpasswd == str) {
       password = crypt(str);
       save_user_to_file();
-      message("\r\n");
+      message("\n");
       send_system_phrase("Password changed.");
-      message("\r\n");
+      message("\n");
     } else {
-      message("\r\n");
+      message("\n");
       send_system_phrase("Mismatch; password not changed.");
-      message("\r\n");
+      message("\n");
 
       set_state(previous_object(), STATE_NEWPASSWD1);
       send_system_phrase("New password: ");
@@ -834,8 +834,8 @@ static void cmd_help(object user, string cmd, string str) {
   if (str && sscanf(str, "%d %s", index, str) == 2) {
     if(index < 1) {
       send_system_phrase("Usage: ");
-      message(cmd + " <word>\r\n");
-      message("   or  " + cmd + " <num> <word>\r\n");
+      message(cmd + " <word>\n");
+      message("   or  " + cmd + " <num> <word>\n");
       return;
     }
     exact = 1;
@@ -863,12 +863,12 @@ static void cmd_help(object user, string cmd, string str) {
     if((exact && (sizeof(hlp) <= index)) || (sizeof(hlp) < 0)
        || (index < 0)) {
       message("Only " + sizeof(hlp) + " help files on \""
-	      + str + "\".\r\n");
+	      + str + "\".\n");
     } else {
       if(sizeof(hlp) > 1) {
-	message("Help on " + str + ":    [" + sizeof(hlp) + " entries]\r\n");
+	message("Help on " + str + ":    [" + sizeof(hlp) + " entries]\n");
       }
-      message_scroll(hlp[index][1]->to_string(this_object()) + "\r\n");
+      message_scroll(hlp[index][1]->to_string(this_object()) + "\n");
     }
     return;
   }
@@ -882,29 +882,29 @@ static void cmd_help(object user, string cmd, string str) {
     if(hlp && sizeof(hlp)) {
       if(index) {
 	if(index < sizeof(hlp)) {
-	  message("Help on " + hlp[index][0] + ":\r\n");
+	  message("Help on " + hlp[index][0] + ":\n");
 	  message(hlp[index][1]->to_string(this_object()));
-	  message("\r\n");
+	  message("\n");
 	} else {
 	  message("There are only " + sizeof(hlp)
-		  + " help entries that sound like " + str + ".\r\n");
+		  + " help entries that sound like " + str + ".\n");
 	}
       } else if(sizeof(hlp) == 1) {
-	message_scroll("Help on " + hlp[0][0] + ":\r\n"
+	message_scroll("Help on " + hlp[0][0] + ":\n"
 		       + hlp[0][1]->to_string(this_object())
-		       + "\r\n");
+		       + "\n");
       } else {
-	message("\r\nWhich do you want help on:\r\n");
+	message("\nWhich do you want help on:\n");
 	for(index = 0; index < sizeof(hlp); index++) {
-	  message("     " + hlp[index][0] + "\r\n");
+	  message("     " + hlp[index][0] + "\n");
 	}
-	message("(type \"help <topic>\" for the topic you want)\r\n");
+	message("(type \"help <topic>\" for the topic you want)\n");
       }
       return;
     }
   }
 
-  message("No help on \"" + str + "\".\r\n");
+  message("No help on \"" + str + "\".\n");
 }
 
 
@@ -923,8 +923,8 @@ private void __sub_unsub_channels(object user, string cmd, int chan,
       if((chan != CHANNEL_ERR && chan != CHANNEL_LOG)
 	 || !wiztool) {
 	user->message("You can't subscribe to any channels that use"
-		      + " extra subscription info.\r\n");
-	user->message("Usage: " + cmd + " <channel> [on|off]\r\n");
+		      + " extra subscription info.\n");
+	user->message("Usage: " + cmd + " <channel> [on|off]\n");
       }
 
       if(!sscanf(sublevel, "%d", level)) {
@@ -934,25 +934,25 @@ private void __sub_unsub_channels(object user, string cmd, int chan,
 	  level = LOGD->get_level_by_name(sublevel);
 	} else {
 	  user->message("Not sure what level to use for '" + sublevel
-			+ "'.\r\n");
+			+ "'.\n");
 	  return;
 	}
       }
 
       /* Subscribe with extra info 'level' */
       if(CHANNELD->subscribe_user(user, chan, level) < 0) {
-	  user->message("You can't subscribe to that channel.\r\n");
+	  user->message("You can't subscribe to that channel.\n");
       } else {
 	user->message("Subscribed to " + channelname + ", level " + level
-		      + ".\r\n");
+		      + ".\n");
       }
     } else {
 
       /* Subscribe with no extra info */
       if(CHANNELD->subscribe_user(user, chan) < 0) {
-	user->message("You can't subscribe to that channel.\r\n");
+	user->message("You can't subscribe to that channel.\n");
       } else {
-	user->message("Subscribed to " + channelname + ".\r\n");
+	user->message("Subscribed to " + channelname + ".\n");
       }
     }
 
@@ -965,13 +965,13 @@ private void __sub_unsub_channels(object user, string cmd, int chan,
 
     if(CHANNELD->unsubscribe_user(user, chan) < 0) {
       user->message("You can't unsub from that.  "
-		    + "Are you sure you're subscribed?\r\n");
+		    + "Are you sure you're subscribed?\n");
     } else {
-      user->message("Unsubscribed from " + channelname + ".\r\n");
+      user->message("Unsubscribed from " + channelname + ".\n");
       save_user_to_file();
     }
   } else {
-    user->message("Huh?  Try using 'on' or 'off' for the third value.\r\n");
+    user->message("Huh?  Try using 'on' or 'off' for the third value.\n");
   }
 }
 
@@ -984,7 +984,7 @@ static void cmd_channels(object user, string cmd, string str) {
     str = STRINGD->trim_whitespace(str);
   if(!str || str == "") {
     chanlist = CHANNELD->channel_list(user);
-    user->message("Channels:\r\n");
+    user->message("Channels:\n");
     for(ctr = 0; ctr < sizeof(chanlist); ctr++) {
       if(CHANNELD->is_subscribed(user, ctr)) {
 	user->message("* ");
@@ -997,19 +997,19 @@ static void cmd_channels(object user, string cmd, string str) {
 	user->message("  " + chanlist[ctr][2]);
       }
 
-      user->message("\r\n");
+      user->message("\n");
     }
-    user->message("-----\r\n");
+    user->message("-----\n");
     return;
   }
 
   if(!str || str == "" || sscanf(str, "%*s %*s %*s %*s") == 4) {
     if(wiztool) {
       send_system_phrase("Usage: ");
-      message(cmd + " [<channel name> [on|off]] [extra info]\r\n");
+      message(cmd + " [<channel name> [on|off]] [extra info]\n");
     } else {
       send_system_phrase("Usage: ");
-      message(cmd + " [<channel name> [on|off]]\r\n");
+      message(cmd + " [<channel name> [on|off]]\n");
     }
     return;
   }
@@ -1017,7 +1017,7 @@ static void cmd_channels(object user, string cmd, string str) {
   if((sscanf(str, "%s %s %s", channelname, subval, sublevel) != 3)
      && (sscanf(str, "%s %s", channelname, subval) != 2)
      && (sscanf(str, "%s", channelname) != 1)) {
-    user->message("Parsing error!\r\n");
+    user->message("Parsing error!\n");
     return;
   }
 
@@ -1025,7 +1025,7 @@ static void cmd_channels(object user, string cmd, string str) {
 
   if(chan < 0) {
     user->message("You don't know any channel named '" + channelname
-		  + "'.  Type 'channels' for a list of names.\r\n");
+		  + "'.  Type 'channels' for a list of names.\n");
     return;
   }
 
@@ -1036,11 +1036,11 @@ static void cmd_channels(object user, string cmd, string str) {
 
   /* Check whether you're subbed and whether the channel is available
      here. */
-  user->message("Channel: " + channelname + "\r\n");
+  user->message("Channel: " + channelname + "\n");
   if(CHANNELD->is_subscribed(user, chan)) {
-    user->message("You are currently subscribed to that channel.\r\n");
+    user->message("You are currently subscribed to that channel.\n");
   } else {
-    user->message("You are not currently subscribed to that channel.\r\n");
+    user->message("You are not currently subscribed to that channel.\n");
   }
-  user->message("That channel is available in this area.\r\n");
+  user->message("That channel is available in this area.\n");
 }
