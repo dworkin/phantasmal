@@ -24,13 +24,14 @@ static void create(varargs int clone) {
 
   if(!find_object(UNQ_DTD)) compile_object(UNQ_DTD);
 
+  zone_table = ({ ({ "Unzoned", ([ ]) }) });
+
   upgraded();
 }
 
 void upgraded(varargs int clone) {
   set_dtd_file(ZONED_DTD);
   dtd::upgraded(clone);
-  zone_table = ({ ({ "Unzoned", ([ ]) }) });
 }
 
 void destructed(int clone) {
@@ -103,15 +104,18 @@ void from_dtd_unq(mixed* unq) {
   string zonename;
 
   if(sizeof(unq) != 4)
-    error("There should be exactly one 'zones' and one 'zonelist' section in the ZONED file!");
+    error("There should be exactly one 'zones' and one 'zonelist'"
+	  + " section in the ZONED file!");
 
   if(unq[0] != "zonelist")
-    error("Unrecognized section in ZONED file -- must start with 'zonelist'!");
+    error("Unrecognized section in ZONED file -- must start with"
+	  + " 'zonelist'!");
   else if(unq[2] != "zones")
-    error("Unrecognized section in ZONED file -- second section must be 'zones'!");
+    error("Unrecognized section in ZONED file -- second section"
+	  + " must be 'zones'!");
 
- if (load_type == 1){
-    
+  if (load_type == 1){
+
     zones = unq[3]; /* load zones values */
     while(sizeof(zones)) {
     
@@ -154,10 +158,11 @@ void from_dtd_unq(mixed* unq) {
           zonename = segment_unq[1][1];
           if (zonename != "Unzoned"){
             zone_table += ({ ({ zonename, ([ ]) }) });
-            /* Is this zone in the position expected in the table */
+            /* Is this zone in the position expected in the table? */
             if (zone_table[zonenum][0] != zonename){
-              error("\nZONED: Incorrect zone table order "+zonename+" #"+zonenum+"\n");
-            } 
+              error("\nZONED: Incorrect zone table order "
+		    + zonename + " #" + zonenum + "\n");
+            }
           }
       } 
       /* Remove that segment, move on */
@@ -237,6 +242,12 @@ int add_new_zone( string zonename ){
   if (zonename && zonename != ""){
     int zonenum;
     zone_table += ({ ({ zonename, ([ ]) }) });
+
+    /* And tell MAPD to update its zone table, too */
+    MAPD->upgraded(0);
+
     return num_zones()-1;
+  } else {
+    error("Illegal or (nil) zone name given to ZONED!");
   }
 }

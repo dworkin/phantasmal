@@ -31,32 +31,42 @@ object get_room_by_num(int num);
 int* rooms_in_zone(int zone);
 private int assign_room_to_zone(int num, object room, int zone);
 private int assign_room_number(int num, object room);
-
+void upgraded(varargs int clone);
 
 
 static void create(varargs int clone) {
-  int numzones, ctr;
-
   if(clone)
     error("Cloning mapd is not allowed!");
+
+  room_objects = ([ ]);
+  tag_code = ([ ]);
+
+  zone_segments = ({ });
+  upgraded(clone);
+
+  initialized = 0;
+}
+
+void upgraded(varargs int clone) {
+  int numzones, size, ctr;
 
   if(!find_object(UNQ_PARSER))
     compile_object(UNQ_PARSER);
   if(!find_object(UNQ_DTD))
     compile_object(UNQ_DTD);
 
-  room_objects = ([ ]);
-  zone_segments = ({ });
-  tag_code = ([ ]);
   numzones = ZONED->num_zones();
-  for(ctr = 0; ctr < numzones; ctr++) {
-    zone_segments += ({ ({ }) });
+  size = sizeof(zone_segments);
+
+  if(size != numzones) {
+    if(size > numzones)
+      error("We can't handle dynamically reducing the number of zones!");
+
+    for(ctr = 0; ctr < numzones - size; ctr++) {
+      LOGD->write_syslog("Adding zone in MAPD!", LOG_VERBOSE);
+      zone_segments += ({ ({ }) });
+    }
   }
-
-  initialized = 0;
-}
-
-void upgraded(varargs int clone) {
 }
 
 void init(string room_dtd_str, string bind_dtd_str) {
@@ -65,12 +75,6 @@ void init(string room_dtd_str, string bind_dtd_str) {
   string bind_file, tag, file;
 
   if(!initialized) {
-    /* Number of zones will have loaded dynamically, so update the array */
-    numzones = ZONED->num_zones();
-    for( ctr = 0; ctr < numzones; ctr++){
-      zone_segments += ({ ({ }) }) ;
-    }
-    
     room_dtd = clone_object(UNQ_DTD);
     room_dtd->load(room_dtd_str);
 
@@ -151,7 +155,7 @@ void set_segment_zone(int segment, int newzone, int oldzone) {
     zone_segments[oldzone] -= ({ segment });
   }
 
-  if(newzone == -1)
+  if(newzone < 0)
     error("Setting zone to illegal zone number!");
 
   zone_segments[newzone] += ({ segment });
