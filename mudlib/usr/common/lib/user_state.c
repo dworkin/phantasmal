@@ -27,6 +27,10 @@ void init(object new_user, object new_next_state) {
   next_state = new_next_state;
 }
 
+static object get_user(void) {
+  return user;
+}
+
 int from_user(string input) {
   error("Implement from_user!");
 }
