@@ -1,0 +1,30 @@
+FILE
+	/usr/common/obj/basic_unq_parser
+
+NAME
+	trim_empty_tags - remove tag/block pairs with only whitespace
+
+PROTOTYPE
+	mixed *trim_empty_tags(mixed *unq_data)
+
+CALLED BY
+	Anybody
+
+DESCRIPTION
+	Trim empty tags out of the supplied block of UNQ data and
+	return it.  Empty tags are those with nil labels, or all-whitespace
+	labels, and also have all-whitespace block bodies.  This
+	function is not recursive, and won't descend into UNQ block bodies
+	to trim out empty tags inside them.
+
+	Many UNQ formats allow unlabelled whitespace but ignore it.  This
+	function can automate that process.
+
+RETURN VALUE
+	The UNQ data described above.
+
+ERRORS
+	Errors will occur if malformed UNQ is passed in.
+
+SEE ALSO
+	basic_unq_parse

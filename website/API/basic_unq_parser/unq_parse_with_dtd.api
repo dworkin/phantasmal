@@ -1,0 +1,28 @@
+FILE
+	/usr/common/obj/basic_unq_parser
+
+NAME
+	unq_parse_with_dtd - parse UNQ data to a structured format
+
+PROTOTYPE
+	mixed *unq_parse_with_dtd(string block, object dtd,
+			varargs string filename)
+
+CALLED BY
+	Anybody
+
+DESCRIPTION
+	The block is parsed into UNQ and then further parsed with
+	the supplied UNQ DTD.  The filename, if supplied, will be
+	used in error reporting.  See parse_to_dtd for specifics
+	of the DTD-parsed format.
+
+RETURN VALUE
+	The DTD-parsed data described above, or nil if parsing fails.
+
+ERRORS
+	Errors will be caught and logged if parsing fails.  More errors
+	will be caused in that case to be caught by the calling function.
+
+SEE ALSO
+	basic_unq_parse, parse_to_dtd

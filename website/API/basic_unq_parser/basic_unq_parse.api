@@ -1,0 +1,33 @@
+FILE
+	/usr/common/obj/basic_unq_parser
+
+NAME
+	basic_unq_parse - convert an UNQ file to parsed UNQ data
+
+PROTOTYPE
+	mixed *basic_unq_parse(string text_block)
+
+CALLED BY
+	Anybody
+
+DESCRIPTION
+	The block is parsed into UNQ and returned as an array.  The
+	array will consist of an even number of elements, paired off
+	as label and block.  Unlabelled blocks will have a label of
+	'nil'.  The blocks will consist of either a single string or
+	an array.  If an array, the array will be in the same format
+	described here, with an even number of elements alternating
+	labels and blocks.
+
+	This UNQ parser will handle backslash escaping, including
+	control characters.
+
+RETURN VALUE
+	The UNQ data described above, or nil if parsing fails.
+
+ERRORS
+	Errors will be caught and logged if parsing fails, but no
+	errors will occur in the calling function's scope.
+
+SEE ALSO
+	unq_parse_with_dtd, trim_empty_tags
