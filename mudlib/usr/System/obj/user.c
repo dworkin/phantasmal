@@ -1,4 +1,4 @@
-/* $Header: /cvsroot/phantasmal/mudlib/usr/System/obj/user.c,v 1.18 2002/06/13 18:50:48 angelbob Exp $ */
+/* $Header: /cvsroot/phantasmal/mudlib/usr/System/obj/user.c,v 1.19 2002/06/14 04:24:30 angelbob Exp $ */
 
 #include <kernel/kernel.h>
 #include <kernel/user.h>
@@ -763,7 +763,7 @@ private void player_login(void)
     body->set_glance(NEW_PHRASE(Name));
     body->set_look(NEW_PHRASE(Name + " wanders the MUD."));
     body->set_examine(nil);
-    body->add_noun(NEW_PHRASE(name));
+    body->add_noun(NEW_PHRASE(STRINGD->to_lower(name)));
 
     mobile = clone_object(SIMPLE_MOBILE);
     mobile->assign_body(body);
