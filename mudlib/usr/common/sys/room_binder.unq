@@ -4,16 +4,6 @@
 }
 
 ~bind{
-  ~tag{room}
-  ~code{/usr/common/obj/simple_room}
-}
-
-~bind{
-  ~tag{portable}
-  ~code{/usr/common/obj/simple_room}
-}
-
-~bind{
-  ~tag{body}
+  ~tag{simple room}
   ~code{/usr/common/obj/simple_room}
 }
