@@ -3,8 +3,17 @@
   ~esUS{cuenta}
 }
 ~desc{
-  ~enUS{Sorry, no storyline until more of the MUD is up.}
-  ~esUS{Mea culpa, no hay cuenta hasta que mas del MUD funciona.}
+  ~enUS{
+
+You've awakened as a spirit, after a past you don't remember.  You've
+died and risen again, or perhaps you never really left.  You've taken
+a form that can see the mortal world again, but you're in danger of
+instant destruction again.  A vessel and its crew take you in, and
+offer you a place among them.  Once you take your place in the crew,
+what do you do?  It seems that nothing will be the same, not ever
+again...
+
+  }
 }
 
 ~name{~enUS{gameplay}}
@@ -12,7 +21,8 @@
 
 This MUD is highly experimental, and not fully written.  You don't get
 gameplay or game balance help until it's more publicly releasable.
-Talk to Angelbob for eventual theme details if you're very curious.
+
+See 'help story' for more details about the theme.
 
 }}
 
