@@ -1,6 +1,7 @@
 #include <kernel/kernel.h>
 #include <kernel/access.h>
 #include <kernel/rsrc.h>
+#include <kernel/version.h>
 #include <type.h>
 #include <config.h>
 #include <log.h>
@@ -12,6 +13,21 @@ static void create(varargs int clone)
 {
   object driver, obj, the_void;
   string mapd_dtd, help_dtd, objs_file;
+  int major, minor, patch;
+
+  /* First things first -- this release needs one of the
+     latest versions of DGD, so let's make sure. */
+  if(!sscanf(KERNEL_LIB_VERSION, "%d.%d.%d", major, minor, patch)) {
+    error("Don't recognize Kernel Library version as being of the"
+	  + " form 1.2.XX!");
+  }
+  if((major == 1 && minor < 2)
+     || (major == 1 && minor == 2 && patch < 13)) {
+    error("Need to upgrade to DGD version 1.2.41 or higher!");
+  } else if (major > 1 || (major == 1 && minor > 2)) {
+    DRIVER->message("This version of Phantasmal is not tested");
+    DRIVER->message("with DGD beyond 1.2.XX.  Please upgrade!\n");
+  }
 
   access::create();
   rsrc::create();
