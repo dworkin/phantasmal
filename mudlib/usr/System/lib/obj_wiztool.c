@@ -115,6 +115,31 @@ static void cmd_set_obj_desc(object user, string cmd, string str) {
 }
 
 
+private void priv_mob_stat(object user, object mob) {
+  object mobbody, mobuser;
+
+  mobbody = mob->get_body();
+  mobuser = mob->get_user();
+
+  user->message("Body: ");
+  if(mobbody) {
+    user->message("#" + mobbody->get_number() + " (");
+    user->message(mobbody->get_glance()->to_string(user));
+    user->message(")\r\n");
+  } else {
+    user->message("(none)\r\n");
+  }
+
+  user->message("User: ");
+  if(mobuser) {
+    user->message(mobuser->get_name() + "\r\n");
+  } else {
+    user->message("(NPC, not player)\r\n");
+  }
+
+}
+
+
 static void cmd_stat(object user, string cmd, string str) {
   int     objnum, ctr, art_type;
   object  obj, room, exit, location;
@@ -133,8 +158,16 @@ static void cmd_stat(object user, string cmd, string str) {
   obj = room ? room : exit;
 
   if(!obj) {
-    user->message("No object #" + objnum
-		  + " found registered with MAPD or EXITD.\r\n");
+    object mob;
+
+    mob = MOBILED->get_mobile_by_num(objnum);
+
+    if(!mob) {
+      user->message("No object #" + objnum
+		    + " found registered with MAPD, EXITD or MOBILED.\r\n");
+      return;
+    }
+    priv_mob_stat(user, mob);
     return;
   }
 
