@@ -6,6 +6,8 @@ Release 0.014:
 	* Weight/length/volume commands for modification
 	* Added weight/length/vol to @make_room/@make_detail/@make_portable
 	* Added w/l/v capacities to @make_room/detail/portable
+	* Changed all the can_* functions to take a user as well so we
+	  can return useful reasons stuff screws up.
 
 Release 0.013:
 	* Added @list, an alias for @list_rooms.
