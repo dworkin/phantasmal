@@ -9,6 +9,9 @@ Release 0.011b:
 	  @stat, @set_obj_flag and the online help.
 	* Critical fix to @set_obj_flag -- didn't work before.
 	* Added open and close commands, usable by all.
+	* Fixed a couple of annoying ObjectD bugs that caused log
+	  messages on %code commands.  Still got a known ObjectD
+	  bug (and a feature request) to go.
 
 Release 0.011:
 	* Lots of refactoring and general code changes.  Always.  Every
