@@ -355,7 +355,6 @@ private void resolve_parent(object room) {
 
   pending_parent = room->get_pending_parent();
   if(pending_parent != -1) {
-    LOGD->write_syslog("Got pending parent: " + pending_parent);
     parent = MAPD->get_room_by_num(pending_parent);
     if(!parent) {
       error("Can't find parent number (#" + pending_parent
