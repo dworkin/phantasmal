@@ -68,16 +68,22 @@ Fuera De Personaje
 }
 }
 
-~name{~enUS{channel}}
+~name{~enUS{channel,channels,subscribe,unsubscribe,sub,unsub}}
 ~desc{~enUS{
 The channel command is used to play with channels, such as the ooc channel
 (see 'help ooc').  It can be used in several ways:
 
-  channel            This, by itself, lists the channels you're listening to
-  channel XXX on     Begins to listen to channel XXX, if available
-  channel XXX off    Stops listening to channel XXX
+  channel            This, by itself, lists the channels available
+  channel XXX on     Subscribe to channel XXX
+  channel XXX off    Unsubscribe to channel XXX
   channel XXX        Queries whether you're listening to channel XXX, and
                      whether it's available here.
+
+Note that not all channels may be available in all locations or to all
+people.  You may subscribe to a channel that isn't available where
+you're standing at the moment.  You may not subscribe to a channel
+that isn't available to you in *any* location.
+
   }
 }
 

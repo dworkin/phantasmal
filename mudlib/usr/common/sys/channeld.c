@@ -4,7 +4,7 @@
 
 mixed*  channels;
 int     num_channels;
-mapping channel_attributes;
+mixed*  channel_attributes;
 
 #define ATTRIB_ADMIN       1
 
@@ -31,26 +31,38 @@ void upgraded(varargs int clone) {
     channels[ctr] = ({ });
   }
 
-  channel_attributes = ([ CHANNEL_OOC              : ({ "OOC", 0 }),
-			  CHANNEL_ERR              : ({ "Error",
-							  ATTRIB_ADMIN }),
-			  CHANNEL_GOSSIP           : ({ "Gossip", 0 }),
-			  ]);
+  channel_attributes = ({ ({ "OOC", 0 }),
+			    ({ "Error", ATTRIB_ADMIN }),
+			    ({ "Gossip", 0 }),
+			    });
 }
 
 object* channel_list(int is_admin) {
-  mixed* ret;
+  mixed* ret, *tmp;
   int    ctr;
 
   ret = ({ });
   for(ctr = 0; ctr < num_channels; ctr++) {
     if(is_admin || !(channel_attributes[ctr][1] & ATTRIB_ADMIN)) {
-      ret +=
-	({ PHRASED->new_simple_english_phrase(channel_attributes[ctr][0]) });
+      tmp = channel_attributes[ctr];
+      ret += ({ PHRASED->new_simple_english_phrase(tmp[0]) });
     }
   }
 
   return ret;
+}
+
+/* The user will be used for the locale eventually. */
+int get_channel_by_name(string name, object user) {
+  int ctr;
+
+  for(ctr = 0; ctr < sizeof(channel_attributes); ctr++) {
+    if(!STRINGD->stricmp(channel_attributes[ctr][0], name)) {
+      return ctr;
+    }
+  }
+
+  return -1;
 }
 
 void phrase_to_channel(int channel, object phrase) {
@@ -86,6 +98,20 @@ int subscribe_user(object user, int channel, string args) {
 
   channels[channel] += ({ ({ user, args }) });
   return 1;
+}
+
+int unsubscribe_user(object user, int channel) {
+  int ctr;
+
+  for(ctr = 0; ctr < sizeof(channels[channel]); ctr++) {
+    if(channels[channel][ctr][0] == user ) {
+      /* Remove user's entry */
+      channels[channel] = channels[channel][..(ctr-1)]
+	+ channels[channel][(ctr + 1)..];
+      return 1;
+    }
+  }
+  return -1;
 }
 
 int is_subscribed(object user, int channel) {

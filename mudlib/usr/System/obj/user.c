@@ -1446,8 +1446,9 @@ static void cmd_movement(object user, string cmd, string str) {
 
 
 static void cmd_channels(object user, string cmd, string str) {
-  int    ctr;
+  int    ctr, chan;
   mixed* chanlist;
+  string channelname, subval;
 
   if(str)
     str = STRINGD->trim_whitespace(str);
@@ -1468,8 +1469,57 @@ static void cmd_channels(object user, string cmd, string str) {
     return;
   }
 
-  send_system_phrase("Usage: ");
-  message(cmd + "\r\n");
+  if(!str || str == "" || sscanf(str, "%*s %*s %*s") == 3) {
+    send_system_phrase("Usage: ");
+    message(cmd + " [<channel name> [on|off]]\r\n");
+    return;
+  }
+
+  if((sscanf(str, "%s %s", channelname, subval) != 2)
+     && (sscanf(str, "%s", channelname) != 1)) {
+    user->message("Parsing error!\r\n");
+    return;
+  }
+
+  chan = CHANNELD->get_channel_by_name(channelname, user);
+
+  if(chan < 0) {
+    user->message("You don't know any channel named '" + channelname
+		  + "'.  Type 'channels' for a list of names.\r\n");
+    return;
+  }
+
+  if(subval) {
+    /* Sub or unsub the user */
+    if(!STRINGD->stricmp(subval, "on")
+       || !STRINGD->stricmp(subval, "sub")
+       || !STRINGD->stricmp(subval, "subscribe")) {
+
+      CHANNELD->subscribe_user(user, chan, "");
+      user->message("Subscribed to " + channelname + ".\r\n");
+    } else if(!STRINGD->stricmp(subval, "off")
+       || !STRINGD->stricmp(subval, "unsub")
+       || !STRINGD->stricmp(subval, "unsubscribe")) {
+
+      CHANNELD->unsubscribe_user(user, chan);
+      user->message("Unsubscribed from " + channelname + ".\r\n");
+    } else {
+      user->message("Huh? Try using 'on' or 'off' for the third value.\r\n");
+      return;
+    }
+
+    return;
+  }
+
+  /* Check whether you're subbed and whether the channel is available
+     here. */
+  user->message("Channel: " + channelname + "\r\n");
+  if(CHANNELD->is_subscribed(user, chan)) {
+    user->message("You are currently subscribed to that channel.\r\n");
+  } else {
+    user->message("You are not currently subscribed to that channel.\r\n");
+  }
+  user->message("That channel is available in this area.\r\n");
 }
 
 
