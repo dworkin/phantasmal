@@ -35,8 +35,8 @@ parameters it is passed.
 ~desc{
   ~enUS{
 
-@goto_room takes a room number as an argument, and teleports you to it.
-It only works on numbered rooms.
+@goto_room takes a room number or portable as an argument, and teleports
+you to it.  It only works on numbered rooms and portables.
 
 }}
 

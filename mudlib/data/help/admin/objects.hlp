@@ -16,6 +16,7 @@ object types.  Here are the current crop:
 @help @set_look
 @help @set_examine
 
+@help @set_object_article
 @help @add_nouns
 @help @add_adjectives
 @help @clear_nouns
@@ -72,12 +73,15 @@ PortableD.
 
 The Brief description is the shortest of all object descriptions and
 is normally used as part of a list of objects so as to minimize length
-and distraction.  It can be set by @set_brief: "@set_brief #75 a
-flower", or simply "@set_brief #75".
+and distraction.  It can be set by @set_brief: "@set_brief #75 flower",
+or simply "@set_brief #75".  The brief description should not start
+with an article (such as "a", "an", or "the").
 
 If used in the latter form a text-entry mode will begin.  No commands
 may be typed until the tilde (\~) is entered on a line by itself to
 stop entering text.
+
+See also @set_glance, @set_look, @set_examine, @set_obj_art
 
 }}
 
@@ -90,12 +94,14 @@ stop entering text.
 
 The Glance description is given when an object is looked at briefly,
 but not so briefly as the "brief" description.  It can be set by
-@set_glance: "@set_glance #75 a pretty flower", or simply "@set_glance
+@set_glance: "@set_glance #75 pretty flower", or simply "@set_glance
 #75".
 
 If used in the latter form a text-entry mode will begin.  No commands
 may be typed until the tilde (\~) is entered on a line by itself to
 stop entering text.
+
+See also @set_brief, @set_look, @set_examine, @set_obj_art
 
 }}
 
@@ -115,6 +121,8 @@ at a portable, detail or exit.  It can be set by @set_look: "@set_look
 If used in the latter form a text-entry mode will begin.  No commands
 may be typed until the tilde (\~) is entered on a line by itself to
 stop entering text.
+
+See also @set_brief, @set_glance, @set_examine
 
 }}
 
@@ -136,7 +144,34 @@ If used in the latter form a text-entry mode will begin.  No commands
 may be typed until the tilde (\~) is entered on a line by itself to
 stop entering text.
 
+See also @set_brief, @set_glance, @set_look
+
 }}
+
+
+~name{~enUS{@set_object_article, @set_object_art, @set_obj_article,
+            @set_obj_art, set_object_article, set_object_art,
+            set_obj_article, set_obj_art, set object article,
+            set object art, set obj article, set obj art, set,
+            article, definite, indefinite, proper, proper noun,
+            proper nouns}}
+~keywords{admin}
+~desc{
+  ~enUS{
+
+The @set_obj_art (or @set_object_article) command tells whether the
+brief and glance descriptions of an object should be referred to using
+a definite article, an indefinite article, or no article (as would
+be appropriate for a proper noun like "Tom" or "King Ted").
+
+The syntax is "@set_obj_art #749 definite".  Appropriate values for
+the second argument include "definite", "def", "indefinite", "indef",
+and "proper".  More may be added later.
+
+See also @add_nouns, @add_adj, @set_brief, @set_glance
+
+}}
+
 
 ~name{~enUS{@move, move, %move}}
 ~keywords{admin}
@@ -144,12 +179,16 @@ stop entering text.
   ~enUS{
 
 The @move command takes two object numbers as arguments.  The first is
-the object number to be moved, the second is the room number to move it
+the object number to be moved, the second is the location to move it
 to.  For instance:
 
 @move #200 #0
 
-The above would move object #200 into object #0 (the Void).
+The above would move object #200 into object #0 (the Void).  The
+command works on rooms and portables, both as objects to move and
+as destinations.
+
+See also @goto
 
 }}
 
