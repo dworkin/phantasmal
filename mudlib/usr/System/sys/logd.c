@@ -3,6 +3,7 @@
 #include <type.h>
 #include <log.h>
 #include <kernel/kernel.h>
+#include <channel.h>
 
 #define SYSLOGFILE   (LOGDIR + "/System.log")
 
@@ -149,6 +150,8 @@ void write_syslog(string logstring, varargs int level, string channel) {
     send_message("Help!  Log failure!\n");
     write_file("/helplog.txt", "Log failure!  Bad one!\n");
   }
+  if(find_object(CHANNELD))
+    CHANNELD->string_to_channel(CHANNEL_LOG, to_write, level);
 }
 
 private void read_channels(mixed* unq) {
