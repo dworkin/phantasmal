@@ -1,0 +1,131 @@
+    <titledef text="Zones" />
+
+    <h2 class="center"> Dealing with Zones </h2>
+
+    <p> There's a pretty arcane set of commands in Phantasmal that
+      alluded to earlier.  You don't need to use them at all
+      most of the time, but to be a good implementor on your
+      Phantasmal-based MUD you're going to need to figure them
+      out.  Well, that or hand-edit the data files.  But if you
+      want to understand the commands, this tutorial is here for
+      ya, man. </p>
+
+    <p> That's right.  Zones.  Segments.  And all those commands
+      that play with them.  Pretty ugly and scary, huh?  Let's
+      hit the basic concepts first, shall we? </p>
+
+    <p> Phantasmal divides all possible object numbers into
+      groups of a hundred.  In theory the numbers go up to over
+      two billion but most MUDs shouldn't need to come anywhere
+      near that.  You can tell what segment an object number is
+      in by cutting off the last two digits.  For instance,
+      object #374 is in segment 3.  Object #3479234 is in
+      segment 34792 and on a very large or very fragmented MUD.
+      Object #2147 is in segment 21.  No problem. </p>
+
+    <p> You can see what segments are sitting around by
+      type @segmap.  The output might look like this: </p>
+    <pre>
+Segments:
+0      /usr/common/sys/mapd           0
+1      /usr/common/sys/exitd          0
+2      /usr/common/sys/mapd           0
+3      /usr/common/sys/mapd           1
+4      /usr/common/sys/mapd           1
+5      /usr/common/sys/mobiled        0
+--------
+    </pre>
+    <p>
+    The numbers on the left are the segment numbers,
+    the filename in the middle is the segment owner,
+    and the number on the right tells you what zone
+    number that segment is in.  Every segment is in
+    one zone or another, though the zone might be
+    zero, which means it's not in any interesting
+    zone at all. </p>
+
+    <p> So what's in any specific zone?  To find out a
+      little, type @zonemap by itself on the command line.
+      Your output might look like this: </p>
+    <pre>
+Zones:
+  0: Unzoned
+  1: Miskatonic University
+  2: Innsmouth
+-----
+    </pre>
+    <p>
+    If so, then zone #1 is Miskatonic University and
+    zone #2 is Innsmouth.  This zonemap probably belongs
+    to a very small Lovecraft-themed MUD. </p>
+
+    <p> Looking at the @segmap above, we see that zone #1 consists
+      of segments #3 and #4, or objects #300-#499, inclusive.
+      To find out what's there, you can type
+      &quot;@list_room world&quot; if you're patient and page through
+      'til you get to the zone you care about.  Or you can type
+      &quot;@stat #300&quot; -- if there's a room number 300, you can
+      then say &quot;@goto #300&quot; to get there.  If there isn't,
+      you can make a room #300 (with @make_room or &quot;@new_room
+      #300&quot;) and then go there.  Either way, once you're in
+      a room in that zone, one with an object number between
+      #300 and #499, you can just type &quot;@list_room&quot; and
+      get a list of just the objects in that zone. </p>
+
+    <p> What if you want to make a new zone, one nobody's ever
+      dealt with before?  You can use the @new_zone command to
+      make it if you like.  You'll first need to decide on a zone
+      name.  To call it Bob's Big Basement, you'd say
+      &quot;@new_zone Bob's Big Basement&quot;.  Type @zonemap to
+      make sure you did it right.  Now type %datadump, because you
+      really don't want to create a bunch of stuff and then maybe
+      lose it.  Save, save, save.  Incidentally, I'm going to
+      pretend for the rest of this example that Bob's Big Basement
+      was zone #4.  If it came out as a different one (check
+      @zonemap to find out) then use that number instead.
+    </p>
+
+    <p> Now you want to put something into your new zone.  How?
+      First, decide what segments you want it to occupy.  In this
+      case, you want all new segments.  There wasn't any owner
+      for segment 6, so first of all you can claim segment 6 --
+      object #600 through #699, for those of you keeping count.
+    </p>
+
+    <p> To do that, first create a new object #600.  You can
+      use @make_room, @make_portable, @new_room, @new_portable,
+      or probably other commands as well.  No matter how you
+      do it, make an object #600.  Do it.  Note that it has
+      to be a room, portable or detail -- not an exit or a mobile,
+      for instance. </p>
+
+    <p> That means there's now a segment 6.  Type @segmap and
+      you'll probably notice that it's in zone 0, and thus
+      unzoned.  To change that, you'll use a new nifty command
+      you haven't seen before.  Go ahead and type
+      &quot;@set_seg_zone #6 #4&quot;.  That should assign
+      segment #6 to zone #4 (Bob's Big Basement).  Now you've
+      got a new zone, and it's got its own segment.  Do you
+      utterly win or what? </p>
+
+    <p> At the moment segments are just a good way to organize
+      object numbers so everybody's stuff doesn't get all mixed
+      up together.  In the future there'll be a way to set
+      security on zones so that only specific builders can mess
+      with a given zone, thus keeping other people out of your
+      stuff. </p>
+
+    <p> You'll notice that mobiles and exits just allocate
+      numbers any way they please rather than paying proper
+      attention to zones.  While some of that will eventually
+      change, overall mobiles and exits are both harder to
+      corral into specific zones than objects are.  We'll
+      figure more of this out when we've got permissions,
+      we promise.  For the moment just create exits and
+      mobiles as though zones didn't exist and you'll find
+      that everything works just fine. </p>
+
+    <p> What next?  More <a href="../index.html">tutorials</a>,
+      right?  It beats looking through the online help over
+      and over and over, and we <i>know</i> you have no
+      social life, you MUD programmer, you. </p>

@@ -1,0 +1,125 @@
+    <titledef text="Object Inheritance (old)" />
+
+    <h2 class="center"> Object Inheritance </h2>
+
+    <p>
+      One way to potentially save yourself some time, when building
+      objects that have some relationship to each other, is to build a
+      parent object for some or all of them.  For instance if you're
+      building a large number of sun-drenched rooms in an outdoor
+      labyrinth somewhere then an awfully large number of them are
+      likely to have grass, sunlight, a hedge, a view of a tower and
+      so on.  You can put all those various details into a single
+      parent object and make your tens or hundreds of labyrinth rooms
+      all implement them automatically.  This tutorial can show you
+      how.
+    </p>
+
+    <p>
+      At the moment, inheritance is primarily a way to inherit <a
+      href="Details.html">object details</a>.  That's a useful thing,
+      but it doesn't do everything.  We hope that object nouns and
+      adjectives will also be inheritable soon.  Things like weights,
+      heights, etc should already be.  We're considering object
+      descriptions, but it's not entirely clear how that should
+      work.
+    </p>
+
+    <p>
+      So, back to that sun-drenched labyrinth.  You're going to need a
+      parent room, which should be clearly marked as such and not
+      connected (via exits) to any other room anywhere, to avoid
+      people randomly walking into it and changing stuff.  So use
+      <b>@make_room</b> to make just such a thing.  Your parent rooms
+      are allowed to have their own parents, but in this example
+      there's probably no reason to bother.  Take note of the parent
+      room's object number, when you find out what it is.
+    </p>
+
+    <p>
+      For your brief and glance descriptions you should put something
+      like &quot;labyrinth parent room&quot;, and for your look
+      description you should put something like &quot;this room
+      contains details for other labyrinth rooms.  You should never,
+      never be able to enter it.&quot;
+    </p>
+
+    <p>
+      You'll also want an ordinary labyrinth test room to try out the
+      nifty inheritance tricks.  Go ahead and create one with
+      <b>@make_room</b>.  Up to this point, when <b>@make_room</b>
+      asks you for a parent object, you've probably just been hitting
+      enter to leave it blank.  And that's been the right thing to do.
+      But when you make the labyrinth test room, you should instead
+      type the number of the labyrinth parent room -- the one we told
+      you to take note of awhile back.  You did, right?
+    </p>
+
+    <p>
+      The description can be whatever you like, but for the full
+      example experience, I recommend mentioning sunshine and a
+      distant tower in the desc.
+    </p>
+
+    <p>
+      Now, go ahead and make a new detail with <b>@make_detail</b>.
+      Make it a part of the labyrinth <i>parent</i> room, not the
+      labyrinth <i>test</i> room.  Describe the sunshine playing on
+      the grass and hedges, and how you can see the dust motes playing
+      in it.  Give it nouns like <b>sun</b>, <b>sunshine</b>,
+      <b>dust</b> and <b>motes</b>, and adjectives like <b>bright</b>,
+      <b>shiny</b> and <b>dust</b> (so that you can look at the
+      dust motes and get the same desc).
+    </p>
+
+    <p>
+      To test it out, go to the labyrinth parent room and look at the
+      dust motes.  Now go back to the labyrinth test room and do the
+      same.  If you want, go ahead and add more details to the
+      labyrinth parent rooms for things like grass, the tower, the
+      hedges and the other stuff you can see.  In a <a
+      href="http://www.skotos.net">Skotos</a> room you'd be spending
+      two or three hours at least on all the descriptions, so don't be
+      shy about taking ten or fifteen minutes on this.  Players eat
+      this stuff up.  And remember, every minute you spend on the
+      details in the parent room is that much more detail in <i>every
+      child room</i>.
+    </p>
+
+    <p>
+      So test it out.  Make another child room.  That's another room
+      like the labyrinth test room, one that also inherits from the
+      labyrinth parent room (whose number you still remember, yeah?).
+      After making this fresh-minted room with <b>@make_room</b>
+      and giving it the labyrinth parent room as a parent, go ahead
+      and look around at the grass, the dust motes, and everything
+      else you made details for.  And there they are!
+    </p>
+
+    <p>
+      Note how just by making a room with a cool parent, you've
+      suddenly gotten a lot of details for free.  This is inheritance,
+      but it's not the kind you're used to in an Object Oriented
+      programming language (just in case you're a programmer).  That
+      kind of inheritance is also called <b>code inheritance</b>
+      because it's code being inherited.  Those languages almost never
+      allow <b>data inheritance</b>, which is what you're seeing here
+      in Phantasmal.  That's because these details are object data,
+      not methods or any other kind of code.  MUDs tend to be better
+      served by data inheritance, at least for &quot;physical&quot;
+      objects.
+    </p>
+
+    <p>
+      The only other thing you should know about inheritance is the
+      way to change or remove object parents.  The
+      <b>@set_obj_parent</b> command is your friend here (check its
+      online help!).  You can set an object #1124's parent to object
+      #375 by saying &quot;@set_obj_parent #1124 #375&quot;.  You can
+      then make it parentless again by saying &quot;@set_obj_parent
+      #1124 #-1&quot; or (in recent versions of Phantasmal)
+      &quot;@set_obj_parent #1124 none&quot;.
+    </p>
+
+    <p> Now go build some more stuff by following
+      the <a href="../index.html">tutorials</a>. </p>

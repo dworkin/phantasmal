@@ -1,0 +1,107 @@
+    <titledef text="Basic Objects" />
+
+    <h2 class="center"> Basic Objects </h2>
+
+    <p> You've got exactly as clean a start as you want.  Either way,
+      you're ready to mess around and make an object or two.  So
+      let's get started with some practical examples. </p>
+
+    <p> The best objects to get started on are rooms.  Trust me.
+      So let's make some. </p>
+
+    <p> There's this whole set of segments and a command, @segmap,
+      to play with them.  Or you can do it the easy way.  You can
+      get help on all that stuff (@help segments, @help @segmap)
+      on your own time.  Here we'll do it the easy way. </p>
+
+    <p> Go ahead and type &quot;@make_room&quot; by itself
+      on the command line.  You'll be asked a series of questions
+      about your room, which you'll need to answer.  For instance,
+      first it'll ask you to give it a room number or hit
+      enter.  I'd just hit enter if I were you, and you'll get
+      the first available room number in the current zone.
+      It'll also ask you for a parent for the room.  I'd just
+      hit enter again -- you haven't got any specific other room
+      set up as a parent room. </p>
+
+    <p> Then it'll ask you for a brief description (type &quot;my
+      boudoir&quot;) a glance description (type &quot;my spiffy
+      bedroom&quot;) and a look description (type something about
+      your bedroom.  Then hit enter again.  Then type a tilde
+      (also called a twiddle: &quot;~&quot;) and hit enter again.
+    </p>
+
+    <p> Then it'll ask you for an examine description.  Just type
+      another twiddle and hit enter again.  That'll default it
+      to the look description, which is what you want in this
+      example.  For nouns, tell it &quot;boudoir bedroom room&quot;.
+      For adjectives tell it &quot;spiffy&quot;. </p>
+
+    <p> There may be some other questions -- about <a href="Weight.html">
+	Height, Weight or Length</a> for example.  If there are any
+      more questions, go ahead and use defaults for them, or choose
+      what seem like reasonable answers. </p>
+
+    <p> Now you've got quite the room going.  Phantasmal will tell
+      you something like &quot;room #74 added to Zone #0 (Unzoned)&quot;.
+      Take that room number (74 in our example) and stat it.  That is,
+      type &quot;@stat #74&quot;.  You'll get something like:</p>
+
+    <pre>
+> @stat #74
+Location:  (none)
+Descriptions (enUS)
+Brief:
+  'my boudoir'
+Glance:
+  'my spiffy bedroom'
+Look:
+  'My bedroom.  It's mine.  All mine!'
+Examine:
+  (defaults to Look desc)
+Nouns (enUS): boudoir bedroom
+Adjectives (enUS): spiffy
+
+Contains objects [0]: 
+Contains 0 mobiles.
+
+Registered with MAPD as a room.
+    </pre>
+
+    <p> Contains no mobiles?  Why that means that you're not
+      standing in it.  You should fix that.  Go ahead and
+      type &quot;@goto #74&quot;, but make sure to use the
+      actual number you got, not necessarily 74. </p>
+
+    <pre>
+> @goto #74
+You teleport to my boudoir.
+my boudoir
+My bedroom.  It's mine.  All mine!
+*****
+
+Exits: 
+    </pre>
+
+    <p> Okay, so now you can give an object a basic description.
+      Fair enough.  What else can you do with it?   Well, you can
+      move it around.  Go ahead and move it to wherever you're standing --
+      type &quot;@move #2 here&quot;, which will teleport it to be inside
+      whatever room you're standing in.  You can also teleport it
+      somewhere else -- for instance &quot;@move #2 #0&quot; will move
+      it into The Void.  You can teleport there (&quot;@goto #0&quot;)
+      to make sure it arrived okay. </p>
+
+    <p> You've got nouns and adjectives for it, so if you've teleported
+      it into your current room, you can look at it -- type
+      &quot;look spiffy bedroom&quot; for instance, or &quot;
+      look boudoir&quot;.  You'll find out more about nouns and
+      adjectives later, or in the help files for @add_noun and
+      @add_adjective. </p>
+
+    <p> If you haven't
+      had a look at the build help yet by typing &quot;@help builder&quot;,
+      you should. </p>
+
+    <p> You can also read some more <a href="../index.html">
+	tutorials</a>. </p>

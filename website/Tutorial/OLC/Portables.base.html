@@ -1,0 +1,102 @@
+    <titledef text="Basic Portables" />
+
+    <h2 class="center"> Basic Portables </h2>
+
+    <p> So now you've got some rooms.  You should put some plunderable
+      objects in them, naturally.  Stuff you can pick up and carry
+      around is a fine thing. </p>
+
+    <p> You can make a quick, simple portable object by typing
+      &quot;@new_room&quot;.  The whole weird segment thing
+      still applies. </p>
+
+    <p> You can do a lot of the same things you do with rooms --
+      @set_brief, @set_glance, @set_look, @set_examine, @stat,
+      @move, and even @goto -- but they do slightly different
+      things in some cases.  For instance, the brief description
+      is what the object looks like when it's in the room, and
+      not usually the room description.  You can add exits to
+      portables, but they're only usable from <i>inside</i>
+      the portable, so that's usually pretty pointless.
+
+    <p> You can list portables with @list_portables.  About the
+      only other cool stuff you can do with portables is to
+      make them containers -- more on that in another tutorial.
+    </p>
+
+    <p> Once there's a portable around, the obvious thing to
+      do is to pick it up.  For instance: </p>
+    <pre>
+
+> @new_port
+Added portable #204.
+
+> @set_brief #204 a root  
+Locale is US english
+Setting brief desc on object #204
+
+> @set_glance #204 a chunk of root
+Locale is US english
+Setting glance desc on object #204
+
+> @set_look #204
+Locale is US english
+Enter text at the prompt.  Enter ~ on a line by itself to end.
+ > You see a chunk of root with bits of dirt still clinging to it.  You 
+ > don't know enough about roots to identify it very well, though a lot
+ > of bark is still attached, as well as some tiny little hairy rootlets.
+ > ~
+Set look description.
+
+> @add_noun #204 root rootlet chunk
+Adding nouns (enUS).
+Done.
+
+> @add_adj #204 dirty hairy
+Adding adjectives (enUS).
+Done.
+
+> get hairy root
+You get a chunk of root.
+
+> drop dirty root
+You drop a chunk of root.
+
+> examine root
+You see a chunk of root with bits of dirt still clinging to it.  You
+don't know enough about roots to identify it very well, though a lot
+of bark is still attached, as well as some tiny little hairy rootlets.
+
+    </pre>
+    Did you catch that bit with @add_noun and @add_adj?  You can
+    use those commands to add lists of nouns and adjectives
+    to an object, and then refer to the object by any number of
+    its adjectives followed by one of its nouns.  For instance:
+    <pre>
+
+> @add_noun #204 turnip root tuber vegetable
+Adding nouns (enUS).
+Done.
+
+> @add_adj #204 small shriveled sere wrinkled withered dry old dried
+Adding adjectives (enUS).
+Done.
+
+> look old dry withered wrinkled root
+This turnip has seen much better days!  It's wrinkled, shriveled up and
+generally very, very unappetizing.
+
+> get turnip
+You get a wrinkled, dry turnip.
+
+> drop dried tuber
+You drop a wrinkled, dry turnip.
+
+    </pre>
+
+    <p> Now you can make nifty objects and pick them up, drop them
+      and so on for yourself.  Go ahead, give it a go.
+    </p>
+
+    <p> Next up?  More <a href="../index.html">tutorials</a>, I
+      suspect.</p>

@@ -1,0 +1,79 @@
+      <titledef text="Containers" />
+
+      <h2 class="center"> Containers </h2>
+
+      <p> You've got basic objects.  You long ago realized how
+	cool being able to play with objects and put them inside
+	each other is.  You want this capability for your very
+	own.  This tutorial can help.</p>
+
+      <p> To make a container, first make a portable.  You
+	<a href="Portables.html">remember</a> how to do that, I'm 
+	sure.  Just mention things in its description that make
+	it sound like a container -- call it a bag, or a breadbox,
+	or a sleeping pod, or whatever seems like you could put
+	stuff in it. </p>
+
+      <p> Okay.  So you've got your portable object.  I'll call
+	it object #210, a large breadbox in the example below. </p>
+<pre>
+
+&gt; @set_obj_flag #210 cont 1
+Done.
+
+&gt; @set_obj_flag #210 open true
+Done.
+
+&gt; @stat #210
+Location: #4 (an old tunnel)
+Descriptions (enUS)
+Brief:
+  'a breadbox'
+Glance:
+  'a largish breadbox'
+Look:
+  'You see an old breadbox, apparently meant to contain bread.  A faded logo
+on the side may once have advertised the box's maker.'
+Examine:
+  (defaults to Look desc)
+Nouns (enUS): breadbox, box
+Adjectives (enUS): bread, large, largish
+
+Portable flags:
+  container:  yes
+  open:       yes
+
+Contains objects [0]: 
+Contains 0 mobiles.
+
+Registered with PORTABLED as a portable.
+
+&gt; put turnip in breadbox
+More than one object fits 'turnip'.  You pick one.
+You put a shriveled turnip in a breadbox.
+
+&gt; look in large box
+- a shriveled turnip
+-----
+
+&gt; put turnip in large bread box
+You put a juicy turnip in a breadbox.
+
+&gt; look in large box
+- a shriveled turnip
+- a juicy turnip
+-----
+
+&gt; get dry shriveled withered turnip from large bread box
+You get a shriveled turnip from a breadbox (taken).
+
+</pre>
+      <p>
+	See?  Easy.  The trick is the @set_obj_flags lines to
+	create a container and open it.  There'll be better
+	commands for this stuff eventually, probably... </p>
+
+      <p> What do you read now?  More
+	<a href="../index.html">tutorials</a> as they're written, or you
+	can start <i>finally</i> reading the help files.  They're
+	worth it.  Really.  Seriously.  I promise. I wrote them. </p>

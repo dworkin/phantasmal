@@ -1,0 +1,85 @@
+    <titledef text="Tags" />
+
+    <h2 class="center"> Tags </h2>
+
+    <p>
+      Some codebases call these attributes, or properties.  The idea
+      of a Phantasmal tag is that it's a named, typed piece of information
+      attached to an object or mobile.  Basically you're adding an
+      extra variable to every object or mobile that Phantasmal didn't
+      add for you.
+    </p>
+
+    <p>
+      A lot of traditional MUDs have 'deeds' systems or 'quest' systems
+      that let you mark particular players as having done one thing or
+      another.  Phantasmal tags can be used for the same purpose, and
+      are meant to be.  You'll have to tag the player's mobile, currently,
+      not the user object, but it should still work just fine.
+    </p>
+
+    <p>
+      Since scripts can potentially get and set tag values, tags can
+      also be used for extra variables for scripts.  You have to be
+      careful, though -- some Phantasmal-based games may not let you
+      randomly make new tags, and it's not good to have lots of
+      old temporary tags hanging around forever.  There should be
+      some good way to make them go away.  A particular Phantasmal-based
+      game may allow you to declare tags that disappear when an object
+      leaves a particular room or zone.  Or you could write scripts
+      on the exits to remove those temporary tags.
+    </p>
+
+    <p>
+      Particular Phantasmal-based games will set up different script
+      interfaces to tags, but the default wiztool has a simple one
+      for one-word tag names.  To declare a new tag type, the syntax
+      is &quot;@new_tag_type &lt;scope&gt; &lt;tag name&gt;
+      &lt;tag type&gt;&quot;, and
+      you can optionally add getter and setter function names after
+      that.  Normally you won't want to, though.
+    </p>
+
+    <p>
+      The 'scope' parameter is what kind of object the new tag can be
+      applied to.  The normal values are 'object' and 'mobile'.
+      The tag name must be single-word, meaning no spaces.  Scripts
+      don't have this restriction, but the default wiztool tag commands
+      all require single-word tag names.  The tag type should specify
+      a type like &quot;int&quot; or &quot;float&quot;, or a DGD type
+      number like 2.  Not all types may be supported for tags, and tags
+      may support non-DGD types like &quot;mobile&quot; or
+      &quot;phrase&quot;.
+    </p>
+
+    <p>
+      To see the new tag you created, type &quot;@list_tags object&quot;
+      or &quot;@list_tags mobile&quot;.  That shows all existing tag
+      types for the given scope.
+    </p>
+
+    <p>
+      To see the list of current tags on a given object or mobile, use
+      the stat command.  You should either see a list of tag names and
+      values, or a status line such as &quot;No Tags Set&quot;.
+    </p>
+
+    <p>
+      To set the value of a tag on a particular DGD object, use the
+      &quot;@set_tag&quot; command.  The syntax is &quot;@set_tag
+      &lt;obj&gt; &lt;tag name&gt; &lt;value&gt;&quot;.  The object
+      can be specified by number, like &quot;#347&quot;, or as an
+      object in the wiztool history, such as &quot;$8&quot;.  The
+      tag name must be a single word, with no spaces, as for the
+      @new_tag_type command above.  And everything remaining on the
+      line is assumed to be the new value, which is evaluated as
+      arbitrary LPC code, and can use history values.  It gets
+      evaluated essentially just like the %code command, including
+      storing the new tag value into the wiztool history list.
+    </p>
+
+    <p>
+      Now that you know how to manipulate tags from the command line,
+      you should go practice.  And then you should come back and
+      read more <a href="../index.html">tutorials</a>.
+    </p>
