@@ -1,4 +1,4 @@
-/* $Header: /cvsroot/phantasmal/mudlib/usr/System/obj/user.c,v 1.62 2003/03/31 10:12:00 angelbob Exp $ */
+/* $Header: /cvsroot/phantasmal/mudlib/usr/System/obj/user.c,v 1.63 2003/04/01 11:21:32 angelbob Exp $ */
 
 #include <kernel/kernel.h>
 #include <kernel/user.h>
@@ -644,12 +644,23 @@ private void player_login(void)
     body->set_open(1);
     body->set_openable(0);
 
+    /* Players weigh about 80 kilograms */
+    body->set_weight(80.0);
+    /* Players are about 2.5dm x 1dm x 18dm == 45dm^3 == 45 liters */
+    body->set_volume(45.0);
+    /* A player is about 18dm == 180 centimeters tall */
+    body->set_length(180.0);
+
     /* Players are able to lift 50 kilograms */
     body->set_weight_capacity(50.0);
-    /* Players are able to carry up to 20 cubic decimeters of stuff. */
+    /* Players are able to carry up to 20 liters of stuff --
+       that's roughly a large hiking backpack. */
     body->set_volume_capacity(20.0);
-    /* Players are able to carry an object up to 2 meters long */
-    body->set_length_capacity(200.0);
+    /* Players are able to carry an object up to half a meter long.
+       Note that that's stuff they're not currently holding in their
+       hands, so that's more reasonable.  Can you fit a 60cm object
+       in your pocket?  Would you want to? */
+    body->set_length_capacity(50.0);
 
     MAPD->add_room_to_zone(body, -1, start_zone);
     if(!MAPD->get_room_by_num(body->get_number())) {
