@@ -16,3 +16,12 @@
   ~body{313}
 }
 
+~mobile{
+  ~type{animal}
+  ~number{503}
+  ~body{314}
+  ~data{
+    ~aggression{0}
+  }
+}
+

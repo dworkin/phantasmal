@@ -145,6 +145,20 @@ Ghak'La must have been Messy-In-A-Hideous-Way.}}
   ~adjectives{{~enUS{messy,hideous}}}
 ~flags{4}
 }
+~portable{
+  ~number{9}
+  ~location{309}
+  ~bdesc{
+    ~enUS{a rubber ball}}
+  ~gdesc{
+    ~enUS{a red rubber ball}}
+  ~ldesc{
+    ~enUS{It's a red rubber ball.}}
+  ~article{0}
+  ~nouns{{~enUS{ball}}}
+  ~adjectives{{~enUS{red,rubber}}}
+~flags{0}
+}
 ~room{
   ~number{77}
   ~location{0}
@@ -469,13 +483,13 @@ Arkham through the trees to the north and east.}}
 }
 ~body{
   ~number{309}
-  ~location{304}
+  ~location{300}
   ~bdesc{
     ~enUS{Angelbob}}
   ~gdesc{
     ~enUS{Angelbob}}
   ~ldesc{
-    ~enUS{Angelbob wanders the MUD.}}
+    ~enUS{Angelbob has obviously set his own description.  How odd!}}
   ~article{0}
   ~nouns{{~enUS{angelbob}}}
   ~adjectives{{}}
@@ -521,7 +535,7 @@ Arkham through the trees to the north and east.}}
 }
 ~room{
   ~number{313}
-  ~location{304}
+  ~location{305}
   ~bdesc{
     ~enUS{a mobile turnip}}
   ~gdesc{
@@ -533,6 +547,20 @@ washing machine back home.}}
   ~article{0}
   ~nouns{{~enUS{turnip,vegetable}}}
   ~adjectives{{~enUS{mobile,vibrating,gently,gently-vibrating,moving}}}
+}
+~portable{
+  ~number{314}
+  ~location{300}
+  ~bdesc{
+    ~enUS{a dog}}
+  ~gdesc{
+    ~enUS{a dog}}
+  ~ldesc{
+    ~enUS{It appears to be a dog.}}
+  ~article{0}
+  ~nouns{{~enUS{dog}}}
+  ~adjectives{{}}
+~flags{0}
 }
 ~portable{
   ~number{400}
