@@ -105,7 +105,7 @@ static void cmd_list_room(object user, string cmd, string str) {
   tmp = "";
   for(ctr = 0; ctr < sizeof(rooms); ctr++) {
     room = MAPD->get_room_by_num(rooms[ctr]);
-    phr = room->get_glance();
+    phr = room->get_brief();
     tmp += ralign10("" + rooms[ctr], 6) + "  ";
     if (room->get_mobile()) {
       tmp += "(body) ";
