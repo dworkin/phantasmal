@@ -143,7 +143,16 @@ destination room has been loaded.
 ~keywords{admin}
 ~desc{
   ~enUS{
-[Not Yet Documented nor Implemented]
+
+Mobiles are the "minds" of anything with its own volition, such as
+players or monsters.  The body is a standard object (see "help rooms")
+with the mobile attached to it.
+
+Some commands to play with mobiles:
+@list_mobile              Lists mobiles with numbers
+@delete_mobile            Deletes mobiles by number
+@stat                     View a mobile (or its body) by number
+
 }}
 
 
