@@ -48,6 +48,11 @@ change more stuff in the .dgd file, but you'll want to learn more
 about DGD by the time it's necessary.  That's a DGD thing, not a
 Phantasmal thing.
 
+Read the README.ssh file.  It'll tell you how to make sure your SSHD
+is appropriately secure.  By default it is *not* secure, because you're
+using the same crypto key you got with Phantasmal, so you're using the same
+crypto key as everybody else.
+
 
                         Making Accounts
 

@@ -1,6 +1,6 @@
 telnet_port	= 8888;			/* telnet port number */
-binary_port	= 8889;			/* binary port number */
-directory	= "/home/angelbob/code/mudlib";  /* Replace w/ your absolute */
+binary_port	= (["*":9888,"*":9999]);   /* binary ports */
+directory = "/home/angelbob/code/game_bundle";
                                                  /* path! */
 users		= 40;			/* max # of users */
 editors		= 40;			/* max # of editor sessions */
@@ -22,6 +22,6 @@ auto_object	= "/kernel/lib/auto";	/* auto inherited object */
 driver_object	= "/kernel/sys/driver";	/* driver object */
 create		= "_F_create";		/* name of create function */
 
-array_size	= 1000;			/* max array size */
+array_size	= 4000;			/* max array size */
 objects		= 500;			/* max # of objects */
 call_outs	= 100;			/* max # of call_outs */

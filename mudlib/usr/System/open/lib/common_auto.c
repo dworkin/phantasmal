@@ -45,19 +45,30 @@ static string previous_program(varargs int n) {
 
 }
 
-#if 0
 static object previous_object(varargs int n) {
-  LOGD->write_syslog("Previous_object call!");
+  int idx;
+  string tmp;
 
-  if(!n) return ::previous_object(2);
+  idx = 1;
+  while(1) {
+    tmp = ::previous_program(idx);
+    if(tmp != "/usr/System/open/lib/common_auto") {
+      if(!n) {
+	return ::previous_object(idx);
+      }
+      n--;
+    }
+    idx++;
+  }
 
-  /* Need to grovel through the layers and exclude any that are
-     the above call_other() error-check. */
-  error("Unsupported!");
 }
-#endif
 
 #if 0
+/* Currently I'm still debugging this stuff, so call_trace returns the
+   full version, including the extra layer in call_outs, for debugging
+   purposes.  In the long run, you'd like call_trace to filter out all
+   the intermediate calls to this object's call_out function. */
+
 static mixed **call_trace(void) {
   mixed **trace, *call;
   int i;

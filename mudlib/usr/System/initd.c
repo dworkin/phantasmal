@@ -119,6 +119,9 @@ static void create(varargs int clone)
   rsrc::add_owner("common");
   rsrc::add_owner("game");
 
+  /* Set this to enable SSHD to do its thing */
+  rsrc::rsrc_set_limit("System", "ticks", 3000000);
+
   access::set_global_access("common", READ_ACCESS);
 
   driver = find_object(DRIVER);
@@ -154,6 +157,10 @@ static void create(varargs int clone)
   /* Compile, find and install the TelnetD */
   if(!find_object(TELNETD)) { compile_object(TELNETD); }
   "/kernel/sys/userd"->set_telnet_manager(0,find_object(TELNETD));
+
+  /* SSHD manages the second binary port in phantasmal.dgd */
+  if(!find_object(SSHD)) { compile_object(SSHD); }
+  "/kernel/sys/userd"->set_binary_manager(1, find_object(SSHD));
 
   /* Compile the Phrase manager (before HelpD) */
   if(!find_object(PHRASED)) { compile_object(PHRASED); }

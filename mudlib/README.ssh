@@ -1,0 +1,31 @@
+                        Phantasmal SSH Support
+
+Phantasmal's support is based on SSH login for DGD, version 0.3.
+Version 0.1 of that library was written by Felix A. Croes
+<felix@dworkin.nl>.  This version, like that version, is released into
+the public domain.
+
+Your MUD should have its own crypto key and identity.  Run the command
+'ssh-keygen -t dsa' and save the files in the directory 'keys'.  The
+created files should be named 'id_dsa' and 'id_dsa.pub'.  If you skip
+this step, default cryptographic keys included with this release will
+be used.  If that happens, your crypto is about as strong as soggy
+newspaper, since your public key has already been distributed to the
+world at large.
+
+KERNEL LIBRARY INSTALLATION:
+
+ - Start DGD, and login using the following command:
+
+	ssh -T -p 6048 <hostname>
+
+   -T means not to use a pseudo-tty, -p 6048 connects to the binary port which
+   is 6048 by default (this can be changed by editing the mud.dgd configuration
+   file) and <hostname> is the name of the host to connect to.  If you're
+   running ssh on the same host as DGD, just use 'localhost'.
+ - Though users without programming rights in the kernel library do not have
+   a password, ssh will still prompt them for one -- just hit the return key.
+ - You won't see anything while logging in (that includes the room you login
+   to and the players in it).
+ - The file ~username/.ssh/authorized_keys (within the mudlib) is used for
+   authentication, if it exists.
