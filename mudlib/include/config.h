@@ -83,8 +83,6 @@
 /* UNQ DTDs */
 #define MAPD_ROOM_DTD       "/data/dtd/room.dtd"
 #define MOB_FILE_DTD        "/data/dtd/mobile.dtd"
-#define HELP_DTD            "/data/dtd/help.dtd"
-#define LOGD_DTD            "/data/dtd/logchannel.dtd"
 #define CONFIGD_DTD         "/data/dtd/config.dtd"
 #define ZONED_DTD           "/data/dtd/zoned.dtd"
 #define BIND_DTD            "/data/dtd/bind.dtd"

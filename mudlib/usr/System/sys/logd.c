@@ -6,6 +6,7 @@
 #include <channel.h>
 
 #define SYSLOGFILE   (LOGDIR + "/System.log")
+#define LOGD_DTD     ("/usr/System/sys/logchannel.dtd")
 
 private mapping channels;
 private mapping levelname;

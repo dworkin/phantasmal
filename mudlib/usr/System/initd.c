@@ -11,6 +11,8 @@
 inherit access API_ACCESS;
 inherit rsrc   API_RSRC;
 
+#define HELP_DTD  ("/usr/System/sys/help.dtd")
+
 /* How many objects can be saved to file in a single call_out? */
 #define SAVE_CHUNK   10
 
