@@ -1,0 +1,161 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+                      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<title>Programming the DGD Driver: Simple String Manipulation</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<link href="../driverbook.css"
+      rel="stylesheet" type="text/css" />
+</head>
+<body>
+<table width="95%" border="0" cellspacing="0" cellpadding="4">
+  <tr>
+    <td colspan="2">
+      <table width="100%" border="0" cellspacing="1"
+        cellpadding="0" class="main">
+        <tr>
+          <td class="banner">Programming the DGD Driver</td>
+        </tr>
+      </table></td>
+  </tr>
+  <tr>
+    <td valign="top">
+      <table width="25%"  border="0" cellspacing="1"
+             cellpadding="0"  class="main">
+        <tr>
+          <td class="content" style="font-size: 120%">
+
+          <ul style="margin: 0; padding-left: 10%">
+            <li> <a href="index.html">Table of Contents</a> </li>
+	    <li> <a href="http://phantasmal.sf.net/DGD/index.html">
+	         DGD &amp; LPC Page </a> </li>
+          </ul>
+
+        </td>
+        </tr>
+        <tr>
+          <td class="content" align="center">
+            <a href="http://validator.w3.org/check/referer">
+            <img src="http://phantasmal.sf.net/images/valid-xhtml10.gif"
+	     alt="Valid XHTML 1.0!"
+             style="border:0;width:88px;height:31px" /></a><br />
+            <img src="http://phantasmal.sf.net/images/pixel.gif"
+             style="border:0;width:88px;height:1px" alt="" /><br />
+            <a href="http://jigsaw.w3.org/css-validator/check/referer">
+            <img src="http://jigsaw.w3.org/css-validator/images/vcss"
+             alt="Valid CSS!" style="border:0;width:88px;height:31px" />
+            </a><br /><br /><br />
+            <a href="http://sourceforge.net">
+            <img src="http://sourceforge.net/sflogo.php?group_id=48659&amp;type=2"
+             style="border: 0; width: 125; height: 37;"
+	     alt="SourceForge.net Logo" /></a>
+          </td>
+        </tr>
+      </table></td>
+    <td> <table width="100%"  border="0" cellspacing="1" cellpadding="0" 
+          class="main">
+        <tr>
+          <td class="content">
+
+
+<h2> 2.4 Simple String Manipulation </h2>
+
+
+<p>
+  Some time back, we called the status() function, and extracted a
+  result which wasn't a number at all.  It was a <dfn>string</dfn>,
+  which is a set of character values, one after the other in a list.
+  Of course, it doesn't usually look that way.  It usually looks like
+  a word or phrase or paragraph.
+</p>
+
+<p>
+  In DGD, just like in C, strings use what's called ASCII code.  Since
+  computers represent numbers internally rather than letters, every
+  printable character (and many special characters with no printable
+  representation) must be assigned a number.  ASCII is one way to
+  assign those numbers.  A DGD string is just a sequence of those
+  numbers, each representing a character.
+</p>
+
+<p>
+  A DGD string can also hold the empty string, which is written as
+  &quot;&quot;.  That's a sequence of <em>zero</em> characters, and it
+  just means &quot;no string here&quot;.  The string can also hold the
+  special value <dfn>nil</dfn>.  Every string holds nil when you first
+  declare it.  So do more complicated data types we'll talk about
+  later.  Nil isn't a valid string, it's just a placeholder meaning
+  that the string isn't usable yet &mdash; you have to assign a value
+  to it first.
+</p>
+
+<p>
+  So go ahead and type <kbd>code &quot;Hello world!&quot;</kbd>.  You
+  should see a result something like <samp>$15 = &quot;Hello
+  world!&quot;</samp>.  The quotation marks around it mean that it's a
+  string.  In LPC, a string is always double-quoted, never
+  single-quoted or quoted with other more interesting marks.
+</p>
+
+<p>
+  Just as you can use operations like + and * on numbers, you can also
+  use certain operators on strings.  For instance, the <dfn>+</dfn>
+  operator will concatenate two strings into a single longer one.  Try
+  typing <kbd>code &quot;Hello&quot; + &quot;World!&quot;</kbd>.  Note
+  that you don't automatically get a space in between, so you should
+  have seen a result like <samp>$18 = &quot;HelloWorld!&quot;</samp>.
+</p>
+
+<p>
+  Remember that the string is made of a sequence of numbers which
+  encode characters.  In LPC, you can extract one of these numbers
+  with the square-brace operator.  For instance, type <kbd>code
+  &quot;A&quot;[0]</kbd>.  You should see a result like <samp>$20 =
+  65</samp>.  That's because 65 is the ASCII encoding for an uppercase
+  A.  Try using strings other than &quot;A&quot; and you can see more
+  ASCII encodings.  You'll notice that all the uppercase letters are
+  ordered alphabetically within themselves, as are the lowercase
+  letters.
+</p>
+
+<p>
+  The zero in braces, above, specifies what offset in the string to
+  examine.  For instance, if you type <kbd>code
+  &quot;FANDANGO&quot;[4]</kbd>, you'll get 65 also.  That's because
+  the number is square brackets is what character of the string to
+  examine, and character four corresponds to the fifth character,
+  which is an uppercase A in the word &quot;FANDANGO&quot;.  The
+  string's characters are numbered in order, starting with zero.
+</p>
+
+<p>
+  You can also extract more than one character from a string.  But
+  that can't just be an ASCII number.  So if you extract more than one
+  character from a string, LPC gives you another string.  Try typing
+  <kbd>code &quot;Big Bertha&quot;[0..2]</kbd>.  You should get the
+  result &quot;Big&quot;.  That's characters number zero through two.
+</p>
+
+<p>
+  You'll find that if you substitute <code>[..2]</code> for
+  <code>[0..2]</code>, it works exactly the same way.  Leaving off the
+  first number means &quot;from the beginning of the string&quot;.
+  Similarly, using <code>[3..]</code> would mean &quot;from the fourth
+  character to the end of the string&quot;.  Perl and some LPC
+  dialects let you specify negative numbers to measure from the end of
+  the string, but DGD chooses not to do so.  So only use positive
+  numbers for your string offsets.
+</p>
+
+
+
+<a href="Tutorial_Loops.html"> Looping and Iteration </a>
+            <address>
+            <span><a href="mailto:angelbob-remove-spamfree@spamfree.users.sf.net">Noah Gibbs</a></span>
+            </address></td>
+        </tr>
+      </table></td>
+  </tr>
+</table>
+</body>
+</html>
