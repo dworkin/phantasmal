@@ -1,4 +1,4 @@
-/* $Header: /cvsroot/phantasmal/mudlib/usr/System/obj/user.c,v 1.19 2002/06/14 04:24:30 angelbob Exp $ */
+/* $Header: /cvsroot/phantasmal/mudlib/usr/System/obj/user.c,v 1.20 2002/06/28 22:53:46 angelbob Exp $ */
 
 #include <kernel/kernel.h>
 #include <kernel/user.h>
@@ -1061,21 +1061,37 @@ static void print_prompt(void) {
 
 /************** User-level commands *************************/
 
+static void cmd_set_lines(object user, string cmd, string str) {
+  int new_num_lines;
+
+  if(!str || str == ""
+     || sscanf(str, "%*s %*s") == 2
+     || sscanf(str, "%d", new_num_lines) != 1) {
+    send_system_phrase("Usage: ");
+    message(cmd + " <num lines>\r\n");
+    return;
+  }
+
+  num_lines = new_num_lines;
+  message("Set number of lines to " + new_num_lines + ".\r\n");
+}
+
 static void cmd_ooc(object user, string cmd, string str) {
   if (!str || str == "") {
     send_system_phrase("Usage: ");
     message(cmd + " <text>\r\n");
-  } else {
-    system_phrase_all_users("(OOC)");
-    message_all_users(" " + Name + " ");
-    system_phrase_all_users("chats");
-    message_all_users(": " + str + "\r\n");
-
-    send_system_phrase("(OOC)");
-    message(" ");
-    send_system_phrase("You chat");
-    message(": " + str + "\r\n");
+    return;
   }
+
+  system_phrase_all_users("(OOC)");
+  message_all_users(" " + Name + " ");
+  system_phrase_all_users("chats");
+  message_all_users(": " + str + "\r\n");
+
+  send_system_phrase("(OOC)");
+  message(" ");
+  send_system_phrase("You chat");
+  message(": " + str + "\r\n");
 }
 
 static void cmd_say(object user, string cmd, string str) {
