@@ -9,7 +9,8 @@
  * that isn't in /usr/common or /usr/System.
 
  * Currently, only files under a /usr/ directory may have a special
- * AUTO object.
+ * AUTO object.  The Kernel Library prevents files under /usr/System
+ * from having one, though.
  */
 
 #include <phantasmal/lpc_names.h>
@@ -29,16 +30,9 @@ string path_special(string file) {
   if(user != "System" && user != "common" && subdir == "script")
     return INHERIT_SCRIPT_AUTO;
 
-#if 0
   if(user == "common") {
     return INHERIT_COMMON_AUTO;
   }
-
-  if(user == "System") {
-    return nil;
-    /* return INHERIT_COMMON_AUTO; */
-  }
-#endif
 
   if(game_path_object)
     return game_path_object->path_special(file);

@@ -82,7 +82,9 @@ void set_heart_beat(int how_often, string funcname, mixed args...) {
   }
 
   if(per_queue[how_often][object_name(previous_object())]) {
-    error("Already have a heart_beat registered!  Unregister it first!");
+    error("Already have a heart_beat registered for "
+	  + object_name(previous_object()) + "!\n"
+	  + "Unregister it first!");
   }
 
   LOGD->write_syslog("Setting up periodic call_out in TIMED", LOG_VERBOSE);
