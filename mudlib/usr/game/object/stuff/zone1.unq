@@ -115,6 +115,8 @@ the west.}}
   ~article{0}
   ~nouns{{}}
   ~adjectives{{}}
+  ~rem_nouns{{}}
+  ~rem_adjectives{{}}
   ~newexit{
     ~rnumber{122}
     ~direction{3}
@@ -214,6 +216,8 @@ Tower off to the southwest.  A defunct lamp stands beside you.}}
   ~article{0}
   ~nouns{{}}
   ~adjectives{{}}
+  ~rem_nouns{{}}
+  ~rem_adjectives{{}}
   ~newexit{
     ~rnumber{125}
     ~direction{2}
@@ -273,6 +277,8 @@ academic halls beyond.  The rest of campus stretches out around you.}}
   ~article{0}
   ~nouns{{}}
   ~adjectives{{}}
+  ~rem_nouns{{}}
+  ~rem_adjectives{{}}
   ~newexit{
     ~rnumber{127}
     ~direction{1}
@@ -332,6 +338,8 @@ south.}}
   ~article{0}
   ~nouns{{}}
   ~adjectives{{}}
+  ~rem_nouns{{}}
+  ~rem_adjectives{{}}
   ~newexit{
     ~rnumber{129}
     ~direction{4}
@@ -391,6 +399,8 @@ dry and tufted.}}
   ~article{0}
   ~nouns{{}}
   ~adjectives{{}}
+  ~rem_nouns{{}}
+  ~rem_adjectives{{}}
   ~newexit{
     ~rnumber{131}
     ~direction{1}
@@ -433,6 +443,8 @@ Arkham through the trees to the north and east.}}
   ~article{0}
   ~nouns{{}}
   ~adjectives{{}}
+  ~rem_nouns{{}}
+  ~rem_adjectives{{}}
   ~newexit{
     ~rnumber{133}
     ~direction{4}
@@ -472,8 +484,8 @@ the floor.  You wonder if it'd be able to win a race with your old
 washing machine back home.}}
   ~flags{0}
   ~article{0}
-  ~nouns{{~enUS{turnip,vegetable}}}
-  ~adjectives{{~enUS{mobile,vibrating,gently,gently-vibrating,moving}}}
+  ~nouns{{~enUS{turnip, vegetable}}}
+  ~adjectives{{~enUS{mobile, vibrating, gently, gently-vibrating, moving}}}
   ~weight{0.1}
   ~volume{0.5}
   ~length{6}
@@ -513,8 +525,8 @@ washing machine back home.}}
 guess it's some form of manufacturing artifact.}}
   ~flags{0}
   ~article{0}
-  ~nouns{{~enUS{blemish,spot}}}
-  ~adjectives{{~enUS{small,swirly}}}
+  ~nouns{{~enUS{blemish, spot}}}
+  ~adjectives{{~enUS{small, swirly}}}
   ~weight{0}
   ~volume{0}
   ~length{0}
@@ -537,8 +549,8 @@ boxes that it once bore the insignia of the box's maker.}}
 out what looks like a picture of a pineapple.  Why a pineapple?}}
   ~flags{0}
   ~article{0}
-  ~nouns{{~enUS{logo,label,insignia}}}
-  ~adjectives{{~enUS{old,faded}}}
+  ~nouns{{~enUS{logo, label, insignia}}}
+  ~adjectives{{~enUS{old, faded}}}
   ~weight{0}
   ~volume{0}
   ~length{0}
@@ -560,8 +572,8 @@ roundish with some spiky bits on top.  Your best guess is that it's a
 pineapple.}}
   ~flags{0}
   ~article{0}
-  ~nouns{{~enUS{pineapple,outline,picture}}}
-  ~adjectives{{~enUS{faint,faded}}}
+  ~nouns{{~enUS{pineapple, outline, picture}}}
+  ~adjectives{{~enUS{faint, faded}}}
   ~weight{0}
   ~volume{0}
   ~length{0}
@@ -583,8 +595,8 @@ You've got a clear view on pedestrians or parked cars in a few places
 even from here.}}
   ~flags{0}
   ~article{0}
-  ~nouns{{~enUS{street,streets,road,city}}}
-  ~adjectives{{~enUS{city,surrounding,arkham}}}
+  ~nouns{{~enUS{street, streets, road, city}}}
+  ~adjectives{{~enUS{city, surrounding, arkham}}}
   ~weight{0}
   ~volume{0}
   ~length{0}
@@ -606,8 +618,8 @@ the carpet is pulled thin and has begun fraying.  The heavy threads
 are quite dirty and worn.  The carpet looks like it was once red or orange.}}
   ~flags{0}
   ~article{1}
-  ~nouns{{~enUS{carpet,threads,floor,rug}}}
-  ~adjectives{{~enUS{old,worn,heavy,threadbare,carpeted,red,orange,stained,frayed,fraying}}}
+  ~nouns{{~enUS{carpet, threads, floor, rug}}}
+  ~adjectives{{~enUS{old, worn, heavy, threadbare, carpeted, red, orange, stained, frayed, fraying}}}
   ~weight{0}
   ~volume{0}
   ~length{0}
@@ -630,8 +642,8 @@ next to one of them.  All of the furnishings are faded, worn, nicked,
 scratched and generally what you'd expect in a student lounge.}}
   ~flags{0}
   ~article{0}
-  ~nouns{{~enUS{couch,couches,sofa,sofas,chair,chairs}}}
-  ~adjectives{{~enUS{old,large,stained,red,green,faded,nicked,scratched,worn}}}
+  ~nouns{{~enUS{couch, couches, sofa, sofas, chair, chairs}}}
+  ~adjectives{{~enUS{old, large, stained, red, green, faded, nicked, scratched, worn}}}
   ~weight{0}
   ~volume{0}
   ~length{0}
@@ -654,7 +666,7 @@ sort of furniture you'd expect to find in a student lounge.}}
   ~flags{0}
   ~article{2}
   ~nouns{{~enUS{table}}}
-  ~adjectives{{~enUS{nicked,scratched,old,worn,stained,faded,large,gouged}}}
+  ~adjectives{{~enUS{nicked, scratched, old, worn, stained, faded, large, gouged}}}
   ~weight{0}
   ~volume{0}
   ~length{0}
@@ -675,8 +687,8 @@ attached even more securely by sticky and decaying floor polish.  It
 reminds you of other educational institutions.}}
   ~flags{0}
   ~article{1}
-  ~nouns{{~enUS{floor,tiles,checkerboard,tile,checker,checkers,dust,grime,polish}}}
-  ~adjectives{{~enUS{tile,tiled,checker,checkered,checkerboard,dusty,grimy,polished,floor,sticky,decaying,decayed}}}
+  ~nouns{{~enUS{floor, tiles, checkerboard, tile, checker, checkers, dust, grime, polish}}}
+  ~adjectives{{~enUS{tile, tiled, checker, checkered, checkerboard, dusty, grimy, polished, floor, sticky, decaying, decayed}}}
   ~weight{0}
   ~volume{0}
   ~length{0}
@@ -698,8 +710,8 @@ and Languages, while to the south looms the oddly angular Telman Hall
 of Mathematics and Science.}}
   ~flags{0}
   ~article{0}
-  ~nouns{{~enUS{hall,halls}}}
-  ~adjectives{{~enUS{peabody,telman,math,science,mathematics,sciences,history,languages,humanities,academic}}}
+  ~nouns{{~enUS{hall, halls}}}
+  ~adjectives{{~enUS{peabody, telman, math, science, mathematics, sciences, history, languages, humanities, academic}}}
   ~weight{0}
   ~volume{0}
   ~length{0}
@@ -747,8 +759,8 @@ are barely warped at all.  Their uneven coloration suggests that now and
 then a board is replaced as an old one wears out.}}
   ~flags{0}
   ~article{0}
-  ~nouns{{~enUS{steps,step}}}
-  ~adjectives{{~enUS{front,old,maintained,well-maintained,wood,wooden}}}
+  ~nouns{{~enUS{steps, step}}}
+  ~adjectives{{~enUS{front, old, maintained, well-maintained, wood, wooden}}}
   ~weight{0}
   ~volume{0}
   ~length{0}
@@ -768,8 +780,8 @@ then a board is replaced as an old one wears out.}}
 directions from its front hallway.}}
   ~flags{0}
   ~article{0}
-  ~nouns{{~enUS{hall,hallway}}}
-  ~adjectives{{~enUS{peabody,inside,front}}}
+  ~nouns{{~enUS{hall, hallway}}}
+  ~adjectives{{~enUS{peabody, inside, front}}}
   ~weight{0}
   ~volume{0}
   ~length{0}
@@ -791,8 +803,8 @@ old thing outside the Modern History building rather than, say, the
 Ancient History hall.}}
   ~flags{0}
   ~article{0}
-  ~nouns{{~enUS{lamp,gaslamp,lantern,post,lamppost,lightpost,light}}}
-  ~adjectives{{~enUS{light,lamp,lantern,gas}}}
+  ~nouns{{~enUS{lamp, gaslamp, lantern, post, lamppost, lightpost, light}}}
+  ~adjectives{{~enUS{light, lamp, lantern, gas}}}
   ~weight{0}
   ~volume{0}
   ~length{0}
@@ -813,7 +825,7 @@ of campus, and the Tower within it.  The Tower is an old two-story open
 building where idle students hang out.}}
   ~flags{0}
   ~article{0}
-  ~nouns{{~enUS{block,tower}}}
+  ~nouns{{~enUS{block, tower}}}
   ~adjectives{{}}
   ~weight{0}
   ~volume{0}
@@ -836,8 +848,8 @@ see the gardener's shed just south of Pickford Engineering Hall.  Further
 East is the home of the English and Literature departments, Merritt Hall.}}
   ~flags{0}
   ~article{0}
-  ~nouns{{~enUS{hall,halls}}}
-  ~adjectives{{~enUS{academic,telman,peabody,merritt,pickford,engineering,literature,english,humanities,economics,marsh,history,modern,languages}}}
+  ~nouns{{~enUS{hall, halls}}}
+  ~adjectives{{~enUS{academic, telman, peabody, merritt, pickford, engineering, literature, english, humanities, economics, marsh, history, modern, languages}}}
   ~weight{0}
   ~volume{0}
   ~length{0}
@@ -858,8 +870,8 @@ trees.  North of it is Pickford Hall, and south is the Block and the
 Tower.}}
   ~flags{0}
   ~article{0}
-  ~nouns{{~enUS{shed,building}}}
-  ~adjectives{{~enUS{old,gardener's,decrepit,tool}}}
+  ~nouns{{~enUS{shed, building}}}
+  ~adjectives{{~enUS{old, gardener's, decrepit, tool}}}
   ~weight{0}
   ~volume{0}
   ~length{0}
@@ -880,8 +892,8 @@ irregular spiral up to the sculpture outside the doors of Telman Hall.
 The pattern makes your head hurt if you look at it too long.}}
   ~flags{0}
   ~article{0}
-  ~nouns{{~enUS{step,steps,stair,stairs}}}
-  ~adjectives{{~enUS{spiral,not-quite-spiral,not,quite}}}
+  ~nouns{{~enUS{step, steps, stair, stairs}}}
+  ~adjectives{{~enUS{spiral, not-quite-spiral, not, quite}}}
   ~weight{0}
   ~volume{0}
   ~length{0}
@@ -902,8 +914,8 @@ roughly into the shape of a "w".  It's not clear what it's supposed to
 be.}}
   ~flags{0}
   ~article{0}
-  ~nouns{{~enUS{sculpture,w,doubleyou,dubya,double-u}}}
-  ~adjectives{{~enUS{ugly,orange,w,doubleyou,dubya,double-u}}}
+  ~nouns{{~enUS{sculpture, w, doubleyou, dubya, double-u}}}
+  ~adjectives{{~enUS{ugly, orange, w, doubleyou, dubya, double-u}}}
   ~weight{0}
   ~volume{0}
   ~length{0}
@@ -924,8 +936,8 @@ Block, a clearing in the center of campus, is barely visible through the
 trees to the northwest.}}
   ~flags{0}
   ~article{0}
-  ~nouns{{~enUS{hall,halls,peabody,marsh,clearing,block}}}
-  ~adjectives{{~enUS{academic,peabody,marsh,distant}}}
+  ~nouns{{~enUS{hall, halls, peabody, marsh, clearing, block}}}
+  ~adjectives{{~enUS{academic, peabody, marsh, distant}}}
   ~weight{0}
   ~volume{0}
   ~length{0}
@@ -950,8 +962,8 @@ inviting.}}
 the expected small bugs, dirt and weeds.}}
   ~flags{0}
   ~article{0}
-  ~nouns{{~enUS{ground,grass,green}}}
-  ~adjectives{{~enUS{green,grassy,long}}}
+  ~nouns{{~enUS{ground, grass, green}}}
+  ~adjectives{{~enUS{green, grassy, long}}}
   ~weight{0}
   ~volume{0}
   ~length{0}
@@ -971,8 +983,8 @@ the expected small bugs, dirt and weeds.}}
 north and the side of Telman to the south.}}
   ~flags{0}
   ~article{0}
-  ~nouns{{~enUS{halls,dorms}}}
-  ~adjectives{{~enUS{academic,school}}}
+  ~nouns{{~enUS{halls, dorms}}}
+  ~adjectives{{~enUS{academic, school}}}
   ~weight{0}
   ~volume{0}
   ~length{0}
@@ -1002,8 +1014,8 @@ Staring at it too long makes your head hurt, and your eyes feel like
 they're twisting in their sockets.  It's not comfortable.}}
   ~flags{0}
   ~article{0}
-  ~nouns{{~enUS{hall,telman}}}
-  ~adjectives{{~enUS{telman,engineering,mathematics,science}}}
+  ~nouns{{~enUS{hall, telman}}}
+  ~adjectives{{~enUS{telman, engineering, mathematics, science}}}
   ~weight{0}
   ~volume{0}
   ~length{0}
@@ -1026,8 +1038,8 @@ up above.  Peabody is an older building, and streaks of grime have
 formed below the windows.}}
   ~flags{0}
   ~article{0}
-  ~nouns{{~enUS{peabody,hall,windows}}}
-  ~adjectives{{~enUS{peabody,painted,brick,humanities,economics}}}
+  ~nouns{{~enUS{peabody, hall, windows}}}
+  ~adjectives{{~enUS{peabody, painted, brick, humanities, economics}}}
   ~weight{0}
   ~volume{0}
   ~length{0}
@@ -1050,8 +1062,8 @@ tell if it's looming over you or receding away from you, but the angle
 is very unusual in any case.}}
   ~flags{0}
   ~article{0}
-  ~nouns{{~enUS{hall,telman,walls,windows}}}
-  ~adjectives{{~enUS{telman,hall,angular,odd,mathematics,science}}}
+  ~nouns{{~enUS{hall, telman, walls, windows}}}
+  ~adjectives{{~enUS{telman, hall, angular, odd, mathematics, science}}}
   ~weight{0}
   ~volume{0}
   ~length{0}
@@ -1071,8 +1083,8 @@ is very unusual in any case.}}
 The ground underneath is quite hard.}}
   ~flags{0}
   ~article{0}
-  ~nouns{{~enUS{tufts,grasses,clumps,ground}}}
-  ~adjectives{{~enUS{grassy,tufts,dry,long,hard,tufted}}}
+  ~nouns{{~enUS{tufts, grasses, clumps, ground}}}
+  ~adjectives{{~enUS{grassy, tufts, dry, long, hard, tufted}}}
   ~weight{0}
   ~volume{0}
   ~length{0}
@@ -1093,7 +1105,7 @@ of campus.  It looks long and comfortable to walk through or lie in.}}
   ~flags{0}
   ~article{0}
   ~nouns{{~enUS{grasses}}}
-  ~adjectives{{~enUS{green,long}}}
+  ~adjectives{{~enUS{green, long}}}
   ~weight{0}
   ~volume{0}
   ~length{0}
@@ -1114,8 +1126,8 @@ Neither side of either building looks particularly interesting from
 here.}}
   ~flags{0}
   ~article{0}
-  ~nouns{{~enUS{marsh,peabody,halls}}}
-  ~adjectives{{~enUS{telman,marsh,halls,economics,humanities,history,languages,modern}}}
+  ~nouns{{~enUS{marsh, peabody, halls}}}
+  ~adjectives{{~enUS{telman, marsh, halls, economics, humanities, history, languages, modern}}}
   ~weight{0}
   ~volume{0}
   ~length{0}

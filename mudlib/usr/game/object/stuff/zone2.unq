@@ -55,8 +55,8 @@ building looks like it was once painted green.}}
     ~enUS{You can't see any more from here.  It's too far away.}}
   ~flags{0}
   ~article{0}
-  ~nouns{{~enUS{hostel,porch,building}}}
-  ~adjectives{{~enUS{worn,faded,battered,grey,green,red,gray,old,worn,wraparound,wrap-around,wrap,around}}}
+  ~nouns{{~enUS{hostel, porch, building}}}
+  ~adjectives{{~enUS{worn, faded, battered, grey, green, red, gray, old, worn, wraparound, wrap-around, wrap, around}}}
   ~weight{0}
   ~volume{0}
   ~length{0}
@@ -79,8 +79,8 @@ of peeling paint even from here.}}
     ~enUS{It's too far to see closely.}}
   ~flags{0}
   ~article{0}
-  ~nouns{{~enUS{furniture,table,tables,chair,chairs}}}
-  ~adjectives{{~enUS{porch,old,worn,faded,weathered}}}
+  ~nouns{{~enUS{furniture, table, tables, chair, chairs}}}
+  ~adjectives{{~enUS{porch, old, worn, faded, weathered}}}
   ~weight{0}
   ~volume{0}
   ~length{0}
@@ -104,7 +104,7 @@ small clear area before the woods and the swamp begin to the southeast.}}
   ~flags{3}
   ~article{0}
   ~nouns{{~enUS{porch}}}
-  ~adjectives{{~enUS{hostel,hostel's,faded,dull,worn}}}
+  ~adjectives{{~enUS{hostel, hostel's, faded, dull, worn}}}
   ~newexit{
     ~rnumber{135}
     ~direction{2}

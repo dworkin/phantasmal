@@ -429,8 +429,8 @@ baskets, half-eaten fruit, and several dead animals, all set in stone.
 Ghak'La must have been Messy-In-A-Hideous-Way.}}
   ~flags{4}
   ~article{0}
-  ~nouns{{~enUS{ghakla,ghak'la,statue}}}
-  ~adjectives{{~enUS{messy,hideous}}}
+  ~nouns{{~enUS{ghakla, ghak'la, statue}}}
+  ~adjectives{{~enUS{messy, hideous}}}
   ~weight{0}
   ~volume{0}
   ~length{0}
@@ -453,7 +453,7 @@ one place, but it's otherwise unremarkable.}}
   ~flags{0}
   ~article{0}
   ~nouns{{~enUS{ball}}}
-  ~adjectives{{~enUS{red,rubber}}}
+  ~adjectives{{~enUS{red, rubber}}}
   ~weight{0.1}
   ~volume{0.3}
   ~length{4}
@@ -476,7 +476,7 @@ see opalescent light filtering in through the petals.
     ~enUS{You see some bits!}}
   ~flags{3}
   ~article{0}
-  ~nouns{{~enUS{room,test}}}
+  ~nouns{{~enUS{room, test}}}
   ~adjectives{{~enUS{test}}}
   ~newexit{
     ~rnumber{101}
@@ -523,7 +523,7 @@ see opalescent light filtering in through the petals.
     ~enUS{You see some bits!}}
   ~flags{3}
   ~article{0}
-  ~nouns{{~enUS{room,test}}}
+  ~nouns{{~enUS{room, test}}}
   ~adjectives{{~enUS{test}}}
   ~newexit{
     ~rnumber{100}
@@ -586,7 +586,7 @@ see opalescent light filtering in through the petals.
     ~enUS{You see some bits!}}
   ~flags{3}
   ~article{0}
-  ~nouns{{~enUS{room,test}}}
+  ~nouns{{~enUS{room, test}}}
   ~adjectives{{~enUS{test}}}
   ~newexit{
     ~rnumber{102}
@@ -626,7 +626,7 @@ see opalescent light filtering in through the petals.
   ~flags{0}
   ~article{0}
   ~nouns{{~enUS{turnip}}}
-  ~adjectives{{~enUS{juicy,plump,large}}}
+  ~adjectives{{~enUS{juicy, plump, large}}}
   ~weight{0.3}
   ~volume{0.5}
   ~length{7}
@@ -649,7 +649,7 @@ doesn't give you any clues.}}
   ~flags{0}
   ~article{0}
   ~nouns{{~enUS{weasel}}}
-  ~adjectives{{~enUS{lifeless,limp}}}
+  ~adjectives{{~enUS{lifeless, limp}}}
   ~weight{1.5}
   ~volume{2}
   ~length{15}
@@ -669,8 +669,8 @@ doesn't give you any clues.}}
 on the side may once have advertised the box's maker.}}
   ~flags{11}
   ~article{0}
-  ~nouns{{~enUS{breadbox,box}}}
-  ~adjectives{{~enUS{bread,large,largish}}}
+  ~nouns{{~enUS{breadbox, box}}}
+  ~adjectives{{~enUS{bread, large, largish}}}
   ~weight{0.2}
   ~volume{2}
   ~length{20}
@@ -694,8 +694,8 @@ It was clearly designed to frighten before cutting, and tear while
 cutting.}}
   ~flags{0}
   ~article{0}
-  ~nouns{{~enUS{knife,dagger}}}
-  ~adjectives{{~enUS{ceremonial,curved,jagged}}}
+  ~nouns{{~enUS{knife, dagger}}}
+  ~adjectives{{~enUS{ceremonial, curved, jagged}}}
   ~weight{0}
   ~volume{0}
   ~length{0}
@@ -705,7 +705,7 @@ cutting.}}
 
 ~object{
   ~number{204}
-  ~location{6}
+  ~detail{6}
   ~bdesc{
     ~enUS{wombat}}
   ~gdesc{
@@ -720,8 +720,8 @@ Ew.}}
 Wombat fumes.  About the usual, you hope.}}
   ~flags{7}
   ~article{0}
-  ~nouns{{~enUS{wombat,mouth}}}
-  ~adjectives{{~enUS{stuffed,immobile}}}
+  ~nouns{{~enUS{wombat, mouth}}}
+  ~adjectives{{~enUS{stuffed, immobile}}}
   ~weight{0}
   ~volume{0}
   ~length{0}
@@ -743,7 +743,7 @@ Wombat fumes.  About the usual, you hope.}}
     ~enUS{It's old and sarcophariffic.}}
   ~flags{13}
   ~article{0}
-  ~nouns{{~enUS{sarcophagus,coffin}}}
+  ~nouns{{~enUS{sarcophagus, coffin}}}
   ~adjectives{{}}
   ~weight{0}
   ~volume{0}
