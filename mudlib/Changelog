@@ -5,6 +5,7 @@ Release 0.014:
 	* Object weight, volume and length and their capacities load/save
 	* Weight/length/volume commands for modification
 	* Added weight/length/vol to @make_room/@make_detail/@make_portable
+	* Added w/l/v capacities to @make_room/detail/portable
 
 Release 0.013:
 	* Added @list, an alias for @list_rooms.
