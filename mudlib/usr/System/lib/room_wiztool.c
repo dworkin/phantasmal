@@ -348,17 +348,26 @@ static void cmd_load_rooms(object user, string cmd, string str) {
 
 static void cmd_goto_room(object user, string cmd, string str) {
   int    roomnum;
-  object room;
-  object mob;
+  object exit, room, mob;
 
   if(str && sscanf(str, "#%d", roomnum)==1) {
     room = MAPD->get_room_by_num(roomnum);
+    if(!room) { /* Not a room, maybe an exit? */
+      exit = EXITD->get_exit_by_num(roomnum);
+      room = exit->get_from_location();
+    }
     if(!room) {
       user->message("Can't locate room #" + roomnum + "\r\n");
       return;
     }
   } else {
     user->message("Usage: " + cmd + " #<location num>\r\n");
+    return;
+  }
+
+  /* Do we really want people teleporting into a details? */
+  if(room->get_detail_of()) {
+    user->message("Can't teleport to a detail.\r\n");
     return;
   }
 
