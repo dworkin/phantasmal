@@ -14,9 +14,10 @@
 /* room_objects keeps track of rooms by object name and certain aliases */
 private mapping room_objects;
 
+/* zone_segments keeps track of the mapping of what segments contain
+   what segments meant for rooms */
 private int*    nozone_segments;
-
-private mapping protected_aliases;
+private int**   zone_segments;
 
 private object  room_dtd;
 private int     initialized;
@@ -43,12 +44,12 @@ static void create(varargs int clone) {
 
   room_objects = ([ ]);
   nozone_segments = ({ });
-
-  protected_aliases = ([ "start_room"     : 1,
-			 "start room"     : 1,
-			 ]);
+  zone_segments = ({ });
 
   initialized = 0;
+}
+
+void upgraded(varargs int clone) {
 }
 
 void init(string dtd) {
@@ -108,9 +109,6 @@ void add_room_number(object room, int num) {
 }
 
 void set_room_alias(string alias, object room) {
-  if(protected_aliases[alias] && !SYSTEM())
-    error("Only System objects can set protected alias " + alias + "!");
-
   if(room_objects[alias] && !SYSTEM())
     error("Alias '" + alias + "' already registered in add_room_alias!");
 
