@@ -96,3 +96,36 @@ this happens then you may run out of ticks before you run out of other
 resources (like sectors).  This stuff is all entirely the same as for
 the Kernel MUDLib, so the DGD mailing list is a good place to ask
 about what the numbers mean and how you can play with them.
+
+
+Q: I'm using the CVS version of DGD on Windows I get the following
+error during startup:
+
+$ ./dgd mud.dgd
+Jun 16 10:52:30 ** DGD 1.2.47
+Jun 16 10:52:30 ** Initializing...
+Can't parse UNQ data passed to unq_dtd:load!
+Config error: initialization failed
+
+The system log has the following errors:
+
+/usr/System/sys/errord(unset) ||| Sun Jun 16 10:52:33 2002 / 0.03 [6]
+--> Runtime error: Rule 2: bad token [caught]
+[...]
+/usr/common/obj/basic_unq_parser(unset) ||| Sun Jun 16 10:52:33 2002 / 0.03 [6]
+--> Error parsing block: ~DTD{
+~channel{name,level}
+~name{string}
+~level{int}
+}
+[...]
+--> Runtime error: Can't parse UNQ data passed to unq_dtd:load!
+
+A: This could mean that you're using the native Win32 version of CVS
+rather than the Cygwin version of CVS.  It appears to convert line
+endings to Win32-style or otherwise cause problems for reasons that
+aren't entirely clear.  Use a Unix workstation rather than Windows, or
+use the Cygwin version of CVS, or convert all your line endings after
+checkout.  The last solution won't work if you're doing development,
+though, since it's vitally important that you not check in anything to
+the main Phantasmal sources that works only with Win32 line endings.
