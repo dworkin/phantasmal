@@ -1,0 +1,9 @@
+~DTD{
+  ~social{verb,self-only,self-target?,target?,other-only,other-target?}
+  ~verb{string}
+  ~self-only{unq}
+  ~self-target{unq}
+  ~target{unq}
+  ~other-only{unq}
+  ~other-target{unq}
+}
