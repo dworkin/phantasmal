@@ -1,4 +1,4 @@
-/* $Header: /cvsroot/phantasmal/mudlib/usr/System/obj/user.c,v 1.26 2002/11/19 05:28:52 angelbob Exp $ */
+/* $Header: /cvsroot/phantasmal/mudlib/usr/System/obj/user.c,v 1.27 2002/11/19 08:31:38 sarak Exp $ */
 
 #include <kernel/kernel.h>
 #include <kernel/user.h>
@@ -781,6 +781,7 @@ private void player_login(void)
       mobile->assign_body(body);
     }
     mobile->set_user(this_object());
+    mobile->teleport(location, 1);
 
     /* Move body to start room */
     if(location->get_number() == CONFIGD->get_meat_locker()) {
