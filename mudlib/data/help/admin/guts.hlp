@@ -8,7 +8,7 @@ individually.  Note that in LPC, "program" is synonymous with "source
 LPC file", a single LPC file like /usr/System/obj/wiztool.c or
 /usr/common/lib/intl_phrase.c.
 
-Such commands include:
+Commands and help topics include:
 
 %history         Shows your code/clone/compile history
 %clear           Clears your code/clone/compile history
@@ -32,7 +32,7 @@ cd               Various file commands, like in DOS or Unix
 %grant           Grant an administrator permissions
 %ungrant         Remove an administrator's permissions
 
-daemons          Help on daemons providing MUD services
+daemons          Daemons providing MUD services
 
 }}
 

@@ -7,7 +7,7 @@ As an administrator and/or builder, you'll need to know about the
 various commands you can use.  Many of these commands are prefixed
 with a @ or % to distinguish them from normal commands and remind you
 of the harm they can do if used carelessly.  Any of these helpfiles
-must be accessed with %help or @help.
+must be accessed with the help command.
 
 help builder        Builder commands
 help admin          Administrator commands
@@ -16,7 +16,7 @@ help guts           Commands dealing directly with LPC
 
 help syntax         Using any commands
 
-For the regular "just help" screen, type "help player_index".
+For the "normal help" screen, type "help player_index".
 
 }}
 
