@@ -140,9 +140,6 @@ void upgraded(void) {
 	"%write_log"           : ({ "cmd_writelog" }),
 	"%log_subscribe"       : ({ "cmd_log_subscribe" }),
 
-	"@help"                : ({ "cmd_help" }),
-	"%help"                : ({ "cmd_help" }),
-
 	"%people"              : ({ "cmd_people" }),
 	"@people"              : ({ "cmd_people" }),
 	"%who"                 : ({ "cmd_people" }),

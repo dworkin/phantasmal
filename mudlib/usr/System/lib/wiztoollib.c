@@ -376,46 +376,6 @@ static void cmd_full_rebuild(object user, string cmd, string str) {
 }
 
 
-static void cmd_help(object user, string cmd, string str) {
-  mixed *hlp;
-  int index;
-
-  if (str && sscanf(str, "%d %s", index, str) == 2) {
-    if(index < 1) {
-      user->message("Usage: " + cmd + " <word>\r\n");
-      user->message("   or  " + cmd + " <num> <word>\r\n");
-      return;
-    }
-    index = index - 1;  /* User sees 1-indexed, we see 0-indexed */
-  } else if (!str || STRINGD->is_whitespace(str)) {
-    str = "main_admin";
-    index = 0;
-  } else {
-    index = 0;
-  }
-
-  hlp = HELPD->query_exact_with_keywords(str, user, ({ "admin" }));
-  if(hlp) {
-    if((sizeof(hlp) <= index) || (sizeof(hlp) <= 0)
-       || (index < 0)) {
-      user->message("Only " + sizeof(hlp) + " help files on \""
-		    + str + "\".\r\n");
-    } else {
-      if(sizeof(hlp) > 1) {
-	user->message("Help on " + str + ":    [" + sizeof(hlp)
-		      + " entries]\r\n");
-      }
-      user->message(hlp[index][1]->to_string(user));
-      user->message("\r\n");
-    }
-    return;
-  }
-
-  user->message("No help on \"" + str + "\".\r\n");
-}
-
-
-
 static void cmd_new_portable(object user, string cmd, string str) {
   object port;
   int    portnum, zonenum;
