@@ -1,4 +1,4 @@
-~room{
+~object{
   ~number{1}
   ~location{0}
   ~bdesc{

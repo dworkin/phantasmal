@@ -1,4 +1,4 @@
-~room{
+~object{
   ~number{100}
   ~location{0}
   ~bdesc{
@@ -35,7 +35,7 @@ You can't seem to approach it, only to recede.}}
   ~volume_capacity{27000000}
   ~length_capacity{1500}
 }
-~room{
+~object{
   ~number{101}
   ~location{0}
   ~bdesc{

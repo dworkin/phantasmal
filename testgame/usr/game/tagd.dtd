@@ -1,0 +1,9 @@
+~DTD{
+  ~tag{name,type,getter?,setter?}
+  ~mobile_tag:tag{}
+  ~object_tag:tag{}
+  ~name{string}
+  ~type{int}
+  ~getter{string}
+  ~setter{string}
+}

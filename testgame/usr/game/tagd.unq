@@ -1,0 +1,9 @@
+~mobile_tag{
+  ~name{test_mobile_tag}
+  ~type{1}
+}
+
+~object_tag{
+  ~name{test_object_tag}
+  ~type{1}
+}
