@@ -1,0 +1,24 @@
+FILE
+	/usr/common/sys/exitd.c
+
+NAME
+	get_exit_by_num - get an exit by global number
+
+PROTOTYPE
+	object get_exit_by_num(int num)
+
+CALLED BY
+	System, Common, Game
+
+DESCRIPTION
+	Takes a number and returns the corresponding exit object,
+	which may be queried as usual.
+
+RETURN VALUE
+	An appropriate exit object, or nil.
+
+ERRORS
+	If an invalid number is passed in, an error may be returned.
+
+SEE ALSO
+	get_exit_segments, get_all_exits, exits_in_segment

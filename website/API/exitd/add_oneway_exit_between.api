@@ -1,0 +1,31 @@
+FILE
+	/usr/common/sys/exitd.c
+
+NAME
+	add_oneway_exit_between - Adds an exit between two existing
+	rooms
+
+PROTOTYPE
+	void add_oneway_exit_between(object room1, object room2, int direction,
+	int num1)
+
+CALLED BY
+	System, Common, Game
+
+DESCRIPTION
+	This function adds a one-way exit from room1 to room2.
+	Going from room1 to room2 occurs in the specified direction.
+	If num1 is positive, it is used as the exit number for the new
+	exit.  If num1 is -1, the exit number is allocated on demand.
+	Num1 is usually left as -1 rather than specified when new exits
+	are allocated.
+
+RETURN VALUE
+	None.
+
+ERRORS
+	If the parameters are invalid, or cloning or setting fields fails,
+	an error will occur.
+
+SEE ALSO
+	direction_by_string, remove_exit, add_twoway_exit_between

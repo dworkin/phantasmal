@@ -1,0 +1,25 @@
+FILE
+	/usr/common/sys/exitd.c
+
+NAME
+	clear_all_exits - delete an exit object
+
+PROTOTYPE
+	void clear_all_exits(object room)
+
+CALLED BY
+	System, Common, Game
+
+DESCRIPTION
+	Destructs all exits leading from the specified room.  Any
+	two-way exits between this room and another will have their
+	corresponding return exits destructed as well.
+
+RETURN VALUE
+	None.
+
+ERRORS
+	If the room passed in is nil, an error will occur.
+
+SEE ALSO
+	remove_exit, clear_exit, add_twoway_exit_between

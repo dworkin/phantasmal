@@ -1,0 +1,25 @@
+FILE
+	/usr/common/sys/exitd.c
+
+NAME
+	exits_in_segment - return the exits in a given segment
+
+PROTOTYPE
+	int *exits_in_segment(int segment_index)
+
+CALLED BY
+	System, Common, Game
+
+DESCRIPTION
+	Takes a segment index and returns all valid exits within that
+	segment.  That means all exits with numbers between
+	(segment_index * 100) and (segment_index * 100 + 99).
+
+RETURN VALUE
+	An array of exits, or nil.
+
+ERRORS
+	Normally none.
+
+SEE ALSO
+	get_exit_segments, get_all_exits, get_exit_by_num

@@ -1,0 +1,25 @@
+FILE
+	/usr/common/sys/exitd.c
+
+NAME
+	remove_exit - removes an exit from a room
+
+PROTOTYPE
+	void remove_exit(object room, object exit)
+
+CALLED BY
+	System, Common, Game
+
+DESCRIPTION
+	Removes a specified exit from the room in question.  This
+	will remove the exit from the list of exits, but will not
+	destroy its associated DGD object.
+
+RETURN VALUE
+	None.
+
+ERRORS
+	If the room doesn't contain that exit, an error will occur.
+
+SEE ALSO
+	clear_exit, clear_all_exits, add_twoway_exit_between

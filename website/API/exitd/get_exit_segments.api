@@ -1,0 +1,25 @@
+FILE
+	/usr/common/sys/exitd.c
+
+NAME
+	get_exit_segments - get all segments containing exits
+
+PROTOTYPE
+	int *get_exit_segments(void)
+
+CALLED BY
+	System, Common, Game
+
+DESCRIPTION
+	Returns an array of integer indices for all segments containing
+	exit objects.  Exits are kept in different segments than other
+	Phantasmal objects like rooms, portables or mobiles.
+
+RETURN VALUE
+	An array of integers, or nil.
+
+ERRORS
+	Usually none.
+
+SEE ALSO
+	get_exit_by_num, get_all_exits, exits_in_segment

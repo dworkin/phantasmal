@@ -1,0 +1,27 @@
+FILE
+	/usr/common/sys/exitd.c
+
+NAME
+	clear_exit - delete an exit object
+
+PROTOTYPE
+	void clear_exit(object exit)
+
+CALLED BY
+	System, Common, Game
+
+DESCRIPTION
+	Destructs a specified exit.  If the exit is two-way, the
+	corresponding exit in the opposite direction is destructed
+	as well.  Note that this doesn't remove the exit from the
+	room database.  You should separately remove the exit, and
+	do so before its destruction.  See remove_exit.
+
+RETURN VALUE
+	None.
+
+ERRORS
+	Normally none.
+
+SEE ALSO
+	remove_exit, clear_all_exits, add_twoway_exit_between
