@@ -16,7 +16,7 @@ private object room_dtd;        /* DTD for room def'n */
 
 /* Prototypes */
 void upgraded(void);
-
+static string first_word_to_lowercase(string str);
 
 /*
  * NAME:	create()
@@ -201,7 +201,32 @@ mixed* get_command_sets(object wiztool) {
   return command_sets;
 }
 
+/*
+ * NAME:	to_filename()
+ * DESCRIPTION: takes the string and converts the first word
+ *		to lowercase
+ */
+static string first_word_to_lowercase(string str) {
+  int iter;
+  int len;
+  string ret;
 
+  ret = "";
+  len = strlen(str);
+  for(iter = 0; iter < len; iter++) {
+    if(str[iter] >= 'A' && str[iter] <= 'Z') {
+      str[iter] += 'a' - 'A';
+      ret += str[iter..iter];
+    }
+    else if (str[iter] == ' ') {
+      ret += str[iter..len-1];
+      return ret;
+    }
+    else
+      ret += str[iter..iter];
+  }
+  return ret;
+}
 
 /*
  * NAME:	message()
@@ -245,6 +270,12 @@ static void process_command(string cmd, string str)
       }
       return;
     }
+  }
+
+  /* kludge to get grant commands to use only lowercase usernames - dbd22 */
+  if(cmd=="%grant" || cmd=="%ungrant") {
+    if (user)
+      str=first_word_to_lowercase(str);
   }
 
   if(!find_object(SYSTEM_WIZTOOL))
