@@ -67,7 +67,7 @@ int message_scroll(string str) {
       scroll_state->add_text(str);
       push_state(scroll_state);
     } else {
-      LOGD->write_syslog("Nil scrolling state trying to send message!",
+      LOGD->write_syslog("Couldn't clone US_SCROLL_TEXT state object!",
 			 LOG_ERROR);
     }
   }
