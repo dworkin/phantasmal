@@ -1,18 +1,4 @@
 ~mobile{
-  ~type{user}
-  ~name{Angelbob}
-  ~number{500}
-  ~body{309}
-}
-
-~mobile{
-  ~type{user}
-  ~name{Admin}
-  ~number{501}
-  ~body{310}
-}
-
-~mobile{
   ~type{wander}
   ~name{a mobile turnip}
   ~number{502}
