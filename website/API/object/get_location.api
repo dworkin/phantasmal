@@ -1,0 +1,33 @@
+FILE
+	/usr/common/lib/object.c
+
+NAME
+	get_location - get the object's location
+
+PROTOTYPE
+	object get_location(void)
+
+CALLED BY
+	System, Common, Game
+
+DESCRIPTION
+	Gets the object's location, or nil if the object has no location.
+	Normally only the Void will have no location, though a particular
+	game can change that with effort.
+
+	Any object may be located within any other object.  Phantasmal
+	doesn't worry about differences between portable objects,
+	containers and rooms, so you're allowed to stand in a tent
+	or a breadbox if you're so inclined (and if you fit).
+
+	You should access-protect your version of this and all other
+	inherited functions, including upgraded() and destructed().
+
+RETURN VALUE
+	The location object.
+
+ERRORS
+	Usually none.
+
+SEE ALSO
+	get_user
