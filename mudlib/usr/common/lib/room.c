@@ -28,6 +28,21 @@ private int* pending_removed_details;
 
 private int objflags;
 
+/* These numbers will be used to determine what a player can carry,
+   and what objects can fit into what other objects.  Weight is
+   in units of kilograms, and volume is in cubic decimeters
+   (note 1 cu meter is 1000 sq decimeters).  Length represents the
+   greatest extent of the longest axis, and is in units of
+   centimeters.  The capacities are the largest values that are
+   acceptable for objects put into this object.  Weight and
+   volume are totalled among all objects put inside and compared to
+   the capacity, while length is only compared to make sure it's
+   no more than the capacity -- a quiver of arrows can accept a very
+   large number of arrows, even though they're all of the maximum
+   acceptable length. */
+float weight, volume, length;
+float weight_capacity, volume_capacity, length_capacity;
+
 
 #define PHR(x) PHRASED->new_simple_english_phrase(x)
 
@@ -489,8 +504,4 @@ void from_dtd_tag(string tag, mixed value) {
   } else { 
     error("Don't recognize tag " + tag + " in function from_dtd_tag()");
   }
-}
-
-string get_type() {  /* override to set a specific type */
-  return "ROOM";
 }
