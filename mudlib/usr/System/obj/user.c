@@ -1,4 +1,4 @@
-/* $Header: /cvsroot/phantasmal/mudlib/usr/System/obj/user.c,v 1.20 2002/06/28 22:53:46 angelbob Exp $ */
+/* $Header: /cvsroot/phantasmal/mudlib/usr/System/obj/user.c,v 1.21 2002/06/28 23:50:46 angelbob Exp $ */
 
 #include <kernel/kernel.h>
 #include <kernel/user.h>
@@ -336,9 +336,8 @@ void pop_state(object state) {
     state->switch_from(1);  /* 1 because popp is true */
     if(sizeof(state_stack)) {
       state_stack[0]->switch_to(0);  /* 0 because pushp is false */
-    } else {
-      print_prompt();
     }
+    /* No longer print prompt here, that's handled in receive_message. */
   }
 
   destruct_object(state);
@@ -857,7 +856,13 @@ int receive_message(string str)
 {
   if (previous_program() == LIB_CONN) {
     if(state_stack && sizeof(state_stack)) {
-      return state_stack[0]->from_user(str);
+      mixed tmp;
+      tmp = state_stack[0]->from_user(str);
+      if(!state_stack || !sizeof(state_stack)) {
+	/* We started with a user_state active, but it's stopped now. */
+	print_prompt();
+      }
+      return tmp;
     }
 
     return process_message(str);
