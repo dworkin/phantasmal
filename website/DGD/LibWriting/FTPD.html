@@ -64,112 +64,27 @@
   <h2> Writing an FTPD in DGD </h2>
 
   <p>
+    An FTPD can be an excellent alternative to providing your MUD
+    coders with telnet access to your server (which can be insecure).
+    You can either run an external FTPD which is restricted (via
+    chroot()) to a particular subset of your filesystem and has its
+    own restricted user list, or you can build an FTPD into your MUD
+    and handle the security problems there.
+  </p>
+
+  <p>
     Since standard DGD doesn't allow outgoing network connections, and
     standard FTP protocol requires them, you can't write an active FTP
     server in unpatched DGD.  You choices are to apply the network
     patch to DGD or to write a passive-mode-only FTPD.
   </p>
 
-<pre>
-From: dgd at list.imaginary.com (Greg Lewis)
-Date: Thu Jan 24 01:42:02 2002
-Subject: [DGD] Sensible telnet access for coders
-Message-ID: <20020124174845.A11380@misty.eyesbeyond.com>
-
-On Thu, Jan 24, 2002 at 05:48:01AM +0100, Arnau Rosselló Castelló wrote:
-> I've been trying to find a way to give coders telnet and ftp access to the 
-> server, so they can use better text editors than the crude ed in dgd, and i 
-> want also that they can keep their source hidden from other coders, and i can't 
-> find a way to do it without problems. So far i thought of this:
-
-Don't give them telnet access just for editing purposes.  There are a
-number of editors which will edit a remote file to which the user has
-ftp access (vim and emacs come to mind).  This simplifies your problem
-into simply providing ftp access.
-
-> - Give them a home dir inside the dgd tree, and hardcode in the mud that they 
-> only can see and exec the files inside that dir, and perhaps a predefined 
-> include and lib dir.
-> There would be problems because the file permissions of UNIX won't work, and 
-> would be substituted by something probably inferior, that wouldn't let them 
-> share the files(perhaps they could trough a "open for all" dir), or give access 
-> to some api without admin intervention. 
-> The permission system inside the MUD could be refined, but it would be 
-> duplicating existing functionality in the OS, besides, often UNIX permissions 
-> and MUD permissions would be out of sync, leading to further problems.
-> 
-> I really can't think of a better way to do it, without dgd supporting some way 
-> to find file permissions.
-> Well, i know Dworkin is against giving ways to call system() from inside the 
-> dgd driver, but maybe creating a limited way to call these functions, like 
-> making a line in the config file like:
-> system1="chown $arg1$ bla,bla..."
-> and a kfun that would call this with the given arguments(maybe with some 
-> checks), would add a lot of flexibility to dgd, while shooting yourself in the 
-> foot would not be the default, like in the vanilla kfuns.
-
-There are a number of options here, some of them more satisfactory than
-others.
-
-1. Write an ftpd in LPC.  This has been done, and you should be able to
-   find one and port it to DGD and whatever lib you are using.  It can
-   use either the networking kfuns or the binary port.  Obviously you
-   tie it into the mud's permission system, which is nice.  Downside is
-   you need good LPC skills and a knowledge of the FTP protocol, or at 
-   least a working subset of it.
-
-2. Run a standard ftpd, preferably chroot'ed into the mud's main
-   directory.  Hack the ftpd to use the mud's permissions by reading
-   whatever format permissions are stored in.  This has been done
-   before but presents some problems in terms of keeping the permissions
-   logic in sync.
-
-3. Run a standard ftpd, give all the coders an account without a useable
-   shell with their home directories set to their home directory within
-   the mud.  Preferably find an ftpd that will allow a configuration
-   which limits users to their home directory or something similar.
-   This should also be run chroot'ed.  The obvious drawback here is that
-   the coders don't have the same access they do on the mud, although
-   they can copy files around inside the mud, which works around most
-   of these problems.
-
-Those are some ideas anyway :).  If you're going to use a standard ftpd,
-then please run it chroot'ed or run both it and the mud in something like
-a FreeBSD jail(8).
-
--- 
-Greg Lewis                            Email : glewis@eyesbeyond.com
-Eyes Beyond                           Phone : (801) 796 6999
-Information Technology                Web   : http://www.eyesbeyond.com
-
-
-From dgd at list.imaginary.com  Thu Jan 24 02:18:00 2002
-From: dgd at list.imaginary.com (Noah Lee Gibbs)
-Date: Thu Jan 24 02:18:00 2002
-Subject: [DGD] Sensible telnet access for coders
-In-Reply-To: <20020124174845.A11380@misty.eyesbeyond.com>
-Message-ID: <Pine.BSF.4.21.0201232349200.31999-100000@hoot.monkeyspeak.com>
-
-On Thu, 24 Jan 2002, Greg Lewis wrote:
-> 1. Write an ftpd in LPC.  This has been done, and you should be able to
->    find one and port it to DGD and whatever lib you are using.  It can
->    use either the networking kfuns or the binary port.
-
-  One problem with this is that you'll need to either use the (not
-currently up-to-date) networking package for DGD or only implement passive
-FTP.  The FTP protocol is old, and unfortunately requires making outgoing
-connections.  It has trouble dealing with NAT, firewalls, etc for the same
-reason (it works, it just gets special-cased by everybody which is ugly).
-  Passive FTP is commonly available, but not every client does it
-decently.  It's often not tested very thoroughly since pretty much every
-"real" FTP server prefers to use active FTP.
-
--- 
-angelbob@monkeyspeak.com
-See my page of DGD documentation at
-"http://www.angelbob.com/projects/DGD_Page.html"
-If you post to the DGD list, you may see yourself there!
-</pre>
+  <p>
+    There are existing FTPD implementations in LPC, but none
+    specifically for DGD.  Still, you can adapt the FTPD from, say,
+    TMI-2 to run under DGD, either with the network patch or by
+    removing all code that would require outgoing connections.
+  </p>
 
   <p style="text-size: 150%"> <a href="../index.html"> Back to top level
     </a> </p>

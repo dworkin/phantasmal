@@ -2,112 +2,29 @@
 
   <h2> Writing an HTTPD in DGD </h2>
 
-<pre>
-Date: Mon Sep 24 13:02:01 2001
-Subject: [DGD] Re: httpd?
-In-Reply-To: <002901c14521$9332c5a0$fa86d2c1@karjm15>
-References: <004f01c1451b$1ee5e160$0100a8c0@cc84920a> <002901c14521$9332c5a0$fa86d2c1@karjm15>
-Message-ID: <20010924125810.N1054@kansas.is-here.com>
+  <p>
+    If you write an HTTPD that can read files in your MUD (as opposed
+    to one that presents an entirely different file model, something
+    it makes up), remember not to let people randomly get code out of
+    your MUD directories.  Be sure to only send out the files you
+    intend people to get.  Be careful to normalize filenames first
+    (remove leading '..' paths, et cetera) so that nobody can fool you
+    by using a different path format.  This helps to keep your HTTPD
+    from causing security problems in your MUD.
+  </p>
 
-On Mon, Sep 24, 2001 at 08:51:42PM +0300, Risto Karjalainen wrote:
-> I once ran a little test with the binary port of DGD. I wrote a simple
-> object that had something like this in its receive_message function:
-> 
-> void receive_message(string str)
-> {
->   string filename, html, tmp;
-> 
->   sscanf(str, "GET %s %s", filename, tmp);
->   html = read_file(filename);
->   html = implode(explode(html, "\n"), "\r\n"); /* Newline conversion */
->   send_message(html);
->   destruct_object(this_object());
-> }
-> 
-> It's very minimalistic and it hasn't any kind of error tolerance, plus its
-> features are very limited. Although if I remember correctly, I got it to
-> work and send simple html documents to my browser. Also I remember I had a
-> check if the file to send is an image, the newline conversion isn't done.
+  <p>
+    The RFC for HTTP 1.0 is <a
+    href="http://www.ics.uci.edu/pub/ietf/http/rfc1945.html">here</a>.
+    It may be useful for your implementation efforts.
+  </p>
 
-I think you can get away with not doing any newline conversion at all.
+  <p>
+    To set cookies, you may find Javascript is useful.  The following script
+    was obtained by Wes Connell off a Javascript help page:
+  </p>
 
-> The code might not work on its own (untested by me), but it mightgive a
-> little pointer to the right direction.
-
-Hmm...
-
-    GET /kernel/sys/driver.c HTTP/1.0
-
-Fun. ;-)
-
-Minimal security setup would include:
-1. Use a base directory other than the lib root.
-2. Have the code check for .. path-entries in the request and either
-   resolve these entries before applying the base-directory, or
-   consider such requests illegal.
-
-Regards,
-
-Erwin.
--- 
-Erwin Harte <harte@xs4all.nl>
-
-Date: Mon Sep 24 14:27:01 2001
-Subject: [DGD] more http...
-In-Reply-To: <007f01c1452d$d3a64a60$0100a8c0@cc84920a>
-Message-ID: <20010924142255.O1054@kansas.is-here.com>
-
-On Mon, Sep 24, 2001 at 09:19:16PM +0200, Nico Lammers wrote:
-> Okay.. let's get this right..
-> 
-> If I have an object which contains:
-> 
-> static void receive_message(string str) {
->     send_message(str)
->     destruct(this_object());
-> }
-> 
-> and my browser sends something like, "GET /www/test HTTP/1.0"
-> then the browser should, in this case, show that line, shouldn't it?
-
-No.  Here's the RFC for HTTP version 1.0:
-
-    http://www.ics.uci.edu/pub/ietf/http/rfc1945.html
-
-Please read it to see what a HTTP reply should look like.
-
-Regards,
-
-Erwin.
-P.S: Why yes, I'm telling you to RTFM. :-)
--- 
-Erwin Harte <harte@xs4all.nl>
-
-
-From: dgd at list.imaginary.com (Wes Connell)
-Date: Sat Jan  5 17:55:02 2002
-Subject: [DGD] Http daemon
-Message-ID: <20020105164033.A15483@brutality.org>
-
-.oOo. Stephen Schmidt (schmidsj@union.edu) wrote:
-
-> On Fri, 4 Jan 2002, Lord Lerkista wrote:
-> > Anyone have a http daemon that can send it to me??
-> 
-> A related question: Does anyone have an http daemon that can
-> set cookies? If you can set a cookie, then you can identify
-> each http connection with a particular player - otherwise
-> I don't see a reliable way to do that. I might be missing
-> something. If not, though, I'd recommend that anyone who
-> is coding an http daemon support cookies, or some other
-> method of identifying the requesting player.
-
-What I've done with my httpd code (and it might not be the best way to do it)
-was to actually output some Javascript code that accesses the document object
-normally. 
-
-I actually got this Javascipt from some JS help page... author unknown.
-
+  <pre>
 <script language="JavaScript">
 <!--
 
@@ -138,6 +55,33 @@ document.cookie = name + "=; expires=Thu, 01-Jan-70 00:00:01 GMT" +  "; path=/";
 }
 //-->
 </script>
+</pre>
+
+<pre>
+From: dgd at list.imaginary.com (Wes Connell)
+Date: Sat Jan  5 17:55:02 2002
+Subject: [DGD] Http daemon
+Message-ID: <20020105164033.A15483@brutality.org>
+
+.oOo. Stephen Schmidt (schmidsj@union.edu) wrote:
+
+> On Fri, 4 Jan 2002, Lord Lerkista wrote:
+> > Anyone have a http daemon that can send it to me??
+> 
+> A related question: Does anyone have an http daemon that can
+> set cookies? If you can set a cookie, then you can identify
+> each http connection with a particular player - otherwise
+> I don't see a reliable way to do that. I might be missing
+> something. If not, though, I'd recommend that anyone who
+> is coding an http daemon support cookies, or some other
+> method of identifying the requesting player.
+
+What I've done with my httpd code (and it might not be the best way to do it)
+was to actually output some Javascript code that accesses the document object
+normally. 
+
+I actually got this Javascipt from some JS help page... author unknown.
+
 
 I spit the Javascript out first then I call something like:
 
