@@ -1,0 +1,3 @@
+This directory is for include files.  You'll need to populate the kernel
+and phantasmal subdirectories appropriately.  See Phantasmal's include
+directory for details.  The bundled release should do this for you.
