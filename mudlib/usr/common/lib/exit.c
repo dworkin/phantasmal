@@ -9,6 +9,7 @@ inherit OBJECT;
 */
 
 int    direction;
+object from_location;
 object destination;
 
 static void create(varargs int clone) {
@@ -34,6 +35,12 @@ void set_direction(int new_dir) {
   } else error("Only EXITD can set exit numbers!");
 }
 
+void set_from_location(object new_loc) {
+  if(previous_program() == EXITD) {
+    from_location = new_loc;
+  } else error("Only EXITD can set exit numbers!");
+}
+
 void set_destination(object new_dest) {
   if(previous_program() == EXITD) {
     destination = new_dest;
@@ -42,6 +49,10 @@ void set_destination(object new_dest) {
 
 int get_direction() {
   return direction;
+}
+
+object get_from_location() {
+  return from_location;
 }
 
 object get_destination() {
