@@ -1,6 +1,7 @@
 #include <config.h>
 
-inherit port PORTABLE;
+/* inherit port PORTABLE; */
+inherit port ROOM;
 inherit unq UNQABLE;
 
 private int pending_location;
@@ -61,7 +62,7 @@ string to_unq_text(void) {
   }
 
   ret += "  ~article{" + desc_article + "}\n";
-  ret += "  ~flags{" + portflags + "}\n";
+  ret += "  ~flags{" + objflags + "}\n";
   if(parent) {
     ret += "  ~parent{" + parent->get_number() + "}\n";
   }
@@ -115,7 +116,7 @@ void from_dtd_unq(mixed* unq) {
     else if(unq[ctr][0] == "article")
       desc_article = unq[ctr][1];
     else if(unq[ctr][0] == "flags")
-      portflags = unq[ctr][1];
+      objflags = unq[ctr][1];
     else if(unq[ctr][0] == "flags")
       pending_parent = unq[ctr][1];
     else if(unq[ctr][0] == "nouns") {

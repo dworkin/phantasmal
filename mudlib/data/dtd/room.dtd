@@ -1,6 +1,6 @@
 ~DTD{
-  ~room{number?,location?,bdesc,gdesc,ldesc,edesc?,article,parent?,nouns,
-        adjectives?,exit*}
+  ~room{number?,location?,bdesc,gdesc,ldesc,edesc?,article,parent?,flags?,
+        nouns,adjectives?,exit*}
   ~number{int}
   ~location{int}
   ~bdesc{phrase}
@@ -9,6 +9,7 @@
   ~edesc{phrase}
   ~article{int}
   ~parent{int}
+  ~flags{int}
   ~nouns{phrase+}
   ~adjectives{phrase*}
   ~exit{string}

@@ -2,6 +2,7 @@
 
 #include <phrase.h>
 #include <grammar.h>
+#include <log.h>
 
 /*
  * /lib/object.c
@@ -46,8 +47,16 @@ object mobile;
 /* Parent/archetype for data inheritance */
 object parent;
 
+/* Details -- sub-objects that are part of this one */
+mixed*  details;
+/* Objects contained in this one */
+mixed*  objects;
+/* Mobiles of objects contained in this one */
+mixed*  mobiles;
 
 /* Prototypes */
+void prepend_to_container(object obj);
+void append_to_container(object obj);
 void clear_nouns(void);
 void clear_adjectives(void);
 
@@ -61,12 +70,23 @@ static void create(varargs int clone) {
 
     clear_nouns();
     clear_adjectives();
+
+    details = ({ });
+    objects = ({ });
+    mobiles = ({ });
   }
 }
 
 void destructed(int clone) {
+  int index;
+
   if(clone && location) {
     location->remove_from_container(this_object());
+  }
+  if(clone) {
+    for(index = 0; index < sizeof(objects); index++) {
+      objects[index]->set_location(nil);
+    }
   }
 }
 
@@ -300,21 +320,98 @@ int match_description(object user, string *cmp_adjectives, string* cmp_nouns) {
   return match;
 }
 
+object* get_details(void) {
+  return details[..];
+}
+
 
 /* Access-protected functions */
 
 
-/* Functions for CONTAINER use */
+/* Container Functions */
 
 /* set_location sets the location variable directly.  Mostly, this shouldn't
    happen.  Instead it should be set with the assorted container commands. */
 void set_location(object new_loc) {
-  if(previous_program() == CONTAINER) {
+  if(previous_program() == OBJECT) {
     location = new_loc;
-  } else {
-    error("You can't set that from there!");
   }
 }
+
+
+void add_to_container(object obj) {
+  append_to_container(obj);
+}
+
+void prepend_to_container(object obj) {
+  if(!obj)
+    error("Can't add (nil) to a container!");
+
+  if(obj->get_location())
+    error("Remove from previous container before adding!");
+
+  obj->set_location(this_object());
+  if(obj->get_mobile()) {
+    mobiles += ({ obj->get_mobile() });
+    obj->get_mobile()->notify_moved(obj);
+  }
+
+  objects = ({ obj }) + objects;
+}
+
+void append_to_container(object obj) {
+  if(!obj)
+    error("Can't add (nil) to a container!");
+
+  if(obj->get_location())
+    error("Remove from previous container before adding!");
+
+  obj->set_location(this_object());
+  if(obj->get_mobile()) {
+    mobiles += ({ obj->get_mobile() });
+    obj->get_mobile()->notify_moved(obj);
+  }
+
+  objects += ({ obj });
+}
+
+void remove_from_container(object obj) {
+  if(obj->get_location() != this_object()) {
+    error("Trying to remove object from wrong container!");
+  }
+
+  if(objects & ({ obj }) ) {
+    objects -= ({ obj });
+  } else {
+    LOGD->write_syslog("Can't remove object from container!", LOG_ERR);
+  }
+
+  obj->set_location(nil);
+  if(obj->get_mobile()) {
+    mobiles -= ({ obj->get_mobile() });
+    obj->get_mobile()->notify_moved(obj);
+  }
+}
+
+object object_num_in_container(int num) {
+  if(num < 0 || num >= sizeof(objects))
+    return nil;
+
+  return objects[num];
+}
+
+mixed* objects_in_container(void) {
+  return objects[..];
+}
+
+mixed* mobiles_in_container(void) {
+  return mobiles[..];
+}
+
+int num_objects_in_container(void) {
+  return sizeof(objects);
+}
+
 
 
 /* Functions for MOBILE use */
