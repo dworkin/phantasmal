@@ -10,6 +10,7 @@
 inherit LIB_USER;
 inherit user API_USER;
 inherit rsrc API_RSRC;
+inherit unq UNQABLE;
 
 #define STATE_NORMAL            0
 #define STATE_LOGIN             1
@@ -18,10 +19,9 @@ inherit rsrc API_RSRC;
 #define STATE_NEWPASSWD2        4
 
 /* Saved by save_object */
+string name;	                /* user name */
 string password;		/* user password */
 int    locale;                  /* chosen output locale */
-string name;	                /* user name */
-int    channelsub;              /* Subscribed channels */
 
 /* User-state processing stack */
 private object* state_stack;
@@ -62,6 +62,7 @@ static void create(int clone)
   if (clone) {
     user::create();
     rsrc::create();
+    unq::create(clone);
     state = ([ ]);
 
     state_stack = ({ });
@@ -70,6 +71,7 @@ static void create(int clone)
     locale = PHRASED->language_by_name("english");
     command_sets = nil;
   } else {
+    unq::create(clone);
     upgraded();
   }
   if(!find_object(SYSTEM_WIZTOOL)) { compile_object(SYSTEM_WIZTOOL); }
@@ -78,6 +80,7 @@ static void create(int clone)
 }
 
 void upgraded(void) {
+  unq::upgraded();
   command_sets = load_command_sets_file(USER_COMMANDS_FILE);
   if(!command_sets) {
     LOGD->write_syslog("Command_sets is Nil!", LOG_FATAL);
@@ -229,7 +232,7 @@ int send_system_phrase(string phrname) {
 
   phr = PHRASED->file_phrase(SYSTEM_PHRASES, phrname);
   if(!phr) {
-    LOGD->write_syslog("Can't find system phrase " + phrname + "!");
+    LOGD->write_syslog("Can't find system phrase " + phrname + "!", LOG_ERR);
   }
   return send_phrase(phr);
 }
@@ -268,8 +271,6 @@ void user_state_data(mixed data) {
     print_prompt();
     return;
   }
-  LOGD->write_syslog("Receiving user_state_data!");
-  LOGD->write_syslog(STRINGD->mixed_sprint(data));
   state_data = data;
 }
 

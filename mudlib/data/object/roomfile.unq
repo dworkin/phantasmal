@@ -138,84 +138,6 @@ stone.  Ghak'La must have been Messy-In-A-Hideous-Way.}}
   ~adjectives{{~enUS{messy,hideous}}}
 }
 ~room{
-  ~number{10}
-  ~location{0}
-  ~bdesc{
-    ~enUS{a room}}
-  ~gdesc{
-    ~enUS{a room}}
-  ~ldesc{
-    ~enUS{You see a room here.}}
-  ~article{0}
-  ~nouns{{}}
-  ~adjectives{{}}
-}
-~room{
-  ~number{11}
-  ~location{0}
-  ~bdesc{
-    ~enUS{a room}}
-  ~gdesc{
-    ~enUS{a room}}
-  ~ldesc{
-    ~enUS{You see a room here.}}
-  ~article{0}
-  ~nouns{{}}
-  ~adjectives{{}}
-}
-~room{
-  ~number{12}
-  ~location{0}
-  ~bdesc{
-    ~enUS{a room}}
-  ~gdesc{
-    ~enUS{a room}}
-  ~ldesc{
-    ~enUS{You see a room here.}}
-  ~article{0}
-  ~nouns{{}}
-  ~adjectives{{}}
-}
-~room{
-  ~number{13}
-  ~location{0}
-  ~bdesc{
-    ~enUS{a room}}
-  ~gdesc{
-    ~enUS{a room}}
-  ~ldesc{
-    ~enUS{You see a room here.}}
-  ~article{0}
-  ~nouns{{}}
-  ~adjectives{{}}
-}
-~room{
-  ~number{14}
-  ~location{0}
-  ~bdesc{
-    ~enUS{a room}}
-  ~gdesc{
-    ~enUS{a room}}
-  ~ldesc{
-    ~enUS{You see a room here.}}
-  ~article{0}
-  ~nouns{{}}
-  ~adjectives{{}}
-}
-~room{
-  ~number{15}
-  ~location{0}
-  ~bdesc{
-    ~enUS{a room}}
-  ~gdesc{
-    ~enUS{a room}}
-  ~ldesc{
-    ~enUS{You see a room here.}}
-  ~article{0}
-  ~nouns{{}}
-  ~adjectives{{}}
-}
-~room{
   ~number{77}
   ~location{0}
   ~bdesc{
@@ -285,10 +207,23 @@ see opalescent light filtering in through the petals.
   ~gdesc{
     ~enUS{student lounge}}
   ~ldesc{
-    ~enUS{This room has several old, large couches here and there.  A large table
-in the middle of the room seems to be built straight into the floor
-somehow.}}
+    ~enUS{This room has several old, large couches here and there.  A table in
+the middle of the room seems to be built directly into the floor somehow.}}
   ~article{1}
+  ~nouns{{}}
+  ~adjectives{{}}
+  ~exit{s: #301 112 113}
+}
+~room{
+  ~number{301}
+  ~location{0}
+  ~bdesc{
+    ~enUS{a room}}
+  ~gdesc{
+    ~enUS{a room}}
+  ~ldesc{
+    ~enUS{You see a room here.}}
+  ~article{0}
   ~nouns{{}}
   ~adjectives{{}}
 }

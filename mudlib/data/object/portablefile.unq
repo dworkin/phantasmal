@@ -108,3 +108,55 @@ Wombat fumes.  About the usual, you hope.}}
   ~nouns{{~enUS{uvula}}}
   ~adjectives{{}}
 }
+~portable{
+  ~number{400}
+  ~location{300}
+  ~bdesc{
+    ~enUS{floor}}
+  ~gdesc{
+    ~enUS{carpeted floor}}
+  ~ldesc{
+    ~enUS{The old, stained carpet has been here for a very long time.  It hasn't
+been cleaned nearly often enough.  You can see places near the walls where
+the carpet is pulled thin and has begun fraying.  The heavy threads
+are quite dirty and worn.  The carpet looks like it was once red or orange.}}
+  ~article{1}
+  ~flags{4}
+  ~nouns{{~enUS{carpet,threads,floor,rug}}}
+  ~adjectives{{~enUS{old,worn,heavy,threadbare,carpeted,red,orange,stained,frayed,fraying}}}
+}
+~portable{
+  ~number{401}
+  ~location{300}
+  ~bdesc{
+    ~enUS{couches}}
+  ~gdesc{
+    ~enUS{old couches}}
+  ~ldesc{
+    ~enUS{The three old couches have been in the room for quite some time.  They've
+faded and lost their original colors which seem to have been red, green
+and indeterminate.  A cheap wooden chair sits anonymously in the corner
+next to one of them.  All of the furnishings are faded, worn, nicked,
+scratched and generally what you'd expect in a student lounge.}}
+  ~article{0}
+  ~flags{4}
+  ~nouns{{~enUS{couch,couches,sofa,sofas,chair,chairs}}}
+  ~adjectives{{~enUS{old,large,stained,red,green,faded,nicked,scratched,worn}}}
+}
+~portable{
+  ~number{402}
+  ~location{300}
+  ~bdesc{
+    ~enUS{table}}
+  ~gdesc{
+    ~enUS{table}}
+  ~ldesc{
+    ~enUS{The table has been built as a piece with the floor somehow, and is quite
+solid-looking.  It has a solid wooden top and sides which have seen better
+days.  The whole thing is nicked, scratched, gouged and generally the
+sort of thing you'd expect to find here.}}
+  ~article{2}
+  ~flags{4}
+  ~nouns{{~enUS{table}}}
+  ~adjectives{{~enUS{nicked,scratched,old,worn,stained,faded,large,gouged}}}
+}

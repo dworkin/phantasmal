@@ -56,11 +56,15 @@ void destructed(int clone) {
 static void cmd_shutdown(object user, string cmd, string str)
 {
   find_object(INITD)->prepare_shutdown();
-  wiz::cmd_shutdown(user, cmd, str);
+  /* wiz::cmd_shutdown(user, cmd, str); */
+}
+
+static void cmd_reboot(object user, string cmd, string str) {
+  find_object(INITD)->prepare_reboot();
 }
 
 static void cmd_datadump(object user, string cmd, string str) {
-  find_object(INITD)->save_mud_data(user);
+  find_object(INITD)->save_mud_data(user, nil);
   user->message("Data save commenced.\n");
 }
 

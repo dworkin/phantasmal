@@ -25,16 +25,28 @@ static int create(varargs int clone) {
   }
 }
 
-/* Functions for parsing and verifying a DTD */
+/* Functions for creating UNQ text from DTD template data */
+        string serialize_to_dtd(mixed* dtd_unq);
+private string serialize_to_dtd_type(string label, mixed unq);
+private string serialize_to_string_with_mods(mixed* type, mixed unq);
+private string serialize_to_dtd_struct(string label, mixed unq);
+private string serialize_to_builtin(string type, mixed unq);
+
+/* Functions for parsing and verifying DTD UNQ input */
+        mixed* parse_to_dtd(mixed* unq);
 private mixed* parse_to_dtd_type(string label, mixed unq);
+private mixed  parse_to_string_with_mods(mixed* type, mixed unq);
 private mixed* parse_to_dtd_struct(string label, mixed unq);
 private mixed  parse_to_builtin(string type, mixed unq);
-private mixed  parse_to_string_with_mods(mixed* type, mixed unq);
 
 /* Functions for loading a DTD */
 private void   new_dtd_element(string label, mixed data);
 private mixed* dtd_struct(string* array);
 private mixed* dtd_string_with_mods(string str);
+
+/* Random helper funcs */
+private void set_up_fields_mapping(mapping fields, mixed* type);
+
 
 
 /* This function should be called only as UNQ_DTD->is_builtin(...),
@@ -51,9 +63,214 @@ mixed is_builtin(string label) {
   return builtins[label];
 }
 
+/*************************** Functions for Serializing ***************/
+
+/* This function Takes UNQ input that could have been the result of
+   this DTD and converts it to an UNQ string suitable for writing
+   to a file.  Returns its error in accum_error, which may be
+   queried with get_parse_error_stack. */
+string serialize_to_dtd(mixed* unq) {
+  string ret, data;
+
+  ret = "";
+  accum_error = "";
+
+  if(sizeof(unq) % 2) {
+    accum_error += "Odd-sized UNQ chunk passed to serialize_to_dtd!\n";
+    return nil;
+  }
+
+  while(sizeof(unq) > 0) {
+    if(sizeof(unq) == 1) {
+      accum_error += "Odd-sized UNQ chunk passed to serialize_to_dtd!\n";
+      return nil;
+    }
+
+    if(dtd[unq[0]]) {
+      data = serialize_to_dtd_type(unq[0], unq[1]);
+      if(!data) {
+	accum_error += "Error on label '" + unq[0] + "'.\n";
+	return nil;
+      }
+      ret += data;
+    } else {
+      accum_error += "Unrecognized type '" + unq[0] + "'.\n";
+      return nil;
+    }
+
+    /* Cut off leading UNQ tag and contents */
+    unq = unq[2..];
+  }
+
+  return ret;
+}
+
+
+private string serialize_to_dtd_type(string label, mixed unq) {
+  string tmp;
+
+  if(dtd[label][0] == "struct") {
+    return serialize_to_dtd_struct(label, unq);
+  }
+
+  tmp = serialize_to_string_with_mods(dtd[label], unq);
+  if(!tmp) {
+    accum_error += "Couldn't serialize as type " + implode(dtd[label], ",")
+      + "\n";
+    return nil;
+  }
+  return tmp;
+}
+
+
+private string serialize_to_string_with_mods(mixed* type, mixed unq) {
+  if(sizeof(type) != 1 && sizeof(type) != 2)
+    error("Illegal type given to serialize_to_string_with_mods!");
+
+  if(sizeof(type) == 1) {
+    if(UNQ_DTD->is_builtin(type[0]))
+      return serialize_to_builtin(type[0], unq);
+
+    if(dtd[type[0]])
+      return serialize_to_dtd_type(type[0], unq);
+
+    accum_error += "Unrecognized type '" + type[0]
+      + "' in serialize_to_string_with_mods!\n";
+    return nil;
+  }
+
+  /* Sizeof(type) == 2, so it's a type/mod combo */
+  if(type[1] != "?" && type[1] != "+" && type[1] != "*") {
+    accum_error += "Unrecognized type modifier " + type[1] + "!\n";
+    return nil;
+  }
+
+  if(UNQ_DTD->is_builtin(type[0])) {
+    string ret;
+    int    ctr;
+
+    if(typeof(unq) == T_STRING) {
+      return unq;
+    }
+    if(typeof(unq) != T_ARRAY) {
+      accum_error += "Unreasonable type serializing UNQ as "
+	+ implode(type, ",") + "!\n";
+      return nil;
+    }
+
+    /* Multiple entries */
+    /* First, check to see that the number of entries is reasonable */
+    if(type[1] == "+" && sizeof(unq) < 1) {
+      accum_error += "Doesn't fit + mod\n";
+      return nil;
+    }
+    if(type[1] == "?" && sizeof(unq) > 1) {
+      accum_error += "Doesn't fit + mod\n";
+      return nil;
+    }
+    /* The "*" modifier doesn't need a check, any number's fine */
+
+    ret = "";
+    for(ctr = 0; ctr < sizeof(unq); ctr++) {
+      string tmp;
+
+      tmp = serialize_to_builtin(type[0], unq[ctr]);
+      if(tmp == nil)
+	return nil;
+
+      ret += tmp;
+    }
+
+    return ret;
+  }
+
+  accum_error += "Don't yet support mod characters on non-builtin types!";
+}
+
+
+private string serialize_to_dtd_struct(string label, mixed unq) {
+  string  ret;
+  mixed*  type;
+  mapping fields;
+  int     ctr;
+
+  ret = "~" + label + "{";
+  type = dtd[label];
+  if(!type || type[0] != "struct") {
+    accum_error += "Non-struct passed to serialize_to_dtd_struct!\n";
+    return nil;
+  }
+
+  /* Rather than an instance tracker, we're just going to serialize
+     the fields in the order given.  That puts some constraints on
+     the UNQ that gets passed in, but that's fine for now.  Like
+     so much of this code, it'll be expanded if somebody needs the
+     new functionality. */
+
+  fields = ([ ]);
+  set_up_fields_mapping(fields, type);
+
+  for(ctr = 0; ctr < sizeof(unq); ctr += 2) {
+    string tmp;
+
+    if(!fields[unq[ctr]]) {
+      accum_error += "Unrecognized field " + unq[ctr] + " in struct.\n";
+      return nil;
+    }
+
+    tmp = serialize_to_dtd_type(unq[ctr], unq[ctr + 1]);
+    if(!tmp) {
+      accum_error += "Error writing label '" + unq[ctr] + "' of struct.\n";
+      return nil;
+    }
+    ret += "~" + unq[ctr] + tmp + "\n";
+  }
+
+  ret += "}";
+  return ret;
+}
+
+
+private string serialize_to_builtin(string type, mixed unq) {
+  if(type == "string") {
+    if(typeof(unq) != T_STRING) {
+      accum_error += "Type " + typeof(unq) + " is not a string!\n";
+      return nil;
+    }
+    return "{" + unq + "}";
+  }
+
+  if(type == "int") {
+    if(typeof(unq) != T_INT) {
+      accum_error += "Type " + typeof(unq) + " is not an int!\n";
+      return nil;
+    }
+    return "{" + unq + "}";
+  }
+
+  if(type == "float") {
+    if(typeof(unq) != T_FLOAT) {
+      accum_error += "Type " + typeof(unq) + " is not a float!\n";
+    }
+    return "{" + unq + "}";
+  }
+
+  if(type == "phrase") {
+    if(typeof(unq) == T_STRING) {
+      return "{" + unq + "}";
+    }
+    return "{" + unq->to_unq_text() + "}";
+  }
+
+  accum_error += "Don't recognize type " + type + " serializing builtins!\n";
+  return nil;
+}
+
+/*************************** Functions for Parsing *******************/
 
 /* Takes arbitrary parsed UNQ input and makes it conform to this DTD
-   if possible */
+   if possible.  Returns errors in accum_error, which may be queried
+   with get_parse_error_stack. */
 mixed* parse_to_dtd(mixed* unq) {
   int    ctr;
   string label;
@@ -140,9 +357,9 @@ private mixed parse_to_string_with_mods(mixed* type, mixed unq) {
     return nil;
   }
 
-  /* Sizeof(type) == 2, so it's a type/modifier combo */
+  /* Sizeof(type) == 2, so it's a type/mod combo */
   if(type[1] != "?" && type[1] != "+" && type[1] != "*") {
-    accum_error += "Unrecognized modifier " + type[1];
+    accum_error += "Unrecognized type modifier " + type[1] + "!\n";
     return nil;
   }
 
@@ -292,16 +509,9 @@ private mixed* parse_to_dtd_struct(string t_label, mixed unq) {
   }
 
   /* Set up fields array to know what bucket of instance_tracker
-     different labels belong in */
+     different labels belong in */ 
   fields = ([ ]);
-  for(ctr = 1; ctr < sizeof(type); ctr++) {
-    if(typeof(type[ctr]) == T_STRING) {
-      fields[type[ctr]] = ctr;
-    } else if(typeof(type[ctr]) == T_ARRAY) {
-      fields[type[ctr][0]] = ctr;
-    } else
-      error("Unknown type in DTD struct type!");
-  }
+  set_up_fields_mapping(fields, type);
 
   for(ctr = 0; ctr < sizeof(unq); ctr += 2) {
     int   index;
@@ -457,4 +667,22 @@ private mixed* dtd_struct(string* array) {
 
 void clear(void) {
   dtd = ([ ]);
+}
+
+
+/****************** Helper funcs ***************************/
+
+private void set_up_fields_mapping(mapping fields, mixed* type) {
+  int ctr;
+
+  /* Set up fields array to know what bucket of instance_tracker
+     different labels belong in */
+  for(ctr = 1; ctr < sizeof(type); ctr++) {
+    if(typeof(type[ctr]) == T_STRING) {
+      fields[type[ctr]] = ctr;
+    } else if(typeof(type[ctr]) == T_ARRAY) {
+      fields[type[ctr][0]] = ctr;
+    } else
+      error("Unknown type in DTD struct type!");
+  }
 }

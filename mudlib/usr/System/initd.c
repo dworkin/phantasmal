@@ -12,9 +12,17 @@ inherit rsrc   API_RSRC;
 /* How many objects can be saved to file in a single call_out? */
 #define SAVE_CHUNK   10
 
+private string pending_callback;
+
 /* Prototypes */
 private void suspend_system();
 private void release_system();
+static void __co_write_rooms(object user, int* objects, int ctr,
+		      string roomfile, string portfile);
+static void __co_write_portables(object user, int* objects, int ctr,
+			  string portfile);
+static void __reboot_callback(void);
+static void __shutdown_callback(void);
 
 
 static void create(varargs int clone)
@@ -48,6 +56,7 @@ static void create(varargs int clone)
 
   /* Start LOGD and log MUD startup */
   if(!find_object(LOGD)) { compile_object(LOGD); }
+  /* Channels aren't set yet... */
   LOGD->write_syslog("\n-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-\n"
 		     + "Starting MUD...\n"
 		     + "-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-");
@@ -125,13 +134,21 @@ static void create(varargs int clone)
   
 }
 
-void save_mud_data(object user) {
+void save_mud_data(object user, string callback) {
   int*   objects;
+  int    cohandle;
 
   if(!SYSTEM()) {
     error("Only privileged code can call save_mud_data!");
     return;
   }
+
+  if(pending_callback) {
+    error("Somebody else is already saving!");
+  }
+  pending_callback = callback;
+
+  LOGD->write_syslog("Writing World Data to files...", LOG_NORMAL);
 
   remove_file(ROOM_FILE + ".old");
   rename_file(ROOM_FILE, ROOM_FILE + ".old");
@@ -151,15 +168,15 @@ void save_mud_data(object user) {
 		       LOG_FATAL);
   }
 
-  LOGD->write_syslog("Writing rooms to file", LOG_NORMAL);
+  LOGD->write_syslog("Writing rooms to file", LOG_VERBOSE);
   objects = MAPD->rooms_in_zone(0) - ({ 0 });
 
-  suspend_system();
-
-  if(call_out("__co_write_rooms", 0, user, objects, 0, ROOM_FILE,
-	      PORT_FILE) < 1) {
-    release_system();
+  cohandle = call_out("__co_write_rooms", 0, user, objects, 0, ROOM_FILE,
+		      PORT_FILE);
+  if(cohandle < 1) {
     error("Can't schedule call_out to save objects!");
+  } else {
+    suspend_system();
   }
 }
 
@@ -170,10 +187,10 @@ void prepare_reboot(void)
     error("Can't call prepare_reboot from there!");
 
   if(find_object(LOGD)) {
-    LOGD->write_syslog("Preparing to reboot MUD...");
+    LOGD->write_syslog("Preparing to reboot MUD...", LOG_NORMAL);
   }
 
-  save_mud_data(nil);
+  save_mud_data(nil, "__reboot_callback");
 }
 
 void prepare_shutdown(void)
@@ -183,10 +200,10 @@ void prepare_shutdown(void)
     error("Can't call prepare_shutdown from there!");
 
   if(find_object(LOGD)) {
-    LOGD->write_syslog("Shutting down MUD...");
+    LOGD->write_syslog("Shutting down MUD...", LOG_NORMAL);
   }
 
-  save_mud_data(nil);
+  save_mud_data(this_user(), "__shutdown_callback");
 }
 
 void reboot(void)
@@ -195,7 +212,7 @@ void reboot(void)
     error("Can't call reboot from there!");
 
   if(find_object(LOGD)) {
-    LOGD->write_syslog("Rebooting!");
+    LOGD->write_syslog("Rebooting!", LOG_NORMAL);
   }
 }
 
@@ -225,6 +242,7 @@ private void suspend_system() {
 private void release_system() {
   RSRCD->release_callouts();
   TELNETD->release_input();
+  pending_callback = nil;
 }
 
 
@@ -251,13 +269,13 @@ static void __co_write_rooms(object user, int* objects, int ctr,
     if(call_out("__co_write_rooms", 0, user, objects, ctr, roomfile,
 		portfile) < 1) {
       release_system();
-      error("Can't schedule all_out to continue writing rooms!");
+      error("Can't schedule call_out to continue writing rooms!");
     }
     return;
   }
 
   /* Done with rooms, start on portables */
-  LOGD->write_syslog("Writing portables to file", LOG_NORMAL);
+  LOGD->write_syslog("Writing portables to file", LOG_VERBOSE);
 
   /* Assign a list of all portables to "objects" */
   {
@@ -306,8 +324,21 @@ static void __co_write_portables(object user, int* objects, int ctr,
     return;
   }
 
+  if(pending_callback) {
+    call_other(this_object(), pending_callback);
+    pending_callback = nil;
+  }
   release_system();
   LOGD->write_syslog("Finished writing saved data...", LOG_NORMAL);
   if(user)
     user->message("Finished writing data.\n");
+}
+
+static void __shutdown_callback(void) {
+  ::shutdown();
+}
+
+static void __reboot_callback(void) {
+  ::dump_state();
+  ::shutdown();
 }

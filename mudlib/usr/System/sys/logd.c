@@ -75,9 +75,9 @@ void write_syslog(string logstring, varargs int level, string channel) {
   if(!level)
     level = LOG_ERR_FATAL;  /* Highest priority */
 
-  if(!channel)
+  if(!channel) {
     channel = previous_program();
-  else if(!SYSTEM())
+  } else if(!SYSTEM())
     error("Only System files can impersonate other channels!");
 
   if(channels && channels[channel]) {
