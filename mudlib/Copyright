@@ -1,11 +1,12 @@
-The Phantasmal MUDLib and its component parts (hereafter referred to
-as Phantasmal) are Copyright (C) 2001-2003 Noah Gibbs and others.
-Phantasmal may be used freely for any purpose.  Phantasmal may be used
-personally, commercially or otherwise.  You may modify and/or
-redistribute Phantasmal under any terms you wish.  These rights to use
-Phantasmal are worldwide, perpetual and irrevocable.  Phantasmal is
-distributed with no warranty of any kind, expressed or implied, not
-even of merchantability or fitness for a particular purpose.
+The Phantasmal MUDLib, its component parts and associated
+documentation (hereinafter referred to as Phantasmal) are Copyright
+(C) 2001-2005 Noah Gibbs and others.  Phantasmal may be used freely
+for any purpose.  Phantasmal may be used personally, commercially or
+otherwise.  You may modify and/or redistribute Phantasmal under any
+terms you wish.  These rights to use Phantasmal are worldwide,
+perpetual and irrevocable.  Phantasmal is distributed with no warranty
+of any kind, expressed or implied, not even of merchantability or
+fitness for a particular purpose.
 
 This means that you can do what you like to it or with it.  We used to
 say that we placed it in the public domain, but it's not clear that
