@@ -1,4 +1,5 @@
 Release 0.017:
+    * Initial support for LPC telnet code on a binary port
     * Preliminary terminal support, altered Phrase support
     * Started adding subtyped object declarations
     * Added support for tag inheritance in TagD
