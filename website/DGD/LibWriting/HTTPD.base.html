@@ -107,5 +107,171 @@ send_html_output(&quot;setCookie(\&quot;PASSWORD\&quot;, encrypted_password);&qu
 send_html_output(&quot;&lt;&frasl;script&gt;&quot;);
   </pre>
 
+<hr />
+
+<pre>
+From: Bart van Leeuwen
+Subject: [DGD] DGD http daemon?
+Date: Tue Feb  8 20:58:01 2005
+
+Hey,
+
+Last week I rewrote a small http serving object from my mud into a
+relatively complete http server.
+
+You can see it in action by pointing your browser at http://mud.wotf.org/
+
+Currently the code is somewhat specific to my kernel (and modified driver)
+but if people are interested in this and someone is willing to help test
+it for a generic DGD kernel then I can make the code available
+(for non commercial use only however)
+
+A somewhat preliminary README can be found at
+http://mud.wotf.org/httpd.html, which provides some info on what it
+supports and how it works.
+
+Bart.
+
+ps. in the next 1 1/2 weeks I'll be rather busy and away from home, I will
+read my mail, but I won't be able to finish the cleaning up of the code. I do want to get an
+idea on if I should put in the efford to remove dependencies on my own
+kernel however.
+</pre>
+
+<hr />
+
+<pre>
+From: Joakim Romland
+Subject: Re: [DGD] DGD http daemon?
+Date: Wed Feb  9 00:30:01 2005
+
+On Tue, 8 Feb 2005 15:26:53 -0500 (EST), Stephen Schmidt wrote:
+> There are all kinds of design-related problems with using
+> a primarily http interface for playing the game; those
+> don't interest me so much. The question is really whether
+> this daemon could be the basis for code support for such
+> a design. If it is, then having a version for a general
+> DGD kernel (or even a specific kernel that could be
+> released as a package with the daemon) would be extremely
+> useful.
+>
+I tinkered (and still touch it when I get some inspiration) with a
+httpd that is built on top of the Kernel Library. It's somewhat more
+bloated and should really be divided into several sub-projects. I
+wrote it mostly to create a WebDAV daemon -- but I needed a httpd for
+that (see SVN repository at
+http://developer.berlios.de/projects/dgd-httpd/)
+
+Either way, you can do some trickery with the xmlHttp object that is
+available in most browsers these days. But as always with HTTP, you
+need to do polling to get new state. Although, if you have support for
+keep-alive sessions in your httpd you poll through the same connection
+all the time (if you poll more often than the timeout is set to that
+is).
+
+I tested this using xmlHttp some time back using the above httpd to
+write a web-chat... And sure, you get a delay of a couple of seconds
+(depending on how often you poll), but to the user (browser) it is
+completely invisible; eg. new information just pops up. You can poll
+quite a few times per second if you want to too, but HTTP headers give
+you a quite a bit of overhead. :-)
+
+It is limited in its usefulness, but I can imagine the creative person
+can come up with some nifty stuff.
+
+If you have no idea what I am talking about, then I have relevant
+snippet of the client code here (if you want the backend as well, just
+drop me a mail -- it's not much code):
+
+[ snip ]
+    function createXmlHttp() {
+        /* Only support for Mozilla atm. */
+        return new XMLHttpRequest();
+    }
+
+    function result() {
+        if(xmlHttp.readyState == 4 && xmlHttp.responseText) {
+            currentBuff.innerHTML = xmlHttp.responseText;
+        }
+    }
+
+    function fetch() {
+        if(xmlHttp && xmlHttp.readyState != 0) {
+            xmlHttp.abort();
+        }
+
+        if(xmlHttp = createXmlHttp()) {
+            xmlHttp.open("GET", urlServer + urlGetPath + "?since=1", true);
+            xmlHttp.onreadystatechange = result;
+        } else {
+            DEBUG("Failed to create xmlHttp");
+        }
+
+        xmlHttp.send(null);
+    }
+
+    function send(msg) {
+        if(xmlHttp && xmlHttp.readyState != 0) {
+            xmlHttp.abort();
+        }
+
+        if(xmlHttp = createXmlHttp()) {
+            xmlHttp.open("GET", urlServer + urlSendPath + "?since=1&message=" +
+msg, true);
+            xmlHttp.onreadystatechange = result;
+        } else {
+            DEBUG("Failed to create xmlHttp");
+        }
+
+        xmlHttp.send(null);
+    }
+
+    function main() {
+        fetch();
+        setTimeout("main()", refreshRate);
+    }
+
+[ /snip ]
+
+
+// Joakim
+</pre>
+
+<hr />
+
+<pre>
+From: Bart van Leeuwen
+Subject: Re: [DGD] DGD http daemon?
+Date: Wed Feb  9 00:43:01 2005
+
+On Tue, 8 Feb 2005, [ISO-8859-1] Petter Nyström wrote:
+
+> If you are releasing the code, I'd be interested in using it. I am not
+> running Dworkin's kernel lib though, so I can't really help you getting a
+> generic version of the code. I am just a fellow lib coder who have often
+> thought it'd be nice to have an internal web server for the simpler
+> purposes that have been mentioned, but I have never given the project
+> priority. With your code, I can't believe there would be that much work to
+> integrate it into my mudlib.
+
+If you know how your kernel's user/connection handling is working then
+you should have little trouble getting this to work on your kernel.
+
+>
+> If you put the code in public domain, let us know!
+
+It will be available for non-commercial use once I cleaned it up a bit and
+have a little bit more documentation for interfacing with it (which should
+take some 2 weeks due to me being away from home for a while)
+
+As a sidenote, there is also a project at
+http://developer.berlios.de/projects/dgd-httpd/ which provides a (for what
+I can tell more heavyweight) http server for DGD. If you need things like
+XML parsing or webdav, take a look at that as well. What I have written is
+extremely minimalistic in comparison.
+
+Bart.
+</pre>
+
   <p style="text-size: 150%"> <a href="../index.html"> Back to top level
     </a> </p>
