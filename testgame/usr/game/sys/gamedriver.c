@@ -26,6 +26,14 @@ static void create(void) {
   suspended_message = file_tmp;
 }
 
+#define GAME_USER "/usr/game/obj/user"
+object new_user_connection(string first_line) {
+  if(!find_object(GAME_USER))
+    compile_object(GAME_USER);
+
+  return clone_object(GAME_USER);
+}
+
 string get_welcome_message(object connection) {
   if(!AUTHORIZED())
     return nil;

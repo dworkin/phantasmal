@@ -25,8 +25,12 @@
 /* Kernel lib tie-in objects -- must be in these dirs to be recognized
    as privileged */
 #define INITD               "/usr/System/initd"
-#define SYSTEM_USER         "/usr/System/obj/user"
+#define DEFAULT_USER_OBJ    "/usr/System/obj/user"
 #define SYSTEM_WIZTOOL      "/usr/System/obj/wiztool"
+
+
+/* Game tie-in objects */
+#define PHANTASMAL_USER     "/usr/System/open/lib/userlib"
 
 
 /* Libraries -- inheritable, not clonable */
@@ -69,7 +73,7 @@
 
 
 /* Storage directories */
-#define SYSTEM_USER_DIR     "/usr/System/users"
+#define SYSTEM_USER_DIR     "/usr/game/users"
 #define LOGDIR              "/log"
 
 
@@ -83,13 +87,13 @@
 #define SOULD_DTD           "/usr/common/sys/sould.dtd"
 
 /* Other data files */
-#define CONFIG_FILE         "/data/system/config.unq"
-#define ROOM_DIR            "/data/object/stuff"
-#define MOB_FILE            "/data/object/mobfile.unq"
-#define ZONE_FILE           "/data/object/zonefile.unq"
-#define SAFE_ROOM_DIR       "/data/object/safe_stuff"
-#define SAFE_MOB_FILE       "/data/object/safe_mobfile.unq"
-#define SAFE_ZONE_FILE      "/data/object/safe_zonefile.unq"
+#define CONFIG_FILE         "/usr/game/config.unq"
+#define ROOM_DIR            "/usr/game/object/stuff"
+#define MOB_FILE            "/usr/game/object/mobfile.unq"
+#define ZONE_FILE           "/usr/game/object/zonefile.unq"
+#define SAFE_ROOM_DIR       "/usr/game/object/safe_stuff"
+#define SAFE_MOB_FILE       "/usr/game/object/safe_mobfile.unq"
+#define SAFE_ZONE_FILE      "/usr/game/object/safe_zonefile.unq"
 #define ROOM_BIND_FILE      "/usr/common/sys/room_binder.unq"
 #define MOBILE_BIND_FILE    "/usr/common/sys/mobile_binder.unq"
 #define BUG_DATA            "/usr/game/text/bug_reports.txt"
@@ -98,8 +102,7 @@
 #define SYSTEM_PHRASES      "/usr/System/obj/system.phr"
 #define EXITD_PHRASES       "/usr/common/sys/exitd.phr"
 #define NL_PARSE_FILE       "/usr/common/sys/nl_parser.dpd"
-#define USER_COMMANDS_FILE  "/data/system/user_cmds.unq"
-#define SOULD_FILE          "/data/system/sould.unq"
+#define SOULD_FILE          "/usr/game/sould.unq"
 
 #define WELCOME_MESSAGE     "/usr/game/text/welcome.msg"
 #define SUSPENDED_MESSAGE   "/usr/game/text/suspended.msg"
