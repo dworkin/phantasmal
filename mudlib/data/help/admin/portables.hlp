@@ -7,29 +7,11 @@ Portables are basic carryable, movable and manipulable objects.  In
 Phantasmal they are manipulated, from an admin viewpoint, by the room
 commands.  The only commands specific to portables are the following:
 
-@new_portable             Create a new portable
 @make_portable            Make a new portable by answering questions
 
 See also:  rooms, MAPD
 }}
 
-
-~name{~enUS{new_portable, newportable, portablenew, portable_new,
-            new_port, newport, portnew, port_new}}
-~keywords{admin}
-~desc{
-  ~enUS{
-
-The @new_portable command creates a new portable object.  It takes
-an optional number as an argument.  For instance:
-
-@new_portable #571
-@set_glance #571 'a bottle of rum'
-
-If typed with no argument, the new portable will be in the same zone as
-your current location.
-
-}}
 
 ~name{~enUS{make_portable, makeportable, make_portables,
             makeportables, portablemake, portable_make
