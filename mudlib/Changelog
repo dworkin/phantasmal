@@ -21,10 +21,14 @@ Release 0.10:
 	* The %compile command will append a ".c" to the supplied filename
 	if the file as mentioned doesn't exist, but the same name with a
 	".c" exists and is at least one byte long.
-	* There is a @new_mobile command to create a new mobile, currently
-	only in very restricted ways.
+	* There is a @new_mobile command to create a new mobile
 	* Added help for new mobile commands
 	* UNQ DTDs can now import other DTD's.
 	* Improved UNQ DTD type inheritance.
 	* The mobfile can now be restored.
 	* @new_zone command to add new zones
+	* wandering mobiles now work
+	* Builtin 'unq' data now works properly
+	* A basic sould is in place
+	* A "social" command allows socials to be used, slightly awkwardly
+	
