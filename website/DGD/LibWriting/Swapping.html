@@ -73,6 +73,8 @@
     and objects will be pulled into memory as they are referenced.
   </p>
 
+  <h3> The Configuration File </h3>
+
   <p>
     DGD's configuration file contains a parameter called
     swap_fragment.  That's the fraction of all objects that should be
@@ -102,9 +104,28 @@
     takes less memory.
   </p>
 
+  <h3> Transparency </h3>
+
+  <p>
+    All of this nifty swapping stuff Just Happens(tm).  That is, you
+    should never, as a programmer, specifically need to request it.
+    Objects are swapped out at the end of threads according to the
+    swap_fragment configuration parameter, and they're swapped in when
+    you use them.  It should never be necessary to explicitly request
+    a swap-in for an object.
+  </p>
+
+  <p>
+    If you ever wish to explicitly request a swap-out, there's a kfun
+    called swapout() which will swap <i>every</i> object out.
+  </p>
+
   <p>
     An object is swapped back into memory when one of its functions is
-    called, or when certain driver functions are called on it.
+    called.  Just the first sector will be swapped in when status() is
+    called on the object.  Note that calling find_object() does not
+    swap the object in.  Only operations that access the object's
+    individual information need to do so.
   </p>
 
   <p>
@@ -113,6 +134,22 @@
     much slower swapping.  Consider separating the highly-changeable
     parts of the objects into smaller DGD objects that will swap
     separately.
+  </p>
+
+  <h3> Memory Use </h3>
+
+  <p>
+    You'll find that the in-RAM memory use of your library, measured
+    in sectors, is driven by several things.  Roughly in order of
+    importance, those things are: 1) the number of rooms and portable
+    items in your world.  2) The time your MUD has been running
+    &mdash; DGD is disk-based, so content is loaded as it is visited.
+    3) The number of active, moving users.  Active users will continue
+    to load content by seeing and using it.  It would otherwise be
+    swapped out.  And 4) the aggressiveness of your cleanup routines,
+    including things like swapping.  The more aggressively you clean
+    up, the shorter the time that 'transient' memory (memory that is
+    used briefly and discarded) will take up space after it is used.
   </p>
 
   <h3> Disabling Swapping </h3>
@@ -138,62 +175,33 @@
     Remember to turn swapping back on afterward!
   </p>
 
-  <h3> Transparency </h3>
+  <h3> Massive Numbers of Objects </h3>
 
   <p>
-    All of this nifty swapping stuff Just Happens(tm).  That is, you
-    should never, as a programmer, specifically need to request it.
-    Objects are swapped out at the end of threads according to the
-    swap_fragment configuration parameter, and they're swapped in when
-    you use them.  It should never be necessary to explicitly request
-    a swap-in for an object.
+    For lots of objects, you'll have to first increase the maximum
+    number of objects and maximum number of sectors in the DGD
+    configuration file.  Both are quite small initially.  DGD was
+    initially designed to run in as little as a single megabyte of
+    memory, so its starting configuration isn't appropriate for large
+    MUDs.  You'll have to change the file a bit.
   </p>
 
   <p>
-    You'll find that the in-RAM memory use of your library, measured
-    in sectors, is driven by several things.  Roughly in order of
-    importance, those things are: 1) the number of rooms and portable
-    items in your world.  2) The time your MUD has been running
-    &mdash; DGD is disk-based, so content is loaded as it is visited.
-    3) The number of active, moving users.  Active users will continue
-    to load content by seeing and using it.  It would otherwise be
-    swapped out.  And 4) the aggressiveness of your cleanup routines,
-    including things like swapping.  The more aggressively you clean
-    up, the shorter the time that 'transient' memory (memory that is
-    used briefly and discarded) will take up space after it is used.
+    Luckily, there is essentially no penalty for have a very large
+    maximum number of objects, at least if you have the disk space to
+    permit it, and the RAM to hold the ones that are currently in
+    memory.
   </p>
 
   <p>
-    If you ever wish to explicitly request a swap-out, there's a kfun
-    called swapout() which will swap <i>every</i> object out.
+    The maximum number of possible objects depends on your operating
+    system and your version of DGD.  But remember that your swapfile
+    will have to be no larger than the largest file your operating
+    system supports, which can be as small as 2GB or smaller.  Also,
+    with the default data type for object numbers, you can't have more
+    than 4 billion objects total.  That's changeable, but it would
+    require significant effort.
   </p>
-
-<pre>
-From: DGD Mailing List (Felix A. Croes)
-Date: Tue Jan 14 06:38:01 2003
-Subject: [DGD] Object swap-in
-
-Birgit Schulte wrote:
-
-> While overhauling my object-daemon, I stumbled upon a basic question:
->
-> When exactly does an object which is swapped out get swapped in again?
-> Does it happen if I do a find_object(obj) or status(obj)?
->
-> Or only if the object is either compiled or a function called within it?
-
-find_object() does not swap in an object; status() does, because some of
-the information needed by that function is swapped out.  However,
-status() only swaps in the first sector of an object's dataspace.
-Calling a function in an object would cause much more of the object
-to be loaded in memory.
-
-If you want to avoid any disk access, you may want to cache some of the
-information from status(obj) in your object daemon.
-
-Regards,
-Dworkin
-</pre>
 
   <p style="text-size: 150%"> <a href="../index.html"> Back to top level
     </a> </p>

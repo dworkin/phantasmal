@@ -30,185 +30,177 @@
     that</a>.
   </p>
 
-<pre>
-From: dgd at list.imaginary.com (Felix A. Croes)
-Date: Sun Jan 13 21:53:01 2002
-Subject: [DGD] Software Licenses
+  <h3> Why Is Licensing Content Hard? </h3>
 
-Noah Lee Gibbs wrote:
+  <p>
+    MUDs aren't the only arena where there are some problems
+    separating content from code, and figuring out what license goes
+    where.  For instance, a lot of games use art.  A GPL'd game
+    doesn't use GPL'd art, because there's not really any such thing
+    as GPL'd art.  Instead, the art is usually licensed in some other
+    way, or is treated as part of the source code.  But most
+    frequently these days, the art is licensed separately if it's any
+    good.
+  </p>
 
->   This is something I've been pondering for awhile.  I'm curious what
-> other people think (valid responses would include:  "I think this is
-> off-topic and should be discussed elsewhere).  I'm mostly curious what
-> software licensing people think would be best for growing the DGD
-> community.  As a secondary effect, I'd love to use a license that makes
-> mine the most popular DGD MUDLib ever :-P
+  <p>
+    MUD descriptions, areas, mobiles and even builder scripts are
+    essentially in the same category.  They are a work of art,
+    produced in the MUD medium.  That means it's in your best
+    interests to be able to license them separately from your MUD.
+    Your MUD's license probably talks mainly about code and
+    executables (binaries), and that's only vaguely applicable to art.
+    Maybe your object scripts are covered, but your descriptions and
+    things really aren't.
+  </p>
 
-How about finishing and releasing it, first :)
+  <p>
+    However, in some ways, this is all an open issue.  It's hard to
+    tell exactly where the legal lines are drawn.  Your best bet is to
+    separately license the artistic content and then not give it to
+    anybody without making that license very clear.  Distributing it
+    separately from your MUD code is probably a really good idea if
+    they have different licenses.
+  </p>
 
-This is definitely on-topic.
+  <h3> Derived Works </h3>
 
+  <p>
+    Under copyright law, if you start from somebody else's work and
+    add your own to it, you've made a derivative work from theirs.
+    That means, essentially, that they have part ownership of what you
+    just made, because you made it from their work too.  It's a little
+    like the fact that you can't go draw your own Mickey Mouse cartoon
+    with Pluto and Goofy and then expect Disney to just look the other
+    way.  They (reasonably and correctly) believe that the law
+    protects them from you doing that.  It means that even if you only
+    put them into, say, 30% of your cartoon, and they don't even take
+    up the whole picture in that 30%, you still can't sell the movie
+    because &quot;most of it is mine, not theirs&quot;.  Copyright law
+    doesn't work that way.
+  </p>
 
->   DGD itself is available only for noncommercial use unless the
-> potential commercial user purchases an expensive license.  Should
-> freely-available libs then basically mandate noncommercial use?  Having
-> every library be free for noncommercial use but require contacting the
-> author for commercial use turns any attempt to use DGD commercially into a
-> "build it yourself" endeavor or a minefield, so it comes out the same
-> either way, really.  The alternative would be to have the MUDLibs allow
-> commercial use so only a DGD server license would be necessary.  But would
-> that bother hobbyist developers?
+  <p>
+    The thing is, if you were to remove that 30% from your movie, it's
+    still not entirely clear that you fully own it.  Because what
+    you've done is to make another derivative work of that
+    <i>first</i> derivative work, the one that you and Disney owned
+    jointly (not that they'd ever let you release it).
+  </p>
 
-It is quite normal for companies to be using software components with
-different licenses.  I see no objection to anyone writing a commercially
-usable mudlib, as long as they keep in mind that anyone who can afford
-an expensive commercial license can probably also afford to write a
-basic mudlib, especially if starting with the kernel library.  You have
-to be as confident about your mudlib as I am of selling expensive DGD
-licenses.
+  <p>
+    Why am I bringing this up?  Well, some of you may be familiar with
+    the den of thieves that is the current MUD development community.
+    It's extremely common to see people basically file the serial
+    numbers off somebody's codebase and claim it as their own.  The
+    most famous example is <a
+    href="http://www.medievia.com">Medievia</a>, which has added a
+    tremendous amount of code and functionality, but is still very
+    clearly built on a Diku (Merc) base.  Builders like <a
+    href="http://www.kavir.org">KaVir</a> who have worked on Medievia
+    have <a
+    href="http://520006811875-0001.bei.t-online.de/med.html">confirmed
+    that fact</a>.
+  </p>
 
-(Note that the kernel library is in the public domain, so it can be
-integrated into a mudlib without any license conflicts.)
+  <p>
+    When and if you find somebody has stolen your code, please bring
+    up the above facts about derivative works.  And if you're thinking
+    of taking &quot;just a couple of functions&quot; from another
+    codebase and you don't plan to obey their license, please remember
+    that you will be using that code <i>illegally</i>, and if you
+    <i>ever</i> plan to make money off it, or even run a public MUD
+    based on it, you can never safely do so.  You'll always have to
+    worry about whether, for instance, a rogue builder with a
+    conscience might discover your illegal act and (as KaVir did with
+    Vryce) turn you in and show the community that you're a criminal.
+    And, as in Vryce's case, you <i>will</i> be a criminal, so your
+    counter arguments will all sound really, really stupid and lame.
+  </p>
 
+  <p>
+    This happens <i>all</i> the time.  Can we please, <i>please</i>
+    stop stealing from each other now?
+  </p>
 
->   On a related topic, the GPL and similar Open Source licenses are a poor
-> fit for MUDs since there are so few people that use the binaries.  For a
-> true Open Source style license for MUDs, should every MUD user have to be
-> able to get a copy of the MUDLib source, like CthulhuMUD does?  The server
-> source, naturally, is already available.
+  <h3> License Incompatibility </h3>
 
-This isn't quite correct.  The source for DGD is available, and may be
-distributed, but a real Open Source license requires no restrictions on
-commercial use.
+  <p>
+    Some licenses don't work together.  For instance, if you have code
+    under the <a href="http://www.gnu.org">Free Software
+    Foundation's</a> GNU Public License, you can't link it into code
+    that uses the Diku license, nor the LPMUD license.  Those licenses
+    are incompatible because there is no way to satisfy the legalese
+    of the GPL while simulataneously legally distributing under the
+    Diku or LPMUD license.  This is another common MUD community
+    fallacy.  Please don't distribute code illegally.  <i>Please</i>?
+  </p>
 
-Regards,
-Dworkin
-</pre>
+  <p>
+    The easiest way to avoid this trap is to sit down and fully read
+    the license for the code you're going to use.  Make sure you've
+    read the license and you understand what it means.  The Free
+    Software Foundation have several pages that carefully explain each
+    of their licenses, and what those licenses require of you.  You
+    should read those if you're going to use an FSF license.  Please
+    don't distribute code illegally.  No, seriously, I mean <i>you</i>
+    shouldn't.  No more distributing illegal code.  Why would you do
+    it?  You're breaking the law if you do, and anybody who bothers to
+    check can tell that you're doing it.  That's just stupid.
+  </p>
 
-<hr />
+  <h3> Commercial Use </h3>
 
-<pre>
-From dgd at list.imaginary.com  Mon Jan 14 04:38:00 2002
-From: dgd at list.imaginary.com (Noah Lee Gibbs)
-Date: Mon Jan 14 04:38:00 2002
-Subject: [DGD] Software Licenses
+  <p>
+    First, go back up and read the 'Derived Works' section again.  No,
+    seriously, go <i>do</i> it.  Okay, now that you're certain (you
+    <i>are</i> certain, aren't you?) that you have the legal right to
+    use all your code commercially, and you're sure that
+    <i>nowhere</i> in the development process did you use somebody
+    else's code and sweep that fact under the rug, you can begin.
+  </p>
 
-On Mon, 14 Jan 2002, Felix A. Croes wrote:
-> It is quite normal for companies to be using software components with
-> different licenses.
+  <p>
+    First off, when thinking about whether you'll use your code
+    commercially, and whether you'll let somebody <i>else</i> use your
+    code commercially, make sure you understand the licenses involved.
+    Some licenses, like Diku and LPMUD, prevent it entirely.  Please
+    don't use that code illegally.
+  </p>
 
-  Yes.  But each one adds overhead.  I work for Palm, and I've worked on
-licensed code (our FAT filesystem, for instance), and there are a number
-of aspects of the license agreement that are painful.  Companies do so,
-but they do it cautiously and prefer not to at all.  That's good judgement
-on their part if my experience is typical.
-  So if the company wanted to license DGD, then license a separate base
-MUDLib, then license a couple of other components in addition (Geir Harald
-Hansen's objectd, for instance), that would be inconvenient.
+  <p>
+    But let's say you're using something like Phantasmal as your
+    MUDlib, something that doesn't impose any limits on you.  Now make
+    sure your server can be used commercially.  In Phantasmal's case,
+    that means <a href="../Skotos/CommercialUse.html">commercially
+    using DGD</a>, which can be tricky.  If you're writing based on
+    Melville, you'll need to get a license through Steve Schmidt, aka
+    MobyDick, the author.  Remember that 'Derived Works' thing?  It
+    applies to Melville, too, and Steve requires you to get a license
+    to use his work commercially.  If you originally started from
+    Melville, you can't legally run your MUD commercially without
+    paying him.
+  </p>
 
-> I see no objection to anyone writing a commercially
-> usable mudlib, as long as they keep in mind that anyone who can afford
-> an expensive commercial license can probably also afford to write a
-> basic mudlib, especially if starting with the kernel library.  You have
-> to be as confident about your mudlib as I am of selling expensive DGD
-> licenses.
+  <p>
+    Be aware that if you're running a MUD commercially, you could be
+    liable for <i>much</i> larger legal penalties if you're caught
+    violating somebody's license.  That's because at that point, it's
+    effectively considered theft.  And they can even tell, with some
+    work, just how much money you stole from the author by not paying
+    him.
+  </p>
 
-  Naturally.  I'm assuming that's what Skotos did since I'm not seeing
-stuff comparable to theirs available for free :-)  I'm not suggesting that
-I'd be likely to get any takers on *my* MUDLib any time soon...
-
-> >   On a related topic, the GPL and similar Open Source licenses are a poor
-> > fit for MUDs since there are so few people that use the binaries.  For a
-> > true Open Source style license for MUDs, should every MUD user have to be
-> > able to get a copy of the MUDLib source, like CthulhuMUD does?  The server
-> > source, naturally, is already available.
-> 
-> This isn't quite correct.  The source for DGD is available, and may be
-> distributed, but a real Open Source license requires no restrictions on
-> commercial use.
-
-  Right.  Which is why I say the server source is "already available", not
-"Open Source".  I guess the MUDLib couldn't be technically Open Source
-unless it could be distributed as a binary.  Maybe as a state dump?
-  But no, I just meant that Open Source licenses fail to address the needs
-of a MUDLib since the binary form is almost never distributed anyway.
-For something in the same spirit, perhaps an "Open MUD License" could
-require that any player of the MUD be able to download the MUDLib source
-code from a web site.  That's what CthulhuMUD does, though I don't think
-it's required by their license.  They're not DGD-based, of course.
-  A license doing that would guarantee that anybody who used the MUDLib
-and added new features had to contribute them back to the community, like
-the GPL does with applications.
-</pre>
-
-<hr />
-
-<pre>
-From: dgd at list.imaginary.com (Noah Lee Gibbs)
-Date: Mon Jan 14 21:58:01 2002
-Subject: [DGD] Software Licenses
-
-On Mon, 14 Jan 2002, Jason Murray wrote:
-> >From: Noah Lee Gibbs
-> >use, only use need to have source.  If you put the MUD up for public play,
-> >you need to let any player get the source.
-> 
-> I do not like this idea for a very simple reason. It gives the dishonourable 
-> player an unfair advantage.
-
-  Yes.  There's a fine line to figure out between MUDLib and
-content.  You'd like the objectd to have to be distributed, but you
-wouldn't want the room descriptions to be.  Since DGD allows you to put
-code into text files, just dividing into source (.c, .h, etc) files and
-data (.txt, etc) files doesn't cut it -- you could compile a .txt file
-into an object.  For that matter, you can't even say "if it compiles as
-DGD LPC code, you have to redistribute" since they could write an
-interpreter for another language.
-  But in the same way that the GPL defines the source code as "the
-preferred form for modifying" an application, we'd need a definition of
-what needed to be redistributed, and divide it into MUDLib and
-content.  It's definitely a subtle distinction.
-
-> It seems to me that you are saying that if I am a coder on such a mud, then 
-> all my code has to be available to the players, too. The first thing that 
-> came to my mind was that the player would have the solution to every quest 
-> in the game--
-
-  And this is where the content/lib distinction is important.  You'd like
-the quests to be content and (for instance) the rules of combat to be part
-of the lib.  The combat code should have to be redistributed, the quests
-shouldn't.  Or maybe neither of those should have to be redistributed, but
-anything in the /usr/System directory should...  It's hard to figure out
-how to formulate the requirement.
-  One idea I've (just) had would be to have the MUD set up .desc files
-containing objects, rooms, etc with very specific, limited bits of code in
-them to do things.  You could make those exempt from redistribution.  But
-of course, there are ways around pretty much any system like that,
-especially if the server folks can modify the server code itself...
-
-> Even if my code, your code, and all other coders' code is safe from public 
-> distribution there remains a good deal of information you probably do not 
-> want your players to have that is readily available.
-
-  The things that come to mind as being in that category would include how
-commands work, the statistics for combat and items, etc.  Not so much the
-items and stats themselves, as how they affect things like how often you
-hit, how much damage you do, what flags exist for rooms...  And my answer
-to that is that your players *will* have that information if they want
-it.  If you think you can hide that from them on even a moderately
-popular server or lib, you're wrong.  I cite the MUD-Dev list for source
-material to back that up, or your choice of UO, Asheron's Call or
-Everquest.  Even if you're a statistical God, the players will figure out
-the stats behind all your systems to any degree of exactness they
-want.  It's not like you don't give them enough sample points...
-
-> >work but never have to contribute anything back. [...]
-> 
-> Perhaps the game is their contribution?
-
-  It's up to the licensor of the code to decide whether that's acceptable,
-but yes, that's one possibility :-)
-</pre>
+  <p>
+    If you're releasing <i>your</i> code for possible commercial use,
+    though, have a look at the license for Melville.  It's very
+    simple, and boils down to 'you have to get a license to use it.'
+    Or you could go the full-on Phantasmal route and just say 'use it
+    and don't worry about me.'  I'm a big fan of that approach, but
+    that's partially because I <i>know</i> how many weenies will steal
+    my code if it's any good, and I never want to have to worry about
+    suing them.
+  </p>
 
   <p style="text-size: 150%"> <a href="../index.html"> Back to top level
     </a> </p>

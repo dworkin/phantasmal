@@ -65,57 +65,8 @@
 
   <p>
     This page is basically just old notes from Phantasmal for possible
-    future implementation, and a message from the DGD mailing list
-    about XMLTerm.
+    future implementation.
   </p>
-
-<pre>
-Date: Tue, 16 May 2000 15:37:37 -0400
-From: Ho-Sheng Hsiao
-To: DGD Mailing List
-Subject: Re: [DGD]DGD HTML?
-
-
-On Tue, May 16, 2000 at 03:22:36PM +0930, Gregory D Lewis wrote:
-> > But how will you handle a second request of the same client? Rely on the data
-> > the client sends about his current position? Or even who he is? You _have_ to
-> > keep information about the connected clients somewhere, and assign some kind of
-> > session information to the clients so that they can identify themselves on
-> > reload. 
-
-> But to answer your question(s):  Trust nothing sent by the client.
-
-There's a third option: XMLterm
-
-I've heard of an Xterm implemented to use streaming HTML/XML tags instead of
-VT* codes. Think, Pueblo. This was a modification to the current Mozilla
-browser. Or more precisely, it uses the XUL toolset in Mozilla and some
-other stuff to create the Xterm.
-
-You can check out the site at <a href="http://www.xmlterm.com">http://www.xmlterm.com</a>.
-
-Considering that Mozilla has a built in IRC client written mostly in
-Javascript et. al., adapting that serve this. 
-
-I've been contemplating doing something like that for years now, ever since
-I heard of Pueblo. Which, btw, though discontinued, the source to that is
-floating around somewhere.
-
-Let me know if any of you are interested in collaborating in doing such a
-project. I have a spare server on a semi-static connection available on a
-limited basis.
-
--- 
----hhh                                              Hosh Enterprises
-                                                (General Specialist)
-Time flows only once. 
-Life is a suicide mission: you gotta do what you should.
---
-73 9B 42 8E 2A 23 DF C0  2B 52 9F ED 1A 07 64 EF
-[ http://www.lost-realities.org/~hhh/pgpkey.asc ]
-</pre>
-
-<hr />
 
 <pre>
 MCP - MUD Client Protocol
@@ -519,6 +470,23 @@ The helpfiles are on SourceForge.  Luckily, the MUD doesn't have to
 know the whole thing and how to handle it, it just needs to know the
 challenge sequence and then send whatever subset of tags it feels
 like.  So we'll burn that bridge when we get to it.
+
+-----------------------------------------------------------
+
+XMLterm
+
+Ho-Sheng Hsiao says:
+
+I've heard of an Xterm implemented to use streaming HTML/XML tags instead of
+VT* codes. Think, Pueblo. This was a modification to the current Mozilla
+browser. Or more precisely, it uses the XUL toolset in Mozilla and some
+other stuff to create the Xterm.
+
+You can check out the site at <a
+href="http://www.xmlterm.com">http://www.xmlterm.com</a>.
+
+Considering that Mozilla has a built in IRC client written mostly in
+Javascript et. al., adapting that serve this. 
 
 -----------------------------------------------------------
 

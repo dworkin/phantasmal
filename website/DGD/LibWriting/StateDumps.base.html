@@ -43,15 +43,19 @@
   </p>
 
   <p>
-    Statedumps are able to handle DGD's normal policy of having far
-    more LPC data than available memory.  Normally, a statedump will
-    be made incrementally and you can simply tell DGD when to put the
-    finishing touches on it, declare it done, and begin writing out
-    (what will be) the next incremental statedump.  By telling DGD
-    approximately how often you'll be dumping state, you make it much
-    easier for the server to write the statedump in a timely way when
-    you request it &mdash; nearly all the work has been done in
-    advance.
+    Statedumps are able to handle DGD's normal policy of having <a
+    href="Swapping.html">far more LPC data than there is available
+    memory</a>.  Normally, a swapfile will be written incrementally as
+    objects are swapped out.  You can tell DGD when to put the
+    finishing touches on it, declare it done, and that becomes your
+    statedump.  Your swapfile will then begin writing out (what will
+    be) the next incremental statedump.  By telling DGD approximately
+    how often you'll be dumping state, you make it much easier for the
+    server to write the statedump in a timely way when you request it
+    &mdash; nearly all the work has been done in advance.  However, it
+    can be very difficult to guarantee the time taken to write a
+    statedump for a large MUD, depending on what objects have or have
+    not been swapped out recently.
   </p>
 
   <p>
@@ -81,46 +85,9 @@
     A certain amount of object fragmentation is removed and other
     cleanup tasks done when objects are swapped out.  For that reason,
     it's often good to make sure that DGD is permitted to do at least
-    some <a href="Swapping.html">swapping</a>.
+    some <a href="Swapping.html">swapping</a> rather than running your
+    game entirely in RAM.
   </p>
-
-<pre>
-From: dgd at list.imaginary.com (Felix A. Croes)
-Date: Wed Dec 26 07:42:01 2001
-Subject: [DGD] Dynamic inheritance
-
-Wes Connell wrote:
-
->[..]
-> >  > I think you might be better off just burning the extra memory and saving 
-> >  > yourself some unnecessary complexity.
->
-> Perhaps my database theory is off here... but why couldn't the DGD driver do
-> incremental updates? (Feel free to rant on me, I desire a good whoopin' on
-> database theory. *chuckle*)
-
-Right now, DGD basically turns the swapfile into a statedump in a single
-stroke, and then slowly rebuilds the swapfile over time; in the meantime,
-the dumpfile can already be copied on tape or whatever.  To make an
-incremental update, you have to save a delta with the previously stored
-state.  On a busy mud, I would expect this to take more time.
-
-Of course, you could create the incremental dump slowly, just like DGD
-already recreates the swapfile slowly.  But at this point you need some
-way to signal when the incremental dump is ready, and there are other
-complications, so that it would be better to just use existing database
-software to store the mud's state, which has already solved all of these
-problems.
-
-I intend to make the latter possible by publishing an interface for
-DGD's state handling, like the extension interface, as soon as the
-code is settled enough after the on-going MP rewrite.
-
-Regards,
-Dworkin
-</pre>
-
-<hr />
 
 <pre>
 From: DGD Mailing List (Noah Gibbs)
@@ -185,40 +152,6 @@ happens just after the thread exits.  But when the
 call_out that you scheduled ten years ago happens, it
 won't know that it was scheduled ten years ago.  It'll
 just know that it's time to run again :-)
-</pre>
-
-<hr />
-
-<pre>
-From: DGD Mailing List (Felix A. Croes)
-Date: Tue Apr  6 06:46:01 2004
-Subject: [DGD] DGD-Fishing
-
-Ragnar Lonn wrote:
-
-> > > While I'm at it I might aswell ask about state dumps also. Are they
-> > > as optimised as can be?  Is it or would it be possible to somehow create
-> > > state dumps without the noticeable pause of the game?
-> >
-> > How long is noticable?
-> >
->
-> Hmm, I'd say around 0.5 seconds and the state dump wouldn't be easily
-> noticeable by the players in an MMORPG-style game.
->
-> But in my own case streaming state changes to another DGD instance might
-> mean I don't have to do state dumps, or that I can do them on the backup
-> DGD instance and not bother players with the lag. I was just curious as
-> to whether it was possible to speed them up in case the streaming thing
-> wouldn't work as hoped.
-
-Half a second or less would be hard to guarantee for a big mud.  DGD is
-not designed for unnoticable statedumps, but for statedumps that are
-fast enough that the delay they cause does not seem significantly
-different from delay due to packet loss.
-
-Regards,
-Dworkin
 </pre>
 
   <p style="text-size: 150%"> <a href="../index.html"> Back to top level
