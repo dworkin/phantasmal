@@ -453,7 +453,6 @@ static void load_helpfiles(void) {
   }
 
   for(ctr = 0; ctr < FILES_PER_ITER; ctr++) {
-    LOGD->write_syslog("File: " + files_this_time[ctr]);
     new_help_file(files_this_time[ctr]);
   }
 
