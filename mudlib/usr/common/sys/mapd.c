@@ -451,7 +451,7 @@ void do_room_resolution(int fully) {
   mapping done_resolve;
   object* new_unres;
 
-  if(!SYSTEM() && !COMMON())
+  if(!SYSTEM() && !COMMON() && !GAME())
     error("Only privileged code can request room resolution!");
 
   done_resolve = ([ ]);
