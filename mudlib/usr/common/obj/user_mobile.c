@@ -23,8 +23,8 @@ object get_user(void) {
 }
 
 void set_user(object new_user) {
-  if (!SYSTEM()) {
-    error("Only SYSTEM objects can change the user!");
+  if (!SYSTEM() && !COMMON() && !GAME()) {
+    error("Only authorized objects can change the user!");
   }
 
   user = new_user;

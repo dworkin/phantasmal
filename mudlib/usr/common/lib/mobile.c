@@ -31,8 +31,8 @@ static int    number;
  */
 
 void assign_body(object new_body) {
-  if(!SYSTEM()) {
-    error("Only SYSTEM objects can assign a mobile a new body!");
+  if(!SYSTEM() && !COMMON() && !GAME()) {
+    error("Only authorized objects can assign a mobile a new body!");
   }
 
   if(body) {

@@ -184,8 +184,8 @@ float get_current_volume(void) {
 void set_weight(float new_weight) {
   object loc;
 
-  if(!SYSTEM() && !COMMON())
-    error("Only SYSTEM code can set weights!");
+  if(!SYSTEM() && !COMMON() && !GAME())
+    error("Only authorized code can set weights!");
 
   /* Remove from container and add back -- that way the weight
      will be correct */
@@ -203,8 +203,8 @@ void set_weight(float new_weight) {
 void set_volume(float new_volume) {
   object loc;
 
-  if(!SYSTEM() && !COMMON())
-    error("Only SYSTEM code can set volumes!");
+  if(!SYSTEM() && !COMMON() && !GAME())
+    error("Only authorized code can set volumes!");
 
   /* Remove from container and add back -- that way the weight
      will be correct */
@@ -220,29 +220,29 @@ void set_volume(float new_volume) {
 }
 
 void set_length(float new_length) {
-  if(!SYSTEM() && !COMMON())
-    error("Only SYSTEM code can set lengths!");
+  if(!SYSTEM() && !COMMON() && !GAME())
+    error("Only authorized code can set lengths!");
 
   length = new_length;
 }
 
 void set_weight_capacity(float new_weight_capacity) {
-  if(!SYSTEM() && !COMMON())
-    error("Only SYSTEM code can set weight capacities!");
+  if(!SYSTEM() && !COMMON() && !GAME())
+    error("Only authorized code can set weight capacities!");
 
   weight_capacity = new_weight_capacity;
 }
 
 void set_volume_capacity(float new_volume_capacity) {
-  if(!SYSTEM() && !COMMON())
-    error("Only SYSTEM code can set volume capacities!");
+  if(!SYSTEM() && !COMMON() && !GAME())
+    error("Only authorized code can set volume capacities!");
 
   volume_capacity = new_volume_capacity;
 }
 
 void set_length_capacity(float new_length_capacity) {
-  if(!SYSTEM() && !COMMON())
-    error("Only SYSTEM code can set length capacities!");
+  if(!SYSTEM() && !COMMON() && !GAME())
+    error("Only authorized code can set length capacities!");
 
   length_capacity = new_length_capacity;
 }
@@ -326,22 +326,22 @@ private void set_flags(int flags, int value) {
 }
 
 void set_container(int value) {
-  if(!SYSTEM() && !COMMON())
-    error("Only SYSTEM code can currently set an object as a container!");
+  if(!SYSTEM() && !COMMON() && !GAME())
+    error("Only authorized code can currently set an object as a container!");
 
   set_flags(OF_CONTAINER, value);
 }
 
 void set_open(int value) {
-  if(!SYSTEM() && !COMMON())
-    error("Only SYSTEM code can currently set an object as open!");
+  if(!SYSTEM() && !COMMON() && !GAME())
+    error("Only authorized code can currently set an object as open!");
 
   set_flags(OF_OPEN, value);
 }
 
 void set_openable(int value) {
-  if(!SYSTEM() && !COMMON())
-    error("Only SYSTEM code can currently set an object as openable!");
+  if(!SYSTEM() && !COMMON() && !GAME())
+    error("Only authorized code can currently set an object as openable!");
 
   set_flags(OF_OPENABLE, value);
 }
@@ -682,7 +682,7 @@ int get_pending_parent(void) {
 }
 
 void set_archetype(object new_arch) {
-  if(!SYSTEM() && !COMMON())
+  if(!SYSTEM() && !COMMON() && !GAME())
     error("Only SYSTEM and COMMON objects may set archetypes!");
 
   ::set_archetype(new_arch);
@@ -698,7 +698,7 @@ int* get_pending_removed_details(void) {
 }
 
 void set_removed_details(object *new_removed_details) {
-  if(!SYSTEM() && !COMMON())
+  if(!SYSTEM() && !COMMON() && !GAME())
     error("Only SYSTEM or COMMON objects can set removed_details!");
 
   pending_removed_details = ({ });
