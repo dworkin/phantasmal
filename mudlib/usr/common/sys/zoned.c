@@ -30,12 +30,16 @@ static void create(varargs int clone) {
 }
 
 void upgraded(varargs int clone) {
-  set_dtd_file(ZONED_DTD);
-  dtd::upgraded(clone);
+  if(SYSTEM() || COMMON()) {
+    set_dtd_file(ZONED_DTD);
+    dtd::upgraded(clone);
+  }
 }
 
 void destructed(int clone) {
-  dtd::destructed(clone);
+  if(SYSTEM()) {
+    dtd::destructed(clone);
+  }
 }
 
 /******* Init Function called by INITD *********************/
@@ -44,6 +48,9 @@ void destructed(int clone) {
    argument.  Currently zone files must be DGD's string
    size or less. */
 void init_from_file(string file) {
+  if(!SYSTEM())
+    return;
+
   if(strlen(file) > MAX_STRING_SIZE - 3)
     error("Zonefile is too large in ZONED->init_from_file!");
   load_type = 1;
@@ -52,6 +59,9 @@ void init_from_file(string file) {
 
 /* Load in the available zones */
 void init_zonelist_from_file(string file) {
+  if(!SYSTEM())
+    return;
+
   if(strlen(file) > MAX_STRING_SIZE - 3)
     error("Zonefile is too large in ZONED->init_from_file!");
   load_type = 2;
@@ -64,8 +74,11 @@ mixed* to_dtd_unq(void) {
   int    ctr, highseg, zone, numzones;
   mixed *tmp, *zonetmp;
 
+  if(!SYSTEM() && !COMMON())
+    return nil;
+
   highseg = OBJNUMD->get_highest_segment();
-  
+
   zonetmp = ({ "zonelist", ({ }) });
   numzones = sizeof(zone_table);
   for(ctr = 0; ctr < numzones; ctr++){
@@ -95,6 +108,9 @@ mixed* to_dtd_unq(void) {
 }
 
 string get_parse_error_stack(void) {
+  if(!SYSTEM() && !COMMON() && !GAME())
+    return nil;
+
   return ::get_parse_error_stack();
 }
 
@@ -102,6 +118,9 @@ void from_dtd_unq(mixed* unq) {
   mixed *zones, *segment_unq;
   int segnum,zonenum;
   string zonename;
+
+  if(!SYSTEM() && !COMMON() && !GAME())
+    return nil;
 
   if(sizeof(unq) != 4)
     error("There should be exactly one 'zones' and one 'zonelist'"
@@ -184,10 +203,16 @@ void write_to_file(string filename) {
 /******* Regular ZONED functions ***************************/
 
 int num_zones(void) {
+  if(!SYSTEM() && !COMMON() && !GAME())
+    return -1;
+
   return sizeof(zone_table);
 }
 
 string get_name_for_zone(int zonenum) {
+  if(!SYSTEM() && !COMMON() && !GAME())
+    return nil;
+
   if(zonenum >= 0 && sizeof(zone_table) > zonenum) {
     return zone_table[zonenum][0];
   } else {
@@ -195,8 +220,11 @@ string get_name_for_zone(int zonenum) {
   }
 }
 
-mixed* get_segments_in_zone(int zonenum) {
+int* get_segments_in_zone(int zonenum) {
   mixed* keys;
+
+  if(!SYSTEM() && !COMMON() && !GAME())
+    return nil;
 
   keys = map_indices(zone_table[zonenum][1]);
   return keys;
@@ -230,6 +258,9 @@ void remove_segment_from_zone(int zonenum, int segment) {
 int get_zone_for_room(object room) {
   int roomnum, segment, zone;
 
+  if(!SYSTEM() && !COMMON() && !GAME())
+    return -1;
+
   roomnum = room->get_number();
   segment = roomnum / 100;
   zone = OBJNUMD->get_segment_zone(segment);
@@ -238,6 +269,9 @@ int get_zone_for_room(object room) {
 }
 
 int add_new_zone( string zonename ){
+  if(!SYSTEM() && !COMMON() && !GAME())
+    return -1;
+
   if (zonename && zonename != ""){
     int zonenum;
     zone_table += ({ ({ zonename, ([ ]) }) });
