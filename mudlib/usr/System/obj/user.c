@@ -1,4 +1,4 @@
-/* $Header: /cvsroot/phantasmal/mudlib/usr/System/obj/user.c,v 1.32 2003/02/22 20:18:35 angelbob Exp $ */
+/* $Header: /cvsroot/phantasmal/mudlib/usr/System/obj/user.c,v 1.33 2003/02/24 06:27:26 angelbob Exp $ */
 
 #include <kernel/kernel.h>
 #include <kernel/user.h>
@@ -13,8 +13,8 @@
 inherit LIB_USER;
 inherit user API_USER;
 inherit rsrc API_RSRC;
-inherit cmd  "/usr/System/lib/commandsetlib";
-inherit io   "/usr/System/lib/user_io";
+inherit cmd  SYSTEM_COMMANDSETLIB;
+inherit io   SYSTEM_USER_IO;
 
 #define STATE_NORMAL            0
 #define STATE_LOGIN             1

@@ -12,8 +12,8 @@ inherit auto AUTO;
 inherit wiz LIB_WIZTOOL;
 inherit access API_ACCESS;
 
-inherit roomwiz "/usr/System/lib/room_wiztool";
-inherit objwiz "/usr/System/lib/obj_wiztool";
+inherit roomwiz SYSTEM_ROOMWIZTOOLLIB;
+inherit objwiz  SYSTEM_OBJWIZTOOLLIB;
 
 private string owner;		/* owner of this object */
 private string directory;	/* current directory */

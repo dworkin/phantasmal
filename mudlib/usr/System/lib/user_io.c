@@ -1,3 +1,4 @@
+#include <kernel/kernel.h>
 #include <config.h>
 #include <log.h>
 #include <type.h>
@@ -111,6 +112,9 @@ void pop_state(object state) {
 }
 
 void push_state(object state) {
+  if(!SYSTEM())
+    error("Only privileged code can call push_state()!");
+
   if(!state_stack) {
     state_stack = ({ });
   }
