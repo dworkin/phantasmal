@@ -264,7 +264,7 @@ doesn't give you any clues.}}
 }
 ~portable{
   ~number{202}
-  ~location{4}
+  ~location{309}
   ~bdesc{
     ~enUS{a breadbox}}
   ~gdesc{
@@ -272,7 +272,7 @@ doesn't give you any clues.}}
   ~ldesc{
     ~enUS{You see an old breadbox, apparently meant to contain bread.  A faded logo
 on the side may once have advertised the box's maker.}}
-  ~flags{9}
+  ~flags{11}
   ~article{0}
   ~nouns{{~enUS{breadbox,box}}}
   ~adjectives{{~enUS{bread,large,largish}}}
@@ -558,7 +558,7 @@ Arkham through the trees to the north and east.}}
 }
 ~room{
   ~number{313}
-  ~location{304}
+  ~location{302}
   ~bdesc{
     ~enUS{a mobile turnip}}
   ~gdesc{
@@ -574,7 +574,7 @@ washing machine back home.}}
 }
 ~portable{
   ~number{314}
-  ~location{304}
+  ~location{300}
   ~bdesc{
     ~enUS{a dog}}
   ~gdesc{
@@ -613,6 +613,36 @@ washing machine back home.}}
   ~article{0}
   ~nouns{{~enUS{tangent}}}
   ~adjectives{{}}
+}
+~portable{
+  ~number{317}
+  ~detail{9}
+  ~bdesc{
+    ~enUS{a blemish}}
+  ~gdesc{
+    ~enUS{a swirly blemish}}
+  ~ldesc{
+    ~enUS{The blemish is a small swirly pattern on the face of the ball.  You'd
+guess it's some form of manufacturing artifact.}}
+  ~flags{0}
+  ~article{0}
+  ~nouns{{~enUS{blemish,spot}}}
+  ~adjectives{{~enUS{small,swirly}}}
+}
+~portable{
+  ~number{318}
+  ~detail{202}
+  ~bdesc{
+    ~enUS{a logo}}
+  ~gdesc{
+    ~enUS{an old faded logo}}
+  ~ldesc{
+    ~enUS{The logo is faded the point of being illegible.  You'd guess from similar
+boxes that it once bore the insignia of the box's maker.}}
+  ~flags{0}
+  ~article{0}
+  ~nouns{{~enUS{logo,label,insignia}}}
+  ~adjectives{{~enUS{old,faded}}}
 }
 ~portable{
   ~number{400}
