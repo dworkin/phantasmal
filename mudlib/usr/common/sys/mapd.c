@@ -4,6 +4,7 @@
 #include <phantasmal/map.h>
 #include <phantasmal/lpc_names.h>
 
+#include <gameconfig.h>
 #include <type.h>
 
 /* The Mapd keeps track of room objects, their groupings and their
@@ -16,6 +17,7 @@ private mapping room_objects;
 
 /* which unq tags are mapped to which lpc code */
 private mapping tag_code;
+private object  default_binding_handler;
 
 private object  room_dtd, bind_dtd;
 private int     initialized;
@@ -37,6 +39,7 @@ void upgraded(varargs int clone);
 static void create(varargs int clone) {
   room_objects = ([ ]);
   tag_code = ([ ]);
+  default_binding_handler = nil;
 
   upgraded(clone);
 
@@ -156,6 +159,17 @@ void add_unq_binding(string tag_name, string tag_path) {
 
   /* If we make it through all that without error, do the assignment. */
   tag_code[tag_name] = tag_path;
+}
+
+void set_binding_handler(object bhandler) {
+  if(previous_program() != GAME_INITD)
+    error("Only GAME_INITD may set the room-binding handler!");
+
+  if(!bhandler)
+    error("(Nil) isn't a valid handler in set_binding_handler!");
+
+  /* do the assignment */
+  default_binding_handler = bhandler;
 }
 
 void add_room_object(object room) {
@@ -288,7 +302,7 @@ private int assign_room_to_zone(int num, object room, int req_zone) {
 private object add_struct_for_room(mixed* unq) {
   object room;
   int    num;
-  string tag_name;
+  string tag_name, room_program, err;
 
   /* no unq passed in, so no object passed out */
   if (sizeof(unq) == 0) {
@@ -309,21 +323,37 @@ private object add_struct_for_room(mixed* unq) {
     tag_name = "object";
   }
 
-  if (tag_code[tag_name] == nil) {
-    error("Tag " + tag_name
-	  + " is not bound to any code! (destructed, perhaps?)");
+  if (tag_code[tag_name] == nil
+      && default_binding_handler) {
+    err = catch(room_program
+		= default_binding_handler->type_for_tag(tag_name));
+    if(err) {
+      error("Error calling type_for_tag on binding handler, type " + tag_name
+	    + ": " + err);
+    }
+  } else {
+    room_program = tag_code[tag_name];
   }
 
-  if (!find_object(tag_code[tag_name])) {
+  if(room_program == nil) {
+    error("Tag " + tag_name
+	  + " is not bound to any room type!");
+  }
+
+  if (!find_object(room_program)) {
     catch {
-      compile_object(tag_code[tag_name]);
+      compile_object(room_program);
     } : {
-      error("Could not compile object '" + tag_code[tag_name]
+      error("Could not compile object '" + room_program
 	    + "' for tag '" + tag_name + "'!");
     }
   }
 
-  room = clone_object(tag_code[tag_name]);
+  err = catch(room = clone_object(room_program));
+  if(err) {
+    error("Error cloning program " + room_program + " of type '" + tag_name
+	  + "' when making new room: " + err);
+  }
   room->from_dtd_unq(unq);
 
   /* Get the requested number from the room, or -1 for default.

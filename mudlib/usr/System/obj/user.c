@@ -1,4 +1,4 @@
-/* $Header: /cvsroot/phantasmal/mudlib/usr/System/obj/user.c,v 1.79 2004/09/14 05:09:53 angelbob Exp $ */
+/* $Header: /cvsroot/phantasmal/mudlib/usr/System/obj/user.c,v 1.80 2004/09/30 06:48:41 angelbob Exp $ */
 
 #include <kernel/kernel.h>
 #include <kernel/user.h>
@@ -76,10 +76,21 @@ void upgraded(varargs int clone) {
    object in /usr/game/, even if it inherits PHANTASMAL_USER, can't do
    it.  This is a cheat to let that happen correctly.  */
 object clone_wiztool_as(string name) {
-  if(previous_program() == PHANTASMAL_USER)
+  object gamedriver;
+  string wiztool_name;
+
+  if(previous_program() != PHANTASMAL_USER)
+    error("This function is only usable by PHANTASMAL_USER, not by you!");
+
+  gamedriver = CONFIGD->get_game_driver();
+  if(!gamedriver || !function_object("wiztool_program", gamedriver))
     return clone_object(SYSTEM_WIZTOOL, name);
 
-  error("This function is only usably by PHANTASMAL_USER, not by you!");
+  wiztool_name = gamedriver->wiztool_program();
+  if(!find_object(wiztool_name))
+    compile_object(wiztool_name);
+
+  return clone_object(wiztool_name, name);
 }
 
 /****************/
@@ -108,9 +119,9 @@ int name_is_forbidden(string name) {
     return 1;
   if(filename == "game")
     return 1;
-  if(sscanf(filename, "common"))
+  if(sscanf(filename, "common%*s"))
     return 1;
-  if(sscanf(filename, "system"))
+  if(sscanf(filename, "system%*s"))
     return 1;
 }
 

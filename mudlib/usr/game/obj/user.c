@@ -1,4 +1,4 @@
-/* $Header: /cvsroot/phantasmal/mudlib/usr/game/obj/user.c,v 1.12 2004/09/14 05:09:55 angelbob Exp $ */
+/* $Header: /cvsroot/phantasmal/mudlib/usr/game/obj/user.c,v 1.13 2004/09/30 06:48:42 angelbob Exp $ */
 
 #include <kernel/kernel.h>
 #include <kernel/user.h>
@@ -291,7 +291,7 @@ void player_login(int first_time)
  * NAME:	player_logout()
  * DESCRIPTION:	Deal with player body, update account info and so on...
  */
-private void player_logout(void)
+static void player_logout(void)
 {
   if(previous_program() != PHANTASMAL_USER)
     return;

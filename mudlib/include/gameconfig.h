@@ -13,6 +13,6 @@
  * that Phantasmal needs to know.
  */
 #define GAME_INITD            "/usr/game/initd"
-#define GAME_DRIVER            "/usr/game/sys/gamedriver"
 
-#define GAME_VERSION          "0.015"
+#define GAME_DRIVER            "/usr/game/sys/gamedriver"
+#define GAME_WIZTOOL           "/usr/game/obj/wiztool"

@@ -299,9 +299,6 @@ static void process_command(string cmd, string str)
     }
   }
 
-  if(!find_object(SYSTEM_WIZTOOL))
-    compile_object(SYSTEM_WIZTOOL);
-
   command_sets = SYSTEM_WIZTOOL->get_command_sets(this_object());
   for(ctr = 0; ctr < sizeof(command_sets); ctr++) {
     if(command_sets[ctr][cmd]) {

@@ -28,7 +28,6 @@ void runtime_error(string error, int caught, mixed** trace)
 {
   int size, i, len;
   string line, progname, function, str, objname, err_str;
-  object obj;
 
   if(!SYSTEM() && !KERNEL())
     return;
@@ -109,8 +108,8 @@ void runtime_error(string error, int caught, mixed** trace)
     if(in_init_sequence) {
       DRIVER->message("Runtime error: " + str);
     }
-    if(caught == 0 && this_user() && (obj=this_user()->query_user())) {
-      obj->message(str);
+    if(caught == 0 && this_user()) {
+      this_user()->message(str);
     }
     if(!caught && find_object(CHANNELD)) {
       CHANNELD->string_to_channel(CHANNEL_ERR, str);

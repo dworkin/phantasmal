@@ -1,3 +1,8 @@
+Release 0.017:
+	* Started support for 'custom' rooms not loaded from UNQ files
+	* SSHD support on second binary TCP port
+	* Debugged extra AUTO object, put it into appropriate places
+
 Release 0.016:
 	* Improved UNQ error reporting for wrong #'s of fields in structs
 	* Added (optional, currently inactive) stuff for a /usr/common AUTO
