@@ -39,7 +39,7 @@ only one daemon, so for instance if the 1300 segment contains a single
 room (managed by MAPD) then all of that segment must be composed of
 rooms (or empty).
 
-See @segmap.
+See @segmap, @set_segment_zone.
 
 }}
 
@@ -61,6 +61,31 @@ in ascending order followed by the daemon managing each.  For instance:
 In this case, #0-#99 would be rooms managed by MAPD, #100-#199 would be
 exits managed by ExitD, and #200-#299 would be portables managed by
 PortableD.
+
+}}
+
+
+~name{~enUS{@set_segment_zone, @set_seg_zone,
+            set_segment_zone,
+            set_seg_zone, set segment zone,
+            set seg zone, set, zone}}
+~keywords{admin}
+~desc{
+  ~enUS{
+
+The @set_segment_zone or @set_seg_zone command sets what zone a given
+segment belongs to (see "help @segmap").  A given zone will usually
+encompass a number of segments including rooms, portables, exits, and
+others.  Grouping the segments into zones allows the builder interface
+to group everything related to a given area despite the division of
+different kinds of objects.  The syntax is:
+
+@set_seg_zone #6 #2
+
+The command above sets segment 6, containing objects #600-#699, to be
+part of zone #2.
+
+See also:  @segmap, segments, @zonemap
 
 }}
 
