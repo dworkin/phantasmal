@@ -11,9 +11,9 @@ mailing list can also help you with these setup problems.
 
 You'll need a recent version of DGD with full support for a bunch of
 the latest features.  This MUDLib has been tested with the DGD
-version(s) listed in TESTED_VERSIONS, and the most recent experimental
-version (like 1.2.66) is very likely to work with the most recent
-version of Phantasmal.  Note that my testing always uses the latest
+version(s) listed in TESTED_VERSIONS.  A recent experimental version
+(like, say, 1.2.93) is very likely to work with the most recent
+version of Phantasmal.  Note that my testing normally uses the latest
 versions.  It's possible that the lower-numbered DGD versions in
 TESTED_VERSIONS don't work correctly any more, but they have with a
 recently.  When in doubt, upgrade to the latest DGD version listed in
@@ -21,15 +21,16 @@ TESTED_VERSIONS, or to the most recent version of DGD.
 
                          Basic Install
 
-You'll want to install your Kernel Library (the mud/kernel subdirectory
-under your DGD installation) into the kernel subdirectory of
-Phantasmal.  You'll also want to copy files from the Kernel Library
+You'll want to install your Kernel Library (the mud/kernel
+subdirectory under your DGD installation) into the kernel subdirectory
+of Phantasmal.  You'll also want to copy files from the Kernel Library
 mud/include/kernel subdirectory into Phantasmal's include/kernel.
 Please do *not* replace Phantasmal's config.h or other stuff in
 phantasmal/include!  Since the Kernel Library changes with successive
 versions of DGD you should use the one that comes with your DGD server
 code and upgrade it when you upgrade DGD.  See the README files in
-Phantasmal's "kernel" and "include/kernel" directories.
+Phantasmal's "kernel" and "include/kernel" directories for more detail
+on these operations.
 
 You may also want to copy the files from the DGD source tree in
 dgd/doc/kfun to the Phantasmal directory under doc/kfun.  If you're
@@ -57,8 +58,8 @@ possible to remove admin's privileges, so *never* let another staff
 member learn the admin password.  Well, or change that password if you
 ever demote or fire them.
 
-I'll call the non-admin account "me" in the follwing paragraph, though
-it could be almost any word.  When you make your new non-admin
+I'll call the non-admin account "me" in the following paragraph,
+though it could be almost any word.  When you make your new non-admin
 account, you can grant it full adminstrative access by typing "%grant
 me access" and "%grant me / full".  That's "%grant", space, your
 account name, space, slash, space, "full", space, but without the
