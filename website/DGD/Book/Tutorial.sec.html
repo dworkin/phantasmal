@@ -182,6 +182,12 @@
 </p>
 
 <p>
+  Note for C users: in C, you could say <code>int sam = 7;</code> and
+  it would work fine.  DGD doesn't allow you to declare and initialize
+  a variable in that way, so don't.
+</p>
+
+<p>
   Not every value or variable is an integer, so not every variable is
   declared using int.  You can also have <dfn>unsigned</dfn>
   variables, which are integers that can't hold negative values.  You
@@ -303,5 +309,126 @@
 </p>
 
 <p>
-  So go ahead and type <kbd>code &quot;Hello world!&quot;</kbd>.
+  So go ahead and type <kbd>code &quot;Hello world!&quot;</kbd>.  You
+  should see a result something like <samp>$15 = &quot;Hello
+  world!&quot;</samp>.  The quotation marks around it mean that it's a
+  string.  In LPC, a string is always double-quoted, never
+  single-quoted or quoted with other more interesting marks.
+</p>
+
+<p>
+  Just as you can use operations like + and * on numbers, you can also
+  use certain operators on strings.  For instance, the <dfn>+</dfn>
+  operator will concatenate two strings into a single longer one.  Try
+  typing <kbd>code &quot;Hello&quot; + &quot;World!&quot;</kbd>.  Note
+  that you don't automatically get a space in between, so you should
+  have seen a result like <samp>$18 = &quot;HelloWorld!&quot;</samp>.
+</p>
+
+<p>
+  Remember that the string is made of a sequence of numbers which
+  encode characters.  In LPC, you can extract one of these numbers
+  with the square-brace operator.  For instance, type <kbd>code
+  &quot;A&quot;[0]</kbd>.  You should see a result like <samp>$20 =
+  65</samp>.  That's because 65 is the ASCII encoding for an uppercase
+  A.  Try using strings other than &quot;A&quot; and you can see more
+  ASCII encodings.  You'll notice that all the uppercase letters are
+  ordered alphabetically within themselves, as are the lowercase
+  letters.
+</p>
+
+<p>
+  The zero in braces, above, specifies what offset in the string to
+  examine.  For instance, if you type <kbd>code
+  &quot;FANDANGO&quot;[4]</kbd>, you'll get 65 also.  That's because
+  the number is square brackets is what character of the string to
+  examine, and character four corresponds to the fifth character,
+  which is an uppercase A in the word &quot;FANDANGO&quot;.  The
+  string's characters are numbered in order, starting with zero.
+</p>
+
+<p>
+  You can also extract more than one character from a string.  But
+  that can't just be an ASCII number.  So if you extract more than one
+  character from a string, LPC gives you another string.  Try typing
+  <kbd>code &quot;Big Bertha&quot;[0..2]</kbd>.  You should get the
+  result &quot;Big&quot;.  That's characters number zero through two.
+</p>
+
+<p>
+  You'll find that if you substitute <code>[..2]</code> for
+  <code>[0..2]</code>, it works exactly the same way.  Leaving off the
+  first number means &quot;from the beginning of the string&quot;.
+  Similarly, using <code>[3..]</code> would mean &quot;from the fourth
+  character to the end of the string&quot;.  Perl and some LPC
+  dialects let you specify negative numbers to measure from the end of
+  the string, but DGD chooses not to do so.  So only use positive
+  numbers for your string offsets.
+</p>
+
+
+@@SECTION Tutorial.CodeInFiles Making and Using LPC Files
+
+<p>
+  You may be getting pretty tired of the code command by now.  Even if
+  you're not, you're probably starting to understand why we don't use
+  it for big programs.  Retyping all that stuff can get ugly, and
+  typos are difficult to correct.  And the code would certainly
+  <em>look</em> better if it could be formatted properly...
+</p>
+
+<p>
+  To start using LPC files, you'll first need to be able to edit files
+  of source code somehow.  That means you'll need an editor.
+</p>
+
+<p>
+  On Unix, essentially any editor will do.  On Windows, however,
+  you'll need to be careful because most editors use Windows-style
+  line breaks, which DGD doesn't use properly.  If you download a copy
+  of TextPad, that editor will handle line breaks properly.  There are
+  also versions of emacs and vi for Windows, and either will work.  Or
+  you can use the <a href="Misc_EditorQuick.html">built-in DGD
+  editor</a>, though that's generally less convenient.  I don't know
+  the situation on Macintosh computers, so I don't know what editors
+  are available.  In any case, no matter the platform, the built-in
+  DGD editor will work fine.
+</p>
+
+<p>
+  It's useful to know what the code command does so you can get your
+  code to work similarly.  The code command makes a new object from a
+  file every time you use it.  That file looks something like this:
+</p>
+
+<pre>
+#include &lt;float.h&gt;
+#include &lt;limits.h&gt;
+#include &lt;status.h&gt;
+#include &lt;trace.h&gt;
+#include &lt;type.h&gt;
+
+mixed exec(object user, mixed argv...) {
+    mixed a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z;
+
+    &lt;Your Code&gt;
+}
+</pre>
+
+<p>
+  It's actually a little more complicated than that &mdash; for
+  instance, a <code>return</code> statement is added before your code
+  if that code doesn't end with a semicolon or end-curly-brace.  Also,
+  your code has all the history references turned into something more
+  palatable to LPC since the history variables aren't part of LPC
+  proper.  They're only part of the code command.
+</p>
+
+<p>
+  You should make an LPC file like that, but where it says
+  &quot;&lt;Your Code&gt;&quot; above, you should substitute
+  <code>return 7;</code>.  That will give a really simple object which
+  should return the number 7 when you call its function.  So this is
+  the object that the Kernel Library would create internally when you
+  used the command <kbd>code 7</kbd>.
 </p>
