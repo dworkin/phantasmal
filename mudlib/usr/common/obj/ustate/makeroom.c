@@ -1071,6 +1071,12 @@ static int prompt_length_input(string input) {
 	       "inches"         : 2.54,
 	       "inch"           : 2.54,
 	       "in"             : 2.54,
+	       "feet"           : 30.5,
+	       "foot"           : 30.5,
+	       "ft"             : 30.5,
+	       "yards"          : 91.4,
+	       "yard"           : 91.4,
+	       "yd"             : 91.4,
 	       ]);
 
     unitstr = STRINGD->trim_whitespace(unitstr);
