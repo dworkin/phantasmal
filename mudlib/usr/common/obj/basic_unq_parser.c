@@ -2,6 +2,7 @@
 #include <limits.h>
 #include <type.h>
 #include <trace.h>
+#include <log.h>
 
 string parser;
 
@@ -18,11 +19,11 @@ mixed* basic_unq_parse(string block) {
   mixed* tmp;
   catch {
     tmp = parse_string(parser, block);
-    /* replace a nil return with a return of an empty array */
     /* -- Tentatively changed this to just log if tmp == nil. */
     if (tmp == nil) {
-      /* tmp = ({ }); */
-      LOGD->write_syslog("Warning: parse_string() returned nil in basic_unq_parse()");
+      LOGD->write_syslog("Warning: parse_string() returned nil "
+			 + "in basic_unq_parse()", LOG_WARN);
+      return nil;
     }
   } : {
     if (block == nil) {
@@ -30,7 +31,7 @@ mixed* basic_unq_parse(string block) {
     } else {
       LOGD->write_syslog("Error parsing block: " + block);
     }
-    tmp = nil;
+    return nil;
   }
 
   tmp = do_backslash_escaping(tmp);
