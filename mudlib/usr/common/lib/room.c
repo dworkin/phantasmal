@@ -24,7 +24,6 @@ private int* pending_removed_details;
 /* The objflags field contains a set of boolean object flags */
 #define OF_CONTAINER          1
 #define OF_OPEN               2
-#define OF_NODESC             4
 #define OF_OPENABLE           8
 
 private int objflags;
@@ -153,10 +152,6 @@ void remove_exit(object exit) {
  * flag overrides
  */
 
-int is_no_desc() {
-  return objflags & OF_NODESC;
-}
-
 int is_container() {
   return objflags & OF_CONTAINER;
 }
@@ -175,13 +170,6 @@ private void set_flags(int flags, int value) {
   } else {
     objflags &= ~flags;
   }
-}
-
-void set_nodesc(int value) {
-  if(!SYSTEM() && previous_program() != US_MAKE_ROOM)
-    error("Only SYSTEM code can currently set an object nodesc!");
-
-  set_flags(OF_NODESC, value);
 }
 
 void set_container(int value) {
@@ -265,10 +253,6 @@ void remove(object mover, object movee, object new_env) {
  */
 
 string can_get(object mover, object new_env) {
-  if (is_no_desc()) {
-    return "You can't get that!";
-  }
-
   if (get_detail_of())
     return "That's attached!  You can't get it.";
 

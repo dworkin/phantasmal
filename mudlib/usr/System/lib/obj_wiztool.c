@@ -293,9 +293,6 @@ static void cmd_stat(object user, string cmd, string str) {
   tmp += "\r\n\r\n";
 
   if(function_object("is_container", obj)) {
-    if(obj->is_no_desc()) {
-      tmp += "The object is a 'nodesc' scenery object.\r\n";
-    }
     if(obj->is_container()) {
       if(obj->is_open()) {
 	tmp += "The object is an open container.\r\n";
@@ -631,7 +628,7 @@ static void cmd_set_obj_flag(object user, string cmd, string str) {
 
   if(str) str = STRINGD->trim_whitespace(str);
   if(str && !STRINGD->stricmp(str, "flagnames")) {
-    user->message("Flag names:  cont container nodesc open openable\r\n");
+    user->message("Flag names:  cont container open openable\r\n");
     return;
   }
 
@@ -674,8 +671,6 @@ static void cmd_set_obj_flag(object user, string cmd, string str) {
     obj->set_container(flagval);
   } else if(!STRINGD->stricmp(flagname, "open")) {
     obj->set_open(flagval);
-  } else if(!STRINGD->stricmp(flagname, "nodesc")) {
-    obj->set_nodesc(flagval);
   } else if(!STRINGD->stricmp(flagname, "openable")) {
     obj->set_openable(flagval);
   }
