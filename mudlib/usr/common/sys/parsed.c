@@ -30,7 +30,7 @@ static void create(varargs int clone) {
 
 static void upgraded(varargs int clone) {
   grammar = read_file(NL_PARSE_FILE);
- 
+
   if (grammar == nil) {
     error("Error reading grammar from file " + NL_PARSE_FILE);
   }
@@ -42,8 +42,8 @@ static void upgraded(varargs int clone) {
   tens = ([ "ten" : 10, "eleven" : 11, "twelve" : 12, "thirteen" : 13,
 	  "fourteen" : 14, "fifteen" : 15, "sixteen" : 16, "seventeen": 17,
 	  "eighteen" : 18, "nineteen" : 19, "twenty" : 20, "thirty" : 30,
-          "fourty" : 40, "fifty" : 50, "sixty" : 60, "seventy" : 70,
-          "eighty" : 80, "ninety" : 90 ]);
+          "forty" : 40, "fourty" : 40, "fifty" : 50, "sixty" : 60,
+	  "seventy" : 70, "eighty" : 80, "ninety" : 90 ]);
 
   LOG("Loaded grammar:\n");
   LOG(grammar);
@@ -74,7 +74,8 @@ static mixed *dig2num(mixed *token){
 }
 
 static mixed *cat_num(mixed *token) {
-  return ({ (token[0]*(int)pow(10.0, (float)strlen(token[1]))) + (int)token[1] });
+  return ({ (token[0] * (int)pow(10.0,
+				 (float)strlen(token[1]))) + (int)token[1] });
 }
 
 static mixed *num1(mixed *token) {

@@ -49,17 +49,17 @@ n = /@@Y@@/
 adj = /@@Z@@/
 n_adj = /[a-zA-Z]+/
 
-line: sentance 
+line: sentence 
 line: sub_line 
-line: sub_line sentance 
+line: sub_line sentence 
 line: 
 
-sub_line: sentance punct 
-sub_line: sub_line sentance punct 
+sub_line: sentence punct 
+sub_line: sub_line sentence punct 
 
-sentance: clause 
-sentance: sentance 'and' clause 
-sentance: sentance 'but' clause
+sentence: clause 
+sentence: sentence 'and' clause 
+sentence: sentence 'but' clause
 
 clause: iverb
 clause: tverb np
@@ -158,7 +158,7 @@ possess: noun '\'s'
 possess: noun '\''
 
 npr: possess adjp noun
-npr: prounoun
+npr: pronoun
 npr: det adjp noun
 npr: possess det adjp noun
 npr: det 'of' possess adjp noun
