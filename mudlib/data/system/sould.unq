@@ -1,0 +1,8 @@
+~social{
+  ~verb{giggle}
+  ~self-only{You giggle to yourself.}
+  ~self-target{You giggle at ~target{}.}
+  ~target{~actor{} giggles at you.}
+  ~other-only{~actor{} giggles to itself.}
+  ~other-target{~actor{} giggles at ~target{}.}
+}
