@@ -17,10 +17,8 @@ Some commands to play with rooms:
 }}
 
 
-~name{~enUS{@list_room, list_room, listroom, @listroom, list room,
-            @list_rooms, list_rooms, listrooms, @listrooms, list rooms,
-            @roomlist, roomlist, room_list, @room_list, room list,
-            list}}
+~name{~enUS{list_room, listroom, list_rooms, listrooms,
+            roomlist, list}}
 ~keywords{admin}
 ~desc{
   ~enUS{
@@ -37,7 +35,7 @@ in the MUD, type "@list_rooms all".
 
 
 ~name{~enUS{make_room, makeroom, make_rooms,
-            makerooms, roommake, room_make }}
+            makerooms, roommake }}
 ~keywords{admin}
 ~desc{
   ~enUS{
@@ -57,8 +55,7 @@ See also:  @make_portable, @make_detail
 }}
 
 
-~name{~enUS{@goto_room, goto_room, @gotoroom, @go_to_room, go_to_room,
-            gotoroom, @goto, goto, goto room, go to room, goto, go_to}}
+~name{~enUS{goto_room, gotoroom, go_to_room, goto, go_to}}
 ~keywords{admin}
 ~desc{
   ~enUS{
@@ -68,9 +65,7 @@ you to it.  It only works on numbered rooms and portables.
 
 }}
 
-~name{~enUS{@save_rooms, @save_room, save_rooms, save_room, @saverooms,
-            @saveroom, saverooms, saveroom, room save, roomsave, room_save,
-            save rooms, save room, @room_save, @roomsave, save}}
+~name{~enUS{save_rooms, save_room, saverooms, saveroom, roomsave, save}}
 ~keywords{admin}
 ~desc{
   ~enUS{
@@ -86,9 +81,8 @@ Examples:
 
 }}
 
-~name{~enUS{@load_rooms, @load_room, load_rooms, load_room, @loadrooms,
-            @loadroom, loadrooms, loadroom, room load, roomload, room_load,
-            load rooms, load room, @room_load, @roomload, load}}
+~name{~enUS{load_rooms, load_room, loadrooms, loadroom, roomload,
+            roomload, load}}
 ~keywords{admin}
 ~desc{
   ~enUS{
@@ -111,11 +105,9 @@ Examples:
 }}
 
 
-~name{~enUS{@new_rooms, @new_room, new_rooms, new_room, @newrooms,
-            @newroom, newrooms, newroom, room new, roomnew, room_new,
-            new rooms, new room, @room_new, @roomnew, new, create,
-            create rooms, create room, @create_room, @createroom,
-            @create_rooms, @createrooms, create_room, create_rooms}}
+~name{~enUS{new_rooms, new_room, newrooms, add room, add rooms,
+            newroom, addroom, roomnew, roomadd, new, create, add,
+            create rooms, create room, createroom, createrooms}}
 ~keywords{admin}
 ~desc{
   ~enUS{
@@ -136,12 +128,8 @@ See also:  @new_portable, MAPD
 }}
 
 
-~name{~enUS{@delete_rooms, @delete_room, delete_rooms, delete_room,
-            @deleterooms, @deleteroom, deleterooms, deleteroom,
-            room delete, roomdelete, room_delete, delete rooms,
-            delete room, @room_delete, @roomdelete, delete, destroy,
-            @destroy_rooms, @destroy_room, destroy_rooms, destroy_room,
-            destroy rooms, destroy room, @delete, @destroy}}
+~name{~enUS{delete_rooms, delete_room, deleterooms, deleteroom, roomdelete,
+            delete, destroy, destroy_rooms, destroy_room }}
 ~keywords{admin}
 ~desc{
   ~enUS{
