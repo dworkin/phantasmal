@@ -91,6 +91,11 @@ while(-e "phantest") {
     }
 }
 
+unless(-f "$driverdir/bin/driver") {
+    # TODO:  just build DGD here if we need to
+    die "You haven't built DGD yet!";
+}
+
 print "Copying TestGame from $testgamedir...\n";
 system("cp -r $testgamedir phantest");
 print "Copying DGD from $driverdir...\n";
