@@ -136,7 +136,7 @@ void runtime_error(string error, int caught, mixed** trace)
   str += "\n";
 
   size = sizeof(trace) - 1;
-  for(i = 0; i < size; i++) {
+  for(i = 0; i &lt; size; i++) {
     progname = trace[i][TRACE_PROGNAME];
     len = trace[i][TRACE_LINE];
     if(len == 0) {
@@ -148,7 +148,7 @@ void runtime_error(string error, int caught, mixed** trace)
 
     function = trace[i][TRACE_FUNCTION];
     len = strlen(function);
-    if(progname == AUTO && i != size - 1 && len > 3) {
+    if(progname == AUTO &amp;&amp; i != size - 1 &amp;&amp; len > 3) {
       switch(function[..2]) {
       case "bad":
       case "_F_":
@@ -156,15 +156,15 @@ void runtime_error(string error, int caught, mixed** trace)
         continue;
       }
     }
-    if(len < 17) {
+    if(len &lt; 17) {
       function += "                 "[len..];
     }
 
     objname = trace[i][TRACE_OBJNAME];
     if(progname != objname) {
       len = strlen(progname);
-      if(len < strlen(objname) && progname == objname[.. len - 1]
-         && objname[len] == '#') {
+      if(len &lt; strlen(objname) &amp;&amp; progname == objname[.. len - 1]
+         &amp;&amp; objname[len] == '#') {
         objname = objname[len..];
       }
       str += line + " " + function + " " + progname + " (" + objname
@@ -175,7 +175,7 @@ void runtime_error(string error, int caught, mixed** trace)
   }
 
   send_message("Runtime error: " + str);
-  if(caught == 0 && this_user() && (obj=this_user()->query_user())) {
+  if(caught == 0 &amp;&amp; this_user() &amp;&amp; (obj=this_user()->query_user())) {
     obj->message(str);
   }
   write_file("/error.log", str);
