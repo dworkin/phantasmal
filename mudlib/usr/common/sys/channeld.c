@@ -52,7 +52,7 @@ void upgraded(varargs int clone) {
 
   if(num_channels != sizeof(channel_attributes)) {
     LOGD->write_syslog("Warning!  ChannelD doesn't fully upgrade yet"
-		       + " when recompiled!");
+		       + " when recompiled!", LOG_ERR);
   }
 }
 

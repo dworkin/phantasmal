@@ -1,4 +1,4 @@
-/* $Header: /cvsroot/phantasmal/mudlib/usr/System/open/lib/userlib.c,v 1.11 2005/03/24 11:41:30 angelbob Exp $ */
+/* $Header: /cvsroot/phantasmal/mudlib/usr/System/open/lib/userlib.c,v 1.12 2005/03/24 12:36:22 angelbob Exp $ */
 
 #include <kernel/kernel.h>
 #include <kernel/user.h>
@@ -604,7 +604,8 @@ int login(string str)
     name = nil;
     restore_user_from_file(str);
     if(name && STRINGD->stricmp(name, check_name)) {
-      LOGD->write_syslog("Internal error restoring player from file!");
+      LOGD->write_syslog("Internal error restoring player from file!",
+			 LOG_FATAL);
       previous_object()->message("Something went wrong logging you in.\r\n"
 			       + "Try again, maybe?\r\n");
       return MODE_DISCONNECT;

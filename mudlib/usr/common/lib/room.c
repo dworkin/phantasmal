@@ -744,7 +744,7 @@ private string exits_to_unq(void) {
         opp_dir = EXITD->opposite_direction(exit->get_direction());
         other_exit = dest->get_exit(opp_dir);
         if(!other_exit || other_exit->get_destination() != this_object()) {
-          LOGD->write_syslog("Problem finding return exit!");
+          LOGD->write_syslog("Problem finding return exit!", LOG_WARN);
         } else {
 /*          if(exit->get_number() < other_exit->get_number()) {  */
 	    ret += exit->to_unq_text();

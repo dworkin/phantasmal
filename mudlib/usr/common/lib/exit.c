@@ -124,7 +124,7 @@ static string to_unq_flags(void) {
     opp_dir = EXITD->opposite_direction(get_direction());
     other_exit = dest->get_exit(opp_dir);
     if(!other_exit) {
-      LOGD->write_syslog("Problem finding return exit!");
+      LOGD->write_syslog("Problem finding return exit!", LOG_WARN);
     } else {
       ret += other_exit->get_number() + "}\n";
     }
