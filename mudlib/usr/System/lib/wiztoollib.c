@@ -85,13 +85,13 @@ static void cmd_reboot(object user, string cmd, string str) {
 }
 
 static void cmd_datadump(object user, string cmd, string str) {
-  find_object(INITD)->save_mud_data(user, ROOM_FILE, ZONE_FILE,
+  find_object(INITD)->save_mud_data(user, ROOM_FILE, MOB_FILE, ZONE_FILE,
 				    nil);
   user->message("Data save commenced.\n");
 }
 
 static void cmd_safesave(object user, string cmd, string str) {
-  find_object(INITD)->save_mud_data(user, SAFE_ROOM_FILE,
+  find_object(INITD)->save_mud_data(user, SAFE_ROOM_FILE, SAFE_MOB_FILE,
 				    SAFE_ZONE_FILE, nil);
   user->message("Safe data save commenced.\n");
 }

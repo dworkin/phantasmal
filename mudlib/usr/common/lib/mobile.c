@@ -8,25 +8,25 @@
    circumstances.
 */
 
+inherit unq UNQABLE;
+
 /*
  * cached vars
  */
 
 static object body;     /* The mobile's body -- an OBJECT of some type */
 static object location;
+static int    number;
+
+/*
+ * Note:  inherits create() and upgraded() from UNQABLE
+ */
 
 /*
  * System functions
  *
  * Functions used to deal with the mobile elsewhere in the MUD
  */
-
-static void create(varargs int clone) {
-  if(clone) {
-
-  }
-}
-
 
 void assign_body(object new_body) {
   if(!SYSTEM()) {
@@ -57,6 +57,17 @@ object get_user(void) {
 
 void set_user(object new_user) {
   error("Can't set the user of this kind of mobile");
+}
+
+int get_number(void) {
+  return number;
+}
+
+void set_number(int new_num) {
+  if(previous_program() != MOBILED) {
+    error("Only MOBILED can set mobile numbers!");
+  }
+  number = new_num;
 }
 
 void notify_moved(object obj) {
@@ -460,4 +471,29 @@ void hook_leave(mixed *args) {
  */
 
 void hook_enter(mixed *args) {
+}
+
+
+/*
+ * UNQ functions
+ */
+
+string to_unq_text(void) {
+  string ret;
+  int    bodynum;
+
+  if(body) {
+    bodynum = body->get_number();
+  } else {
+    bodynum = -1;
+  }
+
+  ret = "~mobile{\n  ~number{" + number + "}\n";
+  ret += "  ~body{" + bodynum + "}\n}\n\n";
+
+  return ret;
+}
+
+void from_dtd_unq(mixed* unq) {
+  error("Can't parse yet!");
 }

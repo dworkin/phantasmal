@@ -19,8 +19,10 @@ private int __sys_suspended;
 private void suspend_system();
 private void release_system();
 static void __co_write_rooms(object user, int* objects, int ctr,
-			     string roomfile,
+			     string roomfile, string mobfile,
 			     string zonefile);
+static void __co_write_mobs(object user, int* objects, int ctr,
+			    string mobfile, string zonefile);
 static void __co_write_zones(object user, int* objects, int ctr,
 			     string zonefile);
 static void __reboot_callback(void);
@@ -30,7 +32,7 @@ static void __shutdown_callback(void);
 static void create(varargs int clone)
 {
   object driver, obj, the_void;
-  string zone_file, mapd_dtd, help_dtd, objs_file;
+  string zone_file, mapd_dtd, help_dtd, objs_file, mobfile_dtd;
   string bind_dtd;
   int major, minor, patch, rooms_loaded;
 
@@ -77,17 +79,18 @@ static void create(varargs int clone)
   driver->set_object_manager(find_object(OBJECTD));
   OBJECTD->do_initial_obj_setup();
 
-  /* Compile the String manager (used as a std library) */
+  /* Compile the StringD & TimeD */
   if(!find_object(STRINGD)) { compile_object(STRINGD); }
+  if(!find_object(TIMED))   { compile_object(TIMED); }
 
-  /* Start up logging channels in the LOGD */
+  /* Start up logging channels in the LogD */
   LOGD->start_channels();
 
-  /* Compile, find and install the Telnetd */
+  /* Compile, find and install the TelnetD */
   if(!find_object(TELNETD)) { compile_object(TELNETD); }
   "/kernel/sys/userd"->set_telnet_manager(0,find_object(TELNETD));
 
-  /* Compile the Phrase manager (before Helpd) */
+  /* Compile the Phrase manager (before HelpD) */
   if(!find_object(PHRASED)) { compile_object(PHRASED); }
 
   /* Set up online help */
@@ -142,12 +145,18 @@ static void create(varargs int clone)
   zone_file = read_file(ZONE_FILE);
   ZONED->init_from_file(zone_file);
 
+  /* Load the mobile file */
+  mobfile_dtd = read_file(MOB_FILE_DTD);
+  if(!mobfile_dtd)
+    error("Can't read file " + MOB_FILE_DTD + "!");
+  MOBILED->init(mobfile_dtd, bind_dtd);
+
   /* Start up ChannelD and ConfigD */
   if(!find_object(CHANNELD)) compile_object(CHANNELD);
   if(!find_object(CONFIGD)) compile_object(CONFIGD);
 }
 
-void save_mud_data(object user, string room_filename,
+void save_mud_data(object user, string room_filename, string mob_filename,
 		   string zone_filename, string callback) {
   int*   objects;
   int    cohandle, iter;
@@ -170,10 +179,17 @@ void save_mud_data(object user, string room_filename,
   }
 
   LOGD->write_syslog("Writing World Data to files...", LOG_NORMAL);
+  LOGD->write_syslog("Rooms: '" + room_filename + "', Mobiles: '"
+		     + mob_filename + "', Zones: '"
+		     + zone_filename + "'", LOG_VERBOSE);
 
   remove_file(room_filename + ".old");
   rename_file(room_filename, room_filename + ".old");
   remove_file(room_filename);
+
+  remove_file(mob_filename + ".old");
+  rename_file(mob_filename, mob_filename + ".old");
+  remove_file(mob_filename);
 
   remove_file(zone_filename + ".old");
   rename_file(zone_filename, zone_filename + ".old");
@@ -184,12 +200,17 @@ void save_mud_data(object user, string room_filename,
 		       LOG_FATAL);
   }
 
+  if(sizeof(get_dir(mob_filename)[0])) {
+    LOGD->write_syslog("Can't remove old mobfile -- trying to append!",
+		       LOG_FATAL);
+  }
+
   if(sizeof(get_dir(zone_filename)[0])) {
     LOGD->write_syslog("Can't remove old zonefile -- trying to append!",
 		       LOG_FATAL);
   }
 
-  LOGD->write_syslog("Writing rooms to file", LOG_VERBOSE);
+  LOGD->write_syslog("Writing rooms to file " + room_filename, LOG_VERBOSE);
   objects = ({ });
   for(iter = 0; iter < ZONED->num_zones(); iter++) {
     objects += MAPD->rooms_in_zone(iter);
@@ -197,7 +218,7 @@ void save_mud_data(object user, string room_filename,
   objects -= ({ 0 });
 
   cohandle = call_out("__co_write_rooms", 0, user, objects, 0,
-		      room_filename, zone_filename);
+		      room_filename, mob_filename, zone_filename);
   if(cohandle < 1) {
     error("Can't schedule call_out to save objects!");
   } else {
@@ -228,7 +249,7 @@ void prepare_shutdown(void)
     LOGD->write_syslog("Shutting down MUD...", LOG_NORMAL);
   }
 
-  save_mud_data(this_user(), ROOM_FILE, ZONE_FILE,
+  save_mud_data(this_user(), ROOM_FILE, MOB_FILE, ZONE_FILE,
 		"__shutdown_callback");
 }
 
@@ -282,7 +303,7 @@ private void release_system() {
 
 
 static void __co_write_rooms(object user, int* objects, int ctr,
-			     string roomfile,
+			     string roomfile, string mobfile,
 			     string zonefile) {
   string unq_str;
   object obj;
@@ -304,19 +325,19 @@ static void __co_write_rooms(object user, int* objects, int ctr,
     if(ctr < sizeof(objects)) {
       /* Still saving rooms... */
       if(call_out("__co_write_rooms", 0, user, objects, ctr, roomfile,
-		  zonefile) < 1) {
-	release_system();
+		  mobfile, zonefile) < 1) {
 	error("Can't schedule call_out to continue writing rooms!");
       }
       return;
     }
 
-    /* Done with portables, start on zones */
-    LOGD->write_syslog("Writing zones to file", LOG_VERBOSE);
+    /* Done with rooms, start on mobiles */
+    LOGD->write_syslog("Writing mobiles to file " + mobfile, LOG_VERBOSE);
 
-    if(call_out("__co_write_zones", 0, user, objects, 0, zonefile) < 1) {
-       release_system();
-       error("Can't schedule call_out to start writing portables!");
+    objects = MOBILED->all_mobiles();
+    if(call_out("__co_write_mobs", 0, user, objects, 0, mobfile,
+		zonefile) < 1) {
+       error("Can't schedule call_out to start writing mobiles!");
      }
   } : {
     release_system();
@@ -325,15 +346,57 @@ static void __co_write_rooms(object user, int* objects, int ctr,
   }
 }
 
+static void __co_write_mobs(object user, int* objects, int ctr,
+			    string mobfile, string zonefile) {
+  string unq_str;
+  object obj;
+  int    chunk_ctr;
+
+  catch {
+    for(chunk_ctr = 0; ctr < sizeof(objects) && chunk_ctr < SAVE_CHUNK;
+	ctr++, chunk_ctr++) {
+      obj = MOBILED->get_mobile_by_num(objects[ctr]);
+
+      unq_str = obj->to_unq_text();
+
+      if(!write_file(mobfile, unq_str)) {
+	DRIVER->message("Couldn't write mobiles to file!  "
+			+ "Fix or kill driver!");
+	error("Couldn't write mobiles to file " + mobfile + "!");
+      }
+    }
+
+    if(ctr < sizeof(objects)) {
+      /* Still saving mobiles... */
+      if(call_out("__co_write_mobs", 0, user, objects, ctr,
+		  mobfile, zonefile) < 1) {
+	error("Can't schedule call_out to continue writing mobiles!");
+      }
+      return;
+    }
+
+    /* Done with mobiles, start on zones */
+    LOGD->write_syslog("Writing zones to file " + zonefile, LOG_VERBOSE);
+
+    if(call_out("__co_write_zones", 0, user, objects, 0, zonefile) < 1) {
+       error("Can't schedule call_out to start writing zones!");
+     }
+  } : {
+    release_system();
+    user->message("Error writing mobiles!\n");
+    error("Error writing mobiles!");
+  }
+}
+
 static void __co_write_zones(object user, int* objects, int ctr,
 			     string zonefile) {
   string unq_str;
 
+  /* TODO:  should eventually break up zone-save into chunks */
   catch {
     unq_str = ZONED->to_unq_text();
     if(!unq_str) {
       LOGD->write_syslog(ZONED->get_parse_error_stack());
-      release_system();
       error("Can't serialize ZONED to UNQ!");
     }
     write_file(zonefile, unq_str);
@@ -343,6 +406,9 @@ static void __co_write_zones(object user, int* objects, int ctr,
     error("Error writing zones!");
   }
 
+  /* This is the callback from %shutdown or %reboot or whatever,
+     it's the function to call after all data has successfully
+     been saved. */
   catch {
     if(pending_callback) {
       call_other(this_object(), pending_callback);

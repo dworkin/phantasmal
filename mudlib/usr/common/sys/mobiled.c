@@ -36,12 +36,17 @@ void destructed(int clone) {
 int add_mobile_number(object mobile, int num) {
   int newnum;
 
+  if(!mobile)
+    error("No mobile in MOBILED::add_mobile_number!");
+
   newnum = allocate_mobile_obj(num, mobile);
   if(newnum <= 0) {
     error("Can't allocate mobile number!");
   }
 
-  LOGD->write_syslog("Allocating mobile number: " + newnum);
+  LOGD->write_syslog("Allocating mobile number: " + newnum, LOG_VERBOSE);
+
+  mobile->set_number(num);
 
   return newnum;
 }
@@ -112,4 +117,9 @@ int* all_mobiles(void) {
   }
 
   return ret;
+}
+
+
+void init(string mobfile_dtd, string binder_dtd) {
+  /* Don't do anything yet -- save before load */
 }
