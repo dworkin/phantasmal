@@ -1,0 +1,73 @@
+  <titledef text="InterMUD3" />
+
+  <h2> Writing an InterMUD3 Server in DGD </h2>
+
+  <p>
+    InterMUD3 is a protocol for sending chat-type social commands
+    between MUDs, allowing you to message players on other MUDs, and
+    to have shared chat channels across more than one MUD.  There are
+    previous protocols for the same, but InterMUD3 is the current
+    frontrunner for new implementations.
+  </p>
+
+  <p>
+    Like FTP, InterMUD3 protocol requires outgoing network
+    connections, so normally you'll need to apply the DGD network
+    patch to implement an InterMUD3 server, though it would be
+    possible to write an external InterMUD3 server, then have it make
+    a connection to the DGD server and relay all the appropriate
+    information, thus defining your own &quot;passive InterMUD3&quot;
+    protocol.  However, this would require significant additional
+    effort, and probably a lot of work in a language other than DGD.
+  </p>
+
+<pre>
+From dgd at list.imaginary.com  Fri Jan 25 09:05:01 2002
+From: dgd at list.imaginary.com (James Tait)
+Date: Fri Jan 25 09:05:01 2002
+Subject: [DGD] [Melville] color and IMUD3
+Message-ID: <010b01c1a5ae$f15979b0$07017a0a@hughesrae.co.uk>
+
+Firstly, thanks to Erwin for replying on my behalf -- my reply got rejected
+(or is awaiting approval, actually) because I replied from my work account.
+:)  There are a couple of things you need to know about the link he posted.
+
+Firstly, the e-mail addresses in there are all wrong! :)  I am no longer at
+Middlesex University, and my bigfoot and crosswinds accounts no longer
+exist.  If you do need to contact me and wrack my brain for hazy memories,
+you'll need to do so at JTait@wyrddreams.demon.co.uk or
+james.tait@morse.com.
+
+Secondly, and perhaps most importantly, the IMUD3 Daemon (if you can call
+it
+that!) was written with a copy of the IMUD3 protocol specification by my
+side.  This can be found at
+http://cie.imaginary.com/protocols/intermud3.html and is well worth reading
+through a couple of times before you get started.
+
+Finally, it is a long time since I wrote the IMUD3 Daemon.  In fact, it's a
+long time since I did any work with DGD, as I now have a full-time job
+which
+often requires long working hours, a fiancée to support, and, as such, very
+little free time.  It was also written while I was a naive university
+student, with very little thought for design, modularity, extensibility,
+etc.  In short, it is very poorly implemented (in retrospect) and should
+only really serve as a proof of concept.
+
+Anyway, if you decide to take it on, good luck with it.  Have you had any
+luck with getting a pre-patched binary for Win32?  Can anyone on the list
+help?
+
+
+Cheers,
+
+JT (Oojmaflip@Wyrd Dreams, once upon a time. ;) )
+
+--
+James Tait
+Linux advocate and MUD programmer
+ICQ# 17834893
+</pre>
+
+  <p style="text-size: 150%"> <a href="../index.html"> Back to top level
+    </a> </p>

@@ -1,0 +1,417 @@
+  <titledef text="MudOS vs DGD" />
+
+  <h1> MudOS vs DGD </h1>
+
+<pre>
+From: John "West" McKenna <john@ucc.gu.uwa.edu.au>
+Message-Id: <200004240236.KAA08398@mermaid.ucc.gu.uwa.edu.au>
+Subject: Re: [DGD]Hello, think you could answer a few questiosn for me? :)
+In-Reply-To: <63.49eabe6.2635046d@aol.com> from "BladeDarkmour@aol.com" at "Apr
+ 23, 2000 09:59:09 pm"
+To: dgd@list.imaginary.com
+Date: Mon, 24 Apr 2000 10:36:28 +0800 (WST)
+
+>    Now for my main question..  What are the main advantages and 
+>disadvantages of the MudOS vs. DGD drivers?
+
+The biased answer: DGD is infinitely superior in every way :-)
+
+It's a personal preference thing, I think.  They're both quite capable of
+running MUDs.  MudOS does a lot more work in the driver, where DGD leaves
+it all for you.  LPC isn't the fastest language in the world, so doing more
+work in the driver might be a good idea.  Of course, DGD's precompiling
+(compiling LPC to C and linking it into the driver) does very good things
+to performance.  Has anyone done any performance comparisions?
+
+The use of 'nil' instead of zero for not-an-object or not-a-string etc
+makes a bigger difference than you'd think.
+
+I'm also in love with the object upgrading: unless MudOS has picked up some
+new features since I last played with it, you have the destruct-update-
+clone cyle every time you make a change to anything.  If you've changed
+something fundamental like the user object, you might as well just take the
+whole MUD down.  DGD can replace the code of existing (and running) objects
+on the fly.  I've written myself a handy little "upgrade" command that
+looks for modified files, and automagically recompiles everything that
+depends on them.  I find it painful to go back to MudOS development.
+
+Personal preference again: DGD has far fewer built-in functions, and the
+ones that are there are very simple.  This means that anything tricky is
+done in LPC, and you don't have to go reading driver source to find out
+what it does (who trusts documentation?).  More importantly, you can change
+it.
+
+DGD doesn't have closures or lambdas or anything like that.  I don't miss
+them - I never used them on MudOS (because I'd never found any decent
+documentation, or had someone tell me what they're actually for).
+
+I'm not all that keen on DGD's method for adding extension packages.
+Patching the driver source just doesn't feel right.  MudOS's "stick the
+file in the directory and it will happen" is nice.
+
+DGD doesn't have snoop() or shadow().  As far as I can see, these are
+nothing but security holes.  Does anyone know what they're actually good
+for?  What possessed whoever was responsible to include them in the first
+place?
+
+There's more, but I'm a bit hazy on the details.  DGD supports saving the
+entire MUD state to a file, so you can restart as if nothing had happened.
+I've never used this.  It also has compile-time and run-time type checking,
+which makes debugging that little bit less unpleasant.
+
+Date: Sun, 23 Apr 2000 23:10:21 -0400 (EDT)
+From: Stephen Schmidt <schmidsj@union.edu>
+To: dgd@list.imaginary.com
+Subject: Re: [DGD]Hello, think you could answer a few questiosn for me? :)
+In-Reply-To: <200004240236.KAA08398@mermaid.ucc.gu.uwa.edu.au>
+Message-ID: <Pine.OSF.4.05.10004232301570.877-100000@idol.union.edu>
+
+On Mon, 24 Apr 2000, John West McKenna wrote:
+> DGD doesn't have snoop() or shadow().  As far as I can see, these are
+> nothing but security holes.  Does anyone know what they're actually good
+> for?
+
+If you are actually running a mud with a sizeable number of
+players (I adminned one that averaged 60-80 players online
+at once, about 300 unique players per day, for a couple years)
+then snoop() or something like it is absolutely necessary for
+enforcing the rules. Problems with sexual harassment, player
+killing, newbie abuse, multiple logins, any situation involving
+rules like that are very hard to solve unless you can snoop
+and see what the suspect is doing. You should have a general
+disclaimer in your login process advising people not to assume
+they have more privacy than they actually do. The problem is to
+make sure that snoop() is only accessible to those who really
+need it, and only when.
+
+Of course, it's not impossible to add a snoop() feature to
+your DGD mudlib of choice, though I don't know of any that
+come with it unless 2.4.5 does.
+
+I concur that shadow() is not necessary and may not be worth
+the risk of having it. It depends on how comfortable you are
+with mudlibs that have a separate body object and connection
+object, and how willing you are to swap bodies around. If you
+have a game design that requires lots of doppleganger-type
+behavior, and you don't wanna swap body objects all the time,
+then shadow() can be pretty handy. But otherwise it's not
+the Right Thing.
+
+> There's more, but I'm a bit hazy on the details.  DGD supports saving the
+> entire MUD state to a file, so you can restart as if nothing had happened.
+
+That's my very favorite feature, because it lets you create a
+world which can be permanently altered by the players themselves
+in a  meaningful way. (You can hack such behavior in under MudOS,
+but it's a lot easier under DGD.) The games I'm interested in
+creating would use that feature, so I would want DGD for them.
+But if that's not your angle, then it may not be so useful.
+
+
+Stephen Schmidt
+
+It is vain to expect a well-balanced government without a
+well-balanced society.
+			-- Gideon Welles
+
+Date: Mon, 24 Apr 2000 15:14:48 +0200 (CEST)
+From: "Felix A. Croes" <felix@pattern.dworkin.nl>
+Message-Id: <200004241314.PAA03580@pattern.dworkin.nl>
+To: dgd@list.imaginary.com
+Subject: Re: [DGD]Hello, think you could answer a few questiosn for me? :)
+
+BladeDarkmour@aol.com wrote:
+
+>[...]
+>     Now for my main question..  What are the main advantages and 
+> disadvantages of the MudOS vs. DGD drivers?   I'd like un-biased responses 
+> btw ;)   Allready have DGD setup with a small barebones mudlib, Melville, for 
+> piddling around with but haven't yet been able to get MudOS fully setup for 
+> some odd reason..  Got the driver setup and installed properly but the mudlib 
+> that ships with it is giving me a small fit. *shrugs*  Ah well, I'm sure I 
+> can resolve that soon enough.
+
+I wrote DGD, so I won't even keep up a pretense of being unbiased.
+I'll just mention two major points:
+
+ - DGD has persistence.  MudOS users claim that persistence is just
+   something that you can program yourself in LPC, and they're almost
+   correct; if handled in LPC, every object has to make sure that it
+   can save and reinitialize itself.  Buggy objects are out of luck.
+   The basic functions underlying the saving mechanism in MudOS are
+   marred by a number of limitations which further restrict the sort
+   of object that can have persistance.
+ - DGD is being actively maintained and developed.  MudOS has seen
+   no more than a handful of bugfixes since November 1997, out of
+   the hundreds of bugs that have been reported, and no new
+   development at all.  In practice this means that if you use MudOS,
+   you must be prepared to do your own driver hacking.
+
+Regards,
+Dworkin
+
+Date: Mon, 24 Apr 2000 17:20:13 +0200 (CEST)
+From: "Felix A. Croes" <felix@pattern.dworkin.nl>
+Message-Id: <200004241520.RAA04746@pattern.dworkin.nl>
+To: dgd@list.imaginary.com
+Subject: Re: [DGD]Hello, think you could answer a few questiosn for me? :)
+
+Stephen Schmidt <schmidsj@union.edu> wrote:
+
+> On Sun, 23 Apr 2000, Par Winzell wrote:
+> > BladeDarkmour@aol.com writes:
+> > > Aye, [state saving]'s one of the features of DGD that caught my
+> > > eye.. Tis a requirement, and I prefer not to have to code support for
+> > > it myself.
+>  
+> > You couldn't.
+>
+> Actually, even under MudOS, you can, because of the save_object()
+> feature. The cost is that you can't use clones anymore; each object
+> needs to have its own save file, so it has to have its own code
+> file. (And, in fact, there's ways around that too, though not
+> good ones.) You have to do some additional work to preserve
+> environment information, and so forth, but it's doable.
+>
+> But it's way too hard when DGD is available with state saves
+> as a driver feature.
+
+Mimicing DGD's persistence (or, for that matter, any other persistent
+mud server's persistence; it is only MudOS people who define the term
+so sloppily) is not just hard in MudOS, it really is impossible.
+
+The limitations you mention are limitations of current implementations
+in the Nightmare and Lima mudlibs.  These are tradeoffs for simplicity
+and have little to do with actual MudOS limitations.  There are many
+more, including: datastructures shared between objects are not saved
+as shared, self-referential datastructures cannot be saved at all,
+neither can object references, etc.
+
+The show-stopper with regard to persistence in MudOS is that it is
+impossible to query the full state of any given object from LPC.
+
+Regards,
+Dworkin
+
+
+
+Date: Thu, 11 May 2000 02:57:26 +0200 (CEST)
+From: "Felix A. Croes" <felix@dworkin.nl>
+Message-Id: <200005110057.CAA10003@dworkin.nl>
+To: dgd@list.imaginary.com
+Subject: Re: [DGD]statedumping
+
+Stephen Schmidt <schmidsj@union.edu> wrote:
+
+> On Wed, 10 May 2000, E. Harte wrote:
+> > I'd say that DGD makes it very easy for a
+> > developer to track objects and make sure the basis is airtight when it
+> > comes to leaking objects.
+>
+> Is it easier in DGD than in, say, MudOS? After all, you can
+> use simul_efuns() to override load_object() and clone_object()
+> in MudOS if you want to implement such a thing. I've never
+> tried it, so maybe there's something I haven't observed.
+
+Definitely easier.  The simul_efun feature can replace functions in
+the auto object, but not variables in the auto object -- which make
+per-wizard linked lists of objects possible.
+
+
+>[...]
+> > In a decent mudlib you'd have limitations in place that
+> > avoid an object going berzerk and creating clones or adding call_outs
+> > until the mud crashes.
+>
+> Most publically available mudlibs don't live up to this
+> standard, unfortunately, though I agree that it would be
+> good if they did.
+
+If you base your mudlib on the kernel lib, such resource control
+is automatic.  You can even define your own resources.  You could,
+for instance, create a money resource and use it to impose limits
+on how much money a wizard can give out.
+
+Regards,
+Dworkin
+
+
+Date: Wed Aug  1 08:48:00 2001
+Subject: [DGD] MudOS or DGD
+Message-ID: <Pine.OSF.4.33.0108010945510.135928-100000@idol.union.edu>
+
+On Wed, 1 Aug 2001, Stephen Schmidt wrote:
+> On Wed, 1 Aug 2001, Gary wrote:
+> > From: "Sergey S. Koval" <serg@scs.ntu-kpi.kiev.ua>
+
+> > > 2. Is it possible to add own "plugin" efuns without altering driver code ?
+> >
+> >   DGD uses kfuns, which I think are very similar to efuns. Checkout the
+> > kernel docs in the documents directory.
+>
+> A DGD kfun is probably more similar to a MudOS simul_efun than
+> to an efun, although the analogy's not perfect in either case.
+
+Oops! My mistake. A DGD kfun is basically the same as a MudOS efun.
+It's the auto functions that are similar to, but not identical to,
+simul_efuns. Sorry for the confusion.
+
+Steve
+
+
+
+From dgd at list.imaginary.com  Wed Jul 30 21:19:01 2003
+From: dgd at list.imaginary.com (Stephen Schmidt)
+Date: Wed Jul 30 21:19:01 2003
+Subject: Re[2]: [DGD] test
+In-Reply-To: <20030731093136.3EF1.LUCIFER@tsinghua.org.cn>
+Message-ID: <Pine.OSF.4.40.0307302211490.164930-100000@idol.union.edu>
+
+On Thu, 31 Jul 2003, Lucifer wrote:
+> Eh... since you ask me what i need and i am quite new to dgd... could
+> you tell me about the grammar differences between dgd and 'traditional
+> lpc' (I only have some experience with MudOS before)?
+
+I was a MudOS hacker for about five years before switching to DGD.
+
+I never had any trouble moving between drivers. DGD has rather
+fewer (I'm probably mixing MudOS and DGD terminology here, so
+forgive me) driver-supplied functions than MudOS, but most of
+the critical ones are the same, and many of the ones not in
+DGD will be provided, sometimes under the same name, by the
+mudlib you use. There's a few changes, of course, but nothing
+difficult to get used to.
+
+Much bigger changes will come when you stop using whatever
+MudOS mudlib you're used to (probably either TMI-2 or
+Nightmare, which are fairly similar) and start using a
+DGD mudlib. One option is the 2.4.5-simulated mudlib,
+which I would recommend not using. There used to be basically
+two other choices, the kernal mudlib and the Melville mudlib.
+The kernel mudlib is very powerful and lets you take advantage
+of all current DGD features, but is complicated and a major
+change from MudOS libs. Melville is rather similar to MudOS
+mudlibs and will be a familiar environment, but it's rather
+old (written 1994, revised last 1998) and doesn't let you do
+many of the cool things the driver permits.
+
+Since I stopped working regularly on DGD, at least one or
+two more mudlibs have come out, but I will let others who
+know them better describe them....
+
+Steve
+
+
+Aha! Advancing on me only brings you closer to the cold wrath
+that is my Spork!
+				- BK
+
+
+From dgd at list.imaginary.com  Thu Jul 31 05:58:01 2003
+From: dgd at list.imaginary.com (Christian McCarron)
+Date: Thu Jul 31 05:58:01 2003
+Subject: [DGD] test
+In-Reply-To: <Pine.OSF.4.40.0307302211490.164930-100000@idol.union.edu>; from schmidsj@union.edu on Wed, Jul 30, 2003 at 10:18:06PM -0400
+References: <20030731093136.3EF1.LUCIFER@tsinghua.org.cn> <Pine.OSF.4.40.0307302211490.164930-100000@idol.union.edu>
+Message-ID: <20030731130931.A18172@sofa.home.elephant.org>
+
+On Wed, Jul 30, 2003 at 10:18:06PM -0400, Stephen Schmidt wrote:
+> On Thu, 31 Jul 2003, Lucifer wrote:
+> > Eh... since you ask me what i need and i am quite new to dgd... could
+> > you tell me about the grammar differences between dgd and 'traditional
+> > lpc' (I only have some experience with MudOS before)?
+> 
+> I was a MudOS hacker for about five years before switching to DGD.
+> 
+> I never had any trouble moving between drivers. DGD has rather
+> fewer (I'm probably mixing MudOS and DGD terminology here, so
+> forgive me) driver-supplied functions than MudOS, but most of
+> the critical ones are the same, and many of the ones not in
+> DGD will be provided, sometimes under the same name, by the
+> mudlib you use. There's a few changes, of course, but nothing
+> difficult to get used to.
+
+The thing thats causing me problems looking at moving from MudOS to
+DGD (something I'd love to do on many, many levels) is the function
+pointers. We use anonymous functions a lot, and we've been quite
+creative in some of the uses we've put them to. Even basic functionality
+like map(arr,(: code :)) seems to have no easy fix without turning the
+code into a whole new function and calling it. Other things like macros
+which auto-construct arbitarily layered function pointers for dynamic
+descriptions etc really look like they'd need a total rewrite, at the core
+and in every single room that uses them.
+
+Since the mud I run is in its 11th year, as you can imagine we have an
+awfully large number of rooms!
+
+I understand that Dworkin doesn't like fp's/closures etc, but is there any
+way these can be done via a package? Whether or not fp's are the best way to
+do this kind of thing (although we have found them incredibly useful), some
+way to include the syntax in the driver as an optional package would allow
+a lot of MudOS libs to move to DGD with far more ease. Given that MudOS dev
+is more or less dead, this could inject a lot of new blood, and a lot of
+experienced developers into the DGD community.
+
+Larnen
+
+
+From dgd at list.imaginary.com  Thu Jul 31 09:33:01 2003
+From: dgd at list.imaginary.com (Par Winzell)
+Date: Thu Jul 31 09:33:01 2003
+Subject: [DGD] test
+In-Reply-To: <200307311418.h6VEIRbS001097@pattern.dworkin.nl>
+References: <200307311418.h6VEIRbS001097@pattern.dworkin.nl>
+Message-ID: <3F29287A.5050209@skotos.net>
+
+>>I understand that Dworkin doesn't like fp's/closures etc, but is there any
+>>way these can be done via a package? Whether or not fp's are the best way to
+>>do this kind of thing (although we have found them incredibly useful), some
+>>way to include the syntax in the driver as an optional package would allow
+>>a lot of MudOS libs to move to DGD with far more ease. Given that MudOS dev
+>>is more or less dead, this could inject a lot of new blood, and a lot of
+>>experienced developers into the DGD community.
+> 
+> Lee Salzman <lee.salzman@lvdi.net> wrote a patch to add function
+> pointers to DGD, available at the URL
+> 
+>     http://www.lvdi.net/~lee.salzman/dgd-mod.diff.gz
+> 
+> (I haven't checked to see if this still works).  It is only suited for
+> DGD 1.2 and perhaps 1.2pX, not later versions.
+
+This can also be done at the LPC level better than ever before:
+  * The combination of LWO's and compilation-from-source makes it very 
+easy to do things like comparer = Lambda("a", "b", "return a < b;"); arr 
+= sort_array(arr, comparer);
+  * Long ago, Dworkin posted a full grammar for the LPC language, 
+suitable for use in parse_string(). It has a few errors in it, and it 
+needs to be updated with language changes since then, but it basically 
+works, and parsing LPC is quite fast. We use it at Skotos to parse a 
+mutation of LPC. If all compilation went through such a layer first, you 
+might be able to add lambda expressions and such at the syntactic level.
+
+Zell
+
+From dgd at list.imaginary.com  Thu Jul 31 14:52:01 2003
+From: dgd at list.imaginary.com (Noah Gibbs)
+Date: Thu Jul 31 14:52:01 2003
+Subject: [DGD] test
+In-Reply-To: <20030731130931.A18172@sofa.home.elephant.org>
+Message-ID: <20030731195138.47037.qmail@web12810.mail.yahoo.com>
+
+  Somebody already mentioned the excellent possibility
+of using compilation of strings, which would probably
+be the best way.
+  But you could also, for function pointers, use a
+two-element array of strings -- the object name and
+the function name.  It'd be easy to make them
+dynamically, and easy assign them.  Calling them would
+just require you to use call_other.
+
+=====
+------
+noah_gibbs@yahoo.com
+</pre>
+
+  <p style="font-size: 150%"> <a href="index.html"> Back to top level
+    </a> </p>

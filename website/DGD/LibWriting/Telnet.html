@@ -1,0 +1,548 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+                      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<title>DGD and LPC: Telnet Protocol</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<link href="../../phantasmal.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<table width="95%" border="0" cellspacing="0" cellpadding="4">
+  <tr>
+    <td colspan="2"> <table width="100%" border="0" cellspacing="1"
+        cellpadding="0" class="main">
+        <tr>
+          <td class="banner">The DGD Driver</td>
+        </tr>
+      </table></td>
+  </tr>
+  <tr>
+    <td valign="top">
+      <table width="25%"  border="0" cellspacing="1"
+             cellpadding="0"  class="main">
+        <tr>
+          <td class="content" style="font-size: 120%">
+
+          <ul style="margin: 0; padding-left: 10%">
+            <li> <a href="index.html">DGD &amp; LPC Page</a> </li>
+	    <li> <a href="../LPC">LPC Textbook</a> </li>
+	    <li> <a href="../Book">New LPC Introduction</a> </li>
+          </ul>
+
+        </td>
+        </tr>
+        <tr>
+          <td class="content" align="center">
+            <a href="http://validator.w3.org/check/referer">
+            <img src="../../images/valid-xhtml10.gif" alt="Valid XHTML 1.0!"
+             style="border:0;width:88px;height:31px" /></a><br />
+            <img src="../../images/pixel.gif"
+             style="border:0;width:88px;height:1px" alt="" /><br />
+            <a href="http://jigsaw.w3.org/css-validator/check/referer">
+            <img src="http://jigsaw.w3.org/css-validator/images/vcss"
+             alt="Valid CSS!" style="border:0;width:88px;height:31px" />
+            </a><br /><br /><br />
+            <a href="http://sourceforge.net">
+            <img src="http://sourceforge.net/sflogo.php?group_id=48659&amp;type=2"
+             style="border: 0; width: 125; height: 37;"
+	     alt="SourceForge.net Logo" /></a>
+          </td>
+        </tr>
+      </table></td>
+    <td> <table width="100%"  border="0" cellspacing="1" cellpadding="0" 
+          class="main">
+        <tr>
+          <td class="heading">&nbsp;&nbsp;&middot;&nbsp;
+	    <a href="http://phantasmal.sf.net/DGD">DGD Page</a> &gt;
+            <a href="">Telnet Protocol</a>
+          </td>
+        </tr>
+        <tr>
+          <td class="content">
+  
+
+  <h2> Implementing Extended Telnet Protocol in DGD </h2>
+
+  <p>
+    DGD has 'telnet ports', which implement part of the telnet
+    protocol.  However, they do so in a very limited and rigid way,
+    and Dworkin has no intention of extending them, or even modifying
+    their behavior.  The network patch for DGD makes no change in
+    this, and the ANSI color patch, while it allows certain outgoing
+    high-ASCII characters, still requires patching DGD.  What should
+    you do to fix this?
+  </p>
+
+  <p>
+    The best answer is to implement your own telnet server in LPC and
+    connect it to a DGD binary port.  This allows you to configure the
+    result in LPC rather than patching DGD, and lets you send things
+    like international high-ASCII characters and ANSI color codes when
+    and how you like.  It also lets you handle parts of the telnet
+    protocol that DGD does not, such as changes in the screen size,
+    and default terminal settings.
+  </p>
+
+<pre>
+Date: Sun, 09 Jan 2000 18:55:29 +0100
+From: Frantisek Fuka <fuxoft@terminal.cz>
+To: dgd@list.imaginary.com
+Subject: [DGD]Characters getting lost, part 2
+
+Regarding my previous post: I found out that characters in range 80h -
+9Fh get filetered out by DGD (it's feature, not bug), which is
+unfortunate because standard Windows encoding for Czech language
+contains characters in this range. 
+
+So my questions are: 
+Can I turn this filering off without re-compiling the executable?
+If not, what exactly should be changed in the source to allow character
+80h-9fh through? (I am not C++ expert so please be fairly specific.) I
+will get someone to recompile the executable for me. Thanks.
+
+
+-- 
+                                         Frantisek Fuka 
+(yes, that IS my real name)
+(and it's pronounced "Fran-tjee-shek Foo-kah")
+My E-mail:   fuxoft@terminal.cz
+My Homepage: http://www.fuxoft.cz
+My ICQ:      2745855
+
+Date: Mon, 10 Jan 2000 02:51:05 +0100 (CET)
+From: "Felix A. Croes" <felix@dworkin.nl>
+Message-Id: <200001100151.CAA25136@pattern.dworkin.nl>
+To: dgd@list.imaginary.com
+Subject: Re: [DGD]Unicode support planned?
+
+"Jason Cone" <jcone@uscdev.com> wrote:
+
+> What with the previous poster inquiring about the filtering of specific
+> character ranges, I've been reminded of something I meant to inquire about a
+> while ago.  Is there any sort of plan to incorporate Unicode support in DGD?
+> Specifically, has native double-byte character set support been planned?  I
+> was convinced that this could be simulated to some extent, but the fact that
+> certain ranges are in fact being filtered out, even a simulation might not
+> be possible.
+
+For Unicode (and even for Czech) I would suggest using binary connections.
+
+DGD does not use or depend on any character set for binary connections.
+What is sent and received is raw data.  Any interpretation is up to the
+mudlib and the client.  Unicode will require some sort of dedicated
+client anyhow, which is another argument in favour of using binary
+connections.
+
+Telnet connections are a hack, a combination of mostly useful telnet
+escape sequence interpretation, buffering, and filtering of potentially
+dangerous characters.  Any argument against one of these features can
+be extended to all of them.  I recommend using binary connections for
+all new mudlibs.
+
+Regards,
+Dworkin
+
+
+
+Date: Sat, 22 Jan 2000 17:32:14 +0100 (CET)
+From: "Felix A. Croes" <felix@dworkin.nl>
+Message-Id: <200001221632.RAA21563@pattern.dworkin.nl>
+To: dgd@list.imaginary.com
+Subject: Re: [DGD]Foreign characters again
+
+Frantisek Fuka <fuxoft@terminal.cz> wrote:
+
+>[...]
+> Isn't it a reasonable request to add some simple configuration option
+> into the next patch that disables the 80h-9Fh filtering in
+> send_message() and editor without having to re-compile? I consulted some
+> developers and they never heard about specifically bytes 80h-9Fh being
+> in some way "not safe". If they were, no one could send Czech strings to
+> any computer. In its current state, the DGD driver is unusable for
+> creating application in Czech language on ANY platform (not only Win32).
+
+It is a very reasonable request.
+
+The problem with so-called upper ASCII characters is that terminals
+which ignore the upper bit may interpret some of these characters as
+control codes, with results such as a lock-up of the terminal, or
+inserting a string in the terminal's input queue which is then
+executed as a command.  I have worked on such terminals for much of
+my life as a programmer and know that they are still in use.
+
+Apparently, such terminals are unknown at terminal.cz. :)
+
+I dislike the idea of a config file setting for this.  For both
+Czech players having their language filtered out on a mud
+configured one way, and players on old terminals experiencing
+lockups on a mud configured the other way, I would consider
+this to be a failure of the server.  I must regretfully
+decide against removing this filter on telnet connections.
+
+However, it is certainly true that the editor should not add
+another layer of protection that distorts Chech characters
+even on a binary connection.  This is simply a feature of the
+original "ex" editor which I unthinkingly copied, within DGD
+to be considered as a bug.  I'll fix that.
+
+Regards,
+Dworkin
+
+
+
+From: "James Bearden" <bearden_james@hotmail.com>
+To: dgd@list.imaginary.com
+Subject: [DGD]Patches
+Date: Wed, 12 Apr 2000 01:29:38 CDT
+
+hmm the ansi color patch for host.h looks odd. This is what the patch says 
+to do, put
+
+
+--- 273,280 ----
+  # define HT   '\011'
+  # define LF   '\012'
+  # define VT   '\013'
+  # define FF   '\014'
+  # define CR   '\015'
++ # define ESC  '\033'
+
+  # define ALGN(x, s)   (((x) + (s) - 1) & ~((s) - 1))
+
+in place of starting on line 273
+
+/* these must be the same on all hosts */
+# define BEL	'\007'
+# define BS	'\010'
+# define HT	'\011'  - line 273
+# define LF	'\012'
+# define VT	'\013'
+# define FF	'\014'
+# define CR	'\015'
+
+# define ALGN(x, s)	(((x) + (s) - 1) & ~((s) - 1))
+
+When I view it in Borland C++ it color codes everything green before I 
+change anything. When I replace it with the patch, the + in front of + # 
+define ESC  '\033' breaks the color code and turns red. normally its in 
+green, but the + is in red, and everything else is in black and blue.
+
+Should I just delete the +?
+______________________________________________________
+Get Your Private, Free Email at http://www.hotmail.com
+
+
+
+Date: Tue, 25 Apr 2000 08:23:34 +0200 (CEST)
+From: "E. Harte" <harte@xs4all.nl>
+X-Sender: harte@inner.demon.nl
+To: dgd@list.imaginary.com
+Subject: Re: [DGD]vt100 escape codes.
+
+On Tue, 25 Apr 2000, John West McKenna wrote:
+
+> BladeDarkmour@aol.com writes:
+> 
+> >Is there any way to determine upon connection, automagically with no 
+> >interaction from the user, if their terminal supports vt100 escape codes? 
+> >*ponders*
+> 
+> I think the answer is "yes, if you're prepared to do a lot of work."
+> 
+[...]
+> Where's that RFC?
+
+There's several.  Start here for some groundwork:
+
+  RFC 854 - Telnet protocol specification.
+  RFC 855 - Telnet option specifications.
+
+There are quite a few describing further details, I suggest you fetch an
+rfc-index.txt from a web or ftp server near you and grep through it for
+'Telnet'. :-)
+
+The one you're then looking for is RFC 1091:
+
+  1091 Telnet terminal-type option. J. VanBokkelen. Feb-01-1989.
+       (Format: TXT=13439 bytes) (Obsoletes RFC0930) (Status: PROPOSED
+       STANDARD)
+
+Good luck. :-)
+
+Erwin.
+-- 
+Erwin Harte  -  Forever September, 2429 and counting  -  harte@xs4all.nl
+
+
+Date: Tue, 25 Apr 2000 11:52:37 +0200 (CEST)
+From: Marc Spoorendonk <marc@freud.et.tudelft.nl>
+To: dgd@list.imaginary.com
+Subject: Re: [DGD]vt100 escape codes.
+
+On Tue, 25 Apr 2000, John West McKenna wrote:
+
+> BladeDarkmour@aol.com writes:
+> 
+> >Is there any way to determine upon connection, automagically with no 
+> >interaction from the user, if their terminal supports vt100 escape codes? 
+> >*ponders*
+> 
+> I think the answer is "yes, if you're prepared to do a lot of work."
+
+I did this about two years ago and it isn't _that_ hard. It's a matter of
+reading a handfull of RFC's about the TELNET OPTION protocol. This lets
+your parse the environment variables that are send with a telnet
+connection.
+
+The ones usually transmitted are DISPLAY, TERM and PRINTER.
+
+> 
+> The telnet protocol does provide information about the terminal being used,
+> but DGD doesn't pass it on.  So you'd have to use the binary port (or, if
+> you've got the network package, tcp connections) and write your own handler
+> for the telnet protocol.  Even then, it won't directly tell you if it
+> supports VT100 (at least, I don't think so).  It will tell you what
+> terminal it is, and you can look up the escape code that terminal uses in
+> your favourite UNIX's termcap.
+> 
+Yups.
+
+> This would be a Good Thing.  Perhaps one day I'll get bored enough to do
+> it.  It would make many useful things possible.
+> 
+> Where's that RFC?
+> 
+Do a grep through the RFC database on "TTYPE" or "ENVIRON"
+
+> John West
+> 
+> List config page:  http://list.imaginary.com/mailman/listinfo/dgd
+> 
+
+
+--
+Marc Spoorendonk
+Department of Electrical Engineering
+Delft University of Technology
+
+e-mail			: Marc@freud.et.tudelft.nl
+mud			: telnet://freud.et.tudelft.nl:8888
+URL			: http://freud.et.tudelft.nl/~marc/index.html
+
+
+
+
+
+Date: Tue, 16 May 2000 15:37:37 -0400
+From: Ho-Sheng Hsiao <hhh@lost-realities.org>
+To: dgd@list.imaginary.com
+Subject: Re: [DGD]DGD HTML?
+Message-ID: <20000516153737.E32043@lost-realities.org>
+
+
+On Tue, May 16, 2000 at 03:22:36PM +0930, Gregory D Lewis wrote:
+> > But how will you handle a second request of the same client? Rely on the data
+> > the client sends about his current position? Or even who he is? You _have_ to
+> > keep information about the connected clients somewhere, and assign some kind of
+> > session information to the clients so that they can identify themselves on
+> > reload. 
+
+> But to answer your question(s):  Trust nothing sent by the client.
+
+There's a third option: XMLterm
+
+I've heard of an Xterm implemented to use streaming HTML/XML tags instead of
+VT* codes. Think, Pueblo. This was a modification to the current Mozilla
+browser. Or more precisely, it uses the XUL toolset in Mozilla and some
+other stuff to create the Xterm.
+
+You can check out the site at http://www.xmlterm.com
+
+Considering that Mozilla has a built in IRC client written mostly in
+Javascript et. al., adapting that serve this. 
+
+I've been contemplating doing something like that for years now, ever since
+I heard of Pueblo. Which, btw, though discontinued, the source to that is
+floating around somewhere.
+
+Let me know if any of you are interested in collaborating in doing such a
+project. I have a spare server on a semi-static connection available on a
+limited basis.
+
+-- 
+---hhh                                              Hosh Enterprises
+                                                (General Specialist)
+Time flows only once. 
+Life is a suicide mission: you gotta do what you should.
+--
+73 9B 42 8E 2A 23 DF C0  2B 52 9F ED 1A 07 64 EF
+[ http://www.lost-realities.org/~hhh/pgpkey.asc ]
+
+
+From: Par Winzell <zell@skotos.net>
+Message-ID: <14790.23818.737435.855501@alyx.skotos.net>
+Date: Mon, 18 Sep 2000 11:20:58 -0700
+To: dgd@list.imaginary.com
+Subject: Re: [DGD]ansi again (sorry Erwin)
+
+ > Am I missing something crucial here?  Probably, but it seems to me that an
+ > ANSI terminal should read ansi codes from anywhere.  Is it that DGD ignores
+ > the escape code altogether, or something else?  I'm slightly confused...
+
+DGD does indeed filter escape sequences out on purpose. I believe Dworkin
+considers them annoying on the verge of a security threat. There are three
+options,
+
+ A) Take the hint and don't use ANSI, which is indeed damn annoying,
+ B) Don't use 'telnet' mode for the socket but 'tcp' (raw) and write
+    your own telnet protocol handler in LPC. It could be argued that
+    the driver shouldn't implement such a high-level function anyway
+    and frankly, apart from the echo hack for when the user enters a
+    password, the whole telnet protocol is kind of pointless anyway.
+ C) The easiest; go find this piece of code in comm.c:
+
+
+	    } else if ((*p & 0x7f) < ' ' && *p != HT && *p != BEL && *p != BS) {
+		/*
+		 * illegal character
+		 */
+		p++;
+		--len;
+		continue;
+	    }
+
+    and add *p != '\033' in the list of exceptions in that if statement.
+    For 1.1.97 this code is at line 298.
+
+ > Thanks, and sorry erwin (I think it was you) for bringing up a subject that
+ > you attacked with such ferocity again :P.
+
+Don't mind Erwin, he gets crabby. :)
+
+Zell
+
+
+
+From dgd at list.imaginary.com  Thu Nov 20 18:15:01 2003
+From: dgd at list.imaginary.com (Noah Gibbs)
+Date: Thu Nov 20 18:15:01 2003
+Subject: [DGD] Telnet Protocol
+In-Reply-To: <000501c3afc1$8df071c0$d8244b43@maxcmilotlno0p>
+Message-ID: <20031121001418.45730.qmail@web12823.mail.yahoo.com>
+
+--- Steve Foley <zeppo1@mindspring.com> wrote:
+> Obviously \r\n, \r\0, but what about just \r?  Or
+> just \n?  Or \n\r?  Should
+> \n\r be treated the same as \r\n?
+> 
+> My own inclination is that the answer to all those
+> might be yes.  Thoughts?
+
+  I'd say not just \r, because that's frequently used
+for weird little animation things like status bars. 
+You can print the bar, send a \r, print, send \r, and
+repeat.  So that should do the carriage return without
+the newline.
+
+  I'm not sure whether to treat \n\r the same as \r\n.
+ My immediate answer would be "yes", because if you
+treat them as having individual effect, the two
+together do the same thing.  The \n takes you downward
+by one line, not necessarily affecting the horizontal
+location in the line.  The \r returns you to the far
+left edge of the line, but doesn't change what line
+you're on.
+
+  My understanding was that you couldn't just sent
+Unix-style \n line endings to telnet, and that you
+always needed to be careful to double them up to \r\n
+just in case you had to deal with a DOS-style client.
+
+  I believe the vast majority of text sent across the
+'net does this.  However, I'm pretty sure some doesn't
+work that way, because PUTTY (my Windows-based telnet
+client) has a specific option for dealing with \n-only
+text.  But in general, doubling the line endings up is
+safer when sending, and accepting either \n or \n\r is
+safer when receiving.  Just \r, though, shouldn't act
+like just \n.
+
+
+=====
+------
+noah_gibbs@yahoo.com
+
+__________________________________
+Do you Yahoo!?
+Protect your identity with Yahoo! Mail AddressGuard
+http://antispam.yahoo.com/whatsnewfree
+
+From dgd at list.imaginary.com  Thu Nov 20 19:14:01 2003
+From: dgd at list.imaginary.com (Noah Gibbs)
+Date: Thu Nov 20 19:14:01 2003
+Subject: [DGD] Telnet Protocol
+In-Reply-To: <001301c3afcb$33efeed0$d8244b43@maxcmilotlno0p>
+Message-ID: <20031121011327.50070.qmail@web12824.mail.yahoo.com>
+
+--- Steve Foley <zeppo1@mindspring.com> wrote:
+> Mmm.  The BSD telnet server leads me to believe
+> there are some telnet
+> implementations that expect \r to be treated as a
+> return key stroke.  But
+> I'm also well aware of how \r and overstrikes have
+> and can be used.
+
+  Scary.  Maybe you should make it configurable.  That
+way you could treat \r as a return keystroke by
+default, at least long enough to let somebody log in,
+and then more aggressive MUDs would have the option of
+making \r a carriage return so they could do their
+little status-bar animations.
+
+  They could do it like some MUDs do color -- display
+it to you and ask you to report whether you see it
+correctly.
+
+  That'd be up to the MUD, though.  Your telnet
+implementation could just have an API to let the MUD
+turn that on or off.
+
+> Yes.  But lets say I'm implementing a telnet server
+> for DGD.  Now,
+> internally, DGD does treat \n as a return key
+> stroke.  So maybe in that
+> context \n should be treated like a return key
+> stroke.
+
+  Not a factor.  What DGD does internally is fine and
+dandy, but that has no effect on how it treats stuff
+coming in over telnet.  Telnet is effectively an alien
+protocol, and DGD's internal representation shouldn't
+be a factor in how you treat it.
+
+  I mean, Intel boxes are little-endian, but they
+still have to do Network Byte Order like everybody
+else, right?
+
+  Similarly, Unix telnet implementations double up the
+return characters even though they internally use a
+single newline character.  Telnet is a foreign data
+protocol, and should be treated like one.
+
+
+=====
+------
+noah_gibbs@yahoo.com
+</pre>
+
+  <p style="text-size: 150%"> <a href="../index.html"> Back to top level
+    </a> </p>
+            <address>
+            <span><a href="mailto:angelbob-remove-spamfree@spamfree.users.sf.net">Noah Gibbs</a></span>
+            </address></td>
+        </tr>
+      </table></td>
+  </tr>
+</table>
+</body>
+</html>

@@ -1,0 +1,172 @@
+  <titledef text="Outgoing Email" />
+
+  <h2> Sending Email From a DGD Server </h2>
+
+  <p>
+    See also <a href="../external/flibs_sendmail.txt">messages about a
+    DGD kfun</a> to do this.
+  </p>
+
+<pre>
+From: Par Winzell <zell@skotos.net>
+Message-ID: <15085.39492.40266.971219@alyx.skotos.net>
+Date: Mon, 30 Apr 2001 10:00:52 -0700
+To: dgd@list.imaginary.com
+Subject: Re: [DGD]Sending emails through DGD?
+
+ > I'm trying to set up a system that automatically emails a player
+ > their password when they create a new account.  Is there currently
+ > support for this in DGD, or does anyone know what changes might
+ > need to be made to implement this feature?
+
+The four most obvious ways to do this that come to mind:
+
+ * Connect to the SMTP port on a mail-handling machine somewhere,
+   e.g. smtp.yourisp.com, and communicating over TCP/IP according
+   to SMTP. The protocol is specified in RFC's, a quick grep:
+
+zell@alyx:/usr/local/doc/rfc ) grep -i smtp rfc-index.txt 
+0876 Survey of SMTP implementations. D. Smallberg. Sep-01-1983.
+1047 Duplicate messages and SMTP. C. Partridge. Feb-01-1988. (Format:
+1090 SMTP on X.25. R. Ullmann. Feb-01-1989. (Format: TXT=6141 bytes)
+1425 SMTP Service Extensions. J. Klensin, WG Chair, N. Freed, Editor,
+1426 SMTP Service Extension for 8bit-MIMEtransport. J. Klensin, WG
+1427 SMTP Service Extension for Message Size Declaration. J. Klensin,
+1428 Transition of Internet Mail from Just-Send-8 to 8bit-SMTP/MIME.
+1651 SMTP Service Extensions. Klensin, N. Freed, M. Rose, E. Stefferud
+1652 SMTP Service Extension for 8bit-MIMEtransport. Klensin, N. Freed,
+1653 SMTP Service Extension for Message Size Declaration. J. Klensin,
+1830 SMTP Service Extensions for Transmission of Large and Binary MIME
+
+
+RFC's can be found on a number of sites across the web; see Yahoo.
+
+
+ * Write a little servlet that sits on your own machine and accepts
+   incoming connections from DGD and translates them into executions
+   of the sendmail program on the Unix (right?) box that runs DGD,
+   or maybe it's written in PHP, or Perl, or some other language that
+   has mail-sending functions built into their standard libraries.
+
+
+Both of the above require the network package. If you don't use that:
+
+ * Write a little program that connects to DGD's binary port and sets
+   itself up as a mail handler. Otherwise functions as above.
+
+
+ * Write a kfun that does it. Ick.
+
+Zell
+
+
+
+Date: Mon, 30 Apr 2001 19:22:33 +0200
+From: Erwin Harte <harte@xs4all.nl>
+To: dgd@list.imaginary.com
+Subject: Re: [DGD]Sending emails through DGD?
+Message-ID: <20010430192233.Y831@harte.xs4all.nl>
+
+On Tue, May 01, 2001 at 01:10:55AM +0800, John West McKenna wrote:
+> Mordengaard writes:
+> 
+> >I'm trying to set up a system that automatically emails a player their
+> >password when they create a new account.  Is there currently support for
+> >this in DGD, or does anyone know what changes might need to be made to
+> >implement this feature?
+> 
+> You'll need to add the networking package to the driver (I believe it
+> hasn't yet been updated for the latest version), and then write some code
+> to speak SMTP to the player's machine.
+> 
+> This is fairly simple.  Connect to port 25, and send something like:
+> (copying from some code that I didn't write - apologies if this is wrong.
+> Read the RFC before you do this)
+
+Definitely.
+
+> 	EHLO mymud.muds-r-us.com
+
+You may want to use HELO instead unless you're willing to speak ESMTP.
+
+> 	MAIL FROM: gumby@mymud.muds-r-us.com
+> 	RCPT TO: fred@freds.mail.com
+        DATA
+> 	To: fred@freds.mail.com
+> 	From: gumby@mymud.muds-r-us.com
+> 	Subject: Here's your password
+> 	
+> 	fooble
+> 	.
+> 	QUIT
+> 
+> Something like that.  Read the RFC.
+
+Which among other things will tell you to insert a '.' for lines
+starting with one, in your message, and will of course tell you to
+check the return-codes after each and every command you send to the
+server so that you won't be trying to send something to a server that
+is telling you to back off b/c it's overloaded, for instance. :-)
+
+Erwin.
+-- 
+Erwin Harte      : `Don't mind Erwin, he gets crabby. :)'
+harte@xs4all.nl  :    -- Par Winzell <zell@skotos.net>
+
+
+
+Date: Tue, 1 May 2001 03:52:09 +0200
+From: Erwin Harte <harte@xs4all.nl>
+To: dgd@list.imaginary.com
+Subject: Re: [DGD]Sending emails through DGD?
+Message-ID: <20010501035209.B831@harte.xs4all.nl>
+
+On Mon, Apr 30, 2001 at 07:38:45PM -0500, Lord Lerkista wrote:
+> >  * Write a kfun that does it. Ick.
+> >
+> 
+> i put this in dgd/src/kfun/extra.c
+> 
+> ----------CUT HERE-------
+> 
+> # ifdef FUNCDEF
+> FUNCDEF("sendmail", kf_sendmail, pt_sendmail)
+> # else
+> char pt_sendmail[] = { C_TYPECHECKED | C_STATIC, T_VOID, 3, T_STRING,
+> T_STRING, T_STRING };
+> 
+> int kf_sendmail(f)
+> register frame *f;
+> {
+>          FILE *fd;
+>          char *command;
+>          command = malloc(128);
+>          sprintf(command,"mail -s \"%s\" %s <%s",
+
+If you MUST, please use snprintf() instead:
+
+  # define COMMAND_SIZE 128
+
+           command = malloc(COMMAND_SIZE);
+           if (snprintf(command, COMMAND_SIZE, "...", ...) == -1) {
+               ... buffer wasn't big enough, deal with that ...
+           }
+
+>          
+> f->sp[2].u.string->text,f->sp[1].u.string->text,f->sp[0].u.string->text);
+>          system(command);
+>          str_del((f->sp++)->u.string);
+>          str_del((f->sp++)->u.string);
+>          free(command);
+>          return 0;
+> }
+> #endif
+
+Erwin.
+-- 
+Erwin Harte
+harte@xs4all.nl
+</pre>
+
+  <p style="text-size: 150%"> <a href="../index.html"> Back to top level
+    </a> </p>
