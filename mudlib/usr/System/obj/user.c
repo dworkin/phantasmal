@@ -1,4 +1,4 @@
-/* $Header: /cvsroot/phantasmal/mudlib/usr/System/obj/user.c,v 1.35 2003/02/27 05:00:35 angelbob Exp $ */
+/* $Header: /cvsroot/phantasmal/mudlib/usr/System/obj/user.c,v 1.36 2003/03/01 04:43:53 angelbob Exp $ */
 
 #include <kernel/kernel.h>
 #include <kernel/user.h>
@@ -1473,6 +1473,104 @@ static void cmd_drop(object user, string cmd, string str) {
 
   if (!(err = mobile->place(tmp[0], location))) {
     message("You drop ");
+    send_phrase(tmp[0]->get_glance());
+    message(".\r\n");
+  } else {
+    message(err + "\r\n");
+  }
+}
+
+static void cmd_open(object user, string cmd, string str) {
+  object* tmp;
+  string  err;
+  int     ctr;
+
+  if(str)
+    str = STRINGD->trim_whitespace(str);
+  if(!str || str == "") {
+    message("Usage: " + cmd + " <description>\r\n");
+    return;
+  }
+
+  tmp = location->find_contained_objects(user, str);
+  if(!tmp || !sizeof(tmp)) {
+    message("You don't find any '" + str + "'.\r\n");
+    return;
+  }
+
+  ctr = 0;
+  if(sizeof(tmp) > 1) {
+    for(ctr = 0; ctr < sizeof(tmp); ctr++) {
+      if(tmp[ctr]->is_openable())
+	break;
+    }
+    if(ctr >= sizeof(tmp)) {
+      message("None of those can be opened.\r\n");
+      return;
+    }
+
+    message("More than one of those is here.\r\n");
+    message("You choose ");
+    send_phrase(tmp[ctr]->get_glance());
+    message(".\r\n");
+  }
+
+  if(!tmp[ctr]->is_openable()) {
+    message("You can't open that!\r\n");
+    return;
+  }
+
+  if(!(err = mobile->open(tmp[ctr]))) {
+    message("You open ");
+    send_phrase(tmp[0]->get_glance());
+    message(".\r\n");
+  } else {
+    message(err + "\r\n");
+  }
+}
+
+static void cmd_close(object user, string cmd, string str) {
+  object* tmp;
+  string  err;
+  int     ctr;
+
+  if(str)
+    str = STRINGD->trim_whitespace(str);
+  if(!str || str == "") {
+    message("Usage: " + cmd + " <description>\r\n");
+    return;
+  }
+
+  tmp = location->find_contained_objects(user, str);
+  if(!tmp || !sizeof(tmp)) {
+    message("You don't find any '" + str + "'.\r\n");
+    return;
+  }
+
+  ctr = 0;
+  if(sizeof(tmp) > 1) {
+    for(ctr = 0; ctr < sizeof(tmp); ctr++) {
+      if(tmp[ctr]->is_openable())
+	break;
+    }
+    if(ctr >= sizeof(tmp)) {
+      message("None of those can be opened.\r\n");
+      return;
+    }
+
+    message("More than one of those is here.\r\n");
+    message("You choose ");
+    send_phrase(tmp[ctr]->get_glance());
+    message(".\r\n");
+  }
+
+  if(!tmp[ctr]->is_openable()) {
+    message("You can't close that!\r\n");
+    return;
+  }
+
+  if(!(err = mobile->close(tmp[ctr]))) {
+    message("You close ");
     send_phrase(tmp[0]->get_glance());
     message(".\r\n");
   } else {
