@@ -302,7 +302,8 @@ private int match_str_array(string* words, string* array) {
   return 1;
 }
 
-int match_description(object user, string *cmp_adjectives, string* cmp_nouns) {
+private int match_adj_and_nouns(object user, string *cmp_adjectives,
+				string* cmp_nouns) {
   int locale, match;
 
   locale = user->get_locale();
@@ -322,8 +323,34 @@ int match_description(object user, string *cmp_adjectives, string* cmp_nouns) {
   return match;
 }
 
+int match_words(object user, string *words) {
+  string noun;
+
+  noun = words[sizeof(words) - 1];
+
+  return match_adj_and_nouns(user, words[..sizeof(words) - 2], ({ noun }));
+}
+
+int match_string(object user, string name) {
+  string* words;
+  int     ctr;
+
+  words = explode(name, " ");
+
+  /* Trim */
+  for(ctr = 0; ctr < sizeof(words); ctr++) {
+    if(!words[ctr] || STRINGD->is_whitespace(words[ctr])) {
+      words = words[..ctr-1] + words[ctr+1..];
+    } else {
+      words[ctr] = STRINGD->to_lower(STRINGD->trim_whitespace(words[ctr]));
+    }
+  }
+
+  return match_words(user, words);
+}
+
 object* find_contained_objects(object user, string namestr) {
-  string  noun, *words;
+  string* words;
   object* ret;
   int     ctr;
 
@@ -342,11 +369,9 @@ object* find_contained_objects(object user, string namestr) {
     return nil;
 
   ret = ({ });
-  noun = words[sizeof(words) - 1];
-  words = words[..sizeof(words)-2];  /* words is now a list of adjectives */
 
   for(ctr = 0; ctr < sizeof(objects); ctr++) {
-    if(objects[ctr]->match_description(user, words, ({ noun }))) {
+    if(objects[ctr]->match_words(user, words)) {
       ret += ({ objects[ctr] });
     }
   }
