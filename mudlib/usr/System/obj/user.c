@@ -1,4 +1,4 @@
-/* $Header: /cvsroot/phantasmal/mudlib/usr/System/obj/user.c,v 1.60 2003/03/31 10:00:44 angelbob Exp $ */
+/* $Header: /cvsroot/phantasmal/mudlib/usr/System/obj/user.c,v 1.61 2003/03/31 10:08:44 angelbob Exp $ */
 
 #include <kernel/kernel.h>
 #include <kernel/user.h>
@@ -664,7 +664,10 @@ private void player_login(void)
     body->set_examine(nil);
     body->add_noun(NEW_PHRASE(STRINGD->to_lower(name)));
 
-    mobile = clone_object(USER_MOBILE);
+    /* Can't just clone mobile here, it causes problems later */
+    mobile = MOBILED->clone_mobile_by_type("user");
+    if(!mobile)
+      error("Can't clone mobile of type 'user'!");
     MOBILED->add_mobile_number(mobile, -1);
     mobile->assign_body(body);
     mobile->set_user(this_object());
