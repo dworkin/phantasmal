@@ -3,3 +3,7 @@ standalone or with the apidoc.pl script in the tools directory.  By
 running that script from the top-level API directory, you can generate
 the API documentation from the Phantasmal web pages in an output
 directory called 'html'.
+
+The generated files are actually .base.html files, which can be turned
+into fully-formatted HTML pages by the pagebuild script, also in the
+tools directory.
