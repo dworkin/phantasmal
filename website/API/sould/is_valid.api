@@ -1,0 +1,24 @@
+FILE
+	/usr/common/sys/sould.c
+
+NAME
+	is_valid - returns whether a verb is a known social
+
+PROTOTYPE
+	int is_valid(string verb)
+
+CALLED BY
+	System, Common, Game
+
+DESCRIPTION
+	Checks whether the supplied verb is a valid social, and returns
+	true or false.
+
+RETURN VALUE
+	1 if the verb is valid, 0 if it isn't, -1 if the query isn't allowed
+
+ERRORS
+	Normally none.
+
+SEE ALSO
+	all_socials

@@ -1,0 +1,24 @@
+FILE
+	/usr/common/sys/sould.c
+
+NAME
+	all_socials - returns all registered social verbs
+
+PROTOTYPE
+	string *all_socials(void)
+
+CALLED BY
+	System, Common, Game
+
+DESCRIPTION
+	Returns a list of all currently-registered social verbs the
+	SoulD is tracking.  This is simply a list of strings.
+
+RETURN VALUE
+	The list of verbs, or nil if the query isn't allowed
+
+ERRORS
+	Normally none.
+
+SEE ALSO
+	num_socials, is_valid, get_social_string

@@ -1,0 +1,27 @@
+FILE
+	/usr/common/sys/sould.c
+
+NAME
+	get_social_string - 
+
+PROTOTYPE
+	string get_social_string(object user, object body,
+				object target_body, string verb)
+
+CALLED BY
+	System, Common, Game
+
+DESCRIPTION
+	Returns a string for the given verb which is appropriate,
+	based on the user, body and target supplied.  This allows
+	localization, and different strings for different points of
+	view.
+
+RETURN VALUE
+	The string to display, or nil if the query isn't allowed
+
+ERRORS
+	A misconfigured SoulD can cause errors.
+
+SEE ALSO
+	all_socials, is_valid
