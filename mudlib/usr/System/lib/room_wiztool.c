@@ -172,6 +172,9 @@ static void cmd_delete_room(object user, string cmd, string str) {
 
   EXITD->clear_all_exits(room);
 
+  if(room->get_detail_of()) {
+    room->get_detail_of()->remove_detail(room);
+  }
   if(room->get_location()) {
     room->get_location()->remove_from_container(room);
   }
