@@ -50,6 +50,12 @@ object get_body(void) {
   return body;
 }
 
+/* This function is just an alias for assign_body */
+void set_body(object new_body) {
+  assign_body(new_body);
+}
+
+
 object get_user(void) {
   /* return nil, the default mobile doesn't have a user */
   return nil;
@@ -519,10 +525,15 @@ mixed* mobile_from_dtd_unq(mixed* unq) {
   while(sizeof(ctr) > 0) {
     if(!STRINGD->stricmp(ctr[0][0], "body")) {
       bodynum = ctr[0][1];
-      body = MAPD->get_room_by_num(bodynum);
-      if(!body)
-	error("Can't find body for mobile, object #" + bodynum + "!\n");
-      location = body->get_location();
+      if(bodynum != -1) {
+	body = MAPD->get_room_by_num(bodynum);
+	if(!body)
+	  error("Can't find body for mobile, object #" + bodynum + "!\n");
+	location = body->get_location();
+      } else {
+	body = nil;
+	location = nil;
+      }
     } else if(!STRINGD->stricmp(ctr[0][0], "number")) {
       number = ctr[0][1];
     } else if(!STRINGD->stricmp(ctr[0][0], "type")) {
