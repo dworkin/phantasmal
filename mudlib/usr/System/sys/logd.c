@@ -76,6 +76,7 @@ void start_channels(void) {
 void write_syslog(string logstring, varargs int level, string channel) {
   string to_write;
   mixed* the_time;
+  mixed  chan_lev;
 
   if(!level)
     level = LOG_ERR_FATAL;  /* Highest priority */
@@ -85,26 +86,62 @@ void write_syslog(string logstring, varargs int level, string channel) {
   } else if(!SYSTEM())
     error("Only System files can impersonate other channels!");
 
-  if(channels && channels[channel]) {
-    if(level < channels[channel]) {
+  if(channels) {
+    chan_lev = channels[channel];
+  }
+
+  /* If it's a path, include only the final filename in the log */
+  if(channel[0] == "/"[0]) {
+    string* comp;
+    int     ctr;
+
+    comp = explode(channel, "/");
+    if(comp) {
+      ctr = sizeof(comp) - 1;
+
+      while(ctr >= 0) {
+	if(comp[ctr]) {
+	  channel = comp[ctr];
+	  break;
+	}
+	ctr--;
+      }
+    }
+  }
+
+  if(channels && chan_lev) {
+    if(level < chan_lev) {
       /* Won't write to file */
-      /* TODO: decide whether to send out on chatd channel(s) */
+      /* TODO: decide whether to send out on channeld channel(s) */
       return;
     }
 
     /* Change output string */
-    channel += "(" + channels[channel] + ")";
+    channel += "(" + chan_lev + ")";
   } else {
-    if(level < LOG_DEBUG) {
-      /* Unset channel, do nothing for now */
+    if(level < LOG_NORMAL) {
+      /* Channel isn't explicitly set, do nothing for now */
       return;
     }
 
     channel += "(unset)";
   }
 
+  to_write = channel;
+
+  to_write += " ||| ";
+  if(this_user()) {
+    if(this_user()->get_Name()) {
+      to_write += this_user()->get_Name();
+    } else {
+      to_write += "(nameless)";
+    }
+  } else {
+    to_write += "(no user)";
+  }
+
   the_time = millitime();
-  to_write = channel + " ||| " + ctime(the_time[0]) + " / "
+  to_write += " ||| " + ctime(the_time[0]) + " / "
     + (string)the_time[1] + " [" + (string)level + "]\n"
     + "  --> " + logstring + "\n";
   if(!write_file(SYSLOGFILE, to_write)) {
