@@ -1,0 +1,24 @@
+               Phantasmal, the Bundled Release
+
+You've downloaded and unpacked the bundled release of Phantasmal for
+DGD.  Congratulations, you're well on your way to a life of
+satisfaction and serenity.  Well, at least to running a MUD on a solid
+and secure driver, free of segfaults.
+
+To install, you'll need to run the install script in the top-level
+directory.  It will customize the bundle for the directory you've
+installed it in, and possibly other aspects of your system.  Go ahead
+and read the INSTALL file in this directory for more details.
+
+
+                           Versions
+
+This bundled release incorporates a recent version of DGD, a recent version
+of Phantasmal, and a test game.  The test game is basically a tutorial to
+show you how you can build your MUD on Phantasmal.
+
+To find out what version of Phantasmal and DGD you're getting, you can
+check the VERSIONS file in the top directory, which is generally up to
+date.  You can also check the startup messages to find out your DGD
+version, and the logfile in log/System.log to find out your Phantasmal
+version.  Those are both always up to date.
