@@ -18,8 +18,16 @@ mixed* basic_unq_parse(string block) {
   mixed* tmp;
   catch {
     tmp = parse_string(parser, block);
+    /* replace a nil return with a return of an empty array */
+    if (tmp == nil) {
+      tmp = ({ });
+    }
   } : {
-    LOGD->write_syslog("Error parsing block: " + block);
+    if (block == nil) {
+      LOGD->write_syslog("Error: no block passed to basic_unq_parse");
+    } else {
+      LOGD->write_syslog("Error parsing block: " + block);
+    }
     tmp = nil;
   }
 
@@ -34,7 +42,7 @@ mixed* unq_parse_with_dtd(string block, object dtd) {
 
   unq = basic_unq_parse(block);
   if(!unq) {
-    error("Can't tokenize/match as unq in unq_parse_with_dtd!");
+    error ("Can't tokenize/match as unq in unq_parse_with_dtd!");
   }
 
   struct = dtd->parse_to_dtd(unq);

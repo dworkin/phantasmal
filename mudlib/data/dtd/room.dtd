@@ -1,6 +1,9 @@
 ~DTD{
-  ~room{number?,location?,bdesc,gdesc,ldesc,edesc?,article,parent?,flags?,
-        nouns,adjectives?,exit*}
+  ~obj{number?,location?,bdesc,gdesc,ldesc,edesc?,article,parent?,nouns,
+       adjectives?,exit*}
+  ~room:obj{}
+  ~portable:obj{flags?}
+  ~body:obj{}
   ~number{int}
   ~location{int}
   ~bdesc{phrase}
@@ -9,8 +12,8 @@
   ~edesc{phrase}
   ~article{int}
   ~parent{int}
-  ~flags{int}
   ~nouns{phrase+}
   ~adjectives{phrase*}
   ~exit{string}
+  ~flags{int}
 }

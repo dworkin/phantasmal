@@ -14,6 +14,9 @@
 /* room_objects keeps track of rooms by object name and certain aliases */
 private mapping room_objects;
 
+/* which unq tags are mapped to which lpc code */
+private mapping tag_code;
+
 /* zone_segments keeps track of the mapping of what segments contain
    what segments meant for rooms */
 private int**   zone_segments;
@@ -41,11 +44,10 @@ static void create(varargs int clone) {
     compile_object(UNQ_PARSER);
   if(!find_object(UNQ_DTD))
     compile_object(UNQ_DTD);
-  if(!find_object(SIMPLE_ROOM))
-    compile_object(SIMPLE_ROOM);
 
   room_objects = ([ ]);
   zone_segments = ({ });
+  tag_code = ([ ]);
   numzones = ZONED->num_zones();
   for(ctr = 0; ctr < numzones; ctr++) {
     zone_segments += ({ ({ }) });
@@ -57,10 +59,61 @@ static void create(varargs int clone) {
 void upgraded(varargs int clone) {
 }
 
-void init(string dtd) {
+void init(string room_dtd_str, string bind_dtd_str) {
+  int ctr;
+  object bind_dtd;
+  mixed *unq_data;
+  string bind_file;
+  string tag;
+  string file;
+
   if(!initialized) {
     room_dtd = clone_object(UNQ_DTD);
-    room_dtd->load(dtd);
+    room_dtd->load(room_dtd_str);
+
+    /* read the binder file */
+    bind_dtd = clone_object(UNQ_DTD);
+    bind_dtd->load(bind_dtd_str);
+    
+    bind_file = read_file(ROOM_BIND_FILE);
+    if (!bind_file) {
+      error("Cannot read file " + ROOM_BIND_FILE + "!");
+    }
+
+    unq_data = UNQ_PARSER->unq_parse_with_dtd(bind_file, bind_dtd);
+    if(!unq_data)
+      error("Cannot parse binder text in init!");
+
+    if (sizeof(unq_data) % 2) {
+      error("Odd sized unq chunk in init");
+    }
+
+    for (ctr = 0; ctr < sizeof(unq_data); ctr += 2) {
+      if (STRINGD->stricmp(unq_data[ctr],"bind")) {
+	error("This doesn't seem to be a code/tag binding");
+      }
+
+      if (typeof(unq_data[ctr+1]) != T_ARRAY || sizeof(unq_data[ctr+1]) != 2) {
+	/* Should never get here for proper DTD */
+	error("Internal error in MAPD->init()");
+      }
+
+
+      if (!STRINGD->stricmp(unq_data[ctr+1][0][0],"tag")) {
+	tag = unq_data[ctr+1][0][1];
+	file = unq_data[ctr+1][1][1];
+      } else {
+	tag = unq_data[ctr+1][1][1];
+	file = unq_data[ctr+1][0][1];
+      }
+
+      if (tag_code[tag] != nil) {
+	error("Tag " + tag + " is already bound!");
+      }
+
+      tag_code[tag] = file;
+    }
+
     initialized = 1;
   } else error("MAPD already initialized!");
 }
@@ -262,7 +315,20 @@ private object add_struct_for_room(mixed* unq) {
   object room;
   int    num;
 
-  room = clone_object(SIMPLE_ROOM);
+  /* no unq passed in, so no object passed out */
+  if (sizeof(unq) == 0) {
+    return nil;
+  }
+
+  if (tag_code[unq[0]] == nil) {
+    error("Tag " + unq[0] + " not bound to any code!");
+  }
+
+  if (!find_object(tag_code[unq[0]])) {
+    compile_object(tag_code[unq[0]]);
+  }
+
+  room = clone_object(tag_code[unq[0]]);
   room->from_dtd_unq(unq);
 
   num = room->get_number();
@@ -285,9 +351,6 @@ private void resolve_parent(object room) {
   pending_parent = room->get_pending_parent();
   if(pending_parent != -1) {
     parent = MAPD->get_room_by_num(pending_parent);
-    if(!parent) {
-      parent = PORTABLED->get_portable_by_num(pending_parent);
-    }
     if(!parent) {
       error("Can't find parent number (#" + pending_parent
 	    + ") loading rooms!");
@@ -313,7 +376,7 @@ private int resolve_location(object room) {
   } else {
     container = get_room_by_num(0);  /* Else, add to The Void */
     if(!container)
-      error("Can't find room# 0!  Panic!");
+      error("Can't find room #0!  Panic!");
 
     container->add_to_container(room);
   }

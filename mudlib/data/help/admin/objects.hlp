@@ -225,11 +225,14 @@ instance:
 The values, if present, should be obviously true or false -- like
 "true", "false", "yes", "no", 1, 0.  If absent, the values default to
 true.  The first argument is the object number of an object registered
-with PORTABLED or MAPD.  The middle argument is a flag name, and can
+with MAPD.  The middle argument is a flag name, and can
 be "cont" or "container" to set whether the object is a container,
 "open" to set whether it is currently open, "nodesc" for scenery
 objects somewhat similar to details and keywords, or other flag names.
 There is currently no convenient way to get a list of flag names.
+
+Please note:  @set_obj_flag doesn't work at the moment.  You can manually
+edit the roomfile.unq file if you want an object to have flags.  -- Keith
 
 }}
 

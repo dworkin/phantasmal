@@ -13,8 +13,6 @@ private object driver;
 private mixed* command_sets;
 
 private object room_dtd;        /* DTD for room def'n */
-private object port_dtd;        /* DTD for portable def'n */
-
 
 /* Prototypes */
 void upgraded(void);
@@ -39,9 +37,7 @@ void destructed(int clone) {
   if(!clone && room_dtd) {
     destruct_object(room_dtd);
   }
-  if(!clone && port_dtd) {
-    destruct_object(port_dtd);
-  }
+
   ::destructed(clone);
 }
 
@@ -100,29 +96,8 @@ void upgraded(void) {
 	"@add_deferred"        : ({ "cmd_add_deferred_exits" }),
 	"@check_deferred"      : ({ "cmd_check_deferred_exits" }),
 
-	"@new_port"            : ({ "cmd_new_portable" }),
-	"@new_portable"        : ({ "cmd_new_portable" }),
-	"@add_port"            : ({ "cmd_new_portable" }),
-	"@add_portable"        : ({ "cmd_new_portable" }),
 	"@delete_port"         : ({ "cmd_delete_portable" }),
 	"@delete_portable"     : ({ "cmd_delete_portable" }),
-	"@list_port"           : ({ "cmd_list_portables" }),
-	"@list_portable"       : ({ "cmd_list_portables" }),
-	"@list_portables"      : ({ "cmd_list_portables" }),
-	"@save_portables"      : ({ "cmd_save_portables" }),
-	"@save_portable"       : ({ "cmd_save_portables" }),
-	"@save_port"           : ({ "cmd_save_portables" }),
-	"@load_portables"      : ({ "cmd_load_portables" }),
-	"@load_portable"       : ({ "cmd_load_portables" }),
-	"@load_port"           : ({ "cmd_load_portables" }),
-	"@set_port_flag"       : ({ "cmd_set_port_flag" }),
-	"@set_port_flags"      : ({ "cmd_set_port_flag" }),
-	"@set_portable_flag"   : ({ "cmd_set_port_flag" }),
-	"@set_portable_flags"  : ({ "cmd_set_port_flag" }),
-	"@set_obj_flag"        : ({ "cmd_set_port_flag" }),
-	"@set_obj_flags"       : ({ "cmd_set_port_flag" }),
-	"@set_object_flag"     : ({ "cmd_set_port_flag" }),
-	"@set_object_flags"    : ({ "cmd_set_port_flag" }),
 
 	"@segment_map"         : ({ "cmd_segment_map" }),
 	"@seg_map"             : ({ "cmd_segment_map" }),
@@ -189,24 +164,13 @@ void upgraded(void) {
   else
     room_dtd = clone_object(UNQ_DTD);
 
-  if(port_dtd)
-    port_dtd->clear();
-  else
-    port_dtd = clone_object(UNQ_DTD);
-
   dtd_file = read_entire_file(MAPD_ROOM_DTD);
   room_dtd->load(dtd_file);
-  dtd_file = read_entire_file(PORTABLE_DTD);
-  port_dtd->load(dtd_file);
 }
 
 
 mixed* parse_to_room(string room_file) {
   return UNQ_PARSER->unq_parse_with_dtd(room_file, room_dtd);
-}
-
-mixed* parse_to_portable(string room_file) {
-  return UNQ_PARSER->unq_parse_with_dtd(room_file, port_dtd);
 }
 
 mixed* get_command_sets(object wiztool) {

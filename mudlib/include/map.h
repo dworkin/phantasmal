@@ -1,4 +1,10 @@
 /* Compass-direction constants */
+#define DIR_ERR                  -20
+/* direction to use if getting or putting */
+#define DIR_PUT              -2
+#define DIR_GET              -1
+/* direction to use if the object is being teleported */
+#define DIR_TELEPORT              0
 #define DIR_NORTH                 1
 #define DIR_SOUTH                 2
 #define DIR_EAST                  3

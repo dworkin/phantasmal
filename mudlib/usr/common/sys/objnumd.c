@@ -21,7 +21,7 @@ static void create(varargs int clone) {
 }
 
 void upgraded(void) {
-  owners = ({ MAPD, EXITD, PORTABLED });
+  owners = ({ MAPD, EXITD });
 }
 
 void destructed(varargs int clone) {

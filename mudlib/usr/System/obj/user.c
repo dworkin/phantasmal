@@ -1,4 +1,4 @@
-/* $Header: /cvsroot/phantasmal/mudlib/usr/System/obj/user.c,v 1.21 2002/06/28 23:50:46 angelbob Exp $ */
+/* $Header: /cvsroot/phantasmal/mudlib/usr/System/obj/user.c,v 1.22 2002/11/08 04:50:56 sarak Exp $ */
 
 #include <kernel/kernel.h>
 #include <kernel/user.h>
@@ -8,6 +8,7 @@
 #include <log.h>
 #include <phrase.h>
 #include <channel.h>
+#include <map.h>
 
 inherit LIB_USER;
 inherit user API_USER;
@@ -55,7 +56,6 @@ void upgraded(void);
 static  int    process_message(string str);
 static  void   print_prompt(void);
 private int    name_is_forbidden(string name);
-private void   tell_room(object room, mixed msg);
 private mixed* load_command_sets_file(string filename);
 void push_state(object state);
 
@@ -89,8 +89,8 @@ static void create(int clone)
 
 void upgraded(void) {
   if(!find_object(SYSTEM_WIZTOOL)) { compile_object(SYSTEM_WIZTOOL); }
-  if(!find_object(SIMPLE_MOBILE)) { compile_object(SIMPLE_MOBILE); }
-  if(!find_object(SIMPLE_PORTABLE)) { compile_object(SIMPLE_PORTABLE); }
+  if(!find_object(USER_MOBILE)) { compile_object(USER_MOBILE); }
+  if(!find_object(MOBILE_PORTABLE)) { compile_object(MOBILE_PORTABLE); }
   if(!find_object(US_SCROLL_TEXT)) { compile_object(US_SCROLL_TEXT); }
 
   command_sets = load_command_sets_file(USER_COMMANDS_FILE);
@@ -227,8 +227,16 @@ string get_name(void) {
   return name;
 }
 
+string get_Name(void) {
+  return Name;
+}
+
 object get_location(void) {
   return location;
+}
+
+object get_body(void) {
+  return body;
 }
 
 int get_idle_time(void) {
@@ -480,7 +488,7 @@ private void system_phrase_all_users(string str)
     }
 }
 
-
+/*
 private void system_phrase_room(object room, string str)
 {
   object phr;
@@ -491,32 +499,20 @@ private void system_phrase_room(object room, string str)
 
   tell_room(room, phr);
 }
+*/
 
 /*
  * NAME:	tell_room()
  * DESCRIPTION:	send message to everybody in specified location
  */
+/*
 private void tell_room(object room, mixed msg)
 {
-  object *mobiles, mobile, user;
-  int i;
-
-  if(!room) {
-    LOGD->write_syslog("Tell_room called on location nil!", LOG_WARN);
-    return;
-  }
-  mobiles = room->mobiles_in_container();
-  for (i = sizeof(mobiles); --i >= 0; ) {
-    mobile = mobiles[i];
-    user = mobile->get_user();
-    if (user && user != this_object() &&
-	sscanf(object_name(user), SYSTEM_USER + "#%*d") != 0) {
-      typeof(msg) == T_STRING ?
-	user->message(msg)
-	: user->send_phrase(msg);
-    }
-  }
+// replace these with proper comments if this is ever uncommented.
+// tell everyone in the room except the person themselves
+  room->tell_room(msg, ({ body }) );
 }
+*/
 
 
 /*
@@ -583,20 +579,8 @@ void show_room_to_player(object location) {
   }
 }
 
-
-void move_player(object room) {
-  if(location) {
-    location->remove_from_container(body);
-  }
-
-  if(room) {
-    room->add_to_container(body);
-  }
-}
-
-
 void notify_moved(object obj) {
-  if(previous_program() != MOBILE) {
+  if(previous_program() != USER_MOBILE) {
     error("Only MOBILEs can notify the User object that its body moved.");
   }
 
@@ -738,22 +722,33 @@ private void player_login(void)
   start_room_num = CONFIGD->get_start_room();
   start_room = MAPD->get_room_by_num(start_room_num);
 
+  /* If start room can't be found, set the start room to the void */
+  if (start_room == nil) {
+    LOGD->write_syslog("Can't find the start room!  Starting in the void...");
+    start_room_num = 0;
+    start_room = MAPD->get_room_by_num(start_room_num);
+    if(start_room == nil) {
+      /* Panic!  No void! */
+      error("Internal Error: no Void!");
+    }
+  }
+
   if(body_num > 0) {
-    body = PORTABLED->get_portable_by_num(body_num);
+    body = MAPD->get_room_by_num(body_num);
   }
   if(!body) {
     location = start_room;
 
-    body = clone_object(SIMPLE_PORTABLE);
+    body = clone_object(MOBILE_PORTABLE);
     if(!body)
       error("Can't clone simple portable!");
-    PORTABLED->add_portable_number(body, -1);
-    if(!PORTABLED->get_portable_by_num(body->get_number())) {
+    MAPD->add_room_number(body, -1);
+    if(!MAPD->get_room_by_num(body->get_number())) {
       LOGD->write_syslog("Error making new body!", LOG_ERR);
     }
     body_num = body->get_number();
 
-    if(!PORTABLED->get_portable_by_num(body_num)) {
+    if(!MAPD->get_room_by_num(body_num)) {
       LOGD->write_syslog("Can't find new body number!", LOG_ERR);
     }
 
@@ -764,12 +759,12 @@ private void player_login(void)
     body->set_examine(nil);
     body->add_noun(NEW_PHRASE(STRINGD->to_lower(name)));
 
-    mobile = clone_object(SIMPLE_MOBILE);
+    mobile = clone_object(USER_MOBILE);
     mobile->assign_body(body);
     mobile->set_user(this_object());
 
-    location->add_to_container(body);
-
+    mobile->teleport(location, 1);
+    
     /* We just set a body number, so we need to save the player data
        file again... */
     save_user_to_file();
@@ -777,14 +772,14 @@ private void player_login(void)
     location = body->get_location();
     mobile = body->get_mobile();
     if(!mobile) {
-      mobile = clone_object(SIMPLE_MOBILE);
+      mobile = clone_object(USER_MOBILE);
       mobile->assign_body(body);
     }
     mobile->set_user(this_object());
 
     /* Move body to start room */
     if(location->get_number() == CONFIGD->get_meat_locker()) {
-      move_player(start_room);
+      mobile->teleport(start_room, 1);
     }
   }
 
@@ -804,12 +799,16 @@ private void player_logout(void)
   if(body) {
     object meat_locker;
     int    ml_num;
+    object mobile;
 
     ml_num = CONFIGD->get_meat_locker();
     if(ml_num >= 0) {
       meat_locker = MAPD->get_room_by_num(ml_num);
       if(meat_locker) {
-	move_player(meat_locker);
+	if (location) {
+	  mobile = body->get_mobile();
+	  mobile->teleport(meat_locker, 1);
+	}
       } else {
 	LOGD->write_syslog("Can't find room #" + ml_num + " as meat locker!",
 			   LOG_ERR);
@@ -1110,13 +1109,7 @@ static void cmd_say(object user, string cmd, string str) {
 
   str = STRINGD->trim_whitespace(str);
 
-  tell_room(location, Name + " ");
-  system_phrase_room(location, "says");
-  tell_room(location, ": " + str + "\r\n");
-
-  send_system_phrase("You say");
-  message(": " + str + "\r\n");
-
+  mobile->say(str);
 }
 
 static void cmd_emote(object user, string cmd, string str) {
@@ -1130,9 +1123,7 @@ static void cmd_emote(object user, string cmd, string str) {
 
   str = STRINGD->trim_whitespace(str);
 
-  tell_room(location, Name + " " + str + "\r\n");
-
-  message(Name + " " + str + "\r\n");
+  mobile->emote(str);
 }
 
 static void cmd_help(object user, string cmd, string str) {
@@ -1225,16 +1216,24 @@ static void cmd_ask(object self, string cmd, string str) {
 
   if (sscanf(str, "%s %s", username, str) != 2 ||
       !(user=user::find_user(username))) {
-    send_system_phrase("Usage: ");
-    message(cmd + " <user> <text>\r\n");
+    if (str == nil || strlen(str) == 0) {
+      message("Usage: ask <text>\r\n" + 
+	      "    or ask <user> <text>\r\n");
+      return;
+    } else {
+      user = nil;
+    }
   } else {
+    /* for the moment ask just behaves like a whisper.
+       This may change later */
     if(sizeof(explode(str, "?")) > 1)
-      user->message(Name + " asks you: " + str + "\r\n");
+      mobile->ask(user, str);
     else
-      user->message(Name + " asks you: " + str + "?\r\n");
+      mobile->ask(user, str + "?");
   }
 }
 
+/* move to mobile (when implemented) */
 static void cmd_yell(object user, string cmd, string str) {
   message("Unimplemented.  Use say or ooc.\r\n");
 }
@@ -1316,6 +1315,11 @@ static void cmd_look(object user, string cmd, string str) {
   if(!str || str == "") {
     show_room_to_player(location);
     return;
+  }
+
+  if (cmd[0] != 'e') {
+    /* trim an initial "at" off the front of the command */
+    sscanf(str, "at %s", str);
   }
 
   if(sscanf(str, "in %s", str) || sscanf(str, "inside %s", str)
@@ -1401,6 +1405,7 @@ static void cmd_put(object user, string cmd, string str) {
   object* portlist, *contlist, *tmp;
   object  port, cont;
   int     ctr;
+  string err;
 
   if(sscanf(str, "%s inside %s", obj1, obj2) != 2
      && sscanf(str, "%s into %s", obj1, obj2) != 2
@@ -1427,61 +1432,28 @@ static void cmd_put(object user, string cmd, string str) {
     }
   }
 
-  tmp = ({ });
-  for(ctr = 0; ctr < sizeof(contlist); ctr++) {
-    if(contlist[ctr]->is_container()
-       && contlist[ctr]->is_open()) {
-      tmp += ({ contlist[ctr] });
-    }
-  }
-  contlist = tmp;
-  tmp = nil;
-
-  if(!sizeof(contlist)) {
-    user->message("Nothing by the name '" + obj2
-		  + "' is an open container.\r\n");
-    return;
-  }
-
-  tmp = ({ });
-  for(ctr = 0; ctr < sizeof(portlist); ctr++) {
-    if(PORTABLED->get_portable_by_num(portlist[ctr]->get_number())
-       && !portlist[ctr]->is_no_desc()) {
-      tmp += ({ portlist[ctr] });
-    }
-  }
-  portlist = tmp;
-  tmp = nil;
-
-  if(!sizeof(portlist)) {
-    user->message("Nothing by the name '" + obj2
-		  + "' can be put into an open container.\r\n");
-    return;
-  }
-
   if(sizeof(portlist) > 1) {
     user->message("More than one object fits '" + obj1 + "'.  "
-		  + "You pick one.\r\n");
+		  + "You pick " + portlist[0]->get_glance() + ".\r\n");
   }
 
   if(sizeof(contlist) > 1) {
     user->message("More than one open container fits '" + obj2 + "'.  "
-		  + "You pick one.\r\n");
+		  + "You pick " + portlist[0]->get_glance() + ".\r\n");
   }
 
   port = portlist[0];
   cont = contlist[0];
 
-  if(port->get_location()) {
-    port->get_location()->remove_from_container(port);
+  if (!(err = mobile->place(port, cont))) {
+    user->message("You put ");
+    user->send_phrase(port->get_brief());
+    user->message(" in ");
+    user->send_phrase(cont->get_brief());
+    user->message(".\r\n");
+  } else {
+    user->message(err + "\r\n");
   }
-  cont->add_to_container(port);
-
-  user->message("You put ");
-  user->send_phrase(port->get_brief());
-  user->message(" in ");
-  user->send_phrase(cont->get_brief());
-  user->message(".\r\n");
 }
 
 static void cmd_remove(object user, string cmd, string str) {
@@ -1489,6 +1461,7 @@ static void cmd_remove(object user, string cmd, string str) {
   object* portlist, *contlist, *tmp;
   object  port, cont;
   int     ctr;
+  string err;
 
   if(sscanf(str, "%s from inside %s", obj1, obj2) != 2
      && sscanf(str, "%s from in %s", obj1, obj2) != 2
@@ -1507,24 +1480,9 @@ static void cmd_remove(object user, string cmd, string str) {
     }
   }
 
-  tmp = ({ });
-  for(ctr = 0; ctr < sizeof(contlist); ctr++) {
-    if(contlist[ctr]->is_container()
-       && contlist[ctr]->is_open()) {
-      tmp += ({ contlist[ctr] });
-    }
-  }
-  contlist = tmp;
-  tmp = nil;
-  if(!contlist || !sizeof(contlist)) {
-    user->message("Nothing matching '" + obj2
-		  + "' is an open container.\r\n");
-    return;
-  }
-
   if(sizeof(contlist) > 1) {
     user->message("More than one open container fits '" + obj2 + "'.\r\n");
-    user->message("You pick one.\r\n");
+    user->message("You pick " + contlist[0]->get_glance() + ".\r\n");
   }
   cont = contlist[0];
 
@@ -1536,36 +1494,21 @@ static void cmd_remove(object user, string cmd, string str) {
     return;
   }
 
-  tmp = ({ });
-  while(sizeof(portlist)) {
-    if(!portlist[0]->is_no_desc()
-       && PORTABLED->get_portable_by_num(portlist[0]->get_number())) {
-      tmp += ({ portlist[0] });
-    }
-    portlist = portlist[1..];
-  }
-  portlist = tmp;
-  if(sizeof(portlist) == 0) {
-    message("You can't move that around!\r\n");
-    return;
-  }
-
   if(sizeof(portlist) > 1) {
     user->message("More than one object fits '" + obj1 + "'.\r\n");
-    user->message("You pick one.\r\n");
+    user->message("You pick " + portlist[0]->get_glance() + ".\r\n");
   }
   port = portlist[0];
 
-  if(port->get_location()) {
-    port->get_location()->remove_from_container(port);
+  if (!(err = mobile->place(port, body))) {
+    user->message("You " + cmd + " ");
+    user->send_phrase(port->get_brief());
+    user->message(" from ");
+    user->send_phrase(cont->get_brief());
+    user->message(" (taken).\r\n");
+  } else {
+    user->message(err + "\r\n");
   }
-  body->add_to_container(port);
-
-  user->message("You " + cmd + " ");
-  user->send_phrase(port->get_brief());
-  user->message(" from ");
-  user->send_phrase(cont->get_brief());
-  user->message(" (taken).\r\n");
 }
 
 static void cmd_bug(object user, string cmd, string str) {
@@ -1580,8 +1523,7 @@ static void cmd_typo(object user, string cmd, string str) {
 
 static void cmd_movement(object user, string cmd, string str) {
   int    dir;
-  object opp_name;
-  object exit, dest, loc;
+  string reason;
 
   /* Currently, we ignore modifiers (str) and just move */
 
@@ -1591,33 +1533,15 @@ static void cmd_movement(object user, string cmd, string str) {
     return;
   }
 
-  exit = location->get_exit(dir);
-  if(!exit) {
-    user->message("You don't see an exit in that direction.\r\n");
+  if (reason = mobile->move(dir)) {
+    user->message(reason + "\r\n");
+
+    /* don't show the room to the player if they havn't gone anywhere */
     return;
   }
 
-  loc = location;
-  dest = exit->get_destination();
-  if(!dest) {
-    user->message("That exit appears to disappear through a rift and vanish!");
-    return;
-  }
-
-  opp_name = EXITD->get_name_for_dir(EXITD->opposite_direction(dir));
-  tell_room(dest, Name + " enters from the ");
-  tell_room(dest, opp_name);
-  tell_room(dest, ".\r\n");
-
-  move_player(dest);
-
-  tell_room(loc, Name + " leaves going ");
-  tell_room(loc, EXITD->get_name_for_dir(dir));
-  tell_room(loc, ".\r\n");
-
-  show_room_to_player(dest);
+  show_room_to_player(location);
 }
-
 
 static void cmd_gossip(object user, string cmd, string str) {
   str = STRINGD->trim_whitespace(str);
@@ -1720,9 +1644,9 @@ static void cmd_channels(object user, string cmd, string str) {
   user->message("That channel is available in this area.\r\n");
 }
 
-
 static void cmd_get(object user, string cmd, string str) {
-  object* tmp, *tmp2;
+  object* tmp;
+  string err;
 
   if(str)
     str = STRINGD->trim_whitespace(str);
@@ -1745,34 +1669,25 @@ static void cmd_get(object user, string cmd, string str) {
     return;
   }
 
-  tmp2 = ({ });
-  while(sizeof(tmp)) {
-    if(!tmp[0]->is_no_desc()
-       && PORTABLED->get_portable_by_num(tmp[0]->get_number())) {
-      tmp2 += ({ tmp[0] });
-    }
-    tmp = tmp[1..];
+  if(sizeof(tmp) > 1) {
+    message("More than one of those is here.\r\n");
+    message("You choose ");
+    send_phrase(tmp[0]->get_glance());
+    message(".\r\n");
   }
 
-  if(sizeof(tmp2) == 0) {
-    message("You can't carry that!\r\n");
-    return;
+  if(!(err = mobile->place(tmp[0], body))) {
+    message("You " + cmd + " ");
+    send_phrase(tmp[0]->get_glance());
+    message(".\r\n");
+  } else {
+    message(err + "\r\n");
   }
-
-  if(sizeof(tmp2) > 1) {
-    message("More than one of those is here.  You choose one.\r\n");
-  }
-
-  tmp2[0]->get_location()->remove_from_container(tmp2[0]);
-  body->add_to_container(tmp2[0]);
-  message("You " + cmd + " ");
-  send_phrase(tmp2[0]->get_glance());
-  message(".\r\n");
 }
-
 
 static void cmd_drop(object user, string cmd, string str) {
   object* tmp;
+  string err;
 
   if(str)
     str = STRINGD->trim_whitespace(str);
@@ -1788,12 +1703,15 @@ static void cmd_drop(object user, string cmd, string str) {
   }
 
   if(sizeof(tmp) > 1) {
-    message("You have more than one of those.  You drop one.\r\n");
+    message("You have more than one of those.\r\n");
+    message("You drop " + tmp[0]->get_glance() + ".\r\n");
   }
 
-  body->remove_from_container(tmp[0]);
-  location->add_to_container(tmp[0]);
-  message("You drop ");
-  send_phrase(tmp[0]->get_glance());
-  message(".\r\n");
+  if (!(err = mobile->place(tmp[0], location))) {
+    message("You drop ");
+    send_phrase(tmp[0]->get_glance());
+    message(".\r\n");
+  } else {
+    message(err + "\r\n");
+  }
 }

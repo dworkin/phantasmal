@@ -81,8 +81,8 @@ string get_parse_error_stack(void) {
 void from_dtd_unq(mixed* unq) {
   mixed *zones, *segment_unq;
 
-  if(sizeof(unq) > 2)
-    error("There should be only one zones section in the ZONED file!");
+  if(sizeof(unq) != 2)
+    error("There should be exactly one zones section in the ZONED file!");
 
   if(unq[0] != "zones")
     error("Unrecognized section in ZONED file -- must start with 'zones'!");

@@ -19,10 +19,8 @@ private int __sys_suspended;
 private void suspend_system();
 private void release_system();
 static void __co_write_rooms(object user, int* objects, int ctr,
-			     string roomfile, string portfile,
+			     string roomfile,
 			     string zonefile);
-static void __co_write_portables(object user, int* objects, int ctr,
-				 string portfile, string zonefile);
 static void __co_write_zones(object user, int* objects, int ctr,
 			     string zonefile);
 static void __reboot_callback(void);
@@ -33,6 +31,7 @@ static void create(varargs int clone)
 {
   object driver, obj, the_void;
   string zone_file, mapd_dtd, help_dtd, objs_file;
+  string bind_dtd;
   int major, minor, patch, rooms_loaded;
 
   /* First things first -- this release needs one of the
@@ -44,7 +43,7 @@ static void create(varargs int clone)
   if((major == 1 && minor < 2)
      || (major == 1 && minor == 2 && patch < 13)) {
     error("Need to upgrade to DGD version 1.2.41 or higher!");
-  } else if (major == 1 && minor == 2 && patch > 14) {
+  } else if (major == 1 && minor == 2 && patch > 16) {
     DRIVER->message("This is a very new Kernel Library version, or at\n");
     DRIVER->message("  least newer than this version of Phantasmal.  If\n");
     DRIVER->message("  you have problems, please upgrade!\n");
@@ -109,10 +108,15 @@ static void create(varargs int clone)
   if(!find_object(MAPD)) { compile_object(MAPD); }
   if(!find_object(EXITD)) { compile_object(EXITD); }
 
+  bind_dtd = read_file(BIND_DTD);
+  if (!bind_dtd) {
+    error("Can't read file " + BIND_DTD + "!");
+  }
+
   mapd_dtd = read_file(MAPD_ROOM_DTD);
   if(!mapd_dtd)
     error("Can't read file " + MAPD_ROOM_DTD + "!");
-  MAPD->init(mapd_dtd);
+  MAPD->init(mapd_dtd, bind_dtd);
 
   /* Set up The Void (room #0) */
   if(!find_object(THE_VOID)) { compile_object(THE_VOID); }
@@ -120,9 +124,6 @@ static void create(varargs int clone)
   if(!the_void)
     error("Can't clone void object!");
   MAPD->add_room_number(the_void, 0);
-
-  /* Set up the PortableD */
-  if(!find_object(PORTABLED)) { compile_object(PORTABLED); }
 
   /* Load stuff into MAPD and EXITD */
   objs_file = read_file(ROOM_FILE);
@@ -136,15 +137,6 @@ static void create(varargs int clone)
     rooms_loaded = 0;
   }
 
-  /* Load stuff into PORTABLED */
-  objs_file = read_file(PORT_FILE);
-  if(objs_file && rooms_loaded) {
-    PORTABLED->add_unq_text_portables(objs_file, the_void, PORT_FILE);
-  } else if(rooms_loaded) {
-    DRIVER->message("Can't read portable file!\n");
-    LOGD->write_syslog("Can't read portable file!  Starting blank!", LOG_WARN);
-  }
-
   /* Load zone/segment mapping information */
   zone_file = read_file(ZONE_FILE);
   ZONED->init_from_file(zone_file);
@@ -154,7 +146,7 @@ static void create(varargs int clone)
   if(!find_object(CONFIGD)) compile_object(CONFIGD);
 }
 
-void save_mud_data(object user, string room_filename, string port_filename,
+void save_mud_data(object user, string room_filename,
 		   string zone_filename, string callback) {
   int*   objects;
   int    cohandle;
@@ -182,21 +174,12 @@ void save_mud_data(object user, string room_filename, string port_filename,
   rename_file(room_filename, room_filename + ".old");
   remove_file(room_filename);
 
-  remove_file(port_filename + ".old");
-  rename_file(port_filename, port_filename + ".old");
-  remove_file(port_filename);
-
   remove_file(zone_filename + ".old");
   rename_file(zone_filename, zone_filename + ".old");
   remove_file(zone_filename);
 
   if(sizeof(get_dir(room_filename)[0])) {
     LOGD->write_syslog("Can't remove old roomfile -- trying to append!",
-		       LOG_FATAL);
-  }
-
-  if(sizeof(get_dir(port_filename)[0])) {
-    LOGD->write_syslog("Can't remove old portablefile -- trying to append!",
 		       LOG_FATAL);
   }
 
@@ -209,7 +192,7 @@ void save_mud_data(object user, string room_filename, string port_filename,
   objects = MAPD->rooms_in_zone(0) - ({ 0 });
 
   cohandle = call_out("__co_write_rooms", 0, user, objects, 0,
-		      room_filename, port_filename, zone_filename);
+		      room_filename, zone_filename);
   if(cohandle < 1) {
     error("Can't schedule call_out to save objects!");
   } else {
@@ -240,7 +223,7 @@ void prepare_shutdown(void)
     LOGD->write_syslog("Shutting down MUD...", LOG_NORMAL);
   }
 
-  save_mud_data(this_user(), ROOM_FILE, PORT_FILE, ZONE_FILE,
+  save_mud_data(this_user(), ROOM_FILE, ZONE_FILE,
 		"__shutdown_callback");
 }
 
@@ -294,7 +277,7 @@ private void release_system() {
 
 
 static void __co_write_rooms(object user, int* objects, int ctr,
-			     string roomfile, string portfile,
+			     string roomfile,
 			     string zonefile) {
   string unq_str;
   object obj;
@@ -316,68 +299,9 @@ static void __co_write_rooms(object user, int* objects, int ctr,
     if(ctr < sizeof(objects)) {
       /* Still saving rooms... */
       if(call_out("__co_write_rooms", 0, user, objects, ctr, roomfile,
-		  portfile, zonefile) < 1) {
+		  zonefile) < 1) {
 	release_system();
 	error("Can't schedule call_out to continue writing rooms!");
-      }
-      return;
-    }
-
-    /* Done with rooms, start on portables */
-    LOGD->write_syslog("Writing portables to file", LOG_VERBOSE);
-
-    /* Assign a list of all portables to "objects" */
-    {
-      int* tmp, *tmp2;
-
-      objects = ({ });
-      tmp = PORTABLED->get_portable_segments();
-      for(ctr = 0; ctr < sizeof(tmp); ctr++) {
-	tmp2 = PORTABLED->portables_in_segment(tmp[ctr]);
-	if(tmp2)
-	  objects += tmp2;
-      }
-    }
-
-    if(call_out("__co_write_portables", 0, user, objects, 0, portfile,
-		zonefile) < 1) {
-      release_system();
-      error("Can't schedule call_out to start writing portables!");
-    }
-  } : {
-    release_system();
-    user->message("Error writing rooms!\n");
-    error("Error writing rooms!");
-  }
-}
-
-
-static void __co_write_portables(object user, int* objects, int ctr,
-				 string portfile, string zonefile) {
-  string unq_str;
-  object obj;
-  int    chunk_ctr;
-
-  catch {
-    for(chunk_ctr = 0; ctr < sizeof(objects) && chunk_ctr < SAVE_CHUNK;
-	ctr++, chunk_ctr++) {
-      obj = PORTABLED->get_portable_by_num(objects[ctr]);
-
-      unq_str = obj->to_unq_text();
-
-      if(!write_file(portfile, unq_str)) {
-	DRIVER->message("Couldn't write portables to file!" +
-			"  Fix or kill driver!");
-	error("Couldn't write portables to file " + portfile + "!");
-      }
-    }
-
-    if(ctr < sizeof(objects)) {
-      /* Still saving portables... */
-      if(call_out("__co_write_portables", 0, user, objects, ctr,
-		  portfile, zonefile) < 1) {
-	release_system();
-	error("Can't schedule call_out to continue writing portables!");
       }
       return;
     }
@@ -386,16 +310,15 @@ static void __co_write_portables(object user, int* objects, int ctr,
     LOGD->write_syslog("Writing zones to file", LOG_VERBOSE);
 
     if(call_out("__co_write_zones", 0, user, objects, 0, zonefile) < 1) {
-      release_system();
-      error("Can't schedule call_out to start writing portables!");
-    }
+       release_system();
+       error("Can't schedule call_out to start writing portables!");
+     }
   } : {
     release_system();
-    user->message("Error writing portables!\n");
-    error("Error writing portables!");
+    user->message("Error writing rooms!\n");
+    error("Error writing rooms!");
   }
 }
-
 
 static void __co_write_zones(object user, int* objects, int ctr,
 			     string zonefile) {

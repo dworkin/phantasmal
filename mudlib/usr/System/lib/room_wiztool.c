@@ -17,6 +17,7 @@ static string read_entire_file(string file) {
   string ret;
 
   ret = read_file(file);
+  if (ret == nil) { return nil; }
   if(strlen(ret) > MAX_STRING_SIZE - 3) {
     error("File '" + file + "' is too large!");
   }
@@ -332,14 +333,12 @@ static void cmd_load_rooms(object user, string cmd, string str) {
 static void cmd_goto_room(object user, string cmd, string str) {
   int    roomnum;
   object room;
+  object mob;
 
   if(sscanf(str, "#%d", roomnum)) {
     room = MAPD->get_room_by_num(roomnum);
     if(!room) {
-      room = PORTABLED->get_portable_by_num(roomnum);
-    }
-    if(!room) {
-      user->message("Can't locate room or portable #" + roomnum + "\r\n");
+      user->message("Can't locate room #" + roomnum + "\r\n");
       return;
     }
   } else {
@@ -347,9 +346,11 @@ static void cmd_goto_room(object user, string cmd, string str) {
     return;
   }
 
+  mob = user->get_body()->get_mobile();
+
   user->message("You teleport to " + room->get_brief()->to_string(user)
 		+ ".\r\n");
-  user->move_player(room);
+  mob->teleport(room, 1);
   user->show_room_to_player(user->get_location());
 }
 

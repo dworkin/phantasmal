@@ -48,9 +48,7 @@ static object resolve_object_name(object user, string name)
     obj = EXITD->get_exit_by_num(obnum);
     if(obj)
       return obj;
-    obj = PORTABLED->get_portable_by_num(obnum);
-    if(obj)
-      return obj;
+    
   }
 
   return nil;
@@ -119,7 +117,7 @@ static void cmd_set_obj_desc(object user, string cmd, string str) {
 
 static void cmd_stat(object user, string cmd, string str) {
   int     objnum, ctr, art_type;
-  object  obj, room, port, exit, location;
+  object  obj, room, exit, location;
   string* words;
   mixed*  objs, *art_desc;
 
@@ -130,14 +128,13 @@ static void cmd_stat(object user, string cmd, string str) {
   }
 
   room = MAPD->get_room_by_num(objnum);
-  port = PORTABLED->get_portable_by_num(objnum);
   exit = EXITD->get_exit_by_num(objnum);
 
-  obj = room ? room : port ? port : exit;
+  obj = room ? room : exit;
 
   if(!obj) {
     user->message("No object #" + objnum
-		  + " found registered with MAPD, EXITD or PORTABLED.\r\n");
+		  + " found registered with MAPD or EXITD.\r\n");
     return;
   }
 
@@ -223,19 +220,6 @@ static void cmd_stat(object user, string cmd, string str) {
 
   user->message("\r\n");
 
-  if(port) {
-    user->message("Portable flags:\r\n");
-    if(port->is_container()) {
-      user->message("  container:  yes\r\n");
-    }
-    if(port->is_open()) {
-      user->message("  open:       yes\r\n");
-    }
-    if(port->is_no_desc()) {
-      user->message("  descless:   yes\r\n");
-    }
-    user->message("\r\n");
-  }
   if(function_object("num_objects_in_container", obj)) {
     user->message("Contains objects [" + obj->num_objects_in_container()
 		  + "]: ");
@@ -268,9 +252,6 @@ static void cmd_stat(object user, string cmd, string str) {
   }
   if(room) {
     user->message("Registered with MAPD as a room.\r\n");
-  }
-  if(port) {
-    user->message("Registered with PORTABLED as a portable.\r\n");
   }
   if(exit) {
     user->message("Registered with EXITD as an exit.\r\n");
@@ -440,25 +421,19 @@ static void cmd_move_obj(object user, string cmd, string str) {
 
   obj2 = MAPD->get_room_by_num(objnum2);
   if(!obj2) {
-    obj2 = PORTABLED->get_portable_by_num(objnum2);
-  }
-  if(!obj2) {
-    user->message("The second argument must be a room or portable.  Obj #"
+    user->message("The second argument must be a room.  Obj #"
 		  + objnum2 + " is not.\r\n");
     return;
   }
 
   obj1 = MAPD->get_room_by_num(objnum1);
   if(!obj1) {
-    obj1 = PORTABLED->get_portable_by_num(objnum1);
-  }
-  if(!obj1) {
     obj1 = EXITD->get_exit_by_num(objnum1);
   }
 
   if(!obj1) {
     user->message("Obj #" + objnum1 + " doesn't appear to be a registered "
-		  + "room, portable or exit.\r\n");
+		  + "room or exit.\r\n");
     return;
   }
 
@@ -487,18 +462,12 @@ static void cmd_set_obj_parent(object user, string cmd, string str) {
 
   obj = MAPD->get_room_by_num(objnum);
   if(!obj) {
-    obj = PORTABLED->get_portable_by_num(objnum);
-  }
-  if(!obj) {
     user->message("The object must be a room or portable.  Obj #"
 		  + objnum + " is not.\r\n");
     return;
   }
 
   parent = MAPD->get_room_by_num(parentnum);
-  if(!parent) {
-    parent = PORTABLED->get_portable_by_num(parentnum);
-  }
   if(!obj) {
     user->message("The parent must be a room or portable.  Obj #"
 		  + objnum + " is not.\r\n");

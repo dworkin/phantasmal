@@ -47,3 +47,12 @@ int get_direction() {
 object get_destination() {
   return destination;
 }
+
+/* Return nil if a user can pass through a door, the reason if they cannot */
+string can_pass(object pass_object) {
+  return nil;
+}
+
+/* Called when a user passes through the exit */
+void pass(object pass_object) {
+}

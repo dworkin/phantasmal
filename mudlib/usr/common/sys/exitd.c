@@ -109,12 +109,18 @@ void destructed(int clone) {
 
 /* Return phrase for direction name */
 object get_name_for_dir(int direction) {
+  if (direction <= 0) {
+    error("Can't get the name of a special direction!");
+  }
   return name_for_dir[direction];
 }
 
 /* Return phrase for direction short name */
 object get_short_for_dir(int direction) {
   object phr;
+  if (direction <= 0) {
+    error("Can't get the short name of a special direction!");
+  }
   phr = shortname_for_dir[direction];
   if(!phr) error("Can't get short name for direction " + direction);
   return phr;
@@ -124,12 +130,15 @@ int direction_by_string(string direc) {
   if(builder_directions[direc])
     return builder_directions[direc];
 
-  return -1;
+  return DIR_ERR;
 }
 
 
 int opposite_direction(int direction) {
-  /* The map.h table of directions has a cute feature... */
+  if (direction <= 0) {
+    error("Can't get the opposite direction of a special direction!");
+  }
+
   if(direction % 2) {
     return direction + 1;
   }
@@ -137,7 +146,7 @@ int opposite_direction(int direction) {
   return direction - 1;
 }
 
-private void push_or_add_exit(int roomnum1, int roomnum2, int direction,
+private void push_or_add_exit(int roomnum1, int roomnum2, int direction, 
 			      int num1, int num2) {
   object room1, room2;
 
@@ -153,8 +162,8 @@ private void push_or_add_exit(int roomnum1, int roomnum2, int direction,
 
 void room_request_simple_exit(int roomnum1, int roomnum2, int direction,
 			      int num1, int num2) {
-  if(previous_program() != SIMPLE_ROOM) {
-    error("Only SIMPLE_ROOM can request deferred exit creation!");
+  if(previous_program() != ROOM) {
+    error("Only ROOM can request deferred exit creation!");
   }
 
   push_or_add_exit(roomnum1, roomnum2, direction, num1, num2);
@@ -220,6 +229,10 @@ private int allocate_exit_obj(int num, object obj) {
 void add_simple_exit_between(object room1, object room2, int direction,
 			     int num1, int num2) {
   object exit1, exit2;
+
+  if (direction <= 0) {
+    error("Can't add an exit in a special direction!");
+  }
 
   exit1 = clone_object(SIMPLE_EXIT);
   exit2 = clone_object(SIMPLE_EXIT);

@@ -4,15 +4,10 @@
   ~enUS{
 
 Portables are basic carryable, movable and manipulable objects.  In
-Phantasmal they are manipulated, from an admin viewpoint, by the
-following commands:
+Phantasmal they are manipulated, from an admin viewpoint, by the room
+commands.  The only commands specific to portables are the following:
 
 @new_portable             Create a new portable
-@delete_portable          Delete an old portable
-@list_portables           List all portables
-@save_portables           Save some portables to file
-@load_portables           Load portables from a file
-@set_portable_flag        Set portable attributes like "container"
 
 }}
 
@@ -33,94 +28,4 @@ an optional number as an argument.  For instance:
 @new_portable #571
 @set_glance #571 'a bottle of rum'
 
-}}
-
-
-~name{~enUS{@delete_portable, delete_portable, deleteportable,
-            @deleteportable, delete portable, @portabledelete,
-            portabledelete, portable_delete, @portable_delete,
-            portable delete, @delete_port, delete_port, deleteport,
-            @deleteport, delete port, @portdelete, portdelete,
-            port_delete, @port_delete, port delete, delete,
-            destroy}}
-~keywords{admin}
-~desc{
-  ~enUS{
-
-The @delete_portable command deletes a portable object.  It takes
-an optional number as an argument.  For instance:
-
-@delete_portable #571
-
-}}
-
-
-~name{~enUS{@list_portable, list_portable, listportable, @listportable,
-            list portable, @list_portables, list_portables, listportables,
-            @listportables, list portables, @portablelist, portablelist,
-            portable_list, @portable_list, portable list,
-            @list_port, list_port, listport, @listport,
-            list port, @list_ports, list_ports, listports,
-            @listports, list ports, @portlist, portlist,
-            port_list, @port_list, port list, list}}
-~keywords{admin}
-~desc{
-  ~enUS{
-
-The @list_portables command (and its shorter aliases, like @list_port)
-lists all portables currently in the game.  It functions pretty much
-like @list_rooms and @list_exits.
-
-}}
-
-
-~name{~enUS{@save_portables, @save_portable, save_portables,
-            save_portable, @saveportables, @saveportable, saveportables,
-            saveportable, portable save, portablesave, portable_save,
-            save portables, save portable, @portable_save, @portablesave,
-            @save_port, save_port, @saveport, saveport, port save,
-            portsave, port_save, save port, @port_save, @portsave,
-            save }}
-~keywords{admin}
-~desc{
-  ~enUS{
-
-@save_portable takes an absolute path and saves portables to that file
-in a loadable format.  It defaults to saving all portables in the MUD.
-It can also be given a series of additional arguments specifying
-portable numbers to save.
-
-Examples:
-@save_portables /data/object/whole_mud.unq
-@save_portables /data/object/my_zone.unq #503 #504 #505 #507 #523 #591
-
-}}
-
-~name{~enUS{@load_portables, @load_portable, load_portables,
-            load_portable, @loadportables, @loadportable, loadportables,
-            loadportable, portable load, portableload, portable_load,
-            load portables, load portable, @portable_load, @portableload,
-            @load_port, load_port, @loadport, loadport, port load,
-            portload, port_load, load port, @port_load, @portload,
-            load }}
-~keywords{admin}
-~desc{
-  ~enUS{
-
-@load_portable's first argument is an absolute path and it loads
-portables found in that file.  It will either load all the portables
-in the file, or if a sequence of numbers is given it will load only
-portables with those numbers from the file.  None of the loaded
-portable numbers must correspond to portables existing in the MUD.
-This is one reason the "number" field is optional in the portable
-structure.
-
-Use this command with great caution to avoid large numbers of
-duplicate portables.  Note also that numberless portables in the file
-cannot be loaded with the second form of this command (the one that
-specifies portable numbers).
-
-Examples:
-  @load_portables /data/object/testload.unq
-  @load_portables /data/object/numtest.unq #234 #247 #212
 }}

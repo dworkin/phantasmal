@@ -118,17 +118,18 @@ void new_help_file(string path) {
   mixed*  ent;
   mixed*  exp_arr;
   mixed*  unq_data;
+  string err;
 
   contents = read_file(path);
   if(strlen(contents) > MAX_STRING_SIZE - 3) {
     error("Helpfile " + path + " too long!");
   }
 
-  catch {
-    unq_data = UNQ_PARSER->unq_parse_with_dtd(contents, help_dtd);
-  } : {
+  err = catch (unq_data = UNQ_PARSER->unq_parse_with_dtd(contents, help_dtd));
+
+  if (err != nil) {
     LOGD->write_syslog("Helpd got parse error parsing " + path);
-    error(::call_trace()[1][TRACE_FIRSTARG][1]);
+    error(err);
   }
   if(!unq_data || !typeof(unq_data) == T_ARRAY)
     error("Couldn't load file " + path + " as UNQ helpfile!");

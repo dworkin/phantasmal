@@ -2,6 +2,7 @@
 #include <type.h>
 #include <trace.h>
 #include <log.h>
+#include <limits.h>
 
 #define INDENT_LEVEL 4
 #define LOG_FILE ("/usr/common/bob.txt")
@@ -11,11 +12,13 @@ private int     is_clone;
 private mapping builtins;
 private string  accum_error;
 
-private void write_log(string str) {
-  /* Uncomment this line to start seeing the write_file debug
-     messages in the LOG_FILE above. */
-  /* write_file(LOG_FILE, str + "\n"); */
-}
+/* #define USE_LOG to write to a log file */
+
+#ifdef USE_LOG
+#define write_log(str) write_file(LOG_FILE, (str) + "\n")
+#else 
+#define write_log(str)
+#endif
 
 static int create(varargs int clone) {
   is_clone = clone;
@@ -158,10 +161,10 @@ private string serialize_to_dtd_type(string label, mixed unq,
 
 /* This serializes the given type, but doesn't wrap it in its appropriate
    label.  The caller will need to do that, if appropriate. */
-private string serialize_to_string_with_mods(mixed* type, mixed unq,
-					     int indent) {
+private string serialize_to_string_with_mods(mixed* type, mixed unq, int indent) {
   string ret;
   int    ctr, is_struct;
+  int repmin, repmax;
 
   if(sizeof(type) != 1 && sizeof(type) != 2)
     error("Illegal type given to serialize_to_string_with_mods!");
@@ -179,7 +182,19 @@ private string serialize_to_string_with_mods(mixed* type, mixed unq,
   }
 
   /* Sizeof(type) == 2, so it's a type/mod combo */
-  if(type[1] != "?" && type[1] != "+" && type[1] != "*") {
+  repmin = 0;
+  repmax = INT_MAX;
+  if(type[1] == "?") {
+    repmax = 1;
+  } else if (type[1] == "+") {
+    repmin = 1;
+  } else if (type[1] == "*") {
+    /* do nothing, any value is acceptable */
+  } else if (sscanf(type[1], "<%d..%d>", repmin, repmax) == 2 || sscanf(type[1], "<..%d>", repmax) == 1 || sscanf(type[1], "<%d..>", repmin) == 1) {
+    /* do nothing, all values already entered */
+  } else if (sscanf(type[1], "<%d>", repmin) == 1) {
+    repmax = repmin;
+  } else {
     accum_error += "Unrecognized type modifier " + type[1] + "!\n";
     return nil;
   }
@@ -196,15 +211,10 @@ private string serialize_to_string_with_mods(mixed* type, mixed unq,
 
   /* Multiple entries */
   /* First, check to see that the number of entries is reasonable */
-  if(type[1] == "+" && sizeof(unq) < 1) {
+  if (sizeof(unq) < repmin || sizeof(unq) > repmax) {
     accum_error += "Number of entries doesn't fit + mod\n";
     return nil;
   }
-  if(type[1] == "?" && sizeof(unq) > 1) {
-    accum_error += "Number of entries doesn't fit ? mod\n";
-    return nil;
-  }
-  /* The "*" modifier doesn't need a check, any number's fine */
 
   /* Set is_struct flag for below... */
   if(UNQ_DTD->is_builtin(type[0])) {
@@ -409,6 +419,7 @@ private mixed* parse_to_dtd_type(string label, mixed unq) {
   /* Else, not a struct. */
 
   tmp = parse_to_string_with_mods(type, unq);
+
   if(tmp == nil) {
     accum_error += "Couldn't parse " + STRINGD->mixed_sprint(unq)
       + " as type " + implode(type,"") + "\n";
@@ -422,6 +433,8 @@ private mixed* parse_to_dtd_type(string label, mixed unq) {
    will not be prefixed with the appropriate label.  If desired,
    that may be done by the caller. */
 private mixed parse_to_string_with_mods(mixed* type, mixed unq) {
+  int repmin, repmax;
+
   if(sizeof(type) != 1 && sizeof(type) != 2)
     error("Illegal type given to parse_to_string_with_mods!");
 
@@ -441,7 +454,19 @@ private mixed parse_to_string_with_mods(mixed* type, mixed unq) {
   }
 
   /* Sizeof(type) == 2, so it's a type/mod combo */
-  if(type[1] != "?" && type[1] != "+" && type[1] != "*") {
+  repmin = 0;
+  repmax = INT_MAX;
+  if(type[1] == "?") {
+    repmax = 1;
+  } else if (type[1] == "+") {
+    repmin = 1;
+  } else if (type[1] == "*") {
+    /* do nothing, any value is acceptable */
+  } else if (sscanf(type[1], "<%d..%d>", repmin, repmax) == 2 || sscanf(type[1], "<..%d>", repmax) == 1 || sscanf(type[1], "<%d..>", repmin) == 1) {
+    /* do nothing, all values already entered */
+  } else if (sscanf(type[1], "<%d>", repmin) == 1) {
+    repmax = repmin;
+  } else {
     accum_error += "Unrecognized type modifier " + type[1] + "!\n";
     return nil;
   }
@@ -481,19 +506,10 @@ private mixed parse_to_string_with_mods(mixed* type, mixed unq) {
       ret += ({ tmp });
     }
 
-    /* "?" support 0 or 1 instance */
-    if(type[1] == "?" && sizeof(ret) > 1) {
+    if (sizeof(ret) < repmin || sizeof(ret) > repmax) {
       accum_error += "Number of entries doesn't fit ? mod\n";
       return nil;
     }
-
-    /* "+" supports 1 or more */
-    if(type[1] == "+" && sizeof(ret) < 1) {
-      accum_error += "Number of entries doesn't fit + mod\n";
-      return nil;
-    }
-
-    /* "*" doesn't even need a check - any number's fine */
 
     return ret;
   }
@@ -507,6 +523,8 @@ private mixed parse_to_string_with_mods(mixed* type, mixed unq) {
    appropriate.  The returned chunk will not be prefixed with a
    label. */
 private mixed parse_to_builtin(string type, mixed unq) {
+  string err;
+
   if(!UNQ_DTD->is_builtin(type))
     error("Type " + type + " isn't builtin in parse_to_builtin!");
 
@@ -551,12 +569,18 @@ private mixed parse_to_builtin(string type, mixed unq) {
     if(typeof(unq) != T_ARRAY)
       error("Don't recognized parsed UNQ object in parse_to_builtin(phrase)!");
 
-    catch {
-      tmp = PHRASED->unq_to_phrase(unq);
-    } : {
-      accum_error += call_trace()[1][TRACE_FIRSTARG][1];
+    /* previous code here doesn't work, since the kernel strips the arguments
+     * from the call trace if this object isn't created by System (which
+     * it isn't 
+     */
+
+    err = catch(tmp = PHRASED->unq_to_phrase(unq));
+    
+    if (err != nil) {
+      accum_error += err;
       return nil;
     }
+     
     return tmp;
   }
 
@@ -564,6 +588,7 @@ private mixed parse_to_builtin(string type, mixed unq) {
 }
 
 /* Parse_to_dtd_struct assumes some input preprocessing -- label is
+  int repmin, repmax;
    whitespace-trimmed and unq's top level is empty-tag-trimmed.  Label
    is also validated to point to an UNQ DTD structure.  UNQ may or may
    not be a valid structure, but has already had the tag corresponding
@@ -578,6 +603,7 @@ private mixed* parse_to_dtd_struct(string t_label, mixed unq) {
   int     ctr;
   mapping fields;
   string  label;
+  int repmin, repmax;
 
   write_log("Parsing to dtd struct '" + t_label + "', arg: '"
 	    + STRINGD->mixed_sprint(unq) + "'");
@@ -657,22 +683,32 @@ private mixed* parse_to_dtd_struct(string t_label, mixed unq) {
     if(typeof(type[ctr]) == T_STRING
        || sizeof(type[ctr]) == 1) {
       if(sizeof(instance_tracker[ctr]) != 1) {
-	accum_error += "Wrong # of instances of " + type[ctr] + "\n";
+	accum_error += "Wrong # of instances of " + type[ctr] + " (" + ctr + ").  1 needed, " + sizeof(instance_tracker[ctr]) + " found.\n";
 	return nil;
       }
       continue;
     }
 
-    if(type[ctr][1] == "*")
-      continue;  /* Star modifier allows any number of insts */
-
-    num = sizeof(instance_tracker[ctr]);
-    if((type[ctr][1] == "?") && num > 1) {
-      accum_error += "Wrong # of fields of type " + type[ctr] + " in struct\n";
+    repmin = 0;
+    repmax = INT_MAX;
+    if(type[ctr][1] == "?") {
+      repmax = 1;
+    } else if (type[ctr][1] == "+") {
+      repmin = 1;
+    } else if (type[ctr][1] == "*") {
+      /* do nothing, any value is acceptable */
+    } else if (sscanf(type[ctr][1], "<%d..%d>", repmin, repmax) == 2 || sscanf(type[ctr][1], "<..%d>", repmax) == 1 || sscanf(type[ctr][1], "<%d..>", repmin) == 1) {
+      /* do nothing, all values already entered */
+    } else if (sscanf(type[ctr][1], "<%d>", repmin) == 1) {
+      repmax = repmin;
+    } else {
+      accum_error += "Unrecognized type modifier " + type[ctr][1] + "!\n";
       return nil;
     }
-    if((type[ctr][1] == "+") && num == 0) {
-      accum_error += "Wrong # of fields of type " + type[ctr] + " in struct\n";
+    
+    num = sizeof(instance_tracker[ctr]);
+    if (num < repmin || num > repmax) {
+      accum_error += "Wrong # of fields of type " + type[ctr][0] + " in struct.  " + num + " given, between " + repmin + " and " + repmax + " required.\n";
       return nil;
     }
   }
@@ -725,8 +761,13 @@ void load(string new_dtd) {
 
 private void new_dtd_element(string label, mixed data) {
   string* tmp_arr;
+  string inh;
 
   label = STRINGD->trim_whitespace(label);
+  if (sscanf(label, "%s:%s", label, inh) == 1 || inh == "") {
+    inh = nil;
+  }
+
   if(dtd[label] || label == "struct" || UNQ_DTD->is_builtin(label))
     error("Redefining label " + label + " in UNQ DTD!");
 
@@ -736,9 +777,28 @@ private void new_dtd_element(string label, mixed data) {
     tmp_arr = explode(data, ",");
     dtd[label] = dtd_struct(tmp_arr);
 
+    if (inh != nil) {
+      if (dtd[inh] != nil) {
+	/* add all types allowed for the base type to the derived type */
+	/* trimming initial struct */
+	dtd[label] = dtd[inh] + dtd[label][1..];
+      } else {
+	error("Base type " + inh + " not defined when parsing " + label);
+      }
+    }
+
     return;
   } else if (typeof(data) == T_ARRAY) {
-    error("complex subtypes not yet supported!");
+    if (sizeof(data) != 0) {
+      error("complex subtypes not yet supported!");
+    } else {
+      if (inh != nil) {
+	/* add types allowed for base type of the derived type */
+	dtd[label] = dtd[inh];
+      } else {
+	error("Base type " + inh + " not defined when parsing " + label);
+      }
+    }
   } else {
     error("Type error -- problem with UNQ parser?");
   }
@@ -753,6 +813,26 @@ private mixed* dtd_string_with_mods(string str) {
 
   if(STRINGD->is_alpha(str))
     return ({ str });
+
+  if (sscanf(str, "%s<%s>", str, mod) == 2) {
+    mod = "<" + mod + ">";
+    return ({ str, mod });
+  }
+
+  if (sscanf(str, "%s<%s>", str, mod) == 2) {
+    mod = "<" + mod + ">";
+    return ({ str, mod });
+  }
+
+  if (sscanf(str, "%s<%s>", str, mod) == 2) {
+    mod = "<" + mod + ">";
+    return ({ str, mod });
+  }
+
+  if (sscanf(str, "%s<%s>", str, mod) == 2) {
+    mod = "<" + mod + ">";
+    return ({ str, mod });
+  }
 
   mod = str[strlen(str)-1..strlen(str)-1];
   str = str[..strlen(str)-2];
