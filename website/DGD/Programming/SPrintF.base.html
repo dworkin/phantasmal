@@ -1,0 +1,126 @@
+  <titledef text="sprintf in DGD" />
+
+  <h2> Implementing the sprintf() Function in DGD </h2>
+
+<pre>
+From: dgd at list.imaginary.com (Erwin Harte)
+Date: Thu Apr  1 14:35:02 2004
+Subject: [DGD] Re: sprintf
+
+On Wed, Mar 31, 2004 at 10:47:13PM +0000, Robert Forshaw wrote:
+> Hi,
+> 
+> has anyone here written an sprintf or similar function for DGD (since it 
+> doesn't have one built in) ? If so, would they care to share it?
+
+This was written about 9 years ago by Abigail.  It's written in LPC so
+I don't expect major problems getting it to work on a recent DGD
+version:
+
+    ftp://ftp.lysator.liu.se/pub/lpmud/drivers/dgd/lpc/sprintf-1.3.tgz
+
+Cheers,
+
+Erwin.
+-- 
+Erwin Harte
+</pre>
+
+<hr />
+
+<pre>
+From: dgd at list.imaginary.com (Michael McKiel)
+Date: Thu Apr  1 14:37:01 2004
+Subject: [DGD] sprintf
+
+ --- Robert Forshaw wrote: > Hi,
+> 
+> has anyone here written an sprintf or similar function for DGD (since it 
+> doesn't have one built in) ? If so, would they care to share it?
+> 
+
+I believe theres one here:
+http://www.ucc.gu.uwa.edu.au/~john/dgd/
+
+As well phantasmal's DGD/external has the same sprintf.tar.gz file.
+
+If I recall all I removed from it to make it work was the:
+    inherit "/kernel/lib/strings";
+
+But we soon after removed sprintf since I found almost all I was using it for
+could be accomplished with the following code, and didn't see a point in
+inheriting 600 lines of sprintf into every single object for almost nothing.
+
+The define is 80 spaces in quotes.
+
+#define SPACE80 "                                                            
+                   "
+
+/* Name: align()
+ * Desc: similiar to Dworkin's ralign() in the wiztool.
+ *       A negative width causes left justify up to -79.    */
+nomask string align (mixed num, int width)
+{
+    string str;
+
+    if ( width > 80 || width < -79 ) return "ILLEGAL Width";
+
+    if ( width >= 0 )
+    {
+        str = SPACE80 + (string) num;
+        return str[strlen(str) - width ..];
+    }
+    else
+    {
+        str = (string) num + SPACE80;
+        return str[0 .. ( 0 - width -1) ];
+    }
+}
+
+
+Zam.
+</pre>
+
+<hr />
+
+<pre>
+From: dgd at list.imaginary.com (Erwin Harte)
+Date: Thu Apr  1 15:28:00 2004
+Subject: [DGD] Re: sprintf
+
+On Thu, Apr 01, 2004 at 04:14:16PM -0500, Michael McKiel wrote:
+[...]
+> I think (though I may be in the minority) that one of DGD's few downfalls is
+> the lack of understanding in how to go about doing a driver extension. In
+> other LPC sources it wouldn't seem to be as much of an undertaking. It would
+> seem that if there was a greater comprehension there, you'd find more binary
+> option/"addons" than just lpc-code thats frequently LIB dependant.
+
+While the downside of linking in a sprintf() from an outside source is
+that you may get different behaviour depending on what platform you're
+compiling your driver on with as effect that the mudlib may work on
+your main server but may misbehave on a test-copy elsewhere.
+
+Additionally you get all the potential buffer overflows and such for
+free while ignoring DGD's sturdy built-in string type.
+
+I'll agree that aside from some samples I haven't seen many people use
+DGD's extension interface.  You are aware of its existence, I assume?
+
+>     Beyond that, just that a few of its great features, like LWO's and
+> parse_string dont get utilized in the KernelLib so one has to start from
+> scratch at getting an understanding of those.
+
+True.  On the other hand you're welcome to ask questions and over time
+I've seen several examples float by, including a (now slightly
+outdated) grammar for LPC itself, from Dworkin. :)
+
+Cheers,
+
+Erwin.
+-- 
+Erwin Harte
+</pre>
+
+  <p style="text-size: 150%"> <a href="index.html"> Back to DGD &amp; LPC
+      Page </a> </p>
