@@ -1039,12 +1039,28 @@ string report_on_object(string spec) {
   return ret;
 }
 
-private void suspend_activity() {
-  RSRCD->suspend_callouts();
+/*
+  Suspend_system suspends network input, new logins and callouts
+  except in this object.  (idea stolen from Geir Harald Hansen's
+  ObjectD)
+*/
+void suspend_system() {
+  if(SYSTEM()) {
+    RSRCD->suspend_callouts();
+    TELNETD->suspend_input();
+  } else
+    error("Only privileged code can call suspend_system!");
 }
 
-private void resume_activity() {
-  RSRCD->release_callouts();
+/*
+  Releases everything that suspend_system suspends.
+*/
+void release_system() {
+  if(SYSTEM()) {
+    RSRCD->release_callouts();
+    TELNETD->release_input();
+  } else
+    error("Only privileged code can call release_system!");
 }
 
 

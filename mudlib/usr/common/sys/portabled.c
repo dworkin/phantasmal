@@ -184,7 +184,6 @@ void add_dtd_unq_portables(mixed* unq_data, object dflt_location,
 			 + size + " portables -- leaving them hanging!");
       return;
     }
-    LOGD->write_syslog("Iteration loading portables...");
   }
 
 }
