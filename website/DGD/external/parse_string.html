@@ -1,0 +1,608 @@
+<HTML>
+  <HEAD>
+    <TITLE>DGD - parse_string()</TITLE>
+  </HEAD>
+  <BODY>
+    <H1>DGD - parse_string()</H1>
+
+    <P>
+This document assumes you've already read through the parse_string help
+file (parser.txt) a few times.  Basically, I'll just provide inline
+discussion of some of the major points to help a parse_string newbie
+(though, unfortunately not an LPC newbie). Boxed text is taken verbatim
+from the parser.txt file that comes with the DGD documentation.
+    </P>
+    <P>
+The reader should be warned that I'm no expert.  I have no formal training
+in the computer sciences, grammars, or compiler theory.  What is contained
+herein is how I've come to think about and understand parse_string.  I
+hope it's enough to get you started in the right direction.
+    </P>
+
+    <H2>TOKEN RULES</H2>
+
+    <P>First, a definition to remind you of:</P>
+
+<TABLE border=1 cellpadding=10 cellspacing=0 align=center width="100%"><TR><TD>
+A token rule has the following format: <TT>token = /regexp/</TT>
+</TD></TR></TABLE>
+
+    <P>
+Most people have had some experience with regular expressions, if only
+through use of the grep command.  I'm not really capable of giving a
+technical definition for what a regular expression is, but the way I
+think about it is as a quick, shorthand method for describing a large
+range of possible strings.  If the regular expression happens to include
+your particular string in the large range of strings it describes, then
+you could say that the regular expression is capable of describing,
+or matching, the string.
+    </P>
+
+    <P>Let's take the following arguments for parse_string:</P>
+
+<PRE>
+  parse_string("whitespace = /[\b\n\r\t ]+/"+
+               "word       = /[a-zA-Z]+/   "+
+         /*1*/ "sentence   : sentence word "+
+         /*2*/ "sentence   : word          ", /* grammar:2 token rules
+                                                         2 production rules
+               "foo bar"                     /* string to be parsed */
+              );
+</PRE>
+
+<P>
+The first two rules define the tokens.  So, in the above example,
+whitespace will match 1 or more consecutive 'backspaces' (<TT>\b</TT>),
+'line feeds' (<TT>\n</TT>), 'carriage returns' (<TT>\r</TT>), 'tabs' (<TT>\t</TT>), or 'spaces' (&nbsp;),
+and word will match 1 or more consecutive lower case/capital letters.
+</P>
+
+<TABLE border=1 cellpadding=10 cellspacing=0 align=center width="100%"><TR><TD>
+The parse_string() utility for DGD parses strings as follows: first,
+the string is broken up into two types of smaller strings, called
+'tokens' and 'whitespace'.
+</TD></TR></TABLE>
+
+<PRE>
+    ({      "foo"  ,      " "       ,   "bar"  })
+    ({      word   ,   whitespace   ,   word   })
+</PRE>
+ 
+<P>
+So the first thing that happens is the string second argument, in the above
+example 'foo bar', is 'translated' into a token sequence.
+</P>
+
+<PRE>
+That is: '({ "foo",     " ",    "bar" }) is 'turned into'
+          ({ word,  whitespace,  word }).
+</PRE>
+
+<P>
+On a side note, it's certainly possible to write a grammar such that the
+string second argument cannot be 'tokenized', meaning none of the token
+rules (or string constants in the production rules) are capable of
+describing part or all of the string second argument. When that's the
+case, parse_string will error.
+</P>
+
+<P>
+There are three (well, at least three) things to keep in mind about
+token rules.
+<P>
+
+<P>
+First:
+</P>
+<TABLE border=1 cellpadding=10 cellspacing=0 align=center width="100%"><TR><TD>
+For any regular expression, the longest possible token will be matched.
+</TD></TR></TABLE>
+
+<P>So, if we have two token rules:</P>
+
+<PRE>
+  a = /test/
+  b = /.+/
+</PRE>
+
+<P>
+And our string to be parse is "the test was hard", the string would be
+tokenized as simply <TT>({&nbsp;b&nbsp;})</TT>, rather than <TT>({&nbsp;b,&nbsp;a,&nbsp;b&nbsp;})</TT> since 'b' will
+match the entire string input (making it the longest possible match).
+The only string input that would result in the use of 'a' would be
+"test", since then 'a' and 'b' would be the same length and because:
+</P>
+
+<P>Second:</P>
+
+<TABLE border=1 cellpadding=10 cellspacing=0 align=center width="100%"><TR><TD>
+If a string matches more than token, the token for which the rule
+appears first in the grammar is selected.
+</TD></TR></TABLE>
+
+<P>Take another example:</P>
+
+<PRE>
+  letter = /[a-zA-Z]/
+  vowel  = /[aAeEiIoOuU]/
+</PRE>
+
+<P>
+In practice, 'vowel' will never match anything since the rule for 'letter'
+precedes it in the grammar, and will match anything vowel can possibly
+match.
+</P>
+
+<P>Third:</P>
+
+<TABLE border=1 cellpadding=10 cellspacing=0 align=center width="100%"><TR><TD>
+A string constant in a production rule matches the given sequence
+of characters directly, without reference to a token rule.  Since
+a token rule is implicitly generated for such string constants,
+the string constant is also said to be a token. String constants
+take precedence over regular expressions, and any token that matches
+both a string constant and a regular expression will always match
+the string constant, only
+</TD></TR></TABLE>
+
+<P>This means that if you defined some token rule like:</P>
+
+<PRE>
+  word  = /[a-zA-Z]+/
+</PRE>
+
+<P>And then had some production rule like:</P>
+
+<PRE>
+  special_word : 'foo'  /* single quotes are used to indicate
+                           a string constant in a production
+                           rule.                              */
+</PRE>
+
+<P>
+Then 'word' can never match the string 'foo', despite the fact that
+the regular expression /[a-zA-Z]+/ which defines 'word' is capable
+of matching 'foo'.
+</P>
+
+<P>Alright...back to our example.</P>
+
+<TABLE border=1 cellpadding=10 cellspacing=0 align=center width="100%"><TR><TD>
+Next, the resulting array of tokens (whitespace is ignored) is
+parsed as a sentence in the language defined by a formal grammar.
+</TD></TR></TABLE>
+
+<P>
+The first thing to point out is that the whitespace token gets discarded.
+This is a handy way to eliminate parts of the input string that you
+either don't need or don't want.  For example, good use of a whitespace
+token would allow you to easily treat user input like:
+</P>
+
+<PRE>
+  'get ball from box'
+  '   get  ball from box  '
+  'get   ball  from  box'
+</PRE>
+
+<P>in the same way.  Also:</P>
+
+<PRE>
+  whitespace = /[\b\n\r\t ]+/
+</PRE>
+
+<P>
+tends to be a good definition for whitespace since these are the sorts
+of strings that could pop up in a string to be parsed that we really would
+rather filter out.  Of course if you are feeding the input string into
+parse_string line by line, you wouldn't need to include <TT>\n\r</TT>.
+</P>
+
+<P>
+One last word on token rules.  You should construct your token rules to
+minimize the total number of tokens the input string gets translated
+into.  More tokens == slower parsing.
+</P>
+
+<P>
+So, our string second argument has been tokenized, and what we're left
+with (our 'resulting array of tokens (whitespace is ignored)' from our
+example is <TT>({&nbsp;word,&nbsp;word&nbsp;})</TT>.  Now to explain...
+</P>
+
+<H2>PRODUCTION RULES</H2>
+
+<P>Just to remind you of our example:</P>
+
+<PRE>
+  parse_string("whitespace = /[\b\n\r\t ]+/"+
+               "word       = /[a-zA-Z]+/   "+
+         /*1*/ "sentence   : sentence word "+
+         /*2*/ "sentence   : word          ", /* grammar:2 token rules
+                                                         2 production rules
+               "foo bar"                      /* string to be parsed */
+              );
+</PRE>
+
+<TABLE border=1 cellpadding=10 cellspacing=0 align=center width="100%"><TR><TD>
+A production rule has the following format:
+
+<PRE>
+  symbol : rule
+</PRE>
+
+<P>
+where "symbol" is an identifier name as in LPC for the production
+rule, and "rule" consists of zero or more token symbols, production
+rule symbols, or string constants delimited by single quotes.
+</P>
+</TD></TR></TABLE>
+
+<P>
+The production rules get used to try to 'recreate' the token
+sequence. We have two production rules we've defined in the grammar,
+and parse_string uses these two rules to attempt to recreate the
+token sequence.
+</P>
+
+<PRE>
+  Rule #1   sentence : sentence word
+  Rule #2   sentence : word
+</PRE>
+
+<TABLE border=1 cellpadding=10 cellspacing=0 align=center width="100%"><TR><TD>
+More than one production rule may be given for the same symbol.
+</TD></TR></TABLE>
+
+<P>
+Obviously, in our example we've done just that.  We've given two
+possible production rules for the symbol 'sentence'.
+</P>
+
+<TABLE border=1 cellpadding=10 cellspacing=0 align=center width="100%"><TR><TD>
+All production rules taken together form a context-free grammar, for
+which the start symbol is defined in the first rule.
+</TD></TR></TABLE>
+
+<P>
+In our above example, 'sentence' is what is called our start symbol.
+The start symbol in parse_string will be whatever you have to the
+left of ':' in your first production rule.  The DGD parser documentation
+lists a few points we need to keep in mind with respect to the start
+symbol which I'll point out later.  The start symbol is aptly named
+because it gives us our 'starting point' for recreating the token
+sequence through the application of the production rules.  What
+exactly this means will become clearer (I hope!) from an example.
+</P>
+
+<P>Just to remind you of the production rules again:</P>
+
+<PRE>
+  Rule #1   sentence : sentence word
+  Rule #2   sentence : word
+</PRE>
+
+<P>
+The thing to keep in mind when 'applying' production rules is that
+anything to the right of the ':' can be used to 'replace' what is to the
+left of it.  So, when we start applying these production rules to attempt
+to recreate the 'word word' token sequence, we can replace occurrences of
+'sentence' with either 'sentence word' or just 'word'.
+</P>
+
+<P>
+Well, we start with our start symbol 'sentence'.  The 'game' is to see
+if we can get to 'word word' from 'sentence'.
+</P>
+
+<PRE>
+        sentence    /* start symbol */
+      sentence word /* Application of Rule #1 */
+        word word   /* Application of Rule #2 */
+</PRE>
+    
+<P>
+By applying Rule #1, we can replace 'sentence' with 'sentence word'.
+By applying Rule #2, we can replace the 'sentence' in our current
+'sentence word' sequence with 'word' to make 'word word'.  We've
+successfully recreated the token sequence with our production rules,
+so the string may be 'parsed' according to the grammar we've defined.
+What parse string would ultimately return in our above example is
+<TT>({&nbsp;"foo",&nbsp;"bar"&nbsp;})</TT>.  To give another example, we could use the same
+grammar above to parse the following input strings:
+</P>
+
+<P>For the string "foo":</P>
+
+<P>Tokenization:   <TT>({&nbsp;"foo"&nbsp;})</TT> becomes <TT>({&nbsp;word&nbsp;})</TT>.</P>
+
+<PRE>
+      sentence  /* start symbol */
+        word    /* Application of Rule #2 */
+</PRE>
+    
+<P>For the string "foo bar foo bar":</P>
+
+<P>
+Tokenization   <TT>({&nbsp;"foo","&nbsp;","bar","&nbsp;","foo","&nbsp;","bar"&nbsp;})</TT> becomes (after
+whitespace is discarded) <TT>({&nbsp;word,&nbsp;word,&nbsp;word,&nbsp;word&nbsp;})</TT>
+</P>
+
+<PRE>
+	 sentence              /* start symbol */
+      sentence word            /* Application of rule #1 */
+    sentence word word         /* Application of rule #1 */
+  sentence word word word      /* Application of rule #1 */
+    word word word word        /* Application of rule #2 */
+</PRE>
+
+<P>Three points about production rules.</P>
+
+<P>First:</P>
+
+<TABLE border=1 cellpadding=10 cellspacing=0 align=center width="100%"><TR><TD>
+Production rules that are unreachable from the start symbol are ignored.
+</TD></TR></TABLE>
+
+<P>
+Let's use another example.  Assume word1 and word2 are previously defined
+token rules, and sentence is again our start symbol.
+</P>
+
+<PRE>
+  sentence  : sentence word1
+  sentence  : word1
+  _sentence  : word2
+</PRE>
+
+<P>
+The last production rule is unreachable because we can't get from our
+start symbol 'sentence' to a point where we could possibly make use
+of the '_sentence : word2' rule, since _sentence never appears on the
+right hand side of a production rule.
+</P>
+
+<P>When we add another rule:</P>
+
+<PRE>
+  Rule #1 sentence   : sentence word1
+  Rule #2 sentence   : word1
+  Rule #3 sentence   : _sentence
+  Rule #4 _sentence  : word2
+</PRE>
+
+<P>Then we can reach rule #4 (i.e. make use of it) in the following way...</P>
+
+<PRE>
+      sentence  /* start symbol */
+     _sentence  /* Application of Rule #3 */
+       word2    /* Application of Rule #4 */
+</PRE>
+
+<P>...assuming the token sequence we're trying to recreate includes word2.</P>
+
+<P>Second:</P>
+
+<TABLE border=1 cellpadding=10 cellspacing=0 align=center width="100%"><TR><TD>
+Any symbol used in a production rule reachable from the start symbol
+must itself define a token rule or a production rule.
+</TD></TR></TABLE>
+
+<P>
+Assume a token rule has been defined for word1 and word2, and sentence
+is again our start symbol.  Rule #3 below violates this requirement:
+</P>
+
+<PRE>
+  Rule #1 sentence : sentence word1
+  Rule #2 sentence : word1
+  Rule #3 sentence : expression
+</PRE>
+
+<P>
+Essentially, if a symbol is used in the right side of a production rule
+like 'expression' has been in the above example, it needs to appear on
+the left side in a token or production rule at some point in the grammar.
+</P>
+
+<P>Third:</P>
+
+<TABLE border=1 cellpadding=10 cellspacing=0 align=center width="100%"><TR><TD>
+A grammar that allows more than one parse tree for the same input
+string is said to be "ambiguous".
+</TD></TR></TABLE>
+
+<P>
+Here is an example of an ambiguous grammar taken partly from the DGD
+parser documentation:
+</P>
+
+<PRE>
+  parse_string("number = /[0-9]+/           "+
+               "whitespace = /[\b\n\r\t ]+/ "+
+  /* Rule #1 */"Expr : number               "+
+  /* Rule #2 */"Expr : Expr '+' Expr        ",
+               "50 + 35"
+              );
+</PRE>
+
+<PRE>          
+  Tokenization: ({ "50", " ", "+", " ", "35" }) becomes
+		({ number, '+', number }) after we discard whitespace.
+</PRE>
+
+<PRE>
+       Expr         /* start symbol */
+   Expr '+' Expr    /* Application of Rule#2 */  /*Step #1 */
+  number '+' Expr   /* Application of Rule#1 */  /*Step #2 */
+  number '+' number /* Application of Rule#1 */  /*Step #3 */
+
+		     OR ALTERNATIVELY
+
+       Expr         /* start symbol */
+   Expr '+' Expr    /* Application of Rule#2 */  /*Step #1*/
+   Expr '+' number  /* Application of Rule#1 */  /*Step #2,Step #3 above*/
+  number '+' number /* Application of Rule#1 */  /*Step #3,Step #2 above*/
+</PRE>
+
+<P>
+The grammar is ambiguous precisely because there's nothing in the
+production rules that indicates which method should be used to try
+to recreate the token sequence.  When there are multiple ways to
+use the production rules to recreate the given token sequence, the
+grammar is ambiguous with respect to the given input string.
+</P><P>
+You'll note that Mr. Croes shows you how to rewrite the grammar to
+be unambiguous.  Assume the same token definitions but the following
+production rules instead:
+</P>
+
+<PRE>
+  /* Rule #1 */  Expr : number
+  /* Rule #2 */  Expr : Expr '+' number
+
+	 Expr        /* start symbol */
+    Expr '+' number  /* Application of rule #2 */
+   number '+' number /* Application of rule #1 */
+</PRE>
+
+<P>And there's only one 'path' to the given token sequence.  In general,
+it is possible to rewrite an ambiguous grammar to be unambiguous, and
+since unambiguous grammars are parsed more efficiently, you should
+generally use unambiguous grammars.
+</P><P>
+Also be mindful that left recursive grammars are parsed more efficiently
+than right recursive grammars.  The examples I've been using, when
+recursive, have been left recursive.  The production rules in the last
+example can be rewritten to be right recursive instead.  Note, that this
+is also straight out of the DGD parser documentation.
+</P>
+
+<PRE>
+ /* Rule #1 */  Expr : number
+ /* Rule #2 */  Expr : number '+' Expr
+
+	Expr        /* start symbol */
+   number '+' Expr  /* Application of rule #2 */
+  number '+' number /* Application of rule #1 */
+</PRE>
+
+<H2>LPC FUNCTIONS IN PRODUCTION RULES</H2>
+
+<TABLE border=1 cellpadding=10 cellspacing=0 align=center width="100%"><TR><TD>
+Optionally, a rule can be followed by an LPC function name:
+
+<PRE>
+  symbol : rule ? function
+</PRE>
+
+<P>where "function" is the name of an LPC function to be called in the
+current object if the specified rule has been matched.</P>
+
+</TD></TR></TABLE>
+
+<P>These are pretty handy.  Let's use a new example grammar, this time using
+an LPC function:</P>
+
+<PRE>
+  mixed *do_parse()
+  {
+     return parse_string("whitespace = /[\b\n\r\t ]+/              "+
+			 "word = /[a-zA-Z]+/                       "+
+    /* Rule #1 */        "sentence : 'put' obj 'in' obj            "+
+    /* Rule #2 */        "obj : adjective word ?  craft_array      "+
+    /* Rule #3 */        "obj : word ?  craft_array                "+
+    /* Rule #4 */        "adjective : word word ? craft_array      "+
+    /* Rule #5 */        "adjective : word  ? craft_array          ",
+			 "put small red ball in big black box",
+			);
+
+  }
+
+  mixed *craft_array(string *arr)
+  {
+      return ({ arr  });
+  }
+</PRE>
+
+Just as an exercise, we can tokenize our string...
+
+<PRE>
+  ({ "put"," ","small"," ","red"," ","ball"," ","in",
+      " ","big"," ","black"," ","box" })
+</PRE>
+
+<P>Which, after we discard whitespace, becomes...</P>
+
+<PRE>
+  ({ "put", "small", "red", "ball", "in", "big", "black", "box" })
+</PRE>
+
+<P>Which is tokenized as...</P>
+
+<PRE>
+  ({ 'put', word, word, word, 'in', word, word, word })
+</PRE>
+
+<P>
+So, to recreate this token sequence (shown with the impact of the calls
+to craft_array() to give further structure to the returned array):
+</P>
+
+<PRE>
+	   sentence        /*start symbol*/
+	'put' obj 'in' obj   /*Rule#1*/
+   'put' ({ adjective word }) 'in' obj   /*Rule#2*/      
+  'put' ({ adjective word }) 'in' ({ adjective word })  /*Rule#2*/
+  'put' ({ ({ word word }) word }) 'in' ({ adjective word })   /*Rule#4*/
+  'put' ({ ({ word word }) word }) 'in' ({ ({ word word }) word}) /*Rule#4*/
+</PRE>
+
+<P>Note: This grammar is ambiguous.  Can you see why?</P>
+
+<P>
+The LPC functions get called when parse_string has to apply the production
+rule in question along the way to recreating the token sequence, with that
+part of the token sequence it will ultimately be recreating as the
+argument for the function call.  The above code would generate the
+following array:
+</P>
+
+<PRE>
+  ({ "put", ({ ({ "small", "red" }), "ball" }), "in", ({ ({ "big", "black" }), "box" }) })
+</PRE>
+
+<P>
+One might want to structure the return value in this way to first isolate
+the information for each 'obj' into its own array, and then further
+isolate the adjectives (which are optional) from the nouns that refer to
+the objects.  Note that instead of strings, our LPC functions could have
+actually found appropriate objects and substituted those object pointers
+into parse_string's return value in place of 'obj', such that the return
+array might look something like:
+</P>
+
+<PRE>
+  ({ "put", OBJ(/world/stuff/red_ball#435),
+     "in", OBJ(/world/stuff/black_box#762) })
+</PRE>
+   
+<P>One last point:</P>
+
+<P>If a particular grammar is going to be used and reused a lot, you should
+put it in its own separate object.  This is because:</P>
+
+<TABLE border=1 cellpadding=10 cellspacing=0 align=center width="100%"><TR><TD>
+Each object can handle only one grammar at a time.  If a grammar differs
+from the previous one used by the same object, any existing generated
+automatons are wiped out and constructed anew.
+</TD></TR></TABLE>
+
+<P>Essentially, that part of the 'grammar' that an object uses to parse a
+given input string is constructed only once and remembered, making
+successive calls to parse_string more efficient.  However, if you
+construct a new grammar in the same object, the old grammar is wiped out,
+and all of the work spent constructing the grammar will be lost.</P>
+
+  </BODY>
+</HTML>
