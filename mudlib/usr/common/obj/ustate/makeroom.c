@@ -505,11 +505,21 @@ static int prompt_obj_number_input(string input) {
   if(obj_detail_of) {
     send_string("It is a detail of obj #");
   } else {
-    send_string("Its location is #");
+    send_string("Its location is ");
   }
-  send_string(location->get_number() + "("
-	      + location->get_brief()->to_string(get_user())
-	      + ")\r\n\r\n");
+  if(location) {
+    string tmp;
+
+    if(location->get_brief()) {
+      tmp = location->get_brief()->to_string(get_user());
+    } else {
+      tmp = "(undescribed)";
+    }
+
+    send_string("#" + location->get_number() + "(" + tmp + ")\r\n\r\n");
+  } else {
+    send_string("nowhere\r\n\r\n");
+  }
 
   /* Okay, now keep entering data... */
   substate = SS_PROMPT_OBJ_PARENT;

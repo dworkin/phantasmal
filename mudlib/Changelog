@@ -1,4 +1,5 @@
 Release 0.014:
+	* Bugfix to @make_room to deal with rooms whose location is nil
 
 Release 0.013:
 	* Added @list, an alias for @list_rooms.
