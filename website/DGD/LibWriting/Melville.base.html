@@ -1,0 +1,64 @@
+  <titledef text="Melville" />
+
+  <h2> Implementing From Melville </h2>
+
+<pre>
+From dgd at list.imaginary.com  Wed Apr 30 16:42:00 2003
+From: dgd at list.imaginary.com (Matt S.)
+Date: Wed Apr 30 16:42:00 2003
+Subject: [DGD] Cancelling input_to()
+
+--Apple-Mail-2-417127595
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain;
+	charset=US-ASCII;
+	format=flowed
+
+In user.c of the Melville lib there should be a variable for the input 
+object and input function (even if you don't use the lib, it should be 
+the basic idea) :
+
+object input_obj;	/* object for input_to */
+static string input_func; /* function for input_to */
+
+If you can place a function in the user object that clears the object, 
+you can safely get out of the input_to (Look at receive_message() ).
+Then just call the function in whatever object you want. You might want 
+to place security restrictions on this function since it can adversely 
+effect things if you rely heavily on input_to's.  And yes, it seems 
+possible to do it with a time_out function, but I've never tried it, 
+nor the answer given above.
+However, I haven't tested this, so I can't be sure.
+
+Matt S.
+
+On Wednesday, April 30, 2003, at 10:32  AM, Mordengaard wrote:
+
+> From: "Lord Lerkista"
+>> I put an opening animation for my mud, and i set an input_to()
+>> to cancel the animation and don't wait until it finished to enter the
+>> mud if i write "q" the animation stops, but if i wait to the animation
+> end,
+>> it stills waits that "q", finishing the animation i have a menu, so i
+> can't
+>> use the menu until i write "q", is there a way to cancel the 
+>> input_to()
+>> of the animation??
+>
+> Just noticed this question in the archive while I was looking for the
+> exact same thing, so I'll just reiterate the question since it didn't 
+> get
+> a response before - -is- it possible to cancel the input_to state, for
+> example with a time_out type of function?
+>
+> Mordengaard
+>
+>
+> ---
+> Outgoing mail is certified Virus Free.
+> Checked by AVG anti-virus system (http://www.grisoft.com).
+> Version: 6.0.476 / Virus Database: 273 - Release Date: 26/04/2003
+</pre>
+
+  <p style="text-size: 150%"> <a href="../index.html"> Back to top level
+    </a> </p>

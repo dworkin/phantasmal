@@ -1,0 +1,236 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+                      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<title>DGD and LPC: Guest Programmers</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<link href="../../phantasmal.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<table width="95%" border="0" cellspacing="0" cellpadding="4">
+  <tr>
+    <td colspan="2"> <table width="100%" border="0" cellspacing="1"
+        cellpadding="0" class="main">
+        <tr>
+          <td class="banner">The DGD Driver</td>
+        </tr>
+      </table></td>
+  </tr>
+  <tr>
+    <td valign="top">
+      <table width="25%"  border="0" cellspacing="1"
+             cellpadding="0"  class="main">
+        <tr>
+          <td class="content" style="font-size: 120%">
+
+          <ul style="margin: 0; padding-left: 10%">
+            <li> <a href="index.html">DGD &amp; LPC Page</a> </li>
+	    <li> <a href="../LPC">LPC Textbook</a> </li>
+	    <li> <a href="../Book">New LPC Introduction</a> </li>
+          </ul>
+
+        </td>
+        </tr>
+        <tr>
+          <td class="content" align="center">
+            <a href="http://validator.w3.org/check/referer">
+            <img src="../../images/valid-xhtml10.gif" alt="Valid XHTML 1.0!"
+             style="border:0;width:88px;height:31px" /></a><br />
+            <img src="../../images/pixel.gif"
+             style="border:0;width:88px;height:1px" alt="" /><br />
+            <a href="http://jigsaw.w3.org/css-validator/check/referer">
+            <img src="http://jigsaw.w3.org/css-validator/images/vcss"
+             alt="Valid CSS!" style="border:0;width:88px;height:31px" />
+            </a><br /><br /><br />
+            <a href="http://sourceforge.net">
+            <img src="http://sourceforge.net/sflogo.php?group_id=48659&amp;type=2"
+             style="border: 0; width: 125; height: 37;"
+	     alt="SourceForge.net Logo" /></a>
+          </td>
+        </tr>
+      </table></td>
+    <td> <table width="100%"  border="0" cellspacing="1" cellpadding="0" 
+          class="main">
+        <tr>
+          <td class="heading">&nbsp;&nbsp;&middot;&nbsp;
+	    <a href="http://phantasmal.sf.net/DGD">DGD Page</a> &gt;
+	    <a href="http://phantasmal.sf.net/DGD/GameDesign">Game Design</a> &gt;
+            <a href="">Guest Programmers</a>
+          </td>
+        </tr>
+        <tr>
+          <td class="content">
+  
+
+  <h2> Programming By Guests and Players </h2>
+
+  <p>
+    In some MUDs, everybody can program.  Look at MUSHes, for
+    instance.  In other MUDs, only trusted 'craftsman' players can
+    program, and only in highly restricted ways.  Think of clan halls,
+    for instance.  In other MUDs, only builders and administrators can
+    program.  And in still others, not even builders can.
+  </p>
+
+  <p>
+    You'll need to decide how much programming your MUD allows people
+    to do.  Remember that restricting player programming only helps
+    security so much...  They can still make macros or bots to do
+    repetitive operations for them, which you may not allow as policy,
+    but are hard to prevent 100% of the time.
+  </p>
+
+<pre>
+Date: Sun Aug 26 19:45:01 2001
+Subject: [DGD] array_size
+
+Thomas Conner Annandale wrote:
+
+>   Are there any disadvantages (memory overhead) to setting the maximum
+> size for arrays and mappings really high?  For example, is there a
+> performance difference between setting array_size to 100 and 100000,
+> assuming that in both cases the actual sizes of the mappings is the same
+> (say, under 50)?
+
+There is no performance penalty.  The limit exists for muds with guest
+programmers.
+
+Regards,
+Dworkin
+
+
+From: dgd at list.imaginary.com (Par Winzell)
+Date: Fri Jan 11 12:38:01 2002
+Subject: [DGD] Large dumpfile?
+
+ > At the moment, I'm using DGD as a customized httpd and that's all.  Yet
+ > the dump file is currently 40 megs and constantly growing.  I'm having a
+ > hard time figuring out where it's all coming from.  Is there some way to
+ > find out which objects all that memory is going to?  Perhaps a command to
+ > call on an object that will tell you how much memory it's taking up?  It
+ > would be very useful in diagnosing my situation.
+
+
+Yes, sort of --
+
+	for each object ob in runtime,
+		examine status(ob)[O_NSECTORS]
+
+which returns the number of sectors taken up by the object's data
+and, if it's a master copy, its program.
+
+Unfortunately I think this only works for swapped-out data, so the
+time to do it might be in a 0.001-second callout after calling the
+swapout() kfun? If you want to get a mudlib-wide total, that is.
+
+Dworkin?
+
+Zell
+
+
+
+From: dgd at list.imaginary.com (Felix A. Croes)
+Date: Fri Feb  6 08:28:02 2004
+Subject: [DGD] Melville under the Kernel Lib
+
+Noah Gibbs wrote:
+
+>   You've provided a great way to limit processor use and stack use
+> (rlimits) for guest scripts.  You've provided a good way to vet most
+> privileged operations (secondary AUTO objects).  You've provided ways
+> to limit use of call_outs, cloning of objects and other things that can
+> cause problems.  All of this is very good, and some is impossible
+> without language support.  Well done.
+>
+>   However, I see one remaining obvious attack on DGD and I don't yet
+> see how to address it.  Imagine you provide builders with the ability
+> to write an object or the equivalent, such as the Kernel Library's code
+> command.  The obvious attack on DGD would be to allocate an array, put
+> big strings in N-1 of its elements, allocate another array, put it into
+> the final element, and recurse.  In other words, produce an object out
+> of things other than heavyweight DGD objects, and make sure that object
+> is very large.
+>
+>   If that's true, won't the object take an unbounded number of sectors?
+>  If it does, DGD will run out of sectors and halt.  Not crash exactly,
+> but it won't stay up and running, either.
+
+There is no need to wait for DGD to run out of sectors.  It will run out
+of memory, and crash.
+
+This is part of the LPmud heritage.  The attack in its classical form is
+
+    str = "foo";
+    for (;;) {
+	str += str;
+    }
+
+DGD has a limit on string length, which helps to prevent accidental
+mistakes.  But there is no good way to stop this attack in the mudlib,
+unless you go the LPMOO route.  Otherwise it would require driver
+support, and even then it would get very tricky.  The driver would have
+to know about resource owners, not just for objects but for individual
+strings and arrays.  An attacker could probably still cause significant
+problems for a mud by staying just within the limits, or by causing this
+to happen within badly-coded objects owned by other people.  To prevent
+the latter, a completely different runtime model would be needed, such
+as the process model in Unix.
+
+I used to worry about this, but in the end I decided that LPC's
+object/runtime model just doesn't lend itself to this type of security.
+Instead, I concentrated on making it easier to identify an attacker
+(or bumbling programmer) with object ownership and file security.
+
+To sum it up: either trust your guest programmers, or give them only a
+very limited, sandboxed environment.
+
+Regards,
+Dworkin
+
+
+
+From: dgd at list.imaginary.com (Felix A. Croes)
+Date: Mon Mar 29 14:40:02 2004
+Subject: [DGD] rlimits
+
+Steve Wooster wrote:
+
+> Could that allow code to do something like this without running out of 
+> ticks? (assume depth comes first, ticks comes second in the argument list)
+
+The syntax is: rlimits (depth; ticks) { ... }
+
+
+> void func()
+> {
+>      // Assume I have 100 ticks remaining.
+>      // Assume rlimits uses 5 ticks.
+>      rlimits (0,95)
+>      {
+>          Code that takes up 90 ticks;
+>      }
+>      rlimits (0,90)
+>      {
+>          Code that takes up 85 ticks;
+>      }
+>      // Are there still about 90 ticks left despite having
+>      // executed 175 ticks worth of code?
+> }
+
+Yes.
+
+Regards,
+Dworkin
+</pre>
+
+  <p style="text-size: 150%"> <a href="../index.html"> Back to top level
+    </a> </p>
+            <address>
+            <span><a href="mailto:angelbob-remove-spamfree@spamfree.users.sf.net">Noah Gibbs</a></span>
+            </address></td>
+        </tr>
+      </table></td>
+  </tr>
+</table>
+</body>
+</html>

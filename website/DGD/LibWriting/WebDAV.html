@@ -2,7 +2,7 @@
                       "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
-<title>DGD and LPC: DGD LPC Reference</title>
+<title>DGD and LPC: WebDAV</title>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
 <link href="../../phantasmal.css" rel="stylesheet" type="text/css" />
 </head>
@@ -24,9 +24,9 @@
           <td class="content" style="font-size: 120%">
 
           <ul style="margin: 0; padding-left: 10%">
-            <li> <a href="../index.html">DGD &amp; LPC Page</a> </li>
+            <li> <a href="index.html">DGD &amp; LPC Page</a> </li>
 	    <li> <a href="../LPC">LPC Textbook</a> </li>
-	    <li> <a href="../Book/html/">New LPC Introduction</a> </li>
+	    <li> <a href="../Book">New LPC Introduction</a> </li>
           </ul>
 
         </td>
@@ -54,61 +54,72 @@
         <tr>
           <td class="heading">&nbsp;&nbsp;&middot;&nbsp;
 	    <a href="http://phantasmal.sf.net/DGD">DGD Page</a> &gt;
-            <a href="">DGD LPC Reference</a>
+	    <a href="http://phantasmal.sf.net/DGD/LibWriting">MUDLibs</a> &gt;
+            <a href="">WebDAV</a>
           </td>
         </tr>
         <tr>
           <td class="content">
-    
+  
 
-  <h1> An LPC Reference for DGD </h1>
+  <h2> Implementing WebDAV </h2>
 
-  <ul>
-    <li> <a href="Code_Examples.html"> A Page of LPC Examples </a> </li>
-    <li> <a href="LPC_FAQ.html"> Some Frequently-Asked LPC Language
-        Questions </a> </li>
-    <li> <a href="../LPC"> A partial DGD Textbook, based on Ronny
-        Wikh's </a> </li>
-    <li> <a href="General_Docs.html"> Some LPC Docs for other LPMUDs
-      </a> </li>
-    <li> <a href="Parse_String.html">Using DGD's parse_string Kfun</a> </li>
-    <li> <a href="Diffs_in_LPC.html"> Differences between DGD's and
-	LPMUD's versions of LPC </a></li>
-    <li> <a href="Driver_Details.html">Random DGD driver implementation
-	details</a> </li>
-    <li> <a href="Calling_Conventions.html">DGD Function Call Conventions</a>
-      </li>
-    <li> <a href="ThreadLocal.html">Threads and Thread-Local Storage</a>
-      </li>
-    <li> <a href="Unsupported.html"> Features that Dworkin explicitly
-        prefers <i>not</i> to add</a> </li>
-  </ul>
+<pre>
+From: dgd at list.imaginary.com (Josh Dady)
+Date: Fri Jan 16 09:28:01 2004
+Subject: [DGD] DGD Newbie
 
-  <span style="font-size: 75%">
+On Jan 15, 2004, at 10:29 AM, Noah Gibbs wrote:
 
-    <p>
-      This page and its sub-pages are all about DGD's version of LPC.
-      If you're using MudOS, LDMUD, Amylaar or any other flavor of
-      LPMUD then don't expect all of this to be true.  Similarly, if
-      you read LPC documents elsewhere on the web, some of it won't
-      work on DGD.  That's especially true of game-specific code since
-      that usually assumes there are a lot of built-in functions that
-      DGD doesn't provide.
-    </p>
+> It's actually possible to write an FTP server without
+> this, but it requires implementing only passive mode.
 
-    <p>
-      A lot of this page is taken from the mailing list and from
-      Dworkin.  Some is taken from Dworkin and not credited to him at
-      the actual location.  If somebody wants to complain, I'll go
-      through and add attribution to him at each individual location
-      in the file.  Otherwise I'll do what I'm doing now and you
-      should assume that anything really useful in the file is by him
-      and anything that isn't, or that's wrong, was added by me.  To
-      be sure about one thing or another, check the mailing list
-      archives.
-    </p>
+I would humbly suggest that, if you're going to build a file-serving 
+protocol in LPC, that you at least consider WebDAV. Windows and OSX 
+speak it natively, there are lots of separate clients available for 
+just about every platform, and the HTTP server that you would have to 
+build first (WebDAV is an extension of HTTP) would just be generally 
+useful anyway. What's more, just about every development environment 
+has some understanding of HTTP (and many do WebDAV), so anything you 
+develop in the future probably would need no separate protocol to 
+interact with the MUD.
 
-  </span>
+--
+Joshua P. Dady
+</pre>
+
+<hr />
+
+<pre>
+From: dgd at list.imaginary.com (Felix A. Croes)
+Date: Wed Jan 28 12:27:01 2004
+Subject: [DGD] Alternatives to the Kernel model of security...
+
+Noah Gibbs wrote:
+
+>[...]
+>   WebDAV, which others have recommended, has the
+> advantage of allowing a similar interface, and the
+> disadvantages of being hard to use, not very portable
+> and being completely unfamiliar to most potential
+> users.  NFS has the same problems, but appeals to a
+> different subset of users (i.e. Linux rather than Mac
+> or Windows).
+
+There's a Linux kernel module called davfs2 which allows you to
+mount WebDAV filesystems:
+
+    http://sourceforge.net/projects/dav/
+
+so it's portable enough to run on your developers' three most
+likely choices of operating system.  There also seems to be a
+command-line client called cadaver which can up/download files.
+Mounting a WebDAV filesystem is easy on a Mac, presumably also
+in Windows, don't know about Linux.
+
+Regards,
+Dworkin
+</pre>
 
   <p style="text-size: 150%"> <a href="../index.html"> Back to top level
     </a> </p>

@@ -1,0 +1,32 @@
+  <titledef text="NFS" />
+
+  <h2> Implementing NFS </h2>
+
+<pre>
+From: dgd at list.imaginary.com (Felix A. Croes)
+Date: Wed Jan 28 10:36:04 2004
+Subject: [DGD] Alternatives to the Kernel model of security...
+
+Josh Dady wrote:
+>[...]
+> If your requirements include editing from the shell account with the 
+> only difference being that the MUD's "/" isn't the shell's "/", then 
+> your only real options are to write a DGD extension to make use of the 
+> filesystem's meta-data (I'm including file permissions here) or to 
+> build a DGD WebDAV server and use an OS that can mount a WebDAV URL as 
+> a regular disk.
+
+Another option would be to use Zell's implementation of an NFS server
+in LPC:
+
+    ftp://ftp.lysator.liu.se/pub/lpmud/drivers/dgd/lpc/nfs.tgz
+
+but that requires the networking package.  Still, it's an illustration
+of how easy it would be to implement WebDAV in LPC.
+
+Regards,
+Dworkin
+</pre>
+
+  <p style="text-size: 150%"> <a href="../index.html"> Back to top level
+    </a> </p>

@@ -2,7 +2,7 @@
                       "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
-<title>DGD and LPC: DGD LPC Reference</title>
+<title>DGD and LPC: NFS</title>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
 <link href="../../phantasmal.css" rel="stylesheet" type="text/css" />
 </head>
@@ -24,9 +24,9 @@
           <td class="content" style="font-size: 120%">
 
           <ul style="margin: 0; padding-left: 10%">
-            <li> <a href="../index.html">DGD &amp; LPC Page</a> </li>
+            <li> <a href="index.html">DGD &amp; LPC Page</a> </li>
 	    <li> <a href="../LPC">LPC Textbook</a> </li>
-	    <li> <a href="../Book/html/">New LPC Introduction</a> </li>
+	    <li> <a href="../Book">New LPC Introduction</a> </li>
           </ul>
 
         </td>
@@ -54,61 +54,41 @@
         <tr>
           <td class="heading">&nbsp;&nbsp;&middot;&nbsp;
 	    <a href="http://phantasmal.sf.net/DGD">DGD Page</a> &gt;
-            <a href="">DGD LPC Reference</a>
+	    <a href="http://phantasmal.sf.net/DGD/LibWriting">MUDLibs</a> &gt;
+            <a href="">NFS</a>
           </td>
         </tr>
         <tr>
           <td class="content">
-    
+  
 
-  <h1> An LPC Reference for DGD </h1>
+  <h2> Implementing NFS </h2>
 
-  <ul>
-    <li> <a href="Code_Examples.html"> A Page of LPC Examples </a> </li>
-    <li> <a href="LPC_FAQ.html"> Some Frequently-Asked LPC Language
-        Questions </a> </li>
-    <li> <a href="../LPC"> A partial DGD Textbook, based on Ronny
-        Wikh's </a> </li>
-    <li> <a href="General_Docs.html"> Some LPC Docs for other LPMUDs
-      </a> </li>
-    <li> <a href="Parse_String.html">Using DGD's parse_string Kfun</a> </li>
-    <li> <a href="Diffs_in_LPC.html"> Differences between DGD's and
-	LPMUD's versions of LPC </a></li>
-    <li> <a href="Driver_Details.html">Random DGD driver implementation
-	details</a> </li>
-    <li> <a href="Calling_Conventions.html">DGD Function Call Conventions</a>
-      </li>
-    <li> <a href="ThreadLocal.html">Threads and Thread-Local Storage</a>
-      </li>
-    <li> <a href="Unsupported.html"> Features that Dworkin explicitly
-        prefers <i>not</i> to add</a> </li>
-  </ul>
+<pre>
+From: dgd at list.imaginary.com (Felix A. Croes)
+Date: Wed Jan 28 10:36:04 2004
+Subject: [DGD] Alternatives to the Kernel model of security...
 
-  <span style="font-size: 75%">
+Josh Dady wrote:
+>[...]
+> If your requirements include editing from the shell account with the 
+> only difference being that the MUD's "/" isn't the shell's "/", then 
+> your only real options are to write a DGD extension to make use of the 
+> filesystem's meta-data (I'm including file permissions here) or to 
+> build a DGD WebDAV server and use an OS that can mount a WebDAV URL as 
+> a regular disk.
 
-    <p>
-      This page and its sub-pages are all about DGD's version of LPC.
-      If you're using MudOS, LDMUD, Amylaar or any other flavor of
-      LPMUD then don't expect all of this to be true.  Similarly, if
-      you read LPC documents elsewhere on the web, some of it won't
-      work on DGD.  That's especially true of game-specific code since
-      that usually assumes there are a lot of built-in functions that
-      DGD doesn't provide.
-    </p>
+Another option would be to use Zell's implementation of an NFS server
+in LPC:
 
-    <p>
-      A lot of this page is taken from the mailing list and from
-      Dworkin.  Some is taken from Dworkin and not credited to him at
-      the actual location.  If somebody wants to complain, I'll go
-      through and add attribution to him at each individual location
-      in the file.  Otherwise I'll do what I'm doing now and you
-      should assume that anything really useful in the file is by him
-      and anything that isn't, or that's wrong, was added by me.  To
-      be sure about one thing or another, check the mailing list
-      archives.
-    </p>
+    ftp://ftp.lysator.liu.se/pub/lpmud/drivers/dgd/lpc/nfs.tgz
 
-  </span>
+but that requires the networking package.  Still, it's an illustration
+of how easy it would be to implement WebDAV in LPC.
+
+Regards,
+Dworkin
+</pre>
 
   <p style="text-size: 150%"> <a href="../index.html"> Back to top level
     </a> </p>

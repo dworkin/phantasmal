@@ -1,0 +1,375 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+                      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<title>DGD and LPC: Script Delays</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<link href="../../phantasmal.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<table width="95%" border="0" cellspacing="0" cellpadding="4">
+  <tr>
+    <td colspan="2"> <table width="100%" border="0" cellspacing="1"
+        cellpadding="0" class="main">
+        <tr>
+          <td class="banner">The DGD Driver</td>
+        </tr>
+      </table></td>
+  </tr>
+  <tr>
+    <td valign="top">
+      <table width="25%"  border="0" cellspacing="1"
+             cellpadding="0"  class="main">
+        <tr>
+          <td class="content" style="font-size: 120%">
+
+          <ul style="margin: 0; padding-left: 10%">
+            <li> <a href="index.html">DGD &amp; LPC Page</a> </li>
+	    <li> <a href="../LPC">LPC Textbook</a> </li>
+	    <li> <a href="../Book">New LPC Introduction</a> </li>
+          </ul>
+
+        </td>
+        </tr>
+        <tr>
+          <td class="content" align="center">
+            <a href="http://validator.w3.org/check/referer">
+            <img src="../../images/valid-xhtml10.gif" alt="Valid XHTML 1.0!"
+             style="border:0;width:88px;height:31px" /></a><br />
+            <img src="../../images/pixel.gif"
+             style="border:0;width:88px;height:1px" alt="" /><br />
+            <a href="http://jigsaw.w3.org/css-validator/check/referer">
+            <img src="http://jigsaw.w3.org/css-validator/images/vcss"
+             alt="Valid CSS!" style="border:0;width:88px;height:31px" />
+            </a><br /><br /><br />
+            <a href="http://sourceforge.net">
+            <img src="http://sourceforge.net/sflogo.php?group_id=48659&amp;type=2"
+             style="border: 0; width: 125; height: 37;"
+	     alt="SourceForge.net Logo" /></a>
+          </td>
+        </tr>
+      </table></td>
+    <td> <table width="100%"  border="0" cellspacing="1" cellpadding="0" 
+          class="main">
+        <tr>
+          <td class="heading">&nbsp;&nbsp;&middot;&nbsp;
+	    <a href="http://phantasmal.sf.net/DGD">DGD Page</a> &gt;
+	    <a href="http://phantasmal.sf.net/DGD/LibWriting">MUDLibs</a> &gt;
+            <a href="">Script Delays</a>
+          </td>
+        </tr>
+        <tr>
+          <td class="content">
+  
+
+  <h2> Delays in In-MUD Scripting Languages </h2>
+
+<pre>
+From: dgd at list.imaginary.com (Noah Gibbs)
+Date: Sat Jan  3 20:28:01 2004
+Subject: [DGD] Delay statements in scripting
+
+  This is a problem I've been thinking about for
+awhile, and stuff I've seen recently has made me more
+interested in fixing it.  Since the problem is
+specific to some of the implementation choices made by
+the DGD server, I'm going to try this list.  Feel free
+to call "off topic" if this seems to be.
+
+  Scripts in MUDs tend to be simple little things that
+rooms, objects and mobiles do.  They tend to be
+essentially a set of actions, in order, with the
+occasional conditional or loop.  They are, in other
+words, usually pretty simple.  They also tend to be
+the sort of thing that somebody would type at a
+command line since they tend to primarily specify
+actions for a mobile to take, or sensory input for
+people to see/hear/etc.
+
+  There's one different very simple and fundamental
+action that scripts want to take, and it's harder to
+implement:  delays.  When you want a mobile to look at
+what it's been given, wait a few seconds and give it
+back disdainfully, it's important to wait that few
+seconds.  The problem is that DGD is single-threaded,
+which means that threads of execution need to finish
+*fast* so that the rest of the MUD can get on with
+what it's doing.  A three-second delay loop isn't an
+option, and would halt the rest of the MUD, spoiling
+the effect.  It doesn't work.
+
+  Note to Skotos guys:  I know you've solved this
+problem, and from your documentation I'm even pretty
+sure how.  However, I'm under NDA so I can't use your
+solution.  Since I'm giving my MUDLib code away, you
+probably wouldn't want me to.
+
+  One way to do this is to schedule call_outs, or do
+something roughly similar.  That's a bit ugly because
+you need to split your function into pieces --
+"give_script_start", "give_script_after_delay_1",
+"give_script_after_delay_2", etc.  However, once you
+get over the syntactic ugliness it's not too bad.  It
+does what you want it to.
+
+  Another way is to have a very simple script that
+queues up actions in your mobiles.  In other words,
+you'd just give it the equivalent of a bunch of lines
+of typed input.  Unfortunately, to add loops and
+conditionals and things to this, you'd need to add
+another programming language on top of your parser. 
+So you could do this, but you'd be implementing
+state-switches and multithreading in a pretty ugly
+way.  Not great.
+
+  A variant on that choice is to queue up actions in
+advance, but run LPC code to do it.  So you'd have
+function like mobile_do_run(), mobile_do_sharpen(),
+etc that would queue up that action to be done when
+the current action is finished.  So you'd make up a
+set script of actions, but you'd get conditionals and
+scripting at the very beginning, when you chose what
+actions.  Unfortunately, that means that all control
+structures must be done in the very beginning, and
+must be done (effectively) before any of the delays
+happen.  That's not great.  It means that mobiles will
+get stupider as the script goes on longer, and if they
+need to enter a room and then respond to it, you're
+reduced to call_out statements again.
+
+  A third possibility is to run the script again after
+each delay, and pass some kind of argument to it to
+tell it where it came back.  So you'd make your whole
+function a big switch() statement and then jump to
+where you were after the delay.  A delay would become
+a return statement, along with how long you should
+delay, and then you'd get called again with an
+argument for how long you've delayed or something. 
+That'd be wacky, and your builders would hate you and
+want to kill you, but it would work.
+
+  All these solutions are pretty gross.  I know of one
+or two variants on the above, which are also pretty
+gross.  Anybody know a good way to deal with this? 
+What I'd really like would be a way to write LPC code
+and have some kind of "delay" statement that worked
+transparently.  Failing that, anything that allowed
+builders to write simple scripts for simple actions
+would be great.
+
+  I assume I'm not the only person who's had this
+problem, but most Diku-type MUDs solve it with an
+awful internal scripting language based on the format
+for player commands (i.e. "if is_player($target1) then
+kill $target1").  That's mostly like the "implement a
+language for it" solution above, and ignores all the
+advantages of having LPC built into the server in the
+first place.
+
+  Anybody know a good way to handle this?
+
+
+=====
+</pre>
+
+<hr />
+
+<pre>
+From: dgd at list.imaginary.com (Steve Foley)
+Date: Sun Jan  4 02:26:01 2004
+Subject: [DGD] Delay statements in scripting
+
+----- Original Message ----- 
+From: "Noah Gibbs"
+
+>   There's one different very simple and fundamental
+> action that scripts want to take, and it's harder to
+> implement:  delays.  When you want a mobile to look at
+> what it's been given, wait a few seconds and give it
+> back disdainfully, it's important to wait that few
+> seconds.  The problem is that DGD is single-threaded,
+> which means that threads of execution need to finish
+> *fast* so that the rest of the MUD can get on with
+> what it's doing.  A three-second delay loop isn't an
+> option, and would halt the rest of the MUD, spoiling
+> the effect.  It doesn't work.
+
+Perhaps this just restates the problem, but maybe it's
+easier to look at the situation as multiple events.
+
+You have the player giving the item to the mobile, which
+causes two things to happen.  First, the mobile examines the
+object.  Second, a new event is created/registered to occur
+at some point in time in the future.  Namely, the mobile
+gives the object back to the player (and this has its own
+set of criteria to meet).  So, I guess the question is, how
+are you dealing with a situation where one event causes
+another event to occur after some delay in time?  Or have I
+simple restated the question?
+
+
+From: dgd at list.imaginary.com (John West McKenna)
+Date: Sun Jan  4 05:25:01 2004
+Subject: [DGD] Delay statements in scripting
+
+Noah Gibbs writes:
+
+<a long post about the difficulties of putting delays into scripts without
+either inventing another language or putting up with ghastly syntax>
+
+How about taking advantage of LPC's dynamic nature?  Write your script as
+ordinary LPC code, with "calls" to a non-existant "delay" function.  This
+script never gets executed, or even compiled.  Instead, it gets fed to a
+relatively simple preprocessor that breaks it up into separate chunks and
+inserts callbacks between them.
+
+The processed code gets compiled and executed.
+
+With a bit more thought/work, it should be possible to deal with loops and
+ifs over the breaks (they'd have to be processed into something new too).
+
+
+From: dgd at list.imaginary.com (Felix A. Croes)
+Date: Sun Jan  4 07:14:01 2004
+Subject: [DGD] Delay statements in scripting
+
+>   There's one different very simple and fundamental
+> action that scripts want to take, and it's harder to
+> implement:  delays.  When you want a mobile to look at
+> what it's been given, wait a few seconds and give it
+> back disdainfully, it's important to wait that few
+> seconds.  The problem is that DGD is single-threaded,
+> which means that threads of execution need to finish
+> *fast* so that the rest of the MUD can get on with
+> what it's doing.  A three-second delay loop isn't an
+> option, and would halt the rest of the MUD, spoiling
+> the effect.  It doesn't work.
+
+Take a look at what LPMOO does: it uses DGD to fully simulate a MOO,
+which does indeed have such delays.
+
+Instead of programming in LPC, you write in a scripting language (which
+can be identical) which is translated into LPC.  All local variable and
+function argument references are replaced with references to some pool
+where they can be kept in case of a delay.  Each function is called with
+an additional argument, the entry point; each function call and each
+delay creates a new entry point just before, and just after the function
+call or delay, respentively.  You arrange the code for quickly restarting
+at this entry point.  LPMOO puts the whole function within a switch, as
+follows:
+
+    int foo(int entry, mixed *variables_and_arguments)
+    {
+	switch (entry) {
+	case 0:
+	    /* normal start of the function */
+	    ...
+	case 1:
+	    /* further within */
+	    ...
+			    case 2:
+				/*
+				 * still further, several compound statements
+				 * deep, switch allows this
+				 */
+				 ...
+	}
+    }
+
+MOO code doesn't have a switch (or didn't at the time), so this was the
+easiest solution.  With a switch construct in your scripting language of
+choice it becomes a little more complex -- more entry points will have
+to be generated.
+
+That is the easy part.  Not so easy is the programming environment you
+have just created.  Remember that arrays, mappings and light-weight
+objects are local to persistent objects, and that each delay can create
+local copies of them.  Furthermore, a cooperative multitasking environment
+suffers from the usual well-known drawbacks, which will be especially
+evident in a tightly integrated system such as DGD's.
+
+Regards,
+Dworkin
+
+From: dgd at list.imaginary.com (Par Winzell)
+Date: Sun Jan  4 11:11:01 2004
+Subject: [DGD] Delay statements in scripting
+
+> Instead of programming in LPC, you write in a scripting language (which
+> can be identical) which is translated into LPC.  All local variable and
+> function argument references are replaced with references to some pool
+> where they can be kept in case of a delay.  Each function is called with
+> an additional argument, the entry point; each function call and each
+> delay creates a new entry point just before, and just after the function
+> call or delay, respentively.  You arrange the code for quickly restarting
+> at this entry point.  LPMOO puts the whole function within a switch, as
+> follows:
+> 
+>     int foo(int entry, mixed *variables_and_arguments)
+>     {
+> 	switch (entry) {
+> 	case 0:
+> 	    /* normal start of the function */
+> 	    ...
+> 	case 1:
+> 	    /* further within */
+> 	    ...
+> 			    case 2:
+> 				/*
+> 				 * still further, several compound statements
+> 				 * deep, switch allows this
+> 				 */
+> 				 ...
+> 	}
+>     }
+
+
+This is precisely what Merry does.
+
+Zell
+
+
+From: dgd at list.imaginary.com (Par Winzell)
+Date: Sun Jan  4 11:31:00 2004
+Subject: [DGD] Delay statements in scripting
+
+> This is precisely what Merry does.
+
+*blush*
+
+Merry is Skotos' LPC-based scripting system. It's pretty much straight 
+LPC with 'additions' -- e.g. delays, which are implemented with the 
+switch solution given by Dworkin above.
+
+Merry is parsed using parse_string() and a rathed mutated version of 
+Felix's old LPC-grammar-for-parse_string() grammar. It's broken down 
+into a binary format and stored in LWO's. The LWO can reconstruct the 
+Merry source or underlying LPC source on demand (the former for editing 
+the script, the latter for compiling it to a real LPC object).
+
+The systems keeps a cache of a few hundred compiled Merry scripts 
+around, but they can be destructed and recompiled on demand.
+
+One tip for anybody implementing this: remember that the compiled 
+objects can't keep any real state. For delays, for example, the callouts 
+themselves can't be kept in the generated object. You -must- be able to 
+destruct such objects at will.
+
+If I execute an action that requires a delay, it's my body that should 
+keep the callout, and then relayeto the appropriate script handler when 
+the callout expires.
+
+Zell
+</pre>
+
+  <p style="text-size: 150%"> <a href="../index.html"> Back to top level
+    </a> </p>
+            <address>
+            <span><a href="mailto:angelbob-remove-spamfree@spamfree.users.sf.net">Noah Gibbs</a></span>
+            </address></td>
+        </tr>
+      </table></td>
+  </tr>
+</table>
+</body>
+</html>
