@@ -38,13 +38,17 @@
   <p>
     Primarily, the DGD community means that the game runs as though it
     would never shut down, and as though the server never went down,
-    even if the server <i>will</i> go down.  The game, as a single run
-    of the program, never stops and rarely even pauses.  DGD's
-    definition of Persistence involves being able to keep actual
-    LPC-language objects around, potentially forever.  The object
-    pointers never expire, you never have to save or restore, you
-    never need to write code to back up your objects &mdash; because
-    conceptually, the server never, never goes down.
+    even if the server <i>will</i> go down.  DGD is said to be
+    persistent because the entire state of the game in memory can be
+    preserved when the server is rebooted.  This allows the game to
+    resume in exactly the same condition that it was in when the
+    server shut down, including all internal variables of all objects.
+    The game, as a single 'virtual run' of the program, never stops
+    and rarely even pauses.  DGD's definition of Persistence involves
+    being able to keep actual LPC-language objects around, potentially
+    forever.  The object pointers never expire, you never have to save
+    or restore, you never need to write code to back up your objects
+    &mdash; because conceptually, the server never, never goes down.
   </p>
 
   <p>
