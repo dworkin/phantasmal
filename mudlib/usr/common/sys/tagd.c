@@ -40,14 +40,15 @@ void new_mobile_tag(string name, int type,
 }
 
 void new_object_tag(string name, int type,
-		    varargs string get_function, string set_function) {
+		    varargs string get_function, string set_function,
+		    int inherit_type) {
   if(!GAME() && !COMMON() && !SYSTEM())
     error("Only game code can create new object tag types!");
 
   if(object_tags[name])
     error("Object tag type '" + name + "' already exists!");
 
-  object_tags[name] = ({ type, get_function, set_function });
+  object_tags[name] = ({ type, get_function, set_function, inherit_type });
 }
 
 mixed mobile_get_tag_value(object mobile, string name) {
@@ -86,6 +87,7 @@ void mobile_set_tag_value(object mobile, string name, mixed value) {
 
 mixed object_get_tag_value(object obj, string name) {
   mixed *tag_arr;
+  mixed tag_val;
 
   if(!GAME() && !COMMON() && !SYSTEM())
     error("Only Game code can get object tag values!");
@@ -97,7 +99,12 @@ mixed object_get_tag_value(object obj, string name) {
   if(!tag_arr)
     error("No such object tag type as '" + name + "'!");
 
-  return call_other(obj, (tag_arr[1] ? tag_arr[1] : "get_tag"), name);
+  tag_val = call_other(obj, (tag_arr[1] ? tag_arr[1] : "get_tag"), name);
+  if(tag_val) return tag_val;
+
+  
+  
+  return nil;
 }
 
 void object_set_tag_value(object obj, string name, mixed value) {
