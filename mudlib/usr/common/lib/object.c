@@ -16,7 +16,7 @@
 /* These allow the object to be contained, and the setters for this
    are all access-controlled so only the CONTAINER object can play
    with them. */
-object location;  /* Same as 'environment' in many MUDLibs */
+private object location;  /* Same as 'environment' in many MUDLibs */
 
 /* Descriptions, available to the player when examining the object */
 object bdesc;  /* "Brief" description, such as "a sword" or
@@ -40,13 +40,13 @@ int     desc_article; /* This is the article type which may be optionally
 			 prepended to brief and glance descriptions */
 
 /* Tracking number for OBJNUMD */
-int    tr_num;
+static int    tr_num;
 
 /* Mobile, if any, perceiving this object as its body */
-object mobile;
+private object mobile;
 
 /* Parent/archetype for data inheritance */
-object archetype;
+private object archetype;
 
 /* Details -- sub-objects that are part of this one */
 
@@ -54,14 +54,14 @@ object archetype;
    lists details that the object's parent has but that this object
    does not.  "detail_of" is an object that this object is a detail of,
    or nil. */
-object* details;
-object* removed_details;
-object  detail_of;
+private object* details;
+private object* removed_details;
+private object  detail_of;
 
 /* Objects contained in this one */
-mixed*  objects;
+private mixed*  objects;
 /* Mobiles of objects contained in this one */
-mixed*  mobiles;
+private mixed*  mobiles;
 
 
 /* Prototypes */
