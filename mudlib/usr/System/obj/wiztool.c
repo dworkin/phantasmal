@@ -101,6 +101,8 @@ void upgraded(void) {
 	"@list_mob"            : ({ "cmd_list_mobiles" }),
 	"@list_mobile"         : ({ "cmd_list_mobiles" }),
 	"@list_mobiles"        : ({ "cmd_list_mobiles" }),
+	"@delete_mob"          : ({ "cmd_delete_mobile" }),
+	"@delete_mobile"       : ({ "cmd_delete_mobile" }),
 
 	"@segment_map"         : ({ "cmd_segment_map" }),
 	"@seg_map"             : ({ "cmd_segment_map" }),

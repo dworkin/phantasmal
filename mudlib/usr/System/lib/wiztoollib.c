@@ -489,6 +489,35 @@ static void cmd_list_mobiles(object user, string cmd, string str) {
 }
 
 
+static void cmd_delete_mobile(object user, string cmd, string str) {
+  int    mobnum;
+  object mob;
+
+  if(!str || STRINGD->is_whitespace(str)
+     || sscanf(str, "%*s %*s") == 2
+     || sscanf(str, "#%d", mobnum) != 1) {
+    user->message("Usage: " + cmd + " #<mobile number>\r\n");
+    return;
+  }
+
+  mob = MOBILED->get_mobile_by_num(mobnum);
+  if(!mob) {
+    user->message("No mobile #" + mobnum
+		  + " is registered with MOBILED.  Failed.\r\n");
+    return;
+  }
+
+  if(mob->get_user()) {
+    user->message("Mobile is still hooked up to a network connection."
+		  + "  Failed.\r\n");
+    return;
+  }
+
+  destruct_object(mob);
+  user->message("Mobile #" + mobnum + " successfully destructed.\r\n");
+}
+
+
 static void cmd_segment_map(object user, string cmd, string str) {
   int hs, ctr;
 

@@ -9,6 +9,8 @@ Release 0.10:
 	and to create objects in the current zone by default (@new_port,
 	@new_room).
 	* New @list_mob command to list mobiles by number
+	* New @delete_mob command can delete mobiles without accompanying
+	user objects.  Note that this can leave bodies behind.
 	* @stat command now works on mobiles
 	* UNQ DTD error handling now can accept a filename
 	
