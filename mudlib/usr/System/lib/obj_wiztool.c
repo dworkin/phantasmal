@@ -628,7 +628,7 @@ static void cmd_set_obj_flag(object user, string cmd, string str) {
 
   if(str) str = STRINGD->trim_whitespace(str);
   if(str && !STRINGD->stricmp(str, "flagnames")) {
-    user->message("Flag names:  cont container open openable\r\n");
+    user->message("Flag names:  cont container open openable lockable\r\n");
     return;
   }
 
@@ -642,8 +642,11 @@ static void cmd_set_obj_flag(object user, string cmd, string str) {
 
   obj = MAPD->get_room_by_num(objnum);
   if(!obj) {
-    user->message("Can't find room or portable #" + objnum + "!\r\n");
-    return;
+    obj = EXITD->get_exit_by_num(objnum);
+    if (!obj) {
+      user->message("Can't find object #" + objnum + "!\r\n");
+      return;
+    }
   }
 
   valmap = ([
@@ -673,6 +676,8 @@ static void cmd_set_obj_flag(object user, string cmd, string str) {
     obj->set_open(flagval);
   } else if(!STRINGD->stricmp(flagname, "openable")) {
     obj->set_openable(flagval);
+  } else if(!STRINGD->stricmp(flagname, "lockable")) {
+    obj->set_lockable(flagval);
   }
 
   user->message("Done.\r\n");

@@ -113,7 +113,6 @@ void upgraded(void) {
 	"@remove_exit"         : ({ "cmd_remove_exit" }),
 	"@list_exit"           : ({ "cmd_list_exit" }),
 	"@list_exits"          : ({ "cmd_list_exit" }),
-	"@fix_exit"            : ({ "cmd_fix_exits" }),
 	"@fix_exits"           : ({ "cmd_fix_exits" }),
 	"@add_deferred_exits"  : ({ "cmd_add_deferred_exits" }),
 	"@add_deferred"        : ({ "cmd_add_deferred_exits" }),

@@ -668,6 +668,12 @@ static void cmd_list_exit(object user, string cmd, string str) {
     tmpstr += " link #";
     tmpstr += exit->get_link();
 
+    if (exit->is_open())
+      tmpstr += " Open";
+
+    if (exit->is_lockable())
+      tmpstr += " Lockable";
+
     tmpstr += "\r\n";
   }
   

@@ -433,6 +433,10 @@ nomask string move(int dir) {
   if (reason = dest->can_enter(body, EXITD->opposite_direction(dir))) {
     return reason;
   }
+  
+  if (!exit->is_open()) {
+    return "That way is closed.\n\r";
+  }
 
   location->leave(body, dir);
   location->remove_from_container(body);

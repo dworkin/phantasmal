@@ -241,11 +241,19 @@ void add_twoway_exit_between(object room1, object room2, int direction,
   exit1->set_from_location(room1);
   exit1->set_direction(direction);
   exit1->set_type(2); /* two-way */
+/*  exit1->set_container(1); */
+  exit1->set_openable(1);
+  exit1->set_open(1);
+  exit1->set_lockable(0);
 
   exit2->set_destination(room1);
   exit2->set_from_location(room2);
   exit2->set_direction(opposite_direction(direction));
   exit2->set_type(2); /* two-way */
+/*  exit2->set_container(1); */
+  exit2->set_openable(1);
+  exit2->set_open(1);
+  exit2->set_lockable(0);
 
   room1->add_exit(direction, exit1);
   room2->add_exit(opposite_direction(direction), exit2);
@@ -285,6 +293,10 @@ void add_oneway_exit_between(object room1, object room2, int direction,
   exit1->set_from_location(room1);
   exit1->set_direction(direction);
   exit1->set_type(1); /*one-way */
+/*  exit1->set_container(1); */
+  exit1->set_openable(1);
+  exit1->set_open(1);
+  exit1->set_lockable(0);
 
   room1->add_exit(direction, exit1);
 
@@ -306,12 +318,15 @@ void add_oneway_exit_between(object room1, object room2, int direction,
 void fix_exit(object exit, int type, int link) {
   exit->set_type(type);
   exit->set_link(link);
+  exit->set_openable(1);
+  exit->set_open(1);
+  exit->set_lockable(0);
 }
 
 void remove_exit(object room, object exit) {
   object other_exit, dest;
 
-  if (exit->get_type()==2) {
+  if (exit->get_type()==2) { /* two-way door, remove other side first */
     other_exit = EXITD->get_exit_by_num(exit->get_link());
     dest = other_exit->get_from_location();
     dest->remove_exit(other_exit);

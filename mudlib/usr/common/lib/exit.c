@@ -91,7 +91,8 @@ object get_destination() {
 
 /* Return nil if a user can pass through a door, the reason if they cannot */
 string can_pass(object pass_object) {
-  return nil;
+  if (!is_open())
+    return "The door is closed.";
 }
 
 /* Called when a user passes through the exit */
