@@ -1,3 +1,5 @@
+/* $Header: /cvsroot/phantasmal/mudlib/usr/System/obj/user.c,v 1.8 2002/05/20 12:31:50 sarak Exp $ */
+
 #include <kernel/kernel.h>
 #include <kernel/user.h>
 #include <kernel/rsrc.h>
@@ -1397,12 +1399,12 @@ static void cmd_remove(object user, string cmd, string str) {
 }
 
 static void cmd_bug(object user, string cmd, string str) {
-  write_file(BUG_DATA, "Bug report: " + str);
+  write_file(BUG_DATA, ctime(time()) + ": Bug Report: " + str + "\n");
   message("Reported bug: " + str + "\r\n");
 }
 
 static void cmd_typo(object user, string cmd, string str) {
-  write_file(TYPO_DATA, "Typo report: " + str);
+  write_file(TYPO_DATA, ctime(time()) + ": Bug Report: " + str + "\n\n");
   message("Reported typo: " + str + "\r\n");
 }
 
