@@ -255,5 +255,423 @@
     persistence for building, in some sense so can players.
   </p>
 
+<pre>
+From: Dread Quixadhal <quixadhal@shadowlord.org>
+Subject: Re: [DGD] GurbaLib
+Date: Wed, 01 Sep 2004 02:51:42 -0400
+
+|Date: Thu, 26 Aug 2004 12:19:19 -0400 (EDT)
+|From: Stephen Schmidt <schmidsj@union.edu>
+|To: dgd@list.imaginary.com
+|Subject: Re: [DGD] GurbaLib
+|Reply-To: dgd@list.imaginary.com
+|
+|On this subject, one might wonder why it is that DGD doesn't
+|have a mudlib that offers more than mudlibs for other drivers,
+|since DGD offers so much more than other drivers. A few musings
+|on that subject follow.
+|
+|The biggest thing DGD offers, from a game perspective, is
+|persistence. A game world can be altered by players and
+|the alterations will remain. This is not the only feature
+|in which DGD outstrips other drivers, but I think it's the
+|one most visible to players of games running on DGD.
+|
+|Unfortunately, for the typical fantasy adventure, this is
+|a drawback rater than a gain. After the player kills the
+|goblin king, the game is over until the game resets and
+|the goblin king magically springs back to life. Similarly
+|for recovering lost treasures, rescuing princesses, and
+|so forth. It is bad for the game, not good, if these
+|things are permanent achievements.
+|
+|One can try to design features into the game to "explain"
+|resetting of the game world, but that approach is counter
+|to the idea of persistence. What's the use of using a
+|persistent driver if all you're going to do is put
+|non-persistent behavior back in via the game design?
+|Also, the mechanisms needed to explain the resets within
+|a consistent story line are complex.
+|
+|What DGD needs (needs in the public domain, anyway; Skotos
+|is outside the scope of my comments here, and I'm not
+|terribly familiar with it anyway - if someone who is
+|wanted to comment on its relation to this topic, I think
+|that'd be great) is a "killer app", a game concept that
+|isn't traditional fantasy adventure and that uses persistence
+|as a fundamental of the game design. DGD ought not try to
+|compete on the tradition grounds of LPMud - its feature
+|set inherently pulls it in a different direction.
+|
+|The reason traditional fantasy adventure works with resets
+|is that the players are a small part of the game world
+|anyway; they don't have important roles in the society
+|in which the game is set. Thus, if their acts are
+|impermanent, it doesn't matter much.
+|
+|The DGD "killer app" game should reverse that. Players
+|should be important people in the society of the game
+|world, capable of taking acts which alter that society,
+|which are then reflected in the game world through the
+|persistence of DGD. For example, building a castle
+|which would then attract NPCs to form a town around it.
+|Or destroying a castle and dispersing the town. Or
+|something similar in whatever setting you do like, if
+|you don't like fantasy adventure.
+|
+|Steve
+
+Very nicely written!
+
+I'd like to add my two cents to this thread by saying that you don't
+have to have things as black or white.  The traditional mud is based
+around resets and a facet/drain economy -- one where players "harvest"
+mobs for gold, which is then drained away again by equipment,
+training, and other in-game perks.  The ultimate result of this kind
+of structure is the "level grind", where players are forced to kill
+hundreds or thousands of the same kind of creature until they are
+powerful enough to move on to the next area, and repeat the process
+until they reach the plateau where no further content is available to
+them.
+
+A fully persistent world with NO resets and a fully closed economy
+would, as Steve points out, require a constant staff of admins to
+create new content on the fly, else the players would exhaust what
+exists in the world and discover a virtual "heat-death" of the game.
+
+To find a middle-ground, we need to try something new.  One idea I had
+ages ago (and I'm sure many others have through of this too) is to
+allow mobs to spawn and evolve in reaction to each other as well as
+player activities.  That is, when you start the clock, the orcs in the
+mountains will gradually start wandering, as will the goblins in the
+forest.  At some point, they may encounter one another.  If they do,
+they can either fight one another over resources, or ally themselves
+for some other (coded) goal.  Maybe they both worship the same deity
+and team up to further those ends.
+
+In any case, when players start running into mobs, and killing them
+for loot, the mobs shouldn't just die and reappear... but neither
+should they be forever destroyed until a game master creates new
+ones.  Allow for the idea that the event was witnessed.  If a band of
+orcs gets killed near a city, perhaps a straggler watched and reported
+back to camp.  Maybe the orcs will mass and attack the town if it
+happens often enough, or maybe they will pick up and move further
+away... allowing the city to expand, or a new enemy to move in.
+
+Thus, persistence is maintained in the sense that if there was a
+goblin camp near the city, that camp remains until it is destroyed or
+packs up and moves away... and that it doesn't just reappear if
+something happens.  But at the same time, nothing prevents new mobs
+from moving into the area, either by the hand of a game master, or by
+some code that decides a new tribe or orcs might be needed (as the orc
+population is now too low, and the human population hasn't filled the
+void).
+
+I also totally agree that the players need to be more than cogs in the
+wheel.  If the best you can hope for is to kill stuff to get more
+equipment, to kill more stuff... you're in level-grind land, and may
+as well toss out persistence.  In that respect, I think players need
+to grow and shape the world alongside the game masters.  They should
+be able to spend their wealth to build housing, and expand the city
+borders.  Work to establish a new village somewhere, and set up trade
+routes that need to be patrolled so the merchants (both NPC and
+player) don't get ambushed by bandits (both NPC and player!).  Perhaps
+players can engage in competition for nation-building as they (and
+their guilds or other organizations) become really powerful (I'm
+thinking along the lines of the old text game conquer, or empire).
+
+So, the big question then is... how can we build a mudlib that allows
+and encourages that kind of thing?  A persistent world that can still
+evolve and populate itself without constant GM handholding, but which
+can be micro-managed by a staff who wants a tight storyline to
+develop?  I'm too much of a n00b at LPC to have any answers here, but
+I 'd love to hear what other people think.
+
+PS:  Sorry if this gets double-posted.  I didn't realize I had subscribed
+under my old email address and tried to post it from my new one.  Since it
+hadn't shown up yet, I figured I'd just repost as it's not THAT long. :)
+</pre>
+
+<hr />
+
+<pre>
+From: David Jackson
+Subject: [DGD] Solving a Persistence Problem - Puzzles and Quest Objects
+Date: Mon, 06 Sep 2004 14:15:00 -0500
+
+
+In working with the Gurba lib, I've made a secondary goal to port over some 
+of the classic adventure games, specifically the MIT Zork (Dungeon) and 
+Colossal Cave.  In planning these ports, I realized a few of the biggest 
+problems in converting what is essentially a single-player game to a 
+multi-player platform.
+
+Let me preface this by saying that this is -not- an argument against DGD or 
+persistency; merely, I have run into some technical issues, and I bring 
+these issues here because I am certain that some of you have come up with 
+some elegant solutions.
+
+1)  Puzzles have to be reset.  In a non-persistent mud (MudOS, LPMud), this 
+is generally not a problem.  Rooms reset themselves, and when they do, the 
+puzzles reset.  This is not the case with a persistent driver (DGD).
+
+2)  Quest items/treasures have to be replaced.  This usually occurs during 
+room resets.  Again, there are no room resets in DGD.
+
+My first solution is;  once a quest item is picked up, it is automatically 
+cloned and placed into the environment in which it was found, but now the 
+new quest item is invisible to the person who picked it up.  I don't really 
+like this solution, and it certainly doesn't address the problem of 
+puzzles.  How do I make an object that, when picked up, it clones itself, 
+and makes itself invisible, and the original remains visible to the person 
+who picked it up?
+
+My second solution was to invent a room reset feature for rooms that may 
+contain puzzles or quest items.  These resets would reset the puzzle, or 
+replace the taken quest/treasure item.  This seems like the most reasonable 
+solution, but I am hopeful that there is a better one, because it doesn't 
+keep the player from repeatedly getting the score for the same 
+quest/treasure items over and over again.
+
+My over-all goal is to provide a mechanism so that every person who plays 
+through a particular area, can play through that area once, but if he 
+should return, then that area will not yield useful quest/treasure 
+items.  Which brings up a very important issue, in fact, a catch-22;
+
+Unless there is an enormous amount of content to be had, certain quests 
+have to be designed so that they can be repeated, over and over again.
+
+The average playing time for the MIT Zork (Dungeon) area is 1 to 3 months 
+(2 to 4 if not played obsessively).
+
+The average playing time for the Adventure / Colossal Cave area is 1 to 3 
+months (2 to 4 if not played obsessively).
+
+That's a total of 2-6 months playing time - which doesn't seem like a lot 
+to me - before new content would have to be introduced.
+
+Any thoughts, ideas, solutions, etc., would be greatly appreciated...
+
+David Jackson
+</pre>
+
+<hr />
+
+<pre>
+From: Noah Gibbs
+Subject: Re: [DGD] Solving a Persistence Problem - Puzzles and Quest Objects
+Date: Mon, 6 Sep 2004 13:03:31 -0700 (PDT)
+
+--- David Jackson wrote:
+> In planning these ports, I realized a few of the
+> biggest 
+> problems in converting what is essentially a single-player
+> game to a multi-player platform.
+
+  Yup.  That's it's own whole can of worms, all right.
+
+> 1)  Puzzles have to be reset.  In a non-persistent mud (MudOS,
+> LPMud), this 
+> is generally not a problem.  Rooms reset themselves, and when they
+> do, the 
+> puzzles reset.  This is not the case with a persistent driver (DGD).
+
+  As you've said below, you *can* add regular resets to DGD.  This
+means the quest can be completed repeatedly.  However, the quest's
+benefit (good item, money, exp) does *not* have to be given repeatedly.
+ For instance, in "Fedex" quests (bringing an item to a person), you
+can have the person say (after the very first time), "sure, I'll take
+it, but why are you bringing this to *me*?"  Then you don't have to
+repeatedly award items or experience to the person.  You *do* have to
+save "quest completed" flags for all the quests for every person, but
+that's a smaller amount of data than you think.
+
+  Another, more persistent, solution is to add "quest gremlins" of some
+kind.  Maybe a lever is spring-loaded, maybe a shifting maze resets
+itself when nobody has been in its area for an hour.  Maybe the birch
+stick you need to wedge open the door will break eventually if left in
+the door, and another birch stick will drop from the tree.  This is
+more difficult, and requires more creativity in your puzzlemaking, but
+it also yields a much more satisfying player experience for us
+explorer-types :-)
+
+  It also requires much more of an answer to "so why is this puzzle
+still there, anyway?"  The answer, in one way or another, is that your
+world maintains the puzzle.  When the puzzle stops being maintained,
+*bam*, no more puzzle.
+
+> 2)  Quest items/treasures have to be replaced.  This usually occurs
+> during 
+> room resets.  Again, there are no room resets in DGD.
+
+  Again, you can just reset.
+
+  Again, you can add Quest Gremlins.  I include not only critters
+(think of the little guys that picked up and moved tiles in the maze in
+"Labyrinth"), but also special effects like the branch dropping from
+the tree.
+
+> My first solution is;  once a quest item is picked up, it is
+> automatically 
+> cloned and placed into the environment in which it was found,
+> but now the 
+> new quest item is invisible to the person who picked it up.
+
+  This would be cute.  An alternative, even grander (and more
+memory-hungry) idea would be to clone the entire puzzle area when a
+person enters.  Then the person does the puzzle, gets a result, and
+winds up with a final 'done' puzzle zone afterward.  This means the
+player is required to do puzzles alone, and that there has to be only
+one (or a very small number) of 'done' states for the puzzle.  An
+example, partially lifted from CthulhuMUD:
+
+  You have a haunted house.  You can enter the house and explore the
+lower floors, read an old diary, see the moldy furniture, et cetera. 
+At that point, if you leave, the puzzle resets and it'll be the same
+next time you come in.  However, once you've entered the upper floors,
+a Presence begins to follow you.  If you then exit, the puzzle will be
+reset, but the Presence will do something mildly nasty to you on the
+way out.
+
+  However, if you've read the diary carefully or get lucky, you can
+tweak a statue on the upper floors to open a secret door, which leads
+to the corpse of the owner.  By taking the medallion he died with and
+wearing it, you can avoid being hurt by the Presence.  However, if you
+do that, then when you leave the house, the Presence will burn the
+place down and you'll barely escape, taking damage on the way.  The
+next time you wander by the house, it's been burned down and you can't
+enter.
+
+  This has the interesting effect that you'll see odd things when other
+people *do* enter from the same street.  The group won't see each other
+inside the house -- it's as though only you, alone, are there.  And it
+means that the people for whom the house is burned down will *still*
+see other people enter.
+
+  You can decide if that's better or worse than having constant resets,
+which are also deeply unrealistic.
+
+> How do I make an object that, when picked up, it clones
+> itself, 
+> and makes itself invisible, and the original remains visible to the
+> person 
+> who picked it up?
+
+  As with the quest flags, above, you have item flags that you save for
+every player.  When the player picks up the item, set the item flag on
+him.  Now he can no longer see it.  You'll do all this somewhere in the
+routines where you describe your rooms and items.
+
+> doesn't 
+> keep the player from repeatedly getting the score for the same 
+> quest/treasure items over and over again.
+
+  This is a constant problem in MUDs, and the cause of the constant
+inflation that plagues almost every MUD everywhere.  Do you make your
+MUD limited, and risk the players getting bored and leaving, or let
+them do the same thing over and over for a reward, and guarantee
+horrendous inflation?
+
+  There's no good answer to that question.  Not yet.  With persistent
+and random puzzle design, eventually there might be.
+</pre>
+
+<hr />
+
+<pre>
+From: Stephen Schmidt
+Subject: Re: [DGD] Solving a Persistence Problem - Puzzles and Quest Objects
+Date: Mon, 6 Sep 2004 21:56:44 -0400 (EDT)
+
+On Mon, 6 Sep 2004, David Jackson wrote:
+> How do I make an object that, when picked up, it clones itself,
+> and makes itself invisible, and the original remains visible to the person
+> who picked it up?
+
+How about cloning it, and not moving it to the right place for,
+say, 10 minutes or so? Effectively this delays the reset of the
+question until the player is gone. It does make for a problem
+if someone else shows up in the interim, or if the first player
+doesn't leave, but it seems elegant otherwise.
+
+> My over-all goal is to provide a mechanism so that every person who plays
+> through a particular area, can play through that area once, but if he
+> should return, then that area will not yield useful quest/treasure
+> items.
+
+You'll have to keep track of who has done what quest. Store that
+data on the player, not on the room or in separate data file.
+Otherwise you're asking for trouble with database maintenance.
+
+This does mean you'll have to be able to add a new variable
+to the player object whenever you bring a new quest up.
+
+> Any thoughts, ideas, solutions, etc., would be greatly appreciated...
+
+How about including some moderately random component to the quest,
+so that the solution isn't the same all the time? For example, the
+key item could be in any one of five different places. That means
+the player who does it again has to solve a new variant (80% of
+the time anyway) and it also cracks down on player 1 telling
+player 2 how to solve the quest.
+
+Steve
+</pre>
+
+<hr />
+
+<pre>
+From: David Jackson
+Subject: Re: [DGD] Solving a Persistence Problem - Puzzles and Quest
+  Objects
+Date: Sat, 11 Sep 2004 02:20:41 -0500
+
+At 04:03 AM 9/7/2004, you wrote:
+
+>  --- David Jackson wrote:
+> >
+>
+>Flag the puzzle or the player, so that each player can only do said
+>quest/puzzle once.
+>Give the puzzle a reset-time so that multiple people can't be doing the
+>puzzle at the same time.
+>Thus allowing anyone to do the puzzle but no 2 people at the same time, and
+>no one person twice.
+>Perhaps?
+>
+
+Following Stephen Schmidt and Noah Gibbs (and your) excellent suggestions, 
+I compiled this result;
+
+A "gremlin" (or, in my case, the Dungeon Master) has a fixed set of rooms 
+which he will move to, one at a time, based on a fixed delay.  The rooms he 
+moves to are rooms containing puzzles (or items required for puzzles), or 
+quest items.
+He resets the rooms to an untouched state.
+
+The player can complete puzzles any number of times - but he will not 
+receive a score for any completion past the first one.
+
+Additionally, he can gather quest/treasure items, and return them to the 
+"Trophy Case".  When he does, that quest/treasure item is recorded in a 
+list, so that he can no longer gain points from that treasure (this 
+mechanism is the same for solving puzzles).
+
+If he encounters those items after he has scored points for them, he can 
+see them, but he can no longer pick them up (an error message of, "you have 
+already gathered this treasure, and find no interest in gathering it again").
+
+However, he may still pick up items required to solve puzzles (this ability 
+is still a subject for debate), and may still complete puzzles.  This is 
+under the assumption that certain puzzles will unlock other areas of the 
+game, which he may need access to.
+
+The basic paradigm is for a "puzzle solving, treasure gathering" MUD, where 
+the emphasis is on exploration and overcoming obstacles, rather than the 
+"fight monsters/gather loot/fight bigger monsters" treadmill.
+
+David Jackson
+</pre>
+
   <p style="text-size: 150%"> <a href="../index.html"> Back to top level
     </a> </p>

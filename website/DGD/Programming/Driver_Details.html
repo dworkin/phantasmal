@@ -103,6 +103,37 @@
     rest.
   </p>
 
+<pre>
+From: DGD Mailing List (Par Winzell)
+Date: Sun Apr  4 11:47:01 2004
+Subject: [DGD] another brief question, about clone instance numbering
+
+Robert Forshaw wrote:
+> Let's say I have "/obj/some_object" and 24 clones, "/obj/some_object#1" 
+> to "/obj/some_object#24".
+> 
+> Now, if I destruct say, "/obj/some_object#3", that will leave a gap in 
+> the instance number sequence, it will go from #2 to #4.
+> 
+> If I then clone "/obj/some_object" again, will the new clone definitely 
+> have an instance number of 3, an instance number of 25, or something else?
+> 
+> If it takes the instance number 3, that's fine. If it takes 25, that 
+> means that as objects are continuously destructed and cloned, the 
+> instance numbers grow higher and higher. And if we are to have any 
+> operations that use these numbers (such as in the bigmap example in 
+> "Clones and very large arrays" thread), it would not do to have 
+> "/obj/some_object#10423425564646", which would inevitably happen in the 
+> second behaviour on a persistant MUD. I'm hoping (and it probably is 
+> likely) that the first behaviour is the correct one.
+
+I don't think DGD promises to fill in the first available slot, but it 
+certainly won't do the latter. The clone number will never be higher 
+than status()[ST_OTABSIZE] or whatever it's called.
+
+Zell
+</pre>
+
   <p style="text-size: 150%"> <a href="index.html"> Back to DGD &amp; LPC
       Page </a> </p>
             <address>
