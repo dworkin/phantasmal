@@ -132,6 +132,8 @@ void upgraded(void) {
 	"@zone_map"            : ({ "cmd_zone_map" }),
 	"@zonemap"             : ({ "cmd_zone_map" }),
 
+	"@add_detail"          : ({ "cmd_add_detail" }),
+
 	"%od_report"           : ({ "cmd_od_report" }),
 	"%list_dest"           : ({ "cmd_list_dest" }),
 	"%full_rebuild"        : ({ "cmd_full_rebuild" }),
