@@ -243,6 +243,25 @@ private string serialize_to_dtd_struct(string label, mixed unq) {
   fields = ([ ]);
   set_up_fields_mapping(fields, type);
 
+  if(typeof(unq) != T_ARRAY) {
+    string tmp;
+
+    if(sizeof(type) != 2
+       || !UNQ_DTD->is_builtin(type[1][0])) {
+      accum_error += "Can't serialize struct '" + label + "' from '"
+	+ unq + "' (type " + typeof(unq) + ").\n";
+      return nil;
+    }
+
+    tmp = serialize_to_string_with_mods(type[1], unq);
+    if(tmp) {
+      /* serialize_to_string_with_mods will supply its own curly
+	 braces. */
+      return "~" + label + tmp + "\n";
+    }
+    return nil;
+  }
+
   for(ctr = 0; ctr < sizeof(unq); ctr += 2) {
     string tmp;
 
