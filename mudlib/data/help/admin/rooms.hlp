@@ -35,24 +35,27 @@ in the MUD, type "@list_rooms all".
 
 }}
 
-~name{~enUS{@make_room, make_room, makeroom, @makeroom, make room,
-            @make_rooms, make_rooms, makerooms, @makerooms, make rooms,
-            @roommake, roommake, room_make, @room_make, room make,
-            make}}
+
+~name{~enUS{make_room, makeroom, make_rooms,
+            makerooms, roommake, room_make }}
 ~keywords{admin}
 ~desc{
   ~enUS{
 
-The @make_room command asks a series of questions about the new room
-to be created, and when the user is finished, creates the room that
-the questions describe.  It asks about descriptions, nouns, adjectives
-and so on.
+The @make_room command asks a series of questions about the new
+object to be created.  It then creates the object that the questions
+describe.  It asks about descriptions, nouns, adjectives and so on.
 
-Certain room attributes (including articles and inheritance) aren't
-yet asked or set by this command.  As they become useful and
-mainstream in Phantasmal they'll be added here too.
+Experimental object attributes aren't necessarily asked or set by this
+command when first implemented.  As they become useful and mainstream
+in Phantasmal they are added to the various @make commands.  For that
+reason, certain settings may require using the standard OLC commands
+rather than this one.
+
+See also:  @make_portable, @make_detail
 
 }}
+
 
 ~name{~enUS{@goto_room, goto_room, @gotoroom, @go_to_room, go_to_room,
             gotoroom, @goto, goto, goto room, go to room, goto, go_to}}
