@@ -68,7 +68,7 @@ void set_filename(string filename) {
 
 string to_unq_text(void) {
   if(SYSTEM() || COMMON() || GAME()) {
-    return "~object{\n  obj_type{custom}\n"
+    return "~object{\n  ~obj_type{custom}\n"
       + to_unq_flags()
       + "\n  ~data{~filename{" + custom_lpc_filename + "}}\n}\n\n";
   }

@@ -28,8 +28,6 @@ an exit must be open (default) for mobiles to go through them.
 
 Some commands for exits:
 @new_exit          Creates a new exit between existing rooms
-@new_oneway_exit   Creates a new one-way exit from this room to another
-@new_twoway_exit   Creates a new two-way exit from this room to another
 @list_exit         Shows exits in the MUD
 @remove_exit       Removes an exit from the current room
 @clear_exits       Remove all exits attached to current room
@@ -41,7 +39,11 @@ Some commands for exits:
 }}
 
 ~name{~enUS{@new_exit, new_exit, newexit, @newexit, new exit,
-            @exit_new, exitnew, exit_new, @exitnew, exit new}}
+            @exit_new, exitnew, exit_new, @exitnew, exit new,
+            @new_oneway_exit, new_oneway_exit, newonewayexit,
+            @newonewayexit, new oneway exit, new one way exit,
+            @new_twoway_exit, new_twoway_exit, newtwowayexit,
+            @newtwowayexit, new twoway exit, new two way exit}}
 ~keywords{admin}
 ~desc{
   ~enUS{
@@ -49,60 +51,19 @@ Some commands for exits:
 @new_exit will create a new exit from the room you currently occupy to
 another one elsewhere.  For instance:
 
-  @new_exit nw #75 oneway (or one-way or 1)
+  @new_exit nw #75 oneway
 
 will create a new exit leading northwest into room #75.
 
-  @new_exit nw #75 twoway (or two-way or 2)
+  @new_exit nw #75 twoway
 
 will create a new exit leading northwest into room #75.  It will also
 create an exit leading from room #75 southeast into the room you're
 standing in when you type the command.
 
-Note that the room the exit leads to must be registered with objregd,
-though the room you're standing in doesn't.
+You can also use the numbers 1 and 2 for oneway or twoway.
 
 }}
-
-~name{~enUS{@new_twoway_exit, new_twoway_exit, newtwowayexit,
-            @newtwowayexit, new twoway exit, new two way exit}}
-~keywords{admin}
-~desc{
-  ~enUS{
-
-@new_twoway_exit will create a new exit from the room you currently occupy to
-another one elsewhere.  The exit will be accompanied by a return exit
-in the opposite direction leaving the destination room and arriving back
-at the room you currently occupy.  For instance:
-
-  @new_twoway_exit nw #75
-
-will create a new exit leading northwest into room #75.  It will also
-create an exit leading from room #75 southeast into the room you're
-standing in when you type the command.  Note that the room the exit
-leads to must be registered with objregd, though the room you're
-standing in doesn't.
-
-}}
-
-~name{~enUS{@new_oneway_exit, new_oneway_exit, newonewayexit,
-            @newonewayexit, new oneway exit, new one way exit}}
-~keywords{admin}
-~desc{
-  ~enUS{
-
-@new_oneway_exit will create a new exit from the room you currently
-occupy to another one elsewhere.  The exit will be NOT accompanied by
-a return exit in the opposite direction. For instance:
-
-  @new_oneway_exit nw #75
-
-will create a new exit leading northwest into room #75.  Note that the
-room the exit leads to must be registered with objregd, though the room
-you're standing in doesn't.
-
-}}
-
 
 ~name{~enUS{@clear_exit, clear_exit, clearexit, @clearexit, clear exit,
             @clear_exits, clear_exits, clearexits, @clearexits, clear exits,

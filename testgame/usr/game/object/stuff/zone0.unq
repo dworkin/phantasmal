@@ -1,9 +1,8 @@
 ~object{
+  ~obj_type{simple room}
   ~number{1}
   ~location{0}
   ~bdesc{
-    ~enUS{Meat locker}}
-  ~gdesc{
     ~enUS{Meat locker}}
   ~ldesc{
     ~enUS{This room is very cold, and you can smell iron in the air.  Hooks come
@@ -11,7 +10,6 @@ down from the ceiling almost everywhere, and hanging carcasses and
 intervening walls block your view.  You're not sure how far away the
 walls are.}}
   ~flags{3}
-  ~article{0}
   ~nouns{{~enUS{locker}}}
   ~adjectives{{~enUS{meat}}}
   ~weight{0}
@@ -20,4 +18,7 @@ walls are.}}
   ~weight_capacity{10000000}
   ~volume_capacity{10000000}
   ~length_capacity{10000}
+  ~tags{}
+
 }
+

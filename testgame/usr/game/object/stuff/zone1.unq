@@ -1,32 +1,21 @@
 ~object{
+  ~obj_type{simple room}
   ~number{100}
   ~location{0}
   ~bdesc{
-    ~enUS{Glowing Portal}}
-  ~gdesc{
     ~enUS{Glowing Portal}}
   ~ldesc{
     ~enUS{A swirling light to the north glows hypnotically.  It seems distant.
 You can't seem to approach it, only to recede.}}
   ~flags{3}
-  ~article{1}
-  ~nouns{{~enUS{portal,vortex}}}
-  ~adjectives{{~enUS{glowing,swirling}}}
+  ~nouns{{~enUS{portal, vortex}}}
+  ~adjectives{{~enUS{glowing, swirling}}}
   ~newexit{
     ~rnumber{312}
     ~direction{2}
     ~destination{101}
     ~return{313}
     ~type{2}
-    ~rbdesc{
-    ~enUS{exit}}
-    ~rgdesc{
-    ~enUS{south}
-    ~esUS{sur}}
-    ~rldesc{
-    ~enUS{south}
-    ~esUS{sur}}
-    ~rnouns{{~enUS{south}~esUS{sur}}}
     ~rflags{3}}
   ~weight{2000}
   ~volume{1000000}
@@ -34,23 +23,24 @@ You can't seem to approach it, only to recede.}}
   ~weight_capacity{2000000}
   ~volume_capacity{27000000}
   ~length_capacity{1500}
+  ~tags{}
+
 }
+
 ~object{
+  ~obj_type{simple room}
   ~number{101}
   ~location{0}
   ~bdesc{
-    ~enUS{Pulsing Nexus}}
-  ~gdesc{
     ~enUS{Pulsing Nexus}}
   ~ldesc{
     ~enUS{Thousands of invisibly-thin threads come together here into a single
 mass, a nexus of light, that pulses rapidly and irregularly.  You could watch
 it, or slip away to the north.}}
   ~edesc{
-     ~enUS{The nexus is bright and powerful for about three feet across, and
+    ~enUS{The nexus is bright and powerful for about three feet across, and
 barely visible until it's about ten feet across.}}
   ~flags{3}
-  ~article{0}
   ~nouns{{}}
   ~adjectives{{}}
   ~newexit{
@@ -59,15 +49,6 @@ barely visible until it's about ten feet across.}}
     ~destination{100}
     ~return{312}
     ~type{2}
-    ~rbdesc{
-    ~enUS{exit}}
-    ~rgdesc{
-    ~enUS{north}
-    ~esUS{norte}}
-    ~rldesc{
-    ~enUS{north}
-    ~esUS{norte}}
-    ~rnouns{{~enUS{north}~esUS{norte}}}
     ~rflags{3}}
   ~weight{2000}
   ~volume{1000000}
@@ -75,4 +56,7 @@ barely visible until it's about ten feet across.}}
   ~weight_capacity{2000000}
   ~volume_capacity{27000000}
   ~length_capacity{1500}
+  ~tags{}
+
 }
+
