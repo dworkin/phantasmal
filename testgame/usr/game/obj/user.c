@@ -1,4 +1,4 @@
-/* $Header: /cvsroot/phantasmal/testgame/usr/game/obj/user.c,v 1.8 2004/09/30 07:23:38 angelbob Exp $ */
+/* $Header: /cvsroot/phantasmal/testgame/usr/game/obj/user.c,v 1.9 2005/03/16 00:05:16 angelbob Exp $ */
 
 #include <kernel/kernel.h>
 #include <kernel/user.h>
@@ -518,7 +518,7 @@ int process_command(string str)
       return -1;
     }
 
-    if(str && str[0] == '%' && wiztool) {
+    if(str && (str != "") && (str[0] == '%') && wiztool) {
       string err, cmd, arg;
 
       cmd = str;
