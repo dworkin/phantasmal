@@ -140,15 +140,20 @@ static void cmd_new_room(object user, string cmd, string str) {
   }
 
   room = clone_object(SIMPLE_ROOM);
-  zonenum = ZONED->get_zone_for_room(user->get_location());
-  if(zonenum < 0) {
-    LOGD->write_syslog("Odd, zone is less than zero when making new room...");
-    zonenum = 0;
+  zonenum = -1;
+  if(roomnum < 0) {
+    zonenum = ZONED->get_zone_for_room(user->get_location());
+    if(zonenum < 0) {
+      LOGD->write_syslog("Odd, zone is less than 0 when making new room...");
+      zonenum = 0;
+    }
   }
   MAPD->add_room_to_zone(room, roomnum, zonenum);
 
+  zonenum = ZONED->get_zone_for_room(room);
   user->message("Added room #" + room->get_number()
-		+ " to zone " + ".\r\n");
+		+ " to zone #" + zonenum
+		+ " (" + ZONED->get_name_for_zone(zonenum) + ")" + ".\r\n");
 }
 
 
