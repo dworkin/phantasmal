@@ -70,7 +70,6 @@ static void create(varargs int clone) {
   if(!find_object(US_ENTER_YN)) compile_object(US_ENTER_YN);
   if(!find_object(LWO_PHRASE)) compile_object(LWO_PHRASE);
   if(!find_object(SIMPLE_ROOM)) compile_object(SIMPLE_ROOM);
-  if(!find_object(SIMPLE_PORTABLE)) compile_object(SIMPLE_PORTABLE);
   if(clone) {
     substate = SS_PROMPT_OBJ_TYPE;
     obj_type = OT_UNKNOWN;
@@ -459,9 +458,6 @@ static int prompt_obj_number_input(string input) {
 
   if(obj_type == OT_ROOM) {
     new_obj = clone_object(SIMPLE_ROOM);
-  } else {
-    /* This is regardless of whether it's OT_PORTABLE or OT_DETAIL */
-    new_obj = clone_object(SIMPLE_PORTABLE);
   }
 
   zonenum = -1;
