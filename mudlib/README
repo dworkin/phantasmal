@@ -1,52 +1,40 @@
                        Phantasmal MUDLib for DGD
 
-To get Phantasmal running, please read the INSTALL document instead of
-this one.  To make significant code modifications to Phantasmal,
-please read SETUP instead of this document.
+To get Phantasmal running, please read the INSTALL file.  To start
+customizing a Phantasmal-based MUD, read SETUP.  Before you make
+significant code changes to Phantasmal, please read doc/Modifying.
 
 Phantasmal is based on the Kernel MUDLib that ships with DGD.  It
 tries to be reasonably fast and secure, but prefers robustness to
-speed.  Its primary focus is on features not commonly found in MUDs,
-especially those that should be.  It currently competes primarily with
-Melville and with GurbaLib.  Melville is simpler to use and competes
-for implementors who would build mostly from scratch.  GurbaLib is
-more complete and competes for implementors who want a game with the
-rules already coded and pretty standard.  See
+speed.  Phantasmal's primary focus is on features you don't find in
+every MUD, especially things you *should*.  It currently competes
+mostly with Melville and with GurbaLib.  Melville is simple to use and
+there's not much there.  It's good if you're building from scratch.
+GurbaLib has more of a game in place.  It's for implementors who want
+a game with the rules already coded and pretty standard.  See
 "http://phantasmal.sourceforge.net/Compare.html" for a detailed
 comparison of Phantasmal to other current DGD MUDLibs.
 
-Phantasmal is designed primarily for low-volume MUDs (those with a
-small number of simultaneously-connected players) and to allow
-excellent service for that small number.  In this day and age a
-hobbyist MUD that gets 50 to 60 players a night is considered to be
-doing quite well.  Modern cheap desktop computers are ridiculously
-powerful when serving this small a number of connections.  Bandwidth
-is almost always more of a worry than processor speed.  Many standard
-concerns about memory usage and processor speed are misplaced, and
-have been for years.  Naturally this would be different if 3D graphics
-or even 2D bitmaps were involved in large quantity, or if large
-numbers of NPCs were to be reasonably simulated.  Still, the age where
-DikuMUDs are all we can afford to run is over.
-
-Phantasmal hopes to serve geographically small, dense MUDs with a
-lower number of more complex rooms rather than sprawling but simple
-wildernesses.  Sprawling wildernesses are best created algorithmically
-on the fly (or in a cache) rather than by simply duplicating many,
-many similar rooms -- this algorithmic generation of rooms is
-essentially compression, trading off the amazing processor capacity of
-modern machines for vastly reduced memory usage.  Eventually,
-Phantasmal hopes to serve these algorithmically created wildernesses
-as well.
+Phantasmal is meant for low-volume MUDs -- those with a small number
+of simultaneously-connected players.  It's designed to allow excellent
+service for that small number.  In this day and age a hobbyist MUD
+that gets 50 to 60 players a night is doing well.  Modern cheap
+desktop computers are ridiculously powerful when serving that few
+connections.  Bandwidth is more of a worry than processor speed.  This
+would all be different if we were dealing with much 3D graphics or
+even 2D bitmaps, or if big crowds of NPCs were to being simulated.
+But the age where we run stuff like DikuMUDs because we have to is
+over...
 
 
                         Current Status
 
-Phantasmal is currently suitable for acting as an example DGD MUDLib
-or as a very simple MUD.  There's a lot of infrastructure in place,
-but a lot of it simply isn't demonstrated usefully to the end user.
-More is available to an administrator than an end user, but it's still
-far from being unpack-and-play, and doesn't have any real built-in
-game.
+Phantasmal is in the process of separating itself out from the game's
+descriptions and themes.  That will let it act as a kind of standard
+library for other MUDs, kind of like what the Kernel Library does.
+The Kernel Library is the DGD standard library for inheritance and
+security, and Phantasmal would become a standard library for MUD stuff
+like rooms and scripts.
 
 The latest information, features, code and tutorials can be located at
 "http://phantasmal.sourceforge.net".
@@ -54,22 +42,21 @@ The latest information, features, code and tutorials can be located at
 
                            Features
 
-Phantasmal's basis in DGD and DGD's Kernel MUDLib give it a lot of
-built-in security and mean it works on a portable, known, stable base.
-It also gives it a well-tested underlying object architecture good
-enough to keep commercial MUDs (like Skotos' servers) up for years.
+Phantasmal works on top of the Kernel Library.  That gives it a lot of
+built-in security and mean it works on a stable base.  It also means
+Phantasmal has a well-tested object architecture good enough to keep
+commercial MUDs (like Skotos' servers) up for years.
 
-It has a powerful OLC system which is the preferred way to create new
-content.  It also allows human-readable and -writable configuration
-and object files for rooms, portables, exits and objects which are an
-alternate way to create content.  They are quite easy to generate by
-automatic scripts or by offline text editing.  These can be loaded by
-administrator characters using only in-MUD commands or by the host
-machine's administrator by directly altering MUD configuration files.
+Phantasmal has a powerful OLC system which is the preferred way to
+create new content.  There are also human-readable and -writable
+configuration and object files for rooms, portables, exits and
+objects.  They're an alternate way to create content.  Admin
+characters can play with these files with in-MUD commands.  People
+with host machine accounts can directly alter them.
 
-It sports a powerful help system with rich configuration files, full
+The powerful help system has rich configuration files, full
 localization, and Soundex matching for near-misses (if a user asks for
-help on "polices" instead of "policies", for instance).
+help on "polisees" instead of "policies", say).
 
 See "http://phantasmal.sourceforge.net/Current.html" for a more
 complete manifest of the current features of the most up-to-date
