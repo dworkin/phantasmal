@@ -109,7 +109,7 @@ void periodic_call_out(int how_often, string funcname, mixed args...) {
     error("Illegal value for how_often in TIMED::periodic_call_out!");
   }
 
-  LOGD->write_syslog("Setting up periodic call_out in TIMED");
+  LOGD->write_syslog("Setting up periodic call_out in TIMED", LOG_VERBOSE);
   per_queue[how_often][object_name(previous_object())]
     = ({ funcname, args });
   if(per_call_out[how_often] <= 0) {
@@ -172,8 +172,6 @@ void __priv_co_hook(int how_often) {
     error("TIMED::__priv_co_hook can be called only by KERNEL code!");
   }
 
-  LOGD->write_syslog("called __priv_co_hook...");
-
   /* Schedule the next call */
   per_call_out[how_often] = 0;
   priv_start_call_out(how_often);
@@ -185,7 +183,8 @@ void __priv_co_hook(int how_often) {
     if(call_obj) {
       call_other(call_obj, tmp[0], tmp[1]...);
     } else {
-      LOGD->write_syslog("Can't find object " + keys[ctr] + " to call!");
+      LOGD->write_syslog("Can't find object " + keys[ctr] + " to call!",
+			 LOG_WARN);
       stop_object_call_out(how_often, keys[ctr]);
     }
   }
