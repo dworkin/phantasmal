@@ -3,10 +3,13 @@ Gibbs.  Other contributors include:
 
 - Keith Dunwoody for patches to merge PORTABLED with MAPD, for major
 contributions to the MOBILE infrastructure, and a patch to add new
-modifiers to UNQ DTD
+modifiers to UNQ DTDs
 
 - Tom Lokovic for testing, ideas, and work on various speculative or
 related projects, including the original design of the UNQ format
+
+- Gary (muphicks@mups.co.uk) for a useful patch for the zonefile and
+general brainstorming
 
 - Neil McBride for miscellaneous code and ideas
 
@@ -16,9 +19,12 @@ parsers
 - Chris Meshkin for ideas and discussion
 
 
+Other MUDLib authors, who provide ideas and competition.  Thanks to
+Steve (Melville) and Erlend (GurbaLib)!
+
 And naturally, no set of credits for a DGD MUDLib would be complete
-without mentioning Felix Croes (Dworkin), who wrote, who writes and
-who maintains DGD itself.
+without mentioning Felix Croes (Dworkin), who wrote and maintains DGD
+and the Kernel library.
 
 Phantasmal also draws ideas from several other sources, but most
 notably Shannon Appelcline's series of Building Blocks articles for
