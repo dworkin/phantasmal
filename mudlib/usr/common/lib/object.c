@@ -692,10 +692,6 @@ int is_lockable() {
   return objflags & OF_LOCKABLE;
 }
 
-string get_type() {  /* override to set a specific type */
-  return "OBJECT";
-}
-
 private void set_flags(int flags, int value) {
   if(value) {
     objflags |= flags;
