@@ -132,14 +132,53 @@ void string_to_channel(int channel, string str, varargs int modifiers) {
   }
 }
 
+void chat_to_channel(int channel, object phrase, varargs int modifiers) {
+  int    ctr, do_write;
+  mixed *keys, *user_stuff;
+  int    sub_dat;
+
+  if(!SYSTEM() && !COMMON() && !GAME())
+    return;
+
+  keys = map_indices(channels[channel]);
+  for(ctr = 0; ctr < sizeof(keys); ctr++) {
+    user_stuff = channels[channel][keys[ctr]];
+    sub_dat = user_stuff[1];
+
+    do_write = 1;
+    switch(channel) {
+    case CHANNEL_ERR:
+    case CHANNEL_LOG:
+      if(modifiers && sub_dat) {
+	if(modifiers < sub_dat)
+	  do_write = 0;
+      }
+      break;
+    }
+
+    if(do_write) {
+      string name;
+
+      name = previous_object()->get_Name();
+      if(!name) { name = "Somebody"; }
+      user_stuff[0]->send_system_phrase("(OOC)");
+      user_stuff[0]->message(" " + name + " ");
+      user_stuff[0]->send_system_phrase("chats");
+      user_stuff[0]->message(": ");
+      user_stuff[0]->send_phrase(phrase);
+      user_stuff[0]->message("\r\n");
+    }
+  }
+}
+
 int subscribe_user(object user, int channel, varargs int arg) {
   int    attrib, ctr;
 
   if(!SYSTEM() && !COMMON() && !GAME())
-    return -1;
+    error("Only privileged code may subscribe users to channels!");
 
   if(channel < 0 || channel >= num_channels) {
-    return -1;
+    error("You may only subscribe to an existing channel!");
   }
   attrib = channel_attributes[channel][1];
 
