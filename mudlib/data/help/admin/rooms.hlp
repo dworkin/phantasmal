@@ -111,7 +111,7 @@ wish.
             room delete, roomdelete, room_delete, delete rooms,
             delete room, @room_delete, @roomdelete, delete, destroy,
             @destroy_rooms, @destroy_room, destroy_rooms, destroy_room,
-            destroy rooms, destroy room}}
+            destroy rooms, destroy room, @delete, @destroy}}
 ~keywords{admin}
 ~desc{
   ~enUS{
@@ -120,5 +120,8 @@ The @delete_room command will delete a room, removing all exits to and
 from it (see @clear_exits).  It is recommended that all contents be
 removed from the room first as no guarantees are made as to their
 locations afterward.
+
+Remember that a "room" could instead be a portable object or a
+mobile's body.
 
 }}
