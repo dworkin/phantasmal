@@ -1,3 +1,4 @@
+#include <kernel/kernel.h>
 #include <config.h>
 
 private mapping segments;

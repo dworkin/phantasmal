@@ -1,3 +1,4 @@
+#include <kernel/kernel.h>
 #include <config.h>
 #include <log.h>
 #include <type.h>

@@ -120,7 +120,7 @@ void from_dtd_unq(mixed* unq) {
   string zonename;
 
   if(!SYSTEM() && !COMMON() && !GAME())
-    return nil;
+    return;
 
   if(sizeof(unq) != 4)
     error("There should be exactly one 'zones' and one 'zonelist'"
@@ -193,10 +193,19 @@ void from_dtd_unq(mixed* unq) {
 }
 
 void write_to_file(string filename) {
+  string str;
+  string unq_str;
+
   if(previous_program() != "/usr/System/initd")
     error("Only INITD may instruct the ZONED to write files!");
 
-  dtd::write_to_file(filename);
+  unq_str = dtd::to_unq_text();
+  if(!unq_str)
+    error("To_unq_text() returned nil!");
+  if(!write_file(filename, unq_str)) {
+    error("Error writing file!");
+  }
+
 }
 
 
