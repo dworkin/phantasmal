@@ -1,7 +1,7 @@
 ~channel{
   ~name{/usr/System/sys/objectd}
-  ~level{2}
+  ~level{3}
 }
 
-~channel{~name{/usr/common/obj/unq_dtd}   ~level{3}}
-~channel{~name{/usr/System/initd}         ~level{2}}
+~channel{~name{/usr/common/obj/unq_dtd}   ~level{4}}
+~channel{~name{/usr/System/initd}         ~level{3}}
