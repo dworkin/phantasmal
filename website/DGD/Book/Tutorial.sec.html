@@ -31,7 +31,7 @@
 <p>
   Next try typing <kbd>code status()[ST_VERSION]</kbd>.  Note the
   opening and closing parentheses go <em>before</em>
-  &quot;ST_VERSION&quot; in square brackets.  If you do it right,
+  <var>ST_VERSION</var> in square brackets.  If you do it right,
   you'll get the current version of DGD, such as &quot;DGD
   1.2.70&quot;, returned between quotation marks, and of course
   assigned to a history number like $2.
@@ -51,14 +51,26 @@
 </p>
 
 <p>
-  It turns out that ST_VERSION, in the example with status(), is
-  actually a number.  The code command defines certain constant values
-  for you, and assigns names to them.  So if you type simply <kbd>code
-  ST_VERSION</kbd>, you should see the numerical value of ST_VERSION,
-  0, printed out.  That's because underneath, ST_VERSION is just the
-  number 0.  We've assigned a value to it using the C Preprocessor, a
-  very powerful part of the language that will be described in a later
-  chapter.
+  It turns out that <var>ST_VERSION</var>, in the example with
+  status(), is actually a number.  The code command defines certain
+  constant values for you, and assigns names to them.  So if you type
+  simply <kbd>code ST_VERSION</kbd>, you should see the numerical
+  value of <var>ST_VERSION</var>, 0, printed out.  That's because
+  underneath, <var>ST_VERSION</var> is just the number 0.  We've
+  assigned a value to it using the C Preprocessor, a very powerful
+  part of the language that will be described in a <a
+  href="ProgramStructure_CPreprocessor">later chapter</a>.
+</p>
+
+<p>
+  You can put in extra spaces almost anywhere &mdash; between
+  operators, before and after operators, between the function name and
+  the opening parenthesis.  Experiment liberally with where you can
+  add spaces, it's useful to know.  Note that you <em>cannot</em> add
+  spaces before the <kbd>code</kbd> command.  The Kernel Library won't
+  parse it correctly, and will tell you that there isn't any such
+  command as nothing.  That's a weakness in the Kernel Library's command
+  parser, though, it's not a problem with LPC as a whole.
 </p>
 
 <p>
@@ -75,9 +87,9 @@
 @@SECTION Tutorial.VarsAndExprs Variables and Arithmetic Expressions
 
 <p>
-  The code command gives you constants like ST_VERSION.  It also gives
-  you several other things, including a set of one-letter variables
-  which it defines for you.
+  The code command gives you constants like <var>ST_VERSION</var>.  It
+  also gives you several other things, including a set of one-letter
+  variables which it defines for you.
 </p>
 
 <p>
@@ -301,11 +313,11 @@
   A DGD string can also hold the empty string, which is written as
   &quot;&quot;.  That's a sequence of <em>zero</em> characters, and it
   just means &quot;no string here&quot;.  The string can also hold the
-  special value <dfn>nil</dfn>.  Every string holds nil when you first
-  declare it.  So do more complicated data types we'll talk about
-  later.  Nil isn't a valid string, it's just a placeholder meaning
-  that the string isn't usable yet &mdash; you have to assign a value
-  to it first.
+  special value <dfn>nil</dfn>.  Every string holds <var>nil</var>
+  when you first declare it.  So do more complicated data types we'll
+  talk about later.  <var>Nil</var> isn't a valid string, it's just a
+  placeholder meaning that the string isn't usable yet &mdash; you
+  have to assign a value to it first.
 </p>
 
 <p>
@@ -366,6 +378,16 @@
   numbers for your string offsets.
 </p>
 
+<p>
+  You can also take the length of a string in characters.  For
+  instance, type <kbd>code strlen(&quot;Bob's Aunt Polly&quot;)</kbd>.
+  You should get a result like <samp>$24 = 16</samp>.  That's because
+  the string contains sixteen characters, which includes the
+  apostrophe and both spaces.  Character counting with strlen()
+  includes punctuation and other special characters as well as letters
+  and numbers.
+</p>
+
 
 @@SECTION Tutorial.UserOutput Sending Output to the User
 
@@ -396,12 +418,12 @@
 <p>
   Another interesting thing you can do with the user object is to send
   output to it.  For instance try typing
-  <kbd>user-&gt;message(&quot;Bob!\n&quot;);</kbd>.  You should see the
-  word &quot;Bob!&quot; on a line by itself, and the history variable
-  will have a value of <samp>nil</samp>.  If you remember, nil was the
-  value that a string has before it gets initialized.  It's also the
-  value that a function returns if you don't explicitly return
-  anything.
+  <kbd>user-&gt;message(&quot;Bob!\n&quot;);</kbd>.  You should see
+  the word &quot;Bob!&quot; on a line by itself, and the history
+  variable will have a value of <var>nil</var>.  If you remember,
+  <var>nil</var> was the value that a string has before it gets
+  initialized.  It's also the value that a function returns if you
+  don't explicitly return anything.
 </p>
 
 <p>
@@ -410,20 +432,26 @@
   <dfn>escape character</dfn>, which is the backslash, followed by
   another character, in this case an 'n' for the <dfn>newline
   character</dfn>.  There are certain other character escapes that
-  have meaning, such as \b for backspace and \t for a tab.  Since the
-  backslash and the double-quote have special meaning in strings,
-  there are special character escapes to write them as well &mdash; \\
-  and \&quot;, respectively.
+  have meaning, such as \b for backspace, \r for a carriage return and
+  \t for a tab.  Since the backslash and the double-quote have special
+  meaning in strings, there are special character escapes to write
+  them as well &mdash; \\ and \&quot;, respectively.  Note that with
+  some telnet clients you'll need to write an end-of-line as \n\r or
+  (more rarely) \r\n.  So if your telnet is doing odd things at line
+  endings, try that.  You may also want to see if there's an option
+  for treating line endings differently &mdash; many telnet clients
+  (including PuTTY on Win32) support changing the behavior with an
+  option.
 </p>
 
 <p>
   To see more of how the <dfn>newline character</dfn> works, try
   adding more <dfn>\n</dfn> characters.  Type <kbd>code
   user-&gt;message(&quot;Line...\n\n\n\n&quot;)</kbd>.  Note that if
-  you leave the semicolon off, you won't get nil returned, but rather
-  the number 1.  That's because the user-&gt;message function returns
-  an integer, which is either 1 or 0 for whether the entire message
-  could be sent.
+  you leave the semicolon off, you won't get <var>nil</var> returned,
+  but rather the number 1.  That's because the user-&gt;message
+  function returns an integer, which is either 1 or 0 for whether the
+  entire message could be sent.
 </p>
 
 <p>
@@ -479,6 +507,7 @@
 #include &lt;trace.h&gt;
 #include &lt;type.h&gt;
 
+/* The exec() function, from the code command */
 mixed exec(object user, mixed argv...) {
     mixed a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z;
 
@@ -543,11 +572,224 @@ mixed exec(object user, mixed argv...) {
 </p>
 
 <p>
-  We'll cover more about the structure of that file and what we mean
+  Go back and look at the code again.  You may have realized that the
+  long line starting with <var>mixed</var> declares all those
+  single-letter variables I mentioned earlier.  <code>Mixed</code> is
+  declares a variable, just as <var>int</var> and <var>float</var> do.
+  A <var>mixed</var> variable can hold any DGD type.  You
+  <em>could</em> just make all of your variables mixed rather than
+  bothering with all the different types.  But there are some serious
+  disadvantages to doing that, as we'll discuss later on.
+</p>
+
+<p>
+  DGD doesn't guarantee that variables like 'c' and 'f' are globally
+  declared.  The code command chooses to provide them.  Constants like
+  <var>ST_VERSION</var> aren't really part of the language either.
+  They're included by the series of <code>#include</code> directives
+  at the start of the source file.  In your own code, you'll need to
+  specifically include the files for any constants you may wish to
+  use.
+</p>
+
+<p>
+  There's also a weird line starting with <code>/*</code> and ending
+  with <code>*/</code>.  That line is called a <dfn>comment</dfn>, and
+  it's designed to let other programmers know things about your code.
+  DGD just skips it, so you can <em>comment</em> on your own code, to
+  humans only.  A comment is allowed to span multiple lines, or it can
+  cover only part of a single line..  It goes from the <code>/*</code>
+  to the <code>*/</code>, whether that's only part of a line, or pages
+  and pages.
+</p>
+
+<p>
+  We'll cover more about the specifics of that file and what we mean
   by a function later on.  Similarly, we'll cover more about why you
   had to call it with the syntax you did.  However, in the mean time,
   you have a good simple way to store your code and make modifications
   to it instead of retyping the whole thing every time.  That'll be
   useful for code like what you typed in the <a
   href="Tutorial_Loops.html">Loops and Looping</a> section.
+</p>
+
+@@SECTION Tutorial.Arrays Arrays
+
+<p>
+  Let's write a function to count digits in a string.  Go ahead and
+  change <tt>myobj.c</tt> (or make a new object) to the following:
+</p>
+
+<pre>
+mixed count_digits(string str) {
+  int   *num_count;
+  int    ctr;
+  object user;
+
+  num_count = allocate_int(10);
+
+  for(ctr = 0; ctr &lt; strlen(str); ctr++) {
+    num_count[str[ctr] - '0']++;
+  }
+
+  user = this_user();
+  user-&gt;message(&quot;Count: [&quot;);
+  for(ctr = 0; ctr &lt; 10; ctr++) {
+    user-&gt;message(num_count[ctr] + &quot; &quot;);
+  }
+  user-&gt;message(&quot;]\n&quot;);
+}
+</pre>
+
+<p>
+  To call this file, first compile it.  So you'll type <kbd>compile
+  /usr/admin/myobj.c</kbd>.  If you're not using <tt>myobj.c</tt> as
+  the filename, substitute the one you're using.  You should get a
+  result like <samp>$34 = &lt;/usr/admin/myobj&gt;</samp>.  Now, using
+  the history variable you get back ($34 in the example), type
+  <kbd>$34->count_digits(&quot;0123456789&quot;)</kbd>, or the
+  equivalent with your own history variable number.  You should see a
+  result like the following:
+</p>
+
+<pre>
+Count: [1 1 1 1 1 1 1 1 1 1 ]
+$36 = nil
+</pre>
+
+<p>
+  Since the function doesn't explicitly return anything, the history
+  variable result is <var>nil</var>.  But since it uses the
+  <code>user-&gt;message</code> function to send output to the user,
+  the list of number counts is printed out.  Try calling the function
+  a few more times with arguments different from
+  &quot;0123456789&quot;.  It will count the number of occurrences of
+  each digit in your input.
+</p>
+
+<p>
+  If you look at the line in the code starting with <code>mixed
+  count_digits</code>, you'll notice that it's different from the code
+  in the <a href="Tutorial_CodeInFiles">last section</a>.  It uses a
+  different <dfn>function name</dfn>, <var>count_digits</var> instead
+  of <var>exec</var>.  That's why you typed &quot;count_digits&quot;
+  when calling the function.  You'll also notice that instead of
+  having <code>object user, mixed argv...</code> in parentheses, it
+  has <code>string str</code>.  That section tells what the function
+  needs to be passed &mdash; for the first function, you supplied
+  <code>this_user()</code>, while for <var>count_digits</var>, you
+  supplied a single string which was called &quot;str&quot; throughout
+  the function.
+</p>
+
+<p>
+  There are two new types of variable declaration in the code to
+  count_digits.  There is a variable type called <var>object</var>,
+  like <var>mixed</var> or <var>int</var>.  A variable of type
+  <var>object</var> will hold a compiled DGD object, such as a
+  connection object, or the object that <tt>myobj.c</tt> compiles
+  into.
+</p>
+
+<p>
+  You'll notice that the variable declaration for <var>num_count</var>
+  starts with <var>int</var>, but that there's an asterisk in front of
+  it.  The asterisk means that <var>num_count</var> isn't an integer,
+  but rather an <dfn>array</dfn> of integers.  That means that it's a
+  list of integers, ten in this case.
+</p>
+
+<p>
+  Defining <var>num_count</var> doesn't give it a value.  Arrays, like
+  strings, are assigned <var>nil</var> by default, and have to be
+  initialized to something.  One way to assign reasonable values to an
+  array of integers is the allocate_int function, which returns an
+  array of zeroes.  The array is as long as the number in parentheses
+  is big.  For the example above, that means ten zeroes.
+</p>
+
+<p>
+  There are a couple of other new things in the code above.  We'll
+  tackle them one at a time.  The first is <code>++</code>, called the
+  <dfn>increment</dfn> operator.  It adds one to whatever variable you
+  use it on.  So if <var>a</var> was a variable, then <code>a++</code>
+  means &quot;add one to <var>a</var>&quot;.
+</p>
+
+<p>
+  Another is the zero in single quotes.  Remember that LPC characters
+  are represented as ASCII-encoded integers.  A character in single
+  quotes will evaluate the that character's integer.  Try typing
+  <kbd>code 'A'</kbd> and you should get a result of 65, just like in
+  the <a href="Tutorial_StringHandling">section on handling
+  strings</a>.
+</p>
+
+<p>
+  The final new feature of the code is the square brackets, called the
+  <dfn>array dereference</dfn> operator.  The idea is that for an
+  array, like a string, you can take a single element from it.  So if
+  an array called <var>arr</var> contains a zero followed by four
+  nines, then the value of <code>arr[0]</code> is zero, and the value
+  of <code>arr[3]</code> is nine.
+</p>
+
+<p>
+  The square brackets are used twice in the code above, one inside the
+  other.  The first is to dereference a particular character of the
+  string, which is the same string dereference you saw before.  Then
+  <code>'0'</code> is subtracted from that character.  The numbers 0
+  through 9, when ASCII encoded, become 48 through 57.  Remember that
+  these codes are for the printable 0 through 9, so it's not the same
+  as the actual numbers.  Since the numbers are in order, starting
+  with zero, you can subtract ASCII zero (which equals the number 48)
+  from an ASCII digit such as the ones you typed in, and get a number
+  0 through 9 for which digit it was.  That's why we subtract the
+  character zero from that character of the string.
+</p>
+
+<p>
+  The second dereference, the one outside, is an array dereference,
+  not a string dereference, but they work the same way if you think of
+  a string as being like an array of ASCII-encoded characters.  Since
+  subtracting the character <code>'0'</code> leaves a number between 0
+  and 9, we can then use that character as the <dfn>offset</dfn>
+  within the array.  Since the array has ten elements, they're
+  numbered 0 through 9.
+</p>
+
+<p>
+  To write an array value in LPC, you surround the entries with
+  parentheses and curly braces and separate the entries with commas.
+  So the array mentioned above would be written <code>({ 0, 9, 9, 9, 9
+  })</code> in LPC.  Instead of the allocate_int call, you could have
+  written <code>num_count = ({ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 });</code>
+</p>
+
+<p>
+  Arrays can also be added to each other like strings.  Adding them
+  will return an array which is as long as the first array's length
+  plus the second array's length.  The first array's elements will be
+  first, followed by those of the second array.  So <kbd>code ({ 1, 2,
+  3 }) + ({ 7, 8, 9 })</kbd> will print a result like <samp>$40 = ({
+  1, 2, 3, 7, 8, 9 })</samp>.
+</p>
+
+
+@@SECTION Tutorial.Mappings Mappings
+
+<p>
+  Mappings are data structures, rather like arrays.  An array is a
+  sequence of values (often numbers).  A <dfn>mapping</dfn> is a sort
+  of dictionary of values, so that you can find a value by looking up
+  its key.  A mapping is written almost, but not quite, like an array.
+</p>
+
+<p>
+  The mapping <code>([ &quot;a&quot; : 1, &quot;b&quot; : 2,
+  &quot;c&quot; : 3 ]) can be dereferenced like an array.  But instead
+  of dereferencing by number, this mapping is dereferenced by name.
+  So if a mapping called <var>letters</var> had that value, then
+  <code>letters[&quot;a&quot;]</code> would have the value 1 and
+  <code>letters[&quot;c&quot;]</code> would have the value 3.
 </p>

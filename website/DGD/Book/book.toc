@@ -15,9 +15,14 @@ Tutorial:
   StringHandling
   UserOutput
   CodeInFiles
+  Arrays
+  Mappings
 
 ControlFlow:
   ForWhile
+
+ProgramStructure:
+  CPreprocessor
 
 Misc:
   EditorQuick
