@@ -31,7 +31,7 @@ void pass_data(mixed data) {
   object phr;
 
   if(typeof(data) == T_NIL) {
-    ::pass_data(nil);
+    ::pass_data(nil);   /* Request user obj to print prompt */
     pop_state();
     return;
   }
@@ -52,5 +52,4 @@ void pass_data(mixed data) {
   send_string("Set " + func_name + " description.\n");
 
   pop_state();
-  ::pass_data(nil);
 }
