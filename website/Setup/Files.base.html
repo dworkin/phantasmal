@@ -1,0 +1,151 @@
+    <titledef text="Interface Files" />
+
+    <h3 style="text-align: center"> Files You Need for a Phantasmal-Based
+      Game </h3>
+
+    <p>
+      You'll need a <b>/usr/game</b> directory.  Files that interface
+      with Phantasmal go under it.
+    </p>
+
+    <h3> Gameconfig.h </h3>
+
+    <p>
+      You'll need an /include/gameconfig.h file.  Phantasmal will
+      include it, and use its GAME_INITD definition to find your
+      game's Init object.  A common value for GAME_INITD is
+      &quot;/usr/game/initd&quot;.  Note the lack of a &quot;.c&quot;
+      on the end.  That's important.
+    </p>
+
+    <h3> GAME_INITD </h3>
+
+    <p>
+      When DGD starts up, it hands off control to the Kernel Library.
+      That hands off control to Phantasmal, which hands off control to
+      your game.  It seems complicated, but you can ignore most of it.
+      Just pretend that Phantasmal and the Kernel are the same thing,
+      because from your point of view, they are.
+    </p>
+
+    <p>
+      Your GAME_INITD object, as specified by gameconfig.h, should
+      have a function with the signature <tt> &quot;static void
+      create(void)&quot; </tt>.  When you start your MUD server, the
+      create() function of the GAME_INITD will get called.  So if you
+      want to do things on startup, you should make sure the create()
+      function exists.
+    </p>
+
+    <p>
+      The create() function is called with unlimited ticks and stack
+      space.  That means it can take as much processor time or stack
+      space as it wants -- functions that get called later on have to
+      be much more careful.  So create() is a good place to load large
+      files, create large data structures and otherwise do
+      preprocessing.  Be careful, though.  If the create() function
+      fails, so does the startup of the whole MUD.
+    </p>
+
+    <p>
+      Your create() function could configure the ConfigD, SoulD and
+      HelpD.  If you want to configure a heart beat function or one or
+      more special AUTO objects, create() is the place to do that,
+      too.  Your GAME_INITD has privileges that no other object in
+      your game does, such as setting ConfigD's path_special object.
+      See the API documentation on specific daemons for details.
+    </p>
+
+    <p>
+      One of the most important things for the GAME_INITD to do is to
+      register a driver object with Phantasmal.  This uses ConfigD's
+      set_game_driver() function, which takes a single object pointer
+      as an argument.  The driver object is how Phantasmal will send
+      signals, events and various input to your game.
+    </p>
+
+    <h3> The Driver Object </h3>
+
+    <p>
+      Phantasmal will call various functions on your driver object
+      when events (like new connections) happen.  Specifically, the
+      driver object must define functions for Phantasmal to call.  The
+      functions include new_user_connection, get_welcome_message,
+      get_suspended_message, and get_shutdown_message.  See the API
+      documentation for /usr/System/sys/gamedriver for details.  Your
+      driver object does not have to use that pathname.  Your driver
+      only required to be a valid DGD object that defines functions
+      with the correct names.
+    </p>
+
+    <p>
+      Normally when a new user connects, Phantasmal will display a
+      welcome message.  To determine the message, Phantasmal will call
+      your driver's get_welcome_message function with the new
+      connection object.  You may call query_ip_name and
+      query_ip_number on the object to determine its origin, and
+      return a reasonable welcome message.  If you return nil, the
+      connection will be rejected.
+    </p>
+
+    <p>
+      If Phantasmal is in the process of shutting down, the function
+      get_shutdown_message will be called instead.
+      Get_shutdown_message also takes a connection object as its only
+      argument.  Normally you should inform the user that their
+      connection will not be accepted, since Phantasmal will normally
+      reject the connection under these circumstances.
+    </p>
+
+    <p>
+      In certain circumstances, Phantasmal will turn off new incoming
+      connections.  For instance, it does this when recompiling the
+      itself in-place.  Usually the MUD will be suspended for no more
+      than a few seconds at a time.  A new incoming connection during
+      those seconds will receive a message determined by calling
+      get_suspended_message on your driver object.  This function
+      takes a single argument, a new connection object.
+    </p>
+
+    <p>
+      If the new connection is allowed (that is, if
+      get_welcome_message does not return nil) and the user types a
+      line ending with a newline, then that line will be passed as a
+      string to your driver's new_user_connection function.  If that
+      function returns nil, the connection is aborted.  If it returns
+      a valid DGD object, the connection is allowed.  Any object
+      returned should inherit from the PHANTASMAL_USER object, which
+      will allow the connection to be properly set up.  The object you
+      return from your driver's new_user_connection function is called
+      a User Object.
+    </p>
+
+    <h3> The User Object </h3>
+
+    <p>
+      Phantasmal will currently do login and password confirmation for
+      you, using a standard system.  This may change in the future.
+      For now, it's true.
+    </p>
+
+    <p>
+      Your User Object's code should start by including
+      &lt;config.h&gt;.  That defines the symbol PHANTASMAL_USER.
+      Your User Object must inherit from PHANTASMAL_USER, and it may
+      not be private inheritance.  That's because Phantasmal will need
+      to call functions from PHANTASMAL_USER, and your User Object
+      isn't allowed to prevent it from doing so.
+    </p>
+
+    <p>
+      After a successful login, Phantasmal will pass new commands to
+      the process_command() function of the User Object.  Functions
+      like message() and send_phrase() may be used to pass information
+      back across the network connection to be viewed by the human
+      user.  See the API documentation for the /usr/game/obj/user
+      object for details on what functions your User Object may call,
+      and what functions will be automatically called upon it.  Note
+      that your User Object doesn't need to be called
+      /usr/game/obj/user.  It can be located at any path, as long as
+      your User Object inherits from the PHANTASMAL_USER library.
+    </p>

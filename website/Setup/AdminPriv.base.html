@@ -1,0 +1,66 @@
+    <titledef text="Administrator Privileges" />
+
+    <h3 style="text-align: center"> Administrator Directories and
+      Privileges </h3>
+
+    <p>
+      Since &quot;wizard&quot; may be a class in your MUD and
+      &quot;Immortal&quot; may be an in-character thing too, we like
+      to call them &quot;Administrators&quot;.  However, no matter
+      what you call them, you'd like to be able to give them different
+      levels of power.  That's where those directories can help you.
+    </p>
+
+    <p>
+      An Implementor or Head Admin is probably going to need ultimate
+      cosmic power in your MUD.  You'll want to give him or her full
+      access to all directories.  To put it in Phantasmal's terms,
+      you'll want to &quot;%grant headadmin / full&quot;, which is how
+      an existing head admin awards that power from the command line.
+      If you give somebody that kind of power, the MUD will let them
+      shut down or reboot the MUD.  It'll let them create and destroy
+      any object in the game.  It'll let them crash the MUD in ways
+      you can't repair.  It'll let them delegate that power to anybody
+      they feel like.  About the only thing they can't do is alter the
+      Kernel Library or other non-Phantasmal files on your machine.
+      You'd better <i>totally</i> trust somebody before you give them
+      this level of power.
+    </p>
+
+    <p>
+      A coder customizing Phantasmal for you (not just your game), or
+      an admin that needs to debug it, will need write access to
+      /usr/common.  That will let them change the laws of physics in
+      your MUD, the nature of objects, and the ways time and space are
+      managed.  This can cause ugly, ugly bugs and you should be
+      careful who you give access to.  You don't want to let anybody
+      do this to your running MUD except your head Implementor.  He
+      should only use that access to fix serious bugs.
+    </p>
+
+    <p>
+      A high-ranking admin, a coder or a Head Builder will probably
+      need full access to your game, but not necessarily to
+      Phantasmal.  That means you have <i>some</i> security against
+      them, but they can still do anything they want to the
+      player-visible bits.  You'll want to give them at least write
+      access to /usr/game, and maybe full access.  Write access lets
+      them put stuff there, while full access lets them delegate power
+      to it.  This will let them change the laws of physics on your
+      MUD to some extent, and write very powerful scripts and
+      functions, but they still can't alter any of the
+      previously-mentioned stuff directly.  This is also the access
+      needed to add new rooms and areas to the MUD, and remove
+      existing areas.
+    </p>
+
+    <p>
+      A new admin will automatically get full access (including
+      delegation) to their own directory.  This lets them build
+      interesting things in isolation, but not to hook them up to your
+      running MUD.  A probationary builder needs this level of access,
+      and probably no more.  A normal builder will only need this
+      level of access when Phantasmal is more polished, and the head
+      builder can then hook their stuff up to the running MUD, or copy
+      it over into game directories.
+    </p>
