@@ -24,6 +24,9 @@ private int**   zone_segments;
 private object  room_dtd, bind_dtd;
 private int     initialized;
 
+/* Rooms that haven't yet fully resolved... */
+private object* unresolved_rooms;
+
 #define PHR(x) PHRASED->new_simple_english_phrase(x)
 
 /* Prototypes */
@@ -67,6 +70,9 @@ void upgraded(varargs int clone) {
       zone_segments += ({ ({ }) });
     }
   }
+
+  if(!unresolved_rooms)
+    unresolved_rooms = ({ });
 }
 
 void init(string room_dtd_str, string bind_dtd_str) {
@@ -349,7 +355,8 @@ private object add_struct_for_room(mixed* unq) {
   return room;
 }
 
-private void resolve_parent(object room) {
+
+private int resolve_parent(object room) {
   int    pending_parent;
   object parent;
 
@@ -357,16 +364,18 @@ private void resolve_parent(object room) {
   if(pending_parent != -1) {
     parent = MAPD->get_room_by_num(pending_parent);
     if(!parent) {
-      error("Can't find parent number (#" + pending_parent
-	    + ") loading rooms!");
+      return 0;
     }
 
     room->set_archetype(parent);
+    return 1;
   }
 
+  return 1;
 }
 
-private void resolve_removed_details(object room) {
+
+private int resolve_removed_details(object room) {
   int    *rem_det;
   int     ctr;
   object  tmp;
@@ -377,12 +386,13 @@ private void resolve_removed_details(object room) {
   for(ctr = 0; ctr < sizeof(rem_det); ctr++) {
     tmp = MAPD->get_room_by_num(rem_det[ctr]);
     if(!tmp)
-      error("Can't resolve removed details!");
+      return 0;
 
     new_rem_det += ({ tmp });
   }
 
   room->set_removed_details(new_rem_det);
+  return 1;
 }
 
 private int resolve_location(object room) {
@@ -410,20 +420,96 @@ private int resolve_location(object room) {
     }
 
     container->add_to_container(room);
+    return 1;
   } else {
     container = get_room_by_num(0);  /* Else, add to The Void */
     if(!container)
       error("Can't find room #0!  Panic!");
 
     container->add_to_container(room);
+    return 1;
   }
-
-  return 1;
 }
 
+
+object *get_deferred_rooms(void) {
+  return unresolved_rooms[..];
+}
+
+
+void do_room_resolution(int fully) {
+  int     iter, res_tmp, finished;
+  mapping done_resolve;
+  object* new_unres;
+
+  if(!SYSTEM() && !COMMON())
+    error("Only privileged code can request room resolution!");
+
+  done_resolve = ([ ]);
+  finished = 0;
+
+  while(finished < sizeof(unresolved_rooms)) {
+    res_tmp = 0;
+
+    /* Do one pass through the list, trying once each to
+       resolve each unresolved room. */
+    for(iter = 0; iter < sizeof(unresolved_rooms); iter++) {
+
+      /* Skip things we've already resolved. */
+      if(done_resolve[unresolved_rooms[iter]])
+	continue;
+
+      if(resolve_location(unresolved_rooms[iter])) {
+	res_tmp = 1;
+	done_resolve[unresolved_rooms[iter]] = 1;
+	finished++;
+      }
+    }
+
+    if(!res_tmp) {
+      /* We're not resolving any more rooms... */
+      break;
+    }
+  }
+
+  /* Now resolve parents and removed details. */
+  new_unres = ({ });
+  for(iter = 0; iter < sizeof(unresolved_rooms); iter++) {
+    if(!done_resolve[unresolved_rooms[iter]]
+       || !resolve_parent(unresolved_rooms[iter])
+       || !resolve_removed_details(unresolved_rooms[iter])) {
+      new_unres += ({ unresolved_rooms[iter] });
+      continue;
+    }
+
+    /* Clear all pending data */
+    unresolved_rooms[iter]->clear_pending();
+  }
+
+  unresolved_rooms = new_unres;
+
+  /* See if we were asked to resolve 100% of remaining rooms */
+  if(fully && sizeof(unresolved_rooms)) {
+    string tmp;
+    int    ctr;
+
+    tmp = "Can't resolve the following rooms: ";
+    for(ctr = 0; ctr < sizeof(unresolved_rooms) - 1; ctr++) {
+      tmp += unresolved_rooms[ctr]->get_number() + ", ";
+    }
+
+    /* This makes sure there's no final comma */
+    tmp += unresolved_rooms[sizeof(unresolved_rooms) - 1]->get_number();
+
+    LOGD->write_syslog(tmp);
+    error("Can't resolve all rooms!  Edit room files to fix this!");
+  }
+}
+
+
 void add_dtd_unq_rooms(mixed* unq, string filename) {
-  int    iter, res_tmp;
-  mixed* resolve_rooms, *all_rooms;
+  int    iter;
+  mixed* resolve_rooms;
   object room;
 
   if(!initialized)
@@ -441,44 +527,8 @@ void add_dtd_unq_rooms(mixed* unq, string filename) {
     iter += 2;
   }
 
-  all_rooms = resolve_rooms[..];
-
-  while(sizeof(resolve_rooms)) {
-    res_tmp = 0;
-
-    for(iter = 0; iter < sizeof(resolve_rooms);) {
-      if(resolve_location(resolve_rooms[iter])) {
-	res_tmp = 1;
-	resolve_rooms = resolve_rooms[..iter-1] + resolve_rooms[iter+1..];
-      } else {
-	iter++;
-      }
-    }
-
-    if(!res_tmp && sizeof(resolve_rooms)) {
-      /* This isn't working, no new rooms are being resolved! */
-      string tmp;
-      int    ctr;
-
-      tmp = "Can't resolve the following rooms: ";
-      for(ctr = 0; ctr < sizeof(resolve_rooms) - 1; ctr++) {
-	tmp += resolve_rooms[ctr]->get_number() + ", ";
-      }
-      tmp += resolve_rooms[sizeof(resolve_rooms) - 1]->get_number();
-      LOGD->write_syslog(tmp);
-      error("Can't resolve all rooms!  Edit room files to fix this!");
-    }
-  }
-
-  for(iter = 0; iter < sizeof(all_rooms); iter++) {
-    /* All rooms should now exist, so we can easily resolve
-       pretty much anything else. */
-    resolve_parent(all_rooms[iter]);
-    resolve_removed_details(all_rooms[iter]);
-
-    /* Clear all pending data */
-    all_rooms[iter]->clear_pending();
-  }
+  unresolved_rooms += resolve_rooms;
+  do_room_resolution(0);
 }
 
 /* Take a chunk of text to parse as UNQ and add rooms appropriately... */
