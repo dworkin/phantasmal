@@ -53,12 +53,14 @@ void from_dtd_unq(mixed* unq) {
 /* function which returns an appropriate error message if this object
  * isn't a container or isn't open
  */
-private string is_open_cont() {
+private string is_open_cont(object user) {
   if (!is_container()) {
-    return "That object isn't a container!";
+    if(!user) return "not container";
+    return get_brief()->to_string(user) + " isn't a container!";
   }
   if (!is_open()) {
-    return "That object isn't open!";
+    if(!user) return "not open";
+    return get_brief()->to_string(user) + " isn't open!";
   }
   return nil;
 }
@@ -69,16 +71,20 @@ private string is_open_cont() {
  */
 
 string can_get(object user, object mover, object new_env) {
-  if(mobile)
-    return "You can't pick up a sentient being!";
+  if(mobile) {
+    if(!user) return "sentient being";
+    return get_brief()->to_string(user)
+      + " is a sentient being!  You can't pick them up.";
+  }
+  return nil;
 }
 
 string can_put(object user, object mover, object movee, object old_env) {
-  return is_open_cont();
+  return is_open_cont(user);
 }
 
 string can_remove(object user, object mover, object movee, object new_env) {
-  return is_open_cont();
+  return is_open_cont(user);
 }
 
 string can_enter(object user, object enter_object, int dir) {
@@ -87,12 +93,13 @@ string can_enter(object user, object enter_object, int dir) {
 
   if (dir == DIR_TELEPORT) {
     if (!is_container()) {
-      return "You can't enter that!";
+      if(!user) return "not container";
+      return get_brief()->to_string(user) + " isn't a container.";
     } else {
       return nil;
     }
   } else {
-    return is_open_cont();
+    return is_open_cont(user);
   }
 } 
 
@@ -103,11 +110,12 @@ string can_leave(object user, object leave_object, int dir) {
 
   if (dir == DIR_TELEPORT) {
     if (!is_container()) {
-      return "You can't enter that!";
+      if(!user) return "not container";
+      return get_brief()->to_string(user) + " isn't a container.";
     } else {
       return nil;
     }
   } else {
-    return is_open_cont();
+    return is_open_cont(user);
   }
 }
