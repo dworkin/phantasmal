@@ -1,3 +1,17 @@
+~zonelist{
+     ~zone{
+         ~zonenum{0}
+         ~name{Unzoned}
+     }
+     ~zone{
+         ~zonenum{1}
+         ~name{Miskatonic University}
+     }
+     ~zone{
+         ~zonenum{2}
+         ~name{Innsmouth}
+     }
+}
 ~zones{
      ~segment{
          ~segnum{0}
@@ -18,5 +32,9 @@
      ~segment{
          ~segnum{4}
          ~zonenum{1}
+     }
+     ~segment{
+         ~segnum{5}
+         ~zonenum{0}
      }
 }
