@@ -1,6 +1,7 @@
 /* Includable files */
 /* Note the .h on the end -- it's intentional */
 #define INHERIT_SCRIPT_AUTO "/include/phantasmal/inherit_script_auto.h"
+#define INHERIT_COMMON_AUTO "/include/phantasmal/inherit_common_auto.h"
 
 
 /* Checking to see if the caller is authorized */
@@ -91,6 +92,7 @@
 #define ZONED_DTD           "/usr/common/sys/zoned.dtd"
 #define BIND_DTD            "/usr/common/sys/bind.dtd"
 #define SOULD_DTD           "/usr/common/sys/sould.dtd"
+#define CONFIGD_DTD         "/usr/common/sys/config.dtd"
 
 /* Save locations, used by INITD and the wiztool */
 #define ROOM_DIR            "/usr/game/object/stuff"

@@ -142,6 +142,9 @@ static void create(varargs int clone)
   driver->set_object_manager(find_object(OBJECTD));
   OBJECTD->do_initial_obj_setup();
 
+  /* Start the ConfigD so that the new AUTO object will be included */
+  if(!find_object(CONFIGD)) compile_object(CONFIGD);
+
   /* Compile the StringD for use by LogD and HelpD */
   if(!find_object(STRINGD)) { compile_object(STRINGD); }
 
@@ -187,10 +190,9 @@ static void create(varargs int clone)
     LOGD->write_syslog("Can't read zone list!  Starting blank!\n", LOG_WARN);
   }
 
-  /* Start up ChannelD, ConfigD and SoulD so that they'll be available
+  /* Start up ChannelD, TimeD and SoulD so that they'll be available
      to GAME_INITD */
   if(!find_object(CHANNELD)) compile_object(CHANNELD);
-  if(!find_object(CONFIGD)) compile_object(CONFIGD);
   if(!find_object(SOULD)) compile_object(SOULD);
   if(!find_object(TIMED))   { compile_object(TIMED); }
 

@@ -242,7 +242,7 @@ private int assign_room_to_zone(int num, object room, int req_zone) {
     zone = ZONED->get_segment_zone(segnum);
     if(zone != req_zone && req_zone >= 0)
       error("Room number (#" + num
-	    + ") not in requested zone (#" + req_zone
+	    + ", zone #" + zone + ") not in requested zone (#" + req_zone
 	    + ") in assign_room_to_zone!");
 
     if(zone < 0) {

@@ -1,3 +1,17 @@
+/*
+ * pathspecial.c
+ *
+ * Once ConfigD has set this object up, the Object Daemon will query
+ * it to determine the path-special objects for everything in the
+ * system.  The idea is that this file hardcodes certain files as
+ * having particular special AUTO objects, and then hands off to the
+ * game's path-special object (set in GAME_INITD) for everything else
+ * that isn't in /usr/common or /usr/System.
+
+ * Currently, only files under a /usr/ directory may have a special
+ * AUTO object.
+ */
+
 #include <phantasmal/lpc_names.h>
 
 private object game_path_object;
@@ -5,17 +19,26 @@ private object game_path_object;
 string path_special(string file) {
   string user, subdir;
 
+  if(file == "/usr/System/open/lib/common_auto")
+    return nil;
+
   if(sscanf(file, "/usr/%s/%s/%*s", user, subdir) != 3) {
     return nil;
   }
 
-  if(subdir == "script") {
+  if(user != "System" && user != "common" && subdir == "script")
     return INHERIT_SCRIPT_AUTO;
+
+#if 0
+  if(user == "common") {
+    return INHERIT_COMMON_AUTO;
   }
 
-  if(user == "System" || user == "common") {
+  if(user == "System") {
     return nil;
+    /* return INHERIT_COMMON_AUTO; */
   }
+#endif
 
   if(game_path_object)
     return game_path_object->path_special(file);
