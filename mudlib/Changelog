@@ -11,9 +11,11 @@ Release 0.012:
 	  all of it just fine.
 	* Slightly different logfile output format.
 	* Allow subscription to log and error channels with extra
-	  information.
+	  information.  Update "channels" list to show it.
 	* LOGD and ERRORD now send out notifications on the log and
 	  error channels.
+	* Normalized help query strings.  This should let us use fewer
+	  search names per help entry, and generate more good matches.
 
 Release 0.011b:
 	* Added @make_portable command, very similar to @make_room.
