@@ -85,3 +85,24 @@ print "Copying DGD from $driverdir...\n";
 system("cp -r $driverdir phantest/dgd");
 print "Copying Phantasmal from $phantasmaldir...\n";
 system("cp -r $phantasmaldir phantest/phantasmal");
+
+print "Moving Phantasmal user directories...\n";
+system("rm -rf phantest/usr/System phantest/usr/common");
+system("mv phantest/phantasmal/usr/System phantest/usr/System");
+system("mv phantest/phantasmal/usr/common phantest/usr/common");
+
+print "Moving Kernel Library...\n";
+system("mv phantest/dgd/mud/kernel/data phantest/kernel/data");
+system("mv phantest/dgd/mud/kernel/sys phantest/kernel/sys");
+system("mv phantest/dgd/mud/kernel/obj phantest/kernel/obj");
+system("mv phantest/dgd/mud/kernel/lib phantest/kernel/lib");
+
+print("Moving data and include directories...\n");
+system("mv phantest/phantasmal/data phantest/data");
+system("mv phantest/phantasmal/include phantest/include");
+
+print("Moving Kernel Library headers...\n");
+system("mv phantest/dgd/mud/include/kernel/*.h phantest/include/kernel/");
+
+print("Cleaning cvs dirs (expect warnings)...\n");
+system("find . -name CVS -exec rm -rf \{\} \;");
