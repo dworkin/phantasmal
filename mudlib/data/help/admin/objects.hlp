@@ -234,20 +234,20 @@ instance:
 
   @set_obj_flag #237 cont true
   @set_obj_flag #294 open 0
-  @set_object_flags #748 container no
+  @set_object_flags #748 container
   @set_object_flags #748 nodesc yes
 
-The values, if present, should be obviously true or false -- like
-"true", "false", "yes", "no", 1, 0.  If absent, the values default to
-true.  The first argument is the object number of an object registered
-with MAPD.  The middle argument is a flag name, and can
-be "cont" or "container" to set whether the object is a container,
-"open" to set whether it is currently open, "nodesc" for scenery
-objects somewhat similar to details and keywords, or other flag names.
-There is currently no convenient way to get a list of flag names.
+The values, if present, should indicate true or false -- like "true",
+"false", "yes", "no", 1, 0.  If absent, the values default to true.
+The first argument is the object number of a room or portable.  The
+middle argument is a flag name, and can be "cont" or "container" to
+set whether the object is a container, "open" to set whether it is
+currently open, "nodesc" for scenery objects, or possibly other flag
+names.  To get a list of flag names, type "@set_obj_flag flagnames".
 
-Please note:  @set_obj_flag doesn't work at the moment.  You can manually
-edit the roomfile.unq file if you want an object to have flags.  -- Keith
+Note: the "nodesc" flag will be retired soon in favor of actual object
+details.  We hope to have details in usable shape for release 0.11 of
+Phantasmal.
 
 }}
 
