@@ -370,6 +370,17 @@ private int resolve_location(object room) {
   int    pending;
   object container;
 
+  pending = room->get_pending_detail_of();
+  if(pending != -1) {
+    container = get_room_by_num(pending);
+    if(!container) {
+      return 0;
+    }
+
+    container->add_detail(room);
+    return 1;
+  }
+
   pending = room->get_pending_location();
   if(pending != -1) {
     container = get_room_by_num(pending);
@@ -378,15 +389,18 @@ private int resolve_location(object room) {
     }
 
     container->add_to_container(room);
+    return 1;
   } else {
     container = get_room_by_num(0);  /* Else, add to The Void */
     if(!container)
       error("Can't find room #0!  Panic!");
 
     container->add_to_container(room);
+    return 1;
   }
 
-  return 1;
+  /* Never used */
+  return 0;
 }
 
 void add_dtd_unq_rooms(mixed* unq, string filename) {
@@ -419,6 +433,7 @@ void add_dtd_unq_rooms(mixed* unq, string filename) {
     for(iter = 0; iter < sizeof(resolve_rooms);) {
       if(resolve_location(resolve_rooms[iter])) {
 	res_tmp = 1;
+	resolve_rooms[iter]->clear_pending();
 	resolve_rooms = resolve_rooms[..iter-1] + resolve_rooms[iter+1..];
       } else {
 	iter++;
