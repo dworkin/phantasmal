@@ -173,7 +173,7 @@ static void cmd_stat(object user, string cmd, string str) {
     } else {
 
       objs = user->find_first_objects(str, LOC_INVENTORY, LOC_CURRENT_ROOM,
-				      LOC_BODY);
+				      LOC_BODY, LOC_CURRENT_EXITS);
       if(!objs) {
 	user->message("You don't find any object matching '"
 		      + str + "' here.\r\n");
@@ -292,9 +292,11 @@ static void cmd_stat(object user, string cmd, string str) {
   tmp += implode(words, ", ");
   tmp += "\r\n\r\n";
 
-  tmp += "Its weight is " + obj->get_weight() + " kilograms.\r\n";
-  tmp += "Its volume is " + obj->get_volume() + " cubic decimeters.\r\n";
-  tmp += "Its length is " + obj->get_length() + " centimeters.\r\n";
+  if(function_object("get_weight", obj)) {
+    tmp += "Its weight is " + obj->get_weight() + " kilograms.\r\n";
+    tmp += "Its volume is " + obj->get_volume() + " cubic decimeters.\r\n";
+    tmp += "Its length is " + obj->get_length() + " centimeters.\r\n";
+  }
 
   if(function_object("is_container", obj)) {
     if(obj->is_container()) {
@@ -308,9 +310,14 @@ static void cmd_stat(object user, string cmd, string str) {
       } else {
 	tmp += "The object may not be freely opened and closed.\r\n";
       }
-      tmp += "Its weight capacity is " + obj->get_weight_capacity() + ".\r\n";
-      tmp += "Its volume capacity is " + obj->get_volume_capacity() + ".\r\n";
-      tmp += "Its maximum height is " + obj->get_length_capacity() + ".\r\n";
+      if(function_object("get_weight_capacity", obj)) {
+	tmp += "Its weight capacity is " + obj->get_weight_capacity()
+	  + ".\r\n";
+	tmp += "Its volume capacity is " + obj->get_volume_capacity()
+	  + ".\r\n";
+	tmp += "Its maximum height/length is " + obj->get_length_capacity()
+	  + ".\r\n";
+      }
     } else {
       tmp += "The object is not a container.\r\n";
     }
