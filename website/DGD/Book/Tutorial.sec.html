@@ -17,19 +17,20 @@
 </p>
 
 <p>
-  Log in as admin, if you haven't already.  Type <tt>code 7+4</tt>.
-  You should see a response like <tt>$0 = 11</tt>.  The $0 is a value
-  that DGD will store for you.  You can refer to it later whenever you
-  like.  For instance, if you typed <tt>code $0+9</tt>, you'd see a
-  result like <tt>$1 = 20</tt>.  Note that this time the history value
-  is $1, not $0.  $0 keeps its old value, and a new history item, $1,
-  gets the new value.  The history number will keep increasing as you
-  perform commands that place values into the history list.
+  Log in as admin, if you haven't already.  Type <kbd>code 7+4</kbd>.
+  You should see a response like <samp>$0 = 11</samp>.  The $0 is a
+  value that DGD will store for you.  You can refer to it later
+  whenever you like.  For instance, if you typed <kbd>code $0+9</kbd>,
+  you'd see a result like <samp>$1 = 20</samp>.  Note that this time
+  the history value is $1, not $0.  $0 keeps its old value, and a new
+  history item, $1, gets the new value.  The history number will keep
+  increasing as you perform commands that place values into the
+  history list.
 </p>
 
 <p>
-  Next try typing <tt>code status()[ST_VERSION]</tt>.  Note the
-  opening and closing parentheses go <i>before</i>
+  Next try typing <kbd>code status()[ST_VERSION]</kbd>.  Note the
+  opening and closing parentheses go <em>before</em>
   &quot;ST_VERSION&quot; in square brackets.  If you do it right,
   you'll get the current version of DGD, such as &quot;DGD
   1.2.70&quot;, returned between quotation marks, and of course
@@ -38,21 +39,22 @@
 
 <p>
   The parentheses after a name mean to call a function by that name.
-  Anything between the parentheses are the <i>arguments</i> of the
-  function, also called parameters.  For instance, try typing <tt>code
-  sin(2.0 * 3.14159)</tt>.  You should get a result like <tt>$3 =
-  -5.3071519e-6</tt>.  Whatever result you get, it should be a very
-  small number, like the above.  That's because you're calculating the
-  sine of two pi, which (if calculated absolutely perfectly) is zero.
-  Now try typing the same thing, but with 2 instead of 2.0.  If you're
-  used to programming in C, the result may surprise you!
+  Anything between the parentheses are the <dfn>arguments</dfn> of the
+  function, also called parameters.  For instance, try typing
+  <kbd>code sin(2.0 * 3.14159)</kbd>.  You should get a result like
+  <samp>$3 = -5.3071519e-6</samp>.  Whatever result you get, it should
+  be a very small number, like the above.  That's because you're
+  calculating the sine of two pi, which (if calculated absolutely
+  perfectly) is zero.  Now try typing the same thing, but with 2
+  instead of 2.0.  If you're used to programming in C, the result may
+  surprise you!
 </p>
 
 <p>
   It turns out that ST_VERSION, in the example with status(), is
   actually a number.  The code command defines certain constant values
-  for you, and assigns names to them.  So if you type simply <tt>code
-  ST_VERSION</tt>, you should see the numerical value of ST_VERSION,
+  for you, and assigns names to them.  So if you type simply <kbd>code
+  ST_VERSION</kbd>, you should see the numerical value of ST_VERSION,
   0, printed out.  That's because underneath, ST_VERSION is just the
   number 0.  We've assigned a value to it using the C Preprocessor, a
   very powerful part of the language that will be described in a later
@@ -79,8 +81,8 @@
 </p>
 
 <p>
-  A <i>variable</i> is a named piece of storage space.  A variable can
-  hold a <i>value</i>, such as the integer 94 or the character string
+  A <dfn>variable</dfn> is a named piece of storage space.  A variable can
+  hold a <dfn>value</dfn>, such as the integer 94 or the character string
   &quot;Bob's your uncle!&quot;.  The variable has a name that you use
   to refer to that storage.  The value of the variable may change over
   time.  For instance, you may add 2 to the variable, giving 96
@@ -88,11 +90,11 @@
 </p>
 
 <p>
-  For instance, type <tt>code a = 94, a = a + 7, a</tt>.  Make sure to
-  type it as written, with the commas.  You should see a result like
-  <tt>$7 = 101</tt>.  The commas are a special operator that means
-  &quot;do the things in order, but only worry about the value of the
-  <i>last</i> one&quot;.  So we did three things with that code
+  For instance, type <kbd>code a = 94, a = a + 7, a</kbd>.  Make sure
+  to type it as written, with the commas.  You should see a result
+  like <samp>$7 = 101</samp>.  The commas are a special operator that
+  means &quot;do the things in order, but only worry about the value
+  of the <i>last</i> one&quot;.  So we did three things with that code
   statement.  We set the variable a to have the value 94.  Then we
   changed what a was equal to by setting it to its old value plus 7.
   Then, the very last part of the command, after the last comma, was
@@ -103,10 +105,10 @@
 <p>
   You can also separate statements with the semicolon.  Due to
   strangeness in the way the code command works, if you use the
-  semicolon operator with the code command at all, you <i>must</i>
+  semicolon operator with the code command at all, you <em>must</em>
   finish your code with a semicolon or an end-curly-brace.  Otherwise
-  you'll get very strange behavior indeed.  Try typing <tt>code a =
-  94; a = a + 7; return a;</tt>.  You should get 101, the same result
+  you'll get very strange behavior indeed.  Try typing <kbd>code a =
+  94; a = a + 7; return a;</kbd>.  You should get 101, the same result
   as above.  If you just get 94, you forgot the ending semicolon
   &mdash; try it again.  Note the 'return' statement at the end.  When
   you don't use a semicolon at the end of your code command, the
@@ -123,22 +125,22 @@
 <p>
   Note that a variable in LPC isn't like a mathematical variable, and
   the equals sign above doesn't really mean equality in a mathematical
-  sense.  Instead, the equals is often called <i>assignment</i> to
+  sense.  Instead, the equals is often called <dfn>assignment</dfn> to
   indicate that it is setting the variable to have a value.  But
   unlike in mathematics, the variable can be repeatedly assigned,
   changing its value throughout your code.
 </p>
 
 <p>
-  You've already seen the plus operator.  There's also a minus, which
-  works the way you'd expect, and can be used to make a number or
-  variable negative as well as subtract.  The asterisk <i>*</i> means
-  multiplication, and the forward-slash, <i>/</i> represents division.
-  Remember that you can only add, multiply, subtract or divide
-  integers with integers and decimal numbers (also called floating
-  point) with other floating point numbers.  If you try to do
-  otherwise, such as by typing <tt>code 7 + 4.1</tt>, you'll get an
-  error.  Try it and see.
+  You've already seen the <dfn>+</dfn> operator.  There's also a
+  minus, <dfn>-</dfn> which works the way you'd expect &mdash; it can
+  be used to make a number or variable negative, or to subtract two
+  numbers.  The asterisk <dfn>*</dfn> means multiplication, and the
+  forward-slash, <dfn>/</dfn> represents division.  Remember that you
+  can only add, multiply, subtract or divide integers with integers
+  and decimal numbers (also called floating point) with other floating
+  point numbers.  If you try to do otherwise, such as by typing
+  <kbd>code 7 + 4.1</kbd>, you'll get an error.  Try it and see.
 </p>
 
 <p>
@@ -150,7 +152,7 @@
 
 <p>
   Integers (and even floating point numbers) are limited in size.  If
-  you try typing <tt>code 10000 * 10000 * 10000</tt>, you'll see a
+  you try typing <kbd>code 10000 * 10000 * 10000</kbd>, you'll see a
   strange result &mdash; it's negative!  That's because integers have
   a maximum value of a little more than four billion, and if your
   numbers get larger than that, they'll wrap back around.  Unsigned
@@ -162,41 +164,42 @@
   are of a fixed size, and there are only so many possible numbers
   that a single variable can represent.  If you need larger or smaller
   integers than that, you'll find that DGD's Arbitrary-Precision
-  Signed Numbers (called ASNs) are the way to go.  They're explained in
-  a later chapter.
+  Signed Numbers (called ASNs) are the way to go.  They're explained
+  in a later chapter.
 </p>
 
 <p>
   You can declare your own variables rather than using the ones that
   the code command gives you by default.  Integer (that means whole
   numbers, not decimals or fractions) variables are declared to be of
-  type <i>int</i>.  So you might type <tt>code int sam; sam = 7; sam =
-  sam + 4; return sam;</tt>.  Note that you must declare the variables
-  at the very beginning.  If you try typing <tt>code a = 4; int sam;
-  sam = 7;</tt>, you'll get an error.  Variables can only be declared
-  at the beginning of a block scope.  What that means to you right now
-  is that if you use variables in your code statements, put them right
-  up front.
+  type <dfn>int</dfn>.  So you might type <kbd>code int sam; sam = 7;
+  sam = sam + 4; return sam;</kbd>.  Note that you must declare the
+  variables at the very beginning.  If you try typing <kbd>code a = 4;
+  int sam; sam = 7;</kbd>, you'll get an error.  Variables can only be
+  declared at the beginning of a block scope.  What that means to you
+  right now is that if you use variables in your code statements, put
+  them right up front.
 </p>
 
 <p>
   Not every value or variable is an integer, so not every variable is
-  declared using <i>int</i>.  You can also have unsigned variables,
-  which can't hold negative values.  You can declare an unsigned
-  variable called bruno by typing <tt>unsigned int bruno;</tt>, or
-  just <tt>unsigned bruno;</tt> Try subtracting a larger unsigned
-  number from a smaller one and see what happens!  The wraparound can
-  be hard to understand if you're not used to it.
+  declared using int.  You can also have <dfn>unsigned</dfn>
+  variables, which are integers that can't hold negative values.  You
+  can declare an unsigned variable called <var>bruno</var> by typing
+  <code>unsigned int bruno;</code>, or just <code>unsigned
+  bruno;</code> Try subtracting a larger unsigned number from a
+  smaller one and see what happens!  The wraparound can be hard to
+  understand if you're not used to it.
 </p>
 
 <p>
   Remember that decimal numbers or fractional numbers are called
   floating point numbers.  A floating point variable called
-  temperature would be declared as <tt>float temperature;</tt>.
-  Remember that you can only add, subtract, multiply and divide
-  floating point numbers with other floating point numbers, not with
-  integers.  That means that to double a floating point number, you'd
-  need to multiply it by 2.0 rather than just 2.
+  <var>temperature</var> would be declared as <code>float
+  temperature;</code>.  Remember that you can only add, subtract,
+  multiply and divide floating point numbers with other floating point
+  numbers, not with integers.  That means that to double a floating
+  point number, you'd need to multiply it by 2.0 rather than just 2.
 </p>
 
 
@@ -213,25 +216,26 @@
 </p>
 
 <p>
-  Try typing <tt> code int times; int count; times = 0; count = 2;
+  Try typing <kbd> code int times; int count; times = 0; count = 2;
   while(count < 10000000) { count = count * 2; times = times + 1; }
-  return times;</tt>  Note that you must <i>not</i> hit return at
-  any point, you have to type it all on one line.  If you do it right,
-  you should get 23 as the answer.
+  return times;</kbd> Note that you must <em>not</em> hit return
+  before the very end, you have to type the whole thing on one line.
+  If you do it right, you should get 23 as the answer.
 </p>
 
 <p>
   But is 23 the right answer?  Hard to tell.  So we should start with
   2 and double it 23 times, just to be sure.  Go ahead and type
-  <tt>code int times; int count; times = 0; count = 2; while(times <
-  20) { count = count * 2; times = times + 1; } return count;</tt>.
-  You should get the value 16777216 returned.  And yes, that's more than
-  ten million.  So our code works!  Now, <i>how</i> does it work?
+  <kbd>code int times; int count; times = 0; count = 2; while(times <
+  20) { count = count * 2; times = times + 1; } return count;</kbd>.
+  You should get the value 16777216 returned.  And yes, that's more
+  than ten million.  So our code works!  Now, <em>how</em> does it
+  work?
 </p>
 
 <p>
   You know about declaring variables and setting values, but
-  <i>while</i> is a new one.  While takes a condition in parentheses,
+  <dfn>while</dfn> is a new one.  While takes a condition in parentheses,
   and then a bunch of stuff between curly braces.  The stuff in curly
   braces is done over and over again until the condition in
   parentheses is false.  So in the first example above, the code will
@@ -246,12 +250,12 @@
 </p>
 
 <p>
-  There's another kind of loop called a <i>for</i> loop, which is very
-  similar.  The first example, written as a foor loop, looks like
-  this: <tt> code int times; int count; for(times = 0, count = 2;
+  There's another kind of loop called a <dfn>for</dfn> loop, which is
+  very similar.  The first example, written as a for loop, looks like
+  this: <kbd> code int times; int count; for(times = 0, count = 2;
   count < 10000000; count = count * 2, times = times + 1) { } return
-  times;</tt> A for loop is a lot like a while loop, but the syntax is
-  funny.  Note that after the word &quot;for&quot;, you have three
+  times;</kbd> A for loop is a lot like a while loop, but the syntax
+  is funny.  Note that after the word &quot;for&quot;, you have three
   different pieces of code in the parentheses, each separated by a
   semicolon.  The first piece of the code is done before the loop
   begins &mdash; in this case, setting times to 0 and count to 2.  The
@@ -265,7 +269,39 @@
   loop.  So the things that were inside the while loop have moved to
   the third section of code in the for loop's parentheses.  You can
   decide where to put which code since putting it in the third section
-  of the parentheses is the same as putting it in the body, so
-  technically any for loop can be rewritten with an empty body &mdash;
-  just put everything inside the parentheses.
+  of the parentheses is the same as putting it in the body.
+</p>
+
+@@SECTION Tutorial.StringHandling Simple String Manipulation
+
+<p>
+  Some time back, we called the status() function, and extracted a
+  result which wasn't a number at all.  It was a <dfn>string</dfn>,
+  which is a set of character values, one after the other in a list.
+  Of course, it doesn't usually look that way.  It usually looks like
+  a word or phrase or paragraph.
+</p>
+
+<p>
+  In DGD, just like in C, strings use what's called ASCII code.  Since
+  computers represent numbers internally rather than letters, every
+  printable character (and many special characters with no printable
+  representation) must be assigned a number.  ASCII is one way to
+  assign those numbers.  A DGD string is just a sequence of those
+  numbers, each representing a character.
+</p>
+
+<p>
+  A DGD string can also hold the empty string, which is written as
+  &quot;&quot;.  That's a sequence of <em>zero</em> characters, and it
+  just means &quot;no string here&quot;.  The string can also hold the
+  special value <dfn>nil</dfn>.  Every string holds nil when you first
+  declare it.  So do more complicated data types we'll talk about
+  later.  Nil isn't a valid string, it's just a placeholder meaning
+  that the string isn't usable yet &mdash; you have to assign a value
+  to it first.
+</p>
+
+<p>
+  So go ahead and type <kbd>code &quot;Hello world!&quot;</kbd>.
 </p>
