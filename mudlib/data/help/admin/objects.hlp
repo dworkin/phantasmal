@@ -285,8 +285,9 @@ to.  For instance:
 @move #200 #0
 
 The above would move object #200 into object #0 (the Void).  The
-command works on rooms and portables, both as objects to move and
-as destinations.
+command works on rooms and portables, both as objects to move and as
+destinations.  You can use the word "here" instead of the second
+object to move an object into your current room.
 
 See also @goto
 
