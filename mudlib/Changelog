@@ -22,6 +22,8 @@ Release 0.012:
 	* Fixed bug in path_place...  How long have put and remove not
 	  been working?
 	* MAPD now lists problem objects when it can't resolve rooms.
+	* @set_obj_detail command will now add details to objects.
+	* @stat now deals with object details.
 
 Release 0.011b:
 	* Added @make_portable command, very similar to @make_room.
