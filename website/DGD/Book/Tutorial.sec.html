@@ -240,7 +240,7 @@
 
 <p>
   Try typing <kbd> code int times; int count; times = 0; count = 2;
-  while(count < 10000000) { count = count * 2; times = times + 1; }
+  while(count &lt; 10000000) { count = count * 2; times = times + 1; }
   return times;</kbd> Note that you must <em>not</em> hit return until
   the very end &mdash; you have to type the whole thing on one line.
   If you do it right, you should get 23 as the answer.
@@ -249,11 +249,11 @@
 <p>
   But is 23 the right answer?  Hard to tell.  So we should start with
   2 and double it 23 times, just to be sure.  Go ahead and type
-  <kbd>code int times; int count; times = 0; count = 2; while(times <
-  20) { count = count * 2; times = times + 1; } return count;</kbd>.
-  You should get the value 16777216 returned.  And yes, that's more
-  than ten million.  So our code works!  Now, <em>how</em> does it
-  work?
+  <kbd>code int times; int count; times = 0; count = 2; while(times
+  &lt; 20) { count = count * 2; times = times + 1; } return
+  count;</kbd>.  You should get the value 16777216 returned.  And yes,
+  that's more than ten million.  So our code works!  Now, <em>how</em>
+  does it work?
 </p>
 
 <p>
@@ -277,13 +277,13 @@
   There's another kind of loop called a <dfn>for</dfn> loop, which is
   very similar.  The first example, written as a for loop, looks like
   this: <kbd> code int times; int count; for(times = 0, count = 2;
-  count < 10000000; count = count * 2, times = times + 1) { } return
-  times;</kbd> A for loop is a lot like a while loop, but the syntax
-  is funny.  Note that after the word &quot;for&quot;, you have three
-  different pieces of code in the parentheses, each separated by a
-  semicolon.  The first piece of the code is done before the loop
+  count &lt; 10000000; count = count * 2, times = times + 1) { }
+  return times;</kbd> A for loop is a lot like a while loop, but the
+  syntax is funny.  Note that after the word &quot;for&quot;, you have
+  three different pieces of code in the parentheses, each separated by
+  a semicolon.  The first piece of the code is done before the loop
   begins.  In this case, it sets <var>times</var> to 0 and
-  <var>count</var> to 2.  The second piece of code, <code>count <
+  <var>count</var> to 2.  The second piece of code, <code>count &lt;
   10000000</code> is checked every time through the loop.  In this
   case it's checking whether count is more than ten million, just like
   the while loop did.
@@ -323,7 +323,7 @@
   just means &quot;no string here&quot;.  The string can also hold the
   special value <dfn>nil</dfn>.  Every string holds <var>nil</var>
   when you first declare it.  So do certain other data types we'll
-  talk about later.  <var>Nil</var> isn't a valid string, it's just a
+  talk about later.  <var>nil</var> isn't a valid string, it's just a
   placeholder meaning that the string isn't usable yet &mdash; you
   have to assign a value to it first.
 </p>
@@ -839,7 +839,7 @@ string *unique(string *array) {
   int     ctr;
 
   elements = ([ ]);
-  for(ctr = 0; ctr < sizeof(array); ctr++) {
+  for(ctr = 0; ctr &lt; sizeof(array); ctr++) {
     elements[array[ctr]] = 1;
   }
 
@@ -882,7 +882,13 @@ string *unique(string *array) {
 </p>
 
 <p>
-  
+  The function first makes a new, empty mapping, and then puts each
+  element of the array into it as a <dfn>key</dfn>, also called an
+  <dfn>index</dfn>.  It assigns the value 1 to each key, though the
+  value won't actually be used.  Any repeated array elements will just
+  assign 1 to the same key that's already in the array.  Then, at the
+  end, we call a function called map_indices which returns an array of
+  the indices (keys) of the mapping, in alphabetical order.
 </p>
 
 
@@ -898,3 +904,76 @@ string *unique(string *array) {
 <p>
 </p>
 
+@@SECTION Tutorial.Arguments Arguments and Call-By-Value
+
+<p>
+  In LPC, most values are passed by value.  That means if you pass an
+  integer variable with a value of 3 into a function and you change
+  that variable in the function, the variable doesn't change outside
+  the function.  Because of that, the following code doesn't do what
+  it looks like it's supposed to. In fact, it does nothing.
+</p>
+
+<pre>
+/* Swap two integers */
+void swap(int a, int b) {
+  int tmp;
+  tmp = b;
+  b = a;
+  a = b;
+}
+</pre>    
+
+<p>
+  It doesn't swap the values beyond the end of the function.
+  Internally, LPC makes the new variables for arguments <var>a</var>
+  and <var>b</var> and copies the values in.  The code swaps the
+  values of the arguments' LPC-internal variables, but those variables
+  are going to disappear at the end of the function.  This method of
+  function call is named <dfn>call-by-value</dfn> because only the
+  value gets passed in -- the original variable is copied so the
+  function never sees it.
+</p>
+
+<p>
+  LPC passes arrays, mappings and objects by reference. That means
+  that if you change an element in the array, it's changed everywhere,
+  not just in that one function.  So call-by-value is only used for
+  integers, floating-point numbers and strings.  Values of type
+  <var>mixed</var> are passed according to the underlying type &mdash;
+  a mixed variable with a current value of 3 or <code>nil</code> will
+  be passed by value, while one whose current value is a mapping will
+  be passed by reference, and might be modified.
+</p>
+
+<p>
+  The fact that some objects are passed by reference has security
+  implications.  If an object in your application keeps information on
+  all users, it will probably wish to use an array or mapping.  It may
+  wish to have a query function to return such an array or mapping to
+  a caller, or it may wish to call functions in other objects with a
+  list of users.  But if it simply passes its array or mapping around
+  as an argument, then other objects may modify that array or mapping,
+  which would be <em>highly</em> inconvenient.  Instead, the object
+  should copy the array or mapping before returning it, and before
+  passing it as an argument to any questionably-trusted functions.  The
+  copied array or mapping contains all the same information, but will
+  not change the original if it is modified.  For example:
+</p>
+
+<pre>
+void trusted_function(void) {
+  mixed *users;
+  mixed *copied_users;
+
+  users = "/usr/System/sys/secured"->get_user_array();
+
+  copied_users = users[..];  /* Make a copy */
+  untrusted_function(7, "sam", copied_users);
+}
+</pre>
+
+@@SECTION Tutorial.VariableScope External Variables and Scope
+
+<p>
+</p>

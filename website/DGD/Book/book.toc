@@ -23,6 +23,8 @@ Tutorial:
   Mappings
   Functions
   Objects
+  Arguments
+  VariableScope
 
 ControlFlow:
   ForWhile
