@@ -649,7 +649,9 @@ void print_some_stuff(string format, mixed stuff)
       integer 0.  nil and 0 are the same thing at lower type-checking levels
       (levels 0 and 1) which still work the way DGD did long ago, nil-wise.
     </p>
-    <p> nil happens in a lot of places. For instance:
+
+    <p> nil happens in a lot of places. For instance: </p>
+
     <ul>
       <li> The kfun <b>allocate</b> allocates an array of nil values. </li>
       <li> String, object, array and mapping variables are initialized
@@ -673,7 +675,7 @@ void print_some_stuff(string format, mixed stuff)
       <li> nil is the value of varargs (optional) parameters of the
 	types mentioned above when the
 	function caller doesn't supply those parameters. </li>
-    </ul> </p>
+    </ul>
 
     <hr />
 
@@ -764,7 +766,7 @@ dinner_schedule = ([ ]);
         catch {
             ::open_port(protocol, port);
             porttype = (protocol == "telnet") ? "telnet" : "binary";
-            if (protocol == "tcp" && udp) {
+            if (protocol == "tcp" &amp;&amp; udp) {
                 udpport = clone_object(PORT_UDP);
                 catch {
                     udpport->listen(port);

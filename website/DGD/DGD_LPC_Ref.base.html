@@ -856,7 +856,7 @@ dinner_schedule = ([ ]);
 # define ST_NOBJECTS    14      /* # objects in use */
 # define ST_COTABSIZE   15      /* callouts table size */
 # define ST_NCOSHORT    16      /* # short-term callouts */
-# define ST_NCOLONG     17      /* # long-term & millisecond callouts */
+# define ST_NCOLONG     17      /* # long-term &amp; millisecond callouts */
 # define ST_UTABSIZE    18      /* user table size */
 # define ST_ETABSIZE    19      /* editor table size */
 # define ST_STRSIZE     20      /* max string size */
@@ -933,7 +933,7 @@ changes in dgd/src/config.h:
       of arguments and
       local variables is now much higher,
       127 if memory serves. </i>
-    <br> </br> </p>
+      <br /> </p>
     <p> You should note that you can get around the limit on functions
       per program listed above by separating the functions into two or more
       programs (.c files) and inheriting them. </p>
@@ -978,15 +978,15 @@ changes in dgd/src/config.h:
     <p>In 1.2.18, Dworkin released the first implementation of
       lightweight objects.  From a message he wrote:</p>
     <pre>
-Mikael Lind <z94lind@mtek.chalmers.se> wrote:
+Mikael Lind &lt;z94lind@mtek.chalmers.se&gt; wrote:
 
->[...]
-> Light-weight objects under DGD sound very intriguing. I do not think
-> that I have seen them mentioned before. Is it possible to get some
-> kind of explanation of what they will be like? My initial thought was
-> along the lines of objects that one can use for abstract data types
-> and similar things; basically, objects that are garbage-collected by
-> the driver.
+&gt;[...]
+&gt; Light-weight objects under DGD sound very intriguing. I do not think
+&gt; that I have seen them mentioned before. Is it possible to get some
+&gt; kind of explanation of what they will be like? My initial thought was
+&gt; along the lines of objects that one can use for abstract data types
+&gt; and similar things; basically, objects that are garbage-collected by
+&gt; the driver.
 
 That is indeed what they are.  Like clones, they are created from a
 master object, which is a normal, persistent object.  Light-weight
