@@ -4,6 +4,8 @@
 #include <phrase.h>
 #include <map.h>
 
+#include <kernel/kernel.h>
+
 /* room.c:
 
    A basic MUD room with standard trimmings
@@ -15,6 +17,16 @@ mixed* exits;
 
 private int pending_location;
 private int pending_parent;
+
+
+/* Flags */
+/* The objflags field contains a set of boolean object flags */
+#define OF_CONTAINER          1
+#define OF_OPEN               2
+#define OF_NODESC             4
+#define OF_OPENABLE           8
+
+private int objflags;
 
 
 #define PHR(x) PHRASED->new_simple_english_phrase(x)
@@ -119,21 +131,64 @@ void remove_exit(object exit) {
   } else error("Only EXITD can remove exits!");
 }
 
-/*
- * is_no_desc()
- *
- * return true to prevent this object from being shown when the room
- * description is given.  Unlike the previous is_no_desc() function, this does
- * not govern if the object can be taken or not (this is the job of the
- * can_get() function
- *
- * N.B.  By default though, the can_get() function returns an error if
- * is_no_desc() returns true, but this can be overriden
+
+/* 
+ * flag overrides
  */
 
 int is_no_desc() {
-  return 0;
+  return objflags & OF_NODESC;
 }
+
+int is_container() {
+  return objflags & OF_CONTAINER;
+}
+
+int is_open() {
+  return objflags & OF_OPEN;
+}
+
+int is_openable() {
+  return objflags & OF_OPENABLE;
+}
+
+private void set_flags(int flags, int value) {
+  if(value) {
+    objflags |= flags;
+  } else {
+    objflags &= ~flags;
+  }
+}
+
+void set_nodesc(int value) {
+  if(!SYSTEM() && previous_program() != US_MAKE_ROOM)
+    error("Only SYSTEM code can currently set an object nodesc!");
+
+  set_flags(OF_NODESC, value);
+}
+
+void set_container(int value) {
+  if(!SYSTEM() && previous_program() != US_MAKE_ROOM)
+    error("Only SYSTEM code can currently set an object as a container!");
+
+  set_flags(OF_CONTAINER, value);
+}
+
+void set_open(int value) {
+  if(!SYSTEM() && previous_program() != MOBILE
+      && previous_program() != US_MAKE_ROOM)
+    error("Only SYSTEM code can currently set an object as open!");
+
+  set_flags(OF_OPEN, value);
+}
+
+void set_openable(int value) {
+  if(!SYSTEM() && previous_program() != US_MAKE_ROOM)
+    error("Only SYSTEM code can currently set an object as openable!");
+
+  set_flags(OF_OPENABLE, value);
+}
+
 
 /****** Functions dealing with entering and leaving a room ********/
 /* return nil if the user can leave/enter, or a string indicating the
@@ -283,6 +338,7 @@ string to_unq_flags(void) {
   if(edesc) {
     ret += "  ~edesc{" + edesc->to_unq_text() + "}\n";
   }
+  ret += "  ~flags{" + objflags + "}\n";
 
   if(archetype) {
     ret += "  ~parent{" + archetype->get_number() + "}\n";
@@ -336,6 +392,8 @@ void from_dtd_tag(string tag, mixed value) {
     set_examine(value);
   else if(tag == "article")
     desc_article = value;
+  else if(tag == "flags")
+    objflags = value;
   else if(tag == "parent")
     pending_parent = value;
   else if(tag == "nouns") {
