@@ -63,13 +63,16 @@
           <td class="content">
     
 
-    <h3 style="text-align: center"> Files You Need for a Phantasmal-Based
-      Game </h3>
+  <h3 style="text-align: center"> Files You Need for a Phantasmal-Based
+    Game </h3>
 
-    <p>
-      You'll need a <b>/usr/game</b> directory.  Files that interface
-      with Phantasmal go under it.
-    </p>
+  <p>
+    You'll need a <b>/usr/game</b> directory.  Files that
+    interface with Phantasmal go under it.  So do other things,
+    potentially.  These files interface fairly directly and are
+    basically mandatory.  They do <i>not</i> include files necessary
+    to interface with various optional Phantasmal daemons.
+  </p>
 
     <h3> Gameconfig.h </h3>
 
@@ -87,6 +90,18 @@
       important game modules.  However, GAME_INITD is the only one
       that's absolutely mandatory (or at least, mandatory without
       changes to Phantasmal proper).
+    </p>
+
+    <h3> version.h </h3>
+
+    <p>
+      The file &quot;/include/version.h&quot; isn't strictly required
+      in most cases, but the bundling script expects it.  It should
+      define a variable called GAME_VERSION which should be a string
+      like &quot;My Game, v. 1.7&quot; which tells both what the game
+      is and what the current version is.  Remember to update it for
+      each game release (if you release to the public, or otherwise
+      wish to track versions).
     </p>
 
     <h3> GAME_INITD </h3>
@@ -232,6 +247,55 @@
       that your User object doesn't need to be called
       /usr/game/obj/user.  It can be located at any path, as long as
       your User object inherits from the PHANTASMAL_USER library.
+    </p>
+
+    <h2> Package Files </h2>
+
+    <p>
+      Files in this category don't interface with Phantasmal, exactly,
+      but you should still have them.
+    </p>
+
+    <h3> Game.dgd </h3>
+
+    <p>
+      Depending on your game, this may be called mygame.dgd or
+      test.dgd or game.dgd or anything else you like.  However, you
+      should supply such a .dgd file and make sure it has reasonable
+      settings for object swapping.  If you use a start script and an
+      install script (like the testgame module does), then be sure to
+      set the directory entry to &quot;RUN INSTALL SCRIPT FIRST&quot;
+      or something like it, so that DGD will object if you try to
+      start the MUD without using the install script first.
+    </p>
+
+    <h3> Documentation </h3>
+
+    <p>
+      A README file, perhaps an INSTALL file, the license for your
+      code...  These are all good things to have.  You should include
+      them.
+    </p>
+
+    <h3> Bundled directory </h3>
+
+    <p>
+      If your game is going to be capable of being bundled with DGD
+      and Phantasmal for easy distribution, you should include a
+      &quot;bundled&quot; subdirectory with files to copy into the
+      top-level files.  I include a README and an INSTALL file there
+      (note that top-level files by those names will be deleted during
+      copyover!), as well as scripts to install and run the MUD.  You
+      may do the same, or include any other files you like.
+    </p>
+
+    <h3> Users directory </h3>
+
+    <p>
+      Your game should have a /usr/game/users directory.  This is
+      where files for information about game users will be stored.
+      Please bear this in mind, and grant access to the /usr/game
+      directory carefully, if at all, to your builders.
     </p>
             <address> 
             <span><a href="mailto:angelbob-remove-spamfree@spamfree.users.sf.net">Noah Gibbs</a></span> 
