@@ -5,25 +5,33 @@
 
 static void config_unq_file(void);
 static void configure_from_unq(mixed* unq);
-static void load_files(void);
 
 static void set_up_scripting(void);
 static void set_up_heart_beat(void);
+static void load_sould(void);
 
 static void create(void) {
   /* Load in configuration files and set data in the common and System
      directories */
-  load_files();
+  config_unq_file();
 
   set_up_scripting();
 
+  /* Build game driver and set it */
+  if(!find_object(GAME_DRIVER))
+    compile_object(GAME_DRIVER);
+
+  CONFIGD->set_game_driver(find_object(GAME_DRIVER));
+
   /* Register a help directory for the HelpD to use */
-  HELPD->new_help_directory("/data/help");
+  HELPD->new_help_directory("/usr/game/help");
 
   /* Set up heart_beat functions */
   if(!find_object(HEART_BEAT))
     compile_object(HEART_BEAT);
   HEART_BEAT->set_up_heart_beat();
+
+  LOGD->write_syslog("Configured Phantasmal from /usr/game!");
 }
 
 static void set_up_scripting(void) {
@@ -38,30 +46,6 @@ static void set_up_scripting(void) {
   /* Test script obj */
   compile_object("/usr/game/script/test_script");
   call_other("/usr/game/script/test_script", "???");
-}
-
-static void load_files(void) {
-  string file_tmp;
-
-  /* Read config.unq file and add stuff to ConfigD */
-  config_unq_file();
-
-  file_tmp = read_file("/usr/game/text/welcome.msg");
-  if(!file_tmp)
-    error("Can't read /usr/game/text/welcome.msg!");
-  CONFIGD->set_welcome_message(file_tmp);
-
-  file_tmp = read_file("/usr/game/text/shutdown.msg");
-  if(!file_tmp)
-    error("Can't read /usr/game/text/shutdown.msg!");
-  CONFIGD->set_shutdown_message(file_tmp);
-
-  file_tmp = read_file("/usr/game/text/suspended.msg");
-  if(!file_tmp)
-    error("Can't read /usr/game/text/suspended.msg!");
-  CONFIGD->set_suspended_message(file_tmp);
-
-  LOGD->write_syslog("Configured Phantasmal from /usr/game!");
 }
 
 static void config_unq_file(void) {
@@ -109,4 +93,11 @@ static void configure_from_unq(mixed* unq) {
     unq = unq[2..];
   }
 
+}
+
+static void load_sould(void) {
+  string file_tmp;
+
+  file_tmp = read_file("/usr/game/sould.unq");
+  SOULD->from_unq_text(file_tmp);
 }
