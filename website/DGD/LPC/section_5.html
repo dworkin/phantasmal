@@ -18,36 +18,302 @@
 	Interface</a> </h1>
 
     <p>
-      So far, we've dwelt almost entirely on the LPC language
-      and the constructs within it that DGD supports or encourages.
-      However, to actually <i>do</i> anything in DGD, you need
-      an interface to standard libraries and an interface to
-      outside events.
+      So far, we've dwelt on the LPC language and the parts of it that
+      DGD supports or encourages.  But to actually <i>do</i> anything
+      in DGD, you need an interface to standard libraries and an
+      interface to outside events.
     </p>
 
     <p>
-      As of this writing, there are a reasonable variety of libraries
-      (aka MUD libraries or mudlibs) available for DGD, including the
-      Kernel Library, Phantasmal, Melville, GurbaLib, 2.4.5, Inferno,
-      BBLib and other small or obscure libraries.  There are also
-      libraries that exist but aren't generally available such as
-      Skotos' libraries and the DGD libraries that support Yahoo Chat.
-      There may be more, unreleased and unknown, waiting in the
-      wings.
+      There are a reasonable variety of libraries (aka MUD libraries
+      or mudlibs) available for DGD, including the Kernel Library,
+      Phantasmal, Melville, GurbaLib, 2.4.5, Inferno, BBLib and
+      others.  There are also libraries that aren't generally
+      available.  Skotos' libraries and the libraries for Yahoo Chat
+      are examples.  There are probably more, unreleased and unknown,
+      waiting in the wings.
     </p>
 
     <p>
-      Each and every one of these libraries exists on top of another
-      interface.  Phantasmal, BBLib and Skotos' libraries all build on
-      the Kernel Library.  The Kernel Library, Melville and 2.4.5 all
-      work directly on top of DGD's interface.  This section will
-      discuss DGD's direct interface, the lowest level of interface
-      available to a library.  The Kernel Library, a very different
-      but very valuable resource, will be discussed in chapter 6.
+      Each of these libraries exists on top of another interface.
+      Phantasmal, BBLib and Skotos' libraries all build on the Kernel
+      Library.  Melville and 2.4.5 work directly on top of DGD's
+      interface. 
+    </p>
+
+    <p>
+      This chapter will discuss DGD's direct interface,
+      the lowest level of interface available to a library.  The
+      Kernel Library, a very different but very valuable resource,
+      will be discussed in chapter 6.
     </p>
 
     <h2> <a name="SEC5.1" href="index.html#SEC5.1">
-	5.1 LPC/Library Interface</a> </h2>
+	5.1 DGD's Configuration File </a> </h2>
+
+    <p>
+      Every time you run DGD, you need to tell it a configuration
+      file.  You can also optionally give it a statedump, but that
+      won't be covered until later.  If your DGD driver binary is
+      called &quot;driver&quot; and your configuration file was called
+      &quot;mud.dgd&quot;, you'd type &quot;./driver mud.dgd&quot;, at
+      least under Unix.  On a Windows system, you'd just say
+      &quot;driver mud.dgd&quot;.  More likely you'd need to give a
+      pathname, like &quot;driver ..\mud.dgd&quot;, but we're assuming
+      here that you know the basics of command lines and pathnames.
+      If you don't, maybe you should find a hobby other than running a
+      MUD -- or just learn to use your OS's command line, it's not
+      that difficult.
+    </p>
+
+    <p>
+      That configuration file is pretty complicated and arcane looking.
+      Let's examine one, shall we?
+    </p>
+
+    <p> <pre>
+telnet_port     = 8888;                 /* telnet port number */
+binary_port     = 8889;                 /* binary port number */
+directory       = "/code/phantasmal/testgame";  /* Replace w/ your absolute
+                                                 path! */
+users           = 40;                   /* max # of users */
+editors         = 40;                   /* max # of editor sessions */
+ed_tmpfile      = "tmp/ed";             /* proto editor tmpfile */
+swap_file       = "tmp/swap";           /* swap file */
+swap_size       = 4096;                 /* # sectors in swap file */
+cache_size      = 100;                  /* # sectors in swap cache */
+sector_size     = 512;                  /* swap sector size */
+swap_fragment   = 32;                   /* fragment to swap out */
+static_chunk    = 64512;                /* static memory chunk */
+dynamic_chunk   = 261120;               /* dynamic memory chunk */
+dump_file       = "tmp/dump";           /* dump file */
+
+typechecking    = 2;                    /* highest level of typechecking */
+include_file    = "/include/std.h";     /* standard include file */
+include_dirs    = ({ "/include", "~/include" }); /* directories to search */
+auto_object     = "/kernel/lib/auto";   /* auto inherited object */
+driver_object   = "/kernel/sys/driver"; /* driver object */
+create          = "_F_create";          /* name of create function */
+    </pre>
+  </p>
+
+    <h3> <a name="SEC5.1.1" href="index.html#SEC5.1.1">
+	5.1.1 Network and Directories </a> </h3>
+
+    <p>
+      Note that text surrounded by <b>/* */</b> are comments, just
+      like in LPC.
+    </p>
+
+    <p>
+      The first entries are the telnet_port and binary_port entries.
+      Either can be a single entry, like above, or an array like
+      the include_dirs entry is above.  For instance, if you wanted
+      three binary ports, you could say something like:
+    <pre>
+binary_port = ({ 8889, 8890, 9725 })
+    </pre>
+    Versions of DGD before the late 1.2 series would only allow a
+    single telnet port and a single binary port.  No standard
+    version of DGD allows outgoing network connections, and none
+    is ever expected to, for security reasons.  You can find
+    a patch to make your personal version allow outgoing connections
+    if you look around on the internet for a bit.  You're taking
+    your security in your own hands if you do this, though.
+  </p>
+
+    <p>
+      The directory entry is an absolute path to the place to find
+      the library's code.  An absolute path means it starts with
+      a slash or backslash, not dots or a tilde.  On Unix systems,
+      use slashes.  On Windows systems, use backslashes.
+    </p>
+
+    <p>
+      Swap_file is the name of the swap_file that DGD will use for
+      your objects when they're not in the active set in RAM (if you
+      don't know what this means, don't worry).  While it can get big
+      for a running game, you can control just <i>how</i> big with
+      some entries in this file.  Usually it stays pretty small for a
+      test program.
+    </p>
+
+    <p>
+      The dump_file is where DGD will put your statedump when your
+      library requests one.  Statedumps are a way of saving and
+      restoring an entire running MUD all at once.
+    </p>
+
+    <h3> <a name="SEC5.1.2" href="index.html#SEC5.1.2">
+	5.1.2 Resource Limits </a> </h3>
+
+    <p>
+      The users entry is how many simultaneous users your MUD
+      supports.  The sky's the limit, but bear in mind that you
+      can increase this later if you need to.  Also bear in mind
+      that your current hardware will only be powerful enough
+      to support a certain number of people well.  Would you
+      rather have fifty people gush about how incredible your MUD
+      is, or five hundred talk about how slow and buggy it is?
+    </p>
+
+    <p>
+      &quot;Editors&quot; is how many people can be simultaneously
+      editing files.  DGD has a built-in editor that few people would
+      want to use.  This is how many instances can be running at once.
+      The ed_tmpfile entry is the filename that editor temp files
+      will use when people are mid-edit.
+    </p>
+
+    <h3> <a name="SEC5.1.3" href="index.html#SEC5.1.3">
+	5.1.3 Memory and Swapping </a> </h3>
+
+    <p>
+      Swap_size is the total number of sectors in the swap file, and
+      sector_size is how big one of those sectors is.  Every object
+      (excepts Light-Weight Objects, LWOs, which we talk about later)
+      in LPC takes some number of sectors.  If it takes less than
+      some whole number of sectors, it gets rounded up -- so if an
+      LPC object requires 2 sectors plus five bytes, it'll get rounded
+      up to three sectors.  If your sector_size is small, you won't
+      get much memory wasted.  If it's large, you'll find that DGD
+      swaps things to and from the disk faster.  The usual default
+      sector_size is 512 bytes, and it works pretty well for most
+      simple applications.  The swap_size is more variable, and you'll
+      probably find yourself having to increase it periodically as
+      your game gets bigger and you start running out of memory or
+      sectors.
+    </p>
+
+    <p>
+      The cache_size is how many of those sectors stay in RAM.  The
+      bigger this is, the faster your library runs and the more of
+      your memory it takes up.  You'll need to decide how much memory
+      you want to devote to your running game.  Making this bigger
+      than swap_size is pretty pointless.  Making them equal just
+      means that everything runs in memory instead of on disk.  Since
+      DGD understands what it's doing better than your OS's virtual
+      memory system, you should only do this for libraries that can
+      hold everything in memory all at once.
+    </p>
+
+    <p>
+      Several (or many) times a second, DGD will swap some objects
+      from memory to disk.  That way, it uses less memory.  It dumps
+      the stuff you haven't been using recently first, and it chooses
+      some fraction to dump out to the disk.  It will only do this
+      if more than cache_size entries are currently in memory.
+      The swap_fragment is the denominator of the fraction.  That
+      means that if swap_fragment is 50, DGD will dump 1/50th of your
+      objects to the disk when it swaps.  So if you had 500 objects
+      in memory and you didn't load any more in, you might have
+      500, then 490, then 481, then 462, and so on, as DGD dumps
+      1/50th of each new number of objects.
+    </p>
+
+    <p>
+      The static_chunk and dynamic_chunk tell DGD how much memory to
+      use in a way that's pretty difficult to understand.  Unless you
+      start running out of memory, I wouldn't recommend touching
+      these.  Consulting with the author of DGD or the DGD mailing
+      list would be appropriate if you're doing a really large
+      application and you need it to be very carefully memory tuned.
+    </p>
+
+    <h3> <a name="SEC5.1.4" href="index.html#SEC5.1.4">
+	5.1.4 LPC and Interface </a> </h3>
+
+    <p>
+      The typechecking determines how carefully DGD checks your LPC
+      code for correctness and questionable behavior.  It's highly
+      recommended that you leave the typechecking at 2, which is the
+      strictest.  If you reduce it to 1 then nil and 0 stop being
+      different from each other.  If you reduce it to 0, function
+      typechecking mostly goes away, and nil is still the same thing
+      as 0.
+    </p>
+
+    <p>
+      The include_file is automatically included by every LPC program
+      as it's compiled.  This is a way for you to add standard
+      #defines and things that every file will have automatically
+      defined.  Be careful what you put in this file because there
+      are some things you can't put before an &quot;inherit&quot;
+      statement, and you'd like to be able to use inheritance
+      in at least <i>some</i> LPC stuff.
+    </p>
+
+    <p>
+      The include_dirs are a list of directories that will be
+      automatically searched for LPC include files.  If you use C or
+      C++ for anything, this is like the include directories that you
+      put in the command line or the project settings.  This tells DGD
+      where you're going to put all your header files.  You can use a
+      tilde in these paths to mean the user's home directory.  Note
+      that this is the user's home in the DGD directories, not the
+      home directories of the person installing DGD in the first
+      place.
+    </p>
+
+    <p>
+      The auto_object is automatically inherited by every other object
+      in the game except the Driver.  This is one of your big ways to
+      interface with DGD.  The auto_object entry tells DGD where to
+      find this object.  The path is relative to the base directory
+      you gave in the &quot;directory&quot; entry.
+    </p>
+
+    <p>
+      The driver_object gets called by DGD to notify your library of
+      external events.  It's the only object that doesn't inherit from
+      the auto object (other than the auto object itself).  Section
+      5.2 gives the details of when and how the driver is called.
+    </p>
+
+    <p>
+      When an object is initialized, a create function is called.  The
+      name of this function is given by the create entry in this file.
+      If the create function doesn't exist, it doesn't get called.
+      You can put a create function in the auto object, which
+      guarantees it exists, but make sure you understand about
+      nomask functions and how regular functions can be masked before
+      you do this.
+    </p>
+
+    <p>
+      The array_size entry gives the maximum number of objects that
+      can be in an array or mapping.  Since DGD will store the entire
+      array or mapping in a single in-memory object which will be
+      swapped all at once, it's in your best interests to keep this
+      number reasonable.  There are <i>still</i> some ways you can
+      make unreasonably large objects that get swapped all at once,
+      but this helps keep simple bugs from destroying your library's
+      performance.
+    </p>
+
+    <p>
+      The objects entry tells DGD the maximum number of objects you
+      want to allow.  If you want to make this much above 64,000
+      you'll need to change some compile options within the DGD code,
+      though they're pretty easy to modify.  This total only counts
+      regular DGD objects, not arrays, mappings or Light-Weight
+      Objects, so this really doesn't limit you very much.  Again,
+      this exists to keep simple bugs from utterly destroying your
+      performance in ways that are very difficult to track down.
+    </p>
+
+    <p>
+      DGD allows you to make a function call with a built-in time
+      delay.  After the delay is up, the call happens.  This is called
+      a call_out.  The number of these that can be stacked up and
+      waiting to happen is given by the call_outs entry.
+      Multiprocessor and very recent versions of DGD don't limit the
+      number of call_outs by default, so this entry may not make any
+      difference for those versions of DGD.
+    </p>
+
+    <h2> <a name="SEC5.2" href="index.html#SEC5.2">
+	5.2 DGD Library API </a> </h2>
 
     <hr>
     <a href="http://sourceforge.net">
@@ -57,7 +323,7 @@
     </address>
     <!-- Created: Mon Jun 11 21:50:30 PDT 2001 -->
     <!-- hhmts start -->
-Last modified: Tue Jun 10 23:32:46 PDT 2003
+Last modified: Mon Jun 16 20:54:56 PDT 2003
 <!-- hhmts end -->
   </body>
 </html>
