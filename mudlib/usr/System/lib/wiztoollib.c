@@ -530,10 +530,11 @@ static void cmd_segment_map(object user, string cmd, string str) {
   user->message("Segments:\r\n");
   hs = OBJNUMD->get_highest_segment();
   for(ctr = 0; ctr <= hs; ctr++) {
-    user->message((ctr + SPACE16)[..6]
-		  + (OBJNUMD->get_segment_owner(ctr) + SPACE16)[..30]
-		  + OBJNUMD->get_segment_zone(ctr)
-		  + "\r\n");
+    user->message((OBJNUMD->get_segment_owner(ctr) != nil) ? 
+		((ctr + SPACE16)[..6]
+		+ (OBJNUMD->get_segment_owner(ctr) + SPACE16)[..30]
+		+ OBJNUMD->get_segment_zone(ctr)
+		+ "\r\n") : "");
   }
   user->message("--------\r\n");
 }
