@@ -701,6 +701,257 @@ void call_upgraded(string *paths) {
   }
 }
 </pre>
+
+<hr />
+
+<pre>
+Message-Id: <m12Xv6m-0004I5C@alyx.skotos.net>
+Date: Wed, 22 Mar 2000 16:04:16 -0800 (PST)
+From: Par Winzell <zell@skotos.net>
+To: dgd@list.imaginary.com
+Subject: Re: [DGD]Ojbect ID
+
+Kevin N. Carpenter writes:
+
+ > Back last June, Zell commented on using IDs to track objects using a two
+ > dimensional model.  I presume he was referring to using a
+ > ::status(obj)[O_INDEX] to retrieve the ID of the master object.  If I
+ > understand the "master object" concept correctly, that would give me the
+ > unique id of the master object something was cloned from.  Neat way to get
+ > back to that object instead of manually striping the #xx off the cloned
+ > objects name.
+
+You're correct, but you miss the most important point. Upgrading works
+by destructing the target program and recompiling all the leaf objects
+that depend on it. Between the time that the program is destructed and
+the last leaf is recompiled, there are two programs in memory, sharing
+the same object name, one destructed and one not. The old program is
+not destructed until no more clones/programs depend on it. If all the
+leaf objects don't compile, both programs will hang around in memory
+until you fix whatever errors are hindering the compilation. Quite in
+general, you can have almost any number of old unfreed programs, each
+haunting the system due to some lingering dependency.
+
+The only way that old program is going to get freed is if you know
+precisely what the dependency is, so you can clear it up. This in turn
+requires a database of programs. Since clearly object name cannot be
+used to index the program (all the unfreed issues have the same name)
+the index becomes absolutely vital. It is much more than a clever
+trick to get at the master object. :)
+
+ > Unfortunately, I'm looking for a way to track clones when a
+ > master object is upgraded.  The only way that was occurred to me is to build
+ > a (doublely) linked list.  That's not a big deal, but if there is a cleaner
+ > way that isn't limited by the config file array_size parameter, I'd like to
+ > hear about it.
+
+I treat clones as a completely separate matter. I do keep just such a
+double linked list of clones, anchored in the clonable master object,
+and I think others do as well. The kernel library maintains a link of
+objects anchored in the owner, I believe. I don't see anything less
+than neat about it...
+
+ > Hmmm, one VERY crude method would be to search for all possible clones,
+ > looping from #1 to ST_NOBJECTS doing find_object() to see if it exist.
+ > Linked list would be a lot cleaner <grin>.  If I anchored the link list in
+ > the master clone or master inheritable, that would make them need to be
+ > recompiled rather than simply destructed, but I don't see that as a big deal
+ > - is it?
+
+Only programs are recompiled. If you have a thousand clones of foo.c
+and you recompile foo.c, all the clones 'get' the new program. Apart
+from debug/emergency purposes (which are good enough reasons in of
+themselves), there are two occasions I can think of where you would be
+happy to have such a linked list:
+
+  A) you probably want to forbid the destruction of a clonable program
+as long as there are existing clones of it -- otherwise you lose the
+ability to recompile that program -- and that's testable as a pleasant
+side-effect of maintaining that linked list
+
+  B) when you need to change not just the program of a clonable but
+also the data structure -- typically you write a patch() function in
+the clonable that performs the data manipulation; upgrade the program
+and then step through the list of all clones and call patch() in each
+and every one.
+
+Zell
+</pre>
+
+<hr />
+
+<pre>
+Date: Thu, 23 Mar 2000 12:03:30 +0100 (CET)
+From: "E. Harte" <harte@xs4all.nl>
+X-Sender: harte@inner.demon.nl
+To: dgd@list.imaginary.com
+Subject: Re: [DGD]Inherit_Program called twice?
+
+On Wed, 22 Mar 2000, Kevin N. Carpenter wrote:
+
+> I have a stripped down mudlib I'm using to develop my object manager and
+> have just spent the last hour trying to figure something out.  It appears
+> that the driver function "inherit_program" is being called twice during an
+> object compilation.  I highly suspect this is something in my code, because
+> that doesn't make any sense, but I sure can't find it.  Only 4 objects are
+> involved: The driver, inheritable auto, object user, and inheritable by user
+> userbase object.
+> 
+> The driver object forces a compile of the auto object.
+> The driver object forces a compile of the user object.
+> The user object inherits a file called userbase which forces a call to the
+> driver function inherit_program().
+> The inherit_program() forces a compile of the userbase object.
+> That compile finished, along with some book keeping.
+> ** Then, to my surprise, it appears that inherit_program() is called in the
+> driver a second time for the same file, user, for the same program,
+> userbase. **
+> Since userbase is already compiled, this finishes quickly, but it still
+> seems odd.
+> I scanned all my code, it definitely DOES NOT call inherit_program directly.
+> 
+> Any ideas?  This is running under Redhat Linux 6.1 on an Dual Processor
+> server.
+
+Yes, it's the normal way of things to happen in DGD, nothing to do with
+your OS or hardware. :-)
+
+DGD only fully compiles one object at a time.
+
+If you compile object A which inherits object B which has to be compiled
+first, it'll finish compiling object B and then start the compilation of
+object A from the start.
+
+If you add debug statements in the path_include() driver-function you'll
+find it calls those functions again as well.
+
+Hope this helps,
+
+Erwin.
+-- 
+Erwin Harte  -  Forever September, 2396 and counting  -  harte@xs4all.nl
+</pre>
+
+<hr />
+
+<pre>
+Date: Thu, 23 Mar 2000 13:36:27 +0100 (CET)
+From: "Felix A. Croes" <felix@dworkin.nl>
+Message-Id: <200003231236.NAA17157@dworkin.nl>
+To: dgd@list.imaginary.com
+Subject: Re: [DGD]Tracking auto_object usage
+
+"Kevin N. Carpenter" <kevinc@monrou.com> wrote:
+
+> Since the driver function inherit_program() isn't called for the inheritance
+> of the auto object, is there an alternative to having the object manager
+> simply keep track of all compiled programs?  Obviously it could be made
+> smart enough to not track other inheritable, since they would only get the
+> auto object as part of the program that was inheriting them.
+
+Sorry, but I don't understand how the part after the first comma
+follows from the part before.
+
+There is a very simple way to make sure the mudlib is properly notified
+about the compilation of the auto object, without a need to have
+inherit_program() called: mask the compile_object() kfun, and whenever
+a non-auto object is compiled with the auto object destructed, perform
+the same task as in inherit_program().
+
+
+> Any opinions on the risk associated with keeping tabs on this via a mapping
+> instead of a linked list?  The number of objects created via compiling
+> rather than cloning is hopefully a small subset of the objects in the mud.
+> Then again, I suppose its unwise to code in any limits around the config
+> file parameter array_size if it can be avoided.
+
+If you register objects in a single mapping, you cannot register more
+objects than the maximum array/mapping size.  The decision is up to you.
+DGD has a (configurable through recompiling) 64K limit on the number
+of objects, and a (hard) limit of 32767 elements in an array or mapping.
+
+Regards,
+Dworkin
+</pre>
+
+<hr />
+
+<pre>
+From: z94lind@mtek.chalmers.se
+Date: Thu, 23 Mar 2000 16:31:09 +0100 (MET)
+To: dgd@list.imaginary.com
+Subject: Re: [DGD]clones, master objects, inheritable, etc...
+Message-ID: <Pine.OSF.4.10.10003231618140.5656-100000@rho010.mtek.chalmers.se>
+
+These are my corrections to Kevin's sanity check. I hope they're correct!
+
+On Thu, 23 Mar 2000, Kevin N. Carpenter wrote:
+
+> Master objects contain re-entrant, re-usable code and their own variable
+> space.
+>
+> Clones contain a variable space and point to the master object code,
+> saving the mud that code space.  Since the code space is shared, when
+> the master object is changed, all clones see that change.
+
+Correct. (As long as you don't destruct the master object and keep some
+clones of it.)
+
+> Inheritable objects are similar to master objects, except that when it is
+> inherited, a copy of the inheritable object is included into the code space
+> of the master object inheriting it.  Thus, if a master inheritable is
+> changed, all objects previously inheriting it must be recompiled to force
+> the changed code to be included.
+
+Almost correct. However, the code isn't actually included. Instead, each
+master object holds references to the proper versions of its inherited
+programs. (Saving memory.) Old versions are thrown away when they are no
+longer needed.
+
+> Include files are just that, code included.  When changed, all master
+> objects or inheritable that use the include file will need to be recompiled.
+
+Correct.
+
+> The driver code keeps track of some of this for you, calling recompile(obj)
+> if obj is out of date with respect to something it inherits.  This call
+> only occurs when another object that inherits obj is compiled.
+
+Actually, I only think this will happen if there is a version clash
+between several inherited objects. Example:
+
+  A inherits nothing. (Okay, maybe the auto object.)
+  B inherits the current version of A.
+  C inherits an older version of A.
+  D wants to inherit both B and C.
+
+  When D is compiled, recompile(C) will be called in the driver.
+
+> "nomask" functions cannot be overridden by any code inheriting them.
+> 
+> "atomic" functions will revert the state of the mud to its state prior
+> to the function being executed if the function fails.
+>
+> "private" functions are local to an object and cannot be called via
+> call_other(a,b) (or its syntactical equivalent: a->b).
+
+Correct. (Local to a program, even. Private functions and variables can't
+be accessed by inheriting objects.)
+
+> "static" variables retain their last value between function calls to
+> an object.
+
+Not really. What you mean is global variables. The only effect of
+declaring a (global) variable static is that it won't be saved or restored
+by save_object() and restore_object(), respectively.
+
+> Am I missing any other function or variable types (ignoring int, string,
+> etc.)?  Have I goofed any of the object types?
+
+I have no idea. :)
+
+// Mikael Lind (Elemel)
+</pre>
             <address>
             <span><a href="mailto:angelbob-remove-spamfree@spamfree.users.sf.net">Noah Gibbs</a></span>
             </address></td>

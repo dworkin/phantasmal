@@ -1,0 +1,874 @@
+  <titledef text="Skotos" />
+
+  <h2> So What's This Skotos Thing? </h2>
+
+  <p>
+    Periodically, you'll see Skotos mentioned with regard to DGD.  You
+    may find the sheer frequency of reference confusing, especially
+    since they're not actually the vendors of DGD itself.
+  </p>
+
+  <p>
+    <a href="http://www.skotos.net">Skotos</a> is a company that makes
+    commercial games, including commercial MUDs.  They do
+    pay-for-play, with a single monthly fee for access to their entire
+    set of offerings.  They also sublicense DGD for commercial use
+    &mdash; if you want to make money off a DGD-based MUD, Skotos are
+    the folks to talk to.
+  </p>
+
+  <p>
+    Until SkotOS 2.0 (their open-source DGD-based offering) comes out,
+    there's little or no code from Skotos that is open-source.  Since
+    any DGD library is of the keenest interest to DGD programmers at
+    this point.  It's not like we've got many libs to look at.  That
+    makes us (well, me and a few others, certainly) quite keen to find
+    out more about how Skotos' library works.
+  </p>
+
+  <p>
+    Folks with a more commercial bent are also quite curious how their
+    licensing scheme works.  You can find out a bit about becoming a
+    developer for them on their web site.  You develop a game for use
+    on their servers, and when enough people are playing it, you get
+    paid a small royalty.  That royalty is split among the appropriate
+    game creators in a prearranged way.
+  </p>
+
+<pre>
+From: "Tenebrae Skotos" <Tenebrae@skotos.net>
+To: <dgd@list.imaginary.com>
+Subject: Re: [DGD]Melville Mudlib
+Date: Mon, 19 Jul 1999 11:29:32 -0700
+
+<Jman77777@aol.com>:
+> Recently, I have been getting involved with LPMuds in general, and
+especially
+> DGD which I like the most.  I have experimented with various mudlib's,
+> deciding that I like Melville the best due to its simplicity and
+availability
+> to use commercially with approval.  I tried to email the author
+(MobyDick),
+> but his email address is no longer valid.  Does anyone have his current
+email
+> address?  In the meantime, I was hoping that some of you might have
+> experience with Melville and could help me figure out a few things.
+
+Before Skotos purchased a license from iChat/Acuity for DGD, we evaluated a
+number of drivers and mudlibs, including Melville. We really liked DGD, but
+no existing mud libs really fit the bill to take advantage of the power of
+DGD. Instead, we decided to write our own. The lead designer is Par Winzell,
+who worked extensively with Felix when DGD was originally licensed to
+Acuity.
+
+We have been developing one from scratch since February, and we hope to have
+a public version of our Basic Lib available in October. It will be available
+with a free non-commercial license similar to the current DGD license, or as
+a license from us (along with DGD itself) for commercial purposes, or also
+license the DGD driver alone. We also will be hosting commercial games under
+an 'associate' program where we do the billing and our associates create the
+games.
+
+Among other features, the mud driver has a web interface for administration
+and creation, and all objects are described in XML forms. The basic lib will
+include everything you need for the base for a next-generation mud,
+including true persistence, and a more extensive social expression mechanism
+than I think ever has been written before (it will make the MUSH'ers
+jealous). What it will not have is a game system -- you have to write your
+own combat.
+
+We will be notifying this list as we make more progress, or you can write to
+us at <skotos@skotos.net>.
+
+---
+
+>From an email sent to MudDev list:
+
+Just FYI, as it is a bit premature for us to say a whole lot more, but given
+the context of the current conversation we thought it was appropriate to
+preannounce.
+
+We thought you should know that we have a started commercial company called
+Skotos Tech that is building a commercial text-based mud system that will
+have some graphic-enhancements. We have been in business since February,
+have already acquired commercial rights to the proven DGD driver from the
+former iChat, we have hired Mud-Dev member Par Winzell <zell@skotos.net>,
+and we are in the process of building a new mud-lib on top of DGD that among
+other things will make game development alot easier.
+
+We believe that there are a number of things that a graphic mud can't do, in
+particular, emotional context (try to get your UO character to bow
+sarcastically,) game worlds of enormous size and vitality, game worlds where
+all the players can play in the same "game" rather then autotomous instances
+of the game, and where the game size and number of players is actually
+relevant to the game play rather then being a nasty side affect. We plan to
+focus on those advantages as that is one place that graphic muds, due to the
+amount of time it takes to create unique graphics, can not compete.
+
+We plan on recruiting a number of programmers and game designers in the fall
+to work on three "flagship" muds, and we will also make our tools available
+to independent "associates" that want to use our system to create their own
+games under our quality-control standards and receive royalties. If things
+progress as we hope, we'll have betas for our flagship muds next spring and
+will release product to the public in September 2000. We also hope to have a
+new basic mud-lib for DGD based on our work that we will make available for
+non-commercial Muds that don't want to make commercial product but want to
+play with our tools.
+
+This list is probably not the right place to talk about business models, but
+I am open to talking with others about our business model for doing commerci
+al muds. We've done alot of research in this area but are quite open to
+learning from others and sharing what we've learned so far.
+
+Skotos Tech
+PMB 353
+1563 Solano Ave.
+Berkeley, CA 94707-2116
+
+
+The following is oriented toward explaining Skotos Tech to those that don't
+know what MUDs are, but you might find it useful to understand what we are
+up to.
+
+About Skotos Tech
+-----------------
+Skotos Tech is an exciting new game company determined to bring an entirely
+fresh paradigm to the world of online gaming. Quality stories will be the
+key to the Skotos experience, not gory special effects. Through high-quality
+graphically-enhanced text-based games, Skotos plans to create a virtual
+community of gamers and storytellers from all over the world. Besides
+providing its own games, Skotos will also offer tools and services to world
+designers, authors, and programmers, so that they easily can create their
+own games and offer them to the Skotos online community.
+
+The central goal of Skotos is to produce a core set of games, forming a
+storytelling community. These games will be the natural evolution of MUDs
+and other text-based games, but they will be richer, with more consistency
+and integrity than anything currently available, and will feature a level of
+advancement that is only possible with the full resources of a professional
+company. Graphical clients will round out these games, providing a more
+immersive experience without overdominating the text. These core games will
+run the spectrum of genres, helping Skotos to create a wide and varied
+community. From romance to science fiction, Skotos Tech will cater to a
+variety of interests.
+
+The world of Skotos Tech will be much larger than just a small collection of
+core entertainments. Skotos will also feature games playing out specific
+story lines, with definite beginnings, middles, and endings. Events will
+intrude as players interact with each other to accomplish their own goals.
+These fixed-duration games will combine the best features of Live Action
+Role-Playing Games (LARPs) and text adventures in a way previously unseen in
+the online world.
+
+And that's just the start of Skotos' online gaming experience. Skotos Tech
+will also offer tools for creating online games and will act as a service
+provider to developers. These games, produced by external developers, will
+be available through the Skotos servers. The best storytellers, game
+authors, and programmers will be invited to become associates at Skotos
+Tech, offering their games in exchange for a percentage of revenues.
+Externally developed games will be rigorously tested to ensure that they
+meet Skotos' standards of quality before they become part of the Skotos
+family.
+
+But, Skotos is doing more than just creating a nexus of online games. Skotos
+Tech is creating a true community. Skotos users will be able to interact
+with each other not just in the games, but also in other online forums. They
+will be able to register e-mail addresses and web pages, both for themselves
+and their characters in the various on-line games. Skotos Tech gamers will
+be able to share the accomplishments of their characters, as well as their
+own interests, drawing together the players of all the Skotos Tech games
+into one community of storytellers and gamers.
+
+Skotos Tech is currently in its initial stages of development. Its initial
+funding is through Alacrity Ventures, and is being incubated at Alacrity's
+management center. The initial release of Skotos Tech is planned for
+September, 2000. Watch www.skotos.net for more information. If you are
+interested in joining our team or becoming an associate, mail
+jobs@skotos.net.
+</pre>
+
+<hr />
+
+<pre>
+From: Par Winzell <zell@skotos.net>
+Message-ID: <14231.35535.90661.523621@alyx.skotos.net>
+Date: Thu, 22 Jul 1999 14:19:11 -0700 (PDT)
+To: dgd@list.imaginary.com
+Subject: Re: [DGD]Melville Mudlib
+
+In response to Dworkin's recent stirring posting about the interesting
+times ahead and a new generation of mudlibs, here's an outline of some
+of the constituent parts of the lib we're writing at Skotos, including
+discussion and motivation.
+
+By far the most influential factor on design has been persistence; the
+idea of a state space that is cold-booted only once and then stays up,
+potentially forever. Core support for this has been in DGD for a long
+time; much of Dworkin's kernel library is designed with these demands
+in mind, and people have been -talking- about peristent Muds for a long
+time. So why aren't there any yet?
+
+Well, it's damn hard. One of the basic problems, a recent topic on this
+list, is program upgrading which requires LPC support in the form of a
+object-database. More generally, the necessity of basic consistency is
+upped brutally. If after a year of precious uptime you find some vital
+datastructure to be corrupted, you're going to be very sad. When this
+happens to the mudlib you wrote, you'll be glad you based it around the
+kernel lib -- which still runs, and lets you do an emergency login and
+poke at the guts of your broken world.
+
+So we use the kernel library, unmodified. Easy decision to make.
+
+Incidentally, the -game- effects of persistency are of course enormous.
+That's another discussion entirely.
+
+The ~System level is small. It has three major components -- the object
+database; a second-level auto object which adds some protection against
+destructing clonable objects that have clones; and some API translation
+to the rest of the lib of kernel services which only ~System is allowed
+to directly access.
+
+The guts are in ~SkotOS. This means they get the benefit of the ~System
+level restrictions and clone book-keeping. Here we have,
+
+ * HTTP service. Text is great, but a browser interface can be used to
+great advantage, especially for administration and development. This is
+especially true in a persistent game, where manipulating state in one
+way or another is much more important than in a rebooting Mud, where it
+is the LPC (and save_object) files that really determine what the world
+is. We're flirting with HTTP 1.1 compliance.
+
+ * Standardized functionality for the export and import of object state
+through XML. To use this system, the object describes its function-call
+interface for query() and set() style operations. With this description
+we are able not only to fetch the object state and transcribe it to XML
+but also to generate for it a true DTD (Document Type Definition). With
+the help of this DTD, which describes precisely the possible structures
+of the state, external XML authoring software will be able to construct
+word-processor quality GUI's for any object that uses the system.
+
+ * An XML parser (and generator) which uses parse_string(). XML is just
+a data storage format, so just parsing it does little. The data may be
+object state as per above, destined to be squeezed back into an object
+somewhere. In addition to this static structure, however, we use XML to
+do an active mark-up of text fields. In SGML/XML terms this is "PCDATA".
+   - In-game descriptions may be marked up to vary depending on server
+state; for example, a room description may vary by light level relative
+to the looker's night-vision stat, or variables associated with players
+or rooms or other objects may be embedded in the text.
+   - We also generate HTML from the XML, and thus automatically have a
+powerful system for server-side generation of dynamic HTML. We'll ship
+the lib with a set of such XML-HTML pages.
+
+ * A decent command parser which should understand a sensible subset of
+English. We have chosen to completely forbid guess-the-verb puzzles, by
+centralizing the parser entirely. If a verb does something anywhere, it
+does something everywhere. Successful commands are turned into actions
+or sequences of actions taken by objects in the virtual world. We tried
+for as much separation between client-interface and world as possible.
+These sequences of actions could equally well be generated by clicking
+on things in some isometric graphical client. While we try to keep that
+door open, we're concentrating on text as the primary interface; though
+we expect ambitious developers to allow for e.g. stat-showing graphical
+client-side panes, scrolling (and clickable) maps, and more.
+
+ * A pretty intricate system for expressive/emotive stuff; while there
+is no emote-command, the social verbs are plentiful and come with lots
+of adverbs. That's nothing new; the interesting stuff are stances and
+poses, which are tied into the world simulation to a higher degree than
+I have seen elsewhere. I am able to e.g. kneel before an altar in quiet
+repose, or lie on a table, or stand next to Dworkin in a room with more
+effect than a transient statement of fact -- these ways in which things
+can relate to each other is used in describing the environment. Certain
+socials break certain stances and poses.
+
+ * There's the idea of a prox -- something one can be in the proximity
+of. Dropped gear will be lying 'near Zell' instead of in the usual big
+collective heap. If I walk away from my battle-axe, it simply lies on
+the floor. One of the things we hope to do is to kill off this ancient
+truth that LPMuds aren't very good for social Mudders.
+
+
+Phew. Then, finally, there is the virtual world itself. We separate the
+world objects from things like command parsing and text generation much
+more than does e.g. 2.4.5; this helps the world state to be independent
+of client interface, as discussed above. We just took a step further in
+this direction and utterly slew the time-honoured sub-classing approach
+to physical objects. There is now only the ur-thing, and it can be room
+or sword or bag of gold -- or all three -- depending only on its state.
+Thus everything is really a clone of /base/obj/thing, everything can be
+eaten (possibly with great discomfort) or used as a weapon (possibly a
+very bad weapon). Of couse, that effect is equally possible to achieve
+with traditional sub-classing. The difference is again the trend toward
+the data-driven, which seems to happen naturally around persistence.
+
+
+It should not be difficult to tell that the early part of this document
+details things that are pretty much settled, while the mutations of the
+/base directory are recent and somewhat shocking.
+
+So. When will all this be available to play with? I'm unsure. October?
+
+Comments requested!
+
+
+Zell
+</pre>
+
+<hr />
+
+<pre>
+Message-ID: <001501bfa3fe$ecc5f440$0201a8c0@VOXEL>
+From: "Jason Cone" <jcone@uscdev.com>
+To: <dgd@list.imaginary.com>
+References: <20000411203041.94795.qmail@hotmail.com>
+Subject: Re: [DGD]Patches
+
+----- Original Message -----
+From: "James Bearden" <bearden_james@hotmail.com>
+
+
+> [...]
+> I did have a question about DGD 1.1 and the commercial version offered by
+> skotos tech.
+>
+> If I were to build my lib up from 1.1, the public version, would it be
+> portable to the commercial version available at skotos tech if down the
+line
+> I wanted to go commercial in any way?
+>
+> What is the difference between the commercial version and the ones Dworkin
+> has worked on and is working on? 1.1 and all the experimental ones.
+
+I can't speak to the functional differences of the 2 versions (I heard that
+there was extended network functionality in the commercial one, but don't
+quote me), but there's more to the process of obtaining a commercial license
+than meets the eye.
+
+[Note to Chris -- you're a respected innovator and your reputation precedes
+you, but I'm going to be quite frank in my opinion of _my_ understanding of
+the license terms.  If I'm wrong on any of the points, do clarify as these
+points were the major reasons why I did not further pursue a commercial
+license.]
+
+It costs money.  That's a given and is not all that surprising.  If you're a
+college student, though, I wouldn't dwell on the possibility for too long.
+;)  In addition, though, here is my understanding of the rights and
+obligations associated with said license (as per my conversation with
+Chris):
+
+1) You are able to use DGD proper for commercial purposes; profit can be
+gained from its usage.
+
+2) You are given a copy of the lib that Skotos is working on and are
+required to use that lib as the foundation for the projects that will run on
+your commercial license of DGD.
+
+3) If you make any modifications to said lib, you are further required to
+submit those changes to Skotos so that they can be evaluated for inclusion
+in their copy of the same lib.  This is where I begged for some
+clarification.  It was implied that implementation-specific changes would
+not need to be submitted, but I was not given a clear definition of what
+"implementation-specific" meant.  The point was finally justified by him
+suggesting to me that everyone should be working with, and benefiting from,
+the same advances.
+
+4) I inquired to the possibilities of obtaining a license where #2 and #3
+would not exist.  This had evidentally not been asked before b/c he replied
+with, "Sure.  I'm sure we can work something out." :)  "Working something
+out" entails paying upward of $75K.  Not good.
+
+#1 is expected.  #2 would be acceptable given that #3 didn't exist.  I just
+don't see how they can expect others to pay for a license, be required to
+use a code base, submit changes made to said codebase (which, by the way,
+they would be able to further profit from), and then feel that they have
+something special; unique; and worth inidividual development.  To me, that's
+like saying, "Here's your house.  You paid good money for it.  Any
+additions/improvements that you make to the house, though, must also be
+provided to everyone else in your neighborhood."  Nuh uh.  I'll go rent an
+apartment and loose all potential equity I might gain from owning a house.
+;)
+
+Anyway, like I said, if I'm wrong on the above (or if things have changed),
+please correct me.
+
+JC
+</pre>
+
+<hr />
+
+<pre>
+From: "Christopher Allen" <ChristopherA@Skotos.net>
+To: <dgd@list.imaginary.com>
+Subject: RE: [DGD]Patches
+Date: Tue, 11 Apr 2000 15:02:48 -0700
+Message-ID: <NDBBIGFBGLEIKKPEAHIBCEBKEEAA.ChristopherA@Skotos.net>
+
+James Bearden wrote:
+> I did have a question about DGD 1.1 and the commercial version offered by
+> skotos tech.
+>
+> If I were to build my lib up from 1.1, the public version, would it be
+> portable to the commercial version available at skotos tech if down the line
+> I wanted to go commercial in any way?
+>
+> What is the difference between the commercial version and the ones Dworkin
+> has worked on and is working on? 1.1 and all the experimental ones.
+
+The versions are almost identical. There are minor differences, mainly some
+features added by iChat and still supported by Felix, and some very minor
+changes by us. We track all the updates by Felix pretty much the day they come
+out.
+
+We also include some libraries above the kernel library -- we have our own
+network package, for instance.
+
+------------------------------------------------------------------------
+. Christopher Allen                                 Skotos Tech Inc. ..
+.                           1512 Walnut St., Berkeley, CA 94709-1513 ..
+. <http://www.Skotos.net>               o510/649-4030  f510/649-4034 ..
+</pre>
+
+<hr />
+
+<pre>
+From: "Christopher Allen" <ChristopherA@Skotos.net>
+To: <dgd@list.imaginary.com>
+Subject: RE: [DGD]Patches
+Date: Tue, 11 Apr 2000 15:27:07 -0700
+Message-ID: <NDBBIGFBGLEIKKPEAHIBKEBKEEAA.ChristopherA@Skotos.net>
+
+Jason Cone wrote:
+> I can't speak to the functional differences of the 2 versions (I heard that
+> there was extended network functionality in the commercial one, but don't
+> quote me), but there's more to the process of obtaining a commercial license
+> than meets the eye.
+>
+> [Note to Chris -- you're a respected innovator and your reputation precedes
+> you, but I'm going to be quite frank in my opinion of _my_ understanding of
+> the license terms.  If I'm wrong on any of the points, do clarify as these
+> points were the major reasons why I did not further pursue a commercial
+> license.]
+>
+> It costs money.  That's a given and is not all that surprising.  If you're a
+> college student, though, I wouldn't dwell on the possibility for too long.
+> ;)  In addition, though, here is my understanding of the rights and
+> obligations associated with said license (as per my conversation with
+> Chris):
+>
+> 1) You are able to use DGD proper for commercial purposes; profit can be
+> gained from its usage.
+>
+> 2) You are given a copy of the lib that Skotos is working on and are
+> required to use that lib as the foundation for the projects that will run on
+> your commercial license of DGD.
+>
+> 3) If you make any modifications to said lib, you are further required to
+> submit those changes to Skotos so that they can be evaluated for inclusion
+> in their copy of the same lib.  This is where I begged for some
+> clarification.  It was implied that implementation-specific changes would
+> not need to be submitted, but I was not given a clear definition of what
+> "implementation-specific" meant.  The point was finally justified by him
+> suggesting to me that everyone should be working with, and benefiting from,
+> the same advances.
+
+The line of demarcation is becoming more specific as we do some architectural
+partitioning out of SkotOS -- we have a number of layers above the kernel
+library:
+
+ -------------------------------------------------------------
+/                          Game                               \
+\                          World                              /
+ -------------------------------------------------------------
+/                          Game                               \
+\                     Specific Mechanics                      /
+ =============================================================
+ -------------------------------------   ---------------------
+/                WorldLib             \ /       IFLib         \
+|   inventory            stance pose   |                      |
+|  proximity  details  faces  desc     |   socials     verbs  |
+\    exits  gender  volition  physics / \   adverbs  errors   /
+ --- - - - - - - - - - - - - - - - --- \ \ -- - - - - - - - --
+/                 DevLib                \ /   ToolLib         \
+|     Services             Interpreters  |                    |
+|                                        |    sam  |   dtd    |
+|  sid  | devd  ||  state | forms | sami |  xmlgen | xmlparse |
+\  logd | helpd ||        |       |     / \                   /
+ -------------------------------------------------------------
+/                                                             \
+|                               System                        |
+|                               Library                       |
+|        Object Services          ||      Net Services        |
+|                                 ||                          |
+|  initd | idd | progdbd |syslogd || nptd | httpd | devuserd@ |
+\        |     |         |        ||      |       |           /
+ -------------------------------------------------------------
+/                                                             \
+|                               Kernel                        |
+|                               Library                       |
+|                                                             |
+|    security  ownership  resources  thread-local  logon      |
+\                                       storage               /
+ -------------------------------------------------------------
+/                                                             \
+|                                D G D 				|
+|                                                             |
+|  LPC Compiler  |  Run-Time  |  Database  |  I/O  |  Parser  |
+\                |            |            |       |          /
+ -------------------------------------------------------------
+
+It is the game world and game specific mechanics (such as the specifics of
+combat) that is the property of the developer using our libraries.
+
+> 4) I inquired to the possibilities of obtaining a license where #2 and #3
+> would not exist.  This had evidentally not been asked before b/c he replied
+> with, "Sure.  I'm sure we can work something out." :)  "Working something
+> out" entails paying upward of $75K.  Not good.
+>
+> #1 is expected.  #2 would be acceptable given that #3 didn't exist.  I just
+> don't see how they can expect others to pay for a license, be required to
+> use a code base, submit changes made to said codebase (which, by the way,
+> they would be able to further profit from), and then feel that they have
+> something special; unique; and worth inidividual development.  To me, that's
+> like saying, "Here's your house.  You paid good money for it.  Any
+> additions/improvements that you make to the house, though, must also be
+> provided to everyone else in your neighborhood."  Nuh uh.  I'll go rent an
+> apartment and loose all potential equity I might gain from owning a house.
+> ;)
+
+Essentially correct, to be more precise to the nuances here is the story.
+
+We paid a lot of money for our license to DGD, and since have have several man
+years of efforts based on it. We are not really planning to be in the business
+of selling drivers or mud libs, and in fact are concerned about it diluting our
+business in the future. However, we don't want to make obtaining DGD as hard as
+it was for us. Thus we'll make a game license available to others for $75K, or
+$25K a year. We are also open to a royalty scheme, but we will require an
+advance and minimum quarterly royalties.
+
+We are willing to lower these prices, however, in return we expect to get some
+contributions from you which we can incorporate into the product. Thus the
+requirement to use our library and submit enhancements back to us.
+
+We also will be making available to select developers, starting in the late
+summer, the ability to create games using SkotOS on our service, in which we
+will pay royalties to the developers when the product is released to our
+customers. See www.skotos.net for more information on what we will be offering.
+
+------------------------------------------------------------------------
+. Christopher Allen                                 Skotos Tech Inc. ..
+.                           1512 Walnut St., Berkeley, CA 94709-1513 ..
+. <http://www.Skotos.net>               o510/649-4030  f510/649-4034 ..
+</pre>
+
+<hr />
+
+<pre>
+Message-ID: <000701bfa40b$7c128fd0$0201a8c0@VOXEL>
+From: "Jason Cone" <jcone@uscdev.com>
+To: <dgd@list.imaginary.com>
+Subject: Re: [DGD]Patches
+Date: Tue, 11 Apr 2000 18:13:00 -0500
+
+----- Original Message -----
+From: "Christopher Allen" <ChristopherA@skotos.net>
+
+
+> [...]
+> We also will be making available to select developers, starting in the
+late
+> summer, the ability to create games using SkotOS on our service, in which
+we
+> will pay royalties to the developers when the product is released to our
+> customers. See www.skotos.net for more information on what we will be
+offering.
+
+As per a recent announcement by yourself, I checked out the aforementioned
+website.  Suffice it to say that I lost many a productive hour that
+afternoon reading, looking at, and otherwise enjoying what you had put
+together.  Outstanding web site and an equally impressive approach to
+interactive game building.
+
+Your explanation holds merit, but only in the context of a game-like
+implementation.  About a year ago, I used DGD to design an interactive
+web-driven workspace and CVS-like repository for our development department.
+I had to abandon its development due to the small size of the team and the
+increased "real" projects which were put upon us, but such an idea could
+prove extremely useful.  Alas, though, I can not make profit on it (without
+the discussed terms) lest I dilute the gaming industry?
+
+DGD is a language... a tool... much like Python, PHP, Perl, and Java are all
+tools.  You basically have a monopoly over all things DGD, so I think you're
+quite safe from being ousted by something developed with DGD.  Why not,
+though, apply your restrictions and cost requirements on those that seek to
+directly compete within your sector and/or use your metalibs?
+
+You probably won't agree with me on this, but the cost/licensing
+requirements of DGD (if applied in a universal manner) are going to prohibit
+it from really being a part of something special outside of SkotOS.  It's a
+shame to see something so innovative (esp. with the up-in-coming SMP
+support) get passed over because it costs so much (much less costs anything
+at all as compared to its scripting/interpreter counterparts).  I have a
+hard time believing that Dworkin is putting so much work (and solid theory)
+behind this product just so people can run a better, free MUD.  He did,
+after all, rename it from Dworkin's _Game_ Driver to Dworkin's _Generic_
+Driver.
+
+Anyway, this isn't meant to cause a rebellion or anything.  Just some things
+to mull over.  I, for one, look forward to SkotOS if for no other reason
+than to really experience the capabilities of DGD.  I've all but had to give
+up DGD/LPC-related development due to employment requirements, but it
+doesn't mean I can't appreciate one fine piece of work. ;)
+
+JC
+</pre>
+
+<hr />
+
+<pre>
+From: "Christopher Allen" <ChristopherA@Skotos.net>
+To: <dgd@list.imaginary.com>
+Subject: RE: [DGD]Patches
+Date: Tue, 11 Apr 2000 17:02:44 -0700
+Message-ID: <NDBBIGFBGLEIKKPEAHIBGEBMEEAA.ChristopherA@Skotos.net>
+
+Jason Cone wrote:
+> As per a recent announcement by yourself, I checked out the aforementioned
+> website.  Suffice it to say that I lost many a productive hour that
+> afternoon reading, looking at, and otherwise enjoying what you had put
+> together.  Outstanding web site and an equally impressive approach to
+> interactive game building.
+
+Thanks ;-)
+
+> Your explanation holds merit, but only in the context of a game-like
+> implementation.  About a year ago, I used DGD to design an interactive
+> web-driven workspace and CVS-like repository for our development department.
+> I had to abandon its development due to the small size of the team and the
+> increased "real" projects which were put upon us, but such an idea could
+> prove extremely useful.  Alas, though, I can not make profit on it (without
+> the discussed terms) lest I dilute the gaming industry?
+>
+> DGD is a language... a tool... much like Python, PHP, Perl, and Java are all
+> tools.  You basically have a monopoly over all things DGD, so I think you're
+> quite safe from being ousted by something developed with DGD.  Why not,
+> though, apply your restrictions and cost requirements on those that seek to
+> directly compete within your sector and/or use your metalibs?
+>
+> You probably won't agree with me on this, but the cost/licensing
+> requirements of DGD (if applied in a universal manner) are going to prohibit
+> it from really being a part of something special outside of SkotOS.  It's a
+> shame to see something so innovative (esp. with the up-in-coming SMP
+> support) get passed over because it costs so much (much less costs anything
+> at all as compared to its scripting/interpreter counterparts).  I have a
+> hard time believing that Dworkin is putting so much work (and solid theory)
+> behind this product just so people can run a better, free MUD.  He did,
+> after all, rename it from Dworkin's _Game_ Driver to Dworkin's _Generic_
+> Driver.
+
+You do have a point. I deliberately tried to avoid game specific language in the
+DGD specification for just such reasons.  For instance, our current
+implementation above DGD includes a complete web server, with fairly
+sophisticated capabilities and XML support, that could be used for a myriad of
+purposes other then games.
+
+I did not realize what specific use you had in mind -- we have had people
+approach us for "non-game industry" games, such as educational games, but no one
+has specifically approached us for using it for a different kind of product. We
+still have to charge for it, but we might consider another model if the
+restrictions were sufficient.
+
+> Anyway, this isn't meant to cause a rebellion or anything.  Just some things
+> to mull over.  I, for one, look forward to SkotOS if for no other reason
+> than to really experience the capabilities of DGD.  I've all but had to give
+> up DGD/LPC-related development due to employment requirements, but it
+> doesn't mean I can't appreciate one fine piece of work. ;)
+
+I appreciate the opportunity to discuss it with you ;-)
+
+------------------------------------------------------------------------
+. Christopher Allen                                 Skotos Tech Inc. ..
+.                           1512 Walnut St., Berkeley, CA 94709-1513 ..
+. <http://www.Skotos.net>               o510/649-4030  f510/649-4034 ..
+</pre>
+
+<hr />
+
+<pre>
+Date: Wed, 12 Apr 2000 02:24:33 +0200 (CEST)
+From: "Felix A. Croes" <felix@dworkin.nl>
+Message-Id: <200004120024.CAA27585@dworkin.nl>
+To: dgd@list.imaginary.com
+Subject: Re: [DGD]Patches
+
+"Jason Cone" <jcone@uscdev.com> wrote:
+
+>[...]
+> You probably won't agree with me on this, but the cost/licensing
+> requirements of DGD (if applied in a universal manner) are going to prohibit
+> it from really being a part of something special outside of SkotOS.  It's a
+> shame to see something so innovative (esp. with the up-in-coming SMP
+> support) get passed over because it costs so much (much less costs anything
+> at all as compared to its scripting/interpreter counterparts).  I have a
+> hard time believing that Dworkin is putting so much work (and solid theory)
+> behind this product just so people can run a better, free MUD.  He did,
+> after all, rename it from Dworkin's _Game_ Driver to Dworkin's _Generic_
+> Driver.
+
+You will be surprised to learn that my motivation for adding MP support
+to DGD is mostly commercial.  It is not anything that I am going to make
+money with directly, but then again, the real money will be in mudlibs.
+I hope that MP support for DGD is going to make the goal of running an
+EverQuest-sized mud on a single machine attainable.  Keeping this in
+mind, Skotos' $75K fee begins to look entirely reasonable.
+
+As a general purpose programmable server, can DGD compete with Python,
+or even with Pike?  Obviously not: Python and Pike are free.  Commercial
+use of DGD has always required license payments, even though they used
+to be far more modest.  It turned out that that modest licensing fees
+did not work: nobody ever obtained such a license.  In order to let
+DGD survive as a commercial product, I had to target it at a different
+audience.
+
+(There are further reasons for DGD not being able to compete with open
+source scripting languages.  LPC, though superb for a persistent mud,
+is not as good as a general purpose language.)
+
+I don't regret going Massively Commercial with DGD, since this allowed
+me to continue improving it as an independent developer.  It is a pity
+that the server is now out of reach for the small-scale commercial
+developer -- but that's how it is.
+
+Regards,
+Dworkin
+</pre>
+
+<hr />
+
+<pre>
+Message-ID: <002901bfa41b$768a7180$0200a8c0@pixel>
+From: "Jason Cone" <jcone@uscdev.com>
+To: <dgd@list.imaginary.com>
+Subject: Re: [DGD]Patches
+Date: Tue, 11 Apr 2000 20:07:23 -0500
+
+> "Jason Cone" <jcone@uscdev.com> wrote:
+>
+> > [...]
+> > at all as compared to its scripting/interpreter counterparts).  I have a
+> > hard time believing that Dworkin is putting so much work (and solid
+theory)
+> > behind this product just so people can run a better, free MUD.  He did,
+> > after all, rename it from Dworkin's _Game_ Driver to Dworkin's _Generic_
+> > Driver.
+>
+> You will be surprised to learn that my motivation for adding MP support
+> to DGD is mostly commercial.  It is not anything that I am going to make
+> money with directly, but then again, the real money will be in mudlibs.
+> I hope that MP support for DGD is going to make the goal of running an
+> EverQuest-sized mud on a single machine attainable.  Keeping this in
+> mind, Skotos' $75K fee begins to look entirely reasonable.
+
+Actually, I'm not surprised at all. :)  Like I said above, I'd have an
+awfully hard time believing that you were doing so if your sights weren't
+set on something larger than the stereotypical MUD.  I completely agree,
+though, that $75K is nothing compared to the other costs that'll be incurred
+in doing something of EverQuest-like scope.  The context in which I've been
+presenting a point of view, though, has been with those projects that are
+significantly less complex than EverQuest yet have commercial merit.
+
+> [...]
+> I don't regret going Massively Commercial with DGD, since this allowed
+> me to continue improving it as an independent developer.  It is a pity
+> that the server is now out of reach for the small-scale commercial
+> developer -- but that's how it is.
+
+I understand.  I, for one, am not calling your decision into question, but
+rather the decisions and circumstances that now surround DGD-specific
+commercial opportunity for those other than SkotOS.  I hear, understand, and
+otherwise acknowledge the decisions that've been made.  I just wanted to
+make sure that people weren't of the opinion that all it took was a $200
+check and, bam!, they're free to realize the <insert nation here> Dream
+without further due or obligation.  As we've discussed, there's more to it.
+;)
+
+If this whole licensing thing were getting in my way of realizing some
+killer application (which, in my opinion, web-based applictions have more of
+a commercial and revenue-generating future than do EverQuest-like games), I
+would probably pursue the points futher.  But because there are other
+suitable alternatives out there for non-game server scenarios, I merely
+wanted this to be a matter of clarifying what is, not what should be.
+
+Having now said all of this, we might want to add the particulars of the
+commercial license to the FAQ.  Or, at the very least, have Mr. Allen
+enumerate the discussed points on a linkable web page.
+
+JC
+</pre>
+
+<hr />
+
+<pre>
+From: "Christopher Allen" <ChristopherA@skotos.net>
+To: <dgd@list.imaginary.com>
+Subject: RE: [DGD]Skotos and StoryBuilder
+Date: Thu, 24 Aug 2000 23:27:34 -0700
+Message-ID: <NDBBIGFBGLEIKKPEAHIBKEBDEJAA.ChristopherA@skotos.net>
+
+Matt Adkisson:
+> Skotos will require its licensed "users" to send in to
+> Skotos any modification that is made to the server --
+> not areas, items, etc, but any systems, such as a new
+> combat system, or a new room system, etc.  Skotos then
+> "owns" your system and has the right to release that
+> system as theirs (with no credit to you, as I
+> understand it) in the next server version.  Skotos
+> explained that, via this method, the StoryBuilder
+> server would continually evolve with minimal effort on
+> their part.
+>
+> You may have already known about this, but in any case
+> it's a critical point to consider.  I was a bit put
+> off by it, as it forces the active MUD admin to code
+> for Skotos.  I don't mean to sound harsh, and Skotos
+> may have altered their business practices since I
+> talked with them.
+
+You exaggerate, and the parts about the 'no credit' part and 'minimal effort on
+their part' are flatly false.
+
+The rights to DGD were very expensive for us to purchase, we have put man years
+into a modern web-centric library on top of it, plan to put in many more man
+years, and are building what we hope will be a multi-million dollar in revenue
+online game service. However, I don't want DGD to be as difficult to purchase as
+it was for us, so it is available, just not cheaply.
+
+What is true -- if don't want to pay the full price for DGD, one way to get the
+full price reduced is to agree to contribute back non-game specific
+functionality back to Skotos so that we may incorporate it into future versions
+of the product available to all licensees. Combat systems are on the edge
+between 'game specific' and 'non-game specific' and I'd hope that anyone that
+we'd partner with would deal with these edge issues in good faith.
+
+You also do not have to 'buy' DGD or our library to build games -- if you create
+a game on our service, we pay you up to a 20% royalty, and we do all the hard
+work for that. Customer support, marketing, a reliable data center, billing,
+etc. are not inexpensive. We have also licensed rights to be allow our games to
+be able to use backgrounds from Lovecraft Country and Paranoia, and hope to
+announce more licenses soon.
+
+We hope to offer what we call 'StoryBuilder' functionality to all members of our
+service next year, but meanwhile, we are accepting proposals from folks that
+wish to get an early start on our service and create games now. We call this
+group the Skotos Seven, and will be paying an advance on royalties for the work.
+Information on the Skotos Seven is at our website at
+http://www.skotos.net/storybuilders/.
+
+------------------------------------------------------------------------
+. Christopher Allen                                 Skotos Tech Inc. ..
+.                           1512 Walnut St., Berkeley, CA 94709-1513 ..
+. <http://www.Skotos.net>               o510/647-2760  f510/647-2761 ..
+</pre>
+
+  <p style="text-size: 150%"> <a href="../index.html"> Back to top level
+    </a> </p>
