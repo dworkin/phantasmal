@@ -1,6 +1,7 @@
 #include <config.h>
 #include <phrase.h>
 #include <type.h>
+#include <status.h>
 
 inherit rep PHRASE_REPOSITORY;
 
@@ -67,9 +68,9 @@ static void create(varargs int clone)
 }
 
 void upgraded(varargs int clone) {
-  rep::upgraded();
-
-
+  rlimits ( status()[ST_STACKDEPTH]; -1 ) {
+    rep::upgraded();
+  }
 }
 
 /* Query current number of locales */
