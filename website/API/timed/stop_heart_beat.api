@@ -12,7 +12,7 @@ CALLED BY
 
 DESCRIPTION
 	Each object may have one heart_beat function of each frequency
-	(such as TIMED_MUD_MINUTE or TIMED_MUD_HOUR).  This call stops
+	(such as TIMED_HALF_MINUTE or TIMED_ONE_HOUR).  This call stops
 	one such heart_beat function.  The function is stopped for
 	the calling object -- that is, an object may only stop one
 	of its <i>own</i> heart_beat functions.

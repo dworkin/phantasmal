@@ -14,28 +14,29 @@ DESCRIPTION
 	The set_heart_beat() function works just like call_out()
 	except for an extra parameter on the front, which determines
 	how often it should be called.  How_often is an enumerated
-	constant in timed.h, and has values like TIMED_MUD_MINUTE
-	for a timer called once per MUD minute.  See timed.h for
-	legal values.
+	constant in timed.h, and has values like TIMED_HALF_MINUTE
+	for a timer called once per 30 seconds.  See
+	phantasmal/timed.h for legal values.
 
 	Each object may have no more than one heart_beat function
 	of any given frequency.  For instance, it may have one
-	each of TIMED_MUD_MINUTE and TIMED_MUD_HOUR, but may not
+	each of TIMED_TEN_MINUTES and TIMED_ONE_HOUR, but may not
 	have two heart_beat functions that each run once per
-	TIMED_MUD_HOUR.
+	TIMED_ONE_HOUR.
 
 	An object may only set_heart_beat for itself, which means
 	that the object calling TIMED->set_heart_beat must name
 	one of its own functions.  The function named must be
 	callable by TIMED, so static and private functions don't
-	work.
+	work.  It's a good idea to make sure that TIMED actually
+	is the object calling the heart_beat function, though.
 
 RETURN VALUE
 	None.
 
 ERRORS
 	Bad parameters or problems setting up a call_out can cause errors.
-	An error also occurs if that object has already set a heart_beat
+	An error can also occur if that object has already set a heart_beat
 	of that frequency.
 
 SEE ALSO
