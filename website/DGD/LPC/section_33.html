@@ -88,25 +88,25 @@ or
       following code you want to write:
 
     <pre>
-if (name == "fatty")
+if (name == &quot;fatty&quot;)
 {
-    nat = "se";
-    desc = "blimp";
+    nat = &quot;se&quot;;
+    desc = &quot;blimp&quot;;
 }
-else if (name == "plugh")
+else if (name == &quot;plugh&quot;)
 {
-    nat = "no";
-    desc = "warlock";
+    nat = &quot;no&quot;;
+    desc = &quot;warlock&quot;;
 }
-else if (name == "olorin")
+else if (name == &quot;olorin&quot;)
 {
-    nat = "de";
-    desc = "bloodshot";
+    nat = &quot;de&quot;;
+    desc = &quot;bloodshot&quot;;
 }
 else
 {
-    nat = "x";
-    desc = "unknown";
+    nat = &quot;x&quot;;
+    desc = &quot;unknown&quot;;
 }
     </pre>
   </p>
@@ -117,24 +117,24 @@ else
     <pre>
 switch (name)
 {
-case "fatty":
-    nat = "se";
-    desc = "blimp";
+case &quot;fatty&quot;:
+    nat = &quot;se&quot;;
+    desc = &quot;blimp&quot;;
     break;
 
-case "plugh":
-    nat = "no";
-    desc = "warlock";
+case &quot;plugh&quot;:
+    nat = &quot;no&quot;;
+    desc = &quot;warlock&quot;;
     break;
 
-case "olorin":
-    nat = "de";
-    desc = "bloodshot";
+case &quot;olorin&quot;:
+    nat = &quot;de&quot;;
+    desc = &quot;bloodshot&quot;;
     break;
 
 default:
-    nat = "x";
-    desc = "unknown";
+    nat = &quot;x&quot;;
+    desc = &quot;unknown&quot;;
 }
     </pre>
   </p>
@@ -175,9 +175,9 @@ default:
       same result you could write:
 
     <pre>
-case "fatty":
+case &quot;fatty&quot;:
     /* FALLTHROUGH */
-case "plugh":
+case &quot;plugh&quot;:
     &lt; code &gt;
     break;
 </pre>
@@ -228,7 +228,7 @@ else
     <pre>
 var = test_expression ? if_expression : else_expression;
 e.g.
-    name = day == 2 ? "tuesday" : "another day";
+    name = day == 2 ? &quot;tuesday&quot; : &quot;another day&quot;;
     </pre>
 
     <p>
@@ -240,7 +240,7 @@ e.g.
       improvement:
 
     <pre>
-name = day == 2 ? time == 18 ? "miller time" : "tuesday" : "another day";
+name = day == 2 ? time == 18 ? &quot;miller time&quot; : &quot;tuesday&quot; : &quot;another day&quot;;
     </pre>
   </p>
 
@@ -455,364 +455,326 @@ for (i = 0 ; i &lt; 10000 ; i++)
       though, you can use the mixed type.
     </p>
 
-<p>
-You declare an array like this:
+    <p>
+      You declare an array like this:
 
-</p>
-
-<pre>
+    <pre>
 &lt;type&gt; *&lt;array name&gt;;
 e.g.
     int *my_arr, *your_arr;
     float *another_arr;
     object *ob_arr;
-</pre>
+    </pre>
+  </p>
 
-<p>
-The initial values of these declared arrays is '0', <i>not</i> an empty
-array. I repeat: they are initialized to 0 and <i>not</i> to an empty
-array. Keep this in mind!
+    <p>
+      The initial values of these declared arrays is <code>nil</code>,
+      <i>not</i> an empty array. I repeat: they are initialized to 0
+      and <i>not</i> to an empty array. Keep this in mind!
+    </p>
 
-</p>
-<p>
-You can allocate and initialize an array like this:
+    <p>
+      You can allocate and initialize an array like this:
 
-</p>
-
-<pre>
+    <pre>
 &lt;array&gt; = ({ elem1, elem2, elem3, ..., elemN });
 e.g.
     my_arr = ({ 1, 383, 5, 391, -4, 6 });
-</pre>
+    </pre>
+    </p>
 
-<p>
-You access members of the array using brackets on the variable name.
-(Assume <VAR>val</VAR> here is declared to be an integer).
-
-</p>
-
-<pre>
+    <p>
+      To access members of the array, use brackets after the variable
+      name:
+    <pre>
 &lt;data variable&gt; = &lt;array&gt;[&lt;index&gt;];
 e.g.
     val = my_arr[3];
-</pre>
+    </pre>
+  </p>
 
-<p>
-LPC, like C, starts counting from 0, making the index to
-the fourth value = 3.
+    <p>
+      LPC, like C, starts counting from array index 0.  That means the
+      index to the fourth value in an array is 3.
+    </p>
 
-</p>
-<p>
-To set the value of an existing position to a new value, simply set it
-using the <code>=</code> operator.
-
-</p>
-
-<pre>
+    <p>
+      To set the value of an existing position to a new value, simply set it
+      using the <code>=</code> operator.
+    <pre>
     my_arr[3] = 22;	/* =&gt; ({ 1, 383, 5, 22, -4, 6 }) */
     my_arr[3] = 391;	/* =&gt; ({ 1, 383, 5, 391, -4, 6 }) */
-</pre>
+    </pre>
+  </p>
 
-<p>
-If you want to make a subset of an array you can specify a range of indices
-within the brackets.
+    <p>
+      If you want to copy a subset of an array you can specify a range
+      of indices within the brackets.  This is called an <b>array
+	slice</b>.
 
-</p>
-
-<pre>
+    <pre>
 &lt;array variable&gt; = &lt;array&gt;[&lt;start_range&gt;..&lt;end_range&gt;];
 e.g.
     your_arr = my_arr[1..3];
-</pre>
+    </pre>
 
-<p>
-... will result in <code>your_arr</code> becoming the new array <code>({ 383, 5,
-391 });</code> If you give a new value to an old array, the previous array is
-lost.
+    This will result in <code>your_arr</code> becoming the new array
+    <code>({ 383, 5, 391 });</code> If you give a new value to an old
+    array, the previous array is lost.
+  </p>
 
-</p>
-
-<pre>
+    <pre>
 e.g.
     my_arr = ({ });
-</pre>
+    </pre>
 
-<p>
-... will result in <code>my_arr</code> holding an empty array. The old array is
-deallocated and the memory previously used is reclaimed by the driver.
+    <p>
+      This code will result in <code>my_arr</code> holding an empty
+      array. The old array is deallocated and the memory previously
+      used is reclaimed by the driver.
+    </p>
 
-</p>
-<p>
-If you index outside an array, an error occurs and execution of the object
-is aborted. However, range indexing outside the array does not result in an
-error, the range is then only constrained to fall within the array.
+    <p>
+      If you index outside an array, an error occurs and execution in
+      the object is aborted. However, range indexing outside the array
+      does not result in an error, the range is then only constrained
+      to fall within the array.  So, for instance, if <code>my_arr</code>
+      is an empty array, the code <code>my_arr[3..7]</code> will
+      return an empty array.
+    </p>
 
-</p>
-<p>
-If you want to create an empty array, initialized to 0 (no matter the type
-of the array, all positions will be set to 0 anyway) of a given length, you
-use the efun <code>allocate()</code>.
+    <p>
+      If you want to create an empty array of a given length with all
+      locations initialized to nil, you can use the
+      <code>allocate()</code> kernel function.
+    </p>
 
-</p>
-<p>
-<a name="IDX46"></a>
+    <p>
+      <a name="IDX46"></a>
 
-<pre>
+    <pre>
 &lt;array&gt; = allocate(&lt;length&gt;);
 e.g.
-    your_arr = allocate(3);	/* =&gt; your_arr = ({ 0, 0, 0 }); */
-</pre>
+    your_arr = allocate(3);	/* =&gt; your_arr = ({ nil, nil, nil }); */
+    </pre>
 
-<p>
-Concatenating (adding) arrays to each other is most easily done with the
-<code>+</code> operator. Simply add them as you would numbers. The <code>+=</code>
-operator works fine as well.
+    <p>
+      Concatenating (adding) arrays to each other is most easily done
+      with the <code>+</code> operator. Simply add them as you would
+      numbers. The <code>+=</code> operator works fine as well.
+    </p>
 
-</p>
-
-<pre>
+    <pre>
 my_arr = ({ 9, 3 }) + ({ 5, 10, 3 }); /* =&gt; ({ 9, 3, 5, 10, 3 }) */
-</pre>
+    </pre>
 
-<p>
-Removing elements from an array is easiest done with the <code>-/-=</code>
-operator, however, be aware that it is a general operator that will
-remove <i>all</i> items found that match the item you want to remove.
+    <p>
+      Removing elements from an array is most easily done with the
+      <code>-</code> or <code>-=</code> operator.  Be aware that the
+      operator that will remove <i>all</i> items found that match the
+      item you want to remove, not just one.
+    </p>
 
-</p>
-
-<pre>
+    <pre>
 my_arr -= ({ 3, 10 }); /* =&gt; ({ 9, 5 }) */
-</pre>
+    </pre>
 
-<p>
-If you want to remove a single item in the middle somewhere that might have
-been repeated, you have to use the range operator of course.
+    <p>
+      If you want to remove a single item somewhere in the array that
+      might have been repeated, you should use the range operator.
 
-</p>
-
-<pre>
+    <pre>
 my_arr = ({ 9, 3, 5, 10, 3 });
 my_arr = my_arr[0..0] + my_arr[2..4]; /* =&gt; ({ 9, 5, 10, 3 }) */
-</pre>
+    </pre>
+  </p>
 
-<p>
-<b>NB!</b> Beware this difference!!!! One is a list, the other an integer!
+    <p>
+      Be careful of the following difference.  One is a list, the
+      other an integer:
+    </p>
 
-</p>
-
-<pre>
+    <pre>
     &lt;array&gt; my_arr[0..0]   /* = ({ 9 }) */
     &lt;int&gt;   my_arr[0]      /* = 9 */
-</pre>
+    </pre>
 
 
+    <h4><a name="SEC3.2.13.2" href="index.html#SEC3.2.13.2">
+	How to declare and use Mappings</a></h4>
 
-<h4><a name="SEC45" href="index.html#SEC45">How to declare and use Mappings</a></h4>
-<p>
-<a name="IDX47"></a>
+    <p>
+      <a name="IDX47"></a>
 
-</p>
-<p>
-Mappings are lists of associated values. They are <code>mixed</code> by
-default, meaning that the index part of the associated values doesn't
-have to be of the same type all the time, even though this is encouraged
-for the same reason as before in regard to the mixed data type.
+      Mappings are lists of associated values. They are of
+      <code>mixed</code> type, meaning that the different indices and
+      the different values can be of varying types within the same
+      mapping.
+    </p>
 
-</p>
-<p>
-Mappings can use any kind of data type both as index and value. The index
-part of the mapping in a single mapping must consist of unique
-values. There can <i>not</i> be two indices of the same value.
+    <p>
+      Mappings can use any kind of data type for either index or
+      value. The index part of the mapping in a single mapping must
+      consist of unique values. There cannot be two indices of the
+      same value as one would overwrite the other.
+    </p>
 
-</p>
-<p>
-This all sounds pretty complicated, but in reality it's pretty simple to
-use. However, it will be a lot easier to understand once we get down to
-actually seeing it used.
-
-</p>
-<p>
-You declare a mapping just like any other variable, so let's just start up
-with a few declarations for later use:
-
-</p>
-
-<pre>
+    <p>
+      You can declare a mapping just like any other variable, so let's
+      start with a few declarations for later use:
+    <pre>
 mapping my_map;
 int     value;
-</pre>
+    </pre>
+  </p>
 
-<p>
-Allocating and initializing can be done in three different ways:
+    <p>
+      Allocating and initializing can be done in two different ways:
 
-</p>
+    <pre>
+1:  &lt;mapping_var&gt; = ([ &lt;index1&gt;:&lt;value1&gt;, &lt;index2&gt;:&lt;value2&gt;, ... ]);
 
-<pre>
-1:	&lt;mapping_var&gt; = ([ &lt;index1&gt;:&lt;value1&gt;, &lt;index2&gt;:&lt;value2&gt;, ... ]);
+2:  &lt;mapping_var&gt;[&lt;index&gt;] = value;
+    </pre>
 
-2:	&lt;mapping_var&gt;[&lt;index&gt;] = value;
+    <p>
+      The first is straightforward and easy.
 
-3:	&lt;mapping_var&gt; = mkmapping(&lt;list of indices&gt;, &lt;list of values&gt;);
-</pre>
+    <pre>
+1: my_map = ([ &quot;adam&quot;:5, &quot;bertil&quot;:8, &quot;cecar&quot;:-4 ]);
+    </pre>
+  </p>
 
-<p>
-The first is straight-forward and easy.
+    <p>
+      In the second case, if a given index doesn't exist in the
+      mapping then it is created when referenced. If it does exist
+      then the value for that index is replaced with the one being
+      assigned.
+    </p>
 
-</p>
-
-<pre>
-1: my_map = ([ "adam":5, "bertil":8, "cecar":-4 ]);
-</pre>
-
-<p>
-The second works so that in case a given mapping pair doesn't exist, it is
-created when referenced. If it does exist the value part is replaced.
-
-</p>
-
-<pre>
-2: my_map["adam"] = 1;    /* Creates the pair "adam":1 */
-   my_map["bertil"] = 8;  /* Creates the pair "bertil":8 */
-   my_map["adam"] = 5;    /* Replaces the old value in "adam" with 5. */
+    <pre>
+2: my_map[&quot;adam&quot;] = 1;    /* Creates the pair &quot;adam&quot;:1 */
+   my_map[&quot;bertil&quot;] = 8;  /* Creates the pair &quot;bertil&quot;:8 */
+   my_map[&quot;adam&quot;] = 5;    /* Replaces the old value in &quot;adam&quot; with 5. */
 	...
-</pre>
+    </pre>
 
-<p>
-The third requires two arrays, one containing the indices and one
-containing the values. How to create arrays was described in the previous
-chapter.
+    <p>
+      Unlike arrays there's no order in a mapping. The values are
+      stored in a way that makes finding the values as quick as
+      possible.  There are functions that will allow you to get the
+      component lists (the indices or values) from a mapping but keep
+      in mind that they can be in <i>any</i> order and are not
+      guaranteed to remain the same from call to call.  In practice
+      they only change order when you add or remove an element, but it's
+      best not to rely on that.
+    </p>
 
-</p>
+    <p>
+      You can merge mappings with the <code>+</code> and
+      <code>+=</code> operators, just as with arrays.
+    <pre>
+my_map += ([ &quot;david&quot;:5, &quot;erik&quot;:33 ]);
+    </pre>
+  </p>
 
-<pre>
-3: my_map = mkmapping(({ "adam", "bertil", "cecar" }), ({ 5, 8, -4 }));
-</pre>
+    <p>
+      <a name="IDX48"></a>
 
-<p>
-Unlike arrays there's no order in a mapping. The values are stashed in a
-way that makes finding the values as quick as possible. There are functions
-that will allow you to get the component lists (the indices or values) from
-a mapping but keep in mind that they can be in <i>any</i> order and are not
-guaranteed to remain the same from call to call. In practice though, they
-only change order when you add or remove an element.
+      Removing items in a mapping is simple.  You can assign
+      <code>nil</code> to that index of the array. Doing so will
+      delete the index/value pair:
+    <pre>
+my_map[&quot;david&quot;] = nil;
+    </pre>
+  </p>
 
-</p>
-<p>
-Merging mappings can be done with the <code>+/+=</code> operator just as with
-mappings.
+    <p>
+      Individual values can be obtained through simple indexing:
+    <pre>
+value = my_map[&quot;cecar&quot;]; /* =&gt; -4 */
+    </pre>
+  </p>
 
-</p>
+    <p>
+      Indexing a value that doesn't exist will <i>not</i> generate an
+      error, only the value <code>nil</code>. Be <i>very</i> careful
+      of this since you might indeed have legal values of nil in the
+      mapping as well -- for instance, a value of <code>nil</code>
+      might mean that the index has no value part, or instead that the
+      value indeed <i>is</i> <code>nil</code>:
 
-<pre>
-my_map += ([ "david":5, "erik":33 ]);
-</pre>
+    <pre>
+value = my_map[&quot;urk&quot;]; /* =&gt; nil */
+    </pre>
 
-<p>
-<a name="IDX48"></a>
-
-</p>
-<p>
-Removing items in a mapping, however, is a bit trickier. That has to be
-done by using the special efun <code>m_delete()</code> (also described later).
-
-</p>
-
-<pre>
-my_map = m_delete(my_map, "bertil");
-my_map = m_delete(my_map, "david");
-</pre>
-
-<p>
-As you see the mapping pairs has to be removed one by one using the index
-as an identifier of which pair you want to remove. Another thing you now
-realize quite clearly is that the indices in a mapping has to be unique,
-you can't have two identical 'handles' to different values. The values
-however can naturally be identical.
-
-</p>
-<p>
-Individual values can be obtained through simple indexing.
-
-</p>
-
-<pre>
-value = my_map["cecar"]; /* =&gt; -4 */
-</pre>
-
-<p>
-Indexing a value that doesn't exist will <i>not</i> generate an error,
-only the value 0. Be <i>very</i> careful of this since you might indeed
-have legal values of 0 in the mapping as well. i.e. a value of 0 might
-mean that the index has no value part but also that the value indeed
-<i>is</i> 0.
-
-</p>
-
-<pre>
-value = my_map["urk"]; /* =&gt; 0 */
-</pre>
+    If you need to be certain, there is a function called
+    <code>map_indices</code> which will return the list of indices.
+    You can check to see if the index exists that way:
+    <pre>
+if(map_indices(my_map) & ({ "urk" })) {
+    DRIVER->message("Urk is a member of the array!\n");
+}
+    </pre>
+  </p>
 
 
+    <hr size=2>
 
-<hr size=2><h2><a name="SEC46" href="index.html#SEC46">The preprocessor</a></h2>
+    <h2><a name="SEC3.3" href="index.html#SEC3.3">
+	The preprocessor</a></h2>
 
-<p>
-The preprocessor is <i>not</i> a part of the LPC language proper. It's a
-special process that is run before the actual compilation of the program
-occurs.  Basically it can be seen as a very smart string substitutor;
-Specified strings in the code is replaced by other strings.
+    <p>
+      The preprocessor isn't a part of the LPC language proper. It's a
+      special process that is run before the actual compilation of the
+      program occurs.  It can be seen as a very smart string
+      translator.  Specified strings in the code are replaced by other
+      strings.
+    </p>
 
-</p>
-<p>
-All preprocessor directives are given as strings starting with the
-character <tt>`#'</tt> on the first column of the line. You can put them
-anywhere, but as you'll be told later most of them do belong in the
-beginning of the code.
-
-</p>
-
-<ul>
-<li><a href="lpc.html#SEC47">#include</a>: The #include statement
-<li><a href="lpc.html#SEC48">#define</a>: The #define and undef statement
-<li><a href="lpc.html#SEC49">#if etc</a>: The #if, #ifdef, #ifndef, #else and #elseif statements
-</ul>
+    <p>
+      All preprocessor directives are given as strings starting with
+      the character <tt>#</tt> on the first non-whitespace column of
+      the line.  It's considered good practice to put preprocessor
+      directives on the very far left of the code, with the <tt>#</tt>
+      in the very first column.
+    </p>
 
 
+    <h3><a name="SEC3.3.1" href="index.html#SEC3.3.1">
+	The #include statement</a></h3>
 
-<h3><a name="SEC47" href="index.html#SEC47">The #include statement</a></h3>
-<p>
-<a name="IDX49"></a>
+    <p>
+      <a name="IDX49"></a>
 
-</p>
-<p>
-This is by far the most used preprocessor command. It simply tells the
-preprocessor to replace that line with the contents of an <i>entire</i>
-other file before going any further.
+      This is by far the most common preprocessor command. It simply
+      tells the preprocessor to replace that line with the contents of
+      an entire other file before going any further.
+    </p>
 
-</p>
-<p>
-Data you put in <b>include-files</b> is usually data that won't ever
-change and that you want to put into several files. Instead of having to
-write those same lines over and over with the cumulative chance of
-putting in copying errors as you go, you simply collect that data into
-one or more files and include them into the program files as necessary.
+    <p>
+      Data you put in included files is usually data that won't ever
+      change and that you'll be referencing in several files. Instead
+      of having to copy and paste the same lines into multiple places
+      and maintaining multiple copies, you simply collect that data in
+      an include file and include it in the program files as
+      appropriate.  Included file names traditionally end in
+      <tt>.h</tt>.
+    </p>
 
-</p>
-<p>
-The syntax is very easy:
+    <p>
+      The syntax for inclusion is simple:
 
-</p>
-
-<pre>
+    <pre>
 #include &lt;standard_file&gt;
-#include "special_file"
-</pre>
+#include &quot;special_file&quot;
+    </pre>
+  </p>
 
-<p>
-<b>NB!</b> Note the absence of a <code>;</code> after the line!
+    <p>
+      Note the absence of a <code>;</code> after the line.
+    </p>
 
-</p>
 <p>
 The two different ways you write this depend on where the file you want to
 include exists. There's a number of standard include files in the game,
@@ -836,9 +798,9 @@ path.
 </p>
 
 <pre>
-#include "/d/Genesis/login/login.h"
-#include "my_defs.h"
-#include "/sys/adverbs.h"	/* Same as the shorter one above */
+#include &quot;/d/Genesis/login/login.h&quot;
+#include &quot;my_defs.h&quot;
+#include &quot;/sys/adverbs.h&quot;	/* Same as the shorter one above */
 </pre>
 
 <p>
@@ -848,14 +810,10 @@ distingues but also that if the files move around your program will stop
 working. If you use the &lt;&gt;-notation they will always be found anyway.
 
 </p>
-<p>
-Include files can have any name, but as a rule they are given the '.h'
-suffix to clearly distinguish them as include files.
 
-</p>
 <p>
-It is even possible to include <code>c</code>-files, i.e. to include entire
-files full of code. However, doing that is <code>very</code> bad form. Do
+It is even possible to include LPC files, i.e. to include entire
+files full of code. However, doing that is <i>very</i> bad form. Do
 <i>not</i> do that <b>EVER</b>! Why? Well, for one thing error
 handling usually has a bad time tracing errors in included files, the
 line numbers gets wrong. Also, since you include the uncompiled code
@@ -929,8 +887,8 @@ kind that you don't want to write over and over.
 
 <pre>
 #define MAX_LOGIN  100          /* Max logged on players */
-#define LOGIN_OB   "/std/login" /* The login object      */
-#define GREET_TEXT "Welcome!"   /* The login message     */
+#define LOGIN_OB   &quot;/std/login&quot; /* The login object      */
+#define GREET_TEXT &quot;Welcome!&quot;   /* The login message     */
 </pre>
 
 <p>
@@ -941,7 +899,7 @@ comments above, but they are removed anyway later.
 </p>
 
 <pre>
-tell_object(player, GREET_TEXT + "\n");
+tell_object(player, GREET_TEXT + &quot;\n&quot;);
 </pre>
 
 <p>
@@ -954,8 +912,8 @@ the linebreak.
 </p>
 
 <pre>
-#define LONG_DEFINE  "beginning of string \
-                      and end of the same"	
+#define LONG_DEFINE  &quot;beginning of string \
+                      and end of the same&quot;	
 </pre>
 
 <p>
@@ -1105,7 +1063,7 @@ something you very rarely do.
     </address>
     <!-- Created: Mon Jun 11 21:50:30 PDT 2001 -->
     <!-- hhmts start -->
-Last modified: Tue Apr  8 23:37:30 PDT 2003
+Last modified: Wed Apr  9 01:37:53 PDT 2003
 <!-- hhmts end -->
   </body>
 </html>
