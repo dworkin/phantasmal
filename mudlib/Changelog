@@ -1,7 +1,7 @@
 Release 0.10:
 
 	* Merged in Keith Dunwoody's patch for merging PORTABLED and MAPD.
-	* (New hooks for MOBILEs are included in that patch)
+	  (New hooks for MOBILEs are included in that patch)
 	* Added Jay Shaffstall's patch for escape character codes in UNQ
 	parsers.
 	* Added MOBILED to track mobiles
@@ -13,4 +13,6 @@ Release 0.10:
 	user objects.  Note that this can leave bodies behind.
 	* @stat command now works on mobiles
 	* UNQ DTD error handling now can accept a filename
+	* A basic mobfile is now saved like the roomfile and zonefile.  It
+	still needs more work before it can be restored, though.
 	
