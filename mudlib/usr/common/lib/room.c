@@ -21,7 +21,6 @@ mixed* exits;
 #define PHR(x) PHRASED->new_simple_english_phrase(x)
 
 static void create(varargs int clone) {
-  /* cont::create(clone); */
   obj::create(clone);
   if(clone) {
     exits = ({ });
@@ -40,12 +39,10 @@ void destructed(int clone) {
       location->add_to_container(objs[index]);
   }
 
-  /* cont::destructed(clone); */
   obj::destructed(clone);
 }
 
 void upgraded(varargs int clone) {
-  /* cont::upgraded(); */
   obj::upgraded();
 }
 
