@@ -1,6 +1,6 @@
 ~DTD{
   ~portable{number?,location?,bdesc,gdesc,ldesc,edesc?,article,flags?,
-            nouns,adjectives?}
+            parent?,nouns,adjectives?}
   ~number{int}
   ~location{int}
   ~bdesc{phrase}
@@ -9,6 +9,7 @@
   ~edesc{phrase}
   ~article{int}
   ~flags{int}
+  ~parent{int}
   ~nouns{phrase+}
   ~adjectives{phrase*}
 }

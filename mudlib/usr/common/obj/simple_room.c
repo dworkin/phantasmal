@@ -6,6 +6,7 @@ inherit room ROOM;
 inherit unq UNQABLE;
 
 private int pending_location;
+private int pending_parent;
 
 #define PHR(x) PHRASED->new_simple_english_phrase(x)
 
@@ -19,6 +20,7 @@ static void create(varargs int clone) {
     edesc = nil;
 
     pending_location = -1;
+    pending_parent = -1;
 
     MAPD->add_room_object(this_object());
   }
@@ -39,6 +41,10 @@ void upgraded(varargs int clone) {
 
 int get_pending_location(void) {
   return pending_location;
+}
+
+int get_pending_parent(void) {
+  return pending_parent;
 }
 
 
@@ -95,6 +101,9 @@ string to_unq_text(void) {
     ret += "  ~edesc{" + edesc->to_unq_text() + "}\n";
   }
 
+  if(parent) {
+    ret += "  ~parent{" + parent->get_number() + "}\n";
+  }
   ret += "  ~article{" + desc_article + "}\n";
 
   /* Skip debug locale */
@@ -147,6 +156,8 @@ void from_dtd_unq(mixed* unq) {
       set_examine(unq[ctr][1]);
     else if(unq[ctr][0] == "article")
       desc_article = unq[ctr][1];
+    else if(unq[ctr][0] == "parent")
+      pending_parent = unq[ctr][1];
     else if(unq[ctr][0] == "nouns") {
       for(ctr2 = 0; ctr2 < sizeof(unq[ctr][1]); ctr2++) {
 	add_noun(unq[ctr][1][ctr2]);
@@ -181,5 +192,4 @@ void from_dtd_unq(mixed* unq) {
       error("Unrecognized UNQ tag in room: " + unq[ctr][0]);
     }
   }
-
 }

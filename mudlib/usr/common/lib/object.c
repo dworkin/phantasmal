@@ -43,6 +43,9 @@ int    tr_num;
 /* Mobile, if any, perceiving this object as its body */
 object mobile;
 
+/* Parent/archetype for data inheritance */
+object parent;
+
 
 /* Prototypes */
 void clear_nouns(void);
@@ -159,6 +162,14 @@ void clear_examine(void) {
 
 int get_number(void) {
   return tr_num;
+}
+
+object get_parent(void) {
+  return parent;
+}
+
+void set_parent(object new_parent) {
+  parent = new_parent;
 }
 
 void add_noun(object phr) {

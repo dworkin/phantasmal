@@ -197,8 +197,8 @@ private int assign_room_number(int num, object room) {
 
 /* Take an UNQ description parsed with a DTD and add the appropriate room
    to mapd. */
-private void add_struct_for_room(mixed* unq) {
-  object room, container;
+private object add_struct_for_room(mixed* unq) {
+  object room;
   int    num;
 
   room = clone_object(SIMPLE_ROOM);
@@ -211,17 +211,41 @@ private void add_struct_for_room(mixed* unq) {
   }
   room->set_number(num);
 
-
   if(!room_objects[object_name(room)])
     error("You forgot to register with MAPD in a room object def maybe?");
 
-  if(room->get_pending_location() != -1) {
-    int    pending;
+  return room;
+}
 
-    pending = room->get_pending_location();
+private void resolve_parent(object room) {
+  int    pending_parent;
+  object parent;
+
+  pending_parent = room->get_pending_parent();
+  if(pending_parent != -1) {
+    parent = MAPD->get_room_by_num(pending_parent);
+    if(!parent) {
+      parent = PORTABLED->get_portable_by_num(pending_parent);
+    }
+    if(!parent) {
+      error("Can't find parent number (#" + pending_parent
+	    + ") loading rooms!");
+    }
+
+    room->set_parent(parent);
+  }
+
+}
+
+private int resolve_location(object room) {
+  int    pending;
+  object container;
+
+  pending = room->get_pending_location();
+  if(pending != -1) {
     container = get_room_by_num(pending);
     if(!container) {
-      error("Can't add room to nonexistent location #" + pending + "!");
+      return 0;
     }
 
     container->add_to_container(room);
@@ -232,10 +256,14 @@ private void add_struct_for_room(mixed* unq) {
 
     container->add_to_container(room);
   }
+
+  return 1;
 }
 
 void add_dtd_unq_rooms(mixed* unq, string filename) {
   int    iter;
+  mixed* resolve_rooms;
+  object room;
 
   if(!initialized)
     error("Can't add rooms to uninitialized mapd!");
@@ -245,9 +273,25 @@ void add_dtd_unq_rooms(mixed* unq, string filename) {
      changes, these room objects change. */
 
   iter = 0;
+  resolve_rooms = ({ });
   while(iter < sizeof(unq)) {
-    add_struct_for_room( ({ unq[iter], unq[iter + 1] }) );
+    room = add_struct_for_room( ({ unq[iter], unq[iter + 1] }) );
+    resolve_rooms += ({ room });
     iter += 2;
+  }
+
+  for(iter = 0; iter < sizeof(resolve_rooms); iter++) {
+    resolve_parent(resolve_rooms[iter]);
+  }
+
+  while(sizeof(resolve_rooms)) {
+    for(iter = 0; iter < sizeof(resolve_rooms);) {
+      if(resolve_location(resolve_rooms[iter])) {
+	resolve_rooms = resolve_rooms[..iter-1] + resolve_rooms[iter+1..];
+      } else {
+	iter++;
+      }
+    }
   }
 }
 

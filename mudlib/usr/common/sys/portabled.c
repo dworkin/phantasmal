@@ -124,15 +124,36 @@ void add_portable_number(object portable, int num) {
   portable->set_number(num);
 }
 
+
+private int resolve_parent(object port) {
+  int pending;
+  object parent;
+
+  pending = port->get_pending_parent();
+
+  parent = MAPD->get_room_by_num(pending);
+  if(!parent) {
+    parent = PORTABLED->get_portable_by_num(pending);
+  }
+  if(!parent) {
+    return 0;
+  }
+
+  port->set_parent(parent);
+  return 1;
+}
+
+
 /* Filename will be used later to register dependency with the objectd
    and/or manually do reloads in the PortableD. */
 void add_dtd_unq_portables(mixed* unq_data, object dflt_location,
 			   string filename) {
   object port, location;
   int    iter, pending;
-  mixed* resolve;
+  mixed* resolve_loc, *resolve_par;
 
-  resolve = ({ });
+  resolve_loc = ({ });
+  resolve_par = ({ });
   iter = 0;
   while(iter < sizeof(unq_data)) {
     port = clone_object(SIMPLE_PORTABLE);
@@ -148,7 +169,12 @@ void add_dtd_unq_portables(mixed* unq_data, object dflt_location,
       }
       dflt_location->add_to_container(port);
     } else {
-      resolve += ({ port });
+      resolve_loc += ({ port });
+    }
+
+    pending = port->get_pending_parent();
+    if(pending != -1) {
+      resolve_par += ({ port });
     }
 
     PORTABLED->add_portable_number(port, port->get_number());
@@ -156,15 +182,15 @@ void add_dtd_unq_portables(mixed* unq_data, object dflt_location,
     iter += 2;
   }
 
-  /* Now go through and resolve unresolved portables */
-  while(sizeof(resolve)) {
+  /* Now go through and resolve location of unresolved portables */
+  while(sizeof(resolve_loc)) {
     int size, ctr, pending;
 
-    size = sizeof(resolve);
+    size = sizeof(resolve_loc);
 
     ctr = 0;
-    while(ctr < sizeof(resolve)) {
-      pending = resolve[ctr]->get_pending_location();
+    while(ctr < sizeof(resolve_loc)) {
+      pending = resolve_loc[ctr]->get_pending_location();
 
       location = MAPD->get_room_by_num(pending);
       if(!location) {
@@ -172,20 +198,28 @@ void add_dtd_unq_portables(mixed* unq_data, object dflt_location,
       }
 
       if(location) {
-	location->add_to_container(resolve[ctr]);
-	resolve = resolve[..ctr-1] + resolve[ctr+1..];
+	location->add_to_container(resolve_loc[ctr]);
+	resolve_loc = resolve_loc[..ctr-1] + resolve_loc[ctr+1..];
       } else {
 	ctr++;
       }
     }
 
-    if(size == sizeof(resolve)) {
+    if(size == sizeof(resolve_loc)) {
       LOGD->write_syslog("Can't find locations for "
 			 + size + " portables -- leaving them hanging!");
       return;
     }
   }
 
+  /* Go through and resolve parents of unresolved portables */
+  for(iter = 0; iter < sizeof(resolve_par); iter++) {
+    if(!resolve_parent(resolve_par[iter])) {
+      error("Can't find parent number (#"
+	    + resolve_par[iter]->get_pending_parent()
+	    + ") loading portable!");
+    }
+  }
 }
 
 

@@ -173,6 +173,27 @@ See also @add_nouns, @add_adj, @set_brief, @set_glance
 }}
 
 
+~name{~enUS{@set_object_parent, @set_object_par, @set_obj_parent,
+            @set_obj_par, @set_parent, set_object_parent, set_object_par,
+            set_obj_parent, set_obj_par, set_parent, set_par,
+            set object parent, set parent, set par,
+            set object art, set obj parent, set obj art, set,
+            parent, inherit, inheritance, data inheritance, urobject,
+            urobjects, ur_object, ur_object, ur object, ur objects}}
+~keywords{admin}
+~desc{
+  ~enUS{
+
+The @set_obj_par (or @set_object_parent, or @set_parent) command sets
+the parent of an object for data inheritance.  This means the child
+object will inherit various data, including details, from the parent
+object.  The syntax is "@set_obj_parent <child> <parent>" where
+"<child>" and "<parent>" are portable or room numbers prefixed with
+a pound ("#") sign.
+
+}}
+
+
 ~name{~enUS{@move, move, %move}}
 ~keywords{admin}
 ~desc{

@@ -4,6 +4,7 @@ inherit port PORTABLE;
 inherit unq UNQABLE;
 
 private int pending_location;
+private int pending_parent;
 
 /* A simple portable object */
 
@@ -18,6 +19,7 @@ static void create(varargs int clone) {
     set_look(PHR("Why look, it's an object.  Portable, but uninitialized!"));
 
     pending_location = -1;
+    pending_parent = -1;
   }
 
 }
@@ -37,6 +39,10 @@ int get_pending_location(void) {
   return pending_location;
 }
 
+int get_pending_parent(void) {
+  return pending_parent;
+}
+
 
 string to_unq_text(void) {
   string ret, tmp_n, tmp_a;
@@ -53,9 +59,12 @@ string to_unq_text(void) {
   if(edesc) {
     ret += "  ~edesc{" + edesc->to_unq_text() + "}\n";
   }
- 
+
   ret += "  ~article{" + desc_article + "}\n";
   ret += "  ~flags{" + portflags + "}\n";
+  if(parent) {
+    ret += "  ~parent{" + parent->get_number() + "}\n";
+  }
 
   /* Skip debug locale */
   tmp_n = tmp_a = "";
@@ -107,6 +116,8 @@ void from_dtd_unq(mixed* unq) {
       desc_article = unq[ctr][1];
     else if(unq[ctr][0] == "flags")
       portflags = unq[ctr][1];
+    else if(unq[ctr][0] == "flags")
+      pending_parent = unq[ctr][1];
     else if(unq[ctr][0] == "nouns") {
       for(ctr2 = 0; ctr2 < sizeof(unq[ctr][1]); ctr2++) {
 	add_noun(unq[ctr][1][ctr2]);

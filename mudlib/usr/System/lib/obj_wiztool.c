@@ -261,6 +261,10 @@ static void cmd_stat(object user, string cmd, string str) {
     }
   }
 
+  if(obj->get_parent()) {
+    user->message("Inherits data from #" + obj->get_parent()->get_number()
+		  + ".\r\n");
+  }
   if(room) {
     user->message("Registered with MAPD as a room.\r\n");
   }
@@ -467,4 +471,39 @@ static void cmd_move_obj(object user, string cmd, string str) {
   user->message(" (#" + obj1->get_number() + ") into ");
   user->send_phrase(obj2->get_brief());
   user->message(" (#" + obj2->get_number() + ").\r\n");
+}
+
+
+static void cmd_set_obj_parent(object user, string cmd, string str) {
+  object obj, parent;
+  int    objnum, parentnum;
+
+  if(!str || sscanf(str, "%*s %*s %*s") == 3
+     || sscanf(str, "#%d #%d", objnum, parentnum) != 2) {
+    user->message("Usage: " + cmd + " #<obj> #<parent>\r\n");
+    return;
+  }
+
+  obj = MAPD->get_room_by_num(objnum);
+  if(!obj) {
+    obj = PORTABLED->get_portable_by_num(objnum);
+  }
+  if(!obj) {
+    user->message("The object must be a room or portable.  Obj #"
+		  + objnum + " is not.\r\n");
+    return;
+  }
+
+  parent = MAPD->get_room_by_num(parentnum);
+  if(!parent) {
+    parent = PORTABLED->get_portable_by_num(parentnum);
+  }
+  if(!obj) {
+    user->message("The parent must be a room or portable.  Obj #"
+		  + objnum + " is not.\r\n");
+    return;
+  }
+
+  obj->set_parent(parent);
+  user->message("Done.\r\n");
 }

@@ -1,5 +1,5 @@
 ~DTD{
-  ~room{number?,location?,bdesc,gdesc,ldesc,edesc?,article,nouns,
+  ~room{number?,location?,bdesc,gdesc,ldesc,edesc?,article,parent?,nouns,
         adjectives?,exit*}
   ~number{int}
   ~location{int}
@@ -8,6 +8,7 @@
   ~ldesc{phrase}
   ~edesc{phrase}
   ~article{int}
+  ~parent{int}
   ~nouns{phrase+}
   ~adjectives{phrase*}
   ~exit{string}
