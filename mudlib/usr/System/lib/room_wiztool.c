@@ -656,7 +656,7 @@ static void cmd_list_exits(object user, string cmd, string str) {
 
   ctr = EXITD->num_deferred_exits();
   if(ctr)
-    user->message("Deferred exits: " + ctr + ".\r\n");
+    user->message(ctr + " deferred exits pending.\r\n");
 
 }
 
@@ -756,6 +756,7 @@ static void cmd_list_exit(object user, string cmd, string str) {
   user->message(tmpstr);
 }
 
+
 static void cmd_add_deferred_exits(object user, string cmd, string str) {
   int num;
 
@@ -764,15 +765,19 @@ static void cmd_add_deferred_exits(object user, string cmd, string str) {
 
   if(!access(user->query_name(), "/", FULL_ACCESS)) {
     user->message("Currently only those with full administrative access "
-		  + "may resolve deferred exits.\r\n");
+		  + "may resolve deferred exits and rooms.\r\n");
     return;
   }
 
   EXITD->add_deferred_exits();
+  MAPD->do_room_resolution(0);  /* Don't fully resolve, so no errors */
 
   num = EXITD->num_deferred_exits();
-  user->message("Deferred exits: " + num + ".\r\n");
+  user->message(num + " deferred exits still pending.\r\n");
+  user->message(sizeof(MAPD->get_deferred_rooms())
+		+ " deferred rooms still pending.\r\n");
 }
+
 
 static void cmd_check_deferred_exits(object user, string cmd, string str) {
   int num;
@@ -787,5 +792,7 @@ static void cmd_check_deferred_exits(object user, string cmd, string str) {
 
   num = EXITD->num_deferred_exits();
 
-  user->message("Deferred exits: " + num + ".\r\n");
+  user->message(num + " deferred exits still pending.\r\n");
+  user->message(sizeof(MAPD->get_deferred_rooms())
+		+ " deferred rooms still pending.\r\n");
 }
