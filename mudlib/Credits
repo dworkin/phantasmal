@@ -16,6 +16,8 @@ for the zonefile and general brainstorming
 - Jay Shaffstall for StringD code and escape character codes for UNQ
 parsers
 
+- Dan Parks for a bugfix with user login and password changing
+
 - Mark Luszniak for requesting more documentation, and for submitting
 simple object code.
 
