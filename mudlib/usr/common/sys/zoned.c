@@ -87,8 +87,6 @@ void from_dtd_unq(mixed* unq) {
   if(unq[0] != "zones")
     error("Unrecognized section in ZONED file -- must start with 'zones'!");
 
-  LOGD->write_syslog("Loading zone data in ZONED...");
-
   zones = unq[1];
   while(sizeof(zones)) {
     int segnum, zonenum;
@@ -114,10 +112,9 @@ void from_dtd_unq(mixed* unq) {
     /* Set zone for segment */
     if(OBJNUMD->get_segment_owner(segnum)) {
       OBJNUMD->set_segment_zone(segnum, zonenum);
-      LOGD->write_syslog("Setting segment owner (" + segnum + ","
-			 + zonenum + ")");
     } else {
-      LOGD->write_syslog("Unowned segment, dropping seg #" + segnum);
+      LOGD->write_syslog("Unowned segment, dropping seg #" + segnum,
+			 LOG_WARN);
     }
 
     /* Remove that segment, move on */
