@@ -351,9 +351,18 @@ nomask string place(object obj, object to) {
  * the failure on failure.  (replace this by a phrase later?)
  */
 nomask string open(object obj) {
-  object link_exit;
+  object link_exit, obj2;
+  int isexit, objnum;
 
-  if(!obj->is_openable() || (!obj->is_container() && obj->get_type() != "EXIT")) {
+  isexit = 0;
+
+  objnum = obj->get_number();
+  obj2 = EXITD->get_exit_by_num(objnum);
+  if (obj2) {
+    isexit = 1;
+  }
+
+  if(!obj->is_openable() || (!obj->is_container())) {
     return "That can't be opened!";
   }
 
@@ -365,7 +374,7 @@ nomask string open(object obj) {
     return "That appears to be locked.";
   }
 
-  if (obj->get_type()=="EXIT") {
+  if (isexit) {
     obj->set_open(1);
     if (obj->get_link()!=-1) {
       link_exit = EXITD->get_exit_by_num(obj->get_link());
@@ -375,8 +384,7 @@ nomask string open(object obj) {
     obj->set_open(1);
   }
 
-  if(obj->get_type() != "EXIT"
-     && obj->get_location() != body
+  if(!isexit && obj->get_location() != body
      && obj->get_location() != location) {
     return "You can't reach that from here.";
   }
@@ -393,9 +401,18 @@ nomask string open(object obj) {
  * the failure on failure.  (replace this by a phrase later?)
  */
 nomask string close(object obj) {
-  object link_exit;
+  object link_exit, obj2;
+  int isexit, objnum;
 
-  if(!obj->is_openable() || (!obj->is_container() && obj->get_type() != "EXIT")) {
+  isexit = 0;
+
+  objnum = obj->get_number();
+  obj2 = EXITD->get_exit_by_num(objnum);
+  if (obj2) {
+    isexit = 1;
+  }
+
+  if(!obj->is_openable() || (!obj->is_container())) {
     return "That can't be closed!";
   }
 
@@ -405,19 +422,17 @@ nomask string close(object obj) {
 
   if(obj->get_location() != location
      && obj->get_location() != body
-     && obj->get_type() != "EXIT") {
+     && !isexit) {
     return "You can't reach that from here.";
   }
 
-  if (obj->get_type()=="EXIT") {
-    obj->set_open(0);
+  if (isexit) {
     if (obj->get_link()!=-1) {
       link_exit = EXITD->get_exit_by_num(obj->get_link());
       link_exit->set_open(0);
     }
-  } else {
-    obj->set_open(0);
   }
+  obj->set_open(0);
 
   return nil;
 }

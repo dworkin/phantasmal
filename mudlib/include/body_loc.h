@@ -29,3 +29,6 @@
 
 /* This looks for objects which are details of the viewer */
 #define LOC_BODY                                   6
+
+/* This looks for objects immediately contained by the exits */
+#define LOC_CURRENT_EXITS                          7

@@ -90,10 +90,6 @@ object get_destination() {
   return destination;
 }
 
-string get_type() {  /* override to set a specific type */
-  return "EXIT";
-}
-
 /* Return nil if a user can pass through a door, the reason if they cannot */
 string can_pass(object pass_object) {
   if (!is_open())

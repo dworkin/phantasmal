@@ -1,4 +1,4 @@
-/* $Header: /cvsroot/phantasmal/mudlib/usr/System/obj/user.c,v 1.56 2003/03/26 07:35:19 angelbob Exp $ */
+/* $Header: /cvsroot/phantasmal/mudlib/usr/System/obj/user.c,v 1.57 2003/03/28 20:52:18 dbd22 Exp $ */
 
 #include <kernel/kernel.h>
 #include <kernel/user.h>
@@ -412,30 +412,18 @@ private object* search_contained_objects(object* objs, string str,
     objs = objs[1..];
   }
 
-  /* now, if it is a room, check the exits */
-  if (temp2 == 1) {
-    if (temp == location) {
-      if(function_object("num_exits", location)) {
-        for(ctr = 0; ctr < location->num_exits(); ctr++) {
-          object exit;
-          exit = location->get_exit_num(ctr);
-          if(exit->match_words(this_object(), words)) {
-            ret += ({ exit });
-          }
-        }
-      }
-    }
-  }
-
   return sizeof(ret) ? ret : nil;
 }
 
 private object* find_objects_in_loc(int loc, string str) {
-  object *objs, test;
+  object *objs;
+  int ctr;
+
+  objs = ({ });
 
   if(!location &&
      (loc == LOC_CURRENT_ROOM || loc == LOC_IMMEDIATE_CURRENT_ROOM
-      || loc == LOC_DETAIL_CURRENT_ROOM))
+      || loc == LOC_DETAIL_CURRENT_ROOM || LOC_CURRENT_EXITS))
     return nil;
 
   if(!body &&
@@ -454,6 +442,15 @@ private object* find_objects_in_loc(int loc, string str) {
   case LOC_CURRENT_ROOM:
     /* Pass location directly so its details will be searched */
     return search_contained_objects( ({ location }), str);
+
+  case LOC_CURRENT_EXITS:
+    /* Pass location directly so its details will be searched */
+    if(function_object("num_exits", location)) {
+      for(ctr = 0; ctr < location->num_exits(); ctr++) {
+        objs += ({ location->get_exit_num(ctr) });
+      }
+    }
+    return search_contained_objects( objs, str);
 
   case LOC_INVENTORY:
     /* Pass objects in body object so that body's details won't be
@@ -1253,7 +1250,7 @@ static void cmd_look(object user, string cmd, string str) {
      || sscanf(str, "within %s", str) || sscanf(str, "into %s", str)) {
     /* Look inside container */
     str = STRINGD->trim_whitespace(str);
-    tmp = find_first_objects(str, LOC_CURRENT_ROOM, LOC_INVENTORY, LOC_BODY);
+    tmp = find_first_objects(str, LOC_CURRENT_ROOM, LOC_INVENTORY, LOC_BODY, LOC_CURRENT_EXITS);
     if(!tmp) {
       user->message("You don't find any '" + str + "'.\r\n");
       return;
@@ -1262,7 +1259,7 @@ static void cmd_look(object user, string cmd, string str) {
       user->message("You see more than one '" + str +"'.  You pick one.\r\n");
     }
 
-    if(!tmp[0]->is_container() && tmp[0]->get_type()!="EXIT") {
+    if(!tmp[0]->is_container()) {
       user->message("That's not a container.\r\n");
       return;
     }
@@ -1272,27 +1269,23 @@ static void cmd_look(object user, string cmd, string str) {
       return;
     }
 
-    if (tmp[0]->get_type()=="EXIT") {
-      show_room_to_player(tmp[0]->get_destination());
-    } else {
-      objs = tmp[0]->objects_in_container();
-      if(objs && sizeof(objs)) {
-        for(ctr = 0; ctr < sizeof(objs); ctr++) {
-          user->message("- ");
-          user->send_phrase(objs[ctr]->get_brief());
-          user->message("\r\n");
-        }
-      user->message("-----\r\n");
-      } else {
-        user->message("You see nothing in the ");
-        user->send_phrase(tmp[0]->get_brief());
-        user->message(".\r\n");
+    objs = tmp[0]->objects_in_container();
+    if(objs && sizeof(objs)) {
+      for(ctr = 0; ctr < sizeof(objs); ctr++) {
+        user->message("- ");
+        user->send_phrase(objs[ctr]->get_brief());
+        user->message("\r\n");
       }
+    user->message("-----\r\n");
+    } else {
+      user->message("You see nothing in the ");
+      user->send_phrase(tmp[0]->get_brief());
+      user->message(".\r\n");
     }
     return;
   }
 
-  tmp = find_first_objects(str, LOC_CURRENT_ROOM, LOC_INVENTORY, LOC_BODY);
+  tmp = find_first_objects(str, LOC_CURRENT_ROOM, LOC_INVENTORY, LOC_BODY, LOC_CURRENT_EXITS);
   if(!tmp || !sizeof(tmp)) {
     user->message("You don't find any '" + str + "'.\r\n");
     return;
@@ -1739,7 +1732,7 @@ static void cmd_open(object user, string cmd, string str) {
     return;
   }
 
-  tmp = find_first_objects(str, LOC_CURRENT_ROOM, LOC_INVENTORY);
+  tmp = find_first_objects(str, LOC_CURRENT_ROOM, LOC_INVENTORY, LOC_CURRENT_EXITS);
   if(!tmp || !sizeof(tmp)) {
     message("You don't find any '" + str + "'.\r\n");
     return;
@@ -1788,7 +1781,7 @@ static void cmd_close(object user, string cmd, string str) {
     return;
   }
 
-  tmp = find_first_objects(str, LOC_CURRENT_ROOM);
+  tmp = find_first_objects(str, LOC_CURRENT_ROOM, LOC_CURRENT_EXITS);
   if(!tmp || !sizeof(tmp)) {
     message("You don't find any '" + str + "'.\r\n");
     return;
