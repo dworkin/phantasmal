@@ -134,6 +134,7 @@ void clear_help_entries(void) {
 
 void reread_help_files(void) {
   int iter;
+  int ret;
 
   for(iter = 0; iter < sizeof(path_stack); iter++) {
     new_help_directory(path_stack[iter]);
@@ -221,7 +222,10 @@ void new_help_directory(string path) {
       }
     } else if(sscanf(dir[0][ctr], "%*s.hlp%s", left) == 2) {
       if(left == "") {
-	new_help_file(path + "/" + dir[0][ctr]);
+      /* modified by dbd22 */
+	if (call_out("new_help_file", 0, path + "/" + dir[0][ctr]) < 0)
+	  error("Couldn't schedule new_help_file!");
+/*	new_help_file(path + "/" + dir[0][ctr]); */
       }
     }
   }
