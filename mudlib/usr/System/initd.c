@@ -351,6 +351,6 @@ static void __shutdown_callback(void) {
 }
 
 static void __reboot_callback(void) {
-  ::dump_state();
-  ::shutdown();
+  /* Dumping of state starts happening before we get this notification,
+     so don't explicitly dump state again... */
 }

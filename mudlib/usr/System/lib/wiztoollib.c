@@ -60,7 +60,9 @@ static void cmd_shutdown(object user, string cmd, string str)
 }
 
 static void cmd_reboot(object user, string cmd, string str) {
-  find_object(INITD)->prepare_reboot();
+  /* DRIVER will do this for us, so we don't need to */
+  /* find_object(INITD)->prepare_reboot(); */
+  wiz::cmd_reboot(user, cmd, str);
 }
 
 static void cmd_datadump(object user, string cmd, string str) {
