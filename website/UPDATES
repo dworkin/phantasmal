@@ -8,6 +8,7 @@ large?
 
 Everywhere:
   Remove CVS directories, #files#, .#files and files~
+  Remove .base.html files?
 
 README
   Mention new features
