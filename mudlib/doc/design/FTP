@@ -27,3 +27,4 @@ TYPE: specify type (A for ASCII, I for binary)
 USER: send username
 
 http://www.cis.ohio-state.edu/cgi-bin/rfc/rfc0959.html
+RFC0765
