@@ -1200,6 +1200,62 @@ themselves (these _F_/_Q_ functions are not intended to be masked).
 Regards,
 Dworkin
 </pre>
+
+<hr />
+
+<pre>
+From: "Felix A. Croes"
+Subject: Re: [DGD] Can't put a wiztool outside the /usr/System directory...
+Date: Sun, 3 Oct 2004 22:22:06 +0200
+
+Noah Gibbs wrote:
+
+>[...]
+>   Along the same lines, I tried putting a wiztool object in
+> /usr/game/obj/wiztool.  I added a small function in the System
+> directory to clone it with the wizard's identity, just like the regular
+> /usr/System/obj/wiztool object works normally.
+>
+>   It *almost* works.  You can run a lot of the regular commands like
+> "people" and "access global" successfully, because those check the
+> owner of the object or the path of the program that's calling them. 
+> But since a lot of the file operations check the creator of the object
+> instead, you can't do things like grant somebody access (which creates
+> a new directory for them) or determine what your own access (which
+> involves enumerating a directory's entries).
+
+When working on the kernel library, for a long time I had the idea
+in mind that the wiztool should be inheritable by everyone.  It didn't
+work out with the kernel library's security system, though.  So the
+wiztool should be in /usr/System.  It's still a good idea to let people
+write their own extensions for it, but those can't be added through
+inheritance.
+
+Regards,
+Dworkin
+</pre>
+
+<hr />
+
+<pre>
+From: dgd at list.imaginary.com (Felix A. Croes)
+Date: Fri Apr 12 08:20:02 2002
+Subject: [DGD] Bug or feature?
+
+Keith Dunwoody wrote:
+
+> Suppose I have a file called ".c" in a directory
+> /usr/blah, which I want to compile.  I tried using
+> compile_object("/usr/blah/"), but instead of trying to
+> compile "/usr/blah/.c" it tries to compile
+> "/usr/blah.c".  Is this a bug or a feature?
+
+It's a bug, but it's not going to be fixed, so some might call it a
+feature :)
+
+Regards,
+Dworkin
+</pre>
             <address>
             <span><a href="mailto:angelbob-remove-spamfree@spamfree.users.sf.net">Noah Gibbs</a></span>
             </address></td>

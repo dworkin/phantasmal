@@ -139,6 +139,228 @@
 
   </span>
 
+  <hr />
+
+<pre>
+From: Par Winzell
+Subject: Re: [DGD] Strings
+Date: Thu, 30 Sep 2004 09:08:27 -0500
+
+Rick wrote:
+> This is probably a dumb question, but are DGD strings binary safe? IIRC
+> LPmud has a 'buffer' type as a binary safe string, I checked out the
+> LPC.html manual that came with DGD but it didn't mention anything as such.
+
+And no, it's not a dumb question at all. In fact I could find no mention 
+whatsoever of the fact that DGD strings consist of full bytes, even in 
+the initial part of src/Changelog, which shows differences from LPMud.
+
+One of these years, Dworkin will no doubt finish LPC.html :-)
+
+Zell
+</pre>
+
+<hr />
+
+<pre>
+From: DGD Mailing List (Felix A. Croes)
+Date: Sat Jan 24 08:08:01 2004
+Subject: [DGD] 1.2.72
+
+diff -c dgd/src/Changelog:1.309 dgd/src/Changelog:1.310
+*** dgd/src/Changelog:1.309     Tue Jan 13 22:37:30 2004
+--- dgd/src/Changelog   Sat Jan 24 14:19:32 2004
+***************
+*** 1557,1559 ****
+--- 1557,1564 ----
+   - Light-weight objects restored from the state dump were not converted
+     properly, causing spurious driver::touch() calls.
+   - Fixed a bug in object upgrading, introduced with call_touch().
++  - New kfun: datagram_challenge(), which replaces the return-TRUE-from-open()
++    way of enabling datagram channels.  Multiple datagrams are now buffered per
++    channel.
++  - Config file change.  ({ 6047, 6048 }) for ports changed to a mapping in
++    which the address must also be specified: ([ "*":6047, "localhost":6048 ])
+
+DGD allows for a UDP "channel" to be attached to a binary connection.
+Previously, the UDP port of this channel on the client side was assumed
+to be identical to the TCP port.  A further restriction was that at
+least one datagram had to be received from that port before the driver 
+was willing to send any (to avoid spamming a host with UDP datagrams
+which doesn't expect any).
+
+This didn't work well with clients behind firewalls, which typically
+remap the source port in their own port space.  So now there is a new
+way of handling UDP channels:
+
+The server sets a UDP challenge for a connection with datagram_challenge().
+The first datagram which is not received through an established UDP
+channel, and which matches this challenge, establishes a new channel
+for the connection with the port used by the client.  open_datagram() will
+be called in the connection object, which thereafter is able to send and
+receive datagrams.  Note that the challenge response datagram is not
+itself received by the connection object.
+
+All outstanding UDP challenges must be unique.  Establishing a UDP
+channel typically happens like this:
+
+ - a TCP connection is established on the binary port
+ - the server establishes a challenge for the UDP channel.  A good
+   unique challenge would be the object ID of the connection object:
+
+    sscanf(object_name(connection_obj), "%*s#%d", object_id);
+
+ - the server sends this (possibly encrypted) challenge to the client,
+   using the TCP connection.
+ - the client responds with the challenge as a UDP datagram.
+ - The server receives the challenge response and establishes the UDP
+   channel.
+
+DGD now handles reception of UDP datagrams more efficiently.  Each
+connection object has its own input buffer in which multiple datagrams
+can be stored.  All datagrams for a binary port will be received on
+that port, and the server keeps track internally of which datagrams
+must be forwarded to which connection object.
+
+Regards,
+Dworkin
+</pre>
+
+<hr />
+
+<pre>
+From felix Mon Oct 26 14:40:02 1998
+Subject: private inheritance
+
+Private inheritance means that the functions and variables in the
+inherited object will be known only in the object that does the
+inheriting.  If the latter object itself is inherited, the functions
+and variables will be hidden.  Effectively, the functions and
+variables behave as if they are private in the object that inherits
+them.
+
+If an object is both privately and non-privately inherited, the
+non-private instance will replace the private one.
+
+A collision between two non-privately inherited functions cannot
+be masked by a function that is privately inherited.  For example,
+if A and B define the function foo, and C inherits A and B and
+redefines foo, then object D which inherits A and B normally and
+C privately will not compile unless it also redefines foo to mask
+the collision from A and B, even though C does the same thing.
+
+It is not possible to inherit an object with a nomask function
+privately.  However, if A has a nomask function and B inherits A,
+C can inherit B privately if it first inherits A normally.
+
+Implementing private inheritance involved comprehensive changes
+to DGD's inheritance implementation, one of the most complex
+parts of the server.  Consider version 1.1.47 experimental and
+subject to change.
+
+Regards,
+Dworkin
+</pre>
+
+<hr />
+
+<pre>
+From: dgd at list.imaginary.com (Mikael Lind)
+Date: Sun Feb  3 10:59:00 2002
+Subject: Round (was Re: [DGD] RE: DGD digest, Vol 1 #118 - 6 msgs)
+
+Quoting Noah Lee Gibbs from 21:17, 2002-02-02:
+
+>   DGD has kind of funny automatic rounding behavior.  Unlike C, a typecast
+> to int does what John Ruiz wrote -- rounds to the nearest integer.  So a
+> nearest-integer round would just be a typecast to int!
+>   To to round down (what C's cast does) you'd want to invert what he did
+> and say (int)(myfloat - 0.5).  To round up, I guess you'd want to do the
+> equivalent of C's (int)(myfloat + (1.0 - 1.0e9)), which I (further) guess
+> in DGD would be (int)(myfloat + (0.5 - 1.0e9)), or basically (int)(myfloat
+> + 0.499999).  It looks kinda funny, but I think it'll do a "round up".
+>   All of these assume that you want to round numbers toward positive
+> infinity or negative infinity.  For instance, if you "round up" the number
+> -2.4, you'll get -2 instead of -3 since -2 is "up" toward positive
+> infinity.  You can change that to round toward larger absolute value, but
+> it'll involve a little more thinking and possibly some "if(myfloat <
+> 0)" checks.
+
+Also see dgd/doc/kfun/ceil and dgd/doc/kfun/floor.
+
+// Mikael / Elemel
+
+--
+I wished for 4 uncursed scrolls of gold detection
+and all I got was this lousy .signature
+</pre>
+
+<hr />
+
+<pre>
+From: DGD Mailing List (Par Winzell)
+Date: Tue Jan  6 17:23:00 2004
+Subject: [DGD] A short question about nil, comparisons and strings.
+
+> Ithe logical not operator is proceeded with 'nil', does it return true or 
+> false? I am assuming !0 is true and !nil is true in my code so far.
+
+0, 0.0 and nil are all false, so !0 == !0.0 == !nil == 1 (true)
+
+"" is true
+
+> What about strings? What is a string initiated as, "", 0, or nil? Are all 
+> those constants different?
+
+they're all different. strings are initialized to nil.
+</pre>
+
+<hr />
+
+<pre>
+Date: Sat, 01 Aug 1998 09:56:03 -0700
+From: Par Winzell
+Subject: [DGD] Re: DGD LPC (?)
+
+Howdy,
+
+> I believe there was a post at some point stating that ({ }) could never
+> equal ({ }) - this is because of references are used rather than the
+> values themselves. Same applies to mappings.
+
+Yes, a new array is created whenever the interpreter encounters ({ })
+and reference comparison between two separate instances obviously fails. 
+
+However -- to be quite picky -- since assignment also uses references,
+you -can- have ({ }) equal ({ }), sort of, since
+
+	a = b = ({ }), a == b
+
+is true... this is a pretty common LPC mistake too, that I see a lot of
+wizards make on Muds, and understandably so, too... since LPC does hide
+most yukky reference stuff well.
+
+Pär
+</pre>
+
+<hr />
+
+<pre>
+From: dgd at list.imaginary.com (Felix A. Croes)
+Date: Sat Dec 22 10:13:01 2001
+Subject: [DGD] parse_string question
+
+Noah Lee Gibbs wrote:
+
+>   When you're doing full type-checking, should the empty string be
+> true?  It seems to be, and I had thought it shouldn't be.
+
+"", ({ }) and ([ ]) test as true in any typechecking mode.
+
+Regards,
+Dworkin
+</pre>
+
   <p style="text-size: 150%"> <a href="../index.html"> Back to top level
     </a> </p>
             <address>

@@ -567,6 +567,66 @@ Erwin.
 Erwin Harte
 </pre>
 
+<hr />
+
+<pre>
+From: DGD Mailing List (Robert Forshaw)
+Date: Thu Apr  1 17:55:01 2004
+Subject: [DGD] players, inheritance, cloning, a better solution?
+
+I have an object called primary_object.c, which contains behaviour code for 
+all objects existing in the game world (rooms, items, and entities). This 
+object was not intended for inheritance, but rather it would be cloned have 
+each clones' behaviour defined by configuration files. I also want actual 
+players to be primary objects.
+
+Now, I could put all the code for interactivity into the primary_object, but 
+this seems a rather inefficient solution since most objects wouldn't be 
+making any use of the interactive code. So I've got a seperate object, 
+called player.c. But if I inherit primary_object in order to adopt its 
+behaviour, it won't be clonable any longer.
+
+My solution has been to make another file, _primary_object.c for lack of a 
+better name, all that does is inherit primary_object.c. So primary_object.c 
+becomes a library and _primary_object.c the clonable.
+
+I'm just wondering if anyone can spot a more attractive solution than the 
+one I've just described, as it seems rather 'hackish', if you know what I 
+mean.
+</pre>
+
+<hr />
+
+<pre>
+From: DGD Mailing List (Par Winzell)
+Date: Thu Apr  1 22:29:01 2004
+Subject: [DGD] players, inheritance, cloning, a better solution?
+
+Robert,
+
+> My solution has been to make another file, _primary_object.c for lack of 
+> a better name, all that does is inherit primary_object.c. So 
+> primary_object.c becomes a library and _primary_object.c the clonable.
+> 
+> I'm just wondering if anyone can spot a more attractive solution than 
+> the one I've just described, as it seems rather 'hackish', if you know 
+> what I mean.
+
+Your choice of names bewilders me slightly, but the idea itself is not 
+hackish. Skotos, for example, has
+
+   /base/lib/thing.c
+
+which is the base of all physical objects, and contains all the code, 
+and we have
+
+   /base/obj/thing.c
+
+which consists of little but an inherit-statement.
+
+Zell
+</pre>
+
   <p style="text-size: 150%"> <a href="../index.html"> Back to top level
     </a> </p>
             <address>

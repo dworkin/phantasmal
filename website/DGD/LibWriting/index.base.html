@@ -108,5 +108,315 @@
     <li> <a href="Melville.html"> Melville Tips </a> </li>
   </ul>
 
+<hr />
+
+<pre>
+From: DGD Mailing List (Felix A. Croes)
+Date: Sun Apr  4 17:47:01 2004
+Subject: [DGD] DGD-Fishing
+
+Ragnar Lonn wrote:
+
+>[...]
+> Speaking of that I'd like to thank Felix for the pointer to the extensions
+> document. I'm not sure extensions is useful for what I would like to do
+> (I'm interested in e.g. replicating objects between two DGD instances) but
+> I realize I have some reading to do.
+
+Replication of objects can be managed without DGD hacks.  Here is an
+outline of how I would do it:
+
+To completely replicate an object you must have its source code, a list
+of objects it inherits from, a list of the variables it declares, and a
+way to query and set those variables.
+
+At compile time, parse the source code with parse_string() using a LPC
+grammar to learn the objects it inherits from and the variables it
+declares.  Temporarily append functions to the source code which
+query and set those variables, actually compile the object, and
+restore the original source code.
+
+One difficulty is the preprocessor.  Somehow you have to deal with
+macros.  This can be done by writing your own preprocessor (again
+using parse_string()), but since the preprocessor is no doubt the
+ugliest part of the LPC language, and since you are pre-parsing the
+source code anyway, I would suggest forbidding the use of any
+preprocessor commands except for #include, and adding constants to
+the pre-parsed language:
+
+    const int foo = 1;
+
+Your parser accepts these and replaces them with #defines.  Constants
+are the only essential feature provided by the preprocessor, everything
+else can be replaced by normal code (and this will probably make the
+LPC code more readable as well).
+
+Replicating objects in this way would work for different DGD versions.
+Of course you would have to fix the grammar if the language changes,
+but the LPC language changes very slowly compared to the rate at which
+DGD's internals change.
+
+Of course, it is possible that you want to do more than replicating
+objects, and that some of those other things cannot be managed through
+LPC. :)
+
+Regards,
+Dworkin
+</pre>
+
+<hr />
+
+<pre>
+From: DGD Mailing List (Michael McKiel)
+Date: Sun Apr 25 02:04:01 2004
+Subject: [DGD] RE:time() and suspending call_outs
+
+ --- Steven Brooker(Immortius) wrote: 
+> What's wrong with saving them to file somewhere?  My
+> objectd copies the code into ./current after compiles.
+>    You just need to make sure people can't compile the
+> contents of these backup folders.
+> 
+I believe Erwin was referring to what Dworkin does in his mudlib, he keeps
+the source code for compiled objects, and can access/dump the source to a
+file, and compare differences between various versions of compiled objects. 
+Sounds like yer talking about a non-automated process, and done by hand.
+Which if you want to keep source like that then likely not much issue, aside
+from the fact that you have to recompile all objects using that source,
+instead of having some that are based off of different source.
+</pre>
+
+<hr />
+
+<pre>
+From: DGD Mailing List (Par Winzell)
+Date: Tue Mar 23 11:50:02 2004
+Subject: [DGD] Re: casting nil (another idea...)
+
+> I'd go for something like this:
+> 
+>     int nil_to_int(mixed v)
+>     {
+> 	return v == nil ? 0 : v;
+>     }
+> 
+>     ...
+> 
+>     luck -= nil_to_int(query_property("luck_reduction"));
+> 
+> If you put the nil_to_int() in an inheritable it doesn't look so bad?
+
+For every library that I've worked with in the past many years, I define 
+  Int(), Str(), Arr(), etc, something like nil_to_int() above. Also 
+useful is a Empty() macro/function that returns true for nil, empty 
+strings, empty arrays, empty mappings, integer zero, ...
+
+Zell
+</pre>
+
+<hr />
+
+<pre>
+From: DGD Mailing List (Robert Forshaw)
+Date: Tue Jan  6 15:27:00 2004
+Subject: [DGD] About runtime errors
+
+I examined Kernel's method of dealing with runtime errors, left feeling more 
+confused than before and decided to write my own function by trial and 
+error. This is what I've ended up with:
+
+void runtime_error(string error, int caught, int ticks)
+{
+	mixed ** trace;
+	mixed * err, err2;
+	trace = call_trace();
+	err = trace[sizeof(trace) - 2];
+	err2 = trace[sizeof(trace) - 3];
+
+	message("\nRuntime error in function " + err[2] +
+		"()\nIn Program \"" + err[1] + "\" on line " + err[3] +
+		",\nWhich was called by \"" + err2[1] + "\" via " +
+		(err[4] ? "call_other()" : "inheritance") +
+		"\nwithin function " +
+		err2[2]  + "() on line " + err2[3] + ".\n");
+
+}
+
+This seems to produce the correct output. It always assumes that the last 
+element of trace describes the current calling process, that would be 
+runtime_error(), and before that the erronous function call, and before that 
+the program and function which called the erronous function call. Is there 
+any situation where this might not be the case? In other words, is this 
+function fallable, or even downright incorrect...?
+
+Could someone explain to me what a 'full stack trace' is exactly?  :)
+</pre>
+
+<hr />
+
+<pre>
+Date: Tue, 29 May 2001 03:53:37 +0200
+From: Erwin Harte
+Subject: Re: [DGD]IP to alphanumeric
+
+On Mon, May 28, 2001 at 07:56:54PM -0500, Lord Lerkista wrote:
+> 
+> On Monday, May 28, 2001, at 07:33 PM, Erwin Harte wrote:
+> 
+> > You might want to have a look at the query_ip_number() kfun.
+> 
+> I try with query_ip_number() and query_ip_name() and both returns the 
+> numeric ip!!
+> =/
+
+Three options:
+
+1. Your machine doesn't have name-resolving configured properly.
+2. The query_ip_name() kfun is redefined by something that doesn't work.
+3. Perhaps the ipnumber doesn't resolve correctly.
+
+The example ipnumber you gave resolves just fine though, so 1 & 2 are
+the only reason I would put any money on right now.
+
+Good luck figuring it out. :-)
+
+Erwin.
+-- 
+Erwin Harte
+</pre>
+
+<hr />
+
+<pre>
+From: DGD Mailing List (Erwin Harte)
+Date: Tue Jan  6 12:37:00 2004
+Subject: [DGD] Re: A simple lib
+
+On Tue, Jan 06, 2004 at 06:27:29PM +0000, Robert Forshaw wrote:
+> >From: "Felix A. Croes"
+[...]
+> >driver::telnet_connect() recompiles /sys/user every time, that's probably
+> >not what you want.
+> 
+> I understand that it isn't what I want. The only reason I have it like this 
+> is due to 'tweaking', i.e. I'm making sure it isn't the clone() function 
+> I've defined that is the problem. My clone() function is OK, right?
+
+No.  You want something like this:
+
+    object clone(mixed file)
+    {
+	    object master, clone;
+
+	    if(typeof(file) == T_STRING)
+	    {
+		    message("Type is string.\n");
+		    if(!(master = find_object(file)))
+		    {
+			    master = compile_object(file);
+			    message("Compile object successful.\n");
+		    }
+		    clone = clone_object(master);
+		    message("Clone object successful.\n");
+		    return clone;
+	    }
+	    return clone_object(file);
+    }
+
+The reason is that compile_object(file) on an already compiled object
+will quite happily compile it again (only failing if the object has
+been inherited) and you can't do that more than once in a single
+thread, which is exactly what your current clone() function in
+sys/driver.c attempts to do.
+
+    object clone(mixed file)
+    {
+	    object o;
+	    if(typeof(file) == T_STRING)
+	    {
+		    message("Type is string.\n");
+>>>>		    if(o = compile_object(file))
+		    {
+			    message("Compile object successful.\n");
+>>>>			    if(o = clone_object(compile_object(file)))
+			    {
+				    message("Clone object successful.\n");
+				    return o;
+			    }
+		    }
+	    }
+	    return clone_object(file);
+    }
+
+Hope that helps,
+
+Erwin.
+-- 
+Erwin Harte
+</pre>
+
+<hr />
+
+<pre>
+From: "Ludvig Lejon"
+Subject: Re: [DGD] DGD Commercial Licensing?
+Date: Wed, 22 Sep 2004 12:05:39 +0200
+
+
+----- Original Message -----
+From: "Stephen Schmidt"
+To: DGD List at imaginary.com
+Sent: Wednesday, September 22, 2004 4:38 AM
+Subject: Re: [DGD] DGD Commercial Licensing?
+
+
+> On Tue, 21 Sep 2004, Jas wrote:
+> > Why not pre-install most of the image files on the player's PC, much the
+> > same as Everquest and other games like that are doing?
+>
+> The problem is wizards writing new areas. This works under two
+> circumstances:
+>
+> 1) You can pre-install a wide enough range of images that wizards
+>    can code new areas using only the existing image files.
+> 2) You abandon the traditional wizard-codes-area scheme.
+>
+> I'm pretty skeptical about #1; I think if you go this road you
+> are looking at #2, limiting the extensibility of the game world
+> in some way (or requiring all users to upgrade their image
+> libraries periodically and having new areas be inaccessible
+> to players with outdated versions).
+>
+> That said, I have no experience with anything like this, and
+> obviously other people do, so there may be incremental
+> solutions (rapid and reasonably transparent updating of the
+> image lib, maybe) which would work around the problem.
+>
+> There is also the problem of having the wizards create new
+> images, and having the admins check them for appropriate
+> content, and so forth, but those problems are no different
+> in nature from what we face with wizards writing new text.
+>
+> Steve
+>
+
+Well, I think this problem could be solved quite nicely.
+Let's say you build a world and place all images required in the players
+client.
+When a new built area is access by a player, the server asks the client if
+that area's images is availible on the players local hard drive.
+If not, they are downloaded to the client while the player sees a
+"Loading"-screen.
+The same goes for weapons, new monsters around the world too. The server can
+easily just ask the
+client if the required images are already downloaded, if not a download
+procedur is started.
+
+I think my solution will be much more appreciated amongst players than the
+solution where they have to manually update their clients.
+
+Lejon
+</pre>
+
   <p style="text-size: 150%"> <a href="../index.html"> Back to top level
     </a> </p>
