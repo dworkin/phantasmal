@@ -36,11 +36,9 @@
 #define PHRASE              "/usr/common/lib/phrase"
 #define INTL_PHRASE         "/usr/common/lib/intl_phrase"
 #define OBJECT              "/usr/common/lib/object"
-#define CONTAINER           "/usr/common/lib/container"
 #define ROOM                "/usr/common/lib/room"
 #define EXIT                "/usr/common/lib/exit"
 #define MOBILE              "/usr/common/lib/mobile"
-#define PORTABLE            "/usr/common/lib/portable"
 #define ISSUE_LWO           "/usr/common/lib/issue_lwo"
 
 
@@ -54,8 +52,12 @@
 #define UNQ_PARSER          "/usr/common/obj/basic_unq_parser"
 #define UNQ_DTD             "/usr/common/obj/unq_dtd"
 #define HEAVY_ARRAY         "/usr/common/obj/heavy_array"
+
+
+/* User State types */
 #define US_ENTER_DATA       "/usr/common/obj/ustate/enter_data"
 #define US_OBJ_DESC         "/usr/common/obj/ustate/set_obj_desc"
+#define US_SCROLL_TEXT      "/usr/common/obj/ustate/scroll_text"
 
 
 /* Specific objects (clonable) */
