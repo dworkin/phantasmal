@@ -1,4 +1,4 @@
-/* $Header: /cvsroot/phantasmal/mudlib/usr/System/obj/user.c,v 1.67 2003/11/15 20:06:59 angelbob Exp $ */
+/* $Header: /cvsroot/phantasmal/mudlib/usr/System/obj/user.c,v 1.68 2003/11/18 15:00:21 angelbob Exp $ */
 
 #include <kernel/kernel.h>
 #include <kernel/user.h>
@@ -76,12 +76,14 @@ static void create(int clone)
 }
 
 void upgraded(varargs int clone) {
-  if(!find_object(SYSTEM_WIZTOOL)) { compile_object(SYSTEM_WIZTOOL); }
-  if(!find_object(USER_MOBILE)) { compile_object(USER_MOBILE); }
-  if(!find_object(SIMPLE_ROOM)) { compile_object(SIMPLE_ROOM); }
+  if(SYSTEM()) {
+    if(!find_object(SYSTEM_WIZTOOL)) { compile_object(SYSTEM_WIZTOOL); }
+    if(!find_object(USER_MOBILE)) { compile_object(USER_MOBILE); }
+    if(!find_object(SIMPLE_ROOM)) { compile_object(SIMPLE_ROOM); }
 
-  cmd::upgraded(clone);
-  io::upgraded(clone);
+    cmd::upgraded(clone);
+    io::upgraded(clone);
+  }
 }
 
 
@@ -92,7 +94,9 @@ int get_locale(void) {
 }
 
 void set_locale(int new_loc) {
-  locale = new_loc;
+  if(SYSTEM() || COMMON() || GAME()) {
+    locale = new_loc;
+  }
 }
 
 string get_name(void) {
@@ -238,7 +242,7 @@ int send_string(string str) {
 }
 
 void user_state_data(mixed data) {
-  if(data == nil) {
+  if(data == nil && (SYSTEM() || COMMON())) {
     /* Passing nil means "done now, print a prompt". */
     print_prompt();
     return;
@@ -246,6 +250,9 @@ void user_state_data(mixed data) {
 }
 
 int message(string str) {
+  if(!SYSTEM() && !COMMON() && !GAME())
+    return -1;
+
   if(peek_state()) {
     to_state_stack(str);
   } else {
@@ -254,13 +261,19 @@ int message(string str) {
 }
 
 int send_phrase(object obj) {
-  /* This is how we'll control second, etc choice of locale later on. */
+  /* This is how we'll control locale when everything is properly
+     localized. */
+  if(!SYSTEM() && !COMMON() && !GAME())
+    return -1;
 
   return message(obj->to_string(this_object()));
 }
 
 int send_system_phrase(string phrname) {
   object phr;
+
+  if(!SYSTEM() && !COMMON() && !GAME())
+    return -1;
 
   phr = PHRASED->file_phrase(SYSTEM_PHRASES, phrname);
   if(!phr) {
@@ -303,6 +316,9 @@ void show_room_to_player(object location) {
   object phr;
   int    ctr;
   mixed* objs;
+
+  if(!SYSTEM() && !COMMON() && !GAME())
+    return;
 
   if(!location) {
     send_system_phrase("you are nowhere");
@@ -483,8 +499,8 @@ object* find_objects(string str, int locations...) {
   int     ctr;
   object* objs;
 
-  if(!SYSTEM() && !COMMON())
-    error("Only System objects are allowed to call find_objects()!");
+  if(!SYSTEM() && !COMMON() && !GAME())
+    error("Only Phantasmal objects are allowed to call find_objects()!");
 
   objs = ({ });
   for(ctr = 0; ctr < sizeof(locations); ctr++) {
@@ -499,8 +515,8 @@ object* find_first_objects(string str, int locations...) {
   int     ctr;
   object* objs;
 
-  if(!SYSTEM() && !COMMON())
-    error("Only System objects are allowed to call find_first_objects()!");
+  if(!SYSTEM() && !COMMON() && !GAME())
+    error("Only Phantasmal objects are allowed to call find_first_objects()!");
 
   for(ctr = 0; ctr < sizeof(locations); ctr++) {
     objs = find_objects_in_loc(locations[ctr], str);

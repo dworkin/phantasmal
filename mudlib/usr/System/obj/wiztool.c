@@ -33,16 +33,21 @@ static void create(int clone)
 }
 
 void destructed(int clone) {
-  if(!clone && room_dtd) {
-    destruct_object(room_dtd);
-  }
+  if(SYSTEM()) {
+    if(!clone && room_dtd) {
+      destruct_object(room_dtd);
+    }
 
-  ::destructed(clone);
+    ::destructed(clone);
+  }
 }
 
 /* Called by objectd when recompiling */
 void upgraded(varargs int clone) {
   string dtd_file;
+
+  if(!SYSTEM())
+    return;
 
   command_sets
     = ({
@@ -236,10 +241,16 @@ void upgraded(varargs int clone) {
 
 
 mixed* parse_to_room(string room_file) {
+  if(!SYSTEM())
+    return nil;
+
   return UNQ_PARSER->unq_parse_with_dtd(room_file, room_dtd);
 }
 
 mixed* get_command_sets(object wiztool) {
+  if(!SYSTEM())
+    return nil;
+
   return command_sets;
 }
 
