@@ -426,9 +426,9 @@ for (i = 0 ; i &lt; 10000 ; i++)
     <p>
       It's time to dig deeper into the special types <b>array</b> and
       <b>mapping</b>.  For each of these data types there exist a
-      number of useful functions that manipulate them and extract
-      information from them. Those functions will be described in
-      detail later.  Only a few are mentioned in this section.
+      number of useful functions and operators that manipulate them
+      and extract information from them.  Some of those functions and
+      operators won't be described in more detail until later.
     </p>
 
     <h4><a name="SEC3.2.13.1" href="index.html#SEC3.2.13.1">
@@ -438,21 +438,23 @@ for (i = 0 ; i &lt; 10000 ; i++)
 
       Arrays really aren't arrays in the proper sense of the
       word. They can better be seen as lists with fixed order. The
-      difference is that arrays aren't usually manipulated easily,
-      while LPC arrays have sets of operators that are fairly
-      similar to Perl lists.
+      difference is that arrays can't usually be manipulated easily,
+      while LPC arrays have a rich set of operations to reorder them,
+      insert into them and otherwise manipulate them.
     </p>
 
     <p>
       Arrays are type-specific. This means that an array of a certain
-      type only can contain variables of that single type.  Another
-      restrictions is that all arrays are one-dimensional.  You can't
-      have an array of arrays. However, the <code>mixed</code> type
-      takes care of these limitations.  A mixed variable can act as an
-      array containing any data type, even other arrays. As a rule you
-      should try to use properly typed arrays to minimize the
-      probabilities of programming mistakes.  When that's not possible,
-      though, you can use the mixed type.
+      type only can contain variables of that single type.  All arrays
+      are one-dimensional, which means you can't declare an array
+      which is like a 2- or 3-dimensional grid rather than a list.
+      However, the <code>mixed</code> type takes care of these
+      limitations.  You can also declare an array of arrays, which
+      also takes care of the problem.  A mixed variable can act as an
+      array containing any data type, even other arrays.  As a rule
+      you should try to use properly typed arrays to minimize the
+      probabilities of programming mistakes.  When that's not
+      possible, though, you can use the mixed type.
     </p>
 
     <p>
@@ -479,7 +481,26 @@ e.g.
     <pre>
 &lt;array&gt; = ({ elem1, elem2, elem3, ..., elemN });
 e.g.
+    int *my_arr;
+
     my_arr = ({ 1, 383, 5, 391, -4, 6 });
+    </pre>
+    </p>
+
+    <p>
+      You can allocate an array of type <code>mixed</code> with the
+      <code>allocate</code> function, like this:
+
+    <pre>
+&lt;array&gt; = allocate(&lt;num of elements&gt;);
+e.g.
+    mixed *some_array;
+
+    some_array = allocate(4);
+    some_array[0] = &quot;Upper Slavonia&quot;;
+    some_array[1] = ({ 1, 2, 7, 9 });
+    some_array[2] = ([ &quot;bob&quot; : 7 ]);
+    some_array[3] = 7;
     </pre>
     </p>
 
@@ -490,6 +511,8 @@ e.g.
 &lt;data variable&gt; = &lt;array&gt;[&lt;index&gt;];
 e.g.
     val = my_arr[3];
+
+    val2 = some_array[1][3];
     </pre>
   </p>
 
@@ -544,21 +567,6 @@ e.g.
     </p>
 
     <p>
-      If you want to create an empty array of a given length with all
-      locations initialized to nil, you can use the
-      <code>allocate()</code> kernel function.
-    </p>
-
-    <p>
-      <a name="IDX46"></a>
-
-    <pre>
-&lt;array&gt; = allocate(&lt;length&gt;);
-e.g.
-    your_arr = allocate(3);	/* =&gt; your_arr = ({ nil, nil, nil }); */
-    </pre>
-
-    <p>
       Concatenating (adding) arrays to each other is most easily done
       with the <code>+</code> operator. Simply add them as you would
       numbers. The <code>+=</code> operator works fine as well.
@@ -598,6 +606,31 @@ my_arr = my_arr[0..0] + my_arr[2..4]; /* =&gt; ({ 9, 5, 10, 3 }) */
     &lt;array&gt; my_arr[0..0]   /* = ({ 9 }) */
     &lt;int&gt;   my_arr[0]      /* = 9 */
     </pre>
+
+    <p>
+      This means that if you wrote the above code as follows, it wouldn't
+      work:
+    </p>
+    <pre>
+my_arr = my_arr[0] + my_arr[2..4];
+    </pre>
+    <p>
+      Instead, it would warn you that you can't add an integer to an
+      array.
+    </p>
+
+    <p>
+      You can leave one end of the array slice unspecified, which will
+      use the beginning or end of the array.  For instance:
+    </p>
+    <pre>
+my_arr = my_arr[..2] + ({ 3, 7, 4 }) + some_array[3..];
+    </pre>
+    <p>
+      The code above would use elements 0 through 2 of my_arr, add
+      ({ 3, 7, 4 }) to the end, and then add all elements of some_array,
+      starting at the fourth.
+    </p>
 
 
     <h4><a name="SEC3.2.13.2" href="index.html#SEC3.2.13.2">
@@ -1059,7 +1092,7 @@ or
     </address>
     <!-- Created: Mon Jun 11 21:50:30 PDT 2001 -->
     <!-- hhmts start -->
-Last modified: Mon Apr 14 15:32:41 PDT 2003
+Last modified: Tue Jul  1 14:46:11 PDT 2003
 <!-- hhmts end -->
   </body>
 </html>
