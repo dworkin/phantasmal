@@ -79,6 +79,18 @@ chdir("phantasmal");
 my $kerneldir = $driverdir . "/mud";
 
 # Okay, we should have all the paths set up correctly.
+while(-e "phantest") {
+    print "Delete old bundle? (y/n) ";
+    $input = <STDIN>;
+    $input = lcfirst(substr($input, 0, 1));
+    if($input eq "y") {
+	system("rm -rf phantest");
+	last;
+    } elsif ($input eq "n") {
+	last;
+    }
+}
+
 print "Copying TestGame from $testgamedir...\n";
 system("cp -r $testgamedir phantest");
 print "Copying DGD from $driverdir...\n";
@@ -92,17 +104,27 @@ system("mv phantest/phantasmal/usr/System phantest/usr/System");
 system("mv phantest/phantasmal/usr/common phantest/usr/common");
 
 print "Moving Kernel Library...\n";
+system("rm -rf phantest/kernel/*");
 system("mv phantest/dgd/mud/kernel/data phantest/kernel/data");
 system("mv phantest/dgd/mud/kernel/sys phantest/kernel/sys");
 system("mv phantest/dgd/mud/kernel/obj phantest/kernel/obj");
 system("mv phantest/dgd/mud/kernel/lib phantest/kernel/lib");
 
 print("Moving data and include directories...\n");
+system("rm -rf phantest/data phantest/include");
 system("mv phantest/phantasmal/data phantest/data");
 system("mv phantest/phantasmal/include phantest/include");
 
 print("Moving Kernel Library headers...\n");
 system("mv phantest/dgd/mud/include/kernel/*.h phantest/include/kernel/");
 
+print("Moving DGD binary directory...\n");
+system("mv phantest/dgd/bin phantest");
+
+print("Cleaning Phantasmal & DGD dirs...\n");
+system("rm -rf phantest/phantasmal");
+system("rm -rf phantest/dgd");
+
 print("Cleaning cvs dirs (expect warnings)...\n");
-system("find . -name CVS -exec rm -rf \{\} \;");
+system("find phantest -name CVS -type d -exec rm -rf \\{\\} \\;");
+system("rm -f phantest/usr/README phantest/kernel/README phantest/include/README");
