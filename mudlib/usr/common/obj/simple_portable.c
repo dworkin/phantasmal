@@ -13,6 +13,7 @@ inherit unq UNQABLE;
 #define OF_CONTAINER          1
 #define OF_OPEN               2
 #define OF_NODESC             4
+#define OF_OPENABLE           8
 
 int objflags;
 
@@ -80,6 +81,10 @@ int is_open() {
   return objflags & OF_OPEN;
 }
 
+int is_openable() {
+  return objflags & OF_OPENABLE;
+}
+
 private void set_flags(int flags, int value) {
   if(value) {
     objflags |= flags;
@@ -103,7 +108,17 @@ void set_container(int value) {
 }
 
 void set_open(int value) {
+  if(!SYSTEM())
+    error("Only SYSTEM code can currently set an object as open!");
+
   set_flags(OF_OPEN, value);
+}
+
+void set_openable(int value) {
+  if(!SYSTEM())
+    error("Only SYSTEM code can currently set an object as openable!");
+
+  set_flags(OF_OPENABLE, value);
 }
 
 /* function which returns an appropriate error message if this object
