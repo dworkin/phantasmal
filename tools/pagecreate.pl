@@ -17,15 +17,25 @@ close(FILE);
 #print "Basefiles: " . join(", ", @basefiles) . "\n";
 
 my ($filename, $outfilename, $contents, %filestate);
-foreach $filename (@basefiles) {
+FILENAME: foreach $filename (@basefiles) {
+    my ($mtime1, $mtime2);
+
+    die("Can't parse filename $filename as base HTML!")
+	unless($filename =~ /^(.*)\.base\.html$/i);
+    $outfilename = $1 . ".html";
+
+    # Check to see if file needs updating
+   ($_,$_,$_,$_,$_,$_,$_,$_,$_,$mtime1,$_,$_,$_)
+       = stat($filename);
+   ($_,$_,$_,$_,$_,$_,$_,$_,$_,$mtime2,$_,$_,$_)
+       = stat($outfilename);
+
+    next FILENAME if($mtime2 >= $mtime1);
+
     open(FILE, "<$filename") or die "Can't open HTML file $filename: $!";
     $contents = join("", <FILE>);
     close(FILE);
 
-    die("Can't parse filename $filename as base HTML!")
-	unless($filename =~ /^(.*)\.base\.html$/i);
-
-    $outfilename = $1 . ".html";
     print "Writing file '$outfilename'.\n";
     open(FILE, ">$outfilename") or die "Can't write to $outfilename: $!";
 
@@ -50,10 +60,10 @@ sub extract_metadata {
 
     if($block =~ /<titledef/) {
 
-	if($block =~ /^((.|\n)*)<titledef (.*)>((.|\n)*)$/) {
-	    my $attribs = $3;
+	if($block =~ /^(.*)<titledef (.*?)>(.*)$/s) {
+	    my $attribs = $2;
 
-	    $block = $1 . $4;
+	    $block = $1 . $3;
 
 	    if($attribs =~ /text="(.*?)"/) {
 		$stateref->{TITLE} = $1;
