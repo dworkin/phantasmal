@@ -1,2 +1,11 @@
+First, you'll need a working DGD installation, a working Kernel
+Library installation, and a working Phantasmal installation.  The
+Kernel Library should be set up automatically with DGD, though you may
+want to test it first.  You can find stuff about Phantasmal and about
+how to set up DGD at "http://www.sf.net/projects/phantasmal" and at
+"http://phantasmal.sf.net/DGD".
+
 Add necessary symlinks to the usr and kernel directories.  See README
 files in those directories for details.
+
+Change the testgame.dgd file to point to your correct absolute path.
