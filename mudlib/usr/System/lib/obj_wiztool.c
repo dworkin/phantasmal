@@ -319,11 +319,26 @@ static void cmd_stat(object user, string cmd, string str) {
 		  + " mobiles.\r\n\r\n";
   }
 
-  details = obj->get_details();
+  details = obj->get_immediate_details();
   if(details && sizeof(details)) {
     object detail;
 
-    tmp += "Has details [" + sizeof(details) + "]: ";
+    tmp += "Has immediate details [" + sizeof(details) + "]: ";
+    for(ctr = 0; ctr < sizeof(details); ctr++) {
+      detail = details[ctr];
+      if(detail) {
+	tmp += "#" + detail->get_number() + " ";
+      } else {
+	tmp += "<unreg> ";
+      }
+    }
+  }
+  tmp += "\r\n";
+  details = obj->get_details();
+  if(obj->get_archetype() && details && sizeof(details)) {
+    object detail;
+
+    tmp += "Has complete details [" + sizeof(details) + "]: ";
     for(ctr = 0; ctr < sizeof(details); ctr++) {
       detail = details[ctr];
       if(detail) {

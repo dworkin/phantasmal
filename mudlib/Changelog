@@ -11,6 +11,7 @@ Release 0.013:
 	  equivalent.  That'll save us some more help entries and
 	  generate more useful responses.
 	* @stat now uses the new object binding functions.
+	* @stat now reports on immediate vs inherited details.
 
 Release 0.012:
 	* More logging and stuff in ObjectD.  And fixed a bug that
