@@ -5,9 +5,12 @@
 
 Portables are basic carryable, movable and manipulable objects.  In
 Phantasmal they are manipulated, from an admin viewpoint, by the room
-commands.  The only commands specific to portables are the following:
+commands.  The only commands specific to portables is the following:
 
 @make_portable            Make a new portable by answering questions
+
+Even that command actually makes a room, it just makes it with more
+portable-like default settings.
 
 See also:  rooms, MAPD
 }}
