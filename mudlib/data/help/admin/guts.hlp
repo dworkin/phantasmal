@@ -94,7 +94,7 @@ recompiling a clonable will upgrade all clones.  If clonable, the
 compiled object will be added to the command history.
 
 See %history, "http://www.angelbob.com/projects/Kernel/Inheritance.html",
-and %full_rebuild.
+%destruct, and %full_rebuild.
 
 }}
 
