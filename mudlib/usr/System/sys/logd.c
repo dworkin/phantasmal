@@ -32,7 +32,10 @@ static void create(varargs int clone) {
 		 "message" : LOG_DEBUG,
 		 "normal" : LOG_NORMAL,
 		 "verbose" : LOG_VERBOSE,
-		 "everything" : LOG_VERBOSE,
+		 "ultra" : LOG_ULTRA_VERBOSE,
+		 "ultraverbose" : LOG_ULTRA_VERBOSE,
+		 "ultra verbose" : LOG_ULTRA_VERBOSE,
+		 "everything" : LOG_ULTRA_VERBOSE,
 		 ]);
 }
 
