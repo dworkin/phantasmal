@@ -71,7 +71,6 @@ int get_segment_zone(int segment) {
   return 0;
 }
 
-/* atomic */
 void set_segment_zone(int segment, int zonenum, varargs int req_own) {
   mixed* seg;
   int    owner, oldzone;
