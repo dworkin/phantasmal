@@ -703,25 +703,180 @@ binary_port = ({ 8889, 8890, 9725 })
 	5.3 DGD Memory Management </a> </h2>
 
     <p>
+      DGD is a disk-based driver.  This means that by default, it
+      stores everything on the disk and keeps little or nothing
+      in RAM besides the base driver.  That's a good thing, because it
+      means that even if your game takes many gigabytes of storage,
+      you'll have only the currently-used stuff taking up RAM space.
+      When your game is idle, your machine won't have to store all the
+      extra stuff in RAM.
+    </p>
+
+    <p>
+      However, DGD doesn't use a standard virtual memory system like
+      your machine's Operating System does.  Instead, it uses a
+      special, customizable system that knows more about your LPC
+      program and how it operates.  DGD's system can also be
+      configured specifically for your application.  All of this means
+      that a well-tuned DGD application can manage its memory much,
+      much better than an application that lets the Operating System
+      do all the work for it.
     </p>
 
     <h3> <a name="SEC5.3.1" href="index.html#SEC5.3.1">
 	5.3.1 Threads of Execution </a> </h3>
 
     <p>
+      DGD does a lot of things at the end of threads of execution.
+      Swapping objects out to disk, recompiling objects and
+      destructing objects all occur at the end of the thread of
+      execution that requests them rather than occurring immediately.
+      Since so many things happen at thread's end, it's important to
+      know what a thread is and when it ends.  Note that DGD's threads
+      of execution are <i>not</i> similar to threads in most other
+      languages.
+    </p>
+
+    <p>
+      DGD threads happen very quickly and end very quickly.  Unlike
+      &quot;normal&quot; threads, they don't ever appear to happen in
+      parallel.  While DGD may actually execute more than one on a
+      multiprocessor machine, you'll never see that happening.
+      Instead, DGD uses its powerful atomic function mechanisms to
+      make sure you'll never see any conflict, and if another thread
+      would conflict with yours, it gets killed and later restarted.
+      So in essence, DGD will always act as though the threads started
+      and stopped one after the other, never overlapping.  You can
+      simply write your code as though you were on a regular single
+      processor machine and it will execute flawlessly on a
+      multiprocessor machine.  For maximum speed there are some tweaks
+      that need to occur, but that's a very advanced discussion for a
+      later book.
+    </p>
+
+    <p>
+      DGD threads start when DGD calls into the driver or user object.
+      That happens when a new connection occurs, when new network
+      input arrives, when a scheduled call_out occurs, when an object
+      is destructed or recompiled, and when the Operating System sends
+      DGD a signal telling it that it has been killed, among other
+      times.  A thread can never spawn another thread and wait for the
+      result -- remember that DGD always behaves as though only a
+      single thread is running.  So if one of the driver functions is
+      called while other code is waiting, then that function call will
+      not spawn a second thread.  It will occur within the first
+      thread.
+    </p>
+
+    <p>
+      When the function that spawned the thread returns, the thread of
+      execution is over.  When that happens, any objects scheduled to
+      be recompiled or destructed will be.  DGD may swap out objects
+      that haven't been referenced in awhile.  If any call_outs are
+      due, DGD will choose one and call it.  If new network data has
+      arrived or a new connection was made, DGD will call the driver
+      or User object to notify it.  And so on...
     </p>
 
     <h3> <a name="SEC5.3.2" href="index.html#SEC5.3.2">
 	5.3.2 Objects and Swapping </a> </h3>
 
     <p>
+      DGD objects take up space.  The sector_size in the Configuration
+      file is the unit DGD uses for swapping.  Any DGD object will
+      take up a certain number of sectors (rounded up), and will be
+      swapped in and out as a unit.  Note that this refers only to
+      normal DGD objects.  It doesn't apply to Lightweight Objects,
+      arrays or mappings.
+    </p>
+
+    <p>
+      When DGD has more than cache_size sectors in memory at the end
+      of a thread of execution, it will begin swapping out objects.
+      Starting with the in-memory object that was used least recently,
+      DGD will remove objects from memory until it has cleared up
+      1/swap_fragment sectors.  So if swap_fragment is 32, it will
+      clear at least one thirty-second of all the sectors in the
+      cache.  It will do this by removing objects from memory,
+      starting with the least recently used.
+    </p>
+
+    <p>
+      When cache_size is large, DGD can have a lot of objects in
+      memory at once before it starts swapping them out.  Since
+      swap_size is how large absolutely <i>everything</i> can be in
+      total, if cache_size is as large as swap_size then nothing will
+      ever be swapped out to disk.  This means that DGD will stop
+      acting like a disk-based MUD and rely on your Operating System
+      to handle swapping, if any needs to happen.  It'll try to just
+      keep everything in memory all the time, though your Operating
+      System will probably only allow that if you actually <i>use</i>
+      everything in memory constantly.
+    </p>
+
+    <p>
+      The sector_size can also be important to tune.  If it's small
+      then DGD will waste very little space since objects won't carry
+      much overhead.  But if it's small then an object will require a
+      lot of sectors -- if sector_size was half as large, each object
+      would require about twice as many sectors, for instance.  When
+      that happens, DGD has to keep track of more sectors and has to
+      swap more often.  In general, use trial-and-error to tune the
+      sector_size, if you need to at all.  Or ask the DGD mailing
+      list, which is a wonderful source of information.
     </p>
 
     <h4> <a name="SEC5.3.2.1" href="index.html#SEC5.3.2.1">
 	5.3.2.1 Lightweight Objects </a> </h4>
 
     <p>
+      DGD swaps regular objects in and out individually, and it swaps
+      them as a whole.  That means that if any part of the object is
+      in memory, the whole object is in memory.  It also means that
+      the object is swapped into memory by itself -- it doesn't carry
+      other DGD objects with it.
     </p>
+
+    <p>
+      Lightweight Objects (LWOs), arrays and mappings are all
+      exceptions to this rule.  They are not standard DGD objects, and
+      they aren't managed like regular DGD objects.  Instead, each
+      array, mapping or LWO is inside a regular DGD object and it gets
+      swapped into and out of memory with its parent object.  This is
+      why references to arrays, mappings and LWOs are all copied at
+      the end of thread execution -- that way they live inside the
+      object that has a reference to them, not another object
+      elsewhere.  Copying is the simplest way to achieve that.
+    </p>
+
+    <p>
+      An LWO, like an array or mapping, lacks some of the normal
+      characteristics of normal DGD objects.  Like arrays and
+      mappings, they are garbage-collected and can't be explictly
+      destructed.  When you're done with them, remove the last
+      reference to them and they will go away automatically.  Since
+      DGD can detect circular links among data structures, you don't
+      need to worry about the usual problems with reference counting.
+      DGD will garbage collect fully, correctly and quickly, unlike
+      Perl or Java.
+    </p>
+
+    <p>
+      The DGD editor, the DGD parse_string function and the
+      telnet_connect and binary_connect functions all involve special
+      objects.  An LWO, an array or a mapping cannot be used for these
+      special objects.  Only a full, normal DGD object can.
+      Similarly, LWOs may not have call_outs.  This means that a
+      call_out cannot be scheduled from a function defined by an LWO.
+    </p>
+
+    <p>
+      Be careful...  Destructing the master object from which an LWO
+      is created will destroy all the LWOs made from it.  In this
+      respect, it is like a cloned object.  Since arrays and mappings
+      have no master object, this isn't true of them.
+    </p>
+
 
     <h3> <a name="SEC5.3.3" href="index.html#SEC5.3.3">
 	5.3.3 Dynamic and Static Memory </a> </h3>
@@ -737,7 +892,7 @@ binary_port = ({ 8889, 8890, 9725 })
     </address>
     <!-- Created: Mon Jun 11 21:50:30 PDT 2001 -->
     <!-- hhmts start -->
-Last modified: Tue Jul  1 15:52:54 PDT 2003
+Last modified: Tue Jul  1 16:28:19 PDT 2003
 <!-- hhmts end -->
   </body>
 </html>
