@@ -1,0 +1,5 @@
+~DTD{
+  ~mobile{number?,body}
+  ~number{int}
+  ~body{int}
+}

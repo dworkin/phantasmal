@@ -19,6 +19,7 @@
 #define OBJNUMD     "/usr/common/sys/objnumd"
 #define CHANNELD    "/usr/common/sys/channeld"
 #define CONFIGD     "/usr/common/sys/configd"
+#define TIMED       "/usr/common/sys/timed"
 
 
 /* Kernel lib tie-in objects -- must be in these dirs to be recognized
@@ -83,7 +84,7 @@
 
 /* UNQ DTDs */
 #define MAPD_ROOM_DTD       "/data/dtd/room.dtd"
-#define PORTABLE_DTD        "/data/dtd/portable.dtd"
+#define MOB_FILE_DTD        "/data/dtd/mobile.dtd"
 #define HELP_DTD            "/data/dtd/help.dtd"
 #define LOGD_DTD            "/data/dtd/logchannel.dtd"
 #define CONFIGD_DTD         "/data/dtd/config.dtd"
@@ -94,8 +95,10 @@
 #define CONFIG_FILE         "/data/system/config.unq"
 #define ROOM_BIND_FILE      "/data/system/room_binder.unq"
 #define ROOM_FILE           "/data/object/roomfile.unq"
+#define MOB_FILE            "/data/object/mobfile.unq"
 #define ZONE_FILE           "/data/object/zonefile.unq"
 #define SAFE_ROOM_FILE      "/data/object/safe_roomfile.unq"
+#define SAFE_MOB_FILE       "/data/object/safe_mobfile.unq"
 #define SAFE_ZONE_FILE      "/data/object/safe_zonefile.unq"
 #define BUG_DATA            "/data/text/bug_reports.txt"
 #define TYPO_DATA           "/data/text/typo_reports.txt"
