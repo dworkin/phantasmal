@@ -1,0 +1,64 @@
+<titledef text="Installing Baseline Phantasmal" />
+
+<h2> Getting Phantasmal Up and Running </h2>
+
+<p>
+  The (very) short answer is &quot;check the INSTALL file that came
+  with your copy of Phantasmal&quot;.  You'll find it in the top-level
+  directory, next to stuff like README and either phantasmal.dgd or
+  testgame.dgd.
+</p>
+
+<p>
+  However, if you're installing non-bundled Phantasmal, there are some
+  steps in the README that might require a bit more figuring out.
+</p>
+
+<h3> Getting DGD Up and Running </h3>
+
+<p>
+  Before you can do anything else, you'll need DGD up and running.
+  Usually you can just unpack and patch it (see <a
+  href="DGD/DGD_Config.html">instructions elsewhere</a> on how to
+  create an experimental copy of DGD).  If you're running something
+  other than Linux or OS X, you'll need to modify src/Makefile.
+  Specifically, you'll need to change the HOST variable to something
+  reasonable.  For instance, old copies of Linux will use the 'LINUX'
+  value.  Check the DGD documentation for details if the default
+  doesn't work for you.  Then go into the 'src' directory and type
+  'make install'.  You'll get an error message on installation, and a
+  message saying that the error is being ignored.  That's normal if
+  you haven't built DGD before in the same directory, or if you
+  deleted the old copy of bin/driver last time.  It's not a problem,
+  which is why the error is ignored.
+</p>
+
+<p>
+  Then, you'll need to test the Kernel Library and make sure it works.
+  You'll need to modify 'mud.dgd'.  Specifically, find the
+  &quot;directory = &lt;blah&gt;&quot; line, and replace the old
+  &quot;blah&quot; value with the right thing for wherever you've put
+  DGD.  You'll need to use an absolute path, not a relative path, so
+  start with a slash or a drive letter, not a dot or a directory name.
+</p>
+
+<p>
+  Type &quot;./bin/driver mud.dgd&quot; if you're on Unix, or
+  &quot;bin\driver mud.dgd&quot; on Windows.  DGD should tell you what
+  version you're using, along with a message telling you that it
+  initialized.  Then it'll hang there.  That's expected -- that's what
+  your MUD server usually looks like when it's running.
+</p>
+
+<p>
+  Telnet to your local machine, port 6047.  You should get a login
+  prompt.  Log in as &quot;admin&quot; (set the new password to
+  whatever you like, it won't matter soon), and type 'who'.  You
+  should see that you're logged in.  Typing 'people' will tell you a
+  bit more.  You can find out <a href="DGD/Kernel/Commands.html">more
+  about the Kernel MUDLib user commands</a> if you check the web or
+  ask around a little.  For now, don't bother &mdash; you'll be using
+  Phantasmal soon anyway.
+</p>
+
+<h3> Getting Phantasmal Up and Running </h3>
