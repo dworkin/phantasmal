@@ -160,6 +160,16 @@
 	actually running multithreaded.  How it does this is Deep Voodoo,
 	and should be questioned only by those with a profound understanding
 	of Atomic Functions (qv). </dd>
+      <dt> Tick </dt>
+      <dd> A tick is a hardware-independent abstraction of CPU usage.
+        DGD runs on multiple platforms, and you'd like them to have
+	similar behavior with respect to things like CPU quotas.  So
+	DGD rates various operations by how processor-intensive they are,
+	and marks off ticks accordingly.  Tick usage can be limited by
+	the rlimits() construct, and monitored by status().  The Kernel
+	Library has a quota system for ticks that prevents you using
+	too many at a time, or too many total.
+        </dd>
     </dl>
 
     <h3> <a href="index.html"> Back to top level </a> </h3>
