@@ -19,8 +19,6 @@ require privilege on the caller's part to perform successfully.
 %log                Writes events to the system log
 %log_subscribe      Choose what log events get written to file
 
-%help               Gets help on various topics
-
 }}
 
 
@@ -163,23 +161,6 @@ it's using, and its start time and uptime.
 The %who command (synonyms: @who, %people, @people) lists who is
 currently logged into the MUD, along with the IP address they are
 currently logged in from.
-
-}}
-
-~name{~enUS{help,%help,@help}}
-~keywords{admin}
-~desc{
-  ~enUS{
-
-The @help and %help commands are interchangeable and use the same
-database of help entries.  They are used by builders and
-administrators to get help on privileged commands and operations.
-Their syntax is just like the normal help command, though entry
-names must be typed exactly rather than allowing Soundex matching.
-
-All builder and admin help should be available to all builder and
-admins.  This means that some documented operations may not be usable
-by you specifically.
 
 }}
 

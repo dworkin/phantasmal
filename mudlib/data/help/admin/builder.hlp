@@ -6,13 +6,13 @@
 The builder commands play with rooms, exits, mobiles and portables.
 Help on the following major topics is available:
 
-@help objects
-@help rooms
-@help zones
-@help exits
-@help mobiles
-@help portables
-@help segments
+help objects
+help rooms
+help zones
+help exits
+help mobiles
+help portables
+help segments
 
 }}
 
@@ -105,7 +105,7 @@ destination room they lead to by number (if numbered).
 
 @check_deferred will print out the current number of deferred exits.
 
-See @help @add_deferred.
+See @add_deferred.
 
 }}
 
@@ -140,7 +140,7 @@ be in-game limits for some mobiles' movement.  A zone consists of a
 number of segments.  Here are some zone-related help topics:
 
 @segmap           Shows information about segments, including their zone
-segment           Help on how to manage segments
+segment           How to manage segments
 @set_seg_zone     Sets the zone for a given segment
 @zonemap          Show the current zones
 @new_zone         Adds a new zone to the @zonemap
