@@ -23,7 +23,7 @@ The following commands have symbolic abbreviations:
 Some commands let you talk to other players and NPCs.
   say          This commands say something to the room you're in
   yell, shout  These commands yell much louder, so the sound carries farther
-  tell, ask    Tells or asks a particular character something
+  tell         Tells or asks a particular character something
 
 The command "say" can also be abbreviated with a single quote.
 
