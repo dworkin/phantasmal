@@ -12,7 +12,12 @@ portable object in any normal way.  Choose the base object to
 receive that detail.  If your base object was #37 and your
 detail was #112, you'd type "@set_obj_detail #37 #112".  Voila!
 
+You can use it to remove a detail by choosing base object #-1.
+For instance:
 
+@set_obj_det #-1 #194
+
+This will make object #194 stop being a detail of anything at all.
 
 See also: objects, details
 
