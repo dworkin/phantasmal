@@ -14,7 +14,6 @@ static void create(int clone) {
   ::create(clone);
   if(clone) {
     bdesc = NEW_PHRASE("The Void");
-    gdesc = NEW_PHRASE("The Primordial Void");
     ldesc = NEW_PHRASE("The wild wind howls through an empty maelstrom...");
     edesc = NEW_PHRASE("Ooh, distant spots!  No, that's your eyesight going.");
 
