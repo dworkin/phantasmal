@@ -31,9 +31,8 @@ void upgraded(varargs int clone) {
 }
 
 mixed* to_dtd_unq(void) {
-  return ({ ({ "start_room", start_room }),
-	      ({ "meat_locker", meat_locker })
-	      });
+  return ({ "start_room", start_room,
+	      "meat_locker", meat_locker });
 }
 
 void from_dtd_unq(mixed* unq) {
