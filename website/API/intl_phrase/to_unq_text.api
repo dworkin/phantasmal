@@ -1,0 +1,29 @@
+FILE
+	/usr/common/lib/intl_phrase.c
+
+NAME
+	to_unq_text - serialize the Phrase as an UNQ string
+
+PROTOTYPE
+	string to_unq_text(void)
+
+CALLED BY
+	Anybody
+
+DESCRIPTION
+	Serialize the Phrase as an UNQ string.  This includes
+	information on all locales in the Phrase.  This is primarily for
+	embedding these Phrases into larger UNQ files.
+
+	This function isn't access-protected.  You should access-protect
+	your version of this and all other inherited functions, including
+	upgraded() and destructed().
+
+RETURN VALUE
+	Nothing.
+
+ERRORS
+	Normally none.
+
+SEE ALSO
+	to_string

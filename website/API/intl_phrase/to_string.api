@@ -1,0 +1,34 @@
+FILE
+	/usr/common/lib/intl_phrase.c
+
+NAME
+	to_string - convert the Phrase to a string in the correct locale
+
+PROTOTYPE
+	string to_string(object user)
+
+CALLED BY
+	Anybody
+
+DESCRIPTION
+	Return an appropriate string for this Phrase as the given user
+	should see it.  Since Phrases are localizable, the user object
+	may be used to supply the locale (English, Spanish, French, etc),
+	the terminal settings or other information, which is in turn
+	used to customize the Phrase.  Normally in-game information
+	contained in a body or mobile is <i>not</i> used, that occurs
+	before the information is converted to a Phrase.
+
+	This function isn't access-protected.  You should access-protect
+	your version of this and all other inherited functions, including
+	upgraded() and destructed().
+
+RETURN VALUE
+	The string described above.
+
+ERRORS
+	Undefined locale or other setting can cause an error, as can
+	access violations.
+
+SEE ALSO
+	get_content_by_lang

@@ -1,0 +1,36 @@
+FILE
+	/usr/common/lib/intl_phrase.c
+
+NAME
+	set_content_by_lang - set the Phrase's content in a specified locale
+
+PROTOTYPE
+	void set_content_by_lang(int locale, mixed cont)
+
+CALLED BY
+	Anybody
+
+DESCRIPTION
+	Set the Phrase's content when rendered in a specified language.
+	This is useful for simple international phrases, but it may be
+	harder to usefully set more complex phrases containing
+	ANSI color codes, terminal operations or other things
+	that depend on user information other than language.  Those
+	phrase subtypes will no doubt define their own equivalents
+	to get_content_by_lang and set_content_by_lang.
+
+	Locales are defined in &lt;phrase.h&gt; and the PhraseD.
+
+	This function isn't access-protected.  You should access-protect
+	your version of this and all other inherited functions, including
+	upgraded() and destructed().
+
+RETURN VALUE
+	Nothing.
+
+ERRORS
+	Undefined locale or other setting can cause an error, as can
+	access violations.
+
+SEE ALSO
+	get_content_by_lang, to_string, PhraseD:language_by_name

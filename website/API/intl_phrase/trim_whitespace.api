@@ -1,0 +1,35 @@
+FILE
+	/usr/common/lib/intl_phrase.c
+
+NAME
+	trim_whitespace - trim leading and trailing whitespace from the
+	Phrase
+
+PROTOTYPE
+	void trim_whitespace(void)
+
+CALLED BY
+	Anybody
+
+DESCRIPTION
+	Modifies the Phrase to remove leading and trailing whitespace in
+	all supported locales.  This is equivalent to the StringD's
+	trim_whitespace function for most simple phrases.  One difference
+	is that this version modifies the Phrase in-place and returns
+	nothing.
+
+	Locales are defined in &lt;phrase.h&gt; and the PhraseD.
+
+	This function isn't access-protected.  You should access-protect
+	your version of this and all other inherited functions, including
+	upgraded() and destructed().
+
+RETURN VALUE
+	Nothing.
+
+ERRORS
+	Undefined locale or other setting can cause an error, as can
+	access violations.
+
+SEE ALSO
+	to_string, stringd:trim_whitespace

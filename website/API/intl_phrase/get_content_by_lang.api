@@ -1,0 +1,33 @@
+FILE
+	/usr/common/lib/intl_phrase.c
+
+NAME
+	get_content_by_lang - return the Phrase rendered as a specific locale
+
+PROTOTYPE
+	string get_content_by_lang(int locale)
+
+CALLED BY
+	Anybody
+
+DESCRIPTION
+	Return a string in a specified language.  This is useful for simple
+	international phrases, but may fail or return garbage if a Phrase
+	contains ANSI color codes, terminal operations or other things
+	that depend on user information other than language.
+
+	Locales are defined in &lt;phrase.h&gt; and the PhraseD.
+
+	This function isn't access-protected.  You should access-protect
+	your version of this and all other inherited functions, including
+	upgraded() and destructed().
+
+RETURN VALUE
+	Nothing.
+
+ERRORS
+	Undefined locale or other setting can cause an error, as can
+	access violations.
+
+SEE ALSO
+	set_content_by_lang, to_string, PhraseD:language_by_name
