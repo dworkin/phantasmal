@@ -1,0 +1,42 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title> Setting Up Phantasmal:  Directory Structure </title>
+    <style type="text/css">
+    <!--
+      p {font-family: serif, font-weight: normal; color: black;
+         font-size: 12pt }
+      h3 {font-family: serif; font-weight: bold; color: #FF20FF;
+          font-size: 16pt}
+     -->
+    </style>
+  </head>
+
+  <body text="#000000" bgcolor="#DDDDDD" link="#0000EF" vlink="#51188E"
+	alink="#FF0000">
+
+    <h3 align="center"> Directory Structure in a Phantasmal-based Game </h3>
+
+    <p>
+      When you're building your MUD, you'd like to change stuff in
+      /data and /usr/game a lot.  You'd like to change stuff in
+      /usr/common very little.  And you'd like to not change stuff in
+      /usr/System at all, if you can manage.  And you should never,
+      never change stuff in /kernel.  There's no reason to do it, and
+      you'll break compatibility and security if you try.
+    </p>
+
+    <p>
+      The /data directory doesn't have much in it any more, and it'll
+      keep having less and less there.  That's intentional.
+      Everything is moving under the /usr directories, because the
+      Kernel Library doesn't give you any file security for stuff in
+      /data.
+    </p>
+
+    <a href="http://sourceforge.net">
+      <img src="http://sourceforge.net/sflogo.php?group_id=48659&type=6"
+	   width="210" height="62" border="0"
+	   alt="SourceForge.net Logo"></a>
+  </body>
+</html>

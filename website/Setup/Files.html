@@ -1,0 +1,51 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title> Setting Up Phantasmal:  Interface Files </title>
+    <style type="text/css">
+    <!--
+      p {font-family: serif, font-weight: normal; color: black;
+         font-size: 12pt }
+      h3 {font-family: serif; font-weight: bold; color: #FF20FF;
+          font-size: 16pt}
+     -->
+    </style>
+  </head>
+
+  <body text="#000000" bgcolor="#DDDDDD" link="#0000EF" vlink="#51188E"
+	alink="#FF0000">
+
+    <h3 align="center"> Files You Need for a Phantasmal-Based Game </h3>
+
+    <p>
+      You'll need a /usr/game directory.  Most everything that plays
+      with Phantasmal will go under it somewhere.  The files below are
+      the absolute bare minimum, the farthest you can strip back a
+      Phantasmal-based MUD without cutting into Phantasmal itself.
+    </p>
+
+    <h3> InitD </h3>
+
+    <p>
+      When DGD starts up, it hands off control to the Kernel Library,
+      which hands off control to Phantasmal, which hands off control
+      to you.  It seems complicated, but you can ignore most of it.
+      When you start things up, the create() function of
+      /usr/game/initd will get called, so if you want to do things on
+      startup, you should make sure that function exists.
+    </p>
+
+    <h3> Gameconfig.h </h3>
+
+    <p>
+      You'll need a GameConfig.h, which many files include and many
+      files use.  Phantasmal doesn't need most of the symbols in it,
+      but <i>does</i> use GAME_INITD.
+    </p>
+
+    <a href="http://sourceforge.net">
+      <img src="http://sourceforge.net/sflogo.php?group_id=48659&type=6"
+	   width="210" height="62" border="0"
+	   alt="SourceForge.net Logo"></a>
+  </body>
+</html>
