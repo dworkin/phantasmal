@@ -56,38 +56,43 @@ mudlibs.  We're working on it...
 Q: I run DGD and it gives me error messages about the version I'm using.
    What do I do?
 
-A: If may say that this version of Phantasmal is not tested with DGD
-beyond some version.  If so, then you've got a slightly old Phantasmal
-or Felix has gotten ahead of me with his constant improvement of DGD.
-You could use the recommended DGD version -- look at /usr/System/initd.c
-for the version check.  Or if things keep working you can just ignore
-the error message, or remove it from /usr/System/initd.c.  Or you could
-see if there's a newer version of Phantasmal, which shouldn't have
-that check.
+A: It may say that this version of Phantasmal is not tested with DGD
+beyond version 1.2.blah.  If so, then you've got a slightly old
+Phantasmal or Felix has gotten ahead of me with his constant
+improvement of DGD.  You could use the DGD version that Phantasmal
+recommends -- look at /usr/System/initd.c for the version check.  Or
+if things keep working you can just ignore the error message, or
+remove it from /usr/System/initd.c.  Or you could see if there's a
+newer version of Phantasmal, which should be happier with newer
+versions of DGD.
 
 If it gives you a startup error that your version of DGD just isn't
 good enough for it then you're going to need to upgrade to a later
-version of DGD, almost certainly an experimental one.  Check out
+version of DGD, a recent experimental one.  Check out
 "http://phantasmal.sourceforge.net/DGD" and click on a link called
-something like "Downloading, Compiling and Configuring DGD".
+something like "Downloading, Compiling and Configuring DGD".  It'll
+tell you how to install an experimental version of DGD.
 
 
 
-Q: I upgrade from one version of DGD to the next one and everybody
-except admin stops being a wizard!  What gives?
+Q: I upgrade from one version of DGD (or even just the Kernel Library)
+to the next one and everybody except admin stops being a wizard!  What
+gives?
 
 A: The Kernel Library stores its listing of who gets wizard privileges
 in the file "kernel/data/access.data".  If you delete this then
 everybody loses all their privileges.  One way to deal with it is to
-manually reinstate everybody.  Another is to grab the file from your
-old copy of DGD and restore it.
+manually reinstate everybody (call the %grant command for all of them
+again).  Another is to grab the file from your old copy of DGD and
+restore it.
 
 If you copy the kernel Library stuff to where it should be rather than
-symbolically linking it, and you copy the new Kernel Library *over* the old
-version, you won't get this problem (unless you overwrite the old
-access.data with the new one).  Naturally that approach comes with its
-own set of problems, including potential incompatibilities between
-future versions of DGD.  Hey, it could happen.
+symbolically linking it, and you copy the new Kernel Library *over*
+the old version, you won't get this problem (unless you overwrite the
+old access.data with the new one, and then you're *really* hosed
+unless you have a backup).  That approach comes with its own set of
+problems, including potential incompatibilities between future
+versions of DGD.  Hey, it could happen.
 
 
 
@@ -99,18 +104,18 @@ Usually it's in the mudlib directory.  In it, if you look hard, you'll
 find there's a swap_size parameter, probably set to 1024 by default.
 Try increasing this number.  Now see if you still get the Fatal Error.
 
-One way to detect this problem is to type %status at the command line
-of your MUD as an admin.  In the upper left of the text display, under
-"Swap device", you'll see a "sectors" entry.  The "sectors" entry
-shows you how many sectors your MUD uses and how many it *can* use.
-You can also check out memory usage and number of objects.  The
-numbers tell you how close you are to exceeding your allowed usage of
-various resources.  You may also find that as you come close to the
-limit in them, it takes more ticks to do things.  If this happens then
-you may run out of ticks before you run out of other resources (like
-sectors).  When the numbers get too close together (if you're using
-2015 sectors out of 2048, for instance), you'll want to fix the upper
-limit in the phantasmal.dgd file.
+There's a way to detect this problem *before* it bites you.  Type
+%status at the command line of your MUD as an admin.  In the upper
+left of the text display, under "Swap device", you'll see a "sectors"
+entry.  The "sectors" entry shows you how many sectors your MUD uses
+and how many it *can* use.  You can also check out memory usage and
+number of objects.  The numbers tell you how close you are to
+exceeding your allowed usage of various resources.  You may also find
+that as you come close to the limit in them, it takes more ticks to do
+things.  If this happens then you may run out of ticks before you run
+out of other resources (like sectors).  When the numbers get too close
+together (if you're using 2015 sectors out of 2048, for instance),
+you'll want to increase the upper limit in the phantasmal.dgd file.
 
 This stuff all works the same for any MUD based on the Kernel Library,
 so the DGD mailing list is a good place to ask about what the numbers
@@ -149,15 +154,17 @@ Or use the Cygwin version of CVS.  Or convert all your line endings
 after checkout from carriage returns to carriage-return/linefeed
 pairs.  The last solution may not work if you're doing SourceForge
 development for Phantasmal -- it's vitally important that you never
-check in anything that has Win32 line endings.
+check in anything to SourceForge Phantasmal that has Win32 line endings.
 
 
 
 Q: When I start DGD, Phantasmal seems to start fine, but when I telnet in I
 can't log on!
 
-A: There is a bug in DGD versions before 1.2.57 which causes Phantasmal to hang
-for a while on start up.  Please upgrade to DGD version 1.2.57 or higher.
+A: There is a bug in DGD versions before 1.2.57 which causes
+Phantasmal to hang for a while on start up.  Please upgrade to DGD
+version 1.2.57 or higher.  Or just wait awhile every time you start
+Phantasmal up again.
 
 
 
@@ -166,12 +173,13 @@ Q: I can log into Phantasmal by telnetting to localhost on the correct
 port, but if I try from another machine it won't let me!
 
 A: Your machine almost certainly has a firewall.  Any recent version
-of Linux, for instance, comes with this automatically.  You'll need to
-edit the configuration files for your firewall to let you log into
-whatever port Phantasmal is running on.  You can find Phantasmal's
-port numbers in phantasmal.dgd, but you'll need to check the
-documentation for your firewall or Operating System to figure out how
-to change the firewall.
+of Linux, for instance, comes with this automatically.  Even Windows
+does once you've got WinXP Service Pack 2 or the equivalent working.
+You'll need to edit the configuration files for your firewall to let
+you log into whatever port Phantasmal is running on.  You can find
+Phantasmal's port numbers in phantasmal.dgd, but you'll need to check
+the documentation for your firewall or Operating System to figure out
+how to change the firewall.
 
 
 
@@ -191,4 +199,4 @@ firewall, or hang your head in shame.
 Or you could run your MUD on a machine that's not at your place of
 work.  Getting some kind of broadband at home would work, as would
 using a professional MUD hosting or colocation service.  Any of those
-will cost money, though.
+will probably cost money, though.
