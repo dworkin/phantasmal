@@ -299,8 +299,6 @@ mixed* query_exact(string key, object user) {
 
   key = normalize_help_query(key);
 
-  user->message("Normalized: " + key + ".\r\n");
-
   ent = exact_entries[locale][key];
   if(!ent) {
     ent = exact_entries[LANG_englishUS][key];
