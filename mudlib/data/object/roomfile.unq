@@ -218,11 +218,15 @@ the middle of the room seems to be built directly into the floor somehow.}}
   ~number{301}
   ~location{0}
   ~bdesc{
-    ~enUS{a room}}
+    ~enUS{hallway}}
   ~gdesc{
-    ~enUS{a room}}
+    ~enUS{hallway}}
   ~ldesc{
-    ~enUS{You see a room here.}}
+    ~enUS{The hallway smells vaguely of old floor polish and dust.  Checkered tile
+reminds you of cheap cafeterias.  A large hardwood door is permanently
+stuck open to the north, leading to the student lounge.  To the west
+is the front of the building.  Closed, long-locked doors line the south
+and east.}}
   ~article{0}
   ~nouns{{}}
   ~adjectives{{}}

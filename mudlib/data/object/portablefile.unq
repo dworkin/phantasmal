@@ -160,3 +160,19 @@ sort of thing you'd expect to find here.}}
   ~nouns{{~enUS{table}}}
   ~adjectives{{~enUS{nicked,scratched,old,worn,stained,faded,large,gouged}}}
 }
+~portable{
+  ~number{403}
+  ~location{301}
+  ~bdesc{
+    ~enUS{floor}}
+  ~gdesc{
+    ~enUS{floor}}
+  ~ldesc{
+    ~enUS{The floor has permanent dust and grime ground into checkerboard tiles,
+attached even more securely by sticky and decaying floor polish.  It
+reminds you of other educational institutions.}}
+  ~article{1}
+  ~flags{4}
+  ~nouns{{~enUS{floor,tiles,checkerboard,tile,checker,checkers,dust,grime,polish}}}
+  ~adjectives{{~enUS{tile,tiled,checker,checkered,checkerboard,dusty,grimy,polished,floor,sticky,decaying,decayed}}}
+}
