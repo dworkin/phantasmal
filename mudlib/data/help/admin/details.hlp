@@ -19,7 +19,13 @@ For instance:
 
 This will make object #194 stop being a detail of anything at all.
 
-See also: objects, details
+Note that an object inherits the details of its parent.  You can
+remove a detail even if it's inherited from the parent, but if you
+remove it from the child then the parent keeps it.  This is a way to
+have a parent with a "recommended" set of details without forcing them
+on every child object.
+
+See also: objects, details, @set_object_parent
 
 }}
 
