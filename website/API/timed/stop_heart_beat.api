@@ -1,0 +1,27 @@
+FILE
+	/usr/common/sys/timed.c
+
+NAME
+	stop_heart_beat - stop a heart_beat function from being called
+
+PROTOTYPE
+	void stop_heart_beat(int how_often)
+
+CALLED BY
+	System, Common, Game
+
+DESCRIPTION
+	Each object may have one heart_beat function of each frequency
+	(such as TIMED_MUD_MINUTE or TIMED_MUD_HOUR).  This call stops
+	one such heart_beat function.  The function is stopped for
+	the calling object -- that is, an object may only stop one
+	of its <i>own</i> heart_beat functions.
+
+RETURN VALUE
+	None.
+
+ERRORS
+	If no such heart_beat function exists, an error may occur.
+
+SEE ALSO
+	set_heart_beat
