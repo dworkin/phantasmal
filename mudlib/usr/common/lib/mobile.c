@@ -308,7 +308,7 @@ nomask string place(object obj, object to) {
 	err = to->get_brief()->get_content_by_lang(LANG_englishUS);
       }
       err += " is not in this room";
-      
+
       return err;
     }
 
@@ -442,6 +442,8 @@ nomask string move(int dir) {
 
   return nil;
 }
+
+
 /*
  * string teleport()
  *
@@ -581,6 +583,9 @@ string to_unq_text(void) {
 
   ret  = "~mobile{\n";
   ret += "  ~type{" + this_object()->get_type() + "}\n";
+  ret += "  ~name{"
+    + body->get_brief()->get_content_by_lang(LANG_englishUS)
+    + "}\n";
   ret += "  ~number{" + number + "}\n";
   ret += "  ~body{" + bodynum + "}\n";
   if(function_object("mobile_unq_fields", this_object())) {
@@ -626,6 +631,8 @@ static mixed mobile_from_dtd_unq(mixed* unq) {
       /* Do nothing, already taken care of */
     } else if(!STRINGD->stricmp(ctr[0][0], "data")) {
       ret = ({ ctr[0][1] });
+    } else if(!STRINGD->stricmp(ctr[0][0], "name")) {
+      /* This is just a comment.  Ignore it. */
     } else {
       error("Unrecognized field in mobile structure!");
     }
