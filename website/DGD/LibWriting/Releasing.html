@@ -1,0 +1,195 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+                      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<title>DGD and LPC: Releasing Code</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<link href="../../phantasmal.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<table width="95%" border="0" cellspacing="0" cellpadding="4">
+  <tr>
+    <td colspan="2"> <table width="100%" border="0" cellspacing="1"
+        cellpadding="0" class="main">
+        <tr>
+          <td class="banner">The DGD Driver</td>
+        </tr>
+      </table></td>
+  </tr>
+  <tr>
+    <td valign="top">
+      <table width="25%"  border="0" cellspacing="1"
+             cellpadding="0"  class="main">
+        <tr>
+          <td class="content" style="font-size: 120%">
+
+          <ul style="margin: 0; padding-left: 10%">
+            <li> <a href="index.html">DGD &amp; LPC Page</a> </li>
+	    <li> <a href="../LPC">LPC Textbook</a> </li>
+	    <li> <a href="../Book">New LPC Introduction</a> </li>
+          </ul>
+
+        </td>
+        </tr>
+        <tr>
+          <td class="content" align="center">
+            <a href="http://validator.w3.org/check/referer">
+            <img src="../../images/valid-xhtml10.gif" alt="Valid XHTML 1.0!"
+             style="border:0;width:88px;height:31px" /></a><br />
+            <img src="../../images/pixel.gif"
+             style="border:0;width:88px;height:1px" alt="" /><br />
+            <a href="http://jigsaw.w3.org/css-validator/check/referer">
+            <img src="http://jigsaw.w3.org/css-validator/images/vcss"
+             alt="Valid CSS!" style="border:0;width:88px;height:31px" />
+            </a><br /><br /><br />
+            <a href="http://sourceforge.net">
+            <img src="http://sourceforge.net/sflogo.php?group_id=48659&amp;type=2"
+             style="border: 0; width: 125; height: 37;"
+	     alt="SourceForge.net Logo" /></a>
+          </td>
+        </tr>
+      </table></td>
+    <td> <table width="100%"  border="0" cellspacing="1" cellpadding="0" 
+          class="main">
+        <tr>
+          <td class="heading">&nbsp;&nbsp;&middot;&nbsp;
+	    <a href="http://phantasmal.sf.net/DGD">DGD Page</a> &gt;
+            <a href="">Releasing Code</a>
+          </td>
+        </tr>
+        <tr>
+          <td class="content">
+  
+
+  <h2> Should You Release the Source to Your MUD Library? </h2>
+
+  <p>
+    This has been a hotly-debated topic for quite a long time
+    throughout the MUD community.  Obviously, at some level it's a
+    matter of choice.  But there has been a lot of good debate on the
+    subject, and it's worth summarizing it to help avoid some of the
+    repetition that usually dominates mailing-list discussion on the
+    topic.
+  </p>
+
+  <p>
+    Reasons that Releasing is a Good Idea:
+  </p>
+
+  <ul>
+    <li> You get to contribute to something much greater than just your own
+      MUD </li>
+    <li> DGD is severely lacking in functional, usable, and game-oriented
+      mudlibs </li>
+    <li> You could potentially benefit from those people that add new
+      functionality to your source. </li>
+    <li> Much bigger pool of users to draw from as far as tracking bugs
+      and playtesting </li>
+  </ul>
+
+  <p>
+    Reasons that Releasing is a Bad Idea:
+  </p>
+
+  <ul>
+    <li> Harder to find time for your own MUD due to MUDLib users asking
+      for their own maintenance and changes </li>
+    <li> You may lose all functional uniqueness due to numerous clones
+      of your MUD </li>
+    <li> Open to subjective public criticism on design paradigms (not
+      really a problem, just an annoyance) </li>
+  </ul>
+
+  <h3> Commentary From People Who Have Released </h3>
+
+  <p>
+    George Reese, author of the NightMare MUDLib (LPMUD, but not for
+    DGD), has this to say:
+  </p>
+
+  <span style="font-color: #FF00FF">
+
+    <p>
+      [People contributing new features] does not happen much at the
+      mudlib level.  The mudlib is where people are differentiating
+      themselves heavily.  Of the things I received for NM, only a
+      couple ever made it into the distribution either because the
+      ideas were so peculiar or the code sucked so bad.
+    </p>
+
+    <p>
+      Don't count on [a larger pool of testers] at the mudlib level :)
+      95% of all bug reports are useless.  They are generally people
+      misusing the lib or who simply don't know a bug from a hole in
+      their head.  The other 5% are useful, but drowned out in the
+      noise.
+    </p>
+
+    <p>
+      [Attention being focused on lib development, not MUD
+      development] is actually a plus, IMHO.  But it assumes you have
+      separated the duties of running the mud into taking care of the
+      lib and those who take care of the game.  Specifically, it
+      allows you to view features people are asking for *on the mud*
+      in a more generic context and thus allows you to come up with
+      more flexible solutions.
+    </p>
+
+    <p>
+      [Other people cloning your MUD] is a HUGE problem... especially
+      a year or two down the road.  More specifically, every mud has
+      the problem of player X disagrees with the admins and declares
+      he or she will start their own mud.
+    </p>
+
+    <p>
+      Guess what.  If your mudlib is being publically distributed, not
+      only can they start their own mud, but they can start one JUST
+      LIKE yours.  And then they can come back to your mud and say
+      &quot;we have started a mud just like [yours], except it is run
+      by players who remember what it is like to be a player&quot; (as
+      if you somehow don't have a clue).
+    </p>
+
+    <p>
+      This is 90% of why I removed NM from distribution.
+    </p>
+
+    <p>
+      Subjective criticism is not the problem.  It is the pot shots.
+      Especially from people who don't have a clue.  You will have a
+      bit of a honeymoon for a while on this one though since you will
+      be the only developed game lib for DGD.
+    </p>
+
+    <p>
+      And don't forget having to provide tech support for people using
+      the lib!
+    </p>
+
+    <p>
+      I think the physical area is much more important than the actual
+      lib.  The lib only determine how easily you can accomplish what
+      is possible without affecting existing systems.  It cannot make
+      you more creative.
+    </p>
+
+    <p>
+      The problem is if you get the situation [of] people intent on
+      copying your mud.  Having the same mudlib makes it much easier
+      to do so, even if you do not release the main town and such.
+    </p>
+
+  </span>
+
+  <p style="text-size: 150%"> <a href="../index.html"> Back to top level
+    </a> </p>
+            <address>
+            <span><a href="mailto:angelbob-remove-spamfree@spamfree.users.sf.net">Noah Gibbs</a></span>
+            </address></td>
+        </tr>
+      </table></td>
+  </tr>
+</table>
+</body>
+</html>
