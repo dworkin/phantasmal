@@ -1,0 +1,64 @@
+    <titledef text="Setting Up" />
+
+    <h2 style="text-align: center"> Setting Up a Phantasmal-based MUD </h2>
+
+    <p>
+      You might wonder how this is different from the other <a
+      href="../../Setup/index.html">Setup Documents</a>.  The
+      difference is that <i>those</i> will tell you how to create your
+      own game on top of Phantasmal.  <i>This</i> one will tell you
+      how to start using unmodified Phantasmal so you can play with
+      it.
+    </p>
+
+    <h3 style="text-align: center"> Downloading and Installing Phantasmal </h3>
+
+    <p> For a non-bundled release, you're going to need to read the
+      documentation and follow it.  You're also going to need to
+      install DGD and get it working, which involves reading even more
+      documentation.  I know, that's unfair and unreasonable in this
+      day and age.  Do it anyway.  Or, you can pick up the bundled
+      release of Phantasmal.  It's much more grab-and-go.
+    </p>
+
+    <p>
+      Even if you use the bundled version you'll still need to unpack
+      it successfully and run the install script (NOTE: install script
+      may not be finished, you may need to change one line in the .dgd
+      file by hand).
+    </p>
+
+    <p>
+      You can find either one at the <a
+      href="http://www.sf.net/projects/phantasmal">Phantasmal
+      SourceForge project</a>.
+    </p>
+
+    <h3 style="text-align: center"> After You've Installed Phantasmal </h3>
+
+    <p> The first thing to do after you've run the server, then telnetted
+      to it from a console or MUDClient, is to make an admin account.
+      It's easy.  The MUD asks you &quot;login: &quot;.  You respond
+      with the name &quot;admin&quot;, then pick a password.
+      Hey presto, you're
+      the administrator with full power.  Now log out (with the
+      <b>quit</b> command) and log in again with another username.
+      Any name, any password.  Log this one out too, then log in
+      as admin again (dizzy yet?).
+      Use the same password you gave admin last time.  Now you'll give
+      your new account some privileges -- if you called him &quot;foo&quot;
+      then you'd say &quot;%grant foo access&quot; and
+      &quot;grant foo / full&quot;.  Note the spaces before and after
+      each word, including the slash. </p>
+
+    <p> With me so far?  From here on out, if you get messages that say
+      you can't do these things without being an administrator, or that
+      permission is denied, or if Phantasmal just doesn't recognize any
+      of the commands starting with % or @ for certain users, it
+      pretty much means you did something wrong last paragraph.  The
+      exception is stuff you <i>really</i> shouldn't do like trying
+      to delete files from the /kernel directory.  Operations like that
+      will tell you you can't, and you can't.  Don't. </p>
+
+    <p> Now let's <a href="../index.html">build some rooms and objects</a>.
+      Trust me, you'll love it. </p>

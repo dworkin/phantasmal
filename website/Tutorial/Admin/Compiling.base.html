@@ -1,0 +1,94 @@
+    <titledef text="Compiling Programs" />
+
+    <h2 style="text-align: center"> Compiling Programs In Your MUD </h2>
+
+    <p> If you're a free spirit that likes to live dangerously then you'll
+      want to change your source files and play with them dynamically
+      while the MUD is running.  If you're writing features for somebody
+      else's MUD and you don't run your own MUD on the same codebase,
+      changing things on the fly is pretty much mandatory.  Either way,
+      this tutorial will start you on that road. </p>
+
+    <p> Being able to compile or recompile a single program is the most
+      basic step, and you'll need the <b>%compile</b> command to do it.
+      You can type &quot;%compile /usr/System/initd&quot; to
+      recompile the InitD, for instance.  If it succeeds it'll tell
+      you so, and if it fails it'll print the error(s) it got when
+      trying to compile. </p>
+
+    <p> Recompiling a library is more interesting, and at this point
+      I'd recommend using the <b>%full_rebuild</b> command any time
+      you modify any library -- better safe than sorry, and it's
+      hard to keep track of what needs to be recompiled and
+      what already has been.  The <b>%full_rebuild</b> command
+      will take care of these things for you.  If you're curious
+      what all the fuss is, have a look at the
+      <a href="http://phantasmal.sf.net/DGD/Kernel"> Kernel Library </a>
+      and read the document on Inheritance.  Rather than understanding
+      all that, though, you can let <b>%full_rebuild</b> do the
+      automated version for you. </p>
+
+    <p> Simply type &quot;%full_rebuild&quot; by itself at the command
+      line and you'll see a message that it's rebuilding, eventually
+      followed by the word &quot;Done&quot;.  That's if there's no
+      errors.  If an error occurs then you'll see the errors printed.
+      In that case, not all of the rebuild will happen since it stops at
+      the file causing the error. </p>
+
+    <h3 style="text-align: center">Upgrading Objects In-Place </h3>
+
+    <p> When you rebuild a program that has instances or clones, or
+      even one that you call functions on, you'll be changing its
+      behavior.  For instance, recompiling /usr/common/sys/mapd to
+      have new code or data will instantly take effect after the
+      rebuild, and rebuilding /usr/System/obj/user will immediately
+      change the behavior of any network connections to users. </p>
+
+    <p> When you add a data field, it starts uninitialized.  When
+      you remove one or change its type, it also goes away or
+      becomes uninitialized.  In that case, you may want to run
+      a snippet of code to give it a new and more sensible value.
+      The obvious way to do that is to put a function called
+      &quot;upgraded&quot; in its definition.  The
+      &quot;upgraded&quot; function should take a single integer
+      varargs argument of type <b>int</b> if the class is cloneable
+      and you expect to call the function on clones. </p>
+
+    <p> ObjectD will only call the upgraded function once for each
+      program it upgrades.  That means that daemons like MapD and ExitD
+      will be able to simply use &quot;upgraded&quot; to update their
+      data.  Libraries have no instance data so they're not too likely
+      to have problems (though they may cause problems for programs
+      that inherit them!), but clonable objects may have more to
+      worry about.  Since each clone has instance data, it may be
+      necessary to notify each clone of the upgrade.  Given how long
+      it can take to call &quot;upgraded&quot; on each and every
+      clone, the ObjectD doesn't do this.  So your program may need
+      to perform an operation on every current clone when you upgrade
+      its code and data members. </p>
+
+    <p> One way to avoid this problem is to have an initialization
+      flag in the object, one you've just added.  Then you can
+      initialize the new data when you perform some common operation
+      on the object and set the flag as well.  This wastes a little
+      space for the flag, and a little time when checking for it
+      (remember, the code that checks for the flag is there forever,
+      it's just that you only initialize once).  But it can be
+      preferable to having to notify all the clones of your object.
+    </p>
+
+    <p> As a final note:  if your object has an &quot;upgrading&quot;
+      function, that function will be called before the object is
+      recompiled.  It uses the original code, <b>not</b> the new
+      code after the recompile.  The &quot;upgraded&quot; function
+      uses the new, post-recompile code.  It's important to keep
+      track of this in some way.  In Phantasmal, currently we just
+      always use &quot;upgraded&quot; so that we know the code we're
+      using is the latest revision and we don't have to worry about
+      whether the code in &quot;upgrading&quot; did the right thing.
+      One can certainly imagine cases where the upgrade system might
+      use &quot;upgrading&quot;, though -- for instance, classes that
+      can read and write themselves to UNQ might save an UNQ version
+      of themselves with &quot;upgrading&quot; and reload from it
+      with &quot;upgraded&quot;, which would nicely avoid problems
+      when changing data types. </p>

@@ -1,0 +1,166 @@
+    <titledef text="Access, Resources and Quotas" />
+
+    <h2 style="text-align: center"> Access, Resources and Quotas </h2>
+
+    <h3 style="text-align: center"> Admin Access and Path Permissions </h3>
+
+    <p> Remember that incantation you did way back when, the one you
+      used to give you administrator character his power as a Mighty
+      Admin?  Now we'll get around to letting you know how that worked
+      and what similar things you can do. </p>
+
+    <p> Phantasmal has its roots in the Kernel Library, and nowhere
+      is that more obvious than in these commands right here.
+      There's a full permissions system for this stuff that's
+      <i>entirely separate</i> from the way Phantasmal does most of
+      what it does, and people who are seriously privileged under
+      this system have full power to do absolutely anything to the
+      MUD if they're so inclined.  That's a generalization, but
+      basically it's very hard to defend your Phantasmal MUD
+      against somebody with these privileges -- it's just not
+      designed for it.  Once somebody can run arbitrary code, and
+      once they can compile objects inside the main body of your
+      MUD, a sufficiently clever attacker will be able to do
+      weird and nasty stuff to your MUD in one way or another. </p>
+
+    <p> So, let's show you how to give people this power, and
+      what you can do to understand it. </p>
+
+    <p> First, you should learn how to find out who can do what, and
+      who exists in your MUD.  The <b>%access</b> command is a fine way
+      to determine what permissions somebody has.  Just type
+      &quot;%access AdminName&quot; and it'll tell you what file access
+      you've given them.  That file access takes the form of paths and
+      types.  For instance, awhile back when you typed &quot;%grant
+      SomeIdiot / full&quot;, what you did was to give them full (that's
+      read/write plus admin) access to the root directory -- in other
+      words, full power to do anything to any file.  And yes, that would
+      be why it's hard to stop them from hurting your MUD if they so
+      choose. </p>
+
+    <p> There are also global areas that anybody can read.  That's
+      important for things like the ROOM object that other people need
+      to be able to inherit.  So if you type &quot;%access global&quot;
+      in Phantasmal, you'll find that the &quot;/usr/common&quot;
+      directory is globally readable.  That's where we store stuff like
+      ROOM and OBJECT so it has to be globally readable. </p>
+
+    <p> The Kernel Library (and thus Phantasmal) stores a list of
+      everybody that has any access that it cares about.  Before
+      you can have any specific access, you have to be on The List.
+      The way to put somebody on The List is to type &quot;%grant
+      WhoEverTheyAre access&quot;.  To take them off the list,
+      just type &quot;%ungrant WhoEverTheyAre access&quot;. </p>
+
+    <p> So <b>%access</b> tells you what they can play with.  How
+      do you change it?  <b>%grant</b> and <b>%ungrant</b> again,
+      it turns out.  The syntax for <b>%grant</b> is
+      &quot;%grant AdminName &lt;path&gt; &lt;access&gt;&quot;.
+      Path is just the path, and AdminName is granted the listed
+      access to that path and all subdirectories (with some
+      specific exceptions that the Kernel Library provides).
+      Access is one of: read, write, full.  Full means both
+      read and write, but also administrative access to do
+      other things.  The <b>%ungrant</b> command has the same
+      syntax, but does the opposite -- it removes access to
+      that path.
+    </p>
+
+    <h3 style="text-align: center"> Quotas and Resources </h3>
+
+    <p> There are certain types of resources that the Kernel
+      MUDLib tracks and limits.  You can only use so much of
+      any one of them before it stops giving you any more.
+      The <b>%quota</b> and <b>%rsrc</b> commands let you
+      play with them. </p>
+
+    <p> The <b>%rsrc</b> command, typed by itself, will show
+      you the total quota and usage of every resource for everybody
+      in the MUD.  It may look like this: </p>
+
+    <pre>
+resources                usage          max  decay  period
+----------------+-------------+------------+------+---------
+callouts                     1           -1
+create stack                 0            5
+create ticks                 0        10000
+editors                      0           -1
+events                       0           -1
+filequota                 1167           -1
+objects                    200           -1
+stack                        0           50
+tick usage             3589379           -1    10% per hour
+ticks                        0       250000
+    </pre>
+
+    <p> The usage column gives the amount currently in use.  The
+      max column tells you the total limit, and the decay
+      column lets you know how fast usage of that resource decays.
+      On the left, of course, are the resource names.  Let's look
+      at one individually.  Go ahead and type &quot;%rsrc tick
+      usage&quot;.  You'll see something like this:</p>
+    <pre>
+owner                    usage          max  decay  period
+----------------+-------------+------------+------+---------
+Ecru                         0           -1    10% per hour
+System                     308           -1    10% per hour
+admin                        0           -1    10% per hour
+angelbob                101333           -1    10% per hour
+common                 3436295           -1    10% per hour
+thedarque                    0           -1    10% per hour
+    </pre>
+
+    <p> Nifty, no?  That breaks the total down into who is using
+      what, and their individual limits.  And <b>%rsrc</b> can
+      also be used to set the total limit, by typing
+      &quot;%rsrc &lt;rsrc name&gt; &lt;new limit&gt;&quot;.
+      That's pretty cool.  Now let's hit our final command
+      and see what <b>%quota</b> can do. </p>
+
+    <p> While <b>%rsrc</b> showed us a lot about the overall usage
+      of resources for everybody, <b>%quota</b> is more selective.
+      Type it by itself to see your usage of each resource, kinda
+      like &quot;%rsrc YourName&quot; would do.  Type it with
+      an admin's name to see that admin's usage of various resources --
+      &quot;%quota SomeIdiot&quot;.  To see one specific resource
+      for one specific admin, type &quot;%quota AdminName &lt;resource
+      name&gt;&quot;, such as &quot;%quota angelbob tick usage&quot;
+      or &quot;%quota angelbob events&quot;.  And finally, you can
+      set a new quota for an admin by typing
+      &quot;%quota AdminName &lt;resource name&gt; &lt;new limit&gt;&quot;.
+      Note that -1 means &quot;unlimited&quot; for most resources,
+      which can be a useful thing. </p>
+
+    <p> You got this far and you're still actually reading?  Man,
+      you're really delving.  We don't have much more we can show you.
+      But go ahead and hit any <a href="../index.html">tutorials</a>
+      you haven't already finished.  Below is a listing of various
+      resources and what they mean to the Kernel MUDLib.  If you
+      micromanage this stuff, you're ahead of me. </p>
+
+    <hr />
+
+    <ul>
+      <li> callouts - this is the number of call_out functions that
+	are or may be active at once. </li>
+      <li> create stack - this is the amount of stack space the Kernel
+	Library wants available before it will create a new object </li>
+      <li> create ticks - this is the number of ticks the Kernel Library
+	wants available before it will create a new object </li>
+      <li> editors - this is the number of editor instances that may
+	be open and active at once. </li>
+      <li> events - the Kernel Library can notify subscriber lists of
+	events, which Phantasmal doesn't currently bother with.  This
+	is the number of available/possible events. </li>
+      <li> filequota - You only get a certain number of bytes of storage
+	to play with in your directory (unless this is set to -1).  This
+	is how much you're currently using, or your maximum limit. </li>
+      <li> objects - each person has a maximum number of allowed objects
+	(unless this is set to -1). </li>
+      <li> stack - this is the amount of stack space remaining to be
+	used </li>
+      <li> tick usage - this is the number of ticks that have already
+	been used.  Every hour it decreases by 10% in the default
+	configuration. </li>
+      <li> ticks - this is the number of ticks remaining to be used </li>
+    </ul>
