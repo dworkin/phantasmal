@@ -298,24 +298,84 @@ void set_openable(int value) {
 }
 
 
+/*
+ * overloaded room notification functions
+ */
+
 /****** Functions dealing with entering and leaving a room ********/
 /* return nil if the user can leave/enter, or a string indicating the
  * reason why they cannot.
  */
 
-/* Note: These functions are trivial here (always returning nil) but
+/* function which returns an appropriate error message if this object
+ * isn't a container or isn't open
+ */
+static string is_open_cont(object user) {
+  if (!is_container()) {
+    if(!user) return "not container";
+    return get_brief()->to_string(user) + " isn't a container!";
+  }
+  if (!is_open()) {
+    if(!user) return "not open";
+    return get_brief()->to_string(user) + " isn't open!";
+  }
+  return nil;
+}
+
+
+/* Note: Many functions are trivial here (always returning nil) but
  * can be overriden to control access into or out of a room 
  * Reason is printed out to the user if the user can't enter */
 
-/* leave_object is the body attempting to leave, dir is the direction. */
+/* Note also: These functions can be used by the child, even if it
+   overrides.  So it's easy for a child to add reasons why an
+   object can't be put, entered, etc, but also easy for them to
+   change the rules entirely. */
+
+/* The can_XXX functions all take a user.  That user is necessary
+   because to return the perceived reason a user can't do something,
+   it's often necessary to know what that user can perceive. */
+
+/* user is the user who will see the reason returned,
+   leave_object is the body attempting to leave,
+   dir is the direction. */
 string can_leave(object user, object leave_object, int dir) {
-  return nil;
+  if(mobile)
+    return "You can't leave a sentient being!"
+      + "  In fact, you shouldn't even be here.";
+
+  if (dir == DIR_TELEPORT) {
+    if (!is_container()) {
+      if(!user) return "not container";
+      return get_brief()->to_string(user) + " isn't a container.";
+    } else {
+      return nil;
+    }
+  } else {
+    return is_open_cont(user);
+  }
 }
 
-/* enter_object is the body attempting to enter, dir is the direction. */
+
+/* user is the user who will see the reason returned,
+   enter_object is the body attempting to enter,
+   dir is the direction. */
 string can_enter(object user, object enter_object, int dir) {
-  return nil;
-}
+  if(mobile)
+    return "You can't enter a sentient being!  Don't be silly.";
+
+  if (dir == DIR_TELEPORT) {
+    if (!is_container()) {
+      if(!user) return "not container";
+      return get_brief()->to_string(user) + " isn't a container.";
+    } else {
+      return nil;
+    }
+  } else {
+    return is_open_cont(user);
+  }
+} 
+
 
 /* leave_object is the body leaving, dir is the direction */
 void leave(object leave_object, int dir) {
@@ -340,6 +400,7 @@ void enter(object enter_object, int dir) {
   enum_room_mobiles("hook_enter", ({ mob }), ({ enter_object, dir }) );
 }
 
+
 /****** Picking up/dropping functions *********/
 
 /*
@@ -356,8 +417,9 @@ void enter(object enter_object, int dir) {
            contained by this object or contains this object.
 */
 string can_remove(object user, object mover, object movee, object new_env) {
-  return nil;
+  return is_open_cont(user);
 }
+
 
 /* This function notifies us that an object has been removed from us.
 
@@ -385,11 +447,14 @@ void remove(object mover, object movee, object new_env) {
   new_env is where it will be moving it to
 */
 string can_get(object user, object mover, object new_env) {
-  if (get_detail_of())
-    return "That's attached!  You can't get it.";
-
+  if(mobile) {
+    if(!user) return "sentient being";
+    return get_brief()->to_string(user)
+      + " is a sentient being!  You can't pick them up.";
+  }
   return nil;
 }
+
 
 /* This function notifies us that somebody has gotten/moved this
    object.
@@ -423,7 +488,7 @@ void get(object mover, object new_env) {
 */
 
 string can_put(object user, object mover, object movee, object old_env) {
-  return nil;
+  return is_open_cont(user);
 }
 
 /*
