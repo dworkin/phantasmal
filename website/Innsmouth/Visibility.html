@@ -1,0 +1,208 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title> MUD Visibility </title>
+  </head>
+
+  <body text="#000000" bgcolor="#DDDDDD" link="#0000EF" vlink="#51188E"
+	alink="#FF0000">
+
+    <h3 align="center"> MUD Visibility and Perception for Phantasmal </h3>
+
+    <font size="4">
+
+    <p>
+      Visibility should be important to Phantasmal -- light levels, lines
+      of sight, ability to notice details.  These things are linked.
+    </p>
+
+    <p>
+      Most MUDs place limited importance on visibility because allowing
+      very perceptive characters to notice vast amounts of detail gets
+      very distracting very quickly.  In, say, a forest setting, there are
+      simply too many things going on.  The challenge, then, is not to
+      determine whether a character can detect particular things, but
+      to reduce the amount of detail coming in to a manageable level.
+      Phantasmal will eventually attempt both tasks.
+    </p>
+
+    <h3> Detecting Detail </h3>
+
+    <p>
+      Detecting detail is a matter of determining what the player can
+      determine about the environment around him.  There are many events
+      occurring constantly -- mobiles move, objects are gotten and dropped,
+      mobiles speak or fidget.  The question, then, is which ones the
+      player or character can detect, and how those events appear.
+    </p>
+
+    <p>
+      Lines of sight are among the simplest ways to manage this -- in
+      a given location, there is effectively a list of other locations
+      that are visible.  Since it isn't really possible to tell where a
+      character is within that location (Phantasmal doesn't use a
+      coordinate grid), we must simply assume that character can
+      potentially see
+      events in every location on the list of visible locations.  Audible
+      locations are similar -- a character can hear events occurring in
+      any location on the &quot;audible list&quot;, potentially.
+    </p>
+
+    <p>
+      Other senses -- taste, touch and smell -- are all localized.  A
+      character can only taste, touch or smell in his current location,
+      or one containing it.  Smells can propagate, but a character cannot
+      instantaneously detect a smell in another location.
+    </p>
+
+    <p>
+      Locations that are visible or audible from the current location
+      will still (usually) transmit sights and sounds less well than
+      if the character were standing in that location.  Each will
+      effectively have a percentage of the visibility/audibility that
+      is actually transmitted.  Note that in the case of visibility,
+      this is not transitive -- you can't see a location that is visible
+      from another location automatically.  Otherwise you could always see
+      around corners!  While it might make sense to propagate sounds
+      automatically (and at some level, this will need to occur), Phantasmal
+      will internally simply use an audible-list just like the
+      visible-list since all of this information can be determined when
+      the objects are connected by exits.
+     </p>
+
+     <p>
+       Objects in Phantasmal can have alternate low-light descriptions.
+       These are usually part of the markup of the object description,
+       though they can be detected programmatically if necessary.
+       These are not specifically low-light descriptions, but are rather
+       low-detail descriptions.  For instance, an object seen through
+       fog, or in darkness, or far away, or without glasses, would use
+       this description.  Thus a tall, brown-haired man might be
+       &quot;a man&quot; or &quot;somebody tall&quot; at a distance.
+       Similarly, to recognize another character you must be close enough
+       and in good enough lighting and visibility to know who you're
+       looking at.
+     </p>
+
+     <p>
+       Conceivably, this could be used to &quot;mis-recognize&quot;
+       people for mysterious, dramatic or comedic effect.  That's longer
+       term, though.
+     </p>
+
+     <p>
+       And finally, some objects require appropriate skills, abilities
+       or characteristics to recognize.  For instance, you might need
+       to be an Angel or Demon to recognize a &quot;tin can of mightly
+       slaying, blessed to the Lord&quot;, or have a good grasp of
+       philately to notice a valuable misprint stamp on a postcard.
+       Objects in the class heirarchy can mark themselves as requiring
+       particular skills or attributes to recognize, and players without
+       those skills or attributes will simply see the object as the
+       next-most-general in the heirarchy -- the valuable misprint
+       stamp would be simply a stamp, the blessed tin can would be
+       simply a tin can, or garbage.
+     </p>
+
+    <h3> Managing Detail </h3>
+
+    <p>
+      The most difficult part is not creating all of this detail, but
+      keeping the player from being overwhelmed.  Phantasmal eventually
+      hopes to have several mechanisms for this -- Object Grouping,
+      Event Grouping, Perceptual Thresholds, and Automatic Detail Adjustment.
+    </p>
+
+    <p>
+      Object Grouping is described in its own separate document, and
+      relies heavily on the class heirarchy.
+    </p>
+
+    <p>
+      Event Grouping is the idea that many events occurring simultaneously
+      can be grouped into a single message.  For instance, twenty
+      balloons popping at once (perhaps a result of an air pressure
+      change) might say that &quot;a large cluster of balloons all pop at
+      once&quot; rather than having twenty separate messages about the
+      balloons popping.  The trick is to detect that these events are
+      occurring roughly simultaneously.
+    </p>
+
+    <p>
+      Similarly, events of different types could be grouped in essentially
+      the same way -- the sound of a cannon roaring, the smell of gunpowder
+      and a small tremor in the earth could be grouped together into
+      &quot;a cannon fires nearby!  It's incredibly loud!&quot;, but a
+      character farther away would only feel the tremor, and a deaf
+      character in the dark might only smell gunpowder.  This combination,
+      if implemented well, could also allow certain deception to occur.
+      For instance, a spell that caused a tremor in the earth could be
+      masked by cannonfire, or a magically-muffled cannon could be used
+      to convince nearby enemies that such a spell had been cast (but
+      the smell might give it away!).
+    </p>
+
+    <p>
+      Obviously there's a limit to what events can be grouped, but in
+      many cases (such as the cannon above), the events could be
+      dispatched all at once, specifically marked as being mergeable.
+      Characters that could detect all of the events would see them
+      as merged, while characters that couldn't perceive one or more
+      would see only the relevant parts of the event.  As the grouping
+      system got better it could notice events like separate balloons
+      popping independently and group them, or group all sounds or
+      smells together if they occur quickly, and so on.
+    </p>
+
+    <p>
+      More difficult is grouping <i>sequential</i> events that are
+      related.  For instance, sharpening a sword might involve taking
+      out a whetstone, oiling it, using it many times and then putting
+      everything away again.  It isn't necessary to give continual
+      updates on the status of the activity unless something interrupts
+      it.  So the events should be grouped as a sequence, so that if
+      all goes well the player will see only &quot; you begin sharpening
+      the sword&quot; and, eventually, &quot;you finish sharpening
+      the sword&quot;.  However, if the whetstone oil contains nasty
+      grit which prevents you from using it, you might see:
+    </p>
+<pre>
+  > sharpen sword
+  You take out a whetstone from your backpack.
+  You take out whetstone oil from your backpack.
+  You pour the whetstone oil on the whetstone.
+  Yuck!  Your whetstone oil is black and gritty, and now your
+        whetstone is all dirty and greasy!
+  > swear like a golfer
+</pre>
+
+    <p>
+      Perceptual Thresholds are a name for preventing a character
+      from detecting things that are too far apart in intensity.
+      Thus, it's very difficult to smell something subtle when
+      there's red herring in the air.  It's hard to see the fine
+      detail of a Ming vase when you're blinded by a flash of
+      magnesium powder burning, and when a cannon goes off, it's hard
+      to hear yourself think :-)
+    </p>
+
+    <p>
+      When a character has a vast amount of information coming in,
+      even if none of that information is especially intense (as in
+      Perceptual Thresholds above), the least noteworthy (probably
+      approximated as the least-perceptible by default) will be
+      lost until a reasonable amount of information is available.
+      For instance, a character running rapidly through the woods
+      will probably get shorter room descriptions (cutting out
+      less perceptible or noteworthy bits) and won't see the ants
+      crawling along or hear the birdsong -- those things aren't
+      as noteworthy as the basic room description, and the information
+      is simply coming in too fast.
+    </p>
+
+    <a href="http://sourceforge.net">
+      <img src="http://sourceforge.net/sflogo.php?group_id=48659&type=6"
+	   width="210" height="62" border="0"
+	   alt="SourceForge.net Logo"></a>
+  </body>
+</html>

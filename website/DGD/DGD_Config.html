@@ -141,6 +141,12 @@
 	MUD on SourceForge, also a MUDLib project </li>
       <li> <a href="http://www.sf.net/projects/macrocosm">Macrocosm</a>
 	MUDlib on SourceForge. </li>
+      <li> <a href="http://thelastbastion.org">The Last Bastion</a>
+        MUD project intends to produce a MUDlib. </li>
+      <li> <a href="http://herator.lysator.liu.se/index_en.html">Herator</a>
+        MUDLib doesn't seem to have gotten very far, and the discussion
+        is in Swedish, but it's nice to see other people playing with
+        DGD. </li>
     </ul>
 
     <p> As of this moment, none of the &quot;Still in Early Development&quot;
@@ -350,50 +356,59 @@ patch -p 0 < patches/1.2.46-1.2.47
       worrying about color.  One option at a time is always your
       best bet.</p>
 
-    <p>Once you have DGD working with all other patches you want
-      to use, including the net package if you're planning to use
-      it, you'll need to get and install the ANSI Color package.
-      You can do this with patch if you're running a DGD version
-      compatible with the ANSI package you've got.  Check your
-      version numbers.  You also can't be using a DGD version with
-      the net package installed or you'll have to hand-patch it.  If
-      you can't find an ANSI Color package specifically for the
-      version of DGD you need (or if you're running the net package)
-      you'll need to look for lines like this: </p>
+    <p>
+      Once you have DGD working with all other patches you want to use
+      (including the net package if you're planning to use it) you'll
+      need to get and install the ANSI Color package.  Note that the
+      ANSI color package isn't guaranteed to work with the net package
+      -- keep reading anyway.  The 'patch' utility will do your dirty
+      work for you if you can find an appropriate ANSI package for
+      your DGD version.  Again, if you have the net package installed
+      (or certain other nonstandard patches) then you'll have to
+      hand-patch it.  To hand-patch, you'll need to look for lines like
+      this: </p>
     <pre>
          } else if ((*p & 0x7f) < ' ' && *p != HT && *p != BEL && *p != BS) {
     </pre>
-    <p>There'll be one or more in .../src/comm.c, so start looking
+    <p>
+      There'll be one or more in .../src/comm.c, so start looking
       there.  You'll need to change the &quot;0x7f&quot; in the line
       above to 0xff to let any high-ASCII characters through, or
       change the line in some other way to let only specific
       characters through.  Once you do that, all should be smooth
-      sailing.  Incidentally, the there may be problems letting
-      <i>all</i> high-ASCII characters through.  You may want to be
-      more selective and just let the ones you care about through.
-      Change the if statement to allow the characters you want.
-      Best, of course, is just to install the ANSI color package
-      rather than mucking around in the source unless you already
-      know what you're doing -- it'll let only the escape character
-      (\033) through. </p>
+      sailing.  Incidentally, the there may be problems if you let
+      <i>all</i> high-ASCII characters through, which is why DGD
+      doesn't do it by default.  You may want to be more selective and
+      just let the ones you care about through.  The best option is
+      usually just to install the ANSI color package rather than
+      mucking around in the source unless you already know what you're
+      doing -- it'll let only the escape character (\033)
+      through, which is all you need for ANSI color.
+    </p>
 
-    <p>To enable non-English character codes you'll need to either
-      do the above hack, not just the ANSI Color package, or you'll
-      need to specifically let through the foreign character codes
-      you plan to allow.  You'll need to find out their ASCII values
-      or ranges and add them to the if statement.</p>
+    <p>
+      To enable non-English character codes you'll need to hand-patch.
+      You can either do the 0xff hack above or specifically let
+      through the foreign character codes you plan to allow.  You'll
+      need to find out their ASCII values or ranges and add them to
+      the if statement.
+    </p>
 
-    <p>If you've got the net package installed, you'll need to
+    <p>
+      If you've got the net package installed, you'll need to
       search comm.net.c for the same line and replace it where it
-      occurs in that file as well.</p>
+      occurs in that file as well.
+    </p>
 
-    <p> As of DGD 1.2.41, there's another possibility if you're
+    <p>
+      As of DGD 1.2.41, there's another possibility if you're
       willing to play with telnet codes, or if you don't care about
       them.  Since you can now have as many telnet or binary ports
       as you feel like, you could just make your primary MUD port a
       <i>binary</i> port, it'll let all high-ASCII characters
       through, and you're still compatible with stock DGD rather
-      than requiring patches. </p>
+      than requiring patches.
+    </p>
   </a>
 
     <hr> </hr>
@@ -454,7 +469,7 @@ patch -p 0 < patches/1.2.46-1.2.47
     <address><a href="mailto:angelbob-remove-spamfree@spamfree.monkeyspeak.com">Noah Gibbs</a></address>
     <!-- Created: Mon Jun 11 21:50:30 PDT 2001 -->
     <!-- hhmts start -->
-Last modified: Fri Mar 14 05:14:28 PST 2003
+Last modified: Wed Jun 18 00:36:37 PDT 2003
 <!-- hhmts end -->
   </body>
 </html>

@@ -37,14 +37,25 @@
       thread, all the clones get upgraded.  That's pretty cool.  You
       can recompile a library, and from then on any new objects that
       inherit it get the new version.  Also cool.  Unfortunately, old
-      objects can't just switch which version of the code they use,
-      so they're stuck with the old version of the library.  In the
+      objects can't just switch which version of the parent class's code
+      they use,
+      so they're stuck with the old version of the library until you
+      recompile them (after destructing and recompiling the library).
+    </p>
+
+    <p>
+      In the
       Kernel MUDLib you can deal with that -- just destruct the old
       version and recompile the clonable (see Issues, below, for
       an example).  That'll upgrade all the clones, give you the
-      library, and everything stays copacetic. </p>
+      library, and everything stays copacetic.  Since a library has
+      no clones and no data, when you destruct it and recompile, you
+      lose nothing.  Since the clonable has nothing inherit from it,
+      you don't need to destruct it and recompile for the benefit of
+      <i>its</i> child classes (since it has none).
+    </p>
 
-    <p> So what if you <i>don't</i> do that -- Melville and 2.4.5
+    <p> So what if you <i>don't</i> do that?  Melville and 2.4.5
       both get away without doing any of this.  The answer is that
       you can't upgrade some objects when the MUD is running, so
       you can kiss full-on persistence goodbye.  To understand
@@ -58,7 +69,11 @@
       able to destruct it and compile a new one so that the classes
       that inherit from it could get a new version.  But that's a
       problem...  You'd have to lose all the data in all the clones
-      when you destructed it!  That's a disaster... </p>
+      when you destructed it!  So it can be both upgradable and
+      clonable, but you couldn't upgrade its functions in its child
+      classes without getting rid of all the clones...  You can see
+      why the Kernel Library just separates inheritables and clonables.
+    </p>
 
     <p> Could you make a different tradeoff to avoid having both
       child objects and clones?  Probably.  For instance, you could
@@ -68,11 +83,13 @@
       that, but the Kernel MUDLib's is simple, reliable and
       it works.  If you want a different one, you can write a
       different MUDLib (or modify the Kernel MUDLib) to show us
-      all how much better the world would be with your version... </p>
+      all how much better the world would be with your version...
+    </p>
 
     <p> With great power comes great responsibility, to quote an old
       comic book character you've all heard of.  So the Kernel MUDLib
-      makes a tradeoff -- you can recompile the whole hog if you want
+      makes a tradeoff -- you can recompile everything in the MUD
+      if you want
       to, but in return you have this set of restrictions. </p>
 
     <hr> </hr>
