@@ -70,6 +70,11 @@ private mapping dest_issues;
 private object* upgrade_clonables;
 private int     upgrade_callout;
 
+/* Mapping of directories and AUTO objects.  If an object has one of
+   these directories as a prefix, it will use the specified AUTO
+   object. */
+private mapping auto_objects;
+
 private void   unregister_inherit_data(object issue);
 private void   register_inherit_data(object issue);
 private void   call_upgraded(object obj);
@@ -104,6 +109,7 @@ static void create(varargs int clone)
   all_libs = ([ ]);
   comp_dep = ({ });
   upgrade_clonables = ({ });
+  auto_objects = ([ ]);
 
   if(!find_object(ISSUE_LWO))
     compile_object(ISSUE_LWO);
@@ -114,6 +120,9 @@ static void create(varargs int clone)
 }
 
 void destructed(int clone) {
+  if(!SYSTEM())
+    return;
+
   destruct_object(obj_issues);
 }
 
@@ -454,8 +463,8 @@ private void transfer_clones(object old_issue, object new_issue) {
   }
 }
 
-private convert_inherited_str_to_mixed(string *inherited, mixed* inh_obj,
-				       string path) {
+private void convert_inherited_str_to_mixed(string *inherited, mixed* inh_obj,
+					    string path) {
   int    tmp_idx, ctr;
   object tmp_issue;
 
@@ -929,12 +938,12 @@ void compile_failed(string owner, string path)
   }
 }
 
-/* #include "AUTO" special case */
+/* Non-System files can inherit from a nonstandard AUTO object if the
+   ObjectD returns one.  This is where that happens. */
 string path_special(string compiled)
 {
-  if(previous_program() == DRIVER) {
-    return SECOND_AUTO_HEADER;
-  }
+
+
   return "";
 }
 
@@ -961,7 +970,7 @@ int forbid_inherit(string from, string path, int priv)
 }
 
 
-/*** Funcs called by the system at large ***/
+/*** API Funcs called by the system at large ***/
 
 /* Security is handled here by allowing the setup only once, and the
    fact that the operation gives information only to this object. */
@@ -971,6 +980,9 @@ void do_initial_obj_setup(void) {
   /* For object iteration: */
   object  index, first;
   object* obj_arr;
+
+  if(!SYSTEM())
+    return;
 
   if(setup_done) return;
   setup_done = 1;
@@ -987,6 +999,9 @@ string destroyed_obj_list(void) {
   int     ctr, idx;
   object  issue;
   string  ret;
+
+  if(!SYSTEM())
+    return nil;
 
   ret = "Objects:\n";
   keys = map_indices(dest_issues);
@@ -1019,6 +1034,9 @@ string report_on_object(string spec) {
   int    ctr, lib;
   mixed* arr, status;
   mixed  index;
+
+  if(!SYSTEM())
+    return nil;
 
   if(sscanf(spec, "#%d", index) || sscanf(spec, "%d", index)) {
     issue = obj_issues->index(index);
@@ -1171,6 +1189,9 @@ mixed* od_status(mixed obj_spec) {
   object issue;
   int    index;
 
+  if(!SYSTEM())
+    return nil;
+
   if(typeof(obj_spec) == T_INT) {
     index = obj_spec;
     issue = obj_issues->index(obj_spec);
@@ -1204,6 +1225,9 @@ mixed* od_status(mixed obj_spec) {
 void recompile_auto_object(object output) {
   int    ctr, ctr2;
   mixed* keys, *didnt_dest;
+
+  if(!SYSTEM())
+    return;
 
   /* This will always be logged at this level */
   LOGD->write_syslog("Doing full rebuild...", LOG_NORMAL);
