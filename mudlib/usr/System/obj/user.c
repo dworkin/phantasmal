@@ -1,4 +1,4 @@
-/* $Header: /cvsroot/phantasmal/mudlib/usr/System/obj/user.c,v 1.70 2003/11/29 09:03:29 angelbob Exp $ */
+/* $Header: /cvsroot/phantasmal/mudlib/usr/System/obj/user.c,v 1.71 2003/11/29 23:22:53 angelbob Exp $ */
 
 #include <kernel/kernel.h>
 #include <kernel/user.h>
@@ -667,6 +667,17 @@ private void player_login(void)
     body = MAPD->get_room_by_num(body_num);
   }
 
+  if(body && body->get_mobile()
+     && body->get_mobile()->get_user()) {
+    LOGD->write_syslog("User is already set for this mobile!",
+		       LOG_ERROR);
+    message("Body and mobile files are misconfigured!  Internal error!\r\n");
+
+    body_num = -1;
+    body = nil;
+  }
+
+
   if(!body) {
     location = start_room;
 
@@ -729,14 +740,6 @@ private void player_login(void)
       mobile = clone_object(USER_MOBILE);
       MOBILED->add_mobile_number(mobile, -1);
       mobile->assign_body(body);
-    }
-
-    if(mobile->get_user()) {
-      LOGD->write_syslog("User is already set for this mobile!",
-			 LOG_ERROR);
-      message("Body and mobile files are misconfigured!  Internal error!\r\n");
-      error("Internal error!");
-      return;
     }
 
     mobile->set_user(this_object());
@@ -1203,29 +1206,6 @@ static void cmd_tell(object self, string cmd, string str) {
     message(cmd + " <user> <text>\r\n");
   } else {
     user->message(Name + " tells you: " + str + "\r\n");
-  }
-}
-
-static void cmd_ask(object self, string cmd, string str) {
-  object user;
-  string username;
-
-  if (sscanf(str, "%s %s", username, str) != 2 ||
-      !(user=user::find_user(username))) {
-    if (str == nil || strlen(str) == 0) {
-      message("Usage: ask <text>\r\n" + 
-	      "    or ask <user> <text>\r\n");
-      return;
-    } else {
-      user = nil;
-    }
-  } else {
-    /* for the moment ask just behaves like a whisper.
-       This may change later */
-    if(sizeof(explode(str, "?")) > 1)
-      mobile->ask(user, str);
-    else
-      mobile->ask(user, str + "?");
   }
 }
 
