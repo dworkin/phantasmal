@@ -5,6 +5,8 @@
  */
 
 #include <limits.h>
+#include <type.h>
+#include <parser.h>
 #include "config.h"
 
 /* code for enabling super-verbose logging */
@@ -14,11 +16,15 @@
 #define LOG(x)
 #endif
 
+/* number of ambiguities to keep */
+#define NUM_KEEP 5
+
 string grammar;
 mapping ones;
 mapping tens;
 
 static void upgraded(varargs int clone);
+static string uncomment_file(string file);
 
 static void create(varargs int clone) {
   if (clone) {
@@ -45,15 +51,38 @@ static void upgraded(varargs int clone) {
           "forty" : 40, "fourty" : 40, "fifty" : 50, "sixty" : 60,
 	  "seventy" : 70, "eighty" : 80, "ninety" : 90 ]);
 
+  grammar = uncomment_file(grammar);
+
   LOG("Loaded grammar:\n");
   LOG(grammar);
   LOG("\n");
 }
 
+/* Function for removing comments from the grammar file.  A comment is
+ * anything which starts with the pound ('#') sign.
+ */
+
+static string uncomment_file(string file) {
+  string *lines;
+  string result;
+  int i, j;
+
+  result = "";
+
+  lines = explode(file, "\n");
+  for(i = 0; i < sizeof(lines); ++i) {
+    if (strlen(lines[i]) > 0 && lines[i][0] != '#') {
+      result += lines[i] + "\n";
+    }
+  }
+
+  return result;
+}
+
 /* function for parsing commands */
 mixed *parse_cmd(string cmd){
   LOG("Parsing string: " + cmd + "$\n");
-  return parse_string(grammar, cmd);
+  return parse_string(grammar, cmd, NUM_KEEP);
 }
 
 /* function for binding noun phrases */
@@ -132,3 +161,153 @@ static mixed *thou2num(mixed *token) {
     return ({ token[0]*1000 + token[size-1] });
   }
 }
+
+/* Functions for "and" and "or" joins */
+static mixed *and_join(mixed *token) {
+  return ({ ({ JOIN_AND, token[0], token[2] }) });
+}
+
+static mixed *sub_join(mixed *token) {
+  return ({ ({ JOIN_SUB, token[0], token[2] }) });
+}
+
+/* or_join -- this phrase should be interpreted one or the other way, but not
+ * both.  Not sure that this function is useful, should be able to deal with
+ * this, since this is how parse_string() will represent ambiguities 
+ * (I think).
+ */
+static mixed *or_join(mixed *token) {
+  return ({ ({ ({ token[0] }) , ({ token[2] }) }) });
+}
+
+/* noun depthifying functions */
+/* noun phrases have the following format:
+ * ({ PHR_NOUN, <descriptor>, <number>, <owner>, <adj1>, <adj2>, ..., <adjN> })
+ * 
+ * In addition there are the following special nouns:
+ * Everything: ({ PHR_NOUN, "all", INT_MAX, nil })
+ * Pronouns:
+ *    He: ({ PHR_NOUN, "he", 1, nil })
+ *    She: ({ PHR_NOUN, "she", 1, nil })
+ *    It: ({ PHR_NOUN, "it", 1, nil })
+ */
+static mixed* noun_all(mixed *token) {
+  return ({ ({ PHR_NOUN, "all", INT_MAX, nil }) });
+}
+
+static mixed *noun(mixed *token) {
+  /* very last token is the noun -- all previous tokens are adjectives */
+  return ({ ({ PHR_NOUN, token[sizeof(token)-1], 1, nil }) + token[0..sizeof(token)-2] });
+}
+
+static mixed *noun_pronoun(mixed *token) {
+  return ({ ({ PHR_NOUN, token[0], 1, nil }) });
+}
+
+static mixed *noun_repeat(mixed *token) {
+  return ({ ({ PHR_NOUN, token[sizeof(token)-1], token[0], nil }) 
+	      + token[1..sizeof(token)-2] });
+}
+
+static mixed *noun_owned(mixed *token) {
+  return ({ ({ PHR_NOUN, token[sizeof(token)-1], 1, token[0] }) 
+	      + token[2..sizeof(token)-2] });
+}
+
+static mixed *noun_owned_repeat(mixed *token) {
+  mixed *noun_phrase;
+  /* toklen is the number of adj/owner/num tokens (exclues the noun). */
+  int i, toklen;
+  
+  /* set up the noun phrase.  Assume last word is the noun, but don't know
+   * much else about the noun phrase yet, so put in bogus values.
+   */
+  toklen = sizeof(token) - 1;
+  noun_phrase = ({ PHR_NOUN, token[toklen], 1, nil });
+
+  for (i = 0; i < toklen; ++i) {
+    switch (typeof(token[i])) {
+    case T_STRING:
+      /* adjective, add to end of noun phrase */
+      noun_phrase += ({ token[i] });
+      break;
+    case T_INT:
+      /* number of objects */
+      noun_phrase[NPR_NUMBER] = token[i];
+      break;
+    case T_ARRAY:
+      if (typeof(token[i][NPR_TYPE]) == T_INT && token[i][NPR_TYPE] == PHR_NOUN) {
+	/* this token is the owner */
+	noun_phrase[NPR_OWNER] = token[i];
+
+	/* kill the next token, this indicates possesive */
+	++i;
+      } else {
+	LOGD->write_syslog("Got a phrase I'm not quite sure what to do with.\r\n");
+	LOGD->write_syslog(STRINGD->mixed_sprint(token[i]) + "\r\n");
+      }
+      break;
+    default:
+      error("Unexpected type of argument in noun_owned_repeat()");
+    }
+  }
+
+  return noun_phrase;
+}
+
+/* function for handing prepositional phrases */
+/* all prepositional phrases are preposition, noun phrase */
+
+static mixed *prep(mixed *tokens) {
+  return ({ ({ PHR_PREP, tokens[0], tokens[1] }) });
+}
+
+/* function for handling verb phrases */
+/* all verb phrases are a verb, followed by one or more noun or prepositional
+ * phrase */
+
+static mixed *verb(mixed *tokens) {
+  return ({ ({ PHR_VERB }) + tokens });
+}
+
+/* function for parsing to an adjective phrase */
+static mixed *adject(mixed *tokens) {
+  int i;
+  mixed *phr;
+  mixed noun;
+
+  phr = ({ });
+  noun = tokens[sizeof(tokens) - 1];
+
+  for (i = sizeof(tokens); i-- > 0; ) {
+    switch(typeof(tokens[i])) {
+    case T_STRING:
+      if (tokens[i] == "of") { 
+	--i;
+	/* the noun is the string right before the "of" */
+	/* This code is dead at the moment, pending better handling of "of"
+	 * type constructs */
+	noun = tokens[i];
+	break;
+      } else {
+	phr = ({ tokens[i] }) + phr;
+      }
+      break;
+    case T_ARRAY:
+      if (tokens[i][NPR_TYPE] == ADJ_NPR) {
+	tokens[i][NPR_TYPE] = ADJ_NPR;
+      }
+      phr = ({ tokens[i] }) + phr;
+      break;
+    }
+  }
+
+  /* add the noun to the end of the phrase, if it's not already there */
+  if (phr[sizeof(phr)-1] != noun) {
+    phr += ({ noun });
+  }
+
+  return phr;
+}
+
+

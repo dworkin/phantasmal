@@ -1,4 +1,4 @@
-/* $Header: /cvsroot/phantasmal/mudlib/usr/System/obj/user.c,v 1.63 2003/04/01 11:21:32 angelbob Exp $ */
+/* $Header: /cvsroot/phantasmal/mudlib/usr/System/obj/user.c,v 1.64 2003/04/12 00:23:09 kdunwoody Exp $ */
 
 #include <kernel/kernel.h>
 #include <kernel/user.h>
@@ -992,7 +992,7 @@ static void cmd_parse(object user, string cmd, string str) {
   if (output == nil) {
     message("FAILED!\r\n");
   } else {
-    message("PARSED!\r\n" + STRINGD->mixed_sprint(output) + "\r\n");
+    message("PARSED!\r\n" + STRINGD->tree_sprint(output, 0) + "\r\n");
   }
 }
 

@@ -1,5 +1,8 @@
+# Punctuation -- treated like the seperator between two commands
+# commas are ignored (part of the def'n of whitespace)
 punct = /[\.;!:?]/
-pronoun = /((him)|(her)|(it))/
+
+# Rules for parsing numbers
 digit = /[0-9]/
 digit2 = /[0-9][0-9]/
 digit3 = /[0-9][0-9][0-9]/
@@ -8,7 +11,23 @@ wnum = /((zero)|(one)|(two)|(three)|(four)|(five)|(six)|(seven)|(eight)|(nine))/
 teens = /((ten)|(eleven)|(twelve)|(thirteen)|(fourteen)|(fifteen)|(sixteen)|(seventeen)|(eighteen)|(ninteen))/
 wtens = /((twenty)|(thirty)|(forty)|(fourty)|(fifty)|(sixty)|(seventy)|(eighty)|(ninty))/
 
-prep = /((on)|(from)|(into)|(at)|(towards))/
+# Basic types of words, for which there is very little ambiguity
+prep = /((on)|(from)|(into)|(at)|(towards)|(to))/
+pronoun = /((him)|(her)|(it))/
+
+# Matches for different types of words.  The naming format is as follows:
+# *v -- verb.  * can be one (or more) of the following -- not too sure
+#       about the terminology here though, what's in brackets is what it 
+#	really  means:
+#    i - intransitive (no arguments)
+#    t - transitive (one argument)
+#    b - bitransitive (two arguments)
+# n -- noun
+# adj -- adjective
+#
+# - All words are treated as being either an adjective or a verb by default
+# - Junk in the match (such as @@AA@@) indicates that there are none of that
+#   type of word yet, but it's left for expansion
 
 iv = /((users)|(who)|(whoami)|(but)|(typo)|(idea)|(i(nv(entory)?)?))/
 iv_n = /@@AA@@/
@@ -49,24 +68,35 @@ n = /@@Y@@/
 adj = /@@Z@@/
 n_adj = /[a-zA-Z]+/
 
+# Start of real rules
+
+# A line.  Lines can consist of one or more sentances (each independent
+# actions).
 line: sentence 
 line: sub_line 
 line: sub_line sentence 
 line: 
 
+# Recursive part of the line definition
 sub_line: sentence punct 
 sub_line: sub_line sentence punct 
 
+# Sentences are as usually defined.  These can have one or more clauses, which
+# are treated like seperate sentences for the sake of the MUD.
 sentence: clause 
 sentence: sentence 'and' clause 
 sentence: sentence 'but' clause
 
-clause: iverb
-clause: tverb np
-clause: tverb pp
-clause: bverb np pp
-clause: bverb pp pp
+# Clauses -- the basic action.  Usually each clause is converted into one
+# action, although clauses with more than one target (ie get all) are
+# converted into one action per target
+clause: iverb ? verb
+clause: tverb np ? verb
+clause: tverb pp ? verb
+clause: bverb np pp ? verb
+clause: bverb pp pp ? verb
 
+# All different kinds of intransitive verbs
 iverb: iv
 iverb: iv_n
 iverb: iv_n_adj
@@ -84,6 +114,7 @@ iverb: itbv_n
 iverb: itbv_n_adj
 iverb: itbv_adj
 
+# All kinds of transitive verbs
 tverb: tv
 tverb: tv_n 
 tverb: tv_n_adj
@@ -101,6 +132,7 @@ tverb: itbv_n
 tverb: itbv_n_adj
 tverb: itbv_adj
 
+# All kinds of bi-transitive verbs
 bverb: bv_n
 bverb: bv_n_adj
 bverb: bv
@@ -118,6 +150,7 @@ bverb: itbv_n_adj
 bverb: itbv
 bverb: itbv_adj
 
+# all kinds of nouns
 noun: n
 noun: n_adj
 noun: iv_n
@@ -135,6 +168,7 @@ noun: itbv_n_adj
 noun: ibv_n
 noun: ibv_n_adj
 
+# All kinds of adjectives
 adject: adj
 adject: n_adj
 adject: iv_n_adj 
@@ -154,35 +188,58 @@ adject: itbv_adj
 adject: tbv_n_adj
 adject: tbv_adj
 
+# Parsing possessive -- usually indicates the action refer's to a detail,
+# or the contents of a person or thing, although could also be an adjective.
+# This ambiguity is at the binder level, rather than the parser level though.
 possess: npr '\'s'
 possess: npr '\''
 
-npr: 'all'
-npr: 'everything'
-npr: adjp noun
-npr: possess adjp noun
-npr: pronoun
-npr: det adjp noun
-npr: num adjp noun
-npr: possess det adjp noun
-npr: possess num adjp noun
-npr: det possess adjp noun
-npr: num 'of' possess adjp noun
+# Non-recursive definitions of noun phrases.  (npr stands for noun phrase
+# right-side, since this is where it appears in the noun phrase rules)
 
+# Special "everything rules"
+npr: 'all' ? noun_all
+npr: 'everything' ? noun_all
+
+# All other noun phrase rules
+npr: adj_noun ? noun
+npr: possess adj_noun ? noun_owned
+npr: pronoun ? noun_pronoun
+npr: det adj_noun ? noun_repeat
+npr: num adj_noun ? noun_repeat
+npr: possess det adjp adj_noun ? noun_owned_repeat
+npr: possess num adjp adj_noun ? noun_owned_repeat
+npr: det possess adjp adj_noun ? noun_owned_repeat
+npr: num 'of' possess adj_noun ? noun_owned_repeat
+npr: num possess adj_noun ? noun_owned_repeat
+
+adj_noun: adjp noun ? adject
+# This rule is really just a special case of a more general rule,
+# which should include stuff like "get pail containing the yak", etc.
+# Need to deal with this later.
+#adj_noun: adjp noun 'of' np ? adject
+
+# Noun phrase rules
 np: npr
-np: np 'and' npr
-np: np 'except' npr
+np: np 'or' npr ? or_join
+np: np 'and' npr ? and_join
+np: np 'except' npr ? sub_join
 
+# Adjective phrase rules -- covers any number of adjectives
 adjp:
 adjp: adjp adject
 
-pp: prep np
+# Prepositional rule -- basically a preposition, followed by a noun phrase
+pp: prep np ? prep
 
+# Special rules for specifying the number of something
 det: 'all' ? num_all
+det: 'all' 'the' ? num_all
 det: 'no' ? num0
 det: 'a' ? num1
 det: 'the' ? num1
 
+# Rules for specifying a number of something
 num: 'all' ? num_all
 num: 'none' ? num0
 num: 'all' 'but' num ? all_but_num
