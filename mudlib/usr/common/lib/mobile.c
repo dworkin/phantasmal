@@ -50,12 +50,6 @@ object get_body(void) {
   return body;
 }
 
-/* This function is just an alias for assign_body */
-void set_body(object new_body) {
-  assign_body(new_body);
-}
-
-
 object get_user(void) {
   /* return nil, the default mobile doesn't have a user */
   return nil;
