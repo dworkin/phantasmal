@@ -1,0 +1,11 @@
+Release 0.10:
+
+	* Merged in Keith Dunwoody's patch for merging PORTABLED and MAPD.
+	* (New hooks for MOBILEs are included in that patch)
+	* Added Jay Shaffstall's patch for escape character codes in UNQ
+	parsers.
+	* Added MOBILED to track mobiles
+	* Updated some zone-related commands to save zones across reboots
+	and to create objects in the current zone by default (@new_port,
+	@new_room).
+	* New @list_mob command to list mobiles by number
