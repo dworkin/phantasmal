@@ -13,10 +13,9 @@ static void create(varargs int clone) {
 
 int from_user(string input) {
   if(input == "~" || input == "~\n") {
-    if(full_block) {
-      pass_data(full_block);
-      full_block = nil;
-    }
+    pass_data(full_block ? full_block : "");
+    full_block = nil;
+
     pop_state();
     return MODE_ECHO;
   }
