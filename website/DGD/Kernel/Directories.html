@@ -19,7 +19,8 @@
       document can get you started. </p>
 
     <p> Where you put stuff is surprisingly important.  The Kernel
-      MUDLib hardcodes a <i>lot</i> of behavior according to paths.
+      MUDLib hardcodes a <i>lot</i> of behavior according to the path
+      to a given file.
       That includes a lot of information about who has access to what,
       and whether an object is inheritable, clonable or an LWO.  So
       let's hit some basic guidelines. </p>
@@ -29,51 +30,59 @@
     <p> You'll need to put a &quot;/lib/&quot; directory somewhere in
       the path to every library (inheritable).  The Kernel MUDLib
       requires it.  It's good practice.  It's good documentation.  Do
-      it. </p>
+      it.  You'll also need to <i>not</i> put &quot;/obj/&quot; or
+      &quot;/data/&quot; anywhere in that path. </p>
 
     <p> If you're using lightweight objects (LWOs), you'll need to do
       the same with a &quot;/data/&quot; directory in the path.  This
       isn't required for the libraries that the LWO object inherits.
-      Those use &quot;/lib/&quot; just like any other library. </p>
+      Those use &quot;/lib/&quot; just like any other library.  Again,
+      you can't put &quot;/lib/&quot; or &quot;/obj&quot; anywhere in
+      the path or you won't be able to use it as an LWO. </p>
 
-    <p> There's a strong convention that clonables should have
-      &quot;/obj/&quot; in their path in the same way.  You don't have
-      to do it for every object with data.  In fact, daemons (below)
-      are a common, specific example of an object with data, that you
-      can call functions on, that doesn't tend to have &quot;obj&quot;
-      in the path.  It's still highly recommend, and for objects you
-      actually want to clone, it's required.  Besides, it's good
+    <p> Clonables should have
+      &quot;/obj/&quot; in their path in the same way, and not have
+      &quot;/lib/&quot; or &quot;/data/&quot;.  You don't have
+      to do it for every object with data, just the ones you want
+      to use clone_object() on.  In fact, daemons (below)
+      are a common, specific example of an object with data that you
+      can call functions on.  They don't tend to have &quot;obj&quot;
+      in the path.  It's still recommend that you do it in most cases,
+      and it's required for objects you
+      actually want to clone.  Besides, it's good
       documentation for other people looking at your MUDLib. </p>
 
     <p> Daemons are objects like any others, but they're meant to be
       used by doing a find_object on them and calling their methods
-      with call_other.  They may have guards in their create()
-      routines that prevent cloning, though that's not usually
-      necessary.  It's good documentation, though.  Daemons often wind
+      with call_other.  Daemons often wind
       up in a directory with &quot;/sys/&quot; in the name instead of
-      &quot;/lib/&quot; or &quot;/obj/&quot;.  This is purely
+      &quot;/lib/&quot;, &quot;/data/&quot; or &quot;/obj/&quot;.  This
+      is purely
       optional, mostly a form of documentation.  You're just saying
       that you plan to use objects in that directory as daemons. </p>
 
     <h2> What about Data? </h2>
 
-    <p> This one's important too, but for different reasons.  The
-      Kernel MUDLib doesn't explicitly prevent paths from being opened
-      with read_file(), which is the way pretty much any data file is
-      accessed.  But different paths require different permissions to
-      access.  For instance, stuff in &quot;/usr/System&quot; is
-      readable and writable only by the privileged admin user by
-      default. </p>
+    <p> This one's important too, but for different reasons.  You
+      don't need to have a particular piece of your path to open a
+      file with read_file().  But different paths require different
+      permissions to access.  For instance, stuff in
+      &quot;/usr/System&quot; is readable and writable only by the
+      privileged admin user (by default) and by anybody you explicitly
+      grant access to.  In general, permissions are given by directory
+      and you'll want to set aside a place somewhere under /usr/
+      to put any given piece of data. </p>
 
-    <p> You may not want to keep the user data there.  While passwords
-      are encrypted, you may need to give certain wizards read access
+    <p> Files with passwords in them are a good example.  While passwords
+      are encrypted, they're not unbreakable, so often you want to avoid
+      giving people read access.  That keeps them from using a password
+      cracking program, or at least makes it harder.  You may need to
+      give certain wizards read access
       to System but not want them to be able to read all the
-      save files.  If so (or out of sense of following
-      conventions) you should probably move it to /save, which is not
-      only not world-readable, but has specific guards in the Kernel
-      Library for additional security.  It's a great place to put private
-      stuff that only very privileged code can access.  It's meant to
-      be. </p>
+      save files.  By putting the save files somewhere else (say under
+      /usr/Secret or something), you can prevent anybody that isn't
+      a full-on admin from being able to read or write the user data
+      files. </p>
 
     <h2> What directories does the Kernel Library treat specially? </h2>
 
@@ -83,34 +92,91 @@
     </p>
 
     <ul>
+
       <li> A lot of Kernel MUDLib functions can only be called from
-        objects under /usr/System. </li>
-      <li> The /kernel and /include/kernel directories are guaranteed
-        writable to nobody. </li>
+        objects under /usr/System.  Objects under /usr/System are also
+        allowed to read and write a lot of things automatically,
+        without having to check permissions.  They're also the only
+        objects that can inherit from objects under /kernel.  Only
+        objects under /usr/System may destruct objects that they don't
+        own, though even they can't destruct an object under /kernel.
+        Only objects under /usr/System are allowed to call swapout(),
+        dump_state(), and shutdown() usefully. </li>
+
+      <li> Only objects <i>outside</i> the /usr/System directory can
+        have a special nonstandard AUTO object. </li>
+
+      <li> The /kernel and /include/kernel directories and their
+        subdirectories are guaranteed writable to nobody.  Files under
+        /kernel or /include/kernel may not be written to or deleted.
+        Directories cannot be made or destroyed there, and files
+        cannot be renamed to or from those directories.  Objects under
+        /kernel can only be cloned by other objects under
+        /kernel. </li>
+
       <li> You can't call_other on any object with /lib in its path.
-        </li>
-      <li> You can only inherit objects with /lib in their paths.</li>
-      <li> Objects with /kernel in the path can only be inherited by
-        objects in /usr/System </li>
-      <li> Only objects outside the System directory can have a special
-        nonstandard AUTO object. </li>
+        You can't find those objects with find_object(), you can't
+        call their functions.  You can only inherit objects with /lib
+        in their paths and without /obj/ or /data/ in their paths. </li>
+
       <li> Files with /include in the path can always be included,
         regardless of read access. (TEST ME, with and without a '..'
 	in the path) </li>
+
       <li> Objects in /kernel have no maximum rlimits(), so they could
-        theoretically loop infinitely or crash for lack of stack space.
-        In practice, this essentially never happens. </li>
-      <li> Objects in /usr/System may voluntarily choose not to limit
-        their number of ticks in rlimits().  This means they may occasionally
-	loop infinitely, especially if coded poorly. </li>
+        theoretically loop infinitely or crash for lack of stack
+        space.  In practice, this essentially never happens.  Objects
+        in /usr/System may voluntarily choose not to limit their
+        number of ticks in rlimits().  This means they may
+        occasionally loop infinitely, especially if coded
+        poorly. </li>
+
       <li> Files outside /usr, or in /usr/foo/open (for any value of foo)
         are readable to everybody.  Except stuff in /kernel/data, that's
 	not necessarily open to reading. </li>
-      <li> A user has full access of every kind to stuff in his own
-        directory.  So do objects from that user's directory. </li>
-      <li> The default wiztool library won't clone or destruct objects
-        from /kernel by default.  That can be overridden, though. </li>
-      <li> (Finish checking kernel/lib dir)</li>
+
+      <li> A user has full access of every object and file under his
+        own home directory.  Objects under that user's directory have
+        full access to each other, and to files under the user's home
+        directory. </li>
+
+      <li> The create() function that gets called automatically on an
+        object will be called with the 'clone' argument only if /obj/
+        or /data/ is in the object's path.  Otherwise it will be called
+	with no argument. </li>
+
+      <li> Libraries not under /kernel require you to have read access
+        to compile them.  Non-libraries, anything under /kernel, and
+        anything compiled from sources requires write access instead
+        of read access if you want to compile it.  There's an
+        exception if the object doing the compiling is under
+        /usr/System.  And anything not under a /usr/XXX directory can
+        be compiled by anybody.
+        </li>
+
+      <li> An object must have an /obj/ in its path, but no /data/ or
+        /lib/, to be clonable.  Objects outside of the /usr/XXX/ area
+        can't clone another object.  Objects that aren't under
+        /usr/System need read access to an object to clone it. </li>
+
+      <li> Only objects in /usr/System can pass a uid argument to
+        clone_object or new_object.  That's a way to change who owns
+        the new clone or LWO.  You should probably never do
+        this. </li>
+
+      <li> An object to be cloned as an LWO with new_object must have
+        /data/ in the path, but not /obj/ or /lib/. </li>
+
+      <li> Objects outside of /usr/System get an edited call_trace,
+        one with no arguments included. </li>
+
+      <li> Objects outside of /usr/System don't get arguments in the
+        output of status(), and nobody is allowed to see the callouts
+        of objects in /kernel. </li>
+
+      <li> Certain Kernel objects get direct call_outs rather than the
+        usual tracked ones.  If you don't know what this means, don't
+	worry about it.  You'll sleep better. </li>
     </ul>
 
     <hr> </hr>
@@ -123,9 +189,9 @@
       some projects you can undertake to improve your MUDLib. </p>
 
     <p> For instance, a simple thing you can do is to move your user
-      data from its current save location to &quot;/save&quot;, as
-      we suggest above.  Mainly you'll need to modify &quot;user.c&quot;.
-      Go give it a try! </p>
+      data from its current save location to another, as we suggest
+      above.  Mainly you'll need to modify &quot;user.c&quot;.  Go
+      give it a try! </p>
 
     <hr> </hr>
       <a href="http://sourceforge.net">
