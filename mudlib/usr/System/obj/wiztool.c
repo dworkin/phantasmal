@@ -127,6 +127,10 @@ void upgraded(void) {
 	"@segment_map"         : ({ "cmd_segment_map" }),
 	"@seg_map"             : ({ "cmd_segment_map" }),
 	"@segmap"              : ({ "cmd_segment_map" }),
+	"@set_segment_zone"    : ({ "cmd_set_segment_zone" }),
+	"@set_seg_zone"        : ({ "cmd_set_segment_zone" }),
+	"@zone_map"            : ({ "cmd_zone_map" }),
+	"@zonemap"             : ({ "cmd_zone_map" }),
 
 	"%od_report"           : ({ "cmd_od_report" }),
 	"%list_dest"           : ({ "cmd_list_dest" }),
