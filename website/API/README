@@ -1,0 +1,5 @@
+The .api files in these directories are designed to be used either
+standalone or with the apidoc.pl script in the tools directory.  By
+running that script from the top-level API directory, you can generate
+the API documentation from the Phantasmal web pages in an output
+directory called 'html'.
