@@ -22,6 +22,15 @@ Such commands include:
 %full_rebuild    Recompiles all objects
 
 %code            The code command runs arbitrary DGD code
+cd               Various file commands, like in DOS or Unix
+%ed              The DGD editor.
+
+%access          Show admins' permissions
+%rsrc            Shows resource usage
+%quota           Shows quotas and resource usage
+
+%grant           Grant an administrator permissions
+%ungrant         Remove an administrator's permissions
 
 daemons          Help on daemons providing MUD services
 
@@ -169,5 +178,151 @@ so inclined.
 
 It updates by destructing every library (as with the %destruct command) and
 then rebuilding every clonable.
+
+}}
+
+
+~name{~enUS{cd,pwd,ls,cp,mv,rm,mkdir,rmdir}}
+~keywords{admin}
+~desc{
+  ~enUS{
+
+The cd, pwd, ls, cp, mv, rm, mkdir and rmdir commands work like in
+Unix.  For DOS folks, the differences are that cd, typed by itself,
+switches to your home directory instead of printing the current
+directory.  pwd, typed by itself, shows the current directory.  DIR is
+ls, COPY is cp, MOVE is mv.  The rest should be the same.
+
+If you've never used either DOS or Unix, please avoid these commands
+for your own sanity.  They can do serious damage to your MUD without
+you intending anything bad.  If you don't understand them already,
+don't use them.
+
+}}
+
+
+~name{~enUS{%ed,ed,edit}}
+~keywords{admin}
+~desc{
+  ~enUS{
+
+DGD includes a build-in line editor called "ed".  You invoke it by
+typing "%ed", or "%ed <filename>".  This can seriously mess stuff up.
+If you don't already know how to use it, please don't mess with it.
+
+}}
+
+
+~name{~enUS{access,%access,global}}
+~keywords{admin}
+~desc{
+  ~enUS{
+
+%access
+%access <username>
+%access global
+
+The %access command by itself tells you your privileges.  With somebody
+else's name, it tells you their priviliges.  With the word "global"
+afterward, it tells you what areas allow reading by anybody.
+
+}}
+
+
+~name{~enUS{%grant,%ungrant,grant,ungrant}}
+~keywords{admin}
+~desc{
+  ~enUS{
+
+%grant <username> access
+%grant <username> <path> [read|write|full]
+%grant global <path>
+
+%ungrant <username> access
+%ungrant <username> <path>
+%ungrant global <path>
+
+Using the "%grant <user> access" syntax turns a regular user into an
+admin character, giving him significant additional powers.  There's no
+simple, controlled way to do so at this point -- you're definitely
+compromising the security of the MUD if you don't trust the person you
+do this to.
+
+The "%grant <user> <path> [r|w|f]" syntax grants a specific user a
+specific kind of access (read access, write access or full
+administrative access) to a specific location and all its
+subdirectories.  This is the basic way that Kernel library permissions
+work.
+
+The %ungrant command is the opposite of grant, and the corresponding
+syntaxes remove the corresponding permissions.  For instance "%ungrant
+<user> access" will make the targeted character stop being an admin
+character.  Be warned that an unscrupulous user can do that to your
+character as well!
+
+Regardless of anything else you do, the "admin" character retains full
+privileges.  This is an immutable characteristic of the Kernel
+Library.
+
+}}
+
+
+~name{~enUS{permission,permissions}}
+~keywords{admin}
+~desc{
+  ~enUS{
+
+To view a user's permissions, use the %access command.  To add new
+permissions, use the %grant command.  To remove existing permissions,
+use the %ungrant command.
+
+}}
+
+
+~name{~enUS{resource,resources}}
+~keywords{admin}
+~desc{
+  ~enUS{
+
+In-game resources are monitored with the %rsrc and %quota, and set
+with %quota.  See also %grant.
+
+}}
+
+
+~name{~enUS{rsrc,%rsrc}}
+~keywords{admin}
+~desc{
+  ~enUS{
+
+The %rsrc command, by itself, tells you your usage, and the maximum
+allowable usage, for a variety of in-game resources.  Type the command
+and one of the resource names ("tick usage" perhaps, or "callouts")
+and you'll see the usage of that resource for all users on the system.
+
+For most resources, a limit of -1 means there is no maximum.
+
+}}
+
+
+~name{~enUS{quota,%quota}}
+~keywords{admin}
+~desc{
+  ~enUS{
+
+%quota
+%quote <user>
+%quota <user> <resource>
+%quota <user> <resource> <new limit>
+
+The %quota command monitors or sets resource usage for administrators.
+Typed by itself, it shows your usage and maximum for various
+resources.  With a name supplied, it shows the usage and maximum for
+that user.  With a name and a resource name ("tick usage", "ticks",
+"callouts", etc) supplied, it shows that resource for that user.  And
+with that plus a new limit supplied, %quota tries to set that user's
+new maximum for that resource.
+
+For most resources, a limit of -1 means there is no maximum.
 
 }}

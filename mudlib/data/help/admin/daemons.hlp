@@ -81,6 +81,7 @@ provide services.  The current set includes:
 
 EXITD
 MAPD
+MOBILED
 OBJREGD
 OBJECTD
 
