@@ -36,22 +36,14 @@ for most matters, mainly because he writes what pass for laws of
 physics around here.
 }}
 
-~name{~enUS{impbug}}
-~desc{~enUS{
-  This chat command requests help from any implementors logged onto
-the MUD.  One or more should be available to respond to you if the MUD
-is up and available to the public.  Note: overuse of this command
-irritates the implementors.  For why this is bad, see "help
-impmanners".
-}}
-
 ~name{~enUS{complain,complaint,grief,grievance,grumble,issue}}
 ~desc{~enUS{
-Should you wish to lodge a complaint about other players, try using
-the "impbug" command or chatting directly with an admin.  The admin
-will either be understanding in resolving your issues or tell you why
-they cannot be resolved to your satisfaction (some things are against
-MUD policy, or are simply things admins may not touch).
+
+Should you wish to lodge a complaint about other players, try chatting
+with an admin.  The admin will either be understanding in resolving
+your issues or tell you why they cannot be resolved to your
+satisfaction (some things are against MUD policy, or are simply things
+admins may not touch).
 
 If you have a complaint with admin behavior, the current final
 authority is the implementor, or the head admin.  Try to find them
