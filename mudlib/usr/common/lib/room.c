@@ -827,12 +827,16 @@ private string serialize_list(mixed *list) {
     switch(typeof(list[ctr])) {
     case T_INT:
       str_list += ({ "" + list[ctr] });
+      break;
     case T_OBJECT:
       str_list += ({ list[ctr]->get_number() + "" });
+      break;
     case T_STRING:
       str_list += ({ list[ctr] });
+      break;
     default:
-      error("Error in stringifying list -- unacceptable type");
+      error("Error in stringifying list -- unacceptable object "
+	    + STRINGD->mixed_sprint(list[ctr]));
     }
   }
 
