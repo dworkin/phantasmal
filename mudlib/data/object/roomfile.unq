@@ -1,0 +1,170 @@
+~room{
+  ~number{1}
+  ~location{0}
+  ~bdesc{
+    ~enUS{a room}}
+  ~gdesc{
+    ~enUS{a room}}
+  ~ldesc{
+    ~enUS{You see a room here.}}
+  ~nouns{{}}
+  ~adjectives{{}}
+}
+~room{
+  ~number{2}
+  ~location{0}
+  ~bdesc{
+    ~enUS{burrow}
+    ~esUS{burrow}}
+  ~gdesc{
+    ~enUS{a cozy burrow}}
+  ~ldesc{
+    ~enUS{This burrow has been around for a long time, and has been enlarged a couple
+of times.  The walls are entirely dirt, and the floor has tufts of fur
+from rabbits sleeping here at one time and another.
+It looks very cozy.
+}}
+  ~nouns{{}}
+  ~adjectives{{}}
+  ~exit{out: #3 106 107}
+}
+~room{
+  ~number{3}
+  ~location{0}
+  ~bdesc{
+    ~enUS{burrow}}
+  ~gdesc{
+    ~enUS{a cozy burrow}}
+  ~ldesc{
+    ~enUS{This tunnel leads inward toward an old common burrow.  South of
+here you can see a larger tunnel leading away.  The smell is warm and
+cozy.  An old root pokes out through the west wall.  You can see bits of
+fur here and there in different colors.}}
+  ~nouns{{}}
+  ~adjectives{{}}
+  ~exit{s: #4 108 109}
+}
+~room{
+  ~number{4}
+  ~location{0}
+  ~bdesc{
+    ~enUS{tunnel}}
+  ~gdesc{
+    ~enUS{an old tunnel}}
+  ~ldesc{
+    ~enUS{This tunnel runs north-south between an old burrow system north and larger,
+newer digging to the south.  Bits of multicolored fur and small root tips
+can be found in the east and west walls.}}
+  ~nouns{{}}
+  ~adjectives{{}}
+  ~exit{s: #5 110 111}
+}
+~room{
+  ~number{5}
+  ~location{0}
+  ~bdesc{
+    ~enUS{tunnel}}
+  ~gdesc{
+    ~enUS{a worn tunnel}}
+  ~ldesc{
+    ~enUS{This tunnel has been worn quite smooth by the passage of many over a long
+time.  At the moment, though, the grey-brown walls are quite dry and
+slightly crumbly with disuse.}}
+  ~edesc{
+    ~enUS{This tunnel has been worn quite smooth by the passage of many over a long
+time.  At the moment, though, the grey-brown walls are quite dry and
+slightly crumbly with disuse.  It's surprising there isn't more dirt and
+dust from the walls settled on the floor -- it's quite clean here.}}
+  ~nouns{{}}
+  ~adjectives{{}}
+}
+~room{
+  ~number{6}
+  ~location{0}
+  ~bdesc{
+    ~enUS{tomb}}
+  ~gdesc{
+    ~enUS{a room}}
+  ~ldesc{
+    ~enUS{Against the wall of the room, a stuffed wombat's mouth gapes eternally.
+I mean, there's the rest of the wombat too, but it doesn't properly gape.
+Sits, more.  Still.  Peaceful, even.  At least.  Well.  Y'know.  Still.
+
+There's also a large sarcopha- sarca --  a coffin.  And a statue of Ghak'La.
+Rumor has it that he's Messy-In-A-Hideous-Way.}}
+  ~nouns{{}}
+  ~adjectives{{}}
+}
+~room{
+  ~number{8}
+  ~location{6}
+  ~bdesc{
+    ~enUS{statue of Ghak'La The Messy-In-A-Hideous-Way}}
+  ~gdesc{
+    ~enUS{a statue of Ghak'La The Messy-In-A-Hideous-Way}}
+  ~ldesc{
+    ~enUS{This imposing figure looms over the room.  At its base are scattered
+baskets, half-eaten fruit, and several dead animals, all set in
+stone.  Ghak'La must have been Messy-In-A-Hideous-Way.}}
+  ~nouns{{~enUS{ghak'la,ghakla,statue}}}
+  ~adjectives{{~enUS{messy,hideous}}}
+}
+~room{
+  ~number{77}
+  ~location{0}
+  ~bdesc{
+    ~enUS{a flower}}
+  ~gdesc{
+    ~enUS{a flower}}
+  ~ldesc{
+    ~enUS{You stand, somehow, inside a flower.  It's quite beautiful, and you can
+see opalescent light filtering in through the petals.
+}}
+  ~edesc{
+    ~enUS{You see some bits!}}
+  ~nouns{{~enUS{room,test}}}
+  ~adjectives{{~enUS{test}}}
+  ~exit{out: #0 104 105}
+}
+~room{
+  ~number{79}
+  ~location{0}
+  ~bdesc{
+    ~enUS{a flower}
+    ~esUS{un flor}}
+  ~gdesc{
+    ~enUS{a flower}
+    ~esUS{un flor}}
+  ~ldesc{
+    ~enUS{You stand in the center of a flower, which extends west and south.
+}
+    ~debugUS{You stand, somehow, inside a flower.  It's quite beautiful, and you can
+see opalescent light filtering in through the petals.
+}}
+  ~edesc{
+    ~enUS{You see some bits!}}
+  ~nouns{{~enUS{room,test}}}
+  ~adjectives{{~enUS{test}}}
+  ~exit{w: #77 100 101}
+}
+~room{
+  ~number{81}
+  ~location{0}
+  ~bdesc{
+    ~enUS{a flower}}
+  ~gdesc{
+    ~enUS{a flower}}
+  ~ldesc{
+    ~enUS{You stand in a beautiful white flower with yellow-pink highlights from
+the light filtering in.  The flower extends north and you can see it
+bending away west from there.
+}
+    ~debugUS{You stand, somehow, inside a flower.  It's quite beautiful, and you can
+see opalescent light filtering in through the petals.
+}}
+  ~edesc{
+    ~enUS{You see some bits!}}
+  ~nouns{{~enUS{room,test}}}
+  ~adjectives{{~enUS{test}}}
+  ~exit{n: #79 102 103}
+}

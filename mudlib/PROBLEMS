@@ -1,0 +1,40 @@
+How to Deal with Some Common Problems
+
+Q: I try to run DGD, but I get things that look like this:
+
+     Error within runtime_error:
+     Compilation within compilation
+     Compilation within compilation
+     Config error: initialization failed
+
+A: You probably haven't linked or copied an appropriate Kernel MUDLib
+into the Kernel subdirectory of your installation of Phantasmal.  Make
+sure that's done and try again.
+
+
+Q: I try to run DGD, but I get things that look like this:
+
+     /kernel/sys/driver.c, 1: cannot include "kernel/kernel.h"
+     /kernel/sys/driver.c, 2: cannot include "kernel/objreg.h"
+     /kernel/sys/driver.c, 3: cannot include "kernel/rsrc.h"
+     /kernel/sys/driver.c, 4: cannot include "kernel/access.h"
+     /kernel/sys/driver.c, 5: cannot include "kernel/user.h"
+     /kernel/sys/driver.c, 6: cannot include "kernel/tls.h"
+     Error within runtime_error:
+     Compilation within compilation
+     Compilation within compilation
+     Config error: initialization failed
+
+A: You copied the Kernel MUDLib into the right place, but forgot to
+put its headers into the include/kernel directory.  Make sure that's
+done correctly and try again.
+
+
+
+Q: I run DGD and things look good except that there's no game.  What gives?
+
+A: This is a MUD server.  You'll need to connect to it with a telnet
+client on an appropriate port.  If you're unfamiliar with how the
+whole process works, you may find you're more comfortable trying out
+CircleMUD or another fully developed MUD before trying DGD and
+Phantasmal, which are definitely intended for the experienced crowd.

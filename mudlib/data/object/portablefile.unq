@@ -1,0 +1,103 @@
+~portable{
+  ~number{200}
+  ~location{202}
+  ~bdesc{
+    ~enUS{a turnip}}
+  ~gdesc{
+    ~enUS{a juicy turnip}}
+  ~ldesc{
+    ~enUS{You see a plump, juicy turnip.  Well, I mean, plump and juicy for a turnip.}}
+  ~flags{0}
+  ~nouns{{~enUS{turnip}}}
+  ~adjectives{{~enUS{juicy,plump,large}}}
+}
+~portable{
+  ~number{201}
+  ~location{0}
+  ~bdesc{
+    ~enUS{a limp weasel}}
+  ~gdesc{
+    ~enUS{a limp, motionless weasel}}
+  ~ldesc{
+    ~enUS{You see a limp, motionless weasel.  It's just lying there.
+You're not sure, exactly, if it's dead, dying, or just
+_very_ relaxed.  Its facial expression, being that of a weasel,
+doesn't give you any clues.}}
+  ~flags{0}
+  ~nouns{{~enUS{weasel}}}
+  ~adjectives{{~enUS{lifeless,limp}}}
+}
+~portable{
+  ~number{202}
+  ~location{4}
+  ~bdesc{
+    ~enUS{a breadbox}}
+  ~gdesc{
+    ~enUS{a largish breadbox}}
+  ~ldesc{
+    ~enUS{You see an old breadbox, apparently meant to contain bread.  A faded logo
+on the side may once have advertised the box's maker.}}
+  ~flags{3}
+  ~nouns{{~enUS{breadbox,box}}}
+  ~adjectives{{~enUS{bread,large,largish}}}
+}
+~portable{
+  ~number{203}
+  ~location{6}
+  ~bdesc{
+    ~enUS{a ceremonial dagger}}
+  ~gdesc{
+    ~enUS{a ceremonial dagger}}
+  ~ldesc{
+    ~enUS{The blade is curved, and more jagged than it has any right to be.
+It was clearly designed to frighten before cutting, and tear while
+cutting.}}
+  ~flags{0}
+  ~nouns{{~enUS{knife,dagger}}}
+  ~adjectives{{~enUS{ceremonial,curved,jagged}}}
+}
+~portable{
+  ~number{204}
+  ~location{6}
+  ~bdesc{
+    ~enUS{wombat}}
+  ~gdesc{
+    ~enUS{a stuffed wombat}}
+  ~ldesc{
+    ~enUS{The stuffed wombat is sitting against the wall.  It looks quite stuffed.
+The mouth gapes uninvitingly.  At least, you sure don't feel invited.
+Maybe you could put stuff into the wombat through it.  Or take it back out.
+Ew.}}
+  ~edesc{
+    ~enUS{Glinting in the wombatty depths, you see...  Nothing special.  Darkness.
+Wombat fumes.  About the usual, you hope.}}
+  ~flags{7}
+  ~nouns{{~enUS{wombat,mouth}}}
+  ~adjectives{{~enUS{stuffed,immobile}}}
+}
+~portable{
+  ~number{205}
+  ~location{6}
+  ~bdesc{
+    ~enUS{an open sarcophagus}}
+  ~gdesc{
+    ~enUS{an open sarcophagus}}
+  ~ldesc{
+    ~enUS{It's old and sarcophariffic.}}
+  ~flags{7}
+  ~nouns{{~enUS{sarcophagus,coffin}}}
+  ~adjectives{{}}
+}
+~portable{
+  ~number{206}
+  ~location{204}
+  ~bdesc{
+    ~enUS{the wombat's uvula}}
+  ~gdesc{
+    ~enUS{the wombat's uvula}}
+  ~ldesc{
+    ~enUS{It's dangly, in the slimy way that only uvulas can dangle.}}
+  ~flags{4}
+  ~nouns{{~enUS{uvula}}}
+  ~adjectives{{}}
+}
