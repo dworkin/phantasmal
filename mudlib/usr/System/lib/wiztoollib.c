@@ -493,8 +493,9 @@ static void cmd_set_segment_zone(object user, string cmd, string str) {
   }
   OBJNUMD->set_segment_zone(segnum, zonenum);
 
-  user->message("Set segment #" + segnum + " to be in zone #" + zonenum
-		+ ".\r\n");
+  user->message("Set segment #" + segnum + " (object #" + (segnum * 100)
+		+ "-#" + (segnum * 100 + 99) + ") to be in zone #" + zonenum
+		+ " (" + ZONED->get_name_for_zone(zonenum) + ").\r\n");
 }
 
 
