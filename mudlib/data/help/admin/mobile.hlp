@@ -17,12 +17,9 @@ Some commands to play with mobiles:
 }}
 
 
-~name{~enUS{@list_mob, @list_mobile, @list_mobiles,
-            @list, @mobile, @mobiles,
-            list_mob, list_mobile, list_mobiles,
+~name{~enUS{list_mob, list_mobile, list_mobiles,
             list mob, list mobile, list mobiles,
-            @list mob, @list mobile, @list mobiles,
-            @listmob, @listmobile, @listmobiles }}
+            listmob, listmobile, listmobiles }}
 ~keywords{admin}
 ~desc{
   ~enUS{
@@ -37,12 +34,9 @@ See Also:  MOBILED, @stat, @delete_mobile, @new_mobile
 }}
 
 
-~name{~enUS{@new_mob, @new_mobile, @new_mobiles,
-            @new, @mobile, @mobiles,
-            new_mob, new_mobile, new_mobiles,
+~name{~enUS{new_mob, new_mobile, new_mobiles,
             new mob, new mobile, new mobiles,
-            @new mob, @new mobile, @new mobiles,
-            @newmob, @newmobile, @newmobiles }}
+            newmob, newmobile, newmobiles }}
 ~keywords{admin}
 ~desc{
   ~enUS{
@@ -72,12 +66,9 @@ See Also:  MOBILED, @stat, @delete_mobile, @list_mobiles, @segmap
 }}
 
 
-~name{~enUS{@delete_mob, @delete_mobile, @delete_mobiles,
-            @delete, @mobile, @mobiles,
-            delete_mob, delete_mobile, delete_mobiles,
+~name{~enUS{delete_mob, delete_mobile, delete_mobiles,
             delete mob, delete mobile, delete mobiles,
-            @delete mob, @delete mobile, @delete mobiles,
-            @deletemob, @deletemobile, @deletemobiles }}
+            deletemob, deletemobile, deletemobiles }}
 ~keywords{admin}
 ~desc{
   ~enUS{

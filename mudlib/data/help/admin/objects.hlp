@@ -17,6 +17,7 @@ help @set_look
 help @set_examine
 
 help @set_object_article
+help @set_object_detail
 help @add_nouns
 help @add_adjectives
 help @clear_nouns
@@ -107,8 +108,8 @@ See also:  @segmap, @set_seg_zone, segments, zones
 }}
 
 
-~name{~enUS{@set_brief,set_brief,set brief,brief,brief desc,
-            brief description}}
+~name{~enUS{set_brief,set brief,brief,brief desc,
+            brief description, set brief desc, set brief description}}
 ~keywords{admin}
 ~desc{
   ~enUS{
@@ -128,8 +129,8 @@ See also @set_glance, @set_look, @set_examine, @set_obj_art
 }}
 
 
-~name{~enUS{@set_glance,set_glance,set glance,glance,glance desc,
-	glance description}}
+~name{~enUS{set_glance,set glance,glance,glance desc,
+	glance description, set glance desc, set glance description }}
 ~keywords{admin}
 ~desc{
   ~enUS{
@@ -148,7 +149,8 @@ See also @set_brief, @set_look, @set_examine, @set_obj_art
 }}
 
 
-~name{~enUS{@set_look,set_look,set look,look,look desc,look description}}
+~name{~enUS{set_look,set look,look,look desc,look description,
+            set look desc, set_look_desc, set look description}}
 ~keywords{admin}
 ~desc{
   ~enUS{
@@ -169,8 +171,8 @@ See also @set_brief, @set_glance, @set_examine
 }}
 
 
-~name{~enUS{@set_examine,set_examine,examine,examine desc,
-            examine description}}
+~name{~enUS{set_examine,examine,examine desc, set examine desc,
+            examine description, set examine description, set_examine_desc}}
 ~keywords{admin}
 ~desc{
   ~enUS{
@@ -191,8 +193,7 @@ See also @set_brief, @set_glance, @set_look
 }}
 
 
-~name{~enUS{@set_object_article, @set_object_art, @set_obj_article,
-            @set_obj_art, set_object_article, set_object_art,
+~name{~enUS{set_object_article, set_object_art,
             set_obj_article, set_obj_art, set object article,
             set object art, set obj article, set obj art, set,
             article, definite, indefinite, proper, proper noun,
@@ -215,15 +216,13 @@ See also @add_nouns, @add_adj, @set_brief, @set_glance
 }}
 
 
-~name{~enUS{@set_obj_flag, @set_obj_flags, @set_object_flag,
-            @set_object_flags, set_obj_flag, set_obj_flags,
+~name{~enUS{set_obj_flag, set_obj_flags,
             set_object_flag, set_object_flags, set_objflag,
             set_objflags, setobjflag, setobjflags, set obj flags,
             set obj flag, set object flags, set object flag,
             contain, cont, containment, container, containers,
-            @container, open, open container, set container,
-            set open,descless,nodesc,no_desc,@set_port_flag,
-            @set_portable_flag, @set_port_flags, @set_portable_flags,
+            open, open container, openable, openable container, set container,
+            set open,set openable,descless,nodesc,no_desc,
             set_port_flag, set_portable_flag, set_port_flags,
             set_portable_flags}}
 ~keywords{admin}
@@ -255,8 +254,7 @@ Phantasmal.
 }}
 
 
-~name{~enUS{@set_object_parent, @set_object_par, @set_obj_parent,
-            @set_obj_par, @set_parent, set_object_parent, set_object_par,
+~name{~enUS{set_object_parent, set_object_par,
             set_obj_parent, set_obj_par, set_parent, set_par,
             set object parent, set parent, set par,
             set object art, set obj parent, set obj art, set,
@@ -276,7 +274,7 @@ a pound ("#") sign.
 }}
 
 
-~name{~enUS{@move, move, %move}}
+~name{~enUS{move}}
 ~keywords{admin}
 ~desc{
   ~enUS{
@@ -296,7 +294,7 @@ See also @goto
 
 }}
 
-~name{~enUS{@stat, stat, %stat}}
+~name{~enUS{stat}}
 ~keywords{admin}
 ~desc{
   ~enUS{
@@ -312,7 +310,7 @@ See Also:  MAPD, OBJREGD, MOBILED, EXITD, room, portable, mobile, exit
 }}
 
 
-~name{~enUS{@add_noun,addnoun,add noun,add_noun,@addnoun}}
+~name{~enUS{addnoun,add noun,add_noun}}
 ~keywords{admin}
 ~desc{
   ~enUS{
@@ -327,8 +325,8 @@ See also: @stat, @clear_nouns, @add_adjective
 
 
 
-~name{~enUS{@add_adjective,addadjective,add adjective,add_adjective,
-            @addadjective,@add_adj,addadj,add adj,add_adj,@addadj}}
+~name{~enUS{addadjective,add adjective,add_adjective,
+            addadj,add adj,add_adj}}
 ~keywords{admin}
 ~desc{
   ~enUS{
@@ -345,8 +343,8 @@ See also: @stat, @clear_adjectives, @add_noun
 
 
 
-~name{~enUS{@clear_noun,clearnoun,clear noun,clear_noun,@clearnoun,
-            @clear_nouns,clearnouns,clear nouns,clear_nouns,@clearnouns}}
+~name{~enUS{clearnoun,clear noun,clear_noun,
+            clearnouns,clear nouns,clear_nouns}}
 ~keywords{admin}
 ~desc{
   ~enUS{
@@ -360,11 +358,10 @@ See Also: @clear_adjectives, @add_noun
 }}
 
 
-~name{~enUS{@clear_adjective,clearadjective,clear adjective,
-            clear_adjective,@clearadjective,@clear_adjectives,
+~name{~enUS{clearadjective,clear adjective,
+            clear_adjective,
             clearadjectives,clear adjectives,clear_adjectives,
-            @clearadjectives,@clear_adj,clearadj,clear adj,
-            clear_adj,@clearadj}}
+            clearadj,clear adj, clear_adj}}
 ~keywords{admin}
 ~desc{
   ~enUS{
@@ -377,8 +374,7 @@ Syntax: @clear_adjectives #<obj num>
 See Also: @clear_nouns, @add_adjective
 }}
 
-~name{~enUS{@delete_obj, @delete_object, @delete_objects,
-            @delete, @object, @objects,
+~name{~enUS{delete,
             delete_obj, delete_object, delete_objects,
             delete obj, delete object, delete objects,
             @delete obj, @delete object, @delete objects,
