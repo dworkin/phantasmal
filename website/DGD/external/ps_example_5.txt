@@ -1,0 +1,192 @@
+From: DGD Mailing List (Robert Forshaw)
+Date: Sun Mar 28 11:22:01 2004
+Subject: [DGD] parse string difficulties
+
+Despite my best efforts I can't understand how parse string is supposed to 
+work. I thought I *might* know what I was doing, when I put it to the test, 
+but got some unexpected results.
+
+Right now the reason for me employing parse_string is to interpret 
+datafiles. The datafiles are meant to contain three things: operators, a 
+prefix-parameter and a suffix-parameter. Operators consist of one symbol 
+only and can be: '+', '-', '=', or '.'. A prefix-parameter is optional and 
+appears behind the operator, a suffix-parameter is also optional and appears 
+in front of it.
+
+So an example data file might look like this:
+
+.food
+.chocolate
+weight=8
+layers+3
+fattening=yes
+strange-
+smell-noxious
+
+The prefix-parameter, operator and suffix-parameter collectively make a 
+line, with newlines acting as seperators for these lines.
+
+I want parse_string to interpret the entire datafile in one string, and 
+allocate an array in the following format: ({ ({ operator, prefix-parameter, 
+suffix-parameter }), ({ operator, prefix-parameter, suffix-parameter }) ... 
+}). If a prefix-parameter or suffix parameter is occluded, that respective 
+element in the returned array will be nil.
+
+
+So in the example:
+
+.food
+.chocolate
+weight=8
+layers+3
+fattening=yes
+strange-
+smell-noxious
+
+it would return:
+
+
+({ ({ ".", nil, "food" }), ({ ".", "nil", "chocolate" }), ({ "=", "weight", 
+"8" }), ({ "+", "layers", "3"}),
+    ({ "=", "fattening", "yes" }), ({ "-", "strange", nil }), ({ "-", 
+"smell", "noxious" }) })
+
+Call me stupid, call me what you like, but I can't figure out how to 
+accomplish this using parse_string. I can't even do something much simpler, 
+like parseing a single line. Here:
+
+ar = parse_string(
+        "whitespace = /[\b\r\n\t ]+/" +
+        "word       = /[a-zA-Z]+/" +
+        "operator   = /[\.\+\=\-]+/" +
+        "SENTENCE   : operator word operator",
+        "property+value");
+
+Now this returns nil, but I want it to return ({ "property", "+", "value" 
+}).
+
+And for some bizzare reason, changing the operator regexp so that it only 
+detects "+":
+
+ar = parse_string(
+        "whitespace = /[\b\r\n\t ]+/" +
+        "word       = /[a-zA-Z]+/" +
+        "operator   = /++/" +
+        "SENTENCE   : operator word operator",
+        "property+value");
+
+Causes a malformed rule error.
+
+I seriously don't know what I'm doing here. It would be most helpful if 
+someone could show me line for line how to write a grammar that interprets 
+my datafiles, that would help me relate to what the function is doing. 
+Anyway, all help is appreciated...
+
+_________________________________________________________________
+Express yourself with cool new emoticons http://www.msn.co.uk/specials/myemo
+
+
+From: DGD Mailing List (Erwin Harte)
+Date: Sun Mar 28 12:55:02 2004
+Subject: [DGD] Re: parse string difficulties
+
+On Sun, Mar 28, 2004 at 05:20:56PM +0000, Robert Forshaw wrote:
+> Despite my best efforts I can't understand how parse string is supposed to 
+> work. I thought I *might* know what I was doing, when I put it to the test, 
+> but got some unexpected results.
+[...]
+> I seriously don't know what I'm doing here. It would be most helpful if 
+> someone could show me line for line how to write a grammar that interprets 
+> my datafiles, that would help me relate to what the function is doing. 
+> Anyway, all help is appreciated...
+
+I like a challenge like that and did some experimenting.  This is the
+grammar I came up with:
+
+    string query_grammar()
+    {   
+	return
+	    "whitespace = /[\b\r\t ]+/\n" +
+	    "newline    = /\n/\n" +
+	    "word       = /[a-zA-Z0-9]+/\n" +
+	    "operator   = /[\\.\\+\\=\\-]+/\n" +
+
+	    "SENTENCE   : OPERATION          ? fun_a\n" +
+	    "SENTENCE   : SENTENCE OPERATION ? fun_b\n" +
+
+	    "OPERATION  : word operator word newline ? fun_1\n" +
+	    "OPERATION  : word operator      newline ? fun_2\n" +
+	    "OPERATION  :      operator word newline ? fun_3\n";
+    }
+
+You need to double-escape the ., +, = and - so that the parse_string()
+kfun actually _sees_ \. while "\." is identical to "." (hope that made
+sense).  You didn't include digits in your original word regexp.
+
+I took the newline out of the whitespace regexp so that it could be
+used separately and avoid grammar confusion between
+
+  word operator word
+  operator word
+
+and
+
+  word operator
+  word operator word
+
+which would otherwise be impossible to distinguish reliably.
+
+The fun_a and fun_b functions create and append to lists of
+word/operator/word combinations.
+
+    static mixed *fun_a(mixed *tree)
+    {   
+	return ({ tree });
+    }
+
+    static mixed *fun_b(mixed *tree)
+    {   
+	return ({ tree[0] + ({ tree[1] }) });
+    }
+
+The fun_1, fun_2 and fun_3 functions fill in the blanks (nils) where
+appropriate and create 3-tuples (3-sized arrays) in the order you
+wanted.
+
+    static mixed *fun_1(mixed *tree)
+    {   
+	return ({ ({ tree[1], tree[0], tree[2] }) });
+    }
+
+    static mixed *fun_2(mixed *tree)
+    {   
+	return ({ ({ tree[1], tree[0], nil }) });
+    }
+
+    static mixed *fun_3(mixed *tree)
+    {   
+	return ({ ({ tree[0], nil, tree[1] }) });
+    }
+
+Throwing something like ".food\nweight=8\n.chocolate\n" at it, it
+returns to me with:
+
+  ({ ({ ({ ".", nil, "food" }),
+        ({ "=", "weight", "8" }),
+        ({ ".", nil, "chocolate" }) }) })
+
+In general:
+
+    static mixed *parse_text(string text)
+    {
+        mixed result;
+
+        result = parse_string(query_grammar(), text);
+        return result ? result[0] : nil;
+    }
+
+Hope that helps,
+
+Erwin.
+-- 
+Erwin Harte
