@@ -112,7 +112,7 @@ void pop_state(object state) {
 }
 
 void push_state(object state) {
-  if(!SYSTEM())
+  if(!SYSTEM() && previous_program() != USER_STATE)
     error("Only privileged code can call push_state()!");
 
   if(!state_stack) {
