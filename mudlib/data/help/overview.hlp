@@ -31,11 +31,6 @@ example, typing "help get" (without the quotes) will give help on the
 
 ~name{~enUS{newbie,new}}
 ~desc{~enUS{
-We're always happy to have new players.  We're glad you're here.
-We'll try our best to provide a warm and nurturing MUD environment for
-you.  The administrators especially are here to help you get your
-bearings and start having fun!
-
 Welcome to the highly addictive world of MUDs.  A MUD, short for
 MultiUser Dungeon or MultiUser Dimension is a prose-based game for
 many players.  It provides less of a single structured game and more
@@ -45,20 +40,19 @@ question might be "How do I have fun?" -- and you'll have to answer
 that one for yourself!
 
 You'll find there are few prebuilt quests and stories in a MUD if
-you're used to an old text adventure game.  A little of that's because
-it's so difficult to come up with good quests for a multiplayer world,
-but a lot of it is just the unstructured nature of the MUD -- we're
-not trying to corral you into any one activity, we want you to be able
-to choose from many, and especially to invent your own.
+you're used to an old text adventure game.  It's difficult to come up
+with good quests for a multiplayer world, but a lot of it is just the
+unstructured nature of the MUD -- we're not trying to corral you into
+any one activity, we want you to be able to choose from many, and
+especially to invent your own.
 
 You create a character, an alternative persona who may or may not be
 similar to yourself in real life, with which you explore the world and
-interact with others.  If you're genuinely new to MUDding, it's pretty
-likely that you'll lose this character or get bored with him, her or
-it eventually.  Try it out.  Wander around.  Read all the help files,
-at least eventually.  Ask questions.  And maybe you'll find out how
-*you* like to have fun on a MUD!
-}}
+interact with others.  If you're new to MUDding, it's pretty likely
+that you'll lose this character or get bored with them eventually.
+Try it out.  Wander around.  Read all the help files, at least
+eventually.  Ask questions.  And maybe you'll find out how *you* like
+to have fun on a MUD!  }}
 
 ~name{~enUS{feature,features,mudlib,mud lib,MUD lib,MUDLib}}
 ~desc{~enUS{
