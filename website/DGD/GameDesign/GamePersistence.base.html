@@ -1,0 +1,257 @@
+  <titledef text="Persistent Game Design" />
+
+  <h2> Persistence, As Applied to Game Design </h2>
+
+  <p> <i>
+      Most of the in-game aspects of this problem have been discussed
+      to death on MUD-Dev long ago.  If you're really curious, make
+      sure to go read it.  This is a good quick summary, but there's
+      more out there.  Always.
+  </i> </p>
+
+  <p>
+    The phrase 'persistent world' means a world that exists
+    more-or-less 24&frasl;7, whether you're there or not.  The
+    implication is that some of the changes that you make to the world
+    may persist.
+  </p>
+
+  <p>
+    For a persistent world, it can be useful to have a <a
+    href="Persistence.html">persistent server</a>, though that's not
+    mandatory.  You can have a non-persistent world on a persistent
+    server (EverQuest is almost this), or a persistent world on a
+    non-persistent server (certain MUDs are exactly this).  You may
+    find it's <i>easier</i> to use a persistent server if you're going
+    to host a persistent game, though.
+  </p>
+
+  <p>
+    Current 'persistent worlds' aren't especially persistent.
+    Respawning tends to occur so rapidly that if you leave for an
+    hour, there's hardly any way to tell you were ever there except by
+    looking at your character.  There are a few exceptions like house
+    deeds, but not many.  Changes to persistent worlds tend to occur
+    in small amounts, and in rare locations.
+  </p>
+
+  <p>
+    A fair number of MUDs will let objects sit around for essentially
+    forever.  If they're removed, it's by the actions of other
+    players, or of the world itself in some way.  This gives a more
+    immediate sort of persistence, though respawns mean that the
+    effect of the player is still pretty limited.  Monsters you kill
+    will be back in a few minutes, items you take are the same way.
+    Overall, it feels a bit like a syndicated television show where no
+    problem is allowed to take more than thirty minutes to fix.
+  </p>
+
+  <p>
+    Persistence comes in degrees.  The game existing after you leave
+    (a la EverQuest) is the simplest degree of persistence.  As the
+    player's actions have greater and greater long-term effect on the
+    world, the degree of persistence is increased.  A somewhat
+    persistent game will leave objects lying around until they're
+    moved or cleaned up.  A more persistent world will fail to respawn
+    monsters and items when they are killed or moved.  An
+    exceptionally persistent world would allow the player to dig a
+    hole in the ground, or build a building, or burn down a whole
+    town, and the results of those actions would remain until the next
+    person changes the area again by building, altering or destroying.
+  </p>
+
+  <p>
+    But why would you do this in a MUD?  When the old stuff isn't
+    going to be kept around for any time anyway, why bother to make it
+    persist for years?  Why would you care?
+  </p>
+
+  <p>
+    One answer is that you can make a much better game with
+    persistence, but only if you abandon the constant resets that
+    define so much of current hack-and-slash MUD-dom.  Imagine a game
+    where monsters are spawned in some more dynamic way and wander
+    around more freely.  Imagine a game where a monster, when you
+    killed it, were to actually <i>die</i> and not pop back up in the
+    same spot a few minutes later.
+  </p>
+
+  <p>
+    That's the concept.  It's not the only concept.  There are other
+    alluring possibilities that persistence allows, including simple
+    things like burying a treasure in the forest and being able to dig
+    it up months or years later.
+  </p>
+
+  <h3> Underpopulation </h3>
+
+  <p>
+    In a MUD, you reset objects and monsters constantly.  What if you
+    didn't?
+  </p>
+
+  <p>
+    But wouldn't your world be entirely depopulated after a few days?
+    Not if there were another way to spawn monsters.  Normally, MUD
+    monsters spawn in a single location and stay there unless they're
+    molested.  However, if animals were to wander randomly in from the
+    far edges of the forest, if orcs were to spawn in tunnels and only
+    come to the surface from there, if townsmen had to train to become
+    guards rather than having guards spring fully-formed from the
+    dust...  Then a few clever players, by carefully placing NPCs and
+    traps, would be able to <i>change</i> the balance of the world.
+    Those orcs could be beaten back and the tunnels guarded by
+    powerful NPCs or players, and there would be no orcs for some time
+    (until villainous players intervened, perhaps).  Or the orcs could
+    be herded toward the forest, making it more dangerous.  There are
+    many variations, and the interesting combinations would increase
+    exponentially as the world grew larger and more varied.
+  </p>
+
+  <h3> Player Logout </h3>
+
+  <p>
+    If a player logs out or disconnects, something must be done with
+    his body.  If you make the player disappear, then there's no
+    change in a persistent MUD.  But if you have the player become a
+    'linkdead statue' or the like, remember that those statues will
+    persist <i>forever</i> unless cleaned up.  So make sure there is
+    some way for the players to go 'off camera' when they log out.
+    Disappearing, player houses, gnomes carrying the statues away,
+    whatever, as long as there's something.
+  </p>
+
+  <p>
+    I suppose it could be argued that the 'most' persistent solution
+    would be to have the characters remain logged on as NPCs, running
+    shops, accomplishing tasks, or otherwise being part of the world.
+    However, AI is simply not good enough at this point for that to be
+    a reasonable and common solution, and players tend to take a very
+    dim view of their character losing experience or items by being
+    killed when they can't control the character.
+  </p>
+
+  <p>
+    There are other concerns with DGD's style of persistence, but they
+    have nothing to do with game design.  You can read more about that
+    <a href="Persistence.html">here</a> if you're interested.
+  </p>
+
+  <h3> Inflation </h3>
+
+  <p>
+    Standard MUDs have horrendous inflation.  Items and money just
+    keep respawning with monsters or respawning separately.  As more
+    and more money is poured into your game over weeks and years, it
+    just keeps accumulating and object prices (usually) stay constant,
+    so players quickly have far more buying power than they'll ever
+    need.  There are only a few good items that are buyable, and more
+    experienced players have, almost without exception, already bought
+    them, then given enough money to your new players to let
+    <i>them</i> buy them.
+  </p>
+
+  <p>
+    A persistent MUD, by requiring more planning, may actually
+    <i>help</i> with this problem.  If you just have creatures respawn
+    or wander in and you never have any money leaving your economy,
+    you've got the same problem.  But by having a more complicated
+    spawning system, you also leave the possibility of merchants
+    moving on, creatures stealing money and leaving the game area, and
+    other money sinks.  If you have sensible ways to introduce
+    creatures and valuable items into the economy, make sure you have
+    a sensible way to remove them as well, or at least you understand
+    enough economics to understand the effects on your game.
+  </p>
+
+  <p>
+    Other standard 'sinks' include taxation, robbery, items wearing
+    out, unattended items rotting away, and various NPCs scavenging or
+    otherwise disposing of objects.
+  </p>
+
+  <h3> The Old Players' Club </h3>
+
+  <p>
+    A problem that nearly every MUD has to deal with is the Old
+    Players' Club &mdash; the set of players who've been on your MUD
+    for a very long time, and have ultrapowerful characters with all
+    the best loot.  Some of them may even have older 'discontinued'
+    items and skills that no longer appear in your MUD for balance
+    reasons, but you just didn't have the heart to take from them.
+  </p>
+
+  <p>
+    To a (very) small extent, these characters will go away on their
+    own as the players quit your MUD.  And to a larger extent, these
+    players are doing your MUD good, not harm.  But it's annoying for
+    a new player to realize that it will take years for him to come
+    close in power to these characters, especially if he'll be
+    competing with them for equipment and experience, and even more so
+    if player versus player combat is at all common in the MUD.  Also,
+    <i>you</i> may not like them being able to casually give away
+    equipment of tremendous power to newbies or helping them
+    powerlevel.
+  </p>
+
+  <p>
+    In that case, you again need sinks, but in this case for power or
+    for players rather than for items or money.  One possibility is a
+    'hall of fame' so that players can trade in their old characters
+    for newer ones, but in return have their very powerful characters
+    immortalized somewhere in the MUD.  If you're willing to risk
+    player dissatisfaction, you can also have skill decay, like item
+    decay, so that characters who can find no greater challenges in
+    the MUD will still have to stay active if they want to maintain
+    their great in-game power.  The combination of skill decay and
+    item decay can <i>also</i> solve the problem of 'discontinued'
+    items and skills remaining in the MUD, especially if discontinued
+    items can't be repaired and discontinued skills can't be improved.
+  </p>
+
+  <h3> Persistent Games and Your Builders </h3>
+
+  <p>
+    Standard LPMUDs have initialization code in every object to set
+    their datafields.  Rooms set exits this way, objects set their
+    weight, et cetera.  A persistent MUD in <a
+    href="Persistence.html">the DGD sense</a>, or one that saves and
+    loads object data in some functionally similar way, allows a new
+    and different trick for MUDs that <i>don't</i> work this way.
+  </p>
+
+  <p>
+    If objects have data that persists over time, then builders can
+    alter it.  For instance, you could give builders items or commands
+    that would make objects heavier or lighter, which would be useful
+    for fine-tuning puzzles involving weights and scales.  Builders
+    could directly alter the description of an object when a typo was
+    found with a &quot;set&quot; command on the command-line, if they
+    so chose, rather than having to edit the LPC file.
+  </p>
+
+  <p>
+    Standard initialization code prevents this.  If the object is
+    initialized (for instance, by a reboot) then the modified weights
+    or descriptions or whatever are lost.  Since reboots, if they
+    occur at all, will occur daily or weekly, that would remove all
+    use of this modification as a tool for builders.  So if your MUD
+    is going to use persistence as a builder tool, you'll need to get
+    rid of standard initialization code, or you'll need to make sure
+    that it only ever runs once for a given object, and that the data
+    is loaded and saved across reboots after that.  DGD-style
+    persistence, mentioned above, does this pleasantly and
+    transparently.
+  </p>
+
+  <p>
+    There is also the matter of <a
+    href="PlayerContent.html">player-created content</a>.  Having a
+    policy on such content is necessary in a persistent world where
+    the players can make direct modifications to the game world and
+    those modifications might reasonably 'stick'.  If builders can use
+    persistence for building, in some sense so can players.
+  </p>
+
+  <p style="text-size: 150%"> <a href="../index.html"> Back to top level
+    </a> </p>
