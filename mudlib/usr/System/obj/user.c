@@ -1,4 +1,4 @@
-/* $Header: /cvsroot/phantasmal/mudlib/usr/System/obj/user.c,v 1.55 2003/03/25 21:52:18 dbd22 Exp $ */
+/* $Header: /cvsroot/phantasmal/mudlib/usr/System/obj/user.c,v 1.56 2003/03/26 07:35:19 angelbob Exp $ */
 
 #include <kernel/kernel.h>
 #include <kernel/user.h>
@@ -1348,14 +1348,14 @@ static void cmd_put(object user, string cmd, string str) {
     return;
   }
 
-  portlist = find_first_objects(obj1, LOC_CURRENT_ROOM, LOC_INVENTORY,
+  portlist = find_first_objects(obj1, LOC_INVENTORY, LOC_CURRENT_ROOM,
 				LOC_BODY);
   if(!portlist || !sizeof(portlist)) {
     user->message("You can't find any '" + obj1 + "' here.\r\n");
     return;
   }
 
-  contlist = find_first_objects(obj2, LOC_CURRENT_ROOM, LOC_INVENTORY,
+  contlist = find_first_objects(obj2, LOC_INVENTORY, LOC_CURRENT_ROOM,
 				LOC_BODY);
   if(!contlist || !sizeof(contlist)) {
     user->message("You can't find any '" + obj2 + "' here.\r\n");
@@ -1402,7 +1402,7 @@ static void cmd_remove(object user, string cmd, string str) {
     return;
   }
 
-  contlist = find_first_objects(obj2, LOC_CURRENT_ROOM, LOC_INVENTORY,
+  contlist = find_first_objects(obj2, LOC_INVENTORY, LOC_CURRENT_ROOM,
 				LOC_BODY);
   if(!contlist || !sizeof(contlist)) {
     user->message("You can't find any '" + obj2 + "' here.\r\n");
@@ -1707,7 +1707,7 @@ static void cmd_drop(object user, string cmd, string str) {
     return;
   }
 
-  tmp = find_first_objects(str, LOC_BODY, LOC_INVENTORY);
+  tmp = find_first_objects(str, LOC_INVENTORY, LOC_BODY);
   if(!tmp || !sizeof(tmp)) {
     message("You're not carrying any '" + str + "'.\r\n");
     return;
