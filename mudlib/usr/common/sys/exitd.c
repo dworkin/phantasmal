@@ -196,6 +196,9 @@ private int allocate_exit_obj(int num, object obj) {
     error("Object already exists with number " + num);
 
   if(num != -1) {
+    OBJNUMD->allocate_in_segment(num / 100, num, obj);
+
+    /* If that succeeded, add it to exit_segments */
     if(!(sizeof( ({ num / 100 }) & exit_segments ))) {
       string tmp;
 
@@ -207,7 +210,6 @@ private int allocate_exit_obj(int num, object obj) {
       LOGD->write_syslog(tmp, LOG_NORMAL);
     }
 
-    OBJNUMD->allocate_in_segment(num / 100, num, obj);
     return num;
   }
 
