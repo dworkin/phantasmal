@@ -533,6 +533,41 @@ static void cmd_segment_map(object user, string cmd, string str) {
 }
 
 
+static void cmd_set_segment_zone(object user, string cmd, string str) {
+  int segnum, zonenum;
+
+  if(str)
+    str = STRINGD->trim_whitespace(str);
+
+  if(!str || STRINGD->is_whitespace(str)
+     || sscanf(str, "#%d #%d", segnum, zonenum) != 2) {
+    user->message("Usage: " + cmd + " #<segnum> #<zonenum>\r\n");
+    return;
+  }
+
+  if(!OBJNUMD->get_segment_owner(segnum)) {
+    user->message("Can't find that segment number!\r\n");
+    return;
+  }
+  OBJNUMD->set_segment_zone(segnum, zonenum);
+
+  user->message("Set segment #" + segnum + " to be in zone #" + zonenum
+		+ ".\r\n");
+}
+
+
+static void cmd_zone_map(object user, string cmd, string str) {
+  if(str && !STRINGD->is_whitespace(str)) {
+    user->message("Usage: " + cmd + "\r\n");
+    return;
+  }
+
+  user->message("Zones:\r\n");
+  user->message("  1:   Miskatonic University\r\n");
+  user->message("-----\r\n");
+}
+
+
 static void cmd_save_portables(object user, string cmd, string str) {
   string unq_str, argstr;
   mixed* ports, *args;
