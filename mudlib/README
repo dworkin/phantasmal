@@ -3,7 +3,8 @@
 To get Phantasmal running, please read the INSTALL file.  To start
 customizing a Phantasmal-based MUD, read SETUP.  Before you make
 significant code changes to Phantasmal's internal components, please
-read doc/Modifying.
+read doc/Modifying, and preferably most of Phantasmal's web
+documentation.
 
 Phantasmal runs on top of the Kernel MUDLib that ships with DGD.
 Phantasmal tries to be reasonably fast and secure, but prefers
@@ -44,7 +45,7 @@ The latest information, features, code and tutorials can be located at
                            Features
 
 Phantasmal works on top of the Kernel Library.  That gives it a lot of
-built-in security and mean it works on a stable base.  It also means
+built-in security and means it works on a stable base.  It also means
 Phantasmal has a well-tested object architecture good enough to keep
 commercial MUDs (like Skotos' servers) up for years.
 
