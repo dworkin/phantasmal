@@ -14,9 +14,6 @@
 # define SSH_UTILS		"/usr/System/lib/ssh_utils"
 # define SSH_TRANSPORT		"/usr/System/lib/ssh"
 # define SSH_CONNECTION		"/usr/System/obj/ssh_connection"
-# define SSH_USER		"/usr/System/obj/kernel_user"
-# define SSH_WIZTOOL		"/usr/System/obj/kernel_wiztool"
-# define SSH_USERD		"/usr/System/sys/kernel_telnetd"
 
 /*****************************/
 
