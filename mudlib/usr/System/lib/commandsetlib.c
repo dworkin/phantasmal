@@ -7,6 +7,7 @@ private mixed* command_sets;
 
 /* Prototypes */
 private mixed* load_command_sets_file(string filename);
+private mixed* add_socials_cmd_set(mixed* cmd_set, int which);
 
 
 void create(void) {
@@ -18,6 +19,13 @@ void upgraded(void) {
   if(!command_sets) {
     LOGD->write_syslog("Command_sets is Nil!", LOG_FATAL);
   }
+}
+
+void set_social_commands(void) {
+  if(previous_program() != SOULD)
+    error("Only SOULD can call commandsetlib::set_social_commands!");
+
+  add_socials_cmd_set(command_sets, 1);
 }
 
 int num_command_sets(int loc) {
@@ -39,17 +47,32 @@ mixed* query_command_sets(int loc, int num, string cmd) {
   }
 }
 
-private void add_commands_to_set(mixed* tmp_cmd, int loc, string cmds) {
+/* Used when loading commands from an UNQ file.  Arg tmp_cmd is a set
+   to add commands to.  Loc is the locale.  Cmds is a string with
+   commands and corresponding function names in a specific format
+   delimited by commas and slashes --
+
+          cmd_name1 / func1,
+          cmd_name2 / func2,
+          cmd_name3 / func3,
+          etc.
+*/
+private void add_commands_from_file(mixed* tmp_cmd, int loc, int which,
+				    string cmds) {
   mixed* entries;
   int    ctr;
   string cmd, func;
 
+  /* Make sure tmp_cmd[loc] consists of an array with at least a single
+     empty mapping... */
   if(!tmp_cmd[loc]) {
     tmp_cmd[loc] = ({ ([ ]) });
   }
   if(!sizeof(tmp_cmd[loc])) {
     tmp_cmd[loc] += ({ ([ ]) });
   }
+
+  /* If the mapping in that array is uninitialized, initialize it */
   if(!tmp_cmd[loc][0]) {
     tmp_cmd[loc][0] = ([ ]);
   }
@@ -63,7 +86,7 @@ private void add_commands_to_set(mixed* tmp_cmd, int loc, string cmds) {
     }
     cmd = STRINGD->trim_whitespace(cmd);
     func = STRINGD->trim_whitespace(func);
-    tmp_cmd[loc][0][cmd] = ({ func });
+    tmp_cmd[loc][which][cmd] = ({ func });
   }
 }
 
@@ -121,7 +144,8 @@ private mixed* load_command_sets_file(string filename) {
       break;
     }
 
-    add_commands_to_set(tmp_cmd, loc, unq[ctr + 1]);
+    /* Add commands to set #0 */
+    add_commands_from_file(tmp_cmd, loc, 0, unq[ctr + 1]);
   }
   if(err) {
     LOGD->write_syslog("Error decoding UNQ, not updating command_sets!",
@@ -130,4 +154,28 @@ private mixed* load_command_sets_file(string filename) {
   }
 
   return tmp_cmd;
+}
+
+private mixed* add_socials_cmd_set(mixed* cmd_set, int which) {
+  int     loc, num, ctr;
+  string *soc;
+
+  loc = PHRASED->language_by_name("enUS");
+
+  /* Make sure that cmd_set[enUS] is large enough to handle
+     which+1 elements */
+  while(sizeof(cmd_set[loc]) <= which) {
+    cmd_set[loc] += ({ ([ ]) });
+  }
+
+  /* Clear out the old social commands */
+  cmd_set[loc][which] = ([ ]);
+
+  soc = SOULD->all_socials();
+  num = sizeof(soc);
+  for(ctr = 0; ctr < num; ctr++) {
+    cmd_set[loc][which][soc[ctr]] = ({ soc[ctr], "social" });
+  }
+
+  return cmd_set;
 }
