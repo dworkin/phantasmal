@@ -1,0 +1,25 @@
+FILE
+	/usr/System/sys/phrased.c
+
+NAME
+	num_locales - return the number of current locales
+
+PROTOTYPE
+	int num_locales(void)
+
+CALLED BY
+	Anybody
+
+DESCRIPTION
+	Returns an integer indicating how many locales are supported by
+	current Phantasmal phrase structures.  In theory this
+	could change at runtime, though that rarely happens.
+
+RETURN VALUE
+	An integer indicating how many locales.
+
+ERRORS
+	Usually none.
+
+SEE ALSO
+	

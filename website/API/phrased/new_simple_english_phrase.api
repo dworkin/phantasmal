@@ -1,0 +1,28 @@
+FILE
+	/usr/System/sys/phrased.c
+
+NAME
+	new_simple_english_phrase - convert an English string to a
+	Phantasmal phrase structure
+
+PROTOTYPE
+	object new_simple_english_phrase(string english_string)
+
+CALLED BY
+	Anybody
+
+DESCRIPTION
+	Returns a Phantasmal phrase structure.  If the phrase is queried
+	in English, it returns the given string.  If queried in other
+	locales, it is undefined, but should be as appropriate as
+	possible.  Don't expect it to do actual translation for you.
+
+RETURN VALUE
+	A new Phrase object.  This may be a Lightweight Object (LWO)
+	rather than a full DGD object.
+
+ERRORS
+	Usually none.
+
+SEE ALSO
+	set_content_by_lang

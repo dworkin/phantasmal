@@ -1,0 +1,30 @@
+FILE
+	/usr/System/sys/phrased.c
+
+NAME
+	locale_name_for_language - takes a locale number and returns a
+	name for file formats or technical displays.
+
+PROTOTYPE
+	string locale_name_for_language(int locale)
+
+CALLED BY
+	Anybody
+
+DESCRIPTION
+	Takes a Phantasmal locale number and returns a displayable,
+	name for the locale.  Names tend to be things like "enUS".
+	These names can be recognized by language_by_name, and are
+	meant for terse, exact, or technical forums.  You should
+	normally not show them to your players, except perhaps in
+	a column display.
+
+RETURN VALUE
+	A readable description string for the language, or nil if
+	the locale number is unrecognized.
+
+ERRORS
+	Usually none.
+
+SEE ALSO
+	language_by_name, name_for_language

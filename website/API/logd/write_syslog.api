@@ -1,0 +1,28 @@
+FILE
+	/usr/System/sys/logd.c
+
+NAME
+	write_syslog - write string to logfile
+
+PROTOTYPE
+	void write_syslog(string logstring, varargs int level)
+
+CALLED BY
+	Anybody (for now)
+
+DESCRIPTION
+	Write a string to the system log.  The level is an enumerated
+	constant for how severe the problem being logged is, and
+	defaults to maximum severity.  Currently anybody can write
+	to this file as often as they want, with strings as large
+	as DGD allows.  This will be altered when/if we have to
+	deal with cases of abuse.
+
+RETURN VALUE
+	Nothing.
+
+ERRORS
+	Usually none.
+
+SEE ALSO
+	get_level_by_name

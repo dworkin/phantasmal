@@ -1,0 +1,28 @@
+FILE
+	/usr/System/sys/phrased.c
+
+NAME
+	language_by_name - takes a language name and returns a Phantasmal
+	locale number
+
+PROTOTYPE
+	int language_by_name(string name)
+
+CALLED BY
+	Anybody
+
+DESCRIPTION
+	Takes a human-readable language name and returns a Phantasmal
+	locale number.  The string can be the language name like
+	"English" or "Spanish", or a locale like "enUS" or "deDE".
+	It could also be one of a couple of simple hybrids like
+	"englishUS" or "espanolES".
+
+RETURN VALUE
+	An integer indicating the locale, or -1 for no known locale.
+
+ERRORS
+	Usually none.
+
+SEE ALSO
+	name_for_language, locale_name_for_language

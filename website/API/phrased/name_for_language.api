@@ -1,0 +1,27 @@
+FILE
+	/usr/System/sys/phrased.c
+
+NAME
+	name_for_language - takes a locale number and returns a
+	human-readable name for display.
+
+PROTOTYPE
+	string name_for_language(int locale)
+
+CALLED BY
+	Anybody
+
+DESCRIPTION
+	Takes a Phantasmal locale number and returns a displayable,
+	human-readable name for the locale.  Names tend to be things
+	like "US English".
+
+RETURN VALUE
+	A readable description string for the language, or nil if
+	the locale number is unrecognized.
+
+ERRORS
+	Usually none.
+
+SEE ALSO
+	language_by_name, locale_name_for_language
