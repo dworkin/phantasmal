@@ -31,6 +31,7 @@
 
 /* Libraries -- inheritable, not clonable */
 #define USER_STATE          "/usr/common/lib/user_state"
+#define ISSUE_LWO           "/usr/common/lib/issue_lwo"
 #define UNQABLE             "/usr/common/lib/unqable"
 #define DTD_UNQABLE         "/usr/common/lib/dtd_unqable"
 #define PHRASE_REPOSITORY   "/usr/common/lib/phrase_repository"
@@ -38,15 +39,16 @@
 #define INTL_PHRASE         "/usr/common/lib/intl_phrase"
 #define OBJECT              "/usr/common/lib/object"
 #define ROOM                "/usr/common/lib/room"
+#define DETAIL              "/usr/common/lib/detail"
 #define EXIT                "/usr/common/lib/exit"
 #define MOBILE              "/usr/common/lib/mobile"
-#define ISSUE_LWO           "/usr/common/lib/issue_lwo"
 
 
 /* Instantiable (clonable) MUD structures */
 #define ACCOUNT             "/usr/common/obj/account"
 #define SIMPLE_PHRASE       "/usr/common/obj/simple_phrase"
 #define SIMPLE_ROOM         "/usr/common/obj/simple_room"
+#define SIMPLE_DETAIL       "/usr/common/obj/simple_detail"
 #define SIMPLE_EXIT         "/usr/common/obj/simple_exit"
 #define SIMPLE_MOBILE       "/usr/common/obj/simple_mobile"
 #define SIMPLE_PORTABLE     "/usr/common/obj/simple_portable"
