@@ -1,13 +1,70 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<html>
-  <head>
-    <title>Extending the DGD Kernel MUDLib</title>
-  </head>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+                      "http://www.w3.org/TR/xhtml1/DTD/strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<title>The Phantasmal MUDlib for DGD: Extending the Kernel</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<link href="../../phantasmal.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<table width="95%" border="0" cellspacing="0" cellpadding="4">
+  <tr>
+    <td colspan="2"> <table width="100%" border="0" cellspacing="1"
+        cellpadding="0" class="main">
+        <tr>
+          <td class="banner">The DGD Kernel Library</td>
+        </tr>
+      </table></td>
+  </tr>
+  <tr>
+    <td valign="top">
+      <table width="25%"  border="0" cellspacing="1"
+             cellpadding="0"  class="main">
+        <tr>
+          <td class="content" style="font-size: 120%">
 
-  <body text="#000000" bgcolor="#DDDDDD" link="#0000EF" vlink="#51188E"
-	alink="#FF0000">
+          <ul style="margin: 0; padding-left: 10%">
+            <li> <a href="../index.html">DGD &amp; LPC Page</a> </li>
+	    <li> <a href="../LPC">LPC Textbook</a> </li>
+	    <li> <a href="http://www.sf.net/projects/phantasmal">Phantasmal
+	      SourceForge</a> </li>
+          </ul>
+
+        </td>
+        </tr>
+        <tr>
+          <td class="content" align="center">
+            <a href="http://validator.w3.org/check/referer">
+            <img src="../../images/valid-xhtml10.gif" alt="Valid XHTML 1.0!"
+             style="border:0;width:88px;height:31px" /></a><br />
+            <img src="../../images/pixel.gif"
+             style="border:0;width:88px;height:1px" alt="" /><br />
+            <a href="http://jigsaw.w3.org/css-validator/check/referer">
+            <img src="http://jigsaw.w3.org/css-validator/images/vcss"
+             alt="Valid CSS!" style="border:0;width:88px;height:31px" />
+            </a><br />
+            <a href="http://sourceforge.net">
+            <img src="http://sourceforge.net/sflogo.php?group_id=48659&amp;type=6"
+             style="border: 0; width: 210; height: 62;"
+	     alt="SourceForge.net Logo" /></a>
+          </td>
+        </tr>
+      </table></td>
+    <td> <table width="100%"  border="0" cellspacing="1" cellpadding="0" 
+          class="main">
+        <tr>
+          <td class="heading">&nbsp;&nbsp;&middot;&nbsp;
+	    <a href="http://phantasmal.sf.net/DGD">DGD Page</a> &gt;
+            <a href="index.html">Kernel Library</a> &gt;
+            <a href="">Extending the Kernel</a>
+          </td>
+        </tr>
+        <tr>
+          <td class="content">
+    
+
     <h1> Modifying the DGD Kernel Library </h1>
-    <font size="3">
+
       <p> An alternative to this document would be just getting going
 	<i>fast</i> with Shevek's simple MUDLib
 	<a href="../external/System.zip">BBLib v1.0b</a> building
@@ -21,8 +78,8 @@
 	you <i>did</i> get the source distribution rather than binary,
 	right?
       </p>
-    </font>
-    <hr> </hr>
+
+    <hr />
 
     <h3> Getting Started with the Kernel MUDLib </h3>
 
@@ -46,7 +103,7 @@
       the driver with the path (it can be relative) to mud.dgd as an
       argument.  Be careful of symbolic links in all this, they
       can sometimes
-      cause problems -- make sure your setup works without
+      cause problems &mdash; make sure your setup works without
       them first.</p>
 
     <p> Once you've got it running, you'll want to log in
@@ -74,14 +131,16 @@
       At least, not yet.  Do that first, then come back here and grin
       about how easy it's all become. </p>
 
-    <hr> </hr>
+    <hr />
     <h3> The Kernel MUDLib and File Layout </h3>
 
     <p> The Kernel MUDLib, out of the box, ships with a little directory
-      structure for you to use.  It looks like this:
+      structure for you to use.  It looks like this: </p>
       <pre>
 doc/ include/ kernel/ log/ txt/ usr/
       </pre>
+
+    <p>
       I'm putting the little slashes after each name to mean it's a directory.
       On Unix, if you type &quot;ls -F&quot; you'll see the same thing.
       It just distinguishes the file type visually, which happens to be
@@ -121,7 +180,8 @@ doc/ include/ kernel/ log/ txt/ usr/
       the Kernel MUDLib makes it much harder for your MUD to change stuff
       under here.  I'll explain how when I explain security. </p>
 
-    <hr> </hr>
+    <hr />
+
     <h3> Getting your MUDLib Set Up </h3>
 
     <p>First, you'll want to read some documentation.  Starting to
@@ -149,19 +209,26 @@ doc/ include/ kernel/ log/ txt/ usr/
       place, the &quot;mud/usr/System&quot; directory should already be there
       waiting for you, you'll just create a new empty file.</p>
 
-    <p>In that brand spanking new file, put the following:
+    <p>In that brand spanking new file, put the following: </p>
+
       <pre>
 static int create(varargs int clone) {
 
 }
       </pre>
+
+    <p>
       Now run the MUD again. Nothing changes, nothing breaks, right?  Now
       add a line inside the create function above.  Make it look like this:
+    </p>
+
       <pre>
 static int create(varargs int clone) {
   write_file(&quot;/log.txt&quot;, &quot;Successful initd.c test\n&quot;);
 }
       </pre>
+
+    <p>
       After that, you should find a file in &quot/mud/log.txt&quot; that says
       &quot;Successful initd.c test&quot;.  And you just created it by
       starting up the MUD.  That's how cool you are.  This new file of yours
@@ -179,7 +246,8 @@ static int create(varargs int clone) {
       &quot;/mud/doc/kernel/userd&quot;, you'll realize what kinds of
       functions your telnet manager will have to have.  You can start
       with one in &quot;/usr/System/sys/telnetd.c&quot; that looks
-      like this:
+      like this: </p>
+
       <pre>
 #include &lt;kernel/user.h&gt;
 #include &lt;config.h&gt;
@@ -205,6 +273,7 @@ string query_banner(object connection)
 
       </pre>
 
+    <p>
       DEFAULT_USER is the user object that the Kernel MUDLib supplies you
       with from the get-go.  Later you'll be supplying your own user
       object, but first you'll figure out what the telnetd object is and what
@@ -212,6 +281,7 @@ string query_banner(object connection)
       initd.c to make it recognize and use your lovely new telnetd.c, which
       is otherwise just another lonely, untouched file on your hard drive.
       To do that, fix up your initd.c to look like this:
+    </p>
       <pre>
 #include &lt;kernel/kernel.h&gt;
 #include &lt;config.h&gt;
@@ -232,9 +302,12 @@ static int create(varargs int clone) {
   "/kernel/sys/userd"->set_telnet_manager(0, telnet_manager);
 }
       </pre>
+
+    <p>
       Start the MUD up, telnet to it and - rapture! - it says &quot;Welcome
       to BoboMUD!  What's yer name?&quot; just like it's supposed to.
     </p>
+
     <p> (If it doesn't, make sure you're running a *very* recent experimental
       version of Phantasmal.  The line with &quot;set_telnet_manager&quot;
       above used to not require that zero in front, but now it does.  That
@@ -260,14 +333,17 @@ static int create(varargs int clone) {
       &quot;/usr/System/obj/user.c&quot;.  You'll need to change a few
       things to get this to work. </p>
 
-    <p> First, go into /include/config.h and add a line like: <pre>
+    <p> First, go into /include/config.h and add a line like: </p>
+    <pre>
 # define SYSTEM_USER  "/usr/System/obj/user"
-      </pre> This will allow you to refer to your spiffy new user
-      object.  Then, in the user object itself look for places it says
+    </pre>
+
+    <p> This will allow you to refer to your spiffy new user object.
+      Then, in the user object itself look for places it says
       DEFAULT_USER and change it to SYSTEM_USER.  Don't change
       DEFAULT_USER_DIR to anything else, though, keep it the same for
-      now.  It may be a good idea to change later (see Adding Stuff
-      to your MUDLib), but for now keep it the same. </p>
+      now.  It may be a good idea to change later (see Adding Stuff to
+      your MUDLib), but for now keep it the same. </p>
 
     <p> You'll also need to change your telnetd.c file to say
       SYSTEM_USER wherever it used to say DEFAULT_USER, so that it
@@ -287,14 +363,22 @@ static int create(varargs int clone) {
       to /usr/System/obj/wiztool.c. </p>
 
     <p> You won't need to modify the wiztool object, but you *will*
-      need to add a line like <pre>
+      need to add a line like </p>
+
+<pre>
 #define SYSTEM_WIZTOOL "/usr/System/obj/wiztool"
-</pre> to /include/config.h.  Then you'll need to change DEFAULT_WIZTOOL
+</pre>
+
+    <p> to /include/config.h.  Then you'll need to change DEFAULT_WIZTOOL
       to SYSTEM_WIZTOOL in two places in /usr/System/user.c.  You'll also
       need to find the create() function and either inside or outside
-      the if (doesn't matter) put the line<pre>
+      the if (doesn't matter) put the line </p>
+
+    <pre>
 if(!find_object(SYSTEM_WIZTOOL)) compile_object(SYSTEM_WIZTOOL);
-      </pre>.  That's because anything you want to clone you'll need
+    </pre>
+
+    <p> That's because anything you want to clone you'll need
       to have compiled first.  One reason you might get &quot;Cannot
       clone XXX&quot; errors is having not compiled the object you're
       trying to clone.
@@ -312,14 +396,12 @@ if(!find_object(SYSTEM_WIZTOOL)) compile_object(SYSTEM_WIZTOOL);
       move on to adding more stuff to your MUDLib.  The &quot;Adding
       Stuff&quot; documents on <a href="index.html">my pages</a> will
       do their best to show you how. </p>
-
-    <hr> </hr>
-      <a href="http://sourceforge.net">
-	<img src="http://sourceforge.net/sflogo.php?group_id=48659&type=3"
-	     width="125" height="37" border="0" alt="SourceForge.net Logo"></a>
-    <!-- Created: Mon Jun 11 21:50:30 PDT 2001 -->
-    <!-- hhmts start -->
-Last modified: Wed Nov 27 06:23:06 PST 2002
-<!-- hhmts end -->
-  </body>
+            <address>
+            <span><a href="mailto:angelbob-remove-spamfree@spamfree.users.sf.net">Noah Gibbs</a></span>
+            </address></td>
+        </tr>
+      </table></td>
+  </tr>
+</table>
+</body>
 </html>

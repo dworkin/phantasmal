@@ -1,11 +1,67 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<html>
-  <head>
-    <title>Inheritance in the Kernel MUDLib </title>
-  </head>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+                      "http://www.w3.org/TR/xhtml1/DTD/strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<title>The Phantasmal MUDlib for DGD: Inheritance in the Kernel</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<link href="../../phantasmal.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<table width="95%" border="0" cellspacing="0" cellpadding="4">
+  <tr>
+    <td colspan="2"> <table width="100%" border="0" cellspacing="1"
+        cellpadding="0" class="main">
+        <tr>
+          <td class="banner">The DGD Kernel Library</td>
+        </tr>
+      </table></td>
+  </tr>
+  <tr>
+    <td valign="top">
+      <table width="25%"  border="0" cellspacing="1"
+             cellpadding="0"  class="main">
+        <tr>
+          <td class="content" style="font-size: 120%">
 
-  <body text="#000000" bgcolor="#DDDDDD" link="#0000EF" vlink="#51188E"
-	alink="#FF0000">
+          <ul style="margin: 0; padding-left: 10%">
+            <li> <a href="../index.html">DGD &amp; LPC Page</a> </li>
+	    <li> <a href="../LPC">LPC Textbook</a> </li>
+	    <li> <a href="http://www.sf.net/projects/phantasmal">Phantasmal
+	      SourceForge</a> </li>
+          </ul>
+
+        </td>
+        </tr>
+        <tr>
+          <td class="content" align="center">
+            <a href="http://validator.w3.org/check/referer">
+            <img src="../../images/valid-xhtml10.gif" alt="Valid XHTML 1.0!"
+             style="border:0;width:88px;height:31px" /></a><br />
+            <img src="../../images/pixel.gif"
+             style="border:0;width:88px;height:1px" alt="" /><br />
+            <a href="http://jigsaw.w3.org/css-validator/check/referer">
+            <img src="http://jigsaw.w3.org/css-validator/images/vcss"
+             alt="Valid CSS!" style="border:0;width:88px;height:31px" />
+            </a><br />
+            <a href="http://sourceforge.net">
+            <img src="http://sourceforge.net/sflogo.php?group_id=48659&amp;type=6"
+             style="border: 0; width: 210; height: 62;"
+	     alt="SourceForge.net Logo" /></a>
+          </td>
+        </tr>
+      </table></td>
+    <td> <table width="100%"  border="0" cellspacing="1" cellpadding="0" 
+          class="main">
+        <tr>
+          <td class="heading">&nbsp;&nbsp;&middot;&nbsp;
+	    <a href="http://phantasmal.sf.net/DGD">DGD Page</a> &gt;
+            <a href="index.html">Kernel Library</a> &gt;
+            <a href="">Inheritance in the Kernel</a>
+          </td>
+        </tr>
+        <tr>
+          <td class="content">
+    
 
     <h3> Inheritance in the Kernel MUDLib </h3>
 
@@ -13,45 +69,68 @@
       is the division of objects into inheritables, clonables, and
       objects from which LWOs can be created </p>
 
-    <p> They're primarily distinguished from each other by what directory
-      the files are in -- if the path contains a &quot;/lib/&quot; then
-      the program is an inheritable, and may not be cloned, but may
-      be inherited by other programs.  If it contains a &quot;/data/&quot;
-      then it's for LightWeight Objects (LWOs) and can be instantiated
+    <p> They're primarily distinguished from each other by what
+      directory the files are in -- if the path contains a
+      &quot;/lib/&quot; then the program is an inheritable.
+      Inheritables may not be cloned, but may be inherited from other
+      programs.  They can't store any data, you can't find them with
+      find_object(), and no functions (including create()) are ever
+      called on them.  The Kernel Library specifically prevents you
+      from touching the 'real' object for reasons that will be
+      explained later. </p>
+
+    <p> If a path contains a &quot;/data/&quot; then the object is a
+      master for LightWeight Objects (LWOs) and can be instantiated
       with new_object(), but may not be cloned or inherited from.
       Note that a file with &quot;/data/&quot; in the path may inherit
-      from inheritables just like clonables and other inheritables do.
-      Anything else (without either &quot;/data/&quot; or &quot;/lib/&quot;
-      in the path) is assumed to be clonable.  You can use clone_object()
-      to make clones of it, but other programs can't inherit from it
-      and you can't call new_object() on it to make an LWO. </p>
+      from inheritables just like everybody else.  It also has data,
+      and you can call functions on it.  You can also call functions
+      on LWOs that you make from it, and (of course) they can have
+      their own copies of any data. </p>
 
-    <p> Okay, so why?  Seems like a pretty serious limitation if you
-      think about it a bit -- it means that every parent class is an
-      abstract parent class rather than being instantiable (to use some
-      fancy Object Oriented terminology).  The answer has everything
-      to do with the way DGD allows you to recompile everything on the
-      fly. </p>
+    <p> An object whose path contains &quot;/obj/&quot; is a
+      cloneable.  You can use clone_object() to make clones of it, but
+      other programs can't inherit from it and you can't call
+      new_object() on it to make an LWO from it.  You can call
+      functions on it (the master object <i>and</i> any of the
+      clones), and it has usable data. </p>
+
+    <p> Any other path (one without either &quot;/data/&quot; or
+      &quot;/lib/&quot; in the path) is assumed to be nothing special.
+      You can't clone it, you can't make an LWO from it, you can't
+      inherit from it.  You can find it (remember, there's only the
+      one master object) with find_object(), you can call functions on
+      it and it can have data.  Most daemons are this way in
+      Kernel-derived MUDLibs.  Usually authors will put
+      &quot;/sys/&quot; in the path instead of &quot;/obj/&quot; or
+      &quot;/lib/&quot; as documentation... But it's not
+      required. </p>
+
+    <p> Okay, so why can't inheritables have data, or be cloned?
+      Seems like a pretty serious limitation if you think about it a
+      bit.  It means that every parent class is an abstract parent
+      class rather than being instantiable (to use some fancy Object
+      Oriented terminology).  The answer has everything to do with the
+      way DGD allows you to recompile everything on the fly. </p>
 
     <p> You can recompile an object with clones and at the end of that
-      thread, all the clones get upgraded.  That's pretty cool.  You
-      can recompile a library, and from then on any new objects that
-      inherit it get the new version.  Also cool.  Unfortunately, old
-      objects can't just switch which version of the parent class's code
-      they use,
-      so they're stuck with the old version of the library until you
-      recompile them (after destructing and recompiling the library).
+      thread, all the clones get upgraded.  It works for LWOs, too.
+      That's pretty cool.  You can recompile a library, and from then
+      on any new objects that inherit it get the new version.  Also
+      cool.  Unfortunately, old objects can't just switch which
+      version of the parent class's code they use, so they're stuck
+      with the old version of the library until you recompile them
+      (after destructing and recompiling the library).
     </p>
 
     <p>
-      In the
-      Kernel MUDLib you can deal with that -- just destruct the old
-      version and recompile the clonable (see Issues, below, for
+      In the Kernel MUDLib you can deal with that -- just destruct the
+      old version and recompile the clonable (see Issues, below, for
       an example).  That'll upgrade all the clones, give you the
-      library, and everything stays copacetic.  Since a library has
-      no clones and no data, when you destruct it and recompile, you
-      lose nothing.  Since the clonable has nothing inherit from it,
-      you don't need to destruct it and recompile for the benefit of
+      library, and everything stays copacetic.  Since a library has no
+      clones and no data, when you destruct it and recompile, you lose
+      nothing.  Since the clonable has nothing inherit from it, you
+      don't need to destruct it and recompile for the benefit of
       <i>its</i> child classes (since it has none).
     </p>
 
@@ -92,7 +171,7 @@
       if you want
       to, but in return you have this set of restrictions. </p>
 
-    <hr> </hr>
+    <hr />
 
     <h3> Recompilation and Object Issues </h3>
 
@@ -112,78 +191,98 @@
       references. </p>
 
     <p>Here's an example: </p>
-    <p>If A inherits B, and B inherits C,
+    <p>Say A inherits from B, and B inherits from C... </p>
+
       <pre>
-  A -> B -> C
+  C <- B <- A
       </pre>
-      If I destruct C and recompile it, B is out of date with C and
-      using a previous issue of C - meaing C has two issues.  If I
-      destruct B, recompile it and then recompile A, I would then only
-      have one issue of C. </p>
+
+    <p>
+      If I destruct C and recompile it, then B is out of date with C.
+      It's using a previous issue of C.  C now has two issues, the old
+      and the new.  If I destruct B and recompile it then the old B
+      still inherits the old C.  But the new B inherits the new C.  So:
+      </p>
+
+<pre>
+  oldC <- OldB <- A
+
+  newC <- newB
+</pre>
+
+    <p>
+      If I then recompile A, that means nobody uses the old B or old C
+      any more.  Since I destructed them <i>and</i> nobody's using
+      them, they'll finally go away.  I would then only have one issue
+      of B and one issue of C. </p>
 
     <p>To spell that out further, let's arbitrarily assign some
       instance numbers to the issues. </p>
 
     <p> Say the old A is issue #1, old B is #2, old C is #3.  So,
       <pre>
-  A(#1) -> B(#2) -> C(#3)
+  C(#3) <- B(#2) <- A(#1)
       </pre>
 Now you recompile C (#3).  So we have
       <pre>
-  A(#1) -> B(#2) -> C(#3)
+  C(#3) <- B(#2) <- A(#1)
 
-                    C(#4)
+  C(#4)
       </pre></p>
 
     <p>That extra issue of C is just sitting off by itself.  Nobody
-      inherits from it.  Then you destruct and recompile B:
-      <pre>
-  A(#1) -> B(#2) -> C(#3)
+      inherits from it.  Then you destruct and recompile B: </p>
 
-           B(#5) -> C(#4)
-      </pre></p>
+      <pre>
+  C(#3) <- B(#2) <- A(#1)
+
+  C(#4) <- B(#5)
+      </pre>
 
     <p>When B is recompiled, it looks up C to inherit from it.  Issue
       #4 is the current non-destroyed one, so it finds that instead of
       #3.  Then, if you recompile A in-place (for instance, if A is
-      clonable so you don't *want* to destroy it):
-      <pre>
-  A(#1) -> B(#5) -> C(#4)
-      </pre>
-      This assumes there's no other objects around.  If that's true
-      then recompiling A (so it looks up B again) gets rid of the last
-      reference to B(#2), which is destroyed.  That removes the last
-      ref to C(#3), which is also destroyed.  A is now linked to the
-      new ones.  If there <i>are</i> other objects that reference the
-      old B(#5) or C(#4), then A will still be recompiled as above,
-      but the old B and C won't immediately go away. </p>
+      clonable so you don't *want* to destroy it): </p>
 
-    <p>Note that since A is recompiled in-place instead of destructed
-      and compiled, its issue number stays the same.  You can find out
-      the issue number in the Kernel MUDLib using either:
+      <pre>
+  C(#4) <- B(#5) <- A(#1)
+      </pre>
+
+    <p>
+      This assumes there's no other objects that reference the old B
+      or C.  If there aren't, then recompiling A (so it looks up B
+      again) gets rid of the last reference to the old B(#2), which is
+      destroyed.  That removes the last ref to old C(#3), which is
+      also destroyed.  A is now linked to the new ones.  If there
+      <i>are</i> other objects that reference the old B(#2) or C(#3),
+      then A will still be recompiled as above, but the old B and C
+      will stick around longer, destructed but active. </p>
+
+    <p>Note that since A is recompiled in-place (instead of destructed
+      and compiled), its issue number stays the same.  You can find
+      out the issue number in the Kernel MUDLib using either: </p>
+
       <pre>
   status(obj)[O_INDEX];
 
 or
 
   status(path)[O_INDEX];
-      </pre></p>
+      </pre>
 
     <p>In the first version, status() takes an object pointer which is
     for a clonable.  The Kernel MUDLib will never give you an object
     pointer to an inheritable, so the second version takes the path
     string for the inheritable.  I don't think the second version can
-    look up destroyed objects, only current non-destroyed ones.  If
+    look up destructed objects, only current non-destructed ones.  If
     you write an object manager, you have to take that into account
     and keep track.</p>
-
-    <hr> </hr>
-      <a href="http://sourceforge.net">
-	<img src="http://sourceforge.net/sflogo.php?group_id=48659&type=3"
-	     width="125" height="37" border="0" alt="SourceForge.net Logo"></a>
-    <!-- Created: Mon Jun 11 21:50:30 PDT 2001 -->
-    <!-- hhmts start -->
-Last modified: Tue Mar 12 23:18:33 PST 2002
-<!-- hhmts end -->
-  </body>
+            <address>
+            <span><a href="mailto:angelbob-remove-spamfree@spamfree.users.sf.net">Noah Gibbs</a></span>
+            </address></td>
+        </tr>
+      </table></td>
+  </tr>
+</table>
+</body>
 </html>
