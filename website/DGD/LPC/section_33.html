@@ -775,250 +775,246 @@ if(map_indices(my_map) & ({ "urk" })) {
       Note the absence of a <code>;</code> after the line.
     </p>
 
-<p>
-The two different ways you write this depend on where the file you want to
-include exists. There's a number of standard include files in the game,
-spread around in a number of different directories. Rather than having to
-remember exactly where they are, you can just give the name of the file you
-want to include then.
+    <p>
+      There are two different ways to write this.  Which you use
+      depends on where the file is that you want to include.  There
+      are a usually standard include files which may be in any of
+      several different directories. Rather than having to remember
+      exactly where they are, you can just give the name of the file
+      you want to include if it's in a standard include directory.
+    </p>
 
-</p>
+    <pre>
+#include &lt;limits.h&gt;
+#include &lt;types.h&gt;
+    </pre>
 
-<pre>
-#include &lt;stdproperties.h&gt;
-#include &lt;adverbs.h&gt;
-</pre>
+    <p>
+      If you want to include files that aren't in the standard include
+      path, for example files of your own, you have to specify where
+      they are.  You can do that either relative to the position of
+      the file that uses it or by an absolute path.  (NOTE:  does
+      DGD allow non-absolute include paths?)
+    </p>
 
-<p>
-If you want to include files that aren't part of the standard setup, for
-example files of your own, you have to specify where they are. You do that
-either relative to the position of the file that uses it or by an absolute
-path.
-
-</p>
-
-<pre>
+    <pre>
 #include &quot;/d/Genesis/login/login.h&quot;
 #include &quot;my_defs.h&quot;
 #include &quot;/sys/adverbs.h&quot;	/* Same as the shorter one above */
-</pre>
+    </pre>
 
-<p>
-When you include standard files, <i>always</i> use the &lt;&gt;-path
-notation. The reason isn't only that it becomes shorter and easier to
-distingues but also that if the files move around your program will stop
-working. If you use the &lt;&gt;-notation they will always be found anyway.
+    <p>
+      When you include standard files, <i>always</i> use the
+      &lt;&gt;-path notation.  Not only is it shorter and easier to
+      distinguish, but also if the files move around then files
+      included with relative or absolute syntax won't be found.  If
+      you use the special include syntax then they will be
+      found in any standard directory, even if they move between
+      them.
+    </p>
 
-</p>
+    <p>
+      It's possible to include LPC files -- entire files full of
+      code. Doing so is normally considered <i>very</i> bad form.
+      Error handling usually has a bad time tracing errors in included
+      files -- there are frequently problems with line numbers.
+      Since you include the uncompiled code into several different
+      objets, you will waste memory and CPU for these identical
+      functions and variables.  It also tends to be harder to figure
+      out where functions are defined.
+    </p>
 
-<p>
-It is even possible to include LPC files, i.e. to include entire
-files full of code. However, doing that is <i>very</i> bad form. Do
-<i>not</i> do that <b>EVER</b>! Why? Well, for one thing error
-handling usually has a bad time tracing errors in included files, the
-line numbers gets wrong. Also, since you include the uncompiled code
-into several different objets, you will waste memory and CPU since
-these identical included parts has to be compiled and stored separately
-for each object that uses them. Apart from all this just reading the
-code will be a chore better not even contemplated.
-
-</p>
-<p>
-What has the extension of the file name <i>really</i> to do with the
-contents then? Well...  actually nothing at all. However, the convention
-is to keep code, functions that are to be executed, in <code>c</code>-files
-and definitions in <code>h</code>-files. Usually the mudlib reflects on this
-convention and might not recognize anything but <code>c</code>-files as code
-sources.
-
-</p>
+    <p>
+      What does the extension of the file name really have to do with
+      the contents then?  Technically, nothing at all.  But the
+      convention is to keep functions in <tt>.cc</tt> files and
+      definitions in <tt>.h</tt> files.  Many mudlibs enforce this,
+      and accept only certain file suffixes for compilation or
+      other tasks.
+    </p>
 
 
-<h3><a name="SEC48" href="index.html#SEC48">The #define statement</a></h3>
-<p>
-<a name="IDX50"></a>
-<a name="IDX51"></a>
+    <h3><a name="SEC3.3.2" href="index.html#SEC3.3.2">
+	The #define statement</a></h3>
+    <p>
+      <a name="IDX50"></a>
+      <a name="IDX51"></a>
 
-</p>
-<p>
-This is a very powerful <b>macro</b> or substitute preprocessor command
-that can be abused endlessly. You are wise if you use it with caution
-and only for simple tasks.
+      #define is a very powerful <b>macro</b> or preprocessor command
+      that can be abused endlessly.  It's recommended that you use it
+      with caution and only for simple tasks.  Using it for complex
+      tasks tends to make reading or debugging your code quite
+      difficult.
+    </p>
 
-</p>
-<p>
-The syntax is as follows:
+    <p>
+      The syntax is as follows:
 
-</p>
-
-<pre>
+    <pre>
 #define &lt;pattern&gt; &lt;substitute pattern&gt;
 #undef &lt;pattern&gt;
-</pre>
+    </pre>
+  </p>
 
-<p>
-Any text in the file that matches <code>&lt;pattern&gt;</code> will be substituted for
-<code>&lt;substitute pattern&gt;</code> before compilation occurs. A <code>#define</code>
-is valid from the line it is found on until the end of the file or an
-<code>#undef</code> command that removes it.
+    <p>
+      Any text in the file that matches <code>&lt;pattern&gt;</code>
+      will be replaced with <code>&lt;substitute pattern&gt;</code>
+      before compilation occurs. A <code>#define</code> is valid from
+      the line it is found on until the end of the file or an
+      <code>#undef</code> command that removes it.
+    </p>
 
-</p>
-<p>
-Although defines can be written just as any kind of text, it is the custom
-(do this!) to use only capitals when writing them. This is so that they
-will be easily distinguishable for what they are since no one (not you
-either!) ever writes function or variable names with capitals.
+    <p>
+      Although the preprocessor allows #define labels to be any sort
+      of legal text, it is customary to use only capital letters.
+      This is so that they will be easily distinguishable as what they
+      are.
+    </p>
 
-</p>
-<p>
-Place all defines in the beginning of the file, or the poor chum who next
-tries to look at your code will have the devil's own time of locating
-them. If it's someone you asked for help (since your badly written code
-most likely won't work) he probably will tell you to stick the file
-someplace very unhygienic and come back later when you've learned to write
-properly.
+    <p>
+      Place all defines in the beginning of the file.  Again, the
+      compiler doesn't enforce this but it's a very good idea.  It guarantees
+      not only that they are easy to find, but also that they're usable
+      throughout the file.
+    </p>
 
-</p>
-<p>
-Simple defines are for example paths, names and above all constants of any
-kind that you don't want to write over and over.
+    <p>
+      Common defines include paths, names and above all constants of
+      any kind.  By defining them, you avoid writing them over and
+      over.
+    </p>
 
-</p>
-
-<pre>
+    <pre>
 #define MAX_LOGIN  100          /* Max logged on players */
-#define LOGIN_OB   &quot;/std/login&quot; /* The login object      */
-#define GREET_TEXT &quot;Welcome!&quot;   /* The login message     */
-</pre>
+#define MY_USER    &quot;/usr/System/my_user&quot; /* My user object */
+#define GREET_TEXT &quot;Welcome!&quot;   /* The login message */
+    </pre>
 
-<p>
-Wherever the pattern strings above occur, they will be replaced by whatever
-is followed by the pattern until the end of the line. That includes the
-comments above, but they are removed anyway later.
+    <p>
+      Anywhere the pattern strings above occur in the file where
+      they're defined (and any file that includes it), they will be
+      replaced by the defined value above.  The substitution includes
+      the comments above, but they're ignored by the compiler.
+    </p>
 
-</p>
+    <pre>
+DRIVER->message(GREET_TEXT + &quot;\n&quot;);
+    </pre>
 
-<pre>
-tell_object(player, GREET_TEXT + &quot;\n&quot;);
-</pre>
+    <p>
+      If a macro extends beyond the end of the line you can terminate
+      the lines with a <code>\</code>.  That continues the macro onto
+      the next line. However, you <i>must</i> put the newline
+      immediately after the <code>\</code>.  There may not be spaces
+      or other characters between the backslash and the newline.
+    </p>
 
-<p>
-If a macro extends beyond the end of the line you can terminate the
-lines with a <code>\</code> which signifies that it continues on the next
-line. However, you <i>must</i> break the string right after the <code>\</code>,
-there must <b>NOT</b> be any spaces or other characters there, just
-the linebreak.
-
-</p>
-
-<pre>
+    <pre>
 #define LONG_DEFINE  &quot;beginning of string \
                       and end of the same&quot;	
-</pre>
+    </pre>
 
-<p>
-Function-like defines are fairly common and often abused. The only really
-important rule is that any argument to the macro <i>must</i> be written
-so that they are used enclosed in parenthesis. If you don't do that you
-can end up with some very strange results.
+    <p>
+      Function-like defines are fairly common and often abused.  It's
+      important to write macros such that every argument to the macro
+      is enclosed in parenthesis where it's used. If you don't do that
+      you can end up with some very strange results.
+    </p>
 
-</p>
-
-<pre>
+    <pre>
 1: #define MUL_IT(a, b) a * b        /* Wrong */
 2: #define MUL_IT(a, b) (a * b)      /* Not enough */
 3: #define MUL_IT(a, b) ((a) * (b))  /* Correct */
-</pre>
+    </pre>
 
-<p>
-What's the big difference you may ask? Well, look at this example:
+    <p>
+      What's the big difference?  Look at this example:
+    </p>
 
-</p>
-
-<pre>
+    <pre>
 result = MUL_IT(2 + 3, 4 * 5) / 5;
 
-   Expanded this becomes:
+   Expanded with the three different macros, this becomes:
 
 1: result = 2 + 3 * 4 * 5 / 5;       /* = 14, Wrong */
-2: result = (2 + 3 * 4 * 5) / 5      /* = 12, Just as wrong */
+2: result = (2 + 3 * 4 * 5) / 5      /* = 12, Still wrong */
 3: result = ((2 + 3) * (4 * 5)) / 5  /* = 20, Correct! */
-</pre>
+    </pre>
 
-<p>
-Abuse of defines usually involves badly formulated macros, complicated
-macros used inside other macros (making the code almost impossible to
-understand) or humungous arrays or mappings in defines that are used
-often. The basic rule is to keep macros short and fairly simple. Do that
-and you'll never have any problems.
+    <p>
+      Common problems with defined constants and functions include
+      badly formulated macros, complicated macros used inside other
+      macros (making the code almost impossible to understand) or
+      humongous arrays or mappings in defines that are used often.
+      The basic rule is to keep macros short and fairly simple.
+    </p>
 
-</p>
 
+    <h3><a name="SEC3.3.3" href="index.html#SEC3.3.3">
+	The #if, #ifdef, #ifndef, #else and #elseif statements</a></h3>
 
-<h3><a name="SEC49" href="index.html#SEC49">The #if, #ifdef, #ifndef, #else and #elseif statements</a></h3>
-<p>
-<a name="IDX52"></a>
-<a name="IDX53"></a>
-<a name="IDX54"></a>
-<a name="IDX55"></a>
-<a name="IDX56"></a>
+    <p>
+      <a name="IDX52"></a>
+      <a name="IDX53"></a>
+      <a name="IDX54"></a>
+      <a name="IDX55"></a>
+      <a name="IDX56"></a>
 
-</p>
-<p>
-These are all preprocessor directives aimed at selecting certain parts of
-code and removing other depending on the state of a preprocessor variable.
+      The commands above are all preprocessor directives aimed at
+      selecting certain parts of code and perhaps removing others
+      depending on the state of a preprocessor variable.
+    </p>
 
-</p>
-<p>
-The <code>#if</code> statement looks very much like a normal if statement,
-just written a bit differently.
+    <p>
+      The <code>#if</code> statement looks very much like a normal if
+      statement, but is written a bit differently.
+    </p>
 
-</p>
-<p>
-Assume you <i>may</i> have the following define somewhere:
+    <p>
+      Assume you <i>may</i> have one of the following definitions
+      somewhere:
 
-</p>
+    </p>
 
-<pre>
+    <pre>
 #define code_VAR  2
 
 or
 	
 #define code_VAR  3
-</pre>
+    </pre>
 
-<p>
-Then you can write
+    <p>
+      Then you can write
+    </p>
 
-</p>
-
-<pre>
+    <pre>
 #if code_VAR == 2
     &lt;code that will be kept only if code_VAR == 2&gt;
 #else
     &lt;code that will be kept only if code_VAR != 2&gt;
 #endif
-</pre>
+    </pre>
 
-<p>
-You don't have to have the <code>#else</code> statement there at all if you
-don't want to.
+    <p>
+      You don't have to have the <code>#else</code> statement there at
+      all if you don't want to.  You can simply use <code>#if</code>
+      and <code>#endif</code>.
+    </p>
 
-</p>
-<p>
-It's sufficient to have the following statement to 'define' a preprocessor
-pattern as existing:
+    <p>
+      It's sufficient to have the following statement to 'define' a
+      preprocessor pattern as existing:
+    </p>
 
-</p>
-
-<pre>
+    <pre>
 #define code_VAR    /* This defines the existance of code_VAR */
-</pre>
+    </pre>
 
-<p>
-Then you can write like this:
-
-</p>
+    <p>
+      Then you can use <code>#ifdef</code> to check for its existence,
+      like this:
+    </p>
 
 <pre>
 #ifdef code_VAR
@@ -1028,32 +1024,32 @@ Then you can write like this:
 #endif
 </pre>
 
-<p>
-or
+    <p>
+      or you can use #ifndef, which is essentially an #ifdef with an
+      extra &quot;not&quot; implied.
+    </p>
 
-</p>
-
-<pre>
+    <pre>
 #ifndef code_VAR
     &lt;code that will be kept only if code_VAR isn't defined&gt;
 #else
     &lt;code that will be kept only if code_VAR is defined&gt;
 #endif
-</pre>
+    </pre>
 
-<p>
-Again, the <code>#else</code> part is optional.
+    <p>
+      Again, the <code>#else</code> is optional.
+    </p>
 
-</p>
-<p>
-The <code>#if/#ifdef/#ifndef</code> preprocessor commands are almost only used
-to add debug code that you don't want to have activated all of the time,
-or code that will work differently depending on other very rarely
-changing parameters. Since the conditions have to be hard-coded in the
-file and can't change during the course of the use of the object this is
-something you very rarely do.
-
-</p>
+    <p>
+      The <code>#if/#ifdef/#ifndef</code> preprocessor commands are
+      frequently used to add debug code that you don't want to have
+      activated all of the time, or code that will work differently
+      depending on other very rarely changing parameters. Since the
+      conditions have to be hard-coded in the file and can't change
+      easily at runtime, most features will use a regular
+      <code>if</code> instead of an <code>#if</code>.
+    </p>
 
     <hr>
     <a href="http://sourceforge.net">
@@ -1063,7 +1059,7 @@ something you very rarely do.
     </address>
     <!-- Created: Mon Jun 11 21:50:30 PDT 2001 -->
     <!-- hhmts start -->
-Last modified: Wed Apr  9 01:37:53 PDT 2003
+Last modified: Wed Apr  9 04:05:42 PDT 2003
 <!-- hhmts end -->
   </body>
 </html>
