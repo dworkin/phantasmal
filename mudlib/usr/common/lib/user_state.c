@@ -55,6 +55,10 @@ static void pop_state(void) {
   user->pop_state(this_object());
 }
 
+static void push_state(object state) {
+  user->push_state(state);
+}
+
 static void pass_data(mixed data) {
   if(next_state)
     next_state->pass_data(data);
