@@ -1,4 +1,4 @@
-/* $Header: /cvsroot/phantasmal/mudlib/usr/System/obj/user.c,v 1.14 2002/06/10 19:46:12 angelbob Exp $ */
+/* $Header: /cvsroot/phantasmal/mudlib/usr/System/obj/user.c,v 1.15 2002/06/10 21:17:26 angelbob Exp $ */
 
 #include <kernel/kernel.h>
 #include <kernel/user.h>
@@ -31,6 +31,8 @@ int    num_lines;               /* number of terminal lines */
 private object* state_stack;
 private mixed   state_data;
 
+private object  scroll_state;
+
 /* Commandset processing */
 private mixed* command_sets;
 
@@ -55,6 +57,7 @@ static  void   print_prompt(void);
 private int    name_is_forbidden(string name);
 private void   tell_room(object room, mixed msg);
 private mixed* load_command_sets_file(string filename);
+void push_state(object state);
 
 /* Macros */
 #define NEW_PHRASE(x) PHRASED->new_simple_english_phrase(x)
@@ -78,7 +81,7 @@ static void create(int clone)
     locale = PHRASED->language_by_name("english");
 
     /* More defaults */
-    num_lines = 25;
+    num_lines = 22;
   } else {
     upgraded();
   }
@@ -88,6 +91,7 @@ void upgraded(void) {
   if(!find_object(SYSTEM_WIZTOOL)) { compile_object(SYSTEM_WIZTOOL); }
   if(!find_object(SIMPLE_MOBILE)) { compile_object(SIMPLE_MOBILE); }
   if(!find_object(SIMPLE_PORTABLE)) { compile_object(SIMPLE_PORTABLE); }
+  if(!find_object(US_SCROLL_TEXT)) { compile_object(US_SCROLL_TEXT); }
 
   command_sets = load_command_sets_file(USER_COMMANDS_FILE);
   if(!command_sets) {
@@ -232,7 +236,8 @@ int get_idle_time(void) {
 }
 
 int get_num_lines(void) {
-  return num_lines;
+  /* return num_lines; */
+  return 20;
 }
 
 int is_admin(void)  {
@@ -271,6 +276,29 @@ int message(string str) {
   }
 }
 
+int message_scroll(string str) {
+  if(scroll_state) {
+    scroll_state->to_user(str);
+  } else {
+    scroll_state = clone_object(US_SCROLL_TEXT);
+    if(scroll_state) {
+      scroll_state->add_text(str);
+      push_state(scroll_state);
+    } else {
+      LOGD->write_syslog("Nil scrolling state trying to send message!",
+			 LOG_ERROR);
+    }
+  }
+}
+
+void notify_done_scrolling(void) {
+  if(previous_object() != scroll_state)
+    error("Only our own scrolling state can notify a user it's done!");
+
+  scroll_state = nil;
+
+}
+
 int send_phrase(object obj) {
   /* This is how we'll control second, etc choice of locale later on. */
 
@@ -290,8 +318,10 @@ int send_system_phrase(string phrname) {
 void pop_state(object state) {
   int first_state;
 
-  if(!state_stack || !sizeof(state_stack))
+  if(!state_stack || !sizeof(state_stack)) {
+    destruct_object(state);
     error("Popping empty stack!");
+  }
 
   if(!(state_stack && ({ state })))
     error("Popping state not in stack!");
@@ -335,9 +365,12 @@ void push_state(object state) {
   } else {
     state->init(this_object(), nil);
   }
-  state->switch_to(1); /* 1 because pushp is true */
 
   state_stack = ({ state }) + state_stack;
+
+  /* Call switch_to() after adding the new state to the stack --
+     'cause it can pop the state right back off in some cases... */
+  state->switch_to(1); /* 1 because pushp is true */
 }
 
 
@@ -721,7 +754,6 @@ private void player_login(void)
       LOGD->write_syslog("Error making new body!", LOG_ERR);
     }
     body_num = body->get_number();
-    LOGD->write_syslog("Set body to number " + body_num + ".");
 
     if(!PORTABLED->get_portable_by_num(body_num)) {
       LOGD->write_syslog("Can't find new body number!", LOG_ERR);
@@ -1097,8 +1129,7 @@ static void cmd_help(object user, string cmd, string str) {
       if(sizeof(hlp) > 1) {
 	message("Help on " + str + ":    [" + sizeof(hlp) + " entries]\r\n");
       }
-      message(hlp[index][1]->to_string(this_object()));
-      message("\r\n");
+      message_scroll(hlp[index][1]->to_string(this_object()) + "\r\n");
     }
     return;
   }
@@ -1120,9 +1151,9 @@ static void cmd_help(object user, string cmd, string str) {
 		  + " help entries that sound like " + str + ".\r\n");
 	}
       } else if(sizeof(hlp) == 1) {
-	message("Help on " + hlp[0][0] + ":\r\n");
-	message(hlp[0][1]->to_string(this_object()));
-	message("\r\n");
+	message_scroll("Help on " + hlp[0][0] + ":\r\n"
+		       + hlp[0][1]->to_string(this_object())
+		       + "\r\n");
       } else {
 	message("\r\nWhich do you want help on:\r\n");
 	for(index = 0; index < sizeof(hlp); index++) {
