@@ -26,6 +26,10 @@ private mixed*  path_stack;
 /* Paths to exclude */
 private mapping path_exc;
 
+/* Vars for loading in call_outs */
+string *files_to_load;
+int     load_callout;
+
 /* Prototypes */
 void load_unq_help(string path, mixed* data);
 void upgraded(void);
@@ -33,6 +37,10 @@ void reread_help_files(void);
 void clear_help_entries(void);
 void new_help_file(string path);
 void new_help_directory(string path);
+static void load_helpfiles(void);
+
+
+#define FILES_PER_ITER 1
 
 
 static void create(varargs int clone) {
@@ -49,6 +57,9 @@ static void create(varargs int clone) {
 
   path_stack = ({ });
 
+  files_to_load = ({ });
+  load_callout = -1;
+
   clear_help_entries();
 }
 
@@ -58,10 +69,30 @@ void destructed(int clone) {
 }
 
 void upgraded(void) {
+  files_to_load = ({ });
+  load_callout = -1;
+
   clear_help_entries();
   reread_help_files();
 }
 
+
+/* This function takes a list of strings like that returned by explode()
+   and calls explode on the individual members of it.  Used to explode
+   wordlist around more than one delimiter. */
+private string* reexplode_wordlist(string *wordlist, string delim) {
+  string *newwords;
+  int     ctr;
+
+  newwords = ({ });
+  for(ctr = 0; ctr < sizeof(wordlist); ctr++) {
+    if(wordlist[ctr] && strlen(wordlist[ctr])) {
+      newwords += explode(wordlist[ctr], delim);
+    }
+  }
+
+  return newwords;
+}
 
 private string normalize_help_query(string query) {
   int     ctr, ctr2;
@@ -71,7 +102,13 @@ private string normalize_help_query(string query) {
   query = STRINGD->to_lower(STRINGD->trim_whitespace(query));
 
   words = explode(query, " ");
+
+  /* Re-explode the list around "-" and "_", just like space */
+  words = reexplode_wordlist(words, "-");
+  words = reexplode_wordlist(words, "_");
+
   query = "";
+
   for(ctr = 0; ctr < sizeof(words); ctr++) {
     if(words[ctr]) {
       word = "";
@@ -111,6 +148,7 @@ void clear_help_entries(void) {
 
 void reread_help_files(void) {
   int iter;
+  int ret;
 
   for(iter = 0; iter < sizeof(path_stack); iter++) {
     new_help_directory(path_stack[iter]);
@@ -165,7 +203,8 @@ void new_help_file(string path) {
 	       = UNQ_PARSER->unq_parse_with_dtd(contents, help_dtd, path));
 
   if (err != nil) {
-    LOGD->write_syslog("Helpd got parse error parsing " + path);
+    LOGD->write_syslog("Helpd got parse error parsing " + path,
+		       LOG_ERR);
     error(err);
   }
   if(!unq_data || !typeof(unq_data) == T_ARRAY)
@@ -198,7 +237,18 @@ void new_help_directory(string path) {
       }
     } else if(sscanf(dir[0][ctr], "%*s.hlp%s", left) == 2) {
       if(left == "") {
-	new_help_file(path + "/" + dir[0][ctr]);
+	files_to_load += ({ path + "/" + dir[0][ctr] });
+
+	if(load_callout < 0) {
+#if 0
+	  load_callout = call_out("load_helpfiles", 0);
+	  if(load_callout < 0)
+	    LOGD->write_syslog("Couldn't load all helpfiles?", LOG_ERR);
+#else
+	  /* Temporary hack to keep from using the call_out loading */
+	  load_helpfiles();
+#endif
+	}
       }
     }
   }
@@ -392,4 +442,25 @@ void load_unq_help(string path, mixed* data) {
 
   if(names)
     new_unq_entry(path, names, desc, keywords);
+}
+
+static void load_helpfiles(void) {
+  int     ctr;
+  string* files_this_time;
+
+  files_this_time = files_to_load[..(FILES_PER_ITER-1)];
+  files_to_load = files_to_load[FILES_PER_ITER..];
+
+  load_callout = -1;
+  if(sizeof(files_to_load) - FILES_PER_ITER > 0) {
+    load_callout = call_out("load_helpfiles", 0);
+    if(load_callout < 0)
+      LOGD->write_syslog("Couldn't schedule call_out for helpfile loading!",
+			 LOG_ERR);
+  }
+
+  for(ctr = 0; ctr < FILES_PER_ITER; ctr++) {
+    new_help_file(files_this_time[ctr]);
+  }
+
 }
