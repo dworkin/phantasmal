@@ -1,4 +1,11 @@
 Release 0.015:
+	* Added simple scripting to /usr/game
+	* Added second AUTO object to /usr/game
+	* Made /usr/game configure ConfigD directly
+	* Made /usr/game's initd work
+	* Moved most files out of /data into /usr/System, /usr/common and
+	  /usr/game.
+	* Added /usr/game directory
 	* Moved HelpD into ~System
 	* Altered how tick counts for upgraded() work
 	* Changed syntax for @set_obj_parent to allow removing parent
