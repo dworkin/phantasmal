@@ -22,6 +22,19 @@ If all that scrolled by and you can't read it, try setting your rows lower
 with set rows 15 (or however long you'd like between scrolling).
 }}
 
+
+~name{~enUS{lines, set_lines, scrolling, scroll, terminal}}
+~desc{~enUS{
+
+You can use the set_lines command to set the number of lines of output
+Phantasmal will display in a help entry before it begins scrolling.
+The default is 20 lines.  Scrolling is primarily used in the display of
+help entries though certain other situations may call for the scrolling
+of output.
+
+}}
+
+
 ~name{~enUS{keyword,<keyword>,topic,<topic>}}
 ~desc{~enUS{
 When a helpfile says "help <keyword>" or "help <topic>", they're not
