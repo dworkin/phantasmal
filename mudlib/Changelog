@@ -1,4 +1,7 @@
 Release 0.016:
+	* Improved UNQ error reporting for wrong #'s of fields in structs
+	* Added (optional, currently inactive) stuff for a /usr/common AUTO
+	  object which will enforce call_other calling existing funcs
 	* Updated to DGD 1.2.90
 	* Moved all zone functionality out of ObjNumD into ZoneD
 	* Changed object articles and glance descriptions to 'transitional',
