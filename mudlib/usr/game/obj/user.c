@@ -1,4 +1,4 @@
-/* $Header: /cvsroot/phantasmal/mudlib/usr/game/obj/user.c,v 1.3 2003/12/08 09:29:40 angelbob Exp $ */
+/* $Header: /cvsroot/phantasmal/mudlib/usr/game/obj/user.c,v 1.4 2003/12/10 11:41:41 angelbob Exp $ */
 
 #include <kernel/kernel.h>
 #include <kernel/user.h>
@@ -155,10 +155,10 @@ int name_is_forbidden(string name) {
  * NAME:	player_login()
  * DESCRIPTION:	Create the player body, set the account info and so on...
  */
-void player_login(void)
+void player_login(int first_time)
 {
   int    start_room_num, start_zone;
-  object start_room;
+  object start_room, other_user;
 
   if(previous_program() != PHANTASMAL_USER)
     return;
@@ -193,14 +193,18 @@ void player_login(void)
 
   if(body && body->get_mobile()
      && body->get_mobile()->get_user()) {
+    other_user = body->get_mobile()->get_user();
+  }
+  if(other_user && other_user->get_name() != name) {
     LOGD->write_syslog("User is already set for this mobile!",
 		       LOG_ERROR);
     message("Body and mobile files are misconfigured!  Internal error!\r\n");
 
-    body_num = -1;
-    body = nil;
+    other_user->message(
+	       "Somebody has logged in with your name and account!\r\n");
+    other_user->message("Closing your connection now...\r\n");
+    destruct_object(other_user);
   }
-
 
   if(!body) {
     location = start_room;

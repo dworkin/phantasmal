@@ -1,4 +1,4 @@
-/* $Header: /cvsroot/phantasmal/mudlib/usr/System/obj/user.c,v 1.76 2003/12/08 09:29:39 angelbob Exp $ */
+/* $Header: /cvsroot/phantasmal/mudlib/usr/System/obj/user.c,v 1.77 2003/12/10 11:41:41 angelbob Exp $ */
 
 #include <kernel/kernel.h>
 #include <kernel/user.h>
@@ -115,7 +115,7 @@ int name_is_forbidden(string name) {
  * NAME:	player_login()
  * DESCRIPTION:	Create the player body, set the account info and so on...
  */
-void player_login(void)
+void player_login(int first_time)
 {
   int    start_room_num, start_zone;
   object start_room;

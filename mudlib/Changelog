@@ -1,4 +1,10 @@
 Release 0.015:
+	* Added toggle for first-ever login attempt to player_login()
+	* Minor fix to cmd_help
+
+Release 0.015pre1:
+	* Separated user object into a user and a userlib, with the user
+	  object overridable.  More work to do here
 	* Moved logd_channels from data directory into /usr/System
 	* Added a game driver object, made telnetd defer to it
 	* Simplified /usr/game as more stuff moves into testgame

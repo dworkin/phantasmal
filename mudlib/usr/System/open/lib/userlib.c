@@ -1,4 +1,4 @@
-/* $Header: /cvsroot/phantasmal/mudlib/usr/System/open/lib/userlib.c,v 1.3 2003/12/08 09:29:40 angelbob Exp $ */
+/* $Header: /cvsroot/phantasmal/mudlib/usr/System/open/lib/userlib.c,v 1.4 2003/12/10 11:41:41 angelbob Exp $ */
 
 #include <kernel/kernel.h>
 #include <kernel/user.h>
@@ -43,6 +43,7 @@ static int nconn;		/* # of connections */
 static int timestamp;           /* Last network input */
 static string hostname;         /* Hostname they're logging in from */
 static mapping state;		/* state for a connection object */
+static int first_login;         /* whether this was the first login */
 
 /* Cached vars */
 static object body;             /* Body object */
@@ -559,6 +560,8 @@ static int get_state(object key_obj) {
 int login(string str)
 {
   if (previous_program() == LIB_CONN) {
+    string check_name;
+
     if(this_object()->name_is_forbidden(str)) {
       previous_object()->message("\r\nThat name is forbidden.\r\n"
 				 + "Please log in with a different one.\r\n");
@@ -570,7 +573,7 @@ int login(string str)
     }
     nconn++;
 
-    Name = name = str;
+    Name = name = check_name = str;
 
     /* Capitalize first letter of Name (but not name) */
     if (Name[0] >= 'a' && Name[0] <= 'z') {
@@ -580,7 +583,16 @@ int login(string str)
     timestamp = time();
     hostname = query_ip_name(this_object());
 
+    name = nil;
     restore_user_from_file(str);
+    if(name && name != check_name)
+      error("Internal error restoring player from file!");
+
+    if(!name) {
+      first_login = 1;
+      name = check_name;
+    } else
+      first_login = 0;
 
     if (password) {
       object phr;
@@ -688,7 +700,7 @@ static int process_message(string str)
     }
 
     catch {
-      this_object()->player_login();
+      this_object()->player_login(first_login);
     } : {
       message("Error logging user in!\r\n");
       return MODE_DISCONNECT;
@@ -752,7 +764,7 @@ static int process_message(string str)
 
     if(!location) {
       catch {
-	this_object()->player_login();
+	this_object()->player_login(first_login);
       } : {
 	return MODE_DISCONNECT;
       }
@@ -789,6 +801,9 @@ static void cmd_help(object user, string cmd, string str) {
   mixed *hlp, *kw;
   int index;
   int exact;
+
+  if(str)
+    str = STRINGD->trim_whitespace(str);
 
   exact = 0;
   if (str && sscanf(str, "%d %s", index, str) == 2) {
