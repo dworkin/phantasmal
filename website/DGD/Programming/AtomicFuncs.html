@@ -1,0 +1,283 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+                      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<title>DGD and LPC: Atomic Functions</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<link href="../../phantasmal.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<table width="95%" border="0" cellspacing="0" cellpadding="4">
+  <tr>
+    <td colspan="2"> <table width="100%" border="0" cellspacing="1"
+        cellpadding="0" class="main">
+        <tr>
+          <td class="banner">The DGD Driver</td>
+        </tr>
+      </table></td>
+  </tr>
+  <tr>
+    <td valign="top">
+      <table width="25%"  border="0" cellspacing="1"
+             cellpadding="0"  class="main">
+        <tr>
+          <td class="content" style="font-size: 120%">
+
+          <ul style="margin: 0; padding-left: 10%">
+            <li> <a href="../index.html">DGD &amp; LPC Page</a> </li>
+	    <li> <a href="../LPC">LPC Textbook</a> </li>
+	    <li> <a href="../Book/html/">New LPC Introduction</a> </li>
+          </ul>
+
+        </td>
+        </tr>
+        <tr>
+          <td class="content" align="center">
+            <a href="http://validator.w3.org/check/referer">
+            <img src="../../images/valid-xhtml10.gif" alt="Valid XHTML 1.0!"
+             style="border:0;width:88px;height:31px" /></a><br />
+            <img src="../../images/pixel.gif"
+             style="border:0;width:88px;height:1px" alt="" /><br />
+            <a href="http://jigsaw.w3.org/css-validator/check/referer">
+            <img src="http://jigsaw.w3.org/css-validator/images/vcss"
+             alt="Valid CSS!" style="border:0;width:88px;height:31px" />
+            </a><br /><br /><br />
+            <a href="http://sourceforge.net">
+            <img src="http://sourceforge.net/sflogo.php?group_id=48659&amp;type=2"
+             style="border: 0; width: 125; height: 37;"
+	     alt="SourceForge.net Logo" /></a>
+          </td>
+        </tr>
+      </table></td>
+    <td> <table width="100%"  border="0" cellspacing="1" cellpadding="0" 
+          class="main">
+        <tr>
+          <td class="heading">&nbsp;&nbsp;&middot;&nbsp;
+	    <a href="http://phantasmal.sf.net/DGD">DGD Page</a> &gt;
+            <a href="">Atomic Functions</a>
+          </td>
+        </tr>
+        <tr>
+          <td class="content">
+  
+
+  <h2> Atomic Functions in DGD </h2>
+
+<pre>
+Date: Sun, 17 Sep 2000 15:11:07 +0200 (CEST)
+From: "Felix A. Croes"
+Subject: Re: [DGD]atomic functions
+
+Stephen Schmidt wrote:
+
+> For the sake of the undereducated among us out here on the
+> mailing list, can someone explain what an "atomic function"
+> might be? Much appreciated...
+
+Atomic functions will undo all changes made within them
+if an error occurs.  They either complete entirely or not
+at all.
+
+Suppose that you have some code similar to the following:
+
+    void move(object destination)
+    {
+	environment = destination;
+	destination->enter_inventory(this_object());
+    }
+
+Naturally, you'd like the environment of one object and the inventory
+of another to be always consistent.  Therefore an error that prevents
+the second from happening would be an annoyance; in the worst case,
+the existing inconsistency could in itself cause errors and further
+inconsistencies in other objects, and your mud could be in serious
+trouble.
+
+For normal LPC code, such an error could occur in two ways, even in
+sound code.  The thread could run out of ticks after the first
+statement of the function, but before the second.  Or the second
+statement, which is a function call, could cause a stack overflow
+error to occur.
+
+There are several ways to prevent this.  For example, you could
+check the available number of ticks at the start of the function,
+and abort if there are not enough available to complete the job.
+Furthermore, you can change the order of the statements so the
+function call comes first; that way, if there is a stack overflow,
+it always happens at the beginning, and not halfway through a move.
+
+My first attempt to deal with this problem in a generalized way
+was to introduce the rlimits language construct. The following
+does always succeed:
+
+    void move(object destination)
+    {
+	rlimits (-1; -1) {
+	    environment = destination;
+	    destination->enter_inventory(this_object());
+	}
+    }
+
+That is, when you set the available stack space and available ticks
+to infinite before you make the move, you are certain not to run
+out of either.
+
+Rlimits has two problems.  First, it is dangerous.  Infinite
+recursion without a maximum call depth will cause your mud to
+crash; an infinite loop without a ticks limit will cause your
+mud to hang.
+
+Second, the effect is too inclusive.  If enter_inventory() in the
+destination object attempts to notify each object already in its
+inventory about the new entree, all those notifications will run
+with infinite ticks and stack as well, which means that all the
+notification functions have to be just as careful about looping and
+recursion.
+
+
+The new way is to use atomic functions:
+
+    atomic void move(object destination)
+    {
+	environment = destination;
+	destination->enter_inventory(this_object());
+    }
+
+Should an error occur halfway through this function, all of the
+changes made within the function are undone; "environment" will
+be set to its previous value.  This also applies to functions
+called from the atomic function; if the destination uses
+notification functions and one of these errors out, then the
+entire move, including all notifications, will be undone.
+
+The atomic effect only applies to errors that would abort execution
+of the atomic function; an error that is caught within the atomic
+function does not do so, and therefore causes no rollback.
+
+Atomic functions can safely be nested.  You can make the entire
+thread atomic, if you like.  Sub-portions of an atomic thread can be
+atomic in their own right.
+
+The use of atomic functions is unrestricted, unlike rlimits.  They
+are safe even for guest programmers.  The worst thing that can happen
+is nothing. :-)
+
+Of course, atomic functions have their own cost.  You cannot do any
+file write operations during atomic execution.  Available ticks are
+depleted twice as fast during execution of an atomic function.  I
+will probably have to fine-tune this later, since I haven't taken
+the cost of switching from non-atomic to atomic code and vice versa
+into account yet; in one case, a thread that had thousands of such
+switches took 10 times as long to finish as when the same thread was
+made atomic in its entirety.
+
+There are other uses for atomic functions.  For example, suppose
+that you are halfway through a very complex change, and discover at
+that point that you cannot continue normally.  Rather than manually
+undoing all changes made, you can just make the entire operation
+atomic, and throw an error yourself.
+
+At present, you cannot perform socket operations within atomic code
+yet; I am working on this.
+
+
+> "Bill Gates' biggest fear is not that some kid is brewing up the next killer
+> app in his garage in Kenosha. His biggest fear is that some kid will brew up
+> the next killer app in his garage in Kenosha and Microsoft won't own it."
+> 	Seattle Times, 4/1-7 2000
+
+Talking about killer apps: within the context of MUD programming
+languages, especially for persistent MUDs, I think atomic functions
+are going to be one of the great enablers.
+
+Regards,
+Dworkin
+</pre>
+
+<hr />
+
+<pre>
+From: dgd at list.imaginary.com (Par Winzell)
+Date: Mon Oct 21 22:31:01 2002
+Subject: [DGD] Atomics
+
+> I am trying to use atomic_error() to log the portion
+> of the stack trace which occur within an atomic
+> function.  Unfortunately, atomic_error() also seems to
+> be called from within an atomic function, which means
+> I can't write to a log file from within this function,
+> I can't set any variables to indicate to a future
+> function what I want logged (the variables get rolled
+> back when the atomic exits), and I can't callout to
+> write to the log file within the atomic (because the
+> callout will be removed when the atomic exits).
+
+Right. I believe the idea is that atomic really does roll back all 
+state, and if you want to trick it you have to go slightly out of your 
+way to do it.
+
+> Is there any way I can write data from atomic_error()
+> to a log, or do I have to use DRIVER->message() to
+> write it to stderr?
+
+We make use of the fact that the string sent to error() actually does 
+survive the atomic rollback. We catch runtime errors, package up the 
+data we want to survive the rollback as ASCII, and stuff it into the 
+string. Then we rethrow this string with error(). The atomic rollback 
+occurs, but runtime_error() recognizes the specially formated error 
+string, unpacks the data, and happily exports it to functions that want 
+to dig into it.
+
+It can really give you a headache, though.
+
+Zell
+</pre>
+
+<hr />
+
+<pre>
+From: dgd at list.imaginary.com (Felix A. Croes)
+Date: Tue Feb 17 17:06:00 2004
+Subject: [DGD] Atomic Errorage
+
+Michael McKiel wrote:
+
+>[...]
+> I didn't seem to be getting any "atomic" errors after putting what will
+> cause a runtime error into the function do_command, so I checked the 
+> error stream (stderr?) from the linux shell.
+>
+> And got this:
+> Bad argument 1 for kfun explode [atomic]
+>   32 do_command        /command/admin/ttt
+> Bad argument 1 for kfun explode
+>  273 receive_message    /system/user (#18)
+>  327 command            /system/player (#19)
+> Bad argument 1 for kfun explode
+> Object: /system/player#19, program: /system/player, line 327
+>
+> So the atomic error is being noticed/detected...but it barrels on thru
+> to runtime_error()...
+>
+> So is there more that needs to be done to make atomic work? or is that what
+> it's supposed to do? I had figured it shouldn't pass thru to runtime_error()
+
+It's working properly.  The error is not supposed to disappear;
+only the changes made by the atomic function should.
+
+Regards,
+Dworkin
+</pre>
+
+  <p style="text-size: 150%"> <a href="index.html"> Back to LPC &amp; DGD
+      Page
+    </a> </p>
+            <address>
+            <span><a href="mailto:angelbob-remove-spamfree@spamfree.users.sf.net">Noah Gibbs</a></span>
+            </address></td>
+        </tr>
+      </table></td>
+  </tr>
+</table>
+</body>
+</html>

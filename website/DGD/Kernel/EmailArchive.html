@@ -1,0 +1,2238 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+                      "http://www.w3.org/TR/xhtml1/DTD/strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<title>The Kernel Library for DGD: Email Archive</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<link href="../../phantasmal.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<table width="95%" border="0" cellspacing="0" cellpadding="4">
+  <tr>
+    <td colspan="2"> <table width="100%" border="0" cellspacing="1"
+        cellpadding="0" class="main">
+        <tr>
+          <td class="banner">The DGD Kernel Library</td>
+        </tr>
+      </table></td>
+  </tr>
+  <tr>
+    <td valign="top">
+      <table width="25%"  border="0" cellspacing="1"
+             cellpadding="0"  class="main">
+        <tr>
+          <td class="content" style="font-size: 120%">
+
+          <ul style="margin: 0; padding-left: 10%">
+            <li> <a href="../index.html">DGD &amp; LPC Page</a> </li>
+	    <li> <a href="../LPC">LPC Textbook</a> </li>
+	    <li> <a href="http://www.sf.net/projects/phantasmal">Phantasmal
+	      SourceForge</a> </li>
+          </ul>
+
+        </td>
+        </tr>
+        <tr>
+          <td class="content" align="center">
+            <a href="http://validator.w3.org/check/referer">
+            <img src="../../images/valid-xhtml10.gif" alt="Valid XHTML 1.0!"
+             style="border:0;width:88px;height:31px" /></a><br />
+            <img src="../../images/pixel.gif"
+             style="border:0;width:88px;height:1px" alt="" /><br />
+            <a href="http://jigsaw.w3.org/css-validator/check/referer">
+            <img src="http://jigsaw.w3.org/css-validator/images/vcss"
+             alt="Valid CSS!" style="border:0;width:88px;height:31px" />
+            </a><br /><br /><br />
+            <a href="http://sourceforge.net">
+            <img src="http://sourceforge.net/sflogo.php?group_id=48659&amp;type=2"
+             style="border: 0; width: 125; height: 37;"
+	     alt="SourceForge.net Logo" /></a>
+          </td>
+        </tr>
+      </table></td>
+    <td> <table width="100%"  border="0" cellspacing="1" cellpadding="0" 
+          class="main">
+        <tr>
+          <td class="heading">&nbsp;&nbsp;&middot;&nbsp;
+	    <a href="http://phantasmal.sf.net/DGD">DGD Page</a> &gt;
+            <a href="index.html">Kernel Library</a> &gt;
+            <a href="">Email Archive</a>
+          </td>
+        </tr>
+        <tr>
+          <td class="content">
+    
+
+  <h2> Kernel Library Email Archive </h2>
+
+  <p>
+    Everything in here was culled from the mailing list.  These should
+    all be interesting Kernel-Library-related messages.  There's a lot
+    of them.
+  </p>
+
+<pre>
+From: dgd at list.imaginary.com (Felix A. Croes)
+Date: Sat Dec 15 17:47:01 2001
+Subject: [DGD] kernel lib wiztool->expand()
+
+Shevek wrote:
+
+> Ok, now the problem.
+> What does expand() return, and am I even using it right? I know for a fact 
+> it expands a filename into a full path, but I see that it can also do some 
+> access checking.
+
+mixed *expand(string files, int exist, int full)
+
+files:		examples: "/foo/bar", "/foo/*", "/foo/bar /foo/gnu *.c"
+exist:	-1:	files need not exist
+	 0:	all files have to exist, except for the last one
+	 1:	all files have to exist
+full:		TRUE for full pathnames in the result
+
+Regards,
+Dworkin
+</pre>
+
+<hr />
+
+<pre>
+From: dgd at list.imaginary.com (Shevek)
+Date: Tue Dec 18 13:32:00 2001
+Subject: [DGD] More info on expand()
+
+Had another look at expand() and managed to clean my code up quite 
+considerably.
+This may come in handy for someone, somewhere, so I thought I'd leave it 
+here in case anyone else has a similar problem.
+
+In:
+Path to filename from current directory, or just filename if it's in 
+current directory.
+Eg System/initd.c if in ~/. initd.c if in ~/System.
+
+Out:
+Nil if a directory/file doesn't exist/access denied/wildcards used.
+Full path to file if not a directory/exists/access allowed/single filename.
+
+/*
+  * NAME:	single_file_path()
+  * DATE:	18/12/01, Shevek.
+  * DESCRIPTION:	Returns the full path to an existing file, nil if there is 
+an error
+  */
+static string single_file_path(string str){
+	    mixed *info;
+		info = expand(str, 1, TRUE);
+		if (info[4] == 1) {
+			if (sizeof(info[0]) != 1) {
+				return nil;
+			}
+			if (info[1][0]==-2){
+				message(str + ": Is a directory.\n");
+				return nil;
+			}
+     	}	
+		else {
+			message("Error: Use single filenames only.\n");
+			return nil;
+     	}
+		str = info[0][0];
+	return str;
+}
+
+Requires:
+message() : return message to user.
+expand() from /kernel/lib/wiztool plus whatever expand needs.
+
+Hope that helps someone out.
+
+Cheers,
+	Shevek
+</pre>
+
+<hr />
+
+<pre>
+From: dgd at list.imaginary.com (Shevek)
+Date: Sat Feb 16 22:23:01 2002
+Subject: [DGD] Kernel Mudlib
+
+At 09:08 16/02/02 -0800, you wrote:
+>On Fri, 15 February 2002, Erwin Harte wrote:
+> >
+> > Return MODE_DISCONNECT or whatever it's called as the very first thing
+> > in that special user-object, then the connection will be closed almost
+> > immediately.
+> >
+>
+>OK thanks.  I think I might be doing that as soon as login() is called on 
+>the user object.  I was just wondering if there was some way of disabling 
+>the telnet port without a special user-object.
+
+Set the timeout in telnetd or binaryd (Or whatever you pass via initd.c) to 
+-1, effectively this disconnects as soon as they connect. No need to pass 
+any object back as it's never used.
+It's good to be nice about it and leave query_banner giving some 
+explanation as to why they can't logon on the telnet/binary port.
+
+Eg
+object select(string str) {
+         /* No need to return anything, but you need the function I think */
+}
+
+int query_timeout(object connection){
+         /* Disconnect immediately */
+         return(-1);
+}
+
+string query_banner(object connection) {
+         /* Needed, it gets called before query_timeout */
+         string str;
+         str="\nTelnet connections are not permitted.";
+         str+="\nUse port 6048 \n";
+         return(str);
+}
+
+Shevek
+</pre>
+
+<hr />
+
+<pre>
+From: dgd at list.imaginary.com (Felix A. Croes)
+Date: Fri Mar 15 20:33:00 2002
+Subject: [DGD] Kernel question
+
+Jay Shaffstall wrote:
+
+>[...]
+> My first question is that DGD's send_message kfun is supposed to send a 
+> message to the current user.  The kernel mudlib connection object provides 
+> a message () method that wraps send_message, seemingly to provide for 
+> automatic resending of anything that doesn't make it out on the first 
+> send_message.  In what circumstances will an entire string not make it to 
+> the user on the first send_message?
+
+An entire string will always make it on the first call, but possibly
+not on the second one, because DGD's internal buffer is only one
+string large (and strings have a maximum length).
+
+
+> The connection object also seems to assume that a second call to 
+> send_message will always send everything that's still pending (this is done 
+> in message_done).  Is that true?
+
+No.  If you'll think about it, you'll see that the send_message call from
+message_done() is always the &lt;first&gt; call -- the first one in the current
+thread.
+
+Regards,
+Dworkin
+</pre>
+
+<hr />
+
+<pre>
+From: dgd at list.imaginary.com (Par Winzell)
+Date: Tue Mar 19 11:06:00 2002
+Subject: [DGD] New to List - Some questions
+
+Jay Shaffstall wrote:
+> What really helped me, though, was sitting down and writing a driver 
+> object from scratch (using the kernel mudlib's and melville's driver 
+> objects as comparisons for different ways of implementing the methods 
+> that are required, and borrowing some kernel code for getting the stack 
+> trace for runtime errors).  The comparison process really helped me to 
+> get a handle on the purpose of each method.
+> 
+> Don't worry too much about the auto object at first.  It's the DGD 
+> equivalent of Java's Object (i.e. the object everything else inherits 
+> from), and can be blank until you come up with functionality that must 
+> be common to all objects.
+> 
+> Also, when you're looking at the kernel mudlib, remember that its 
+> purpose is to provide a secure environment for multiple coders to work 
+> in together.  If that isn't part of your game, then much of what the 
+> kernel does won't be needed for you.
+> 
+> Finally, since I'm a rank newbie at DGD as well, my comments may be 
+> entirely based on my own misunderstandings, and are subject to 
+> correction by the more experienced folks here.
+
+This is all excellent advice. The 'immerse self by doing' approach is 
+easily the best one for DGD. It wouldn't hurt to have a FAQ somewhere 
+explaining some of the things you discover and wonder about in the 
+process of writing your first auto/driver objects, but this list is a 
+pretty good resource for that, too.
+
+The kernel mudlib takes a pretty powerful investment of time to really 
+comprehend. It may not be the ideal start for somebody approaching DGD 
+for the first time. Understanding the kernel library -does- give you an 
+understanding of DGD, of course, but it's rather overkill and one could 
+argue that DGD's main strength is its ability to be so powerful while 
+avoiding directing the developer in any one given direction. The kernel 
+library does direct you somewhat and you may lose some freedom of 
+thought if you immerse yourself in the kernel library immediately.
+
+Writing a driver/auto object first yourself may be a better idea, yes.
+
+Zell
+</pre>
+
+<hr />
+
+<pre>
+From: dgd at list.imaginary.com (Felix A. Croes)
+Date: Mon Dec 17 19:32:01 2001
+Subject: [DGD] More info on expand()
+
+Wes Connell wrote:
+
+> I'm not sure if Shevek solved his expand() problems, but I am having one of
+> my own. Inside expand() the variable 'dir' is initially set by get_dir(). 
+> The kfun docs on get_dir() say that it returns an array in the following
+> configuration:
+>
+> ({ ({ file names }), ({ file sizes }), ({ file mod times }) })
+>
+> However, near the end of expand() the following code is executed:
+>
+>         all[0] += dir[0];
+>         all[1] += dir[1];
+>         all[2] += dir[2];
+>         all[3] += dir[3];
+>         all[4] += sizeof(dir[0]);
+>
+> This is expecting a 4th value inside 'dir'. Some parts of the expand() code
+> do set this 4th value but only in the case of error.
+
+No, the 4th value is copied straight from dir[3].  It's the 5th value that
+is set in case of an error, and also by the last line of the code you
+quote.
+
+
+> I know this 4th value is used to determine whether or not the filename is
+> currently compiled into an object. The only place I've found this used is 
+> in the ls command to insert the asterisk before the filename.
+>
+> So my quesiton is, how is this 4th value set? I have exported the code to
+> my own wiztool but I dont think that should matter much since it is calling
+> get_dir() as a kfun.
+
+It's calling get_dir() as a function in the auto object, not as a kfun.
+
+Regards,
+Dworkin
+</pre>
+
+<hr />
+
+<pre>
+From: dgd at list.imaginary.com (Par Winzell)
+Date: Fri Dec 14 20:18:01 2001
+Subject: [DGD] kernel lib wiztool->expand()
+
+Shevek writes:
+
+ > What does expand() return, and am I even using it right?
+
+Maybe someone else can answer this. Since you have the source
+available, though, I figure you can probably guess just about
+as well as anybody else except for Dworkin who pay possible
+recall what it's supposed to do. :-)
+
+ > 1) What is Ecru? I know it's a user, but why?
+
+It collects everything for which there is no explicit user.
+
+ > What I'm actually trying to do is something like this:
+ > filename=SOME_DIR + "/" + (First char of str) + "/" + str + ".pwd";
+ > where str=someone's name for the purposes of seperating files into 
+ > directories based on first letter of name. Ie all the people starting with 
+ > 'A' into ~/System/data/A.
+
+You would benefit greatly from increased use of capitalization.
+
+I think you want
+
+	filename = DIR + "/" + str[0 .. 0] + "/" + str + ".pwd";
+
+
+Zell
+</pre>
+
+<hr />
+
+<pre>
+Date: Thu, 15 Feb 2001 17:26:32 +0100 (CET)
+From: "Felix A. Croes"
+Subject: Re: [DGD]kernel cloning and inheriting
+
+Stephen Schmidt wrote:
+
+>[...]
+> Let me see if I have this straight; I'm pretty sure at
+> some level I don't. Consider three objects, A, Ac, and B.
+> Ac is a clone of A; B inherits A.
+
+In the kernel library, inheritables are not clonable, but I
+assume that you are talking about the general case.
+
+
+> 1. You can recompile B because nothing inherits it.
+> 2. You cannot recompile Ac because it is a clone; to recompile
+>    Ac is basically to recompile A.
+
+Yes.  Recompiling Ac is impossible, but if you could recompile A,
+all clones would be upgraded as well.
+
+
+> 3. You cannot recompile A because B inherits it.
+> 4. You could recompile A if you first destructed B, but then
+>    object B would be lost. In a persistant world, the loss of
+>    B during the recompilation of A could be problematic.
+> 5. You could recompile both B and A if Ac did not exist. (?)
+>    The root problem is that if you try to recompile A in
+>    the presence of Ac, then Ac is forced to change along
+>    with B, and Ac might not want to do that.
+
+If Ac did not exist, and A was a pure inheritable object, you could
+have upgraded A and B with the following sequence:
+
+    destruct A
+    recompile B (will automatically compile A also)
+
+As it is, you can still do this, but of course the state of A will
+be lost thereby.  If A was a pure inheritable/clonable without its
+own state, you can do this without negative effects on A and B.
+Ac, however, will continue to use the old program of A, since A
+was destructed before it was recompiled.  Only if A had been
+recompiled without deing destructed first -- impossible because of
+B -- would ac have been upgraded also.
+
+Regards,
+Dworkin
+</pre>
+
+<hr />
+
+<pre>
+Date: Thu, 15 Feb 2001 18:47:04 +0100 (CET)
+From: "Felix A. Croes"
+Subject: Re: [DGD]kernel cloning and inheriting
+
+Stephen Schmidt wrote:
+
+>[...]
+> > If Ac did not exist, and A was a pure inheritable object, you could
+> > have upgraded A and B with the following sequence:
+> > 
+> >     destruct A
+> >     recompile B (will automatically compile A also)
+>
+> If Ac did not exist, and you recompiled B without first
+> destructing A, then A would not be recompiled? I'm pretty
+> sure that's right.
+
+Normally, it wouldn't be.  However, A may be out of date as well, in
+the sense that it inherits yet another object -- let's call it C --
+which has been destructed.  In that case, the recompilation of B
+could in itself trigger the destruction of A from the recompile()
+function in the driver object; the immediately following recompilation
+of B would then also trigger the recompilation of A.
+
+
+>[...]
+> Just out of pure curiosity, why is it not possible to
+> have changes in A reflected in both Ac and B? Is it
+> because A doesn't keep track of a list of all objects
+> that inherit it, so it doesn't know that when it updates
+> its own code, it has to update B also? Or is it that when
+> A is recompiled, you want B to keep the old behavior? Or
+> is there something deeper going on?
+
+Suppose that A is inherited by a further N objects.  If we want
+to recompile A, and the changes must be automatically reflected
+in those other, inheriting objects, than all of those objects
+will have to be automatically upgraded.  I could have made it
+that way, and in fact I originally intended to do so.  However,
+if N becomes large, recompiling A is going to take a <very> long
+time -- minutes in some existing DGD mudlibs.  I wanted to be
+able to upgrade A without such a huge delay, so I decided to
+divide the upgrade process into many smaller steps, each of which
+could be done from LPC, perhaps with a series of callouts.  Since
+this was completely new functionality and there was no backward
+compatibility to take into account, I decided on the current
+limitations.
+
+Regards,
+Dworkin
+</pre>
+
+<hr />
+
+<pre>
+Date: Fri, 20 Apr 2001 11:46:03 -0400
+From: Kris Van Hees
+Subject: Re: [DGD]Initializing problem
+
+On Fri, Apr 20, 2001 at 05:38:22PM +0200, Erwin Harte wrote:
+> Not sure.  I would probably also include defines in that file that
+> could be useful for objects in other /usr directories, at which point
+> I'm not sure which is easier/better to work with, this one:
+> 
+>   # include <System.h>
+> 
+> Or this one:
+> 
+>   # include "~System/include/System.h"
+> 
+> I think the /include/System.h file should give general pointers into
+> the /usr/System/ tree, while ~System/include/ would contain include-
+> files for specific objects' interfaces.
+
+An alternative might be to add ~System/include to the includes list in the DGD
+config file?  Potentially before others if you intend on possibly overriding
+anything that gets defined in the kernel lib.
+
+	Kris
+</pre>
+
+<hr />
+
+<pre>
+Date: Fri, 20 Apr 2001 18:27:40 +0200
+From: Erwin Harte
+Subject: Re: [DGD]Initializing problem
+
+On Fri, Apr 20, 2001 at 10:56:23AM -0500, Jason Cone wrote:
+[...]
+> 
+> For each of the 2 locations, /kernel/include/System.h and
+> /usr/System/include/System.h, the statement,
+> 
+> 	#include <System.h>
+> 
+> , is still a valid declaration; I verified this by moving your System.h from
+> /kernel/include to /usr/System/include and changed nothing else.  Because
+> one of the (secondary) include paths in the config file is "~/include", any
+> file that is represented by "/usr/<single directory>/include/<file>" can be
+> included via "#include <file>".
+
+Try including it from, say, ~admin/foobar.c, and you will find that
+the ~/include/ directory is assumed to be ~admin/include/, not
+~System/include/.
+
+[...]
+> 
+> To me, a custom secondary library should be totally and completely
+> encapsulated by the /usr/System -- that way, alternative core libraries
+> could be developed on top of which any library that was configured to run on
+> top of Felix's core library could also run (which may, or may not, contain a
+> '/kernel/include' directory).
+
+The /kernel/include/ directory would only be a problem if
+/kernel/include were part of the search-path, which it isn't, adding
+it is what I would consider an interface-change and all bets are off
+at that point. :-)
+
+I understand your point about the encapsulation, if I were to further
+develop this particular demo-System-lib I might change things a bit.
+
+Regards,
+
+Erwin.
+-- 
+Erwin Harte      : `Don't mind Erwin, he gets crabby. :)'
+</pre>
+
+<hr />
+
+<pre>
+Date: Tue, 3 Apr 2001 23:00:37 +0200 (CEST)
+From: "Felix A. Croes"
+Subject: Re: [DGD]Using the kernel lib
+
+Stephen Schmidt wrote:
+
+> Question on the kernel lib: What is the division of code between
+> /kernel/lib/user.c and /kernel/obj/user.c? I'm hoping that everything
+> "important" is in /kernel/lib/user.c, and that one can remove and
+> replace /kernel/obj/user.c without causing any problems. Is that,
+> indeed, the case? Or are there things in /kernel/obj/user.c which
+> must be there for the kernel lib to function?
+
+The kernel lib's user object is <meant> to be replaced, but the
+replacement must have certain functions -- create(), login(), logout(),
+receive_message(), and optionally receive_datagram() -- to function
+properly.  It also must inherit /kernel/lib/user.
+
+Regards,
+Dworkin
+</pre>
+
+<hr />
+
+<pre>
+Date: Tue, 3 Apr 2001 23:34:39 +0200 (CEST)
+From: "Felix A. Croes"
+Subject: Re: [DGD]Using the kernel lib
+
+Stephen Schmidt wrote:
+
+> On Tue, 3 Apr 2001, Felix A. Croes wrote:
+> > The kernel lib's user object is <meant> to be replaced, but the
+> > replacement must have certain functions -- create(), login(), logout(),
+> > receive_message(), and optionally receive_datagram() -- to function
+> > properly.  It also must inherit /kernel/lib/user.
+>  
+> OK. I presume the same is true of /kernel/obj/telnet.c; you
+> replace it with something else that inherits connection.c
+> in the lib directory. What functions have to be defined
+> in that file?
+
+No, /kernel/obj/telnet is not intended to be replaced, and neither is
+/kernel/obj/binary.
+
+Regards,
+Dworkin
+</pre>
+
+<hr />
+
+<pre>
+Date: Thu, 19 Apr 2001 22:37:08 +0200 (CEST)
+From: "Felix A. Croes"
+Subject: Re: [DGD]Initializing problem
+
+Stephen Schmidt wrote:
+
+> On Thu, 19 Apr 2001, Felix A. Croes wrote:
+>[...]
+> > First off, making modifications to the kernel library is a bad idea.
+>
+> But a couple weeks ago I was told:
+>
+> >>> The kernel lib's user object is <meant> to be replaced
+
+Replacing is not modifying :)  The kernel library allows you to replace
+the user object, by creating a telnet connection manager or binary
+connection manager.  I have detailed how to do this in a recent posting,
+in response to a question of your own I believe.
+
+Regards,
+Dworkin
+</pre>
+
+<hr />
+
+<pre>
+From: Par Winzell
+Date: Fri, 20 Apr 2001 10:27:13 -0700
+Subject: RE: [DGD]Core library and initd.c
+
+ > Doh!  I failed to add 2 + 2 correctly.  In this case, perhaps it does make
+ > sense for there to be a /kernel/include/System.h-like include file that can,
+ > if present, inform the driver (/kernel/sys/driver.c) of the locations of all
+ > secondary library-specific files (though, at present, the initd.c file is
+ > the only that comes to mind).
+
+In my opinion Dworkin's great strength is he masters the full spectrum,
+from tinkering in near-optimal assembly code to intuiting architectural
+designs, and through this mastery is the slave of neither extreme. This
+results in code and design that is a very unusual mix of flexible and
+generic on one hand, and finalized and settled on the other.
+
+I think ~System is one of these cases. For the kernel library to fully
+stand alone, it is appropriate for it to perform one well-defined call,
+placing the onus of integration entirely in the hands of the integrator.
+
+Modifying an include file in /kernel has a very different feel; it has
+the effect of 'pointing' the kernel library at your code. Sometimes, for
+some designs, that is a useful thing: e.g. DGD itself works that way.
+
+But for the kernel library it it inappropriate. The self-containedness
+of the kernel library is the main reason it is interesting to me. When
+every piece of code I ever wrote has crashed, I can still log into the
+emergency admin port and fix the problem using code that I know has not
+been touched through my frenzied development. It's a great boundary to
+have -- to be able to rely on: no files go in /kernel. period.
+
+If you really wanted to change System to something else, the place for
+it would probably be in /include/config.h, but I advice against that.
+
+Zell
+</pre>
+
+<hr />
+
+<pre>
+Date: Mon, 7 May 2001 21:02:59 +0200 (CEST)
+From: "Felix A. Croes"
+Subject: Re: [DGD]Kernel lib file permissions
+
+Stephen Schmidt wrote:
+
+> I have a question, and I know that the correct answer is
+> UTSL, and I will do that eventually, but in the meantime
+> I'm hoping someone can give me a general and succinct
+> answer: Under the kernel lib, how are file-reading and
+> file-writing permissions determined? What objects are
+> allowed to read and write files in what directories?
+> I know the implementation is done by overriding the
+> kfuns in the auto object - the question is what the
+> rules are.
+
+It's very simple.  Basically, the file access permissions are much like
+in 2.4.5.  By default, wizards only have write access in their own
+directory, and read access everywhere outside /usr except /kernel/data.
+They may have additional access granted to them.  A wizard's objects
+only have that wizard's default access, irrespective of granted permissions.
+There are some special cases, such as global read access in /usr/anywiz/open,
+but that is the general picture.
+
+File permissions also have an effect on compilation and cloning.  You
+can only compile an object if you have write access to the file.  You
+can only clone (or inherit) an object if you have read access to it.
+
+Regards,
+Dworkin
+</pre>
+
+<hr />
+
+<pre>
+Date: Sat, 12 May 2001 02:39:49 +0200 (CEST)
+From: "Felix A. Croes"
+Subject: Re: [DGD]Auto object
+
+I wrote:
+
+>[...]
+> You've been putting far too much in /usr/System.  Most of this should
+> probably be in /lib, /sys, /obj, or in some directory I haven't thought
+> of yet.  Since objects not in /kernel or /usr have very restricted
+> file and object permissions, some of it should perhaps be in
+> /usr/Melville.
+>
+> From what you've told us so far, I see a need for 3 objects in
+> /usr/System: initd.c, sys/objectd.c and lib/auto.c.
+
+All right, I was being too minimalist here.  You also need a telnet
+connection manager and a user object in /usr/System.
+
+So, what should be in which directory?  Objects outside of /kernel and
+/usr cannot do file operations or create objects, so I would suggest
+something like the following:
+
+/sys		contains stateless "daemon" objects
+/lib		contains inheritables that are useful to all wizards
+/obj		contains clonables that are useful to all wizards
+/usr/Melville	contains the first few rooms of the mudlib; rooms must
+		be able to create other objects such as monsters, and
+		therefore should be inside /usr.
+
+Alternatively, you could directories such as create /melville/sys,
+/melville/lib, etc.
+
+You may find a need for other objects in /usr/System, but you should
+only put objects in there if such a need exists.  Any object in
+/usr/System can write anywhere except in /kernel, can create objects
+that are owned by any other user, and can destruct any object that
+is not in /kernel.  The more objects you have in /usr/System, the
+more objects you have to check for possible security holes.
+
+Regards,
+Dworkin
+</pre>
+
+<hr />
+
+<pre>
+From: Par Winzell
+Date: Sat, 19 May 2001 08:06:46 -0700
+Subject: Re: [DGD]inherit_list
+
+ > The other thing I could do is hook into inherit_program in the driver
+ > and keep my own inherit list, but that seems like a bit of a mess.
+
+That is precisely the thing to do. It's not a "mess" at all, it is
+a very elegant solution, but it -is- a bit of an undertaking to get
+all the kinks worked out.
+
+ > I see in an old mail from Dworkin that he recommended keeping an
+ > inherit list database in the mudlib.
+ > Is that still recommended?
+
+Yes.
+
+
+ > I would expect that DGD knows the inherit chain already - wouldn't it
+ > be more efficient to be able to ask the driver, rather than track it
+ > yourself?
+
+Probably, but DGD is still a minimalist design. If it can be done
+quickly and well in LPC, why clutter up the driver?
+
+
+ > And on a separate issue, why does the kernel lib require that you have
+ > write access to an object to compile it? 
+ > It would appear to be a read operation? Why write? 
+
+It "reads" the source file, but it certainly modifies the object. :-)
+
+Zell
+</pre>
+
+<hr />
+
+<pre>
+From: Par Winzell
+Date: Wed, 23 May 2001 06:38:13 -0700
+Subject: Re: [DGD]Kernel mudlib question: What's TLS?
+
+ > TLS = Thread-local-storage.
+ > 
+ > The idea is to have a storage-place that is unique for each thread but
+ > without the use of one global object.  The reason for that is that
+ > such a global object would cause multiple threads to 'abort' eachother
+ > when they both want to modify data in the same object, while the
+ > individual TLS can be modified by the relevant threads without causing
+ > such conflicts.
+
+Some examples:
+
+ *) The kfun this_user() returns nil in a callout. At times, one would
+    want this value preserved across callouts, since it's usually well-
+    defined at the time the callout is started. The Skotos library now
+    does this, and it uses a TLS slot to store the preserved value for
+    the duration of the thread.
+
+ *) If DGD did not count ticks itself, we could provide a rudimentary
+    execution-time limiter by updating a TLS slot whenever we did some
+    big operation (or the cheesy version: store time() at the start of
+    the thread and occasionally compare it to time() so that threads
+    on average freeze the process for no more than 0.5 seconds).
+
+ *) You could designate a TLS slot as 'debug data', perhaps putting a
+    mapping value there or maybe an array of mappings or whatnot; and
+    as the thread weaves its way through the code of your library,
+    debug functions could place interesting data there which gets
+    stored or logged or somesuch at the end of the thread, perhaps
+    under certain conditions...
+
+Of course, DGD does not yet have multi-processing, but this is one of
+the many preliminary architectural features that Dworkin has put there
+in preparation. Also, it's just tidy to keep stuff that is relevant in
+the context of a thread private to that thread.
+
+Zell
+</pre>
+
+<hr />
+
+<pre>
+Date: Sat, 26 May 2001 04:10:44 +0200
+From: Erwin Harte
+Subject: Re: [DGD]Inherit and include
+
+On Sat, May 26, 2001 at 02:48:59AM +0100, mtaylor wrote:
+[...]
+> Dear list ...
+> 
+> Another set of questions from me ;)
+> 
+> We have built our mudlib by looking at melville, 2.4.5 and the kernel with
+> the DGD driver so we are learning as we go. Everything seems to be fine and
+> working well but I am unsure of a few things.
+> 
+> Firstly I am having a problem with the close() function. We have a player.c
+> which holds all the information for the Players Character (name, stats etc)
+> and also the functions that deal with the connection stuff. Is this a bad
+> idea? I've noticed that other mudlibs have a user.c and player.c - one holds
+> the connection functions and one the functions for that player's character
+> in the world. 
+
+Yes.  Reason being that this way it is possible to (a) take over from
+another connection and re-establish your relation to the same player-
+object with a new user-clone, and (b) in a persistent game you don't
+want to have to destroy your player-object when you need to forcibly
+close the connection.
+
+> Now if I have a close function in the player.c I have two big problems. One
+> is that if I call destruct_object(this_object()) then it says Too many
+> arguments for function close.
+
+Most likely you've defined the function as 'void close() { ... }'
+while it should be 'void close(int forced) { ... }'.
+
+> The second is that if I close the Mud Client I have without a quit command
+> (I.e. I close the Mud Client program) then the DGD driver crashes.
+
+I can't imagine that being the way things work, what version of DGD
+are you running, on what platform, and what mud-client are you using?
+
+> If I have no close command then it's fine ... *confused*
+
+I think you mean function, not command.  Calling an undefined function
+in an object will work no matter what parameters you tried to call it
+with, but if the function exists and you're running with type-checking
+mode 2 (I think) then it had better match with the parameters of the
+function.
+
+> Also I have a quit command that gives a goodbye message and then destructs
+> the player object. However the message doesn't get shown ... The user is
+> just disconnected ... What am I doing wrong?
+
+It might help to do the disconnecting/destructing from a call_out() so
+that the network-traffic is given a bit more time to be sent across.
+
+> Lastly and most amusingly I wonder about rlimits. There doesn't seem to be
+> any documentation on what you need in your mudlib to satisfy the DGD Driver
+> and so we are working it out as we go along. Looking at other mudlibs and
+> error messages. So far we haven't put any rlimit stuff anywhere. I don't
+> really understand about stacks and ticks etc. at all.
+
+You want rlimits() restrictions surrounding anything that doesn't have
+a damn good reason for being allowed to finish 'no matter what'.
+
+In general that means you override the standard call_out() so that the
+function gets called with some rlimits() restriction, and similar bits
+for open()/close()/receive_message()/etc functions, in short anything
+that can start a new thread.
+
+> Also security ... So far we don't really have any security checks on
+> anything. What should we do about this?
+
+Panic. ;-)  There are three levels of security as I see it:
+
+1. Internal consistency, to make sure certain auto-object functions
+   are only used by other auto-object code, for instance.
+
+   For that type of situation previous_program() is really useful.
+
+2. Filesystem security.  Do you want anyone or anything to be able to
+   read/write to/from anywhere?
+
+   To fix that you'll want to sit down and think about what the basic
+   rules are, and how flexible you want to be in being able to 'grant'
+   access to others, etc.  Overruling the basic file/directory-
+   related kfuns is the next step once you've figured that out.
+
+3. Cloning/compiling/destructing/inheriting/including.  Be careful who
+   or what is allowed to use what other objects/files for this.
+
+Good luck!
+
+Erwin.
+P.S: Did you just send the same message twice to the list?
+-- 
+Erwin Harte
+</pre>
+
+<hr />
+
+<pre>
+Date: Thu Aug  9 06:38:00 2001
+Subject: [DGD] Access
+
+Pete wrote:
+
+> On 9 Aug 2001, at 13:12, Felix A. Croes wrote:
+>[...]
+> > That's default object access -- you can only grant access to users.
+> > User-level access is handled in /kernel/lib/wiztool.c.
+>
+> That is what i am speaking about, how should it work? I can grant 
+> access for <user> to <dir> but objects from /usr/<user> does not 
+> have rights to <dir>, so what is it good for? I have put debug 
+> outputs to auto object functions, and it calls access with 
+> arguments like:
+> user = /usr/World/sys/commandd
+> dir = /usr/System/cmd/go.c
+> and it does not work even though user World has write access to 
+> /usr/System
+
+In the kernel library, objects don't have access outside their own
+/usr/Foo directory, even though user Foo may have that access.  This
+is intended to prevent security leaks such as the above; if objects
+in /usr/World have write access in /usr/System, then effectively
+objects in /usr/World can do anything at all.
+
+Regards,
+Dworkin
+</pre>
+
+<hr />
+
+<pre>
+Date: Thu Aug  9 07:53:01 2001
+Subject: [DGD] access
+
+Ok, after more trying of it i can only say again its useless...
+Sorry people but this is big disappointment for me, since it makes 
+admin only admin of wiztool, not admin of whole system. If i would 
+have such root on my linux i would throw it away long time ago. Its 
+more restrictive then windows nt security, and even that is already 
+big crap. I read that kernel library should be good for anything with 
+no need for modifications, but this makes it not usable at all i think. 
+If I cant grant rights for user objects in runtime then i cant get users 
+to cooperate since they cant work with others code in runtime. And 
+when i count that any bigger coding simply must be done on local 
+copy of mud (who should use mud editor for coding?!) and file 
+upload is done by extrenal ftp then the security as it is is simply 
+not needed at all.
+That means doing rewrite of kernel code, exactly what i did not 
+want to do :(
+</pre>
+
+<pre>
+Date: Sun Aug 12 06:45:01 2001
+Subject: [DGD] Access
+
+Stephen Schmidt wrote:
+
+> On Thu, 9 Aug 2001, Mikael Lind wrote:
+> > After some initial problems I had, Dworkin emphasised that
+> > compilation and calling are to be kept separate.
+>
+> Can someone give some intuition as to why this is desirable?
+> I understand it, but don't understand the need for it. I have
+> not done much work with the kernel, but it seems to me that
+> this method requires that, each time an object calls into
+> another object, one must check whether the target object is
+> compiled, and if not, pass control to a manager object which
+> determines whether to compile and proceed, or abort the call,
+> based on the identity of the calling object and whatever else
+> you want to take into account.
+
+It is easy enough to simulate the old 2.4.5 behaviour on top of
+the kernel library, if that is desired.  But I kept it separate
+in the kernel library because compiling and calling are very
+different actions in terms of security.
+
+If I create a source file somewhere in my directory with an aim to
+eventually make it available to others as a callable server object,
+is it not odd that anyone can compile it before I think it is ready?
+If it is broken, and I want to repair it, should I not be able to take
+it offline without others racking up errors in my code?  An object
+compiled from a source file in my directory will be owned by me, and
+counts towards my own object quota.  Should others really be able
+to increase the number of objects I have in the game, just because
+this object is intended to be callable by others once compiled?
+
+This is why compiling an object requires write permission to the
+source file.  If you want to make an object available as a server,
+it is easiest to just make sure that it is compiled in advance.
+
+Regards,
+Dworkin
+</pre>
+
+<hr />
+
+<pre>
+From: dgd at list.imaginary.com (Par Winzell)
+Date: Mon Sep 17 12:39:01 2001
+Subject: [DGD] Could it work...
+
+>>I'm sure I've missed loads but I wasn't entirely sure why the kernel lib was
+>>so important to use. The above does seem tricky but doesn't sound
+>>impossible. With looking at the kernel I'm sure we can work it out seeing as
+>>that's how we've coded the connection stuff etc. so far.
+>>Or am I being dim?
+>>
+> I think the point people are trying to make is that very careful thought
+> has gone into making the kernel lib, and by using the kernel lib, you are
+> saved from doing a lot of trial-and-error attempts at your own 'kernel
+> lib'.  Especially if one is not terribly interested in the knitty-gritty
+> details, that's where I'd assume the kernel lib helps; at least that's the
+> point I think Par was 
+
+
+That's pretty much it. You have to ask yourself, how much of what the 
+kernel library gives me do I need? And if that amount is large enough, 
+then you need to question if it is realistic to believe you can -save- 
+effort by -not- using it.
+
+If you are going for a truly persistent Mud, i.e. you plan on rebooting 
+only from state dumps once your Mud is up and running, then you -have- 
+to either use the kernel library, or reimplement much of what it does. 
+That is a non-trivial undertaking, to say the least.
+
+Going persistent is a big deal. When you're persistent, you realize, you 
+will never again cold-start your game. You never again get to feel like 
+you're cleaning away all the old cobwebs. If you clone an object and you 
+lose track of the clone, it's going to stay with you for eternity. If 
+you compile a program and forget where it is, it'll stay compiled and 
+forgotten forever. Crap builds up. If you make a terrible error a year 
+into your Mud's uptime, an error that causes you not to be able to log 
+in, you're screwed -- you have to go back to a saved statedump from a 
+few days earlier, or if you didn't save any, lose all your state.
+
+If Matt wants to avoid all this complexity, he should not try for the 
+persistence right now. It cannot be overstated what a difference this 
+makes. Save inventories and vital player data to file, perhaps using the 
+trusy old save_object() and restore_object(). Worry about persistence in 
+a few years. You really don't want to go for persistence as your first 
+project.
+
+Zell
+</pre>
+
+<hr />
+
+<pre>
+Date: Mon Sep 17 12:51:00 2001
+Subject: [DGD] Could it work...
+
+Matt,
+
+> To be honest we looked at the kernel lib and had no idea what was going on
+> ;) So with a lot of work and head banging we built our own system from the
+> ground up. The great thing about that is that I know what every little bit
+> of code does. I was unsure about working with something I couldn't
+> understand. Maybe now we can look back and say ... 'oops' but I think it's
+> okay...
+
+
+The kernel library is not particularly friendly, true, and I completely 
+agree that it is good to learn why you need something before you start 
+using it. To limit the amount of "oops" that happens, seriously consider 
+my suggestion not to start off with a persistent Mud. Then over time as 
+you run the Mud, take note of how often you need to cold-start it and 
+consider what would happen if you couldn't do that, ever. That'll give 
+you a first appreciation of what need the kernel library attempts to fill.
+
+Zell
+</pre>
+
+<hr />
+
+<pre>
+Date: Tue Sep 18 19:25:01 2001
+Subject: [DGD] Could it work...
+
+On Wed, Sep 19, 2001 at 12:22:35AM +0100, mtaylor wrote:
+> Me again I'm afraid,
+> 
+> My coding partner thinks that we can use what we need of the kernel lib to
+> develop our own system. The good thing for us about doing that is that we
+> will then understand what is going on.
+> 
+> Does anyone have the time (and/or patience) to list what it is the kernel
+> lib does and very briefly how and why it does it.
+
+Disclaimer: I doubt this list is complete.
+
+The kernel-lib...
+
+- provides the basic ability to add users, grant users access, grant
+  users limited quota of objects, stack/ticks/callout-usage, to avoid
+  someone going ahead and creating 60000 clones of some object and
+  thereby taking the game down.
+
+- provides the ability for external objects to 'hook' themselves into
+  the /kernel/sys/driver.c object (and one or two other /kernel
+  objects) so that you will be notified if an object is compiled,
+  cloned, destructed, freed, inherited, a file #include'd, etc.
+
+  This is where you would hook up an 'Object DB' that keeps track of
+  the inheritance information so that you can write your own 'upgrade'
+  command that recompiles whatever is necessary.  This is one of the
+  things that is _not_ provided by the kernel-lib. :)
+
+- provides a basic wiztool (with a very nice 'store results for reuse'
+  approach).
+
+- enforces that inheritables, clonables and 'other' code are in
+  separate directories, 'lib/' subdirs for inherities, 'obj/' subdirs
+  for clonables and, more recently, 'data/' subdirs for LWOs.
+
+I'm sure there are other useful things but these are just some that
+come to mind right now.
+
+Hope this helps,
+
+Erwin.
+-- 
+Erwin Harte
+</pre>
+
+<hr />
+
+<pre>
+From: dgd at list.imaginary.com (Par Winzell)
+Date: Tue Dec 11 19:01:00 2001
+Subject: [DGD] Compilation in System...
+
+ > >I'd suggest putting it in /usr/World, if anywhere.  Be sure to create
+ > >a pseudo-user for that, with 'grant World access'.
+ > 
+ > Didn't understand about pseudo-users, but now I have at least some grasp I 
+ > see this is an excellent suggestion and I'll be using it.
+
+The urge to make ~System as small as possible hit me later than I
+would have wished, and I spent a lot of extra time moving things
+out of ~System and into other directories. ~System should do almost
+nothing but export the priviliges given to it by the kernel library
+to the rest of the library, along with whatever restrictions you
+want to add to the kernel library's.
+
+Zell
+</pre>
+
+<hr />
+
+<pre>
+From: dgd at list.imaginary.com (Erwin Harte)
+Date: Fri Feb  8 16:09:00 2002
+Subject: [DGD] Inherit/include
+
+On Fri, Feb 08, 2002 at 09:26:38PM +0000, Shevek wrote:
+> I'm noticing some odd behaviour from this the kernel lib (DGD 1.2p1).
+> Basically you can't inherit/include from any directory that doesn't have 
+> global read access.
+> 
+> Personally I'd think that if the compiling user has read access to the 
+> directory then surely they should be able to inherit/include from it. 
+> Doesn't seem to work like that though.
+> 
+> Is it like this for reasons I'm just not understanding? Because it puts a 
+> real crimp on passing code between non global read directories.
+
+The only access that counts at that point is the access that the file
+has, it doesn't matter that you (the coder) have a bit more access
+than that, otherwise you could have the following situation:
+
+- You (bar) grant <foo> write-access in your home-directory to work on
+  something.
+- You, one of the main game-admins, also have full access to /.
+- <foo> now writes a bit of code in your home-directory and, using
+  that, has full access to /.
+
+Sweet, isn't it?
+
+Use your ~/open/ directory if you want to share some feature/interface
+information, I'd suggest creating ~/open/lib/ and ~/open/include/ for
+this purpose and for any code you want to share you can put an almost
+empty inheriting bit in ~/open/lib/fnurt.c which can be used by
+others.
+
+Consider it the 'black box' approach. :-)  If you want to share all of
+the code then put all of it in your ~/open/ directory.
+
+Hope that helps,
+
+Erwin.
+-- 
+Erwin Harte
+</pre>
+
+<hr />
+
+<pre>
+From: dgd at list.imaginary.com (Shevek)
+Date: Fri Feb  8 18:11:01 2002
+Subject: [DGD] Inherit/include
+
+>The only access that counts at that point is the access that the file
+>has, it doesn't matter that you (the coder) have a bit more access
+>than that, otherwise you could have the following situation:
+
+ From what I see using status in the kernel lib the owner of a file gets 
+set to wherever it is compiled from it just doesn't seem to change a great 
+deal of anything. There isn't anything insecure about letting a file take 
+the access of the user who compiles it, so long as the user doesn't go 
+around compiling code they haven't checked.
+
+Things are stranger than it just being the file's access that's odd though.
+
+Eg I copied a file called test into ~/System, which contained a single 
+command to write a file into the ~/System directory. On compilation with 
+any user that has access to System it quite happily writes a file into the 
+~/System directory. Tried this again with a user that has write access to 
+~/System but not write access to ~/Private. Upon compilation in ~/System 
+the test program can merrily write its test file into ~/Private.
+To me that sounds exactly like the behaviour you describe below, with the 
+test program taking System's root access.
+
+But it gets more complex. When you give a user (I'll call him Test) write 
+access to a directory (I'll call it ~/Public). Test can use the editor to 
+make files in ~/Public, but can't compile code in their home directory that 
+writes files to ~/Public.
+Now say Test is given read access to a directory (I'll call it ~/Private) 
+they can read anything they like, but any code they write in ~/Test can't 
+read from the directory (Although it can if ~/Private is global read).
+Ie the file access problem you pointed out.
+
+Effectively this makes any code, written in a user directory that isn't 
+~/System, trapped in its own directory, only able to read from global read 
+directories, with any code written in ~/System having full root access 
+(Despite includes/inherits from anything other than the kernel).
+
+I can see why trapping code inside the directories is secure, I just think 
+that if code can access that which the owner (Ie compiler of the code) can 
+access then it makes things a whole bunch easier to use. Otherwise anything 
+that has to read/write from outside its user directory (From anything that 
+isn't global read) has to go into System, or use a daemon in System to give 
+it file access outside its user directory.
+
+>- You (bar) grant <foo> write-access in your home-directory to work on
+>   something.
+>- You, one of the main game-admins, also have full access to /.
+>- <foo> now writes a bit of code in your home-directory and, using
+>   that, has full access to /.
+>
+>Sweet, isn't it?
+
+Define sweet :>
+
+I get your point, although that wasn't the behaviour I was suggesting.
+
+If I have code in System, and get it to be compiled with System as owner 
+then it has full / access anyway. Just can't inherit/include anything from 
+anywhere but ~/include or a global read dir which still seems bizarre to 
+me. So I can have a piece of code which is able to read/write/delete any 
+file it likes (Tested this), but cannot inherit/include the file. Does that 
+not sound even a little odd to you?
+
+>Use your ~/open/ directory if you want to share some feature/interface
+>information, I'd suggest creating ~/open/lib/ and ~/open/include/ for
+>this purpose and for any code you want to share you can put an almost
+>empty inheriting bit in ~/open/lib/fnurt.c which can be used by
+>others.
+>
+>Consider it the 'black box' approach. :-)  If you want to share all of
+>the code then put all of it in your ~/open/ directory.
+>
+>Hope that helps,
+>
+>Erwin.
+
+Do this already with stuff like a room inheritable etc.
+Thing is all I want to do is inherit/include from a private directory that 
+doesn't give any special write access :>
+
+Cheers,
+         Shevek
+</pre>
+
+<hr />
+
+<pre>
+From: dgd at list.imaginary.com (Felix A. Croes)
+Date: Sat Feb  9 07:49:02 2002
+Subject: [DGD] Inherit/include
+
+Shevek wrote:
+
+> >The only access that counts at that point is the access that the file
+> >has, it doesn't matter that you (the coder) have a bit more access
+> >than that, otherwise you could have the following situation:
+>
+>  From what I see using status in the kernel lib the owner of a file gets 
+> set to wherever it is compiled from it just doesn't seem to change a great 
+> deal of anything. There isn't anything insecure about letting a file take 
+> the access of the user who compiles it, so long as the user doesn't go 
+> around compiling code they haven't checked.
+
+Foo examines a bit of code and finds it to be secure; Foo has gotten
+into the habit of checking every bit of his own code just before he
+compiles it, because there are others who have write access to his code.
+Foo is very security-conscious, and to make extra sure, he checks it
+three more times.  However, just before Foo actually compiles the code,
+Bar replaces it with a version of his own.  Bingo, a security leak.
+
+
+> Things are stranger than it just being the file's access that's odd though.
+>
+> Eg I copied a file called test into ~/System, which contained a single 
+> command to write a file into the ~/System directory. On compilation with 
+> any user that has access to System it quite happily writes a file into the 
+> ~/System directory. Tried this again with a user that has write access to 
+> ~/System but not write access to ~/Private. Upon compilation in ~/System 
+> the test program can merrily write its test file into ~/Private.
+
+Never grant anyone write access to ~System.  Always grant then full access
+to / instead.  You're right, it amounts to the same thing, because any code
+in ~System has full rights anyhow.
+
+
+> To me that sounds exactly like the behaviour you describe below, with the 
+> test program taking System's root access.
+>
+> But it gets more complex. When you give a user (I'll call him Test) write 
+> access to a directory (I'll call it ~/Public). Test can use the editor to 
+> make files in ~/Public, but can't compile code in their home directory that 
+> writes files to ~/Public.
+
+Test however can write and compile files in ~/Public that can read and
+write anything else in your directory, because objects in your directory
+can access anything else in your directory.  Bingo.  This is probably not
+what you intended, but if it's any consolation, Test's access to your files
+does not extend to the files outside of your directory that you, as a
+user, have special access to.  Though you inadvertedly gave away access
+to all of your files, you didn't endanger anyone else by doing so.
+
+There is not much point in giving someone write access to a subdirectory,
+only.
+
+
+> Now say Test is given read access to a directory (I'll call it ~/Private) 
+> they can read anything they like, but any code they write in ~/Test can't 
+> read from the directory (Although it can if ~/Private is global read).
+> Ie the file access problem you pointed out.
+
+Hardly the same problem that Erwin mentioned.
+
+
+> Effectively this makes any code, written in a user directory that isn't 
+> ~/System, trapped in its own directory, only able to read from global read 
+> directories, with any code written in ~/System having full root access 
+
+Exactly!  This is intentional.
+
+
+> (Despite includes/inherits from anything other than the kernel).
+
+But of course, nothing in ~System should ever depend on any code outside
+~System, since such code could introduce a security leak.
+
+
+> I can see why trapping code inside the directories is secure, I just think 
+> that if code can access that which the owner (Ie compiler of the code) can 
+> access then it makes things a whole bunch easier to use. Otherwise anything 
+> that has to read/write from outside its user directory (From anything that 
+> isn't global read) has to go into System, or use a daemon in System to give 
+> it file access outside its user directory.
+
+Generally, don't write code that requires access outside its own directory.
+The only object that has a good reason to do so is the wiztool, which is
+why an object in ~System can inherit /kernel/lib/wiztool (which has already
+masked all the relevant functions so that only user-level access, and not
+System-level access, is possible).
+
+
+>[...]
+> If I have code in System, and get it to be compiled with System as owner 
+> then it has full / access anyway. Just can't inherit/include anything from 
+> anywhere but ~/include or a global read dir which still seems bizarre to 
+> me. So I can have a piece of code which is able to read/write/delete any 
+> file it likes (Tested this), but cannot inherit/include the file. Does that 
+> not sound even a little odd to you?
+
+No object in ~System should depend on code inherited or included from
+elsewhere (other than /kernel), since such code could then do whatever
+it wants.  Bingo.  Any code that is to have System rights should be in
+~System.  If I wanted to remove the oddity, I would forbid the
+dependency altogether, rather than allow it.
+
+
+>[...]
+> Thing is all I want to do is inherit/include from a private directory that 
+> doesn't give any special write access :>
+
+Sorry, but you cannot use kernel lib file access in this manner.  If you
+want to restrict access to certain functionality, you have to do so at
+runtime.
+
+Regards,
+Dworkin
+</pre>
+
+<hr />
+
+<pre>
+From: dgd at list.imaginary.com (Noah Lee Gibbs)
+Date: Sat Feb  9 18:10:01 2002
+Subject: [DGD] Inherit/include
+
+On Sat, 9 Feb 2002, Felix A. Croes wrote:
+> Could it have been the other way?  First you created an explicit System
+> user, and then you gave it extra access.  It would be hard to fathom why
+> you wanted to use the wiztool in this situation, unless you had a user
+> already.
+
+  Any call to compile_object in the wiztool goes through the wiztool
+compile_object function, regardless of whether it reflects user
+input.  In this case, it does not.
+
+> I do not think it is a good idea to make a System user who can login.
+
+  There isn't a System user who can log in.  Indeed, that is explicitly
+forbidden.  However, in the create() function of the wiztool it compiles
+the objects it may later wish to clone.  In my case, they are things like
+/usr/common/obj/user_state.c.  When I include a call to compile_object on
+that object in the creator function, the call to access() that occurs in
+/kernel/lib/wiztool.c passes owner (System), path
+(/usr/common/obj/user_state.c) and access (WRITE_ACCESS).  Therefore,
+System winds up needing write access to that file to compile it in its
+create function.
+
+-- 
+See my page of DGD documentation at
+"http://www.angelbob.com/projects/DGD_Page.html"
+If you post to the DGD list, you may see yourself there!
+</pre>
+
+<hr />
+
+<pre>
+From: dgd at list.imaginary.com (Stephen Schmidt)
+Date: Mon May 19 23:15:01 2003
+Subject: [DGD] Any advice?
+
+On Tue, 20 May 2003, Ben Chambers wrote:
+> While the challenge is part of my reason for doing this, I also feel that
+> coding it myself will allow me to have more flexibility in how it is
+> implemented and what exactly I want it to do and how it does it.  For
+> example, I'm sure that because Melville was written from scratch, it is more
+> like what you originally intended than if you had changed your ideas in
+> order to allow the mudlib to be built on top of the kernel.
+
+In truth, probably not, for two reasons. First, the kernel mudlib
+is, if you build over it correctly, highly transparent to the
+end goals. In terms of functionality, the kernel strikes me as
+extremely flexible (though I'm not very familiar with it) and
+I doubt it misses any features I would consider important. In
+terms of elegance, that might not be true - the kernel has
+features that I personally don't anticipate that I'd ever use,
+and if I built something for myself from scratch, I could get
+something that did less than the present kernel does, but did
+everything I wanted, in less space (but much more programmer
+time, of course).
+
+Second, Melville was always oriented towards being a real simple
+mudlib that would be familiar to someone who coded on MudOS or
+other post-LP-2.4.5 drivers, but would let you start to get
+into the internals of how DGD worked. In 1994 I think it did
+a decent job of that. Nowadays the driver has moved so far
+beyond Melville that it doesn't anymore. Today it's main
+purpose is to give a familiar mudlib to someone who wants to
+code more or less the same way they did in 1994 (which is
+perhaps a dumb goal - why use DGD if you're not going to take
+advantage of its power? - but the evidence shows that there
+is a small but reliable market for it.) Both of those goals
+could be carried out equally well in a mudlib that ran over
+the kernel, and the "intro to DGD" one could, of course, be
+carried out much better that way. Today I would guess that
+Phantasmal, which does run over the kernel, is the right way
+to go for someone relatively inexperienced in game design who
+is interested in learning how to hack DGD. (Disclaimer: I know
+Phantasmal only from discussion on this group, I may be totally
+wrong about that.)
+
+Steve
+</pre>
+
+<hr />
+
+<pre>
+From: dgd at list.imaginary.com (Felix A. Croes)
+Date: Mon Nov 17 17:55:01 2003
+Subject: [DGD] Kernel Lib security and APIs
+
+Noah Gibbs wrote:
+
+>[...]
+>   I like this in concept.  It's working for me. 
+> However, I have a couple of questions about how to
+> make it work properly with Kernel Library security.
+>
+>   I'd like to keep (for instance) room files somewhere
+> under /usr/game, and then pass the filename to a
+> routine in /usr/common.  The routine in /usr/common
+> would open and parse the file and put the rooms in
+> their appropriate places.  It would read script names
+> out of the file and call those scripts.  The scripts
+> exist in one or more other files in /usr/game.
+>
+>   There's a problem with this -- there's no way that I
+> can see to get an object under /usr/common to read a
+> file under /usr/game without using a globally-readable
+> directory.  I tried giving the "common" user full read
+> access to /usr/game, but it made no difference.
+
+Directories under /usr serve three different purposes.
+
+First, security: user directories are created there.  Each user
+normally only has access to his own files.  Global read access can
+be added for a directory, which allows all users and their objects
+read access to files in that directory.
+
+User-specific access applies <only> to the user, not to his objects.
+If you really want objects to access files in a different directory
+under /usr, make a server object in that directory which hands out
+files on request.  For your example above, /usr/game objects should
+really pass the file contents to /usr/common objects, not the file
+names.
+
+File security was designed with proper restrictions for untrusted guest
+programmers (wizards) in mind, and it may get in the way sometimes
+in muds which are organized differently.
+
+Second, resource control and measurement: this one is very important.
+Each "user" under /usr (whether representing an actual user or not)
+has his own resource limits.  With guest programmers, you probably
+want these to be actual limits so nobody can clone arbitrary amounts
+of objects, create callout explosions, hand out huge amounts of money
+to players, and so on.  Without them, you'll probably still want to
+use them for measurement, to see how many objects/callouts/ticks/etc
+are used in a specific section of your mudlib.  It is recommended to
+structure your mudlib into different directories under /usr with this
+in mind.
+
+Note that file access is based on the object creator (based directly
+on the file name), whereas resource management is based on the object's
+owner.  For master objects, the object owner is always the same as the
+object creator.  For clones, the owner is the same as the owner of the
+object that cloned it.  So if an object in /usr/foo clones an object
+from /usr/bar, the owner of that object is foo.
+
+Third and last, concurrency: the kernel library keeps track of a lot
+of things for you.  Unfortunately this can have an adverse effect in
+DGD/MP; with a single server object keeping track of things, two LPC
+threads using those things cannot run concurrently, because they
+effectively cause modifications in that same server object.
+
+The kernel library works around this in two different ways.  Decaying
+resources (such as tick measurement) are not affected.  Non-decaying
+resources (such as the number of objects) can be modified concurrently
+if and only if this is done from objects with different owners.  So
+here lies another reason to have different subsystems in different
+directories under /usr.
+
+Regards,
+Dworkin
+</pre>
+
+<hr />
+
+<pre>
+From: dgd at list.imaginary.com (Felix A. Croes)
+Date: Fri Dec  5 07:41:01 2003
+Subject: [DGD] Cross-directory inheritance and read access
+
+Noah Gibbs wrote:
+
+>   In the Kernel Library, you need to have read access
+> to a file in order to inherit it.  Special access
+> (giving a user specific access to a specific
+> directory) doesn't work for files in those users'
+> directories.  So in order to inherit from a library,
+> that library has to be globally readable.
+>
+>   That seems wrong to me.  The only method to prevent
+> somebody inheriting a globally readable library is the
+> forbid_inherit mechanism in the ObjectD.  You could do
+> that, but it's a fair amount of work, and it's
+> circumventing the existing permissions system --
+> you've already made sure that they can read the file,
+> because if they can't then they can't inherit it.  I
+> suppose Phantasmal could demand write-access to a file
+> in order to inherit it, but that would be *really*
+> insecure.
+>
+>   I could just skip the inheritance and do all work by
+> replacing the child object with a hook object, and
+> passing the calls through to it.  That seems like a
+> very awkward interface, though.  Is there some way to
+> reasonably access-control inheritance without making
+> directories like /usr/System/lib globally readable, or
+> moving the libraries to /usr/System/open/lib?
+
+What exactly do you want: have files readable without making them
+inheritable, or have files inheritable without making them readable?
+
+In the first case, you should use forbid_inherit to define your own
+security model.  This doesn't have to be complex.  For example, you
+could prevent inheriting anything that has "/private/" as a pathname
+component unless the inheritor has the same creator.
+
+In the second case, you can separate file access and inheritance by
+making ~/open/lib/foo.c inherit from ~/lib/foo.c.  Note that it is
+a bad idea to do this for a second-level auto object, which is
+inherited by everything, because you'd needlessly pollute the
+inheritance tables that DGD uses internally.
+
+Regards,
+Dworkin
+</pre>
+
+<hr />
+
+<pre>
+From: dgd at list.imaginary.com (Felix A. Croes)
+Date: Sun May 25 17:06:01 2003
+Subject: [DGD] Rlimits weirdness...
+
+Noah Gibbs wrote:
+
+>   I'm seeing some odd behavior, and the Kernel Library
+> definition of runtime_rlimits() in the Driver seems to
+> be the cause.
+>
+>   An object in /usr/System is permitted to set
+> maxticks to -1, which will remove all limits on ticks.
+>  On the other hand, the same object isn't allowed to
+> (for instance) set the limit to 250,000 repeatedly so
+> that it can run many consecutive time-limited
+> operations in the same thread.  Is this for security
+> reasons and I'm just not getting it?
+
+What you can't do is set a tick limit and then raise it.  Non-negative
+tick limits can only be set when the current limit is -1 (infinite).
+Once a limit is set, you are committed.  You can voluntarily lower it,
+though.
+
+>From your description, I think you should be setting the limit to
+250,000 from where the current limit is infinite.  That'll allow you
+to run the consecutive time-limited operations, as you describe.
+
+Regards,
+Dworkin
+</pre>
+
+<hr />
+
+<pre>
+From: dgd at list.imaginary.com (Felix A. Croes)
+Date: Sun May 25 17:59:00 2003
+Subject: [DGD] Rlimits weirdness...
+
+Noah Gibbs wrote:
+
+> --- "Felix A. Croes" wrote:
+> > What you can't do is set a tick limit and then raise
+> > it.  Non-negative
+> > tick limits can only be set when the current limit
+> > is -1 (infinite).
+>
+>   Hm.  So since call_out sets a non-negative tick
+> limit, that means I can only lower it.  So I guess
+> I'll need to make every upgraded() call its own
+> call_out.  I was trying to avoid that.
+
+You don't have to, as long as you go back to unlimited ticks first:
+
+    rlimits (-1; 0) {
+	rlimits (250000; 0) {
+	    task1();
+	}
+	rlimits (250000; 0) {
+	    task2();
+	}
+	/* ... */
+    }
+
+Or, even better:
+
+    rlimits (-1; 0) {
+	call_limited("task1");
+	call_limited("task2");
+	/* ... */
+    }
+
+Regards,
+Dworkin
+</pre>
+
+<hr />
+
+<pre>
+From: dgd at list.imaginary.com (Felix A. Croes)
+Date: Sun May 25 18:23:00 2003
+Subject: [DGD] Rlimits weirdness...
+
+Noah Gibbs wrote:
+
+>   I wanted to use call_limited, but it's static.  And
+> rather than making every upgraded() call in every
+> object use it manually (definite security hole, and
+> inconvenient), I'd have to do the same thing from
+> ObjectD, which can't get at some of the information it
+> would need to do that.
+
+Static functions can be called with call_limited().  Beyond that,
+it is not clear to me exactly what you are trying to do, so it is
+hard to offer advice.
+
+
+>   So for the moment I just have two rlimits calls
+> surrounding the call_other.  It looks silly, but it
+> works.
+>
+>   I still find it very odd that the Kernel Library
+> allows that, but disallows it with only one call.
+
+It disallows raising the ticks limit, unless you are in "supervisor"
+mode, i.e. running with no ticks limit.  Note that you cannot deal
+with running out of ticks unless you do the dealing in code that has
+no ticks limit (unless you make the whole operation atomic).
+
+System objects are subject to the same restrictions on raising ticks
+as other objects, to avoid accidents where the ticks limit is raised
+forever in an infinite loop.
+
+Regards,
+Dworkin
+</pre>
+
+<hr />
+
+<pre>
+From: dgd at list.imaginary.com (Ben Chambers)
+Date: Mon May 19 23:23:01 2003
+Subject: [DGD] Any advice?
+
+----- Original Message -----
+From: "Stephen Schmidt"
+Sent: Tuesday, May 20, 2003 12:14 AM
+Subject: Re: [DGD] Any advice?
+
+
+> In truth, probably not, for two reasons. First, the kernel mudlib
+> is, if you build over it correctly, highly transparent to the[...]
+
+Learning to 'hack' DGD is most definitely not my only goal.  The one biggest
+issue that I have with the kernel library is lack of documentation.  At
+first glance I thought you would simply hack it to expand it.  Then when I
+read stuff at Phantasmal's site (which is wonderful, I might add) it turns
+out it looks in some directory in the user directory for extensions of these
+objects that you can apparently drop in place yourself...
+</pre>
+
+<hr />
+
+<pre>
+From: dgd at list.imaginary.com (Joshua P. Dady)
+Date: Tue May 20 09:04:01 2003
+Subject: [DGD] Any advice?
+
+On Tuesday, May 20, 2003, at 07:19  AM, Felix A. Croes wrote:
+> Having said that, some things in DGD are just mind-bogglingly complex.
+> Take the string parser for instance -- it wasn't created to make
+> parsing easy, it was created to make parsing really efficient.  The
+> documentation for it I consider to be of good quality, but nevertheless
+> making a good parser with it is as hard, or perhaps harder, than doing
+> so in LPC.
+
+At least in this case, I would expect that there are more than enough 
+of us who understand that even writing good grammars to feed a generic 
+parser are hard to write, and that there are good, dedicated texts on 
+the matter, that it wouldn't be hard to explain it to anyone who didn't 
+just understand.
+
+As for the rest, I've often found situations where I would have to read 
+the documentation _and_ the kernel mudlib's implementation of that 
+section in order to really understand either.  This tends to be a 
+two-edged sword, as it gives deeper insight as to why things are the 
+way they are, but there are times when I just want to implement a 
+feature without having a history lesson first.  8)
+
+   -Josh
+</pre>
+
+<hr />
+
+<pre>
+From: dgd at list.imaginary.com (Noah Gibbs)
+Date: Tue Jan  6 16:45:01 2004
+Subject: [DGD] A simple lib
+
+  This is old, but I meant to reply.
+
+--- Robert Forshaw wrote:
+> I was most detered from the kernel lib because
+> it looked like it would 
+> consume too much resources. My MUD will be
+> making heavy use of very short 
+> (milisecond) callouts and I don't want it
+> lagging because the resource 
+> manager itself is hogging the CPU. Am I wrong
+> in this assessment?
+
+  Possibly.  I've never had any performance problems
+with it, but I'm also doing something that acts a lot
+like a regular MUD.  Since a regular MUD uses an order
+of magnitude less CPU than a modern desktop machine
+provides (if that!), the small amount of waste that
+the Kernel Library involves is simply not an issue.
+
+  If you're going to do something that requires nearly
+your entire CPU load, and you're going to do it in
+tiny amounts at millisecond precision, then security
+and sanity-checking both need to go.  They're too
+expensive.  So you can write a less-secure and
+less-debuggable version than the Kernel, which will be
+faster.
+
+  Of course, if you're doing something that
+performance-intensive and precise, why are you using
+LPC?
+</pre>
+
+<hr />
+
+<pre>
+From: dgd at list.imaginary.com (Felix A. Croes)
+Date: Wed Jan 28 07:06:01 2004
+Subject: [DGD] Alternatives to the Kernel model of security...
+
+Noah Gibbs wrote:
+
+>   The Kernel Library, while it's a very powerful and
+> useful bit of software, is undeniably hard to use in
+> certain cases.  I don't mean it's technically
+> incapable.  I mean that its security model is
+> unfamiliar to essentially everyone, and that common
+> forms of security are difficult to map onto its
+> interace.
+
+I'll explain a little about how the kernel library's security model
+came to be.
+
+Before I started working on DGD, I spent a lot of time trying to
+circumvent the security of various mudlibs.  When I started, all LPmuds
+used a variety of 2.4.5 mudlib, and eventually I developed a routine
+to go from newbie player to archwizard in about 15 minutes (including
+removing evidence from the logfiles). :)
+
+The basic idea of LPmud 2.4.5's security was simple: wizards can only
+edit files in their own directory, in /open and in directories where
+they have explicitly been granted access, archwizards can edit files
+everywhere except in /room and /obj.  The implementation was full of
+holes.
+
+A new security model was developed for the CD mudlib.  The main change
+was that security became object-based, instead of player-based.  This
+introduced the wiztool problem: when wizard A cloned a wiztool made
+by wizard B, that wiztool could not access files in the directory of
+wizard A.  To solve this, there had to be a way for wizard A to grant
+his cloned wiztool permission to access files in his own directory.
+
+This was managed with the uid (user ID) security system, partially
+implemented in the server and partially in the mudlib.  The uid
+system was a disaster, for various reasons:
+
+ - the design was based on the Unix suid (set user ID) system, which
+   is notoriously bad
+ - the implementation was so complex that problably only Genesis
+   archwizard Commander understood it, but a number of others were
+   nevertheless making changes to it, and the system became less and
+   less secure with each new mudlib release
+ - overall security was affected by a huge number of source files,
+   all of which had to be in tune with eachother
+ - The 3.1.2 LPmud server, with builtin uid support, was used as the
+   basis for the MudOS server, for which new mudlibs were developed
+   which tried to make a different use of the existing uid support
+   in the server, and which all failed miserably.
+
+I have broken uid security so many times that eventually, the
+archwizards of Genesis simply stopped fixing the bugs that I
+reported to them.
+
+Then came what came to be known as the "stack-based" security system,
+which was an enormous improvement.  This is the system that is still
+used for the Lima mudlib today.  Though I managed to break it on one
+occasion, I never found a fundamental flaw in it.  I do have some
+reservations.
+
+Stack-based security does not depend on the current player (as in
+2.4.5), or the permissions of the current object (as in CDlib), but
+on the intersection of the permissions of all objects in the call
+chain.  Each object has the option of "resetting" security before
+performing a sensitive operation, with the effect that this operation
+will be performed with only the permissions of the current object
+taken into account.
+
+The problem of stack-based security is that there are many objects
+which you want to be transparent with regard to security, i.e. you
+want them to be able to appear in the call chain without affecting
+the combined permissions.  Unfortunately, the only way to accomplish
+this is to give the "transparent" object maximum permissions.  In the
+Lima mudlib today, there is a large set of "transparent" objects, all
+of which are innocuous in function, and dangerous in potential.
+Finding a security problem now involves finding a badly-made
+"transparent" object.
+
+For the kernel library, I wanted a security model with the following
+additional properties:
+
+ - the set of objects that require maximum permissions would be very
+   small
+ - a breach of one programmer's security does not affect the security
+   of the remainder of the system, regardless of that programmer's
+   permissions
+
+In the kernel library, only the kernel objects that define the
+security model itself have maximum permissions.  System objects have
+almost maximum permissions; the one thing they cannot do is change the
+security model.  The set of System objects can be small (I have less
+than 20 in my own mudlib).
+
+To meet the second requirement, I separated the permissions granted to
+a programmer, and to that programmer's objects.  After making this
+separation, I decided that stack-based security would now be needlessly
+restrictive.
+
+Regards,
+Dworkin
+</pre>
+
+<hr />
+
+<pre>
+From: dgd at list.imaginary.com (Felix A. Croes)
+Date: Fri Feb  6 07:28:00 2004
+Subject: [DGD] Melville under the Kernel Lib
+
+Michael McKiel wrote:
+
+> In the past archives, Steven has stated if he were to "do it again" he'd
+> prolly choose to go on top of the kernel. Yet in quite a few posting's also
+> has stated a 'distaste'(?) for the directory depth's of such. 
+>
+> Yet there doesn't seem to be any way to accomodate (what we've been calling)
+> the Klib without "breaking" its directory requirements, and making it innured
+> to any future patches from the experimental line of DGD.
+
+If you want to re-do Melville on top of the kernel library, you have to
+move files around.  That is a given.
+
+As much as I like the kernel library, I'd like to see other mudlibs that
+don't depend on it as well.  When everyone uses the kernel library, it
+becomes harder for me to find bugs in DGD that the kernel library just
+doesn't trigger.
+
+Here is what the kernel library does, and what a modern mudlib should do:
+
+ - Provide a layer of abstraction between the driver and the higher-level
+   mudlib, so that the latter does not have to be aware of driver changes
+   (other than changes in LPC itself).
+ - A framework for persistence.  In DGD this is really simple, all you
+   have to do is destroy all connection objects to let them "go linkdead",
+   and to let objects that deal with absolute time know that there has
+   been a reboot interval.  For example, a cron object which wants to
+   run tasks at specific hours should reschedule its callouts after a
+   reboot.
+ - Separation of inheritables and other objects.  This is essential for
+   any mud that wants to be able to entire inheritance trees of objects
+   to the latest source version without destroying object state.  The
+   kernel library does it through pathnames, but other methods are
+   possible.
+ - Separation through pathnames of clones and LWOs.  This is not
+   essential, and the kernel library just does it for the sake of
+   orthogonality.
+ - Resource management and measurement.  This is absolutely essential for
+   a persistent mud with guest programmers (think of LambdaMOO), and
+   useful but not required in other cases.
+ - File security and object security.  A requirement for muds with guest
+   programmers, but hard to do right, and the kernel library's system
+   may be too paranoid.
+ - DGD/MP aware.  This is going to be important in the future.  A number
+   of design issues are involved:
+
+    - There have to be some kind of thread-local variables which are not
+      held in any object, to handle things such as this_player().
+    - It must be possible to start a callout without making a change to
+      data in any object (this is why callouts are no longer a resource
+      in the kernel library, since resources are tracked by a central
+      object).
+    - Large threads that modify many objects should, whenever possible,
+      be broken up into smaller threads modifying fewer objects, using
+      callouts.
+
+Regards,
+Dworkin
+</pre>
+
+<hr />
+
+<pre>
+From: dgd at list.imaginary.com (Felix A. Croes)
+Date: Fri Feb 27 05:49:01 2004
+Subject: [DGD] Kernel Lib, creator & owner
+
+Michael McKiel wrote:
+
+> Well I tested some more, logged in as admin.
+> copied, blah.c to /usr/zamadhi/obj/blah.c
+> compiled it, cloned it.
+> The master object winds up with zamadhi as creator & owner.
+> And the clone winds up with "admin" as owner, and zamadhi as query_creator()
+>
+> Does that present any security consequences then? for say the purposes of the
+> Master object being able to destruct the clone, or to update the clone? when
+> "admin" becomes the owner?
+
+The object is owned by 'admin' and can only be destructed by that owner
+or by someone with administrator access.  It also counts towards admin's
+object quota, if any.  File access is still governed by creator.  Other
+resources are all used in admin's name.
+
+Regards,
+Dworkin
+</pre>
+
+<hr />
+
+<pre>
+From: dgd at list.imaginary.com (Par Winzell)
+Date: Fri Feb 27 13:06:01 2004
+Subject: [DGD] Kernel Lib, creator & owner
+
+>>So...are there any instances where the variables owner & creator in the
+>>auto.c will actually be different? or the driver's creator() return a
+>>differing string? ... and if not why have 2 variables that don't differ?
+>>
+>>I'm sure I'm missing something, so could anyone enlighten me? :)
+>>
+> 
+> Well I tested some more, logged in as admin.
+> copied, blah.c to /usr/zamadhi/obj/blah.c
+> compiled it, cloned it.
+> The master object winds up with zamadhi as creator & owner.
+> And the clone winds up with "admin" as owner, and zamadhi as query_creator()
+
+You can easily scan through auto.c for all instances of owner and 
+creator being assigned anything. It all happens in _F_create and the 
+logic is quite straight-forward:
+
+   * The creator is purely a function of the object's name...
+     * An object /usr/Foo/* has creator Foo
+     * An object /kernel/* has creator System
+       * (i.e. /kernel and /usr/System have some equivalences)
+     * Anything else has creator nil
+
+   * The owner is identical to the creator for master objects (anything 
+that is neither clone nor pure program). For clones it is set to the 
+owner of the cloning object, unless the second argument to 
+clone_object() and new_object() is used by the mudlib layer to force a 
+certain owner for an object. This is how a wiztool that lives in /kernel 
+can give a newly cloned object e.g. the owner 'zell'.
+
+The clone_object() and new_object() functions pass on this 'uid to be' 
+through a TLS value (thread local storage).
+
+Zell
+</pre>
+
+<hr />
+
+<pre>
+From: dgd at list.imaginary.com (Felix A. Croes)
+Date: Sat Feb 28 08:47:00 2004
+Subject: [DGD] Kernel LIB's Invisible Callouts
+
+Michael McKiel wrote:
+
+> Well I've plowed thru the kernel, got it running under the following
+> directory structure:
+> /home   /include   /k
+>[...]
+> Ok enough preamble I suppose heh. The question being, why can't callouts be
+> seen in kernel objects? ... Since if I want to mix kernel AND 'System' files
+> it would seem to me nonVisible callouts would pose problems.
+
+Who are you asking?  You changed it, it's your own mudlib now :)  If
+you don't want callouts in /k objects to be invisible, make them
+visible.  They are not visible in the kernel library because /kernel
+objects are in a class of themselves, and should definitely <not> mix
+with other objects.
+
+You will have to do some conversion, though, since callouts in
+kernel objects have a different argument format; they don't pass
+through the _F_callout wrapper.
+
+Regards,
+Dworkin
+</pre>
+
+<hr />
+
+<pre>
+From: dgd at list.imaginary.com (Michael McKiel)
+Date: Sat Feb 28 09:36:01 2004
+Subject: [DGD] Kernel LIB's Invisible Callouts
+
+ --- "Felix A. Croes"
+> 
+> Who are you asking?  You changed it, it's your own mudlib now :)  If
+
+*grin* well Yeah...but I couldn't proceed til I knew why all the Kernel's
+call_out's were 'invisible' to status() ;)
+
+> you don't want callouts in /k objects to be invisible, make them
+> visible.  They are not visible in the kernel library because /kernel
+> objects are in a class of themselves, and should definitely <not> mix
+> with other objects.
+> 
+> You will have to do some conversion, though, since callouts in
+> kernel objects have a different argument format; they don't pass
+> through the _F_callout wrapper.
+
+
+At first I didn't think that helped, but did some grep'ing and found that the
+only kernel objects that do call_out's are rsrc.c and rsrcd.c, and they're
+the only objects prevented from using the _F_callout wrapper:
+due to (in auto.c's call_out) :
+    if ( DIR_RSRC(oname) ) {
+    /* direct callouts for resource management objects */
+    return ::call_out(function, delay, args...);
+    }
+
+where, #define DIR_RSRC(f) sscanf(f, "/k/%*s/rsrc") != 0
+
+So I don't have to prevent status() from displaying call_out's in all objects
+that are/could be/ considered "Kernel" just 'DIR_RSRC' ones.
+
+So...security here I come :), Thank ye.
+</pre>
+
+<hr />
+
+<pre>
+From: dgd at list.imaginary.com (Felix A. Croes)
+Date: Wed Mar 24 05:25:01 2004
+Subject: [DGD] Question about thread local storage
+
+Steve Wooster wrote:
+
+>      I've been looking through the kernel lib to see how it implemented 
+> TLS... I know it has to do with modifying the array of arguments for the 
+> second call that call_trace() returns, and that the kernel lib always 
+> ensures the second call has extra arguments sent to it, but I'm a bit 
+> confused with how it does that. When it comes to functions in the driver 
+> object such as Initialize() or Restore(), I see it passing the necessary 
+> array, but at first glance, I'm having trouble figuring out how it 
+> allocates the memory in threads started by call_outs. Anybody know? Thanks. 
+> My apologies if this could have been easily found with more searching.
+
+All callouts are redirected to _F_callout() in the auto object.  This
+calls _F_call_limited(), and that function then <replaces> the argument
+array with the TLS array.  I could have handled this through another
+function (say __F_callout) as it is done elsewhere, but _F_call_limited
+is heavily involved in TLS manipulation anyhow.
+
+By the way, the kernel library uses the _F_/_Q_ convention for functions
+that have to be present in objects, but should not pollute the object
+namespace.  If "_F_destruct" had been "destruct", then mudlibs based
+on the kernel library could not have defined a destruct function
+themselves (these _F_/_Q_ functions are not intended to be masked).
+
+Regards,
+Dworkin
+</pre>
+            <address>
+            <span><a href="mailto:angelbob-remove-spamfree@spamfree.users.sf.net">Noah Gibbs</a></span>
+            </address></td>
+        </tr>
+      </table></td>
+  </tr>
+</table>
+</body>
+</html>

@@ -1,0 +1,91 @@
+  <titledef text="Designing Driver Objs" />
+
+  <h2> Designing Your Driver Object </h2>
+
+<pre>
+From: dgd at list.imaginary.com (Erwin Harte)
+Date: Mon May 19 22:42:01 2003
+Subject: [DGD] Function Hooks
+
+On Mon, May 19, 2003 at 11:36:05PM -0400, Ben Chambers wrote:
+> Does the DGD REQUIRE all those functions to be implemented prior to running
+> the mudlib, or can I just start with something that does literally nothing
+> and work from there?
+
+Are you talking about the functions that DGD expects in the driver
+object, or about the hooks that the kernel-lib provides?
+
+The driver object is expected to provide certain functions, even if
+those functions do (almost) nothing and are just placeholders.
+
+The kernel-lib can be started without any modifications and you can
+take it from there.
+
+Erwin.
+-- 
+Erwin Harte
+</pre>
+
+<hr />
+
+<pre>
+From: dgd at list.imaginary.com (Felix A. Croes)
+Date: Thu May 22 07:24:01 2003
+Subject: [DGD] Auto and Driver objects
+
+"Ben Chambers" wrote:
+
+> Thanks!  That clarifies a good many things... I was sitting there staring at
+> the driver and auto objects, and saying, how can the driver object, use the
+> auto object to load the auto object that hasn't been loaded yet...
+
+But note that in some mudlibs, it may be useful for the driver object
+to inherit the auto object after all.  So the driver object can do that;
+it just doesn't do it automatically.
+
+Regards,
+Dworkin
+</pre>
+
+<hr />
+
+<pre>
+From: dgd at list.imaginary.com (Erwin Harte)
+Date: Wed Jan 30 11:52:00 2002
+Subject: [DGD] driver / config file
+
+On Wed, Jan 30, 2002 at 06:07:58PM +0100, Johann N. Schmidt wrote:
+> Hello,
+> 
+> some suggestions regarding driver.c/config file:
+>  
+> would it be impossible/have disadvantages to transport the tags
+>  
+> 1. include_file
+> 2. include_dirs
+> 3. auto_object
+> 4. create
+>  
+> from the dgd config file to the driver, thus having functions
+>  
+[...]
+
+The driver-object itself also needs to be compiled and for that DGD
+needs to know what the standard include file, the include-directories
+and the create function are (quite often you don't use it, but it _is_
+possible to do something useful in there).
+
+If you have a look at the driver-functions that DGD already supports
+you'll see that you can do just about all of the above in LPC already
+by adding some extra code in the driver object and the alternate
+create function could be done by some special code in the auto object.
+
+Hope that helps,
+
+Erwin.
+-- 
+Erwin Harte
+</pre>
+
+  <p style="text-size: 150%"> <a href="../index.html"> Back to top level
+    </a> </p>
