@@ -108,14 +108,25 @@ static void create(varargs int clone)
 
   /* Set up ZoneD, Mapd, Exitd & MobileD */
   if(!find_object(ZONED)) { compile_object(ZONED); }
-  if(!find_object(MAPD)) { compile_object(MAPD); }
-  if(!find_object(EXITD)) { compile_object(EXITD); }
-  if(!find_object(MOBILED)) { compile_object(MOBILED); }
 
   bind_dtd = read_file(BIND_DTD);
   if (!bind_dtd) {
     error("Can't read file " + BIND_DTD + "!");
   }
+
+  /* Load zone name list information -- BEFORE first call to
+     any MAPD function. */
+  zone_file = read_file(ZONE_FILE);
+  if(zone_file){
+    ZONED->init_zonelist_from_file(zone_file);
+  } else {
+    DRIVER->message("Can't read zone list!  Starting blank!\n");
+    LOGD->write_syslog("Can't read zone list!  Starting blank!\n", LOG_WARN);
+  }
+
+  if(!find_object(MAPD)) { compile_object(MAPD); }
+  if(!find_object(EXITD)) { compile_object(EXITD); }
+  if(!find_object(MOBILED)) { compile_object(MOBILED); }
 
   mapd_dtd = read_file(MAPD_ROOM_DTD);
   if(!mapd_dtd)
@@ -128,15 +139,6 @@ static void create(varargs int clone)
   if(!the_void)
     error("Error occurred while cloning The Void!");
   MAPD->add_room_to_zone(the_void, 0, 0);
-
-  /* Load zone name list information */
-  zone_file = read_file(ZONE_FILE);
-  if(zone_file){
-    ZONED->init_zonelist_from_file(zone_file);
-  } else {
-    DRIVER->message("Can't read zone list!  Starting blank!\n");
-    LOGD->write_syslog("Can't read zone list!  Starting blank!\n", LOG_WARN);
-  }
 
 
   /* Load stuff into MAPD and EXITD */
