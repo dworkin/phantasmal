@@ -4,15 +4,15 @@ directory	= "/code/phantasmal/mudlib";  /* Replace w/ your absolute
                                                  path! */
 users		= 40;			/* max # of users */
 editors		= 40;			/* max # of editor sessions */
-ed_tmpfile	= "../tmp/ed";		/* proto editor tmpfile */
-swap_file	= "../tmp/swap";	/* swap file */
+ed_tmpfile	= "tmp/ed";		/* proto editor tmpfile */
+swap_file	= "tmp/swap";		/* swap file */
 swap_size	= 2048;			/* # sectors in swap file */
 cache_size	= 50;			/* # sectors in swap cache */
 sector_size	= 512;			/* swap sector size */
 swap_fragment	= 32;			/* fragment to swap out */
 static_chunk	= 64512;		/* static memory chunk */
 dynamic_chunk	= 261120;		/* dynamic memory chunk */
-dump_file	= "../dump";		/* dump file */
+dump_file	= "tmp/dump";		/* dump file */
 
 typechecking	= 2;			/* highest level of typechecking */
 include_file	= "/include/std.h";	/* standard include file */
