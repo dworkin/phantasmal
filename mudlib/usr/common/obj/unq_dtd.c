@@ -589,7 +589,7 @@ void load(string new_dtd) {
   new_unq = UNQ_PARSER->trim_empty_tags(new_unq);
 
   str = STRINGD->trim_whitespace(new_unq[0]);
-  if(str != "dtd" && str != "DTD") {
+  if(STRINGD->stricmp(str, "dtd")) {
     error("Can't load file as DTD -- not tagged as DTD!");
   }
 
@@ -611,6 +611,7 @@ void load(string new_dtd) {
 private void new_dtd_element(string label, mixed data) {
   string* tmp_arr;
 
+  label = STRINGD->trim_whitespace(label);
   if(dtd[label] || label == "struct" || UNQ_DTD->is_builtin(label))
     error("Redefining label " + label + " in UNQ DTD!");
 
@@ -635,6 +636,7 @@ private void new_dtd_element(string label, mixed data) {
 private mixed* dtd_string_with_mods(string str) {
   string mod;
 
+  str = STRINGD->trim_whitespace(str);
   if(str == nil)
     error("Nil passed to dtd_string_with_mods!");
 
