@@ -1,10 +1,10 @@
 How to Deal with Some Common Installation Problems
 
 
-Most of the problems in here are because you didn't follow the
-instructions in INSTALL incorrectly -- or you didn't follow them at
-all.  Have you followed the instructions in INSTALL, and followed them
-carefully and correctly?
+If you're not using Bundled Phantasmal, then most of the problems in
+here are because you didn't follow the instructions in INSTALL
+correctly -- or you didn't follow them at all.  Have you followed the
+instructions in INSTALL, and followed them carefully and correctly?
 
 
 
@@ -123,6 +123,12 @@ mean and how you can play with them.
 
 
 
+Q: I'm running DGD and when I try to do a %datadump or a shutdown, I
+   run out of ticks, so it doesn't finish.  It can't even shut down!
+
+A: Please see the previous question.
+
+
 Q: I'm using the CVS version of DGD on Windows I get the following
 error during startup:
 
@@ -158,8 +164,8 @@ check in anything to SourceForge Phantasmal that has Win32 line endings.
 
 
 
-Q: When I start DGD, Phantasmal seems to start fine, but when I telnet in I
-can't log on!
+Q: When I start DGD, Phantasmal seems to start fine, but when I telnet
+   in I can't log on!
 
 A: There is a bug in DGD versions before 1.2.57 which causes
 Phantasmal to hang for a while on start up.  Please upgrade to DGD
@@ -188,15 +194,16 @@ away can't!
 
 A: Your network administrator almost certainly runs a firewall.
 Whatever port you're using for Phantasmal isn't being allowed through,
-which isn't surprising.  Firewalls are often used specifically to stop
-unauthorized, possibly-insecure servers like MUDs from working.  If
-you're setting up Phantasmal for some authorized purpose, talk to your
-network administrator about letting requests through on the
-appropriate port.  If you're *not* running it with appropriate
-permission, you'll need to either figure out how to defeat the
-firewall, or hang your head in shame.
+which isn't surprising.  Firewalls are often used on school or
+workplace networks specifically to stop unauthorized,
+possibly-insecure servers like MUDs from working.  If you're setting
+up Phantasmal for some authorized purpose then talk to your network
+administrator about letting requests through on the appropriate port.
+If you're *not* running it with appropriate permission, you'll need to
+either figure out how to defeat the firewall, or hang your head in
+shame.
 
-Or you could run your MUD on a machine that's not at your place of
-work.  Getting some kind of broadband at home would work, as would
-using a professional MUD hosting or colocation service.  Any of those
-will probably cost money, though.
+Or you could run your MUD on a machine that's not at your school or
+place of work.  Getting some kind of broadband at home would work, as
+would using a professional MUD hosting or colocation service.  Any of
+those will probably cost money, though.
