@@ -3,6 +3,7 @@
 #include <trace.h>
 #include <log.h>
 
+#define INDENT_LEVEL 4
 #define LOG_FILE ("/usr/common/bob.txt")
 
 private mapping dtd;
@@ -36,10 +37,11 @@ static int create(varargs int clone) {
 
 /* Functions for creating UNQ text from DTD template data */
         string serialize_to_dtd(mixed* dtd_unq);
-private string serialize_to_dtd_type(string label, mixed unq);
-private string serialize_to_string_with_mods(mixed* type, mixed unq);
-private string serialize_to_dtd_struct(string label, mixed unq);
-private string serialize_to_builtin(string type, mixed unq);
+private string serialize_to_dtd_type(string label, mixed unq, int indent);
+private string serialize_to_string_with_mods(mixed* type, mixed unq,
+					     int indent);
+private string serialize_to_dtd_struct(string label, mixed unq, int indent);
+private string serialize_to_builtin(string type, mixed unq, int indent);
 
 /* Functions for parsing and verifying DTD UNQ input */
         mixed* parse_to_dtd(mixed* unq);
@@ -72,6 +74,17 @@ mixed is_builtin(string label) {
   return builtins[label];
 }
 
+#define SPACES_MAX "                "
+#define SPACES_MAX_LEN 16
+private string indent_spaces(int num) {
+  int tmp;
+
+  tmp = num > SPACES_MAX_LEN ? SPACES_MAX_LEN : num;
+  if(tmp < 1) return "";
+
+  return SPACES_MAX[0..tmp];
+}
+
 /*************************** Functions for Serializing ***************/
 
 /* This function Takes UNQ input that could have been the result of
@@ -101,7 +114,7 @@ string serialize_to_dtd(mixed* unq) {
     }
 
     if(dtd[unq[0]]) {
-      data = serialize_to_dtd_type(unq[0], unq[1]);
+      data = serialize_to_dtd_type(unq[0], unq[1], 0);
       if(!data) {
 	accum_error += "Error on label '" + unq[0] + "'.\n";
 	return nil;
@@ -122,16 +135,17 @@ string serialize_to_dtd(mixed* unq) {
 
 /* The label should be passed in as arg1, and the unq (excluding the
    label itself) as arg 2. */
-private string serialize_to_dtd_type(string label, mixed unq) {
+private string serialize_to_dtd_type(string label, mixed unq,
+				     int indent) {
   string tmp;
 
   if(dtd[label][0] == "struct") {
-    return serialize_to_dtd_struct(label, unq);
+    return serialize_to_dtd_struct(label, unq, indent);
   }
 
-  tmp = serialize_to_string_with_mods(dtd[label], unq);
+  tmp = serialize_to_string_with_mods(dtd[label], unq, indent);
   if(tmp && !UNQ_DTD->is_builtin(label)) {
-    tmp = "~" + label + "{" + tmp + "}\n";
+    tmp = indent_spaces(indent) + "~" + label + "{" + tmp + "}\n";
   }
   if(!tmp) {
     accum_error += "Couldn't serialize as type " + implode(dtd[label], "")
@@ -144,7 +158,8 @@ private string serialize_to_dtd_type(string label, mixed unq) {
 
 /* This serializes the given type, but doesn't wrap it in its appropriate
    label.  The caller will need to do that, if appropriate. */
-private string serialize_to_string_with_mods(mixed* type, mixed unq) {
+private string serialize_to_string_with_mods(mixed* type, mixed unq,
+					     int indent) {
   string ret;
   int    ctr, is_struct;
 
@@ -153,10 +168,10 @@ private string serialize_to_string_with_mods(mixed* type, mixed unq) {
 
   if(sizeof(type) == 1) {
     if(UNQ_DTD->is_builtin(type[0]))
-      return serialize_to_builtin(type[0], unq);
+      return serialize_to_builtin(type[0], unq, indent);
 
     if(dtd[type[0]])
-      return serialize_to_dtd_type(type[0], unq);
+      return serialize_to_dtd_type(type[0], unq, indent);
 
     accum_error += "Unrecognized type '" + type[0]
       + "' in serialize_to_string_with_mods!\n";
@@ -207,9 +222,9 @@ private string serialize_to_string_with_mods(mixed* type, mixed unq) {
     string tmp;
 
     if(is_struct)
-      tmp = serialize_to_dtd_struct(type[0], unq[ctr + 1]);
+      tmp = serialize_to_dtd_struct(type[0], unq[ctr + 1], indent);
     else
-      tmp = serialize_to_builtin(type[0], unq[ctr + 1]);
+      tmp = serialize_to_builtin(type[0], unq[ctr + 1], indent);
 
     if(tmp == nil)
       return nil;
@@ -223,13 +238,14 @@ private string serialize_to_string_with_mods(mixed* type, mixed unq) {
 
 /* The label should be passed in as arg1, and the unq (excluding the
    label itself) as arg 2. */
-private string serialize_to_dtd_struct(string label, mixed unq) {
+private string serialize_to_dtd_struct(string label, mixed unq,
+				       int indent) {
   string  ret;
   mixed*  type;
   mapping fields;
   int     ctr;
 
-  ret = "~" + label + "{";
+  ret = indent_spaces(indent) + "~" + label + "{\n";
   type = dtd[label];
   if(!type || type[0] != "struct") {
     accum_error += "Non-struct passed to serialize_to_dtd_struct!\n";
@@ -255,37 +271,42 @@ private string serialize_to_dtd_struct(string label, mixed unq) {
       return nil;
     }
 
-    tmp = serialize_to_string_with_mods(type[1], unq);
+    tmp = serialize_to_string_with_mods(type[1], unq, indent);
     if(tmp) {
       /* serialize_to_string_with_mods will supply its own curly
 	 braces. */
-      return "~" + label + tmp + "\n";
+      return indent_spaces(indent) + "~" + label + tmp + "\n";
     }
     return nil;
   }
 
-  for(ctr = 0; ctr < sizeof(unq); ctr += 2) {
+  /* (typeof(unq) == T_ARRAY) from here on */
+
+  for(ctr = 0; ctr < sizeof(unq); ctr++) {
     string tmp;
 
-    if(!fields[unq[ctr]]) {
-      accum_error += "Unrecognized field '" + unq[ctr] + "'.\n";
+    if(!fields[unq[ctr][0]]) {
+      accum_error += "Unrecognized field '" + STRINGD->mixed_sprint(unq[ctr])
+	+ "' at offset " + ctr + ".\n";
       return nil;
     }
 
-    tmp = serialize_to_dtd_type(unq[ctr], unq[ctr + 1]);
+    tmp = serialize_to_dtd_type(unq[ctr][0], unq[ctr][1],
+				indent + INDENT_LEVEL);
     if(!tmp) {
-      accum_error += "Error writing label '" + unq[ctr] + "' of struct.\n";
+      accum_error += "Error writing field '" + unq[ctr][0] + "' of struct.\n";
       return nil;
     }
-    ret += "~" + unq[ctr] + tmp + "\n";
+    /* ret += indent_spaces(indent) + "~" + unq[ctr][0] + tmp + "\n"; */
+    ret += tmp;
   }
 
-  ret += "}";
+  ret += + indent_spaces(indent) + "}\n";
   return ret;
 }
 
 
-private string serialize_to_builtin(string type, mixed unq) {
+private string serialize_to_builtin(string type, mixed unq, int indent) {
   if(type == "string") {
     if(typeof(unq) != T_STRING) {
       accum_error += "Type " + typeof(unq) + " is not a string!\n";
