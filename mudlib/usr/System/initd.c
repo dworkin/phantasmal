@@ -1,4 +1,3 @@
-
 #include <kernel/kernel.h>
 #include <kernel/access.h>
 #include <kernel/rsrc.h>
@@ -7,6 +6,7 @@
 #include <type.h>
 #include <config.h>
 #include <log.h>
+#include <version.h>
 
 inherit access API_ACCESS;
 inherit rsrc   API_RSRC;
@@ -93,7 +93,8 @@ static void create(varargs int clone)
   if(!find_object(LOGD)) { compile_object(LOGD); }
   /* Channels aren't set yet... */
   LOGD->write_syslog("\n-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-\n"
-		     + "Starting MUD...\n"
+		     + "Starting Phantasmal v" + PHANTASMAL_VERSION
+		     + "...\n"
 		     + "-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-");
 
   /* Compile, find and install the Errord */
