@@ -233,20 +233,20 @@ static void load_custom_rooms(void) {
   int     ctr;
   string  err, prog_name;
 
-  dir_list = get_dir("/usr/game/rooms/*");
+  dir_list = get_dir(GAME_ROOMS_DIR . "*");
   for(ctr = 0; ctr < sizeof(dir_list[0]); ctr++) {
     if(dir_list[1][ctr] == -2) {
-      /* Directory, recurse */
+      /* TODO: Directory, recurse */
     } else if(sscanf(dir_list[0][ctr], "%s.c", prog_name) == 1) {
       /* Custom room file, make sure the room is used */
       if(!GAME_ROOM_REGISTRY->room_for_type("/" + prog_name)) {
 	LOGD->write_syslog("Compiling room " + prog_name);
 	/* Try to compile object for use. */
-	compile_object("/usr/game/rooms/" + prog_name);
-	if(find_object("/usr/game/rooms/" + prog_name)) {
+	compile_object(GAME_ROOMS_DIR + prog_name);
+	if(find_object(GAME_ROOMS_DIR + prog_name)) {
 	  object newobj;
 	  /* Clone the object so it'll show up in the registry */
-	  newobj = clone_object("/usr/game/rooms/" + prog_name);
+	  newobj = clone_object(GAME_ROOMS_DIR + prog_name);
 	  if(newobj) {
 	    MAPD->add_room_to_zone(newobj, -1, 0);
 	  } else {

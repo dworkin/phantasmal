@@ -18,6 +18,7 @@
 #define GAME_PATH_SPECIAL     "/usr/game/sys/pathspecial"
 #define GAME_ROOM_BINDER      "/usr/game/sys/roombinder"
 #define GAME_ROOM_REGISTRY    "/usr/game/sys/room_registry"
+#define GAME_ROOMS_DIR        "/usr/game/obj/rooms/"
 #define HEART_BEAT            "/usr/game/sys/heart_beat"
 
 #define INHERIT_CUSTOM_ROOM_AUTO "/include/inherit_cr_auto.h"
