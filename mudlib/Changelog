@@ -16,8 +16,9 @@ Release 0.012:
 	  error channels.
 	* Normalized help query strings.  This should let us use fewer
 	  search names per help entry, and generate more good matches.
-	* Merged object flags into ROOM from SIMPLE_PORTABLE, prepratory
+	* Merged object flags into ROOM from SIMPLE_PORTABLE, preparatory
 	  to merge of SIMPLE_ROOM and SIMPLE_PORTABLE.
+	* Removed unnecessary cmd_social from the SYSTEM_USER object.
 
 Release 0.011b:
 	* Added @make_portable command, very similar to @make_room.

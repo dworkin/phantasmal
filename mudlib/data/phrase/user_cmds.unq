@@ -6,8 +6,6 @@ emote     / cmd_emote,
 ooc       / cmd_ooc,
 impbug    / cmd_impbug,
 
-social    / cmd_social,
-
 n         / cmd_movement,
 s         / cmd_movement,
 e         / cmd_movement,

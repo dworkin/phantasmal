@@ -1,4 +1,4 @@
-/* $Header: /cvsroot/phantasmal/mudlib/usr/System/obj/user.c,v 1.40 2003/03/07 00:18:32 angelbob Exp $ */
+/* $Header: /cvsroot/phantasmal/mudlib/usr/System/obj/user.c,v 1.41 2003/03/07 07:03:48 angelbob Exp $ */
 
 #include <kernel/kernel.h>
 #include <kernel/user.h>
@@ -793,31 +793,6 @@ static void print_prompt(void) {
 
 
 /************** User-level commands *************************/
-
-/* This one is special, and is called specially... */
-static void cmd_social(object user, string cmd, string str) {
-  object* targets;
-
-  if(!SOULD->is_valid(cmd)) {
-    message(cmd + " doesn't look like a valid social verb.\r\n");
-    return;
-  }
-
-  if(str && str != "") {
-    targets = location->find_contained_objects(user, str);
-    if(!targets) {
-      message("You don't see any objects matching '" + str
-	      + "' here.\r\n");
-      return;
-    }
-
-    /* For the moment, just pick the first one */
-    mobile->social(cmd, targets[0]);
-    return;
-  }
-
-  mobile->social(cmd, nil);
-}
 
 static void cmd_set_lines(object user, string cmd, string str) {
   int new_num_lines;
