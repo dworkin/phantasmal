@@ -1,9 +1,0 @@
-Need to implement keyword-based conversation system for basic use prior to
-anything more complex.
-
-Keyword-Based Conversation (KBC) must be overridable at multiple levels of
-inheritance so there can be separate levels for "anybody", "human",
-"pirate", "pirate on Dark Lady", and "Roger the Cabin Boy", each with its
-own separate conversation pieces.
-
-Need basic pathfinding.
