@@ -120,9 +120,10 @@ nomask void emote(string str) {
  * parameter should point to the target's body.
  */
 
-nomask int social(string str, object target) {
+nomask int social(string verb, object target) {
   location->enum_room_mobiles("hook_social", ({ }),
-			      ({ body, nil, str  }));
+			      ({ body, target, verb  }));
+  return 0;
 }
 
 /*
@@ -451,9 +452,9 @@ void hook_emote(mixed *args) {
 }
 
 /*
- * first arg: body who acted out the social
- * second arg: target body or nil
- * third arg: the name of the social
+ * first arg (object): body who acted out the social
+ * second arg (object): target body or nil
+ * third arg (string): the name of the social
  */
 
 void hook_social(mixed *args) {
