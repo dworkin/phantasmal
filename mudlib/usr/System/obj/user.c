@@ -1,4 +1,4 @@
-/* $Header: /cvsroot/phantasmal/mudlib/usr/System/obj/user.c,v 1.37 2003/03/04 01:06:20 angelbob Exp $ */
+/* $Header: /cvsroot/phantasmal/mudlib/usr/System/obj/user.c,v 1.38 2003/03/04 23:56:49 angelbob Exp $ */
 
 #include <kernel/kernel.h>
 #include <kernel/user.h>
@@ -27,6 +27,8 @@ string name;	                /* user name */
 string password;		/* user password */
 int    locale;                  /* chosen output locale */
 int    channel_subs;            /* user channel subscriptions */
+int    log_chan_level;          /* Level of output on CHANNEL_LOG */
+int    err_chan_level;          /* Level of output on CHANNEL_ERR */
 int    body_num;                /* number of body object */
 
 
@@ -154,6 +156,14 @@ static void save_user_to_file(void) {
   subcode = 0;
   for(ctr = 0; ctr < sizeof(chanlist); ctr++) {
     if(CHANNELD->is_subscribed(this_object(), chanlist[ctr][1])) {
+      if(chanlist[ctr][1] == CHANNEL_LOG) {
+	log_chan_level = CHANNELD->sub_data_level(this_object(),
+						  chanlist[ctr][1]);
+      } else if (chanlist[ctr][1] == CHANNEL_ERR) {
+	err_chan_level = CHANNELD->sub_data_level(this_object(),
+						  chanlist[ctr][1]);
+      }
+
       subcode += 1 << chanlist[ctr][1];
     }
   }
@@ -176,8 +186,22 @@ static void restore_user_from_file(string str) {
   while(subcode && subcode >= chan_code) {
     /* If this user should be subbed to this channel */
     if(subcode & chan_code) {
+      int ret;
+
       subcode -= chan_code;
-      if(CHANNELD->subscribe_user(this_object(), channel, "") < 0) {
+
+      switch(channel) {
+      case CHANNEL_LOG:
+	ret = CHANNELD->subscribe_user(this_object(), channel, log_chan_level);
+	break;
+      case CHANNEL_ERR:
+	ret = CHANNELD->subscribe_user(this_object(), channel, err_chan_level);
+	break;
+      default:
+	ret = CHANNELD->subscribe_user(this_object(), channel);
+      }
+
+      if(ret < 0) {
 	LOGD->write_syslog("Couldn't sub user " + Name + " to channel #"
 			   + channel + "!", LOG_ERROR);
       }
@@ -1333,10 +1357,77 @@ static void cmd_gossip(object user, string cmd, string str) {
 }
 
 
+private void __sub_unsub_channels(object user, string cmd, int chan,
+				  string channelname, string subval,
+				  string sublevel) {
+  /* Sub or unsub the user */
+  if(!STRINGD->stricmp(subval, "on")
+     || !STRINGD->stricmp(subval, "sub")
+     || !STRINGD->stricmp(subval, "subscribe")) {
+
+    if(sublevel) {
+      int level;
+
+      /* Subscribe with extra sub info */
+      if((chan != CHANNEL_ERR && chan != CHANNEL_LOG)
+	 || !wiztool) {
+	user->message("You can't subscribe to any channels that use"
+		      + " extra subscription info.\r\n");
+	user->message("Usage: " + cmd + " <channel> [on|off]\r\n");
+      }
+
+      if(!sscanf(sublevel, "%d", level)) {
+	/* Try and parse sublevel as a string */
+	if(chan == CHANNEL_LOG || chan == CHANNEL_ERR
+	   && LOGD->get_level_by_name(sublevel)) {
+	  level = LOGD->get_level_by_name(sublevel);
+	} else {
+	  user->message("Not sure what level to use for '" + sublevel
+			+ "'.\r\n");
+	  return;
+	}
+      }
+
+      /* Subscribe with extra info 'level' */
+      if(CHANNELD->subscribe_user(user, chan, level) < 0) {
+	  user->message("You can't subscribe to that channel.\r\n");
+      } else {
+	user->message("Subscribed to " + channelname + ", level " + level
+		      + ".\r\n");
+      }
+    } else {
+
+      /* Subscribe with no extra info */
+      if(CHANNELD->subscribe_user(user, chan) < 0) {
+	user->message("You can't subscribe to that channel.\r\n");
+      } else {
+	user->message("Subscribed to " + channelname + ".\r\n");
+      }
+    }
+
+    /* Save new subscriptions, if any */
+    save_user_to_file();
+
+  } else if(!STRINGD->stricmp(subval, "off")
+	    || !STRINGD->stricmp(subval, "unsub")
+	    || !STRINGD->stricmp(subval, "unsubscribe")) {
+
+    if(CHANNELD->unsubscribe_user(user, chan) < 0) {
+      user->message("You can't unsub from that.  "
+		    + "Are you sure you're subscribed?\r\n");
+    } else {
+      user->message("Unsubscribed from " + channelname + ".\r\n");
+      save_user_to_file();
+    }
+  } else {
+    user->message("Huh?  Try using 'on' or 'off' for the third value.\r\n");
+  }
+}
+
 static void cmd_channels(object user, string cmd, string str) {
   int    ctr, chan;
   mixed* chanlist;
-  string channelname, subval;
+  string channelname, subval, sublevel;
 
   if(str)
     str = STRINGD->trim_whitespace(str);
@@ -1357,13 +1448,19 @@ static void cmd_channels(object user, string cmd, string str) {
     return;
   }
 
-  if(!str || str == "" || sscanf(str, "%*s %*s %*s") == 3) {
-    send_system_phrase("Usage: ");
-    message(cmd + " [<channel name> [on|off]]\r\n");
+  if(!str || str == "" || sscanf(str, "%*s %*s %*s %*s") == 4) {
+    if(wiztool) {
+      send_system_phrase("Usage: ");
+      message(cmd + " [<channel name> [on|off]] [extra info]\r\n");
+    } else {
+      send_system_phrase("Usage: ");
+      message(cmd + " [<channel name> [on|off]]\r\n");
+    }
     return;
   }
 
-  if((sscanf(str, "%s %s", channelname, subval) != 2)
+  if((sscanf(str, "%s %s %s", channelname, subval, sublevel) != 3)
+     && (sscanf(str, "%s %s", channelname, subval) != 2)
      && (sscanf(str, "%s", channelname) != 1)) {
     user->message("Parsing error!\r\n");
     return;
@@ -1378,33 +1475,7 @@ static void cmd_channels(object user, string cmd, string str) {
   }
 
   if(subval) {
-    /* Sub or unsub the user */
-    if(!STRINGD->stricmp(subval, "on")
-       || !STRINGD->stricmp(subval, "sub")
-       || !STRINGD->stricmp(subval, "subscribe")) {
-
-      if(CHANNELD->subscribe_user(user, chan, "") < 0) {
-	user->message("You can't subscribe to that channel.\r\n");
-      } else {
-	user->message("Subscribed to " + channelname + ".\r\n");
-	save_user_to_file();
-      }
-    } else if(!STRINGD->stricmp(subval, "off")
-       || !STRINGD->stricmp(subval, "unsub")
-       || !STRINGD->stricmp(subval, "unsubscribe")) {
-
-      if(CHANNELD->unsubscribe_user(user, chan) < 0) {
-	user->message("You can't unsub from that.  "
-		      + "Are you sure you're subscribed?\r\n");
-      } else {
-	user->message("Unsubscribed from " + channelname + ".\r\n");
-	save_user_to_file();
-      }
-    } else {
-      user->message("Huh?  Try using 'on' or 'off' for the third value.\r\n");
-      return;
-    }
-
+    __sub_unsub_channels(user, cmd, chan, channelname, subval, sublevel);
     return;
   }
 
