@@ -48,15 +48,21 @@
     </p>
 
     <p> Phantasmal is also in very active development, which is both
-      good and bad.  Its level of
-      testing and robustness is now quite comparable to Melville's.
-      Looking at a feature comparison, it's all over but the shouting.
-      It remains to be seen, though, if developers will begin actually
-      creating MUDs based on Phantasmal...  Melville's
-      compelling simplicity continue to win it converts, and Phantasmal
-      changes fundamental functions far more often since it continues
-      to add new functionality.  Melville has been entirely static for
-      years, other than security patches.
+      good and bad -- Melville changes year by year, if that.
+      Phantasmal may be completely restructured in six months,
+      requiring more effort to keep up.  Phantasmal changes
+      fundamental functions far more often since it continues to add
+      new functionality.  Melville has been entirely static for years,
+      other than security patches.  But Phantasmal is careful to
+      maintain a level of testing and robustness comparable to
+      Melville's. </p>
+
+    <p> Looking at a feature comparison, it's all over but the
+      shouting.  It remains to be seen, though, if developers will
+      begin actually creating MUDs based on Phantasmal...  Melville's
+      compelling simplicity continues to win it converts, and
+      Phantasmal is sufficiently different from other MUDs to be
+      intimidating to new administrators.
     </p>
 
     <h3> How does Phantasmal compare to the Kernel MUDLib? </h3>
@@ -65,11 +71,11 @@
       services on top of it.  The Kernel MUDLib inheritance and
       security services are provided nearly unaltered.  The Kernel
       MUDLib is significantly worse than Phantasmal for providing a
-      stereotypical MUD, but it's also cleaner, somewhat more secure
-      and tightly written.  Phantasmal is addressing these problems,
-      but it's simply not possible to change at Phantasmal's current
-      rate and still maintain the extremely high code standards of the
-      Kernel Library. </p>
+      stereotypical MUD, but it's also cleaner, slightly more secure
+      and more tightly written.  Phantasmal is addressing these
+      problems, but it isn't possible to change at Phantasmal's
+      current rate and still maintain the extremely high code
+      standards of the Kernel Library. </p>
 
     <p> If you want to build on the Kernel MUDLib, Phantasmal makes a
       fine example of how to do so.  You could also take Phantasmal
@@ -77,15 +83,15 @@
       Kernel MUDLib are public domain, so either one can be used or
       relicensed in any way whatsoever. </p>
 
-    <p> In the same way that the Kernel Library provides a base to
-      build a MUDLib on, Phantasmal provides a base to build a MUD on.
-      Some objects, like the User object, even have the same basic
-      interface between Phantasmal and the Kernel Library.  The Kernel
-      Library provides services like inheritance, security and events
-      to a MUDLib, while Phantasmal provides services like rooms,
-      mobiles, containers, recurrent events and basic activities to a
-      MUD.  They're a powerful combination, but the Kernel Library can
-      also be used separately. </p>
+    <p> Much as the Kernel Library provides a base to build a MUDLib
+      on, Phantasmal provides a base to build a MUD on.  Some objects,
+      like the User object, even have the same basic interface in
+      Phantasmal as in the Kernel Library.  The Kernel Library
+      provides services like inheritance, security and events to a
+      MUDLib, while Phantasmal provides services like rooms, mobiles,
+      containers, recurrent events and basic activities to a MUD.
+      They're powerful in combination, but the Kernel Library can also
+      be used separately. </p>
 
     <p> For more information about building a MUD on top of the
       Kernel Library, check out <a href="DGD/Kernel">this section</a>
@@ -93,48 +99,46 @@
 
     <h3> How does Phantasmal compare to GurbaLib? </h3>
 
-    <p> GurbaLib is assessed here mainly based on its web page (now
-      apparently defunct).  To the extent that web page is outdated,
-      so is this assessment.  Note that GurbaLib has not been in
-      development for some time. </p>
+    <p> GurbaLib is assessed here mainly based on its <a
+      href="http://gurba.sytes.net/~erlends/gurba.html"> web page
+      </a>.  To the extent that web page is outdated, so is this
+      assessment.  Note that GurbaLib has not been in development for
+      some time. </p>
 
     <p> GurbaLib has a large set of game features that Phantasmal does
       not have.  They're not always polished and perfect, but they
-      exist.  Some of them, Phantasmal is likely never to have.  Some
-      features implemented by GurbaLib but not Phantasmal include:
-      wearable and wieldable objects; FTP Daemon and IMUD3 support;
-      Actions and Triggers; Message Boards; Races; ANSI colors; Player
-      and Site Banning; Vendors; Guilds; Aliases; Skill System. </p>
-
-    <p> The features on that list that Phantasmal will never implement
-      are the ones that will be left to individual MUDs.  For
-      instance, Phantasmal will probably never have a guild system or
-      a class system, but certain Phantasmal-based MUDs will probably
-      choose to build such a thing into the game. </p>
+      exist.  Many features (guilds, classes) will never be provided
+      by Phantasmal proper, but may be provided by games like Seas of
+      Night on top of Phantasmal.  Some features, such as IMUD3
+      support, can't be implemented on top of vanilla DGD.  Features
+      implemented by GurbaLib but not Phantasmal include: wearable and
+      wieldable objects; FTP Daemon and IMUD3 support; Actions and
+      Triggers; Message Boards; Races; ANSI colors; Player and Site
+      Banning; Vendors; Guilds; Aliases; Skill System. </p>
 
     <p> Obviously, GurbaLib as described is more suitable for a
-      stereotypical MUD than Phantasmal.  Phantasmal aims to address
-      some of those points, but will take more development time to
-      catch up.  Phantasmal <i>does</i> have a few points for which it
-      can claim superiority -- it can rebuild in-place, either
-      individual objects or all at once.  It has a genuinely excellent
-      help system.  Its localization is extensive and GurbaLib's is
-      basically nonexistent.  Phantasmal has a good security model and
-      a well thought-out design, both failing of Gurba's.  However,
-      for stereotypical MUD use Phantasmal simply isn't equal. </p>
+      stereotypical MUD than Phantasmal is.  Phantasmal aims to
+      address some of those points, but will take more development
+      time to catch up.  Phantasmal <i>does</i> have points for which
+      it can claim superiority.  Phantasmal can rebuild in-place, and
+      has a genuinely excellent help system.  Its localization is
+      extensive and GurbaLib's is basically nonexistent.  Phantasmal
+      has a good security model and a well thought-out design, both
+      failings of Gurba's.  However, for stereotypical MUD use
+      Phantasmal simply isn't equal. </p>
 
-    <p> GurbaLib isn't based on the Kernel MUDLib, and runs on
-      a modified DGD 1.1.  This makes it problematic to follow
-      current experimental DGD development.  That may not be a
-      problem for you, though, if you don't have or want
-      LWOs, atomicity, or other fairly recent features. </p>
+    <p> GurbaLib isn't based on the Kernel MUDLib, and runs on a
+      modified DGD 1.1.  This makes it problematic to follow current
+      experimental DGD development.  That may not be a problem for
+      you, though, if you don't have and don't want LWOs, atomicity,
+      and other features from the last few years. </p>
 
     <p> As a standard, out-of-box LPMUD, GurbaLib is probably the best
       currently available.  It isn't as flexible as Phantasmal, nor
       does it show off many of DGD's features (like rebuild-in-place),
-      but it has a decent game already built.  GurbaLib is almost
-      certainly the best overall choice if you're building a very
-      Diku-like MUD on DGD. </p>
+      but it has a decent game already built.  It's a fine reason to
+      never again consider using 2.4.5. </p>
+
 
     <h3> How does Phantasmal compare to 2.4.5? </h3>
 
@@ -144,16 +148,14 @@
       Nonetheless it is surprisingly prevalent.  That's because
       it allows you to simply unpack-and-go to get a very
       basic MUD set up, as no other available MUDLib does.
-      Being already usable as a game, it often wins over other
-      MUDLibs -- they have substantial start-up effort. </p>
+      Since it's already usable as a game, it often wins over
+      MUDLibs that have substantial start-up effort. </p>
 
-    <p> 2.4.5 isn't really comparable to Phantasmal proper, though it
-      might be comparable to the test game in Phantasmal's bundled
-      package.  Most existing 2.4.5 MUDs started using it because it
-      was the only thing available, and continued using it because
-      it's painful to switch codebases.  Phantasmal will need to exist
-      another decade before it could hope to be such an entrenched
-      solution.  I hope it never becomes one. </p>
+    <p> 2.4.5 isn't really comparable to Phantasmal.  Most existing
+      2.4.5 MUDs started using it because it was the only thing
+      available, and continued using it because it's painful to switch
+      codebases.  Phantasmal will need to exist another decade before
+      it could hope to be such an entrenched solution. </p>
 
     <p> Currently 2.4.5 has wearable and wieldable items, combat, food
       and drink, and other general gameplay elements over Phantasmal.
@@ -161,51 +163,69 @@
       system over 2.4.5.  Even when Phantasmal has extensive gameplay
       features, it still will not replace 2.4.5's biggest advantage,
       the fact that 2.4.5 has been around for a ridiculously long
-      time. </p>
+      time and is the basis of many existing MUDs. </p>
 
-    <h3> What's Seas of Night? </h3>
+    <h3> What is &quot;Seas of Night?&quot; </h3>
 
-    <p> Seas of Night is a test game, distributed with Bundled Phantasmal
-      and in Phantasmal's CVS repository.  It's an example of how to
-      build an actual game on top of the facilities that Phantasmal
-      gives.  When you're comparing features between 2.4.5, GurbaLib,
-      Lima and so on, Seas of Night is probably a better comparison to
-      all of them than Phantasmal is...  So I'll mention Seas of Night
-      where it's relevant, and where it adds features that baseline
-      Phantasmal doesn't. </p>
+    <p> Seas of Night is a test game, distributed with Bundled
+      Phantasmal and in Phantasmal's CVS repository.  It's an example
+      of how to build an actual game on top of the facilities that
+      Phantasmal gives.  When you're comparing features between 2.4.5,
+      GurbaLib, Lima and so on, Seas of Night is probably a better
+      comparison to all of them than Phantasmal is...  So I'll mention
+      Seas of Night where it's relevant, and where it adds features
+      that aren't part of Phantasmal proper. </p>
 
     <h3> What about non-DGD MUDLibs? </h3>
 
+    <p> You could also look at the LDMUD server, but there don't seem
+      to be any overwhelmingly good MUDLibs.  And if you're going to
+      build your own MUDLib from scratch anyway, why not use DGD?
+      It's a better server. </p>
+
+    <p> Everything on Amylaar seems to be pretty outdated.  I'd go
+      for MudOS if you're looking at non-DGD platforms. </p>
+
     <p> Probably the best non-DGD competition is the Lima MUDLib for
       MudOS.  It's cleaner and structured better than TMI-2, and is
-      more modern and powerful than Nightmare.  Lima provides a better
-      and cleaner example of a stereotype LPMUD than 2.4.5 or
+      more modern and powerful than Nightmare, LDMUD or Amylaar.  Lima
+      provides a better example of a stereotype LPMUD than 2.4.5 or
       GurbaLib.  It obviously doesn't have some of DGD's features like
       atomic functions or statedumps, but is overall a quite
       acceptable alternative in most respects.  It's probably a much
       better choice if what you want is an LPMUD like all the other
       ones out there. </p>
 
-    <p> You could also look at the LDMUD server, but there don't seem
-      to be any overwhelmingly good MUDLibs.  And if you're building
-      your own MUDLib from scratch, why not use DGD? </p>
-
-    <p> Everything on Amylaar seems to be pretty outdated.  I'd go
-      for MudOS if you're looking at non-DGD platforms. </p>
 
     <h3> Any Other DGD MUDLibs Out There? </h3>
 
-    <p> There are a few miscellaneous things like the adaptation of
-      LambdaMOO to DGD and Inferno which are in entirely different
+    <p> There are a few miscellaneous things like Inferno, and the
+      adaptation of LambdaMOO to DGD.  They're in entirely different
       categories.  They don't have enough in common with anything
       mentioned here to really compete with them. </p>
 
-    <p> There are also three SourceForge MUDLibs in early development.
-      None of them have released much anything yet, but we can all
-      wait eagerly to hear from them.  They are
-      <a href="http://www.sf.net/projects/aexmud">Aexeon</a>,
-      <a href="http://www.sf.net/projects/macrocosm">Macrocosm</a>,
-      and <a href="http://www.sf.net/projects/whedimer">Whedimer</a>.
+    <p> There are at least three SourceForge MUDLibs in early
+      development.  None of them have released much anything yet, but
+      we can all wait eagerly to hear from them.  They are <a
+      href="http://www.sf.net/projects/aexmud">Aexeon</a>, <a
+      href="http://www.sf.net/projects/macrocosm">Macrocosm</a>, and
+      <a href="http://www.sf.net/projects/whedimer">Whedimer</a>.
+    </p>
+
+    <p>
+      <a href="http://thelastbastion.org">The Last Bastion</a> is an
+      attempt to create a MUD and/or MUDLib.  It hasn't released anything
+      yet, and is also basically in the same camp as the above.
+    </p>
+
+    <p>
+      The <a
+      href="http://herator.lysator.liu.se/index_en.html">Herator </a>
+      MUD Library hasn't publicly published their code, though there
+      are a few interesting files that can be downloaded when their
+      Subversion repository is up.  I don't know what their schedule
+      is or how they plan to publish.  Their pages don't say.  They
+      seem to be using the LGPL license for their library.
     </p>
 
   </font>

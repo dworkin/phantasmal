@@ -11,18 +11,27 @@
 
     <font size="4">
 
-    <p> Phantasmal builds on the code of the DGD Kernel MUDLib and
-      borrows specific tricks and concepts from several other MUDLibs.
-      Phantasmal means to be a standard library for certain game
+    <p> Phantasmal means to be a standard library for certain game
       features like NPCs, rooms and details.  It's a good base to
       begin construction from, but not a full game by itself.  There's
-      a game library called TestGame in CVS and with Bundled Phantasmal
-      which makes a fine example of how Phantasmal can be turned into
-      a normal game. </p>
+      a game library called Seas of Night which makes a fine example
+      of how Phantasmal can be turned into a normal game.  It's
+      distributed as part of Bundled Phantasmal, or can be found in
+      the CVS tree.  Everything in this document is specific to
+      Phantasmal and/or Seas of Night.  You could build all sorts of
+      additional new features into a Phantasmal game, but this
+      document will only mention it if Phantasmal or SoN has already
+      done so. </p>
 
-    <p> Phantasmal is currently working to allow old-style LPC objects
-      and other objects with code that isn't much like the current
-      default.  It has recently added scripts, and needs to integrate
+    <p> Phantasmal builds on the code of the DGD Kernel Library and
+      borrows specific tricks and concepts from several other MUDLibs.
+      This gives it a good, secure base which is reinforced by
+      additional security code in the Phantasmal Game API.  Phantasmal
+      uses a lot of Kernel Library features like inheritance, full
+      rebuilding and handling file security by user directory.
+      </p>
+
+    <p> Phantasmal has recently added scripts, and needs to integrate
       them into more of what it does.  It has added tags, which are
       arbitrary object properties necessary to make scripts useful.
       </p>
@@ -47,10 +56,15 @@
       development, but the infrastructure is there. </p>
 
     <p> Portables can be gotten, dropped and generally manipulated.
-      They work fine as containers.  See the tutorials for examples
-      of online creation.  Objects save and load happily in any
-      topology, stacked to any depth, and there are permanent
-      bodies and inventory. </p>
+      They work fine as containers.  See the tutorials for examples of
+      online creation.  Objects save and load happily in any topology,
+      stacked to any depth, and there are permanent bodies and
+      inventory.  Objects can have other objects as
+      &quot;details&quot;, which allow you to examine an object or
+      setting in many particulars.  All these objects have weight,
+      volume and size, and capacities for same.  A full inheritance
+      system lets these properties propagate automatically to child
+      objects. </p>
 
     <p> There is a convenient online help system.  It reads directories
       recursively and registers online help files localized to any
@@ -71,12 +85,12 @@
       for the various systems nonetheless.  Wish I was a
       better translator! </p>
 
-    <p> In case of problems the binary port is still
-      configured for emergency administrator login, and all the old
-      wiz commands work just like the
-      <a href="DGD/Kernel/Commands.html">unmodified Kernel MUDLib</a>.
-      Normally (on the regular port) most of them have a % on the
-      front, so they have names like %grant, %compile and so on. </p>
+    <p> In case of problems the binary port is still configured for
+      emergency administrator login, and all the old wiz commands work
+      just like the <a href="DGD/Kernel/Commands.html">unmodified
+      Kernel MUDLib</a>.  On the regular port most of them have a % on
+      the front, so they have names like %grant, %compile and so
+      on. </p>
 
     <p> <a href="http://plunq.sourceforge.net/name.html">UNQ</a>
       files supply non-statedump structured data storage very
@@ -88,16 +102,14 @@
       well supported and greatly aid parsing most of the
       objects that Phantasmal stores in files. </p>
 
-    <p> There's a simple object manager
-      to handle in-place upgrades.  This is
-      one of the requirements for a persistent MUD.
-      The ObjectD uses
-      DGD's lightweight objects (LWOs) to keep its footprint reasonable,
-      and manages them heirarchically to permit future expansion to
-      very large number of objects.  Its current form tracks
-      objects but doesn't help with partial rebuilds, only
+    <p> There's a simple object manager to handle in-place upgrades.
+      This is one of the requirements for a persistent MUD.  The
+      ObjectD uses DGD's lightweight objects (LWOs) to keep its
+      footprint reasonable, and manages them heirarchically to permit
+      future expansion to very large number of objects.  Its current
+      form tracks objects but doesn't help with partial rebuilds, only
       whole-hog AUTO upgrades.  Until Phantasmal gets significantly
-      larger that's unlikely to be a real problem. </p>
+      larger and/or slower that's unlikely to be a real problem. </p>
 
   </font>
 
