@@ -1,0 +1,6 @@
+This is an example of how to set up a new game using the Phantasmal
+MUD Library (and by extension, the Kernel library, since Phantasmal
+uses it).
+
+It isn't meant to be a very playable game, just an example of how to
+set stuff up.
