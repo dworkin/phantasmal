@@ -539,21 +539,73 @@ binary_port = ({ 8889, 8890, 9725 })
 	Note that atomic_error, since it is called atomically, may not
 	write to files or network connections.
       </dd>
+
+      <dt>int compile_rlimits(string objname)</dt>
+      <dd>
+	If an LPC program uses the rlimits() construct, DGD will call
+	this function on the Driver with that object's name.  If the
+	compile_rlimits function returns nonzero then that object is
+	allowed to use rlimits() without restriction.  If
+	compile_rlimits returns 0 then every time the object tries to
+	use rlimits(), DGD will query the Driver with runtime_rlimits
+	to make sure it's okay.
+      </dd>
+
+      <dt>int runtime_rlimits(object obj, int stack, int ticks)</dt>
+      <dd>
+	DGD calls this function of the Driver to see if the supplied
+	object is permitted to use rlimits() with the given arguments.
+	A value less than zero for stack or ticks means unlimited,
+	while a value of zero means no change.  A positive value will
+	set the limit to that value.  If runtime_rlimits returns 0,
+	the usage is illegal and will abort with an error.  A nonzero
+	return value means the rlimits call is legal.
+      </dd>
+
+      <dt>void remove_program(string objname, int timestamp, int index)</dt>
+      <dd>
+	Whenever a master object is removed, DGD calls this function
+	on the Driver object.  The object has already been destructed
+	by the time this function is called, so find_object() on
+	objname will fail or return a different issue.  The index is a
+	unique number for each issue of the object, so if multiple
+	versions are compiled with the same name, each one will still
+	have a different index for this call.<br/> It's very important
+	to track object removal because when a master object is
+	destructed, all of its clones and child objects are destructed
+	as well.  Since this code should <i>really</i> never be
+	allowed to fail, it's called with unlimited stack and processor
+	time.  It's also called from inside a catch{} statement.<br/>
+	It's important to track object inheritance, but doing so well
+	can be very complex.  Read about Object Inheritance for details.
+      </dd>
     </dl>
 
     <h3> <a name="SEC5.2.3" href="index.html#SEC5.2.3">
 	The User Object </a> </h3>
 
     <p>
-      The User object, like the Driver, defines specific functions
-      that DGD will call to notify it that certain things have
-      happened.
+      The User object, like the Driver, defines specific functions.
+      DGD will call those functions to notify the user object that
+      certain things have happened.  The User object must be a regular
+      DGD object, created with clone_object() or compile_object().  It
+      may not be a Light-Weight Object created with new_object().
     </p>
 
     <p>
-      The User object must be a regular DGD object, usually created
-      with clone_object().  It may not be a Light-Weight Object
-      created with new_object().
+      DGD calls the following functions on a User object:
+    </p>
+
+    <dl>
+      <dt>int open(void)</dt>
+      <dd>
+      </dd>
+    </dl>
+
+    <h3> <a name="SEC5.2.4" href="index.html#SEC5.2.4">
+	Object Creation and Initialization </a> </h3>
+
+    <p>
     </p>
 
     <hr>
@@ -564,7 +616,7 @@ binary_port = ({ 8889, 8890, 9725 })
     </address>
     <!-- Created: Mon Jun 11 21:50:30 PDT 2001 -->
     <!-- hhmts start -->
-Last modified: Mon Jun 16 23:05:34 PDT 2003
+Last modified: Tue Jun 17 00:56:46 PDT 2003
 <!-- hhmts end -->
   </body>
 </html>

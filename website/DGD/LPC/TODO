@@ -1,3 +1,7 @@
+* Setup
+General section on getting DGD set up so you can play with this stuff
+
+
 * General LPC:
 Threads of execution.
 Copying of arrays/mappings/LWOs at thread end (see 4.2.7)
@@ -19,13 +23,16 @@ Call-by-reference vs call-by-value
 Error handler
 Static functions in AUTO object
 
+
 * DGD General:
-Config files
 Compile options
 Limits on # of objects
+Precompiled DGD objects
+Telnet vs Binary ports
 
 
 * Kernel Library:
 Thread-local storage interface
 Modified functions
 Inheritance & Libraries
+ObjectD
