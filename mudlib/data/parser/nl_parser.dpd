@@ -15,7 +15,7 @@ iv_n = /@@AA@@/
 iv_n_adj = /((north)|(n)|(south)|(s)|(east)|(e)|(west)|(w)|(ne)|(nw)|(se)|(sw)|(southeast)|(southwest)|(northeast)|(northwest)|(up)|(down)|(in)|(out))/
 iv_adj = /@@A@@/
 
-itv = /(g(l(ance?)?))|(l(ook)?)|(ex(a(mine)?)?)|(drop)/
+itv = /(g(l(ance)?)?)|(l(ook)?)|(ex(a(mine)?)?)|(drop)/
 itv_n = /run/
 itv_n_adj = /@@D@@/
 itv_adj = /@@E@@/
