@@ -944,7 +944,12 @@ void compile_failed(string owner, string path)
 string path_special(string compiled)
 {
   if(path_special_object) {
-    return path_special_object->path_special(compiled);
+    string tmp;
+    tmp = path_special_object->path_special(compiled);
+    if(!tmp)
+      tmp = "";
+
+    return tmp;
   }
 
   return "";
