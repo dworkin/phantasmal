@@ -134,6 +134,37 @@
 	they don't belong on the roadmap. </li>
     </ul>
 
+    <h4 align="center"> Inter-Object Security </h4>
+
+    <ul>
+      <li> Upgraded() functions should be guarded by
+        &quot;if(SYSTEM())&quot; constructs, plus perhaps a guard for
+        being called by the object itself.  Create() functions should
+        be static.  Destructed() functions should also be callable
+        only by System callers.  In a library, the upgraded() and
+        destructed() functions, if present, should be static. </li>
+      <li> Use the SYSTEM(), COMMON() and GAME() checks liberally.
+        Decide who should call a particular function and guard it
+	appropriately.  The best, of course, is to specifically
+	check previous_program() so that only the expected caller
+	can call the function.  Functions that only the current
+	object calls should be marked private. </li>
+      <li> Never call anything in a publicly writable directory.  Never
+        call a method of any object in a writable directory if you don't
+	trust all possible writers.  Remember who has access to what.
+      </li>
+      <li> Never pass your internal data structures to the outside world
+        without copying.  The caller may not realize that the data
+	structure is sensitive to you.  Always copy it first so that
+	you don't have to trust the caller's security.
+      </li>
+      <li> Never gratuitously add callers without reason.  Sure, you
+        may trust &quot;common&quot;, but why give it specific access
+        to something it doesn't need?  Know who calls a function and
+	give them, and only them, access.
+      </li>
+    </ul>
+
     <h4 align="center"> Adding Commands </h4>
     <ul>
       <li> Add an entry to the online help for that command </li>
