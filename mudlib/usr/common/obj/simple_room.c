@@ -3,6 +3,8 @@
 #include <phantasmal/log.h>
 #include <phantasmal/lpc_names.h>
 
+#include <kernel/kernel.h>
+
 inherit room ROOM;
 inherit unq DTD_UNQABLE;
 

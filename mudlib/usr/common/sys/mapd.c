@@ -17,10 +17,6 @@ private mapping room_objects;
 /* which unq tags are mapped to which lpc code */
 private mapping tag_code;
 
-/* zone_segments keeps track of the mapping of what segments contain
-   what segments meant for rooms */
-private int**   zone_segments;
-
 private object  room_dtd, bind_dtd;
 private int     initialized;
 
@@ -35,7 +31,6 @@ private object* unresolved_rooms;
 object get_room_by_num(int num);
 int* rooms_in_zone(int zone);
 private int assign_room_to_zone(int num, object room, int zone);
-private int assign_room_number(int num, object room);
 void upgraded(varargs int clone);
 
 
@@ -43,15 +38,12 @@ static void create(varargs int clone) {
   room_objects = ([ ]);
   tag_code = ([ ]);
 
-  zone_segments = ({ });
   upgraded(clone);
 
   initialized = 0;
 }
 
 void upgraded(varargs int clone) {
-  int numzones, size, ctr;
-
   if(!SYSTEM() && previous_program() != MAPD)
     return;
 
@@ -60,25 +52,12 @@ void upgraded(varargs int clone) {
   if(!find_object(UNQ_DTD))
     compile_object(UNQ_DTD);
 
-  numzones = ZONED->num_zones();
-  size = sizeof(zone_segments);
-
-  if(size != numzones) {
-    if(size > numzones)
-      error("We can't handle dynamically reducing the number of zones!");
-
-    for(ctr = 0; ctr < numzones - size; ctr++) {
-      LOGD->write_syslog("Adding zone in MAPD!", LOG_VERBOSE);
-      zone_segments += ({ ({ }) });
-    }
-  }
-
   if(!unresolved_rooms)
     unresolved_rooms = ({ });
 }
 
 void init(string room_dtd_str, string bind_dtd_str) {
-  int    ctr, numzones;
+  int    ctr;
   mixed *unq_data;
   string bind_file, tag, file;
 
@@ -159,30 +138,6 @@ void destructed(int clone) {
 }
 
 
-/* ZoneD calls this function to notify MapD of new zone additions. */
-void notify_new_zones(void) {
-  if(previous_program() == ZONED)
-    upgraded(0);
-}
-
-
-void set_segment_zone(int segment, int newzone, int oldzone) {
-  if(previous_program() != OBJNUMD)
-    error("Only objnumd can notify MAPD of a segment zone change!");
-
-  if(oldzone == -1)
-    oldzone = 0;
-  if(sizeof(zone_segments[oldzone] & ({ segment }))) {
-    zone_segments[oldzone] -= ({ segment });
-  }
-
-  if(newzone < 0)
-    error("Setting zone to illegal zone number!");
-
-  zone_segments[newzone] += ({ segment });
-}
-
-
 void add_unq_binding(string tag_name, string tag_path) {
   if(!GAME() && !COMMON() && !SYSTEM())
     error("Only privileged code may add a room binding!");
@@ -233,27 +188,14 @@ void add_room_to_zone(object room, int num, int req_zone) {
   }
 
   seg = num / 100;
-  zone = OBJNUMD->get_segment_zone(seg);
+  zone = ZONED->get_segment_zone(seg);
   if(zone != req_zone && req_zone != -1)
     error("Room assigned to unreasonable segment!  Wrong zone!");
 
   if(zone == -1)
     zone = 0;  /* Fix offset */
 
-  /* Check to see if this is a newly-allocated segment */
-  if(!sizeof( ({ seg }) & zone_segments[zone])) {
-    if(OBJNUMD->get_segment_owner(seg))
-      error("Segment already allocated for non-room use!");
-
-    zone_segments[zone] += ({ seg });
-  }
-
   room->set_number(num);
-}
-
-object get_room(string name) {
-  error("Obsolete function!");
-  return room_objects[name];
 }
 
 void remove_room_object(object room) {
@@ -281,12 +223,14 @@ object get_room_by_num(int num) {
 }
 
 
-/* Find appropriate room number in the requested zone */
+/* Find appropriate room number in the requested zone (if any) */
 private int assign_room_to_zone(int num, object room, int req_zone) {
-  int    segnum, ctr, zone;
+  int    segnum, ctr;
   string segown;
 
   if(num >= 0) {
+    int zone;
+
     segnum = num / 100;
 
     segown = OBJNUMD->get_segment_owner(segnum);
@@ -295,46 +239,47 @@ private int assign_room_to_zone(int num, object room, int req_zone) {
 			 + " in non-MAPD segment!", LOG_WARN);
       return -1;
     }
-    zone = OBJNUMD->get_segment_zone(segnum);
+    zone = ZONED->get_segment_zone(segnum);
     if(zone != req_zone && req_zone >= 0)
       error("Room number (#" + num
 	    + ") not in requested zone (#" + req_zone
 	    + ") in assign_room_to_zone!");
 
-    OBJNUMD->allocate_in_segment(segnum, num, room);
-
     if(zone < 0) {
-      error("Zone is less than zero in assign_room_to_zone(" + num
+      error("Illegal zone in assign_room_to_zone(" + num
 	    + ", <room>, " + req_zone + ")!");
     }
 
-    if(!sizeof(zone_segments[zone] & ({ segnum }))) {
-      zone_segments[zone] += ({ segnum });
-    }
+    OBJNUMD->allocate_in_segment(segnum, num, room);
+
     return num;
   } else {
-    zone = req_zone;
+    /* This section happens if there is no specific requested room
+       number */
+    int *zoneseg;
 
-    for(ctr = 0; ctr < sizeof(zone_segments[zone]); ctr++) {
-      num = OBJNUMD->new_in_segment(zone_segments[zone][ctr], room);
+    /* If no specific room number or zone is requested, give us something
+       unzoned */
+    if(req_zone < 0)
+      req_zone = 0;
+
+    zoneseg = ZONED->get_segments_in_zone(req_zone);
+
+    for(ctr = 0; ctr < sizeof(zoneseg); ctr++) {
+      num = OBJNUMD->new_in_segment(zoneseg[ctr], room);
       if(num != -1)
 	break;
     }
     if(num == -1) {
       segnum = OBJNUMD->allocate_new_segment();
-      
-      zone_segments[zone] += ({ segnum });
       num = OBJNUMD->new_in_segment(segnum, room);
+
+      if(req_zone)
+	ZONED->set_segment_zone(segnum, req_zone);
     }
 
     return num;
   }
-}
-
-
-private int assign_room_number(int num, object room) {
-  /* Assign as unzoned */
-  return assign_room_to_zone(num, room, 0);
 }
 
 
@@ -384,7 +329,7 @@ private object add_struct_for_room(mixed* unq) {
   /* Get the requested number from the room, or -1 for default.
      Attempt to assign this number. */
   num = room->get_number();
-  num = assign_room_number(num, room);
+  num = assign_room_to_zone(num, room, -1); /* assign to any zone */
   if(num < 0) {
     error("Can't assign room number!");
   }
@@ -619,15 +564,14 @@ int* segments_in_zone(int zone) {
   if(!SYSTEM() && !COMMON() && !GAME())
     return nil;
 
-  if(zone < 0 || zone >= sizeof(zone_segments)) {
-    return nil;
-  }
-
-  return zone_segments[zone][..];
+  return ZONED->get_segments_in_zone(zone);
 }
 
 int* rooms_in_segment(int segment) {
   if(!SYSTEM() && !COMMON() && !GAME())
+    return nil;
+
+  if(OBJNUMD->get_segment_owner(segment) != MAPD)
     return nil;
 
   return OBJNUMD->objects_in_segment(segment);

@@ -50,7 +50,7 @@ int get_highest_segment(void) {
   return highest_segment;
 }
 
-private void set_segment_owner(int segment, int owner, int zonenum) {
+private void set_segment_owner(int segment, int owner) {
   if(segment < 0)
     error("Can't allocate negative segment in set_segment_owner!");
 
@@ -60,7 +60,7 @@ private void set_segment_owner(int segment, int owner, int zonenum) {
   }
 
   /* This location defines segment structure... */
-  segments[segment] = ({ owner, ({ }), zonenum });
+  segments[segment] = ({ owner, ({ }) });
 
   if(segments_full == segment - 1) {
     while(segments[segments_full + 1])
@@ -68,70 +68,6 @@ private void set_segment_owner(int segment, int owner, int zonenum) {
   }
   if(segment > highest_segment)
     highest_segment = segment;
-}
-
-int get_segment_zone(int segment) {
-  mixed* seg;
-
-  if(!SYSTEM() && !COMMON())
-    return -1;
-
-  seg = segments[segment];
-  if(seg) {
-    return seg[2];
-  }
-
-  /* unzoned */
-  return 0;
-}
-
-void set_segment_zone(int segment, int zonenum, varargs int req_own) {
-  mixed* seg;
-  int    owner, oldzone;
-
-  if(previous_program() == SYSTEM_WIZTOOLLIB
-     || previous_program() == ZONED) {
-
-    /* The wiztoollib and the ZoneD both have full access to the
-       setting of zones.  That's because wiztoollib holds the
-       admin commands to alter zone numbers and ZoneD does the
-       tracking. */
-    owner = -1;
-    if(req_own)
-      owner = req_own;
-  } else {
-    for(owner = 0; owner < sizeof(owners); owner++) {
-      if(previous_program() == owners[owner])
-	break;
-    }
-    if(owner >= sizeof(owners)
-       || owners[owner] != previous_program())
-      error("Unknown owner " + previous_program()
-	    + " calling set_segment_zone!");
-  }
-  if(owner != -1 && req_own)
-    error("A normal segment owner may not request to impersonate another!");
-
-  seg = segments[segment];
-  if(!seg) {
-    if(owner == -1) {
-      error("Can't set_segment_zone on a nonexistent, unowned segment!");
-    }
-    set_segment_owner(segment, owner, zonenum);
-    ZONED->add_segment_to_zone(zonenum, segment);
-    return;
-  }
-  if(owner != -1 && seg[0] != owner)
-    error("Can't set zone of somebody else's segment!");
-
-  oldzone = seg[2];
-  ZONED->remove_segment_from_zone(oldzone, segment);
-  seg[2] = zonenum;
-  ZONED->add_segment_to_zone(zonenum, segment);
-
-  /* Notify the segment owner */
-  call_other(owners[segments[segment][0]], "set_segment_zone", segment,
-	     zonenum, oldzone);
 }
 
 int allocate_new_segment(void) {
@@ -151,8 +87,8 @@ int allocate_new_segment(void) {
   if(get_segment_owner(seg)) {
     error("Internal error -- attempting to reassign segment!");
   }
-  /* Set as unzoned (zone #0) */
-  set_segment_owner(seg, owner, 0);
+
+  set_segment_owner(seg, owner);
 
   return seg;
 }
@@ -196,8 +132,8 @@ void allocate_in_segment(int segment, int tr_num, object obj) {
   offs = tr_num % 100;
   seg = segments[segment];
   if(!seg) {
-    /* Allocate a new segment for caller, unzoned */
-    set_segment_owner(segment, owner, 0);
+    /* Allocate a new segment for caller */
+    set_segment_owner(segment, owner);
     seg = segments[segment];
     if(!seg)
       error("Cannot allocate segment -- why?");
@@ -306,7 +242,8 @@ int* objects_in_segment(int segment) {
 
   seg = segments[segment];
   if(!seg || previous_program() != owners[seg[0]])
-    error("Can't get listing of a segment you don't own!");
+    error("Can't get listing of segment " + segment
+	  + " that you don't own!");
 
   objs = ({ });
   for(ctr = 0, tr_num = segment*100; ctr < sizeof(seg[1]); ctr++, tr_num++) {

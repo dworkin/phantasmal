@@ -1,3 +1,5 @@
+/* ZoneD -- daemon that tracks zones */
+
 #include <kernel/kernel.h>
 
 #include <phantasmal/log.h>
@@ -6,17 +8,20 @@
 #include <type.h>
 #include <limits.h>
 
-/* ZoneD -- daemon that tracks zones */
-
 inherit dtd DTD_UNQABLE;
+
+
+/* Zone Attributes */
+#define ZONE_ATTR_VOLATILE         1
+
 
 /* Prototypes */
 void upgraded(varargs int clone);
+void set_segment_zone(int segment, int zonenum);
 
-mixed* zone_table;
-
-/* Are we decoding the unq zonelist or segments */
-int load_type;
+mixed*  zone_table;
+mapping segment_map;
+int     player_zone;
 
 static void create(varargs int clone) {
   if(clone)
@@ -26,7 +31,9 @@ static void create(varargs int clone) {
 
   if(!find_object(UNQ_DTD)) compile_object(UNQ_DTD);
 
-  zone_table = ({ ({ "Unzoned", ([ ]) }) });
+  zone_table = ({ ({ "Unzoned", ([ ]), 0 }) });
+  segment_map = ([ ]);
+  player_zone = -1;
 
   upgraded();
 }
@@ -55,26 +62,9 @@ void init_from_file(string file) {
 
   if(strlen(file) > MAX_STRING_SIZE - 3)
     error("Zonefile is too large in ZONED->init_from_file!");
-  load_type = 1;
   from_unq_text(file);
-
-  if(find_object(MAPD))
-    MAPD->notify_new_zones();
 }
 
-/* Load in the available zones */
-void init_zonelist_from_file(string file) {
-  if(!SYSTEM())
-    return;
-
-  if(strlen(file) > MAX_STRING_SIZE - 3)
-    error("Zonefile is too large in ZONED->init_from_file!");
-  load_type = 2;
-  from_unq_text(file);
-
-  if(find_object(MAPD))
-    MAPD->notify_new_zones();
-}
 
 /******* Functions for DTD_UNQABLE *************************/
 
@@ -92,24 +82,27 @@ mixed* to_dtd_unq(void) {
   for(ctr = 0; ctr < numzones; ctr++){
     zonetmp[1] +=  ({ ({ "zone",
 		        ({ ({ "zonenum", ctr }),
-  			   ({ "name", zone_table[ctr][0] }) 
+			    ({ "name", zone_table[ctr][0] }),
+			    ({ "attributes", zone_table[ctr][2] })
 		         })
 	  	      })
 	            });
   }
- 
+
   tmp = ({ "zones", ({ }) });
   for(ctr = 0; ctr <= highseg; ctr++) {
     if(!OBJNUMD->get_segment_owner(ctr))
       continue;
 
-    zone = OBJNUMD->get_segment_zone(ctr);
-    tmp[1] += ({ ({ "segment",
-		      ({ ({ "segnum", ctr }),
-			   ({ "zonenum", zone })
-			   })
-		      })
-		   });
+    if(segment_map[ctr] != nil) {
+      zone = segment_map[ctr];
+      tmp[1] += ({ ({ "segment",
+			({ ({ "segnum", ctr }),
+			     ({ "zonenum", zone })
+			     })
+			})
+		     });
+    }
   }
 
   return zonetmp + tmp;
@@ -128,7 +121,7 @@ void from_dtd_unq(mixed* unq) {
   string zonename;
 
   if(!SYSTEM() && !COMMON() && !GAME())
-    return;
+    error("Calling ZoneD:from_dtd_unq unprivileged!");
 
   if(sizeof(unq) != 4)
     error("There should be exactly one 'zones' and one 'zonelist'"
@@ -141,61 +134,48 @@ void from_dtd_unq(mixed* unq) {
     error("Unrecognized section in ZONED file -- second section"
 	  + " must be 'zones'!");
 
-  if (load_type == 1){
-
-    zones = unq[3]; /* load zones values */
-    while(sizeof(zones)) {
-    
-      /* Everything in the zones entry must be a segment. */
-      if(typeof(zones[0]) != T_ARRAY
-         || sizeof(zones[0]) < 2
-         || zones[0][0] != "segment" )
-        error("Format error in zone file, expected 'segment' section!");
-
-      if( zones[0][0] == "segment" ){
-        segment_unq = zones[0][1];
-
-        if(sizeof(segment_unq) != 2
-           || segment_unq[0][0] != "segnum"
-           || segment_unq[1][0] != "zonenum") {
-          error("ZONED segment doesn't fit format "
-	        + "[segnum, <int>, zonenum, <int>]!");
-        }
-
-        segnum = segment_unq[0][1];
-        zonenum = segment_unq[1][1];
-        /* Set zone for segment */
-        if(OBJNUMD->get_segment_owner(segnum)) {
-          OBJNUMD->set_segment_zone(segnum, zonenum);
-        } else {
-          LOGD->write_syslog("Unowned segment, dropping seg #" + segnum,
-			     LOG_WARN);
-        }
+  zones = unq[1]; /* load zonelist values */
+  while(sizeof(zones)) {
+    if( zones[0][0] == "zone" ){
+      segment_unq = zones[0][1];
+      zonenum = segment_unq[0][1];
+      zonename = segment_unq[1][1];
+      if (zonename != "Unzoned"){
+	zone_table += ({ ({ zonename, ([ ]), 0 }) });
+	/* Is this zone in the position expected in the table? */
+	if (zone_table[zonenum][0] != zonename){
+	  error("\nZONED: Incorrect zone table order or skipped number "
+		+ zonename + " #" + zonenum + "\n");
+	}
       }
-      zones = zones[1..];    
+    } else error("Non-zone in zonelist!");
+    /* Finished with that segment, move on */
+    zones = zones[1..];    
+  }
+
+  zones = unq[3]; /* load zones values */
+  while(sizeof(zones)) {
+
+    /* Everything in the zones entry must be a segment. */
+    if(typeof(zones[0]) != T_ARRAY
+       || sizeof(zones[0]) < 2
+       || zones[0][0] != "segment" )
+      error("Format error in zone file, expected 'segment' section!");
+
+    segment_unq = zones[0][1];
+
+    if(sizeof(segment_unq) != 2
+       || segment_unq[0][0] != "segnum"
+       || segment_unq[1][0] != "zonenum") {
+      error("ZONED segment doesn't fit format "
+	    + "[segnum, <int>, zonenum, <int>]!");
     }
 
-  } else if( load_type == 2) {
+    segnum = segment_unq[0][1];
+    zonenum = segment_unq[1][1];
+    set_segment_zone(segnum, zonenum);
 
-    zones = unq[1]; /* load zonelist values */
-    while(sizeof(zones)) {
-      if( zones[0][0] == "zone" ){
-          segment_unq = zones[0][1];
-          zonenum = segment_unq[0][1];
-          zonename = segment_unq[1][1];
-          if (zonename != "Unzoned"){
-            zone_table += ({ ({ zonename, ([ ]) }) });
-            /* Is this zone in the position expected in the table? */
-            if (zone_table[zonenum][0] != zonename){
-              error("\nZONED: Incorrect zone table order "
-		    + zonename + " #" + zonenum + "\n");
-            }
-          }
-      } 
-      /* Remove that segment, move on */
-      zones = zones[1..];    
-    }
-    
+    zones = zones[1..];    
   }
 
 }
@@ -247,29 +227,24 @@ int* get_segments_in_zone(int zonenum) {
   return keys;
 }
 
-void add_segment_to_zone(int zonenum, int segment) {
-  if(previous_program() != OBJNUMD)
-    error("Only OBJNUMD can add segments to a zone!");
+int get_segment_zone(int segment) {
+  if(!SYSTEM() && !COMMON() && !GAME())
+    return -1;
 
-  if(sizeof(zone_table) <= zonenum) {
-    error("Can't add segment to nonexistent zone!");
-  }
-  zone_table[zonenum][1][segment] = 1;
+  return (segment_map[segment] != nil ? segment_map[segment] : -1);
 }
 
-void remove_segment_from_zone(int zonenum, int segment) {
-  if(previous_program() != OBJNUMD)
-    error("Only OBJNUMD can remove segments from a zone!");
+void set_segment_zone(int segment, int zonenum) {
+  if(segment < 0 || zonenum < 0 || zonenum > sizeof(zone_table))
+    error("Segment or zone doesn't exist in set_segment_zone!");
 
-  if(zonenum < 0)
-    return;
-
-  if(sizeof(zone_table) <= zonenum) {
-    LOGD->write_syslog("Nonexistent zone, not in table!", LOG_WARN);
-    return;
+  if(segment_map[segment] != nil) {
+    int oldzone;
+    oldzone = segment_map[segment];
+    zone_table[oldzone][1][segment] = nil;
   }
-
-  zone_table[zonenum][1][segment] = nil;
+  segment_map[segment] = zonenum;
+  zone_table[zonenum][1][segment] = 1;
 }
 
 int get_zone_for_room(object room) {
@@ -278,9 +253,12 @@ int get_zone_for_room(object room) {
   if(!SYSTEM() && !COMMON() && !GAME())
     return -1;
 
+  if(!room)
+    error("Invalid room passed to ZoneD:get_zone_for_room!");
+
   roomnum = room->get_number();
   segment = roomnum / 100;
-  zone = OBJNUMD->get_segment_zone(segment);
+  zone = get_segment_zone(segment);
 
   return zone;
 }
@@ -291,13 +269,53 @@ int add_new_zone( string zonename ){
 
   if (zonename && zonename != ""){
     int zonenum;
-    zone_table += ({ ({ zonename, ([ ]) }) });
-
-    /* And tell MAPD to update its zone table, too */
-    MAPD->notify_new_zones();
+    zone_table += ({ ({ zonename, ([ ]), 0 }) });
 
     return num_zones()-1;
   } else {
     error("Illegal or (nil) zone name given to ZONED!");
+  }
+}
+
+int is_zone_volatile(int zonenum) {
+  if(!SYSTEM() && !COMMON() && !GAME())
+    return -1;
+
+  if(zonenum < 0 || zonenum > sizeof(zone_table))
+    error("Invalid zone number passed to ZoneD:is_zone_volatile!");
+
+  if(zone_table[zonenum][2] & ZONE_ATTR_VOLATILE)
+    return 1;
+
+  return 0;
+}
+
+int get_player_zone(void) {
+  if(!SYSTEM() && !COMMON() && !GAME())
+    return -1;
+
+  if(player_zone < 0)
+    return -1;
+
+  return player_zone;
+}
+
+void set_player_zone(int zonenum) {
+  if(!SYSTEM() && !COMMON() && !GAME())
+    return;
+
+  if(zonenum < 0 || zonenum > sizeof(zone_table))
+    error("Invalid zone number passed to ZoneD:set_player_zone!");
+
+  if(player_zone >= 0) {
+    /* Set former player zone as non-volatile */
+    zone_table[player_zone][2] &= ~ZONE_ATTR_VOLATILE;
+  }
+
+  player_zone = zonenum;
+
+  if(player_zone >= 0) {
+    /* Set new player zone as volatile */
+    zone_table[player_zone][2] |= ZONE_ATTR_VOLATILE;
   }
 }

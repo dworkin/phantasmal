@@ -169,10 +169,8 @@ static void create(varargs int clone)
 
   /* driver->message("Loading phantasmal object system...\n"); */
 
-  /* Compile the Objnumd */
+  /* Compile the Objnumd and ZoneD */
   if(!find_object(OBJNUMD)) { compile_object(OBJNUMD); }
-
-  /* Set up ZoneD, Mapd, Exitd & MobileD */
   if(!find_object(ZONED)) { compile_object(ZONED); }
 
   bind_dtd = read_file(BIND_DTD);
@@ -182,14 +180,20 @@ static void create(varargs int clone)
 
   /* Load zone name list information -- BEFORE first call to
      any MAPD function. */ 
-  /* TODO:  move this into GAME_INITD, and restructure it */
   zone_file = read_file(ZONE_FILE);
   if(zone_file){
-    ZONED->init_zonelist_from_file(zone_file);
+    ZONED->init_from_file(zone_file);
   } else {
     DRIVER->message("Can't read zone list!  Starting blank!\n");
     LOGD->write_syslog("Can't read zone list!  Starting blank!\n", LOG_WARN);
   }
+
+  /* Start up ChannelD, ConfigD and SoulD so that they'll be available
+     to GAME_INITD */
+  if(!find_object(CHANNELD)) compile_object(CHANNELD);
+  if(!find_object(CONFIGD)) compile_object(CONFIGD);
+  if(!find_object(SOULD)) compile_object(SOULD);
+  if(!find_object(TIMED))   { compile_object(TIMED); }
 
   /* Start appropriate daemons for object, mobile and zone loading */
   if(!find_object(MAPD)) { compile_object(MAPD); }
@@ -215,7 +219,7 @@ static void create(varargs int clone)
 
 
   /* Load stuff into MAPD and EXITD */
-  /* TODO:  move this into GAME_INITD */
+  /* TODO:  move this section into GAME_INITD */
   if(read_object_dir(ROOM_DIR) >= 0) {
     EXITD->add_deferred_exits();
     MAPD->do_room_resolution(1);
@@ -228,9 +232,6 @@ static void create(varargs int clone)
   }
 
   /* driver->message("Loading mobiles...\n"); */
-
-  /* Might be needed when making new mobiles */
-  if(!find_object(TIMED))   { compile_object(TIMED); }
 
   /* Set up the MOBILED */
   MOBILED->init();
@@ -247,24 +248,6 @@ static void create(varargs int clone)
 		       LOG_ERROR);
     mobiles_loaded = 0;
   }
-
-  /* Load zone/segment mapping information.
-     Note: must load after rooms, exits and mobiles have
-     already been loaded to avoid losing segments. */
-  /* TODO:  move this into GAME_INITD, and restructure it */
-  zone_file = read_file(ZONE_FILE);
-  if(zone_file){
-    ZONED->init_from_file(zone_file);
-  } else {
-    DRIVER->message("Can't read zone file!  Starting blank!\n");
-    LOGD->write_syslog("Can't read zone file!  Starting blank!\n", LOG_WARN);
-  } 
-
-  /* Start up ChannelD, ConfigD and SoulD, none of which are
-     vital to initial loading. */
-  if(!find_object(CHANNELD)) compile_object(CHANNELD);
-  if(!find_object(CONFIGD)) compile_object(CONFIGD);
-  if(!find_object(SOULD)) compile_object(SOULD);
 
   /* Make sure ConfigD is set up for scripting */
   CONFIGD->set_path_special(nil);

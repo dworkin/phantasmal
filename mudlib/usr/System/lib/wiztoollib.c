@@ -559,7 +559,7 @@ static void cmd_segment_map(object user, string cmd, string str) {
     user->message((OBJNUMD->get_segment_owner(ctr) != nil) ?
                 ((ctr + SPACE16)[..6]
                 + (OBJNUMD->get_segment_owner(ctr) + SPACE16)[..30]
-                + OBJNUMD->get_segment_zone(ctr)
+                + ZONED->get_segment_zone(ctr)
                 + "\r\n") : "");
   }
   user->message("--------\r\n");
@@ -586,7 +586,7 @@ static void cmd_set_segment_zone(object user, string cmd, string str) {
     user->message("Can't find zone #" + zonenum + ".  Try @zonemap.\r\n");
     return;
   }
-  OBJNUMD->set_segment_zone(segnum, zonenum);
+  ZONED->set_segment_zone(segnum, zonenum);
 
   user->message("Set segment #" + segnum + " (object #" + (segnum * 100)
 		+ "-#" + (segnum * 100 + 99) + ") to be in zone #" + zonenum
