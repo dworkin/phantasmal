@@ -68,7 +68,7 @@ PortableD.
 ~name{~enUS{@set_segment_zone, @set_seg_zone,
             set_segment_zone,
             set_seg_zone, set segment zone,
-            set seg zone, set, zone}}
+            set seg zone, set}}
 ~keywords{admin}
 ~desc{
   ~enUS{
@@ -85,7 +85,20 @@ different kinds of objects.  The syntax is:
 The command above sets segment 6, containing objects #600-#699, to be
 part of zone #2.
 
-See also:  @segmap, segments, @zonemap
+See also:  @segmap, segments, @zonemap, zones
+
+}}
+
+
+~name{~enUS{@zonemap, @zone map, zonemap, zone map}}
+~keywords{admin}
+~desc{
+  ~enUS{
+
+The @zonemap command lists the general contents of the MUD's zones
+by number, giving a brief description of each.
+
+See also:  @segmap, @set_seg_zone, segments, zones
 
 }}
 
