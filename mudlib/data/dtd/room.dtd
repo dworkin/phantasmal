@@ -2,8 +2,6 @@
   ~obj{number?,location?,detail?,bdesc,gdesc,ldesc,edesc?,article,parent?,
        nouns,adjectives?,exit*,flags?,removed_details?}
   ~room:obj{}
-  ~portable:obj{}
-  ~body:obj{}
   ~number{int}
   ~location{int}
   ~detail{int}
