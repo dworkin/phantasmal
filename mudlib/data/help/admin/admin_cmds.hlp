@@ -10,7 +10,8 @@ require privilege on the caller's part to perform successfully.
 %reboot             Reboot the MUD
 %swapout            Swap out MUD objects
 %statedump          Dump the MUD's full state to a file
-%datadump           Write the objectfiles as on shutdown
+%save               Write the objectfiles (as if on shutdown)
+%safesave           Write safe-backup copies of object files
 
 %status             Give the status of the MUDLib & server
 
@@ -76,9 +77,9 @@ beyond a possible delay, nor is it especially useful to do in almost
 any case.
 
 Ordinarily you'd be better served by using the %statedump, %shutdown,
-%datadump or %reboot command.
+%save or %reboot command.
 
-See also: %statedump, %datadump, %shutdown, %reboot
+See also: %statedump, %save, %shutdown, %reboot
 
 }}
 
@@ -98,12 +99,13 @@ characteristics see the DGD mailing list and/or MUD-Dev.  Such MUDs
 have been discussed very extensively in both of those forums and
 probably many others.
 
-See also: %shutdown, %reboot, %datadump
+See also: %shutdown, %reboot, %save
 
 }}
 
 
-~name{~enUS{datadump,%datadump,@datadump,data dump,data_dump,%data_dump}}
+~name{~enUS{datadump,%datadump,@datadump,data dump,data_dump,%data_dump,
+            %save, save, @save}}
 ~keywords{admin}
 ~desc{
   ~enUS{
@@ -114,7 +116,28 @@ shutdown and will be broken in the same ways and at the same times.
 The %statedump command is quite different and uses a different
 mechanism -- see "%statedump".
 
-See also: %shutdown, %reboot, %datadump
+See also: %shutdown, %reboot, %safesave, %statedump
+
+}}
+
+
+~name{~enUS{safesave,%safesave,@safesave,safe save,safe_save,%safe_save,
+            %save, save, @save}}
+~keywords{admin}
+~desc{
+  ~enUS{
+
+The %safesave command saves objects to a roomfile, a portablefile and
+so on.  It uses the same mechanism as objects being saved on MUD
+shutdown and will be broken in the same ways and at the same times.
+However, unlike the %save command (also called %datadump), this saves
+to extra "safe" copies of the files and will not be automatically
+loaded on startup.  This is to provide a backup, just in case
+something bad happens to your primary copy of the data.  The
+%statedump command is quite different and uses a different mechanism
+-- see "%statedump".
+
+See also: %shutdown, %reboot, %safesave, %statedump
 
 }}
 
