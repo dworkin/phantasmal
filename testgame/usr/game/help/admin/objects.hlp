@@ -298,16 +298,23 @@ parent object(s).  The syntax is "@set_obj_parent <child> <parent>" where
 pound ("#") sign.
 
 If "<parent>" is the word 'none', all parents are cleared, and the
-object will be set to have no parents.  If "<parent>" is a negative
-number then that object will be removed as a parent of the given
-object, if it is one.  So specifying "#-341" for parent will make sure
-that object #341 is no longer a parent of the given object.
+object will be set to have no parents.  If the word "add" or "remove"
+precedes the list of parents, those parents will be added or removed.
+If the word is "set" then the object's list of parents will be set
+to that list of objects.
 
-If the parents are set to a new set of objects, the details, nouns and
-adjectives are recalculated to reflect the new inheritance.  If the
-parents are set to the same objects in a different order, only the
-order-dependent settings are changed -- removed nouns, adjectives and
-details stay removed, for instance.
+The "set" keyword may be used to change the order of parents in the
+list.  In that case, just include all the old parents in the "set"
+call.  If the set call actually changes *which* parents (not just the
+order) then the details, nouns and adjectives are recalculated to
+reflect the new inheritance.  If the parents are set to the same
+objects in a different order, only the order-dependent settings are
+changed -- removed nouns, adjectives and details from the parent list
+will still be removed.
+
+Usage: @set_obj_par #791 none
+       @set_object_parent #947 set #322 #741 #909
+       @set_obj_parent #947 remove #322 #741
 
 You can check an object's current parents using the 'stat' command.
 
@@ -348,6 +355,9 @@ it is registered with MAPD, and so on.  @stat works on rooms, portables,
 exits and mobiles.
 
 It shows inheritance and tag values, among other information.
+
+Examples: @stat turnip
+          @stat #103
 
 See Also:  MAPD, OBJREGD, MOBILED, EXITD, room, portable, mobile, exit
 

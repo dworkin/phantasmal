@@ -38,24 +38,21 @@ Some commands for exits:
 @add_deferred      Attempt to resolve deferred exits
 }}
 
-~name{~enUS{@new_exit, new_exit, newexit, @newexit, new exit,
-            @exit_new, exitnew, exit_new, @exitnew, exit new,
-            @new_oneway_exit, new_oneway_exit, newonewayexit,
-            @newonewayexit, new oneway exit, new one way exit,
-            @new_twoway_exit, new_twoway_exit, newtwowayexit,
-            @newtwowayexit, new twoway exit, new two way exit}}
+~name{~enUS{new_exit, newexit, exitnew, addexit, exitadd,
+            new_oneway_exit, newonewayexit, new one way exit,
+            new_twoway_exit, newtwowayexit, new two way exit}}
 ~keywords{admin}
 ~desc{
   ~enUS{
 
-@new_exit will create a new exit from the room you currently occupy to
-another one elsewhere.  For instance:
+@new_exit (aka @add_exit) will create a new exit from the room you
+currently occupy to another one elsewhere.  For instance:
 
   @new_exit nw #75 oneway
 
 will create a new exit leading northwest into room #75.
 
-  @new_exit nw #75 twoway
+  @add_exit nw #75 twoway
 
 will create a new exit leading northwest into room #75.  It will also
 create an exit leading from room #75 southeast into the room you're

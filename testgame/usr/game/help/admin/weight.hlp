@@ -7,16 +7,17 @@
 ~desc{
   ~enUS{
 
-The @set_obj_<something> commands set the weight, volume and height of
-an object.  Related command set containers' capacities for these
-same attributes.
+The @set_obj_weight, @set_obj_height and @set_obj_vol commands set the
+weight, volume and height of an object.  Related commands like
+@set_obj_weight_capacity set containers' capacities for these same
+attributes.
 
 See also: weight, volume, length, capacity
 
 }}
 
 
-~name{~enUS{weight}}
+~name{~enUS{weight, obj weight, object weight}}
 ~keywords{admin}
 ~desc{
   ~enUS{
@@ -32,7 +33,8 @@ See also: @set_obj_weight, weight capacity, volume, length
 }}
 
 
-~name{~enUS{set obj weight, set object weight}}
+~name{~enUS{set obj weight, set object weight, set weight, setweight,
+            setobjweight, setobjectweight, weightset}}
 ~keywords{admin}
 ~desc{
   ~enUS{
@@ -49,7 +51,7 @@ See also: weight, weight capacity
 }}
 
 
-~name{~enUS{volume, vol}}
+~name{~enUS{volume, vol, object volume, object vol}}
 ~keywords{admin}
 ~desc{
   ~enUS{
@@ -69,7 +71,7 @@ See also: @set_obj_volume, volume capacity, weight, length
 
 
 ~name{~enUS{set obj volume, set object volume,
-            set obj vol, set object vol}}
+            set obj vol, set object vol, set vol, set volume}}
 ~keywords{admin}
 ~desc{
   ~enUS{
@@ -104,7 +106,9 @@ See also: @set_obj_length, length capacity, volume, weight
 
 
 ~name{~enUS{set obj length, set object length,
-            set obj height, set object height}}
+            set obj height, set object height, set length, setlength,
+            lengthset, setobjlength, setobjectlength, setobjheight,
+            setobjectheight}}
 ~keywords{admin}
 ~desc{
   ~enUS{
@@ -124,7 +128,10 @@ See also: length, length capacity
 
 ~name{~enUS{capacity, weight capacity, length capacity,
             volume capacity, weight cap, length cap, volume cap,
-            vol capacity, vol cap, height capacity, height cap}}
+            vol capacity, vol cap, height capacity, height cap,
+            maximum, weight maximum, length maximum,
+            volume maximum, weight max, length max, volume max,
+            vol maximum, vol max, height maximum, height max}}
 ~keywords{admin}
 ~desc{
   ~enUS{
@@ -138,6 +145,7 @@ Every individual object must be less than its total length capacity,
 so a quiver of arrows could accomodate 20 arrows of its maximum length
 quite comfortably, but couldn't accomodate even one single javelin.
 
+See also: @set_weight_capacity, @set_height_capacity, @set_volume_capacity
 }}
 
 
@@ -145,7 +153,12 @@ quite comfortably, but couldn't accomodate even one single javelin.
             @set_volume_capacity, @set_volume_cap,
             @set_vol_capacity, @set_vol_cap,
             @set_length_capacity, @set_length_cap,
-            @set_height_capacity, @set_height_cap}}
+            @set_height_capacity, @set_height_cap,
+            @set_weight_maximum, @set_weight_max,
+            @set_volume_maximum, @set_volume_max,
+            @set_vol_maximum, @set_vol_max,
+            @set_length_maximum, @set_length_max,
+            @set_height_maximum, @set_height_max}}
 ~keywords{admin}
 ~desc{
   ~enUS{
