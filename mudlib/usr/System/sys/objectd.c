@@ -666,22 +666,20 @@ static void do_upgrade(object obj) {
 
   for(ctr = 0; ctr < sizeof(upgrade_clonables); ctr++) {
     if(function_object("upgraded", upgrade_clonables[ctr])) {
-      catch {
 
-	/* We don't need to call_limited or anything similar here,
-	   because it's already called in a call_out, so there
-	   are already tick limits.  We'll want to change stuff
-	   here if we ever want to "bill" admin characters for
-	   upgrading their objects, but right now we don't
-	   care. */
+      rlimits(status()[ST_STACKDEPTH]; -1) {
 
-	/* upgrade_clonables[ctr]->call_limited("upgraded", 0 ); */
+	catch {
+	  rlimits(status()[ST_STACKDEPTH];
+		  rsrc::query_rsrc("ticks")[RSRC_MAX]) {
+	    call_other(upgrade_clonables[ctr], "upgraded");
+	  }
+	} : {
+	  LOGD->write_syslog("Error in " + object_name(upgrade_clonables[ctr])
+			     + "->upgraded()! (error text already in log)",
+			     LOG_ERR);
+	}
 
-	call_other(upgrade_clonables[ctr], "upgraded", 0);
-      } : {
-	LOGD->write_syslog("Error in " + object_name(upgrade_clonables[ctr])
-			   + "->upgraded()!",
-			   LOG_ERR);
       }
     }
   }
