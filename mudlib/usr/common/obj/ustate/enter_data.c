@@ -34,8 +34,3 @@ void switch_to(int pushp) {
 	      "end.\n");
   send_string(" > ");
 }
-
-static void pass_data(string data) {
-  if(next_state)
-    next_state->receive_data(data);
-}

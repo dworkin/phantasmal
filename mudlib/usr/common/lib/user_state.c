@@ -53,12 +53,7 @@ static void pop_state(void) {
 
 static void pass_data(mixed data) {
   if(next_state)
-    next_state->receive_data(data);
+    next_state->pass_data(data);
 
   user->user_state_data(data);
-}
-
-void receive_data(mixed data) {
-  /* This call to pass_data will use overrides by subclasses. */
-  pass_data(data);
 }
