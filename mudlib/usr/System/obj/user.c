@@ -1,4 +1,4 @@
-/* $Header: /cvsroot/phantasmal/mudlib/usr/System/obj/user.c,v 1.22 2002/11/08 04:50:56 sarak Exp $ */
+/* $Header: /cvsroot/phantasmal/mudlib/usr/System/obj/user.c,v 1.23 2002/11/11 11:08:18 sarak Exp $ */
 
 #include <kernel/kernel.h>
 #include <kernel/user.h>
@@ -1512,7 +1512,7 @@ static void cmd_remove(object user, string cmd, string str) {
 }
 
 static void cmd_bug(object user, string cmd, string str) {
-  write_file(BUG_DATA, ctime(time()) + ": Bug Report: " + str + "\n");
+  write_file(BUG_DATA, ctime(time()) + ": Bug Report: " + str + "\n\n");
   message("Reported bug: " + str + "\r\n");
 }
 
