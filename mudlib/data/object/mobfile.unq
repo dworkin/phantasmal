@@ -1,5 +1,12 @@
 ~mobile{
-  ~number{0}
+  ~type{user}
+  ~number{500}
   ~body{309}
+}
+
+~mobile{
+  ~type{user}
+  ~number{501}
+  ~body{310}
 }
 
