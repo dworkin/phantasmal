@@ -7,11 +7,11 @@ The Security, resource and quota command set is copied from DGD's
 Kernel MUDLib's versions of the same functionality.  Those commands
 are:
 
-@help %access            Shows an admin's access
-@help %quota             Checks or sets quotas
-@help %rsrc              Shows an admin's resource limits or usage
-@help %grant             Grants an admin additional access
-@help %ungrant           Removes existing access
+help %access            Shows an admin's access
+help %quota             Checks or sets quotas
+help %rsrc              Shows an admin's resource limits or usage
+help %grant             Grants an admin additional access
+help %ungrant           Removes existing access
 
 }}
 
@@ -72,20 +72,4 @@ Examples:
   %access angelbob                 Show angelbob's access
   %access global                   What areas are global?
   %access /usr/System/sys/objectd  Who can access the objectd?
-}}
-
-
-~name{~enUS{%grant,@grant,grant}}
-~keywords{admin}
-~desc{
-  ~enUS{
-[Not Yet Documented]
-}}
-
-
-~name{~enUS{%ungrant,@ungrant,ungrant}}
-~keywords{admin}
-~desc{
-  ~enUS{
-[Not Yet Documented]
 }}
