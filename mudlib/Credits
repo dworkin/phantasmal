@@ -1,0 +1,25 @@
+The Phantasmal MUDLib is primarily written and maintained by Noah
+Gibbs.  Other contributors include:
+
+- Keith Dunwoody for patches to merge PORTABLED with MAPD, for major
+contributions to the MOBILE infrastructure, and a patch to add new
+modifiers to UNQ DTD
+
+- Tom Lokovic for testing, ideas, and work on various speculative or
+related projects, including the original design of the UNQ format
+
+- Neil McBride for miscellaneous code and ideas
+
+- Jay Shaffstall for StringD code and escape character codes for UNQ
+parsers
+
+- Chris Meshkin for ideas and discussion
+
+
+And naturally, no set of credits for a DGD MUDLib would be complete
+without mentioning Felix Croes (Dworkin), who wrote, who writes and
+who maintains DGD itself.
+
+Phantasmal also draws ideas from several other sources, but most
+notably Shannon Appelcline's series of Building Blocks articles for
+Skotos.
