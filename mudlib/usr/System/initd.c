@@ -95,18 +95,19 @@ static void create(varargs int clone)
     error("Don't recognize Kernel Library version as being of the"
 	  + " form X.Y.ZZ!");
   }
-  if((major == 1 && minor < 2)
-     || (major == 1 && minor == 2 && patch < 16)) {
-    /* We specifically need a patch from 1.2.57, so Kernel version
-       16 or 17. */
-    error("Need to upgrade to DGD version 1.2.57 or higher!");
-  } else if (major == 1 && minor == 2 && patch > 18) {
-    DRIVER->message("This is a very new Kernel Library version, or at\n");
-    DRIVER->message("  least newer than this version of Phantasmal.  If\n");
-    DRIVER->message("  you have problems, please upgrade Phantasmal!\n");
+  if(major < 1
+     || (major == 1 && minor < 2)
+     || (major == 1 && minor == 2 && patch < 19)) {
+    /* We specifically need a patch from 1.2.68, so Kernel version
+       19 or 20. */
+    error("Need to upgrade to DGD version 1.2.68 or higher!");
   } else if (major > 1 || (major == 1 && minor > 2)) {
     DRIVER->message("This version of Phantasmal is not tested\n");
     DRIVER->message("with DGD beyond 1.2.XX.  Please upgrade Phantasmal!\n");
+  } else if (minor == 2 && patch > 20) {
+    DRIVER->message("This is a very new Kernel Library version, or at\n");
+    DRIVER->message("least newer than this version of Phantasmal.  If\n");
+    DRIVER->message("you have problems, please upgrade Phantasmal!\n");
   }
 
   access::create();
