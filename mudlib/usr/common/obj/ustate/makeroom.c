@@ -19,29 +19,34 @@ private int    obj_type;
 #define OT_UNKNOWN                  1
 #define OT_ROOM                     2
 #define OT_PORTABLE                 3
+#define OT_DETAIL                   4
 
 /* Valid substate values */
 #define SS_PROMPT_OBJ_TYPE          1
 #define SS_PROMPT_OBJ_NUMBER        2
-#define SS_PROMPT_BRIEF_DESC        3
-#define SS_PROMPT_GLANCE_DESC       4
-#define SS_PROMPT_LOOK_DESC         5
-#define SS_PROMPT_EXAMINE_DESC      6
-#define SS_PROMPT_NOUNS             7
-#define SS_PROMPT_ADJECTIVES        8
-#define SS_PROMPT_CONTAINER         9
-#define SS_PROMPT_OPEN             10
-#define SS_PROMPT_OPENABLE         11
+#define SS_PROMPT_OBJ_DETAIL_OF     3
+#define SS_PROMPT_OBJ_PARENT        4
+#define SS_PROMPT_BRIEF_DESC        5
+#define SS_PROMPT_GLANCE_DESC       6
+#define SS_PROMPT_LOOK_DESC         7
+#define SS_PROMPT_EXAMINE_DESC      8
+#define SS_PROMPT_NOUNS             9
+#define SS_PROMPT_ADJECTIVES       10
+#define SS_PROMPT_CONTAINER        11
+#define SS_PROMPT_OPEN             12
+#define SS_PROMPT_OPENABLE         13
 
 /* Input function return values */
-#define RET_NORMAL            1
-#define RET_POP_STATE         2
-#define RET_NO_PROMPT         3
+#define RET_NORMAL                  1
+#define RET_POP_STATE               2
+#define RET_NO_PROMPT               3
 
 
 /* Prototypes */
 static int  prompt_obj_type_input(string input);
 static int  prompt_obj_number_input(string input);
+static int  prompt_obj_detail_of_input(string input);
+static int  prompt_obj_parent_input(string input);
 static int  prompt_brief_desc_input(string input);
 static int  prompt_glance_desc_input(string input);
 static void prompt_look_desc_data(mixed data);
@@ -51,6 +56,8 @@ static int  prompt_adjectives_input(string input);
 static void prompt_container_data(mixed data);
 static void prompt_open_data(mixed data);
 static void prompt_openable_data(mixed data);
+
+private string blurb_for_substate(int substate);
 
 /* Macros */
 #define NEW_PHRASE(x) PHRASED->new_simple_english_phrase(x)
@@ -75,6 +82,8 @@ void specify_type(string type) {
     obj_type = OT_ROOM;
   else if(type == "port" || type == "portable" || type == "p")
     obj_type = OT_PORTABLE;
+  else if(type == "det" || type == "detail" || type == "p")
+    obj_type = OT_DETAIL;
   else
     error("Illegal value supplied to specify_type!");
 
@@ -107,6 +116,12 @@ int from_user(string input) {
     break;
   case SS_PROMPT_OBJ_NUMBER:
     ret = prompt_obj_number_input(input);
+    break;
+  case SS_PROMPT_OBJ_DETAIL_OF:
+    ret = prompt_obj_detail_of_input(input);
+    break;
+  case SS_PROMPT_OBJ_PARENT:
+    ret = prompt_obj_parent_input(input);
     break;
   case SS_PROMPT_BRIEF_DESC:
     ret = prompt_brief_desc_input(input);
@@ -155,32 +170,102 @@ int from_user(string input) {
   return MODE_ECHO;
 }
 
-/* This is if somebody (other than us) is sending data to the
-   user.  This happens if, for instance, somebody moves into
-   or out of the same room and the player sees a message. */
+/* This is if somebody (other than us) is sending data to the user.
+   This happens if, for instance, somebody moves into or out of the
+   same room and the player sees a message. */
 void to_user(string output) {
   /* For the moment, suspend output to the player who is mid-OLC */
   /* send_string(output); */
 }
+
+
+/* This function returns the text to send to the player in the given
+   substate at the given moment.  Since we do a lot of "that was
+   illegal, let's try it again" type prompting, it gets messy to have
+   the text every place the player can screw something up.  The
+   supplied substate is assumed to be the one the player is currently
+   in, and the prompt is assumed to be prior to input (or prior
+   to re-entering input after unacceptable input). */
+private string blurb_for_substate(int substate) {
+  switch(substate) {
+
+  case SS_PROMPT_OBJ_TYPE:
+    return "Please enter an object type.\r\n"
+      + "Valid values are:  room, portable, detail (r/p/d)\r\n";
+
+  case SS_PROMPT_OBJ_NUMBER:
+    return "Enter the desired object number for this object\r\n"
+      + "  or hit enter to assign it automatically.\r\n";
+
+  case SS_PROMPT_OBJ_DETAIL_OF:
+    return "Enter the base object number for this detail or type 'quit'.\r\n"
+      + "The object must already exist.\r\n";
+
+  case SS_PROMPT_OBJ_PARENT:
+    return "Enter the object's parent for data inheritance.\r\n"
+      + "That's like Skotos ur-objects (see help @set_obj_parent).\r\n";
+
+  case SS_PROMPT_BRIEF_DESC:
+    return "Next, please enter a one-line brief description.\r\n"
+      + "Examples of brief descriptions:  "
+      + "'a sword', 'John', 'some bacon'.\r\n";
+
+  case SS_PROMPT_GLANCE_DESC:
+    return "Please enter a one-line glance description.\r\n"
+      + "Examples of brief descriptions:  "
+      + "'a red flashing toy gun', 'John the Butcher',"
+      + "or 'about a pound of bacon'.\r\n";
+
+  case SS_PROMPT_LOOK_DESC:
+    return "Now, enter a multiline 'look' description.  This is what an"
+      + " observer would note\r\n"
+      + "specifically about this object on quick perusal.\r\n";
+
+  case SS_PROMPT_EXAMINE_DESC:
+    return "Now, enter a multiline 'examine' description.  This is what an"
+      + " observer would\r\n"
+      + "note about this object with careful scrutiny.\r\n"
+      + "Or hit '~' and enter and it will default to the look "
+      + "description.\r\n";
+
+  case SS_PROMPT_NOUNS:
+    return "Brief:  " + new_obj->get_brief()->to_string(get_user()) + "\r\n"
+      + "Glance: " + new_obj->get_glance()->to_string(get_user()) + "\r\n"
+      + "\r\nGive a space-separated list of nouns to refer to this"
+      + " object.\r\n"
+      + "Example: sword blade hilt weapon pommel\r\n\r\n";
+
+  case SS_PROMPT_ADJECTIVES:
+    return "Brief:  " + new_obj->get_brief()->to_string(get_user()) + "\r\n"
+      + "Glance: " + new_obj->get_glance()->to_string(get_user()) + "\r\n"
+      + "Enter a space-separate list of adjectives to refer to this"
+      + " object.\r\n"
+      + "Example: heavy gray dull\r\n";
+
+  case SS_PROMPT_CONTAINER:
+
+  case SS_PROMPT_OPEN:
+
+  case SS_PROMPT_OPENABLE:
+
+  default:
+    return "<UNDEFINED STATE>\r\n";
+  }
+}
+
 
 /* This is called when the state is switched to.  The pushp parameter
    describes whether a push or a pop switched to this state -- if
    pushp is true, the state was just allocated and started.  If it's
    false, a state got pushed and we resumed control afterward. */
 void switch_to(int pushp) {
-  if(pushp && substate == SS_PROMPT_OBJ_NUMBER) {
+  if(pushp
+     && (substate == SS_PROMPT_OBJ_NUMBER
+	 || substate == SS_PROMPT_OBJ_TYPE)) {
     /* Just allocated */
     send_string("Creating a new object.  Type 'quit' at the prompt"
 		+ " (except on multiline prompts) to cancel.\r\n");
-    send_string("First, enter the desired object number,"
-		+ " or hit enter to assign it automatically.\r\n");
-    send_string(" > ");
-  } else if(pushp && substate == SS_PROMPT_OBJ_TYPE) {
-    /* Just allocated */
-    send_string("Creating a new object.  Type 'quit' at most prompts"
-		+ " (but not multiline prompts) to cancel.\r\n");
-    send_string("Please enter an object type.\r\n");
-    send_string("Valid values are:  room, portable (r/p)\r\n");
+    send_string(blurb_for_substate(substate));
     send_string(" > ");
   } else if (substate == SS_PROMPT_LOOK_DESC
 	     || substate == SS_PROMPT_EXAMINE_DESC) {
@@ -237,24 +322,27 @@ static int prompt_obj_type_input(string input) {
   if(input)
     input = STRINGD->trim_whitespace(STRINGD->to_lower(input));
 
-  /* TODO:  we should use the binder for this */
+  /* TODO:  we should probably use the binder for this */
   if(!input
-     || (input != "r" && input != "p" && input != "room" && input != "port"
-	 && input != "portable")) {
-    send_string("Valid values for object type are 'room' and 'portable'.\r\n");
-    send_string("Please enter object type or 'quit'.\r\n");
+     || (input != "r" && input != "p" && input != "d"
+	 && input != "room"
+	 && input != "port" && input != "portable"
+	 && input != "det" && input != "detail")) {
+    send_string("That's not a valid object type.\r\n");
+    send_string(blurb_for_substate(SS_PROMPT_OBJ_TYPE));
 
     return RET_NORMAL;
   }
 
   if(input[0] == "r"[0]) {
     obj_type = OT_ROOM;
+  } else if(input[0] == "d"[0]) {
+    obj_type = OT_DETAIL;
   } else {
     obj_type = OT_PORTABLE;
   }
 
-  send_string("Type the desired object number,"
-	      + " or hit enter to assign it automatically.\r\n");
+  send_string(blurb_for_substate(SS_PROMPT_OBJ_NUMBER));
 
   substate = SS_PROMPT_OBJ_NUMBER;
 
@@ -277,28 +365,31 @@ static int prompt_obj_number_input(string input) {
     if(sscanf(input, "%*s %*d") == 2
        || sscanf(input, "%*d %*s") == 2
        || sscanf(input, "%d", obj_number) != 1) {
-      send_string("Please *only* enter a number.  Enter an object number"
-		  + " or hit enter.\r\n");
+      send_string("Please *only* enter a number.\r\n");
+      send_string(blurb_for_substate(SS_PROMPT_OBJ_NUMBER));
       return RET_NORMAL;
     }
     /* Object number was parsed. */
     if(obj_number < 1) {
       send_string("That doesn't appear to be a legal object number.\r\n");
-      send_string("Enter a positive, nonzero object number or hit enter.\r\n");
+      send_string("Object numbers should be positive and nonzero.\r\n");
+      send_string(blurb_for_substate(SS_PROMPT_OBJ_NUMBER));
 
       return RET_NORMAL;
     }
     if(MAPD->get_room_by_num(obj_number)) {
-      send_string("There is already an object with that number.\r\n");
-      send_string("Enter an object number, type 'quit' or hit enter.\r\n");
+      send_string("There is already an object #" + obj_number + ".\r\n");
+      send_string(blurb_for_substate(SS_PROMPT_OBJ_NUMBER));
 
       return RET_NORMAL;
     }
     segown = OBJNUMD->get_segment_owner(obj_number / 100);
     if(obj_number >= 0 && segown && segown != MAPD) {
-      user->message("Object number " + obj_number
-		    + " is in a segment somebody else is using!\r\n");
-      send_string("Enter an object number, type 'quit' or hit enter.\r\n");
+      user->message("Object #" + obj_number
+		    + " is in a segment somebody owned by "
+		    + segown + "!\r\n");
+      send_string(blurb_for_substate(SS_PROMPT_OBJ_NUMBER));
+
       return RET_NORMAL;
     }
 
@@ -315,6 +406,7 @@ static int prompt_obj_number_input(string input) {
   if(obj_type == OT_ROOM) {
     new_obj = clone_object(SIMPLE_ROOM);
   } else {
+    /* This is regardless of whether it's OT_PORTABLE or OT_DETAIL */
     new_obj = clone_object(SIMPLE_PORTABLE);
   }
   zonenum = -1;
@@ -346,11 +438,9 @@ static int prompt_obj_number_input(string input) {
 	      + ")\r\n\r\n");
 
   /* Okay, now keep entering data... */
-  send_string("Next, please enter a one-line brief description.\r\n");
-  send_string("Examples of brief descriptions:  "
-	      + "'a sword', 'John', 'some bacon'.\r\n");
+  send_string(blurb_for_substate(SS_PROMPT_BRIEF_DESC));
 
-  substate = SS_PROMPT_BRIEF_DESC;
+	      substate = SS_PROMPT_BRIEF_DESC;
 
   /* The editor is going to print its own prompt, so don't bother
      with ours. */
@@ -362,9 +452,7 @@ static int prompt_brief_desc_input(string input) {
 
   if(!input || STRINGD->is_whitespace(input)) {
     send_string("That was all whitespace.  Let's try that again.\r\n");
-    send_string("Please enter a one-line brief description.\r\n");
-    send_string("Examples of brief descriptions:  "
-		+ "'a sword', 'John', 'some bacon'.\r\n");
+    send_string(blurb_for_substate(SS_PROMPT_BRIEF_DESC));
 
     return RET_NORMAL;
   }
@@ -375,10 +463,7 @@ static int prompt_brief_desc_input(string input) {
 
   substate = SS_PROMPT_GLANCE_DESC;
 
-  send_string("Please enter a one-line glance description.\r\n");
-  send_string("Examples of brief descriptions:  "
-	      + "'a red flashing toy gun', 'John the Butcher',"
-	      + "or 'about a pound of bacon'.\r\n");
+  send_string(blurb_for_substate(SS_PROMPT_GLANCE_DESC));
 
   return RET_NORMAL;
 }
@@ -388,10 +473,7 @@ static int prompt_glance_desc_input(string input) {
 
   if(!input || STRINGD->is_whitespace(input)) {
     send_string("That was all whitespace.  Let's try that again.\r\n");
-    send_string("Please enter a one-line glance description.\r\n");
-    send_string("Examples of brief descriptions:  "
-		+ "'a red flashing toy gun', 'John the Butcher',"
-		+ "or 'about a pound of bacon'.\r\n");
+    send_string(blurb_for_substate(SS_PROMPT_GLANCE_DESC));
 
     return RET_NORMAL;
   }
@@ -403,9 +485,7 @@ static int prompt_glance_desc_input(string input) {
   substate = SS_PROMPT_LOOK_DESC;
 
   send_string("\r\nGlance desc accepted.\r\n");
-  send_string("Now, enter a multiline 'look' description.  This is what an"
-	      + " observer would note\r\n");
-  send_string("specifically about this object on quick perusal.\r\n");
+  send_string(blurb_for_substate(SS_PROMPT_LOOK_DESC));
 
   edit_state = clone_object(US_ENTER_DATA);
   if(edit_state) {
@@ -431,6 +511,7 @@ static void prompt_look_desc_data(mixed data) {
   if(!data || STRINGD->is_whitespace(data)) {
     send_string("That look description was all whitespace.  "
 		+ "Let's try that again.\r\n");
+    send_string(blurb_for_substate(SS_PROMPT_LOOK_DESC));
 
     edit_state = clone_object(US_ENTER_DATA);
     if(edit_state) {
@@ -451,11 +532,7 @@ static void prompt_look_desc_data(mixed data) {
   substate = SS_PROMPT_EXAMINE_DESC;
   send_string("\r\nLook desc accepted.\r\n");
 
-  send_string("Now, enter a multiline 'examine' description.  This is what an"
-	      + " observer would\r\n");
-  send_string("note about this object with careful scrutiny.\r\n");
-  send_string("Or hit '~' and enter and it will default to the look "
-	      + "description.\r\n");
+  send_string(blurb_for_substate(SS_PROMPT_EXAMINE_DESC));
 
   edit_state = clone_object(US_ENTER_DATA);
   if(edit_state) {
@@ -491,17 +568,11 @@ static void prompt_examine_desc_data(mixed data) {
   substate = SS_PROMPT_NOUNS;
 
   send_string("\r\nOkay, now let's get a list of the nouns and adjectives "
-	      + "you can\r\n");
-  send_string("use to refer to the object.  For reference, we'll also let you"
-	      + " see\r\n");
-  send_string("the short descriptions you supplied.\r\n");
-  send_string("Brief:  " + new_obj->get_brief()->to_string(get_user())
-	      + "\r\n");
-  send_string("Glance: " + new_obj->get_glance()->to_string(get_user())
-	      + "\r\n");
-  send_string("\r\nNow, give a space-separated list of nouns to refer to this"
-	      + " object.\r\n");
-  send_string("Example: sword blade hilt weapon pommel\r\n\r\n");
+	      + "you can\r\n"
+	      + "use to refer to the object.  For reference, we'll also"
+	      + " let you see\r\n"
+	      + "the short descriptions you supplied.\r\n");
+  send_string(blurb_for_substate(SS_PROMPT_NOUNS));
 
   /* Don't return anything, this is a void function */
 }
@@ -531,13 +602,7 @@ static int prompt_nouns_input(string input) {
   if(obj_type == OT_PORTABLE
      && (!input || STRINGD->is_whitespace(input))) {
     send_string("Nope.  You'll want at least one noun.  Try again.\r\n");
-    send_string("Brief:  " + new_obj->get_brief()->to_string(get_user())
-		+ "\r\n");
-    send_string("Glance: " + new_obj->get_glance()->to_string(get_user())
-		+ "\r\n");
-    send_string("\r\nNow, give a space-separated list of nouns to refer to "
-		+ "this object.\r\n");
-    send_string("Example: sword blade weapon\r\n\r\n");
+    send_string(blurb_for_substate(SS_PROMPT_NOUNS));
     return RET_NORMAL;
   }
 
@@ -546,8 +611,8 @@ static int prompt_nouns_input(string input) {
 
   substate = SS_PROMPT_ADJECTIVES;
 
-  send_string("\r\nGood.  Next, do the same for adjectives.\r\n");
-  send_string("Example: heavy gray dull\r\n");
+  send_string("Good.  Now do the same for adjectives.\r\n");
+  send_string(blurb_for_substate(SS_PROMPT_ADJECTIVES));
 
   return RET_NORMAL;
 }
