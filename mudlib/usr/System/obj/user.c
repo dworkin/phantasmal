@@ -1,4 +1,4 @@
-/* $Header: /cvsroot/phantasmal/mudlib/usr/System/obj/user.c,v 1.44 2003/03/10 07:38:10 angelbob Exp $ */
+/* $Header: /cvsroot/phantasmal/mudlib/usr/System/obj/user.c,v 1.45 2003/03/10 08:00:34 angelbob Exp $ */
 
 #include <kernel/kernel.h>
 #include <kernel/user.h>
@@ -1624,7 +1624,7 @@ static void cmd_get(object user, string cmd, string str) {
     return;
   }
 
-  tmp = find_first_objects(str, LOC_CURRENT_ROOM);
+  tmp = find_first_objects(str, LOC_CURRENT_ROOM, LOC_INVENTORY);
   if(!tmp || !sizeof(tmp)) {
     message("You don't find any '" + str + "'.\r\n");
     return;
@@ -1635,6 +1635,13 @@ static void cmd_get(object user, string cmd, string str) {
     message("You choose ");
     send_phrase(tmp[0]->get_glance());
     message(".\r\n");
+  }
+
+  if(tmp[0]->get_detail_of()) {
+    message("You can't get that.  It's part of ");
+    send_phrase(tmp[0]->get_detail_of()->get_glance());
+    message(".\r\n");
+    return;
   }
 
   if(!(err = mobile->place(tmp[0], body))) {
