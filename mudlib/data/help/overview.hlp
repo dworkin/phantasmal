@@ -16,7 +16,7 @@ help copying                The MUDLib rights and license
 help credits                Who's responsible for all this, then?
 }}
 
-~name{~enUS{index,main}}
+~name{~enUS{index,main,player_index}}
 ~desc{~enUS{
 If you're new to MUDding, type "help newbie".  Some other useful
 keywords to get help on are "movement", "policy", "death", and

@@ -9,12 +9,14 @@ with a @ or % to distinguish them from normal commands and remind you
 of the harm they can do if used carelessly.  Any of these helpfiles
 must be accessed with %help or @help.
 
-@help builder        Builder commands
-%help admin          Administrator commands
-%help resource       Resource and quota commands
-%help guts           Commands dealing directly with LPC
+help builder        Builder commands
+help admin          Administrator commands
+help resource       Resource and quota commands
+help guts           Commands dealing directly with LPC
 
-@help syntax         Using any commands
+help syntax         Using any commands
+
+For the regular "just help" screen, type "help player_index".
 
 }}
 
