@@ -642,8 +642,10 @@ private object add_lib(string owner, string path, string* inherited) {
 
 private void call_upgraded(object obj) {
 
-  if(!obj)
+  if(!obj) {
     LOGD->write_syslog("Calling call_upgraded on nil!", LOG_ERR);
+    return;
+  }
 
   /* Originally we checked to see if the object had an "upgraded"
      function and if so, we scheduled a callout.  That doesn't work
@@ -666,17 +668,21 @@ private void call_upgraded(object obj) {
 static void do_upgrade(object obj) {
   int ctr;
 
-  release_system();
   upgrade_callout = 0;
 
-  for(ctr = 0; ctr < sizeof(upgrade_clonables); ctr++) {
-    if(function_object("upgraded", upgrade_clonables[ctr])) {
+  /* Give objects more time to call upgraded() if they need it since
+     they may be rereading large files all at once.  Currently this
+     doesn't vary per user. */
+  rsrc::set_rsrc("upgrade ticks",
+		 rsrc::query_rsrc("ticks")[RSRC_MAX] * 4,
+		 0, 0);
 
-      rlimits(status()[ST_STACKDEPTH]; -1) {
-
+  rlimits(status()[ST_STACKDEPTH]; -1) {
+    for(ctr = 0; ctr < sizeof(upgrade_clonables); ctr++) {
+      if(function_object("upgraded", upgrade_clonables[ctr])) {
 	catch {
 	  rlimits(status()[ST_STACKDEPTH];
-		  rsrc::query_rsrc("ticks")[RSRC_MAX]) {
+		  rsrc::query_rsrc("upgrade ticks")[RSRC_MAX]) {
 	    call_other(upgrade_clonables[ctr], "upgraded");
 	  }
 	} : {
@@ -689,6 +695,7 @@ static void do_upgrade(object obj) {
     }
   }
 
+  release_system();
   upgrade_clonables = ({ });
 }
 

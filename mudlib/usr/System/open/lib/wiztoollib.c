@@ -91,8 +91,16 @@ mixed* get_command_sets(object wiztool) {
 
 static void cmd_shutdown(object user, string cmd, string str)
 {
-  find_object(INITD)->prepare_shutdown();
-  /* wiz::cmd_shutdown(user, cmd, str); */
+  if(str && str != "") {
+    if(str == "force") {
+      find_object(INITD)->force_shutdown();
+    } else {
+      user->message("Unrecognized argument.  Try again.\r\n");
+      return;
+    }
+  } else {
+    find_object(INITD)->prepare_shutdown();
+  }
 }
 
 static void cmd_reboot(object user, string cmd, string str) {

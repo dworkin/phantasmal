@@ -24,6 +24,7 @@ inherit rsrc   API_RSRC;
 
 private string pending_callback;
 private int __sys_suspended;
+private int errors_in_writing;
 
 
 /* Prototypes */
@@ -63,7 +64,6 @@ static int delete_directory(string dirname) {
 
   return remove_dir(dirname);
 }
-
 
 static void create(varargs int clone)
 {
@@ -121,6 +121,13 @@ static void create(varargs int clone)
      them to be users from the rsrcd's point of view. */
   rsrc::add_owner("common");
   rsrc::add_owner("game");
+
+  /* Give objects more time to call upgraded() if they need it since
+     they may be rereading large files all at once.  Currently this
+     doesn't vary per user. */
+  rsrc::set_rsrc("upgrade ticks",
+		 rsrc::query_rsrc("ticks")[RSRC_MAX] * 4,
+		 0, 0);
 
   /* Set this to enable SSHD to do its thing.  Otherwise it can't get
      enough ticks. */
@@ -272,6 +279,8 @@ void save_mud_data(object user, string room_dirname, string mob_filename,
     release_system();
   }
 
+  errors_in_writing = 0;
+
   LOGD->write_syslog("Writing World Data to files...", LOG_NORMAL);
   LOGD->write_syslog("Rooms: '" + room_dirname + "/*', Mobiles: '"
 		     + mob_filename + "', Zones: '"
@@ -352,6 +361,13 @@ void prepare_shutdown(void)
 		"__shutdown_callback");
 }
 
+void force_shutdown(void) {
+  if(previous_program() != SYSTEM_WIZTOOLLIB)
+    error("Nope, you can't just shut down the system.  Nice try.");
+
+  ::shutdown();
+}
+
 void reboot(void)
 {
   if(previous_program() != SYSTEM_WIZTOOLLIB)
@@ -411,7 +427,7 @@ private void release_system() {
 static void __co_write_rooms(object user, int* objects, int* save_zones,
 			     int ctr, int zone_ctr, string roomdir,
 			     string mobfile, string zonefile) {
-  string unq_str, roomfile;
+  string unq_str, roomfile, err;
   object obj;
   int    chunk_ctr;
 
@@ -428,12 +444,12 @@ static void __co_write_rooms(object user, int* objects, int* save_zones,
 	  ctr++, chunk_ctr++) {
 	obj = MAPD->get_room_by_num(objects[ctr]);
 
-	unq_str = obj->to_unq_text();
+	err = catch(unq_str = obj->to_unq_text());
 
-	if(!write_file(roomfile, unq_str)) {
-	  DRIVER->message("Couldn't write room to file!"
-			  + "  Fix it or kill the driver!\n");
-	  error("Couldn't write rooms to file " + roomfile + "!");
+	if(err || !write_file(roomfile, unq_str)) {
+	  LOGD->write_syslog("Couldn't write room " + objects[ctr]
+			     + " to file!");
+	  errors_in_writing = 1;
 	}
       }
 
@@ -472,14 +488,14 @@ static void __co_write_rooms(object user, int* objects, int* save_zones,
      }
   } : {
     release_system();
-    user->message("Error writing rooms!\n");
+    if(user) user->message("Error writing rooms!\n");
     error("Error writing rooms!");
   }
 }
 
 static void __co_write_mobs(object user, int* objects, int ctr,
 			    string mobfile, string zonefile) {
-  string unq_str;
+  string unq_str, err;
   object obj;
   int    chunk_ctr;
 
@@ -488,12 +504,12 @@ static void __co_write_mobs(object user, int* objects, int ctr,
 	ctr++, chunk_ctr++) {
       obj = MOBILED->get_mobile_by_num(objects[ctr]);
 
-      unq_str = obj->to_unq_text();
+      err = catch(unq_str = obj->to_unq_text());
 
-      if(!write_file(mobfile, unq_str)) {
-	DRIVER->message("Couldn't write mobiles to file!  "
-			+ "Fix or kill driver!");
-	error("Couldn't write mobiles to file " + mobfile + "!");
+      if(err || !write_file(mobfile, unq_str)) {
+	LOGD->write_syslog("Couldn't write mobile " + objects[ctr]
+			   + " to file!");
+	errors_in_writing = 1;
       }
     }
 
@@ -514,7 +530,7 @@ static void __co_write_mobs(object user, int* objects, int ctr,
      }
   } : {
     release_system();
-    user->message("Error writing mobiles!\n");
+    if(user) user->message("Error writing mobiles!\n");
     error("Error writing mobiles!");
   }
 }
@@ -533,8 +549,18 @@ static void __co_write_zones(object user, int* objects, int ctr,
     write_file(zonefile, unq_str);
   } : {
     release_system();
-    user->message("Error writing zones!\n");
+    if(user) user->message("Error writing zones!\n");
     error("Error writing zones!");
+  }
+
+  if(errors_in_writing) {
+    errors_in_writing = 0;
+
+    release_system();
+
+    if(user) user->message("Errors in writing saved data!\r\n");
+
+    return;
   }
 
   /* This is the callback from %shutdown or %reboot or whatever,
@@ -547,14 +573,13 @@ static void __co_write_zones(object user, int* objects, int ctr,
     }
   } : {
     release_system();
-    user->message("Error calling callback!\n");
+    if(user) user->message("Error calling callback!\n");
     error("Error calling callback!");
   }
 
   release_system();
   LOGD->write_syslog("Finished writing saved data...", LOG_NORMAL);
-  if(user)
-    user->message("Finished writing data.\n");
+  if(user) user->message("Finished writing data.\n");
 }
 
 

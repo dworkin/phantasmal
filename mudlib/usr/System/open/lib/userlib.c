@@ -1,4 +1,4 @@
-/* $Header: /cvsroot/phantasmal/mudlib/usr/System/open/lib/userlib.c,v 1.12 2005/03/24 12:36:22 angelbob Exp $ */
+/* $Header: /cvsroot/phantasmal/mudlib/usr/System/open/lib/userlib.c,v 1.13 2005/03/28 19:18:03 angelbob Exp $ */
 
 #include <kernel/kernel.h>
 #include <kernel/user.h>
@@ -334,14 +334,14 @@ nomask int receive_message(string str)
  * NAME:	show_room_to_player()
  * DESCRIPTION:	give room desc to current player
  */
-static void show_room_to_player(object location) {
+static void show_room_to_player(object ROOM location) {
   string tmp;
   object PHRASE phr;
   int    ctr;
   mixed* objs;
 
   if(!SYSTEM() && !COMMON() && !GAME())
-    return;
+    error("Only privileged code may call show_room_to_player!");
 
   if(!location) {
     send_system_phrase("you are nowhere");
@@ -354,6 +354,8 @@ static void show_room_to_player(object location) {
     tmp = phr->to_string(this_object());
   if(tmp) {
     message(tmp);
+    if(is_admin())
+      message(" [" + location->get_number() + "]");
     message("\r\n");
   } else {
     send_system_phrase("(unnamed location)");
