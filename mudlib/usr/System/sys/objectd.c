@@ -524,7 +524,6 @@ private object add_clonable(string owner, object obj, string* inherited) {
       LOGD->write_syslog("Old issue is in dest_issues but not destroyed!",
 			 LOG_WARN);
     }
-    LOGD->write_syslog("Updating destructed version of object", LOG_VERBOSE);
   }
 
   if(old_version && !old_version->destroyed()) {
@@ -558,7 +557,6 @@ private object add_clonable(string owner, object obj, string* inherited) {
       transfer_clones(old_version, new_issue);
 
       /* Remove from dest array */
-      LOGD->write_syslog("Clearing destroyed issue on recompile", LOG_VERBOSE);
       dest_issues[object_name(obj)] = nil;
       dest_issues[old_index] = nil;
     }
@@ -633,8 +631,6 @@ private object add_lib(string owner, string path, string* inherited) {
 
 private void call_upgraded(object obj) {
   if(function_object("upgraded", obj)) {
-    LOGD->write_syslog("Calling upgraded on " + object_name(obj),
-		       LOG_VERBOSE);
     catch {
       obj->upgraded();
     } : {
@@ -727,7 +723,7 @@ void destruct(string owner, object obj)
 	LOGD->write_syslog("Index " + index + " already in dest_issues.",
 			   LOG_VERBOSE);
 
-      LOGD->write_syslog("Object is already in dest_issues!", LOG_ERR);
+      LOGD->write_syslog("Object is already in dest_issues!", LOG_WARN);
     }
 
     /* Put into dest_issues */
@@ -758,9 +754,7 @@ void destruct_lib(string owner, string path)
     LOGD->write_syslog("destruct_lib: " + path + " (" + index + ")",
 		       LOG_VERBOSE);
 
-    if(!status(path)) {
-      all_libs[path] = nil;
-    }
+    all_libs[path] = nil;
 
     /* If the Obj is not registered, that's fine unless we've
        aggro_recompile'd and set stronger checking on. */
@@ -1167,7 +1161,7 @@ mixed* od_status(mixed obj_spec) {
   well with this :-) */
 void recompile_auto_object(object output) {
   int    ctr, ctr2;
-  mixed* keys;
+  mixed* keys, *didnt_dest;
 
   /* This will always be logged at this level */
   LOGD->write_syslog("Doing full rebuild...", LOG_NORMAL);
@@ -1177,11 +1171,14 @@ void recompile_auto_object(object output) {
 
   /* Destruct all libs... */
   keys = map_indices(all_libs);
+  didnt_dest = ({ });
   ctr2 = 0;
   for(ctr = 0; ctr < sizeof(keys); ctr++) {
     if(status(keys[ctr])) {
       ctr2++;
       destruct_object(keys[ctr]);
+    } else {
+      didnt_dest += ({ keys[ctr] });
     }
   }
   ctr2++;
@@ -1191,9 +1188,9 @@ void recompile_auto_object(object output) {
     /* In this case, some elements of all_libs are already destructed,
        which violates our assumptions.  Of course, the rebuild will
        probably fix it. */
-    LOGD->write_syslog("Destructing " + ctr2 + "/" + (sizeof(keys) + 1)
-		       + " libs of: AUTO, "
-		       + implode(keys, ", "), LOG_WARN);
+    LOGD->write_syslog("Couldn't destruct " + sizeof(didnt_dest) + "/"
+		       + (sizeof(keys) + 1) + " libs: "
+		       + implode(didnt_dest, ", "), LOG_WARN);
   }
 
   /* Recompile all clonables */
