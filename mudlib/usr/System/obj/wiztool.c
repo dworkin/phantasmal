@@ -119,6 +119,10 @@ void upgraded(void) {
 	"@set_port_flags"      : ({ "cmd_set_port_flag" }),
 	"@set_portable_flag"   : ({ "cmd_set_port_flag" }),
 	"@set_portable_flags"  : ({ "cmd_set_port_flag" }),
+	"@set_obj_flag"        : ({ "cmd_set_port_flag" }),
+	"@set_obj_flags"       : ({ "cmd_set_port_flag" }),
+	"@set_object_flag"     : ({ "cmd_set_port_flag" }),
+	"@set_object_flags"    : ({ "cmd_set_port_flag" }),
 
 	"@segment_map"         : ({ "cmd_segment_map" }),
 	"@seg_map"             : ({ "cmd_segment_map" }),

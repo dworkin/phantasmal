@@ -8,8 +8,7 @@
 
 inherit obj OBJECT;
 
-/* The objflags field contains a set of boolean flags specific to
-   portables */
+/* The objflags field contains a set of boolean object flags */
 #define OF_CONTAINER          1
 #define OF_OPEN               2
 #define OF_NO_DESC            4
