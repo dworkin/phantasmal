@@ -408,6 +408,9 @@ string can_leave(object user, object leave_object, int dir) {
    enter_object is the body attempting to enter,
    dir is the direction. */
 string can_enter(object user, object enter_object, int dir) {
+  string reason;
+  object body;
+
   if(obj::get_mobile())
     return "You can't enter a sentient being!  Don't be silly.";
 
@@ -419,8 +422,28 @@ string can_enter(object user, object enter_object, int dir) {
       return nil;
     }
   } else {
-    return is_open_cont(user);
+    reason = is_open_cont(user);
+    if(reason)
+      return reason;
   }
+
+  if(enter_object
+     && (current_weight + enter_object->get_weight() > weight_capacity)) {
+    if(!user)
+      return "too full";
+    else
+      return get_brief()->to_string(user) + " is too full!";
+  }
+
+  if(enter_object
+     && (current_volume + enter_object->get_volume() > volume_capacity)) {
+    if(!user)
+      return "too full";
+    else
+      return get_brief()->to_string(user) + " is too full!";
+  }
+
+  return nil;
 } 
 
 
@@ -535,7 +558,33 @@ void get(object mover, object new_env) {
 */
 
 string can_put(object user, object mover, object movee, object old_env) {
-  return is_open_cont(user);
+  string reason;
+
+  reason = is_open_cont(user);
+  if(reason)
+    return reason;
+
+  if(movee && (current_weight + movee->get_weight() > weight_capacity)) {
+    if(!user)
+      return "too full";
+    else
+      return get_brief()->to_string(user) + " is too full!";
+  }
+
+  if(movee && (current_volume + movee->get_volume() > volume_capacity)) {
+    if(!user)
+      return "too full";
+    else
+      return get_brief()->to_string(user) + " is too full!";
+  }
+
+  if(movee && (movee->get_length() > length_capacity)) {
+    if(!user)
+      return "not long enough";
+    else
+      return get_brief()->to_string(user)
+	+ " can't hold something that long!";
+  }
 }
 
 /*
