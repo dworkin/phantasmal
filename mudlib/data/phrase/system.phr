@@ -46,6 +46,11 @@
   ~esUS{No pareja}
 }
 
+~Password change cancelled{
+  ~enUS{Password change cancelled.}
+  ~esUS{No hay un cambia de contrasena.}
+}
+
 ~logs in.{
   ~enUS{logs in.}
   ~esUS{entra.}
@@ -62,8 +67,8 @@
 }
 
 ~Looks like no password{
-  ~enUS{Looks like no password - disconnecting.}
-  ~esUS{Lo parece que no hay contrasena - Te desconecta.}
+  ~enUS{You didn't give any password!}
+  ~esUS{Me parece que no hay contrasena.  Te desconecta.}
 }
 
 ~must be four characters{
