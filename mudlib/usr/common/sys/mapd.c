@@ -425,8 +425,17 @@ void add_dtd_unq_rooms(mixed* unq, string filename) {
       }
     }
 
-    if(!res_tmp) {
+    if(!res_tmp && sizeof(resolve_rooms)) {
       /* This isn't working, no new rooms are being resolved! */
+      string tmp;
+      int    ctr;
+
+      tmp = "Can't resolve the following rooms: ";
+      for(ctr = 0; ctr < sizeof(resolve_rooms) - 1; ctr++) {
+	tmp += resolve_rooms[ctr]->get_number() + ", ";
+      }
+      tmp += resolve_rooms[sizeof(resolve_rooms) - 1]->get_number();
+      LOGD->write_syslog(tmp);
       error("Can't resolve all rooms!  Edit room files to fix this!");
     }
   }
