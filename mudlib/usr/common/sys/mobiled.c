@@ -215,6 +215,12 @@ string get_file_by_mobile_type(string mobtype) {
   return tag_code[mobtype];
 }
 
+object clone_mobile_by_type(string mobtype) {
+  if(!tag_code[mobtype]) return nil;
+
+  return clone_object(tag_code[mobtype]);
+}
+
 void add_unq_text_mobiles(string unq_text, string filename) {
   mixed *unq_data;
 
