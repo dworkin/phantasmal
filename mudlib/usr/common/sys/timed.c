@@ -11,7 +11,8 @@ mixed*   per_call_out;
  * TIMED exists to keep track of real time, in-MUD time and
  * conversions between them.  It also handles call_outs on behalf of
  * MUD mobiles and objects that need them to avoid using up more than
- * necessary from the small total number of callouts.
+ * necessary from the small total number of callouts, and gives a
+ * heartbeat function more familiar to long-time LPC users.
  ***********************************************************************/
 
 /* In-MUD time has a conversion factor associated with it -- that is,
@@ -69,6 +70,9 @@ void upgraded(varargs int clone) {
   mixed *tmp_queue, *tmp_call_outs;
   int    size, ctr;
 
+  if(!SYSTEM() && !COMMON())
+    return;
+
   /* Allocate or reallocate the queue of periodic
      call_outs and the call_out numbers if necessary. */
   if(!per_queue || sizeof(per_queue) != TIMED_HIGHEST) {
@@ -104,9 +108,16 @@ void upgraded(varargs int clone) {
   delay_tab[TIMED_MUD_MINUTE] = 20;
 }
 
-void periodic_call_out(int how_often, string funcname, mixed args...) {
+void set_heart_beat(int how_often, string funcname, mixed args...) {
+  if(!SYSTEM() && !COMMON() && !GAME())
+    return;
+
   if((how_often >= TIMED_HIGHEST) || (how_often <= 0)) {
     error("Illegal value for how_often in TIMED::periodic_call_out!");
+  }
+
+  if(per_queue[how_often][object_name(previous_object())]) {
+    error("Already have a heart_beat registered!  Unregister it first!");
   }
 
   LOGD->write_syslog("Setting up periodic call_out in TIMED", LOG_VERBOSE);
@@ -124,7 +135,10 @@ private void stop_object_call_out(int how_often, string objname) {
   }
 }
 
-void stop_call_out(int how_often) {
+void stop_heart_beat(int how_often) {
+  if(!SYSTEM() && !COMMON() && !GAME())
+    return;
+
   stop_object_call_out(how_often, object_name(previous_object()));
 }
 
