@@ -1,4 +1,6 @@
 Release 0.017:
+	* Added support for custom and non-System wiztool objects
+	* Added a custom room-binder object for nonstandard room types
 	* Started support for 'custom' rooms not loaded from UNQ files
 	* SSHD support on second binary TCP port
 	* Debugged extra AUTO object, put it into appropriate places

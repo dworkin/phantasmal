@@ -12,10 +12,6 @@ private string owner;
 private string directory;
 private object driver;
 
-private mixed* command_sets;
-
-private object room_dtd;        /* DTD for room def'n */
-
 /* Prototypes */
 void upgraded(varargs int clone);
 
@@ -36,18 +32,12 @@ static void create(int clone)
 
 void destructed(int clone) {
   if(SYSTEM()) {
-    if(!clone && room_dtd) {
-      destruct_object(room_dtd);
-    }
-
     ::destructed(clone);
   }
 }
 
 /* Called by objectd when recompiling */
 void upgraded(varargs int clone) {
-  string dtd_file;
-
   if(!SYSTEM())
     return;
 
@@ -229,29 +219,7 @@ void upgraded(varargs int clone) {
   if(!find_object(UNQ_DTD))
     compile_object(UNQ_DTD);
 
-  /* Set up room & portable DTDs */
-  if(room_dtd)
-    room_dtd->clear();
-  else
-    room_dtd = ::clone_object(UNQ_DTD);
-
-  dtd_file = read_entire_file(MAPD_ROOM_DTD);
-  room_dtd->load(dtd_file);
-}
-
-
-mixed* parse_to_room(string room_file) {
-  if(!SYSTEM())
-    return nil;
-
-  return UNQ_PARSER->unq_parse_with_dtd(room_file, room_dtd);
-}
-
-mixed* get_command_sets(object wiztool) {
-  if(!SYSTEM())
-    return nil;
-
-  return command_sets;
+  ::upgraded(clone);
 }
 
 

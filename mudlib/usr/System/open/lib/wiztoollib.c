@@ -26,6 +26,8 @@ private string directory;	/* current directory */
 
 private object port_dtd;        /* DTD for portable def'n */
 
+mixed* command_sets;
+
 
 #define SPACE16 "                "
 
@@ -68,11 +70,24 @@ static void create(varargs int clone)
   }
 }
 
-static void destructed(int clone) {
+static void destructed(varargs int clone) {
   roomwiz::destructed(clone);
   objwiz::destructed(clone);
 }
 
+static void upgraded(varargs int clone) {
+  roomwiz::upgraded(clone);
+  objwiz::upgraded(clone);
+}
+
+mixed* get_command_sets(object wiztool) {
+  if(!SYSTEM())
+    return nil;
+
+  return command_sets;
+}
+
+/******************* Command functions *********************/
 
 static void cmd_shutdown(object user, string cmd, string str)
 {
@@ -241,7 +256,7 @@ static void cmd_people(object user, string cmd, string str)
   string *owners, name;
   int i, sz;
 
-  if (str) {
+  if (str && str != "") {
     message("Usage: " + cmd + "\r\n");
     return;
   }

@@ -18,6 +18,10 @@ static void cmd_list_exit(object user, string cmd, string str);
 #define SPACE10 "          "
 #define SPACE40 (SPACE10 + SPACE10 + SPACE10 + SPACE10)
 
+private object room_dtd;        /* DTD for room def'n */
+
+static void upgraded(varargs int clone);
+
 private string ralign10(mixed num, int width)
 {
     string str;
@@ -57,10 +61,23 @@ static void create(varargs int clone)
   if(!find_object(US_MAKE_ROOM)) compile_object(US_MAKE_ROOM);
 }
 
-void destructed(varargs int clone) {
-  if(SYSTEM()) {
+static void upgraded(varargs int clone) {
+  string dtd_file;
 
-  }
+  /* Set up room DTD */
+  if(room_dtd)
+    room_dtd->clear();
+  else
+    room_dtd = ::clone_object(UNQ_DTD);
+
+  dtd_file = read_entire_file(MAPD_ROOM_DTD);
+  room_dtd->load(dtd_file);
+}
+
+static void destructed(varargs int clone) {
+    if(!clone && room_dtd) {
+      destruct_object(room_dtd);
+    }
 }
 
 
@@ -258,6 +275,13 @@ static void cmd_save_rooms(object user, string cmd, string str) {
   }
 
   user->message("\r\nDone!\r\n");
+}
+
+mixed* parse_to_room(string room_file) {
+  if(!SYSTEM())
+    return nil;
+
+  return UNQ_PARSER->unq_parse_with_dtd(room_file, room_dtd);
 }
 
 static void cmd_load_rooms(object user, string cmd, string str) {

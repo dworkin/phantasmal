@@ -33,6 +33,17 @@ void destructed(varargs int clone) {
   }
 }
 
+private int owner_for_program(string program_name) {
+  int owner;
+
+  for(owner = 0; owner < sizeof(owners); owner++) {
+    if(program_name == owners[owner])
+      return owner;
+  }
+
+  return -1;
+}
+
 string get_segment_owner(int segment) {
   if(!SYSTEM() && !COMMON())
     return nil;
@@ -74,12 +85,8 @@ int allocate_new_segment(void) {
   int owner;
   int seg;
 
-  for(owner = 0; owner < sizeof(owners); owner++) {
-    if(previous_program() == owners[owner])
-      break;
-  }
-  if(owner >= sizeof(owners)
-     || owners[owner] != previous_program())
+  owner = owner_for_program(previous_program());
+  if(owner == -1)
     error("Unknown owner " + previous_program()
 	  + " calling allocate_new_segment!");
 
@@ -120,12 +127,8 @@ void allocate_in_segment(int segment, int tr_num, object obj) {
   if(tr_num / 100 != segment)
     error("Tracking number not in segment in allocate_in_segment!");
 
-  for(owner = 0; owner < sizeof(owners); owner++) {
-    if(previous_program() == owners[owner])
-      break;
-  }
-  if(owner >= sizeof(owners)
-     || owners[owner] != previous_program())
+  owner = owner_for_program(previous_program());
+  if(owner == -1)
     error("Unknown owner " + previous_program()
 	  + " calling allocate_in_segment!");
 
@@ -208,6 +211,10 @@ int new_in_segment(int segment, object obj) {
   int    ctr;
 
   seg = segments[segment];
+  if(!seg) {
+    set_segment_owner(segment, owner_for_program(previous_program()));
+    seg = segments[segment];
+  }
   if(owners[seg[0]] != previous_program())
     error("Can't allocate in segment you don't own!");
 

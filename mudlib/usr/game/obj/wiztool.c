@@ -250,7 +250,7 @@ mixed* parse_to_room(string room_file) {
 }
 
 mixed* get_command_sets(object wiztool) {
-  if(previous_program() != GAME_WIZTOOL)
+  if(!SYSTEM() && !GAME())
     error("Only privileged code may call get_command_sets!");
 
   return command_sets;
