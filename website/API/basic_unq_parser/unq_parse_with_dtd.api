@@ -25,4 +25,4 @@ ERRORS
 	will be caused in that case to be caught by the calling function.
 
 SEE ALSO
-	basic_unq_parse, parse_to_dtd
+	basic_unq_parse, parse_to_dtd, get_parse_error_stack
