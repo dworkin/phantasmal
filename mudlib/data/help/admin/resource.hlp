@@ -27,7 +27,7 @@ It shows everybody's.  With a resource name and a numerical limit
 name %rsrc will list the usage of that resource by all wizards.
 
 Examples:
-%rsrc                    Show everybody's use of every resource
+%rsrc                    Show my use of every resource
 %rsrc ticks              Show everybody's tick usage
 %rsrc ticks -1           Try to unrestrict tick usage
 }}
