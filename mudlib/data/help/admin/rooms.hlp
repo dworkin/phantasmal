@@ -23,9 +23,12 @@ Some commands to play with rooms:
   ~enUS{
 
 The @list_room command lists the numbered rooms in the MUD currently
-registered with the Map Daemon (MAPD).  At the moment it simply lists
-every room by number and "glance" description, and ignores any
-parameters it is passed.
+registered with the Map Daemon (MAPD).  It lists each room by number
+and "glance" description.
+
+By default only rooms in the current zone are listed.  The same
+behavior occurs with the command "@list_rooms zone".  To see all rooms
+in the MUD, type "@list_rooms all".
 
 }}
 
