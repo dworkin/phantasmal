@@ -39,6 +39,10 @@ void runtime_error(string error, int caught, mixed** trace)
   err_str = str + "\n";
   str = "";
 
+  if(sscanf(err_str, "Failed to compile%*s") > 0) {
+    return;
+  }
+
   size = sizeof(trace) - 1;
   for(i = 0; i < size; i++) {
     progname = trace[i][TRACE_PROGNAME];
