@@ -180,6 +180,8 @@ static void cmd_delete_room(object user, string cmd, string str) {
   }
 
   destruct_object(room);
+
+  user->message("Room #" + roomnum + " destroyed.\r\n");
 }
 
 
