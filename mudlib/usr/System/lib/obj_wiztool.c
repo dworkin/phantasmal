@@ -61,6 +61,7 @@ static void cmd_set_obj_desc(object user, string cmd, string str) {
   object obj;
   string desc, objname;
   string look_type;
+  int    must_set;
 
   if(!sscanf(cmd, "@set_%s", look_type))
     error("Unrecognized command to set desc: " + cmd);
@@ -106,11 +107,16 @@ static void cmd_set_obj_desc(object user, string cmd, string str) {
       error("Can't find getter function for " + look_type + " in "
 	    + object_name(obj));
 
+    must_set = 0;
     phr = call_other(obj, "get_" + look_type);
     if(!phr || (look_type == "examine" && phr == obj->get_look())) {
       phr = PHRASED->new_simple_english_phrase("CHANGE ME!");
+      must_set = 1;
     }
     phr->set_content_by_lang(user->get_locale(), desc);
+    if(must_set) {
+      call_other(obj, "set_" + look_type, phr);
+    }
   }
 }
 
