@@ -20,14 +20,16 @@ help %ungrant           Removes existing access
 ~keywords{admin}
 ~desc{
   ~enUS{
+
 The %rsrc command typed by itself will show the MUD's total usage of
 the same resources %quota affects.  This doesn't just show your usage.
 It shows everybody's.  With a resource name and a numerical limit
-%rsrc will set the new limit to the given value.  With just a resource
-name %rsrc will list the usage of that resource by all wizards.
+%rsrc will set the new total limit to the given value.  With just a
+resource name %rsrc will list the usage of that resource by all
+wizards.
 
 Examples:
-%rsrc                    Show my use of every resource
+%rsrc                    Show total use of every resource
 %rsrc ticks              Show everybody's tick usage
 %rsrc ticks -1           Try to unrestrict tick usage
 }}
