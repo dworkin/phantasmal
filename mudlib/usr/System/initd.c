@@ -32,9 +32,9 @@ static void __shutdown_callback(void);
 static void create(varargs int clone)
 {
   object driver, obj, the_void;
-  string zone_file, mapd_dtd, help_dtd, objs_file, mobfile_dtd;
+  string zone_file, mapd_dtd, help_dtd, objs_file, mobfile_dtd, mob_file;
   string bind_dtd;
-  int major, minor, patch, rooms_loaded;
+  int major, minor, patch, rooms_loaded, mobiles_loaded;
 
   /* First things first -- this release needs one of the
      latest versions of DGD, so let's make sure. */
@@ -137,19 +137,33 @@ static void create(varargs int clone)
     rooms_loaded = 1;
   } else {
     DRIVER->message("Can't read room file!  Starting blank!\n");
-    LOGD->write_syslog("Can't read room file!  Starting blank!", LOG_WARN);
+    LOGD->write_syslog("Can't read room file!  Starting blank!", LOG_ERROR);
     rooms_loaded = 0;
   }
 
-  /* Load zone/segment mapping information */
-  zone_file = read_file(ZONE_FILE);
-  ZONED->init_from_file(zone_file);
-
-  /* Load the mobile file */
+  /* Set up the MOBILED */
   mobfile_dtd = read_file(MOB_FILE_DTD);
   if(!mobfile_dtd)
     error("Can't read file " + MOB_FILE_DTD + "!");
   MOBILED->init(mobfile_dtd, bind_dtd);
+
+  /* Load the mobilefile into MOBILED */
+  mob_file = read_file(MOB_FILE);
+  if(mob_file) {
+    MOBILED->add_unq_text_mobiles(mob_file, MOB_FILE);
+    mobiles_loaded = 1;
+  } else {
+    DRIVER->message("Can't read mobile file!  Starting w/o mobiles!\n");
+    LOGD->write_syslog("Can't read mobile file!  Starting w/o mobiles!",
+		       LOG_ERROR);
+    mobiles_loaded = 0;
+  }
+
+  /* Load zone/segment mapping information.
+     Note: must load after rooms, exits and mobiles have
+     already been loaded to avoid losing segments. */
+  zone_file = read_file(ZONE_FILE);
+  ZONED->init_from_file(zone_file);
 
   /* Start up ChannelD and ConfigD */
   if(!find_object(CHANNELD)) compile_object(CHANNELD);
