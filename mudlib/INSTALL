@@ -33,23 +33,25 @@ recent version of Phantasmal.  When in doubt, upgrade to the latest
 DGD version listed in TESTED_VERSIONS, or to the most recent version
 of DGD.
 
-You'll need to make a .dgd file for Phantasmal.  Copy the mud.dgd file
-in your DGD directory and change a couple of things.  Change the
-directory it runs in and the port number (if you want).  The binary
-port is for administrator login if something goes drastically wrong.
-You'll never ordinarily use it.  You should also change the number of
-sectors, called "swap_size", from 1024 to 2048, or perhaps even more.
-Eventually you'll want to change more stuff in the .dgd file, but
-you'll know enough about DGD to handle that yourself by the time it's
-necessary.  In any case, *do* remember that the path specified in
-phantasmal.dgd for the MUDLib's directory needs to be absolute, not
-relative.  That means it should *start* with a slash.
+You'll need a .dgd file for Phantasmal.  Copy the phantasmal.dgd file
+in your Phantasmal top-level directory and change the "directory"
+entry to the correct one where you installed Phantasmal.  Change the
+port number as well, if you want.  The binary port is for
+administrator login if something goes drastically wrong.  You'll never
+ordinarily use it.  You may also want to change the number of sectors,
+called "swap_size", to be even more.  The number given should work
+fine at startup, though.  Eventually you'll want to change more stuff
+in the .dgd file, but you'll know enough about DGD to handle that
+yourself by the time it's necessary.  In any case, *do* remember that
+the path specified in phantasmal.dgd for the MUDLib's directory needs
+to be absolute, not relative.  That means it should *start* with a
+slash.
 
-Also in your phantasmal.dgd file, have a look at ed_tmpfile, swap_file
-and dump_file.  Each of those is a relative path from your root
-Phantasmal MUDLib directory, the one containing this file (INSTALL).
-You may want to create a "../tmp" directory from here, or change those
-paths to point somewhere else.
+Also in your phantasmal.dgd file, consider having a look at
+ed_tmpfile, swap_file and dump_file.  Each of those is a relative path
+from your root Phantasmal MUDLib directory, the one containing this
+file (INSTALL).  You may want to create a "../tmp" directory from
+here, or change those paths to point somewhere else.
 
 Once you have the MUD running, you should first log in as admin, then
 make yourself a non-admin account to use.  When you make your new
@@ -64,11 +66,10 @@ sparingly and only with people you want to have full administrative
 access.  There will eventually be a less-privileged admin class
 suitable for builders, but that hasn't yet been implemented.
 
-Many of the standard Kernel MUDLib commands have been altered to have
-a "%" in front of the name.  These are documented in the help. Type
-"help" to start using player help, or "@help" to start using admin
-help.  Player commands have no punctuation on the front and should all
-be documented.  In case of conflict or uncertainty, the lists in
+When you get started, type "help".  You may notice that the default
+help is different for administrators and regular non-admin players.  I
+try to keep all commands documented in the online help.  In case of
+conflict or uncertainty, the command lists in
 /usr/System/lib/wiztoollib.c and /data/phrase/user_cmds.unq are
 definitive.
 
