@@ -425,7 +425,9 @@ EOF
     }
 
     foreach $user (keys %userbucket) {
-	print_index_user($user, @{$userbucket{$user}});
+	if(scalar(@{$userbucket{$user}}) > 0) {
+	    print_index_user($user, @{$userbucket{$user}});
+	}
     }
 
     print FILE <<"EOF";
@@ -444,13 +446,13 @@ EOF
 
 sub print_index_user {
     my $user = shift;
-    my @filenames = @_;
+    my @objnames = @_;
 
     my $obj_name;
 
     print FILE "    <b> Files under /usr/$user </b>\n";
     print FILE "    <ul>\n";
-    for $obj_name (sort keys %obj_filenames) {
+    for $obj_name (sort @objnames) {
 	print FILE "      <li> <a href=\"$obj_filenames{$obj_name}\">"
 	    . "$obj_name </a> </li>\n";
     }
