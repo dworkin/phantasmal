@@ -736,6 +736,8 @@ static int prompt_adjectives_input(string input) {
   }
 
   if(obj_type == OT_ROOM) {
+    new_obj->set_container(1);
+    new_obj->set_open(1);
     send_string("\r\nDone with room #" + new_obj->get_number() + ".\r\n");
     return RET_POP_STATE;
   }
