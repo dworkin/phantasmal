@@ -213,22 +213,6 @@ If you don't already know how to use it, please don't mess with it.
 }}
 
 
-~name{~enUS{access,%access,global}}
-~keywords{admin}
-~desc{
-  ~enUS{
-
-%access
-%access <username>
-%access global
-
-The %access command by itself tells you your privileges.  With somebody
-else's name, it tells you their priviliges.  With the word "global"
-afterward, it tells you what areas allow reading by anybody.
-
-}}
-
-
 ~name{~enUS{%grant,%ungrant,grant,ungrant}}
 ~keywords{admin}
 ~desc{
@@ -275,54 +259,5 @@ Library.
 To view a user's permissions, use the %access command.  To add new
 permissions, use the %grant command.  To remove existing permissions,
 use the %ungrant command.
-
-}}
-
-
-~name{~enUS{resource,resources}}
-~keywords{admin}
-~desc{
-  ~enUS{
-
-In-game resources are monitored with the %rsrc and %quota, and set
-with %quota.  See also %grant.
-
-}}
-
-
-~name{~enUS{rsrc,%rsrc}}
-~keywords{admin}
-~desc{
-  ~enUS{
-
-The %rsrc command, by itself, tells you your usage, and the maximum
-allowable usage, for a variety of in-game resources.  Type the command
-and one of the resource names ("tick usage" perhaps, or "callouts")
-and you'll see the usage of that resource for all users on the system.
-
-For most resources, a limit of -1 means there is no maximum.
-
-}}
-
-
-~name{~enUS{quota,%quota}}
-~keywords{admin}
-~desc{
-  ~enUS{
-
-%quota
-%quote <user>
-%quota <user> <resource>
-%quota <user> <resource> <new limit>
-
-The %quota command monitors or sets resource usage for administrators.
-Typed by itself, it shows your usage and maximum for various
-resources.  With a name supplied, it shows the usage and maximum for
-that user.  With a name and a resource name ("tick usage", "ticks",
-"callouts", etc) supplied, it shows that resource for that user.  And
-with that plus a new limit supplied, %quota tries to set that user's
-new maximum for that resource.
-
-For most resources, a limit of -1 means there is no maximum.
 
 }}

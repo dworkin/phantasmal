@@ -8,21 +8,21 @@ objects) but also rooms, details, exits and others.  There are a
 number of commands for objects, which therefore work on all of those
 object types.  Here are the current crop:
 
-@help @stat
-@help @move
+help @stat
+help @move
 
-@help @set_glance
-@help @set_brief
-@help @set_look
-@help @set_examine
+help @set_glance
+help @set_brief
+help @set_look
+help @set_examine
 
-@help @set_object_article
-@help @add_nouns
-@help @add_adjectives
-@help @clear_nouns
-@help @clear_adjectives
+help @set_object_article
+help @add_nouns
+help @add_adjectives
+help @clear_nouns
+help @clear_adjectives
 
-@help @delete
+help @delete
 
 See also commands for portables, rooms and so on for certain operations
 specific to those objects.
