@@ -269,6 +269,11 @@ object.  The syntax is "@set_obj_parent <child> <parent>" where
 "<child>" and "<parent>" are portable or room numbers prefixed with
 a pound ("#") sign.
 
+If "<parent>" is #-1 or the word 'none', the parent is cleared, and
+the object will be set to have no parent.
+
+You can check an object's current parent using the 'stat' command.
+
 }}
 
 
