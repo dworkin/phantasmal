@@ -5,7 +5,7 @@ tries to be reasonably fast and secure, but prefers robustness to
 speed.  Its primary focus is on features not commonly found in MUDs,
 especially those that should be.  It is currently in the early stages
 of its implementation and competes primarily with Melville, which is
-still more usable in most cases.  See
+still more usable in many cases.  See
 "http://phantasmal.sourceforge.net/Compare.html" for a comparison of
 Phantasmal to other current DGD MUDLibs.
 
@@ -14,11 +14,11 @@ small number of simultaneously-connected players) and to allow
 excellent service for that small number.  In this day and age a
 hobbyist MUD that gets 50 to 60 players a night is considered to be
 doing pretty well.  Modern cheap desktop computers are ridiculously
-powerful when serving this small a number.  Many standard concerns
-about memory usage and processor speed are misplaced, and have been
-for years.  Naturally this would be different if 3D graphics or even
-2D bitmaps were involved in large quantity, or if large numbers of
-NPCs were to be reasonably simulated.
+powerful when serving this small a number of connections.  Many
+standard concerns about memory usage and processor speed are
+misplaced, and have been for years.  Naturally this would be different
+if 3D graphics or even 2D bitmaps were involved in large quantity, or
+if large numbers of NPCs were to be reasonably simulated.
 
 Phantasmal hopes to serve geographically small, dense MUDs with a
 lower number of more complex rooms rather than sprawling but simple
