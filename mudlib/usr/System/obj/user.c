@@ -1,4 +1,4 @@
-/* $Header: /cvsroot/phantasmal/mudlib/usr/System/obj/user.c,v 1.43 2003/03/10 07:13:13 angelbob Exp $ */
+/* $Header: /cvsroot/phantasmal/mudlib/usr/System/obj/user.c,v 1.44 2003/03/10 07:38:10 angelbob Exp $ */
 
 #include <kernel/kernel.h>
 #include <kernel/user.h>
@@ -385,8 +385,9 @@ private object* search_contained_objects(object* objs, string str,
 
   ret = ({ });
   while(sizeof(objs)) {
-    if(!only_details
-       && objs[0]->is_container() && objs[0]->is_open()) {
+    if(objs[0] == location
+       || (!only_details
+	   && objs[0]->is_container() && objs[0]->is_open())) {
       contents = objs[0]->objects_in_container();
       if(contents)
 	objs += contents;
@@ -1295,22 +1296,18 @@ static void cmd_put(object user, string cmd, string str) {
     return;
   }
 
-  portlist = body->find_contained_objects(user, obj1);
+  portlist = find_first_objects(obj1, LOC_INVENTORY, LOC_CURRENT_ROOM,
+				LOC_BODY);
   if(!portlist || !sizeof(portlist)) {
-    portlist = location->find_contained_objects(user, obj1);
-    if(!portlist || !sizeof(portlist)) {
-      user->message("You can't find any '" + obj1 + "' here.\r\n");
-      return;
-    }
+    user->message("You can't find any '" + obj1 + "' here.\r\n");
+    return;
   }
 
-  contlist = body->find_contained_objects(user, obj2);
+  contlist = find_first_objects(obj2, LOC_INVENTORY, LOC_CURRENT_ROOM,
+				LOC_BODY);
   if(!contlist || !sizeof(contlist)) {
-    contlist = location->find_contained_objects(user, obj2);
-    if(!contlist || !sizeof(contlist)) {
-      user->message("You can't find any '" + obj2 + "' here.\r\n");
-      return;
-    }
+    user->message("You can't find any '" + obj2 + "' here.\r\n");
+    return;
   }
 
   if(sizeof(portlist) > 1) {
@@ -1353,13 +1350,11 @@ static void cmd_remove(object user, string cmd, string str) {
     return;
   }
 
-  contlist = body->find_contained_objects(user, obj2);
+  contlist = find_first_objects(obj2, LOC_INVENTORY, LOC_CURRENT_ROOM,
+				LOC_BODY);
   if(!contlist || !sizeof(contlist)) {
-    contlist = location->find_contained_objects(user, obj2);
-    if(!contlist || !sizeof(contlist)) {
-      user->message("You can't find any '" + obj2 + "' here.\r\n");
-      return;
-    }
+    user->message("You can't find any '" + obj2 + "' here.\r\n");
+    return;
   }
 
   if(sizeof(contlist) > 1) {
@@ -1629,7 +1624,7 @@ static void cmd_get(object user, string cmd, string str) {
     return;
   }
 
-  tmp = location->find_contained_objects(user, str);
+  tmp = find_first_objects(str, LOC_CURRENT_ROOM);
   if(!tmp || !sizeof(tmp)) {
     message("You don't find any '" + str + "'.\r\n");
     return;
@@ -1662,7 +1657,7 @@ static void cmd_drop(object user, string cmd, string str) {
     return;
   }
 
-  tmp = body->find_contained_objects(user, str);
+  tmp = find_first_objects(str, LOC_INVENTORY, LOC_BODY);
   if(!tmp || !sizeof(tmp)) {
     message("You're not carrying any '" + str + "'.\r\n");
     return;
@@ -1743,7 +1738,7 @@ static void cmd_close(object user, string cmd, string str) {
     return;
   }
 
-  tmp = location->find_contained_objects(user, str);
+  tmp = find_first_objects(str, LOC_CURRENT_ROOM);
   if(!tmp || !sizeof(tmp)) {
     message("You don't find any '" + str + "'.\r\n");
     return;
