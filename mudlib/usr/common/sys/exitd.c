@@ -17,8 +17,10 @@ private mapping builder_directions;
 private mixed*  deferred_add_exit;
 
 /* Prototypes */
-void add_simple_exit_between(object room1, object room2, int direction,
+void add_twoway_exit_between(object room1, object room2, int direction,
 			     int num1, int num2);
+void add_oneway_exit_between(object room1, object room2, int direction,
+			     int num1);
 void upgraded(varargs int clone);
 #define PHR(x) PHRASED->new_simple_english_phrase(x)
 #define FILE(x) PHRASED->file_phrase(EXITD_PHRASES,(x))
@@ -146,7 +148,7 @@ int opposite_direction(int direction) {
   return direction - 1;
 }
 
-private void push_or_add_exit(int roomnum1, int roomnum2, int direction, 
+private void push_or_add_exit(int roomnum1, int roomnum2, int direction,
 			      int num1, int num2) {
   object room1, room2;
 
@@ -154,7 +156,7 @@ private void push_or_add_exit(int roomnum1, int roomnum2, int direction,
   room2 = MAPD->get_room_by_num(roomnum2);
 
   if(room1 && room2) {
-    add_simple_exit_between(room1, room2, direction, num1, num2);
+    add_twoway_exit_between(room1, room2, direction, num1, num2);
   } else {
     deferred_add_exit += ({ ({ roomnum1, roomnum2, direction, num1, num2 }) });
   }
@@ -223,7 +225,8 @@ private int allocate_exit_obj(int num, object obj) {
   return num;
 }
 
-void add_simple_exit_between(object room1, object room2, int direction,
+/* note:  caller must make sure not to override existing exits!!! */
+void add_twoway_exit_between(object room1, object room2, int direction,
 			     int num1, int num2) {
   object exit1, exit2;
 
@@ -237,10 +240,12 @@ void add_simple_exit_between(object room1, object room2, int direction,
   exit1->set_destination(room2);
   exit1->set_from_location(room1);
   exit1->set_direction(direction);
+  exit1->set_type(2); /* two-way */
 
   exit2->set_destination(room1);
   exit2->set_from_location(room2);
   exit2->set_direction(opposite_direction(direction));
+  exit2->set_type(2); /* two-way */
 
   room1->add_exit(direction, exit1);
   room2->add_exit(opposite_direction(direction), exit2);
@@ -253,7 +258,9 @@ void add_simple_exit_between(object room1, object room2, int direction,
   }
 
   exit1->set_number(num1);
+  exit1->set_link(num2);
   exit2->set_number(num2);
+  exit2->set_link(num1);
 
   if(exit1->get_number() < 0
      || exit2->get_number() < 0)
@@ -263,32 +270,53 @@ void add_simple_exit_between(object room1, object room2, int direction,
   exit2->set_brief(PHRASED->new_simple_english_phrase("Exit #" + num2));
 }
 
-void remove_exit(object room, object exit) {
-  int iter, opp_dir;
-  object other_exit, dest;
+/* note:  caller must make sure not to override existing exits!!! */
+void add_oneway_exit_between(object room1, object room2, int direction,
+			     int num1) {
+  object exit1;
 
-  dest = exit->get_destination();
-
-  if(dest) {
-    opp_dir = EXITD->opposite_direction(exit->get_direction());
-    other_exit = dest->get_exit(opp_dir);
-    if(other_exit) {
-      if(other_exit->get_destination() == room) {
-	exit->get_destination()->remove_exit(other_exit);
-	destruct_object(other_exit);
-      } else {
-	LOGD->write_syslog("Opposite exit doesn't go same place!",
-			   LOG_WARNING);
-      }
-    } else {
-      LOGD->write_syslog("No opposite exit to " + exit->get_number()
-			 + "!", LOG_ERROR);
-    }
-  } else {
-    LOGD->write_syslog("Destination should always be non-nil right now!",
-		       LOG_ERROR);
+  if (direction <= 0) {
+    error("Can't add an exit in a special direction!");
   }
 
+  exit1 = clone_object(SIMPLE_EXIT);
+
+  exit1->set_destination(room2);
+  exit1->set_from_location(room1);
+  exit1->set_direction(direction);
+  exit1->set_type(1); /*one-way */
+
+  room1->add_exit(direction, exit1);
+
+  num1 = allocate_exit_obj(num1, exit1);
+
+  if(num1 < 0 ) {
+    error("Exit number not assigned successfully!");
+  }
+
+  exit1->set_number(num1);
+  exit1->set_link(-1);
+
+  if(exit1->get_number() < 0)
+    error("Exit number not assigned successfully!");
+
+  exit1->set_brief(PHRASED->new_simple_english_phrase("Exit #" + num1));
+}
+
+void fix_exit(object exit, int type, int link) {
+  exit->set_type(type);
+  exit->set_link(link);
+}
+
+void remove_exit(object room, object exit) {
+  object other_exit, dest;
+
+  if (exit->get_type()==2) {
+    other_exit = EXITD->get_exit_by_num(exit->get_link());
+    dest = other_exit->get_from_location();
+    dest->remove_exit(other_exit);
+    destruct_object(other_exit);
+  }
   room->remove_exit(exit);
   destruct_object(exit);
 }

@@ -27,9 +27,12 @@ such, they are numbered and object commands work fine on them.
 
 Some commands for exits:
 @new_exit          Creates a new exit between existing rooms
+@new_oneway_exit   Creates a new one-way exit from this room to another
+@new_twoway_exit   Creates a new two-way exit from this room to another
 @list_exit         Shows exits in the MUD
 @remove_exit       Removes an exit from the current room
 @clear_exits       Remove all exits attached to current room
+@fix_exits         Repairs exits (aka upgrades)
 @stat              Shows information about an object
 
 @check_deferred    Check for deferred exits
@@ -43,11 +46,35 @@ Some commands for exits:
   ~enUS{
 
 @new_exit will create a new exit from the room you currently occupy to
+another one elsewhere.  For instance:
+
+  @new_exit nw #75 oneway (or one-way or 1)
+
+will create a new exit leading northwest into room #75.
+
+  @new_exit nw #75 twoway (or two-way or 2)
+
+will create a new exit leading northwest into room #75.  It will also
+create an exit leading from room #75 southeast into the room you're
+standing in when you type the command.
+
+Note that the room the exit leads to must be registered with objregd,
+though the room you're standing in doesn't.
+
+}}
+
+~name{~enUS{@new_twoway_exit, new_twoway_exit, newtwowayexit,
+            @newtwowayexit, new twoway exit, new two way exit}}
+~keywords{admin}
+~desc{
+  ~enUS{
+
+@new_twoway_exit will create a new exit from the room you currently occupy to
 another one elsewhere.  The exit will be accompanied by a return exit
 in the opposite direction leaving the destination room and arriving back
 at the room you currently occupy.  For instance:
 
-  @new_exit nw #75
+  @new_twoway_exit nw #75
 
 will create a new exit leading northwest into room #75.  It will also
 create an exit leading from room #75 southeast into the room you're
@@ -56,6 +83,25 @@ leads to must be registered with objregd, though the room you're
 standing in doesn't.
 
 }}
+
+~name{~enUS{@new_oneway_exit, new_oneway_exit, newonewayexit,
+            @newonewayexit, new oneway exit, new one way exit}}
+~keywords{admin}
+~desc{
+  ~enUS{
+
+@new_oneway_exit will create a new exit from the room you currently
+occupy to another one elsewhere.  The exit will be NOT accompanied by
+a return exit in the opposite direction. For instance:
+
+  @new_oneway_exit nw #75
+
+will create a new exit leading northwest into room #75.  Note that the
+room the exit leads to must be registered with objregd, though the room
+you're standing in doesn't.
+
+}}
+
 
 ~name{~enUS{@clear_exit, clear_exit, clearexit, @clearexit, clear exit,
             @clear_exits, clear_exits, clearexits, @clearexits, clear exits,
@@ -85,14 +131,25 @@ if any.
 }}
 
 ~name{~enUS{@list_exit, list_exit, @listexit, listexit, list exit,
-            @exit_list, @exitlist, exitlist, exit_list, exit list}}
+            @exit_list, @exitlist, exitlist, exit_list, exit list,
+	    @list_exits, list_exits}}
 ~keywords{admin}
 ~desc{
   ~enUS{
 
-@list_exit lists all exits currently known to the Map Daemon and
-displays their number and brief description, as well as the
-destination room they lead to by number (if numbered).
+@list_exit lists all exits currently known to the Map Daemon and displays
+their number and brief description, as well as the rooms they lead from
+and to by number (if numbered) and the type (one-way, two-way, or other).
+
+}}
+
+~name{~enUS{@fix_exit, fix_exit, @fixexit, fixexit, fix exit,
+            @fix_exits, fix_exits, @fixexits, fixexits, fix exits}}
+~keywords{admin}
+~desc{
+  ~enUS{
+
+@fix_exits repairs the exits.  Fixes one-way vs. two-way, links, etc.
 
 }}
 

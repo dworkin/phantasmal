@@ -343,10 +343,6 @@ static void cmd_load_rooms(object user, string cmd, string str) {
   user->message("Done.\r\n");
 }
 
-
-
-/******  Exit Functions ****************************************/
-
 static void cmd_goto_room(object user, string cmd, string str) {
   int    roomnum;
   object room;
@@ -371,7 +367,102 @@ static void cmd_goto_room(object user, string cmd, string str) {
   user->show_room_to_player(user->get_location());
 }
 
+/******  Exit Functions ****************************************/
+
 static void cmd_new_exit(object user, string cmd, string str) {
+  int    roomnum, dir, tempint;
+  object room;
+  string dirname;
+  string type;
+  
+  tempint = sscanf(str, "%s #%d %s", dirname, roomnum, type);
+
+  if(str &&  tempint== 3 || tempint==2) {
+    room = MAPD->get_room_by_num(roomnum);
+    if(!room) {
+      user->message("Can't locate room #" + roomnum + "\r\n");
+      return;
+    }
+    dir = EXITD->direction_by_string(dirname);
+    if(dir == -1) {
+      user->message("Don't recognize " + dirname + " as direction.\r\n");
+      return;
+    }
+  } else {
+    user->message("Usage: " + cmd + " <direction> #<room number> <type>\r\n");
+    return;
+  }
+
+  if(!user->get_location()) {
+    user->message("You aren't standing anywhere so you can't make an exit!\r\n");
+    return;
+
+  }
+  if(user->get_location()->get_exit(dir)) {
+    user->message("There already appears to be an exit in that direction.\r\n");
+    return;
+  }
+
+  if (tempint == 2) type="twoway";
+
+  if (type=="oneway" || type=="one-way" || type=="1") {
+    user->message("You begin creating a one-way exit to '"
+		+ room->get_brief()->to_string(user) + "'.\r\n");
+    EXITD->add_oneway_exit_between(user->get_location(), room, dir, -1);
+
+  } else if (type=="twoway" || type=="two-way" || type=="2") {
+    if (room->get_exit(EXITD->opposite_direction(dir))) {
+      user->message("There appears to be an exit in the other room.\r\n");
+      return;
+    }
+    user->message("You begin creating a two-way exit to '"
+		+ room->get_brief()->to_string(user) + "'.\r\n");
+    EXITD->add_twoway_exit_between(user->get_location(), room, dir, -1, -1);
+
+  }
+}
+
+static void cmd_new_twoway_exit(object user, string cmd, string str) {
+  int    roomnum, dir;
+  object room;
+  string dirname;
+
+  if(str && sscanf(str, "%s #%d", dirname, roomnum) == 2) {
+    room = MAPD->get_room_by_num(roomnum);
+    if(!room) {
+      user->message("Can't locate room #" + roomnum + "\r\n");
+      return;
+    }
+    dir = EXITD->direction_by_string(dirname);
+    if(dir == -1) {
+      user->message("Don't recognize " + dirname + " as direction.\r\n");
+      return;
+    }
+  } else {
+    user->message("Usage: " + cmd + " <direction> #<room number>\r\n");
+    return;
+  }
+
+  if(!user->get_location()) {
+    user->message("You aren't standing anywhere so you can't make an exit!\r\n");
+    return;
+  }
+  if(user->get_location()->get_exit(dir)) {
+    user->message("There already appears to be an exit in that direction.\r\n");
+    return;
+  }
+
+  if (room->get_exit(EXITD->opposite_direction(dir))) {
+    user->message("There appears to be an exit in the other room.\r\n");
+    return;
+  }
+  
+  user->message("You begin creating an exit to '"
+		+ room->get_brief()->to_string(user) + "'.\r\n");
+  EXITD->add_twoway_exit_between(user->get_location(), room, dir, -1, -1);
+}
+
+static void cmd_new_oneway_exit(object user, string cmd, string str) {
   int    roomnum, dir;
   object room;
   string dirname;
@@ -403,7 +494,7 @@ static void cmd_new_exit(object user, string cmd, string str) {
 
   user->message("You begin creating an exit to '"
 		+ room->get_brief()->to_string(user) + "'.\r\n");
-  EXITD->add_simple_exit_between(user->get_location(), room, dir, -1, -1);
+  EXITD->add_oneway_exit_between(user->get_location(), room, dir, -1);
 }
 
 static void cmd_clear_exits(object user, string cmd, string str) {
@@ -448,6 +539,45 @@ static void cmd_remove_exit(object user, string cmd, string str) {
   EXITD->remove_exit(user->get_location(), exit);
 }
 
+static void cmd_fix_exits(object user, string cmd, string str) {
+  int   *tmp, *segs, *exits;
+  int    ctr, ctr2;
+  string tmpstr;
+
+  segs = EXITD->get_exit_segments();
+
+  tmp = ({ });
+  exits = ({ });
+  for(ctr = 0; ctr < sizeof(segs); ctr++) {
+    tmp = EXITD->exits_in_segment(segs[ctr]);
+    if(tmp && sizeof(tmp))
+      exits += tmp;
+  }
+
+  for(ctr = 0; ctr < sizeof(exits); ctr++) {
+    object exit, from;
+    exit = EXITD->get_exit_by_num(exits[ctr]);
+    if (exit->get_link()==0) {
+      if (exit->get_type() == 1) {
+        /* EXITD->fix_exit(room, exit, type, link) */
+        EXITD->fix_exit(exit, 1, -1);
+      } else if ((exit->get_type() == 2) || (exit->get_type() == 0)) {
+        from = exit->get_from_location();
+        for(ctr2 = 0; ctr2 < sizeof(exits); ctr2++) {
+          object exit2, dest2;
+          exit2 = EXITD->get_exit_by_num(exits[ctr2]);
+          dest2 = exit->get_destination();
+          if (dest2)
+            if (dest2->get_number() == from->get_number())
+               if (exit2->get_direction() == EXITD->opposite_direction(from->get_direction()))
+                 /* EXITD->fix_exit(room, exit, type, link) */
+                 EXITD->fix_exit(exit, 2, exit2->get_number());
+        }
+      }
+    }
+  }
+}
+
 static void cmd_list_exit(object user, string cmd, string str) {
   int   *tmp, *segs, *exits;
   int    ctr;
@@ -476,14 +606,15 @@ static void cmd_list_exit(object user, string cmd, string str) {
   user->message("Exits:\r\n");
   tmpstr = "";
   for(ctr = 0; ctr < sizeof(exits); ctr++) {
-    object exit, dest, phr;
-    int    dir;
+    object exit, dest, phr, from;
+    int    dir, type;
 
     exit = EXITD->get_exit_by_num(exits[ctr]);
     if(!exit)
       error("Can't find exit #" + exits[ctr]);
 
     dest = exit->get_destination();
+    from = exit->get_from_location();
     tmpstr += "Exit #" + exit->get_number();
 
     if(exit->get_brief())
@@ -500,6 +631,14 @@ static void cmd_list_exit(object user, string cmd, string str) {
 	tmpstr += phr->to_string(user);
     } else
       tmpstr += "no direction";
+    /* Show "from" location as number or commentary */
+    tmpstr += " from #";
+    if (!from)
+      tmpstr += "<none>";
+    else if (from->get_number() == -1)
+      tmpstr += "<unregistered room>";
+    else
+      tmpstr += from->get_number();
 
     /* Show "to" location as number or commentary */
     tmpstr += " to #";
@@ -509,9 +648,29 @@ static void cmd_list_exit(object user, string cmd, string str) {
       tmpstr += "<unregistered room>";
     else
       tmpstr += dest->get_number();
+
+    /* Show type: one-way, two-way, other */
+    tmpstr += " type: ";
+    type = exit->get_type();
+    switch (type) {
+      case 1: /* one-way */
+	      tmpstr += "one-way";
+	      break;
+      case 2: /* two-way */
+	      tmpstr += "two-way";
+	      break;
+      default: /* unknown */
+	      tmpstr += "<unknown>";
+	      break;
+    }
+
+    /* Show "link" location as number or commentary */
+    tmpstr += " link #";
+    tmpstr += exit->get_link();
+
     tmpstr += "\r\n";
   }
-
+  
   user->message(tmpstr);
 
   ctr = EXITD->num_deferred_exits();
