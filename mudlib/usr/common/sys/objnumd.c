@@ -39,26 +39,69 @@ int get_highest_segment(void) {
   return highest_segment;
 }
 
-private void set_segment_owner(int segment, int owner) {
+private void set_segment_owner(int segment, int owner, int zonenum) {
   if(segment < 0)
     error("Can't allocate negative segment in set_segment_owner!");
 
   if(segments[segment]) {
     LOGD->write_syslog("Changing segment owner from "
 		       + owners[segments[segment][0]] + " to "
-		       + owners[owner]);
+		       + owners[owner] + " (not changing zone)");
 
     segments[segment][0] = owner;
     return;
   }
 
-  segments[segment] = ({ owner, ({ }) });
+  /* This location defines segment structure... */
+  segments[segment] = ({ owner, ({ }), zonenum });
+
   if(segments_full == segment - 1) {
     while(segments[segments_full + 1])
       segments_full++;
   }
   if(segment > highest_segment)
     highest_segment = segment;
+}
+
+int get_segment_zone(int segment) {
+  mixed* seg;
+
+  seg = segments[segment];
+  if(seg) {
+
+    /* FOR UPGRADE FROM PREVIOUS VERSION ONLY */
+    /* TODO:  remove this code after release of version 0.009 */
+    if(sizeof(seg) == 2) {
+      seg += ({ -1 });
+    }
+
+    return seg[2];
+  }
+
+  return -1;
+}
+
+void set_segment_zone(int segment, int zonenum) {
+  mixed* seg;
+  int    owner;
+
+  for(owner = 0; owner < sizeof(owners); owner++) {
+    if(previous_program() == owners[owner])
+      break;
+  }
+  if(owner >= sizeof(owners)
+     || owners[owner] != previous_program())
+    error("Unknown owner " + previous_program()
+	  + " calling set_segment_zone!");
+
+  seg = segments[segment];
+  if(!seg) {
+    error("Can't set_segment_zone on a nonexistent segment!");
+  }
+  if(seg[0] != owner)
+    error("Can't set zone of somebody else's segment!");
+
+  seg[2] = zonenum;
 }
 
 int allocate_new_segment(void) {
@@ -78,7 +121,7 @@ int allocate_new_segment(void) {
   if(get_segment_owner(seg)) {
     error("Internal error -- attempting to reassign segment!");
   }
-  set_segment_owner(seg, owner);
+  set_segment_owner(seg, owner, -1);
 
   return seg;
 }
@@ -123,7 +166,7 @@ void allocate_in_segment(int segment, int tr_num, object obj) {
   seg = segments[segment];
   if(!seg) {
     /* Allocate a new segment for caller */
-    set_segment_owner(segment, owner);
+    set_segment_owner(segment, owner, -1);
     seg = segments[segment];
     if(!seg)
       error("Cannot allocate segment -- why?");
