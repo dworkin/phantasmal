@@ -25,5 +25,4 @@ ERRORS
 	Usually none.
 
 SEE ALSO
-	say, hook_emote, hook_social, hook_whisper, hook_whisper_other,
-	hook_ask, hook_ask_other
+	say, hook_emote, hook_social, hook_whisper, hook_whisper_other
