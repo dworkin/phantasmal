@@ -17,6 +17,7 @@ mixed* exits;
 
 private int pending_location;
 private int pending_parent;
+private int pending_detail_of;
 
 
 /* Flags */
@@ -38,6 +39,7 @@ static void create(varargs int clone) {
 
     pending_parent = -1;
     pending_location = -1;
+    pending_detail_of = -1;
   }
 }
 
@@ -45,6 +47,8 @@ void destructed(int clone) {
   int index;
   mixed *objs;
 
+  /* Remove contained objects, put them where this object used to
+     be. */
   objs = objects_in_container();
   for(index = 0; index < sizeof(objs); index++) {
     remove_from_container(objs[index]);
@@ -52,6 +56,18 @@ void destructed(int clone) {
     if(location)
       location->add_to_container(objs[index]);
   }
+
+  /* Destruct all details */
+  objs = get_details();
+  if(!objs) objs = ({ }); /* Prevent error below */
+  for(index = 0; index < sizeof(objs); index++) {
+    remove_detail(objs[index]);
+    EXITD->clear_all_exits(objs[index]);
+    destruct_object(objs[index]);
+  }
+
+  if(detail_of)
+    location->remove_detail(this_object());
 
   obj::destructed(clone);
 }
@@ -252,6 +268,9 @@ string can_get(object mover, object new_env) {
     return "You can't get that!";
   }
 
+  if (get_detail_of())
+    return "That's attached!  You can't get it.";
+
   return nil;
 }
 
@@ -279,6 +298,14 @@ int get_pending_location(void) {
 
 int get_pending_parent(void) {
   return pending_parent;
+}
+
+int get_pending_detail_of(void) {
+  return pending_detail_of;
+}
+
+void clear_pending(void) {
+  pending_location = pending_parent = pending_detail_of = -1;
 }
 
 /* Include only exits that appear to have been created from this room
@@ -329,7 +356,9 @@ string to_unq_flags(void) {
   int locale;
 
   ret = "  ~number{" + tr_num + "}\n";
-  if (location) {
+  if (get_detail_of()) {
+    ret += "  ~detail{" + get_detail_of()->get_number() + "}\n";
+  } else if (location) {
     ret += "  ~location{" + location->get_number() + "}\n";
   }
   ret += "  ~bdesc{" + bdesc->to_unq_text() + "}\n";
@@ -380,9 +409,31 @@ void from_dtd_tag(string tag, mixed value) {
 
   if(tag == "number")
     tr_num = value;
-  else if(tag == "location")
+
+  else if(tag == "detail") {
+    if(pending_location > -1) {
+      LOGD->write_syslog("Detail specified despite pending location!",
+			 LOG_ERR);
+      LOGD->write_syslog("Obj #" + tr_num + ", detail field: "
+			 + value + ", existing location/detail: "
+			 + pending_location, LOG_ERR);
+      error("Error loading object #" + tr_num + "!  Check logfile.");
+    }
+    pending_detail_of = value;
     pending_location = value;
-  else if(tag == "bdesc")
+
+  } else if(tag == "location") {
+    if(pending_location > -1) {
+      LOGD->write_syslog("Location specified despite pending location!",
+			 LOG_ERR);
+      LOGD->write_syslog("Obj #" + tr_num + ", new location: "
+			 + value + ", existing location/detail: "
+			 + pending_location, LOG_ERR);
+      error("Error loading object #" + tr_num + "!  Check logfile.");
+    }
+    pending_location = value;
+
+  } else if(tag == "bdesc")
     set_brief(value);
   else if(tag == "gdesc")
     set_glance(value);
