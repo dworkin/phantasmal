@@ -1,4 +1,4 @@
-/* $Header: /cvsroot/phantasmal/testgame/usr/game/obj/user.c,v 1.6 2004/09/06 00:13:16 angelbob Exp $ */
+/* $Header: /cvsroot/phantasmal/testgame/usr/game/obj/user.c,v 1.7 2004/09/14 05:28:57 angelbob Exp $ */
 
 #include <kernel/kernel.h>
 #include <kernel/user.h>
@@ -344,7 +344,7 @@ static void create_body(void) {
 void player_login(int first_login)
 {
   if(previous_program() != PHANTASMAL_USER)
-    return;
+    error("Only PHANTASMAL_USER can call player_login!");
 
   body = nil;
 
