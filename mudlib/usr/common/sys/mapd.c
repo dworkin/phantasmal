@@ -355,6 +355,7 @@ private void resolve_parent(object room) {
 
   pending_parent = room->get_pending_parent();
   if(pending_parent != -1) {
+    LOGD->write_syslog("Got pending parent: " + pending_parent);
     parent = MAPD->get_room_by_num(pending_parent);
     if(!parent) {
       error("Can't find parent number (#" + pending_parent
@@ -366,10 +367,30 @@ private void resolve_parent(object room) {
 
 }
 
+private void resolve_removed_details(object room) {
+  int    *rem_det;
+  int     ctr;
+  object  tmp;
+  object *new_rem_det;
+
+  rem_det = room->get_pending_removed_details();
+  new_rem_det = ({ });
+  for(ctr = 0; ctr < sizeof(rem_det); ctr++) {
+    tmp = MAPD->get_room_by_num(rem_det[ctr]);
+    if(!tmp)
+      error("Can't resolve removed details!");
+
+    new_rem_det += ({ tmp });
+  }
+
+  room->set_removed_details(new_rem_det);
+}
+
 private int resolve_location(object room) {
   int    pending;
   object container;
 
+  /* Resolve details (rather than regular containment) */
   pending = room->get_pending_detail_of();
   if(pending != -1) {
     container = get_room_by_num(pending);
@@ -381,6 +402,7 @@ private int resolve_location(object room) {
     return 1;
   }
 
+  /* Resolve regular containment */
   pending = room->get_pending_location();
   if(pending != -1) {
     container = get_room_by_num(pending);
@@ -389,23 +411,20 @@ private int resolve_location(object room) {
     }
 
     container->add_to_container(room);
-    return 1;
   } else {
     container = get_room_by_num(0);  /* Else, add to The Void */
     if(!container)
       error("Can't find room #0!  Panic!");
 
     container->add_to_container(room);
-    return 1;
   }
 
-  /* Never used */
-  return 0;
+  return 1;
 }
 
 void add_dtd_unq_rooms(mixed* unq, string filename) {
   int    iter, res_tmp;
-  mixed* resolve_rooms;
+  mixed* resolve_rooms, *all_rooms;
   object room;
 
   if(!initialized)
@@ -423,9 +442,7 @@ void add_dtd_unq_rooms(mixed* unq, string filename) {
     iter += 2;
   }
 
-  for(iter = 0; iter < sizeof(resolve_rooms); iter++) {
-    resolve_parent(resolve_rooms[iter]);
-  }
+  all_rooms = resolve_rooms[..];
 
   while(sizeof(resolve_rooms)) {
     res_tmp = 0;
@@ -433,7 +450,6 @@ void add_dtd_unq_rooms(mixed* unq, string filename) {
     for(iter = 0; iter < sizeof(resolve_rooms);) {
       if(resolve_location(resolve_rooms[iter])) {
 	res_tmp = 1;
-	resolve_rooms[iter]->clear_pending();
 	resolve_rooms = resolve_rooms[..iter-1] + resolve_rooms[iter+1..];
       } else {
 	iter++;
@@ -453,6 +469,16 @@ void add_dtd_unq_rooms(mixed* unq, string filename) {
       LOGD->write_syslog(tmp);
       error("Can't resolve all rooms!  Edit room files to fix this!");
     }
+  }
+
+  for(iter = 0; iter < sizeof(all_rooms); iter++) {
+    /* All rooms should now exist, so we can easily resolve
+       pretty much anything else. */
+    resolve_parent(all_rooms[iter]);
+    resolve_removed_details(all_rooms[iter]);
+
+    /* Clear all pending data */
+    all_rooms[iter]->clear_pending();
   }
 }
 
