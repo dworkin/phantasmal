@@ -45,3 +45,25 @@ See also: objects
 
 }}
 
+
+~name{~enUS{make_detail, makedetail, make_details,
+            makedetails, detailmake, detail_make
+            make_det, makedet, make_dets,
+            makedets, detmake, det_make }}
+~keywords{admin}
+~desc{
+  ~enUS{
+
+The @make_detail command asks a series of questions about the new
+object to be created.  It then creates the object that the questions
+describe.  It asks about descriptions, nouns, adjectives and so on.
+
+Experimental object attributes aren't necessarily asked or set by this
+command when first implemented.  As they become useful and mainstream
+in Phantasmal they are added to the various @make commands.  For that
+reason, certain settings may require using the standard OLC commands
+rather than this one.
+
+See also:  @make_room, @make_portable
+
+}}
