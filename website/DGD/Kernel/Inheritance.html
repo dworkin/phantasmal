@@ -2,7 +2,7 @@
                       "http://www.w3.org/TR/xhtml1/DTD/strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
-<title>The Phantasmal MUDlib for DGD: Inheritance in the Kernel</title>
+<title>The Kernel Library for DGD: Inheritance in the Kernel</title>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
 <link href="../../phantasmal.css" rel="stylesheet" type="text/css" />
 </head>
@@ -194,7 +194,7 @@
     <p>Say A inherits from B, and B inherits from C... </p>
 
       <pre>
-  C <- B <- A
+  C &lt;- B &lt;- A
       </pre>
 
     <p>
@@ -205,9 +205,9 @@
       </p>
 
 <pre>
-  oldC <- OldB <- A
+  oldC &lt;- OldB &lt;- A
 
-  newC <- newB
+  newC &lt;- newB
 </pre>
 
     <p>
@@ -219,24 +219,24 @@
     <p>To spell that out further, let's arbitrarily assign some
       instance numbers to the issues. </p>
 
-    <p> Say the old A is issue #1, old B is #2, old C is #3.  So,
+    <p> Say the old A is issue #1, old B is #2, old C is #3.  So, </p>
       <pre>
-  C(#3) <- B(#2) <- A(#1)
+  C(#3) &lt;- B(#2) &lt;- A(#1)
       </pre>
-Now you recompile C (#3).  So we have
+<p>Now you recompile C (#3).  So we have </p>
       <pre>
-  C(#3) <- B(#2) <- A(#1)
+  C(#3) &lt;- B(#2) &lt;- A(#1)
 
   C(#4)
-      </pre></p>
+      </pre>
 
     <p>That extra issue of C is just sitting off by itself.  Nobody
       inherits from it.  Then you destruct and recompile B: </p>
 
       <pre>
-  C(#3) <- B(#2) <- A(#1)
+  C(#3) &lt;- B(#2) &lt;- A(#1)
 
-  C(#4) <- B(#5)
+  C(#4) &lt;- B(#5)
       </pre>
 
     <p>When B is recompiled, it looks up C to inherit from it.  Issue
@@ -245,7 +245,7 @@ Now you recompile C (#3).  So we have
       clonable so you don't *want* to destroy it): </p>
 
       <pre>
-  C(#4) <- B(#5) <- A(#1)
+  C(#4) &lt;- B(#5) &lt;- A(#1)
       </pre>
 
     <p>
