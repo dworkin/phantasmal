@@ -1,4 +1,4 @@
-/* $Header: /cvsroot/phantasmal/mudlib/usr/System/obj/user.c,v 1.74 2003/12/05 11:07:08 angelbob Exp $ */
+/* $Header: /cvsroot/phantasmal/mudlib/usr/System/obj/user.c,v 1.75 2003/12/08 09:07:32 angelbob Exp $ */
 
 #include <kernel/kernel.h>
 #include <kernel/user.h>
@@ -24,6 +24,14 @@ inherit PHANTASMAL_USER;
 
 static mapping commands_map;
 
+/***********************************************************************/
+/* THIS USER OBJECT SHOULD *ONLY* EVER BE USED BY TELNETD WHEN *NO*    */
+/* REGULAR USER OBJECT CAN BE FOUND.  IT IS NOT MEANT FOR NORMAL USE,  */
+/* NOR SHOULD IT EVER HAVE A BODY OR REASONABLE CAPABILITIES.  FOR THE */
+/* REAL USER OBJECT, SEE /usr/game/obj/user.c OR THE EQUIVALENT IN     */
+/* YOUR GAME OF CHOICE.                                                */
+/***********************************************************************/
+
 /* Prototypes */
 void upgraded(varargs int clone);
 
@@ -45,75 +53,9 @@ void upgraded(varargs int clone) {
     ::upgraded(clone);
 
     commands_map = ([
-		     "yell"      : "cmd_yell",
-		     "shout"     : "cmd_yell",
-		     "say"       : "cmd_say",
-		     "emote"     : "cmd_emote",
 		     "ooc"       : "cmd_ooc",
-		     "impbug"    : "cmd_impbug",
-
-		     "n"         : "cmd_movement",
-		     "s"         : "cmd_movement",
-		     "e"         : "cmd_movement",
-		     "w"         : "cmd_movement",
-		     "nw"        : "cmd_movement",
-		     "sw"        : "cmd_movement",
-		     "ne"        : "cmd_movement",
-		     "se"        : "cmd_movement",
-		     "u"         : "cmd_movement",
-		     "d"         : "cmd_movement",
-
-		     "north"     : "cmd_movement",
-		     "south"     : "cmd_movement",
-		     "east"      : "cmd_movement",
-		     "west"      : "cmd_movement",
-		     "northwest" : "cmd_movement",
-		     "southwest" : "cmd_movement",
-		     "northeast" : "cmd_movement",
-		     "southeast" : "cmd_movement",
-		     "up"        : "cmd_movement",
-		     "down"      : "cmd_movement",
-		     "in"        : "cmd_movement",
-		     "out"       : "cmd_movement",
-
 		     "help"      : "cmd_help",
-		     "locale"    : "cmd_locale",
-		     "locales"   : "cmd_locales",
-		     "users"     : "cmd_users",
-		     "who"       : "cmd_users",
 		     "whoami"    : "cmd_whoami",
-		     "bug"       : "cmd_bug",
-		     "typo"      : "cmd_typo",
-		     "idea"      : "cmd_idea",
-		     "tell"      : "cmd_tell",
-		     "lines"     : "cmd_set_lines",
-		     "set_lines" : "cmd_set_lines",
-
-		     "channel"   : "cmd_channels",
-		     "channels"  : "cmd_channels",
-
-		     "g"         : "cmd_look",
-		     "gl"        : "cmd_look",
-		     "glance"    : "cmd_look",
-		     "l"         : "cmd_look",
-		     "look"      : "cmd_look",
-		     "ex"        : "cmd_look",
-		     "exa"       : "cmd_look",
-		     "examine"   : "cmd_look",
-
-		     "get"       : "cmd_get",
-		     "take"      : "cmd_get",
-		     "drop"      : "cmd_drop",
-		     "i"         : "cmd_inventory",
-		     "inv"       : "cmd_inventory",
-		     "inventory" : "cmd_inventory",
-		     "put"       : "cmd_put",
-		     "place"     : "cmd_put",
-		     "remove"    : "cmd_remove",
-		     "open"      : "cmd_open",
-		     "close"     : "cmd_close",
-
-		     "parse"     : "cmd_parse"
     ]);
 
   }
@@ -164,116 +106,13 @@ void player_login(void)
   if(previous_program() != PHANTASMAL_USER)
     return;
 
-  body = nil;
-
-  /* Set up location, body, etc */
-  start_room_num = CONFIGD->get_start_room();
+  /* Set the start room to the void */
+  start_room_num = 0;
   start_room = MAPD->get_room_by_num(start_room_num);
-
-  /* If start room can't be found, set the start room to the void */
-  if (start_room == nil) {
-    LOGD->write_syslog("Can't find the start room!  Starting in the void...");
-    start_room_num = 0;
-    start_room = MAPD->get_room_by_num(start_room_num);
-    start_zone = 0;
-    if(start_room == nil) {
-      /* Panic!  No void! */
-      error("Internal Error: no Void!");
-    }
-  } else {
-    start_zone = ZONED->get_zone_for_room(start_room);
-    if(start_zone < 0) {
-      /* What's with this start room? */
-      error("Internal Error:  no zone, not even zero, for start room!");
-    }
-  }
-
-  if(body_num > 0) {
-    body = MAPD->get_room_by_num(body_num);
-  }
-
-  if(body && body->get_mobile()
-     && body->get_mobile()->get_user()) {
-    LOGD->write_syslog("User is already set for this mobile!",
-		       LOG_ERROR);
-    message("Body and mobile files are misconfigured!  Internal error!\r\n");
-
-    body_num = -1;
-    body = nil;
-  }
-
-
-  if(!body) {
-    location = start_room;
-
-    body = clone_object(SIMPLE_ROOM);
-    if(!body)
-      error("Can't clone player's body!");
-
-    body->set_container(1);
-    body->set_open(1);
-    body->set_openable(0);
-
-    /* Players weigh about 80 kilograms */
-    body->set_weight(80.0);
-    /* Players are about 2.5dm x 1dm x 18dm == 45dm^3 == 45 liters */
-    body->set_volume(45.0);
-    /* A player is about 18dm == 180 centimeters tall */
-    body->set_length(180.0);
-
-    /* Players are able to lift 50 kilograms */
-    body->set_weight_capacity(50.0);
-    /* Players are able to carry up to 20 liters of stuff --
-       that's roughly a large hiking backpack. */
-    body->set_volume_capacity(20.0);
-    /* Players are able to carry an object up to half a meter long.
-       Note that that's stuff they're not currently holding in their
-       hands, so that's more reasonable.  Can you fit a 60cm object
-       in your pocket?  Would you want to? */
-    body->set_length_capacity(50.0);
-
-    MAPD->add_room_to_zone(body, -1, start_zone);
-    if(!MAPD->get_room_by_num(body->get_number())) {
-      LOGD->write_syslog("Error making new body!", LOG_ERR);
-    }
-    body_num = body->get_number();
-
-    /* Set descriptions and add noun for new name */
-    body->set_brief(NEW_PHRASE(Name));
-    body->set_glance(NEW_PHRASE(Name));
-    body->set_look(NEW_PHRASE(Name + " wanders the MUD."));
-    body->set_examine(nil);
-    body->add_noun(NEW_PHRASE(STRINGD->to_lower(name)));
-
-    /* Can't just clone mobile here, it causes problems later */
-    mobile = MOBILED->clone_mobile_by_type("user");
-    if(!mobile)
-      error("Can't clone mobile of type 'user'!");
-    MOBILED->add_mobile_number(mobile, -1);
-    mobile->assign_body(body);
-    mobile->set_user(this_object());
-
-    mobile->teleport(location, 1);
-
-    /* We just set a body number, so we need to save the player data
-       file again... */
-    save_user_to_file();
-  } else {
-    location = body->get_location();
-    mobile = body->get_mobile();
-    if(!mobile) {
-      mobile = clone_object(USER_MOBILE);
-      MOBILED->add_mobile_number(mobile, -1);
-      mobile->assign_body(body);
-    }
-
-    mobile->set_user(this_object());
-    mobile->teleport(location, 1);
-
-    /* Move body to start room */
-    if(location->get_number() == CONFIGD->get_meat_locker()) {
-      mobile->teleport(start_room, 1);
-    }
+  start_zone = 0;
+  if(start_room == nil) {
+    /* Panic!  No void! */
+    error("Internal Error: no Void!");
   }
 
   /* Show room to player */
@@ -290,27 +129,6 @@ private void player_logout(void)
 {
   if(previous_program() != PHANTASMAL_USER)
     return;
-
-  /* Teleport body to meat locker */
-  if(body) {
-    object meat_locker;
-    int    ml_num;
-    object mobile;
-
-    ml_num = CONFIGD->get_meat_locker();
-    if(ml_num >= 0) {
-      meat_locker = MAPD->get_room_by_num(ml_num);
-      if(meat_locker) {
-	if (location) {
-	  mobile = body->get_mobile();
-	  mobile->teleport(meat_locker, 1);
-	}
-      } else {
-	LOGD->write_syslog("Can't find room #" + ml_num + " as meat locker!",
-			   LOG_ERR);
-      }
-    }
-  }
 
   CHANNELD->unsubscribe_user_from_all(this_object());
 }
@@ -338,32 +156,8 @@ int process_command(string str)
       str = nil;
     }
 
-    if (strlen(cmd) != 0) {
-      switch (cmd[0]) {
-      case '\'':
-	if (strlen(cmd) > 1) {
-	  str = cmd[1..];
-	} else {
-	  str = "";
-	}
-	cmd = "say";
-	break;
-
-      case ':':
-	if (strlen(cmd) > 1) {
-	  str = cmd[1..];
-	} else {
-	  str = "";
-	}
-	cmd = "emote";
-	break;
-
-      default:
-	if(sscanf(cmd, "%s %s", cmd, str) != 2) {
-	  str = "";
-	}
-	break;
-      }
+    if(sscanf(cmd, "%s %s", cmd, str) != 2) {
+      str = "";
     }
 
     if(cmd && strlen(cmd)) {
@@ -381,10 +175,6 @@ int process_command(string str)
       case "quit":
 	return MODE_DISCONNECT;
       }
-    }
-
-    if(SOULD->is_social_verb(cmd)) {
-      cmd_social(this_object(), cmd, str = "" ? nil : str);
     }
 
     if(commands_map[cmd]) {
@@ -407,21 +197,31 @@ int process_command(string str)
   }
 
   /* All is well, just print a prompt and wait for next command */
+  message("No /usr/game/obj/user exists!  Use ooc cmd to complain.\r\n");
   return -1;
-}
-
-
-/************** Security Cheats *****************************/
-
-object clone_wiztool_as(string str) {
-  if(previous_program() == PHANTASMAL_USER) {
-    return clone_object(SYSTEM_WIZTOOL, str);
-  }
-
-  return nil;
 }
 
 
 /************** User-level commands *************************/
 
-/* I'll move some of these in from PHANTASMAL_USER shortly */
+static void cmd_ooc(object user, string cmd, string str) {
+  if (!str || str == "") {
+    send_system_phrase("Usage: ");
+    message(cmd + " <text>\r\n");
+    return;
+  }
+
+  system_phrase_all_users("(OOC)");
+  message_all_users(" " + Name + " ");
+  system_phrase_all_users("chats");
+  message_all_users(": " + str + "\r\n");
+
+  send_system_phrase("(OOC)");
+  message(" ");
+  send_system_phrase("You chat");
+  message(": " + str + "\r\n");
+}
+
+static void cmd_whoami(object user, string cmd, string str) {
+  message("You are '" + name + "'.\r\n");
+}

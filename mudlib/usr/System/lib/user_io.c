@@ -45,9 +45,7 @@ int get_num_lines(void) {
 }
 
 static void set_num_lines(int new_num) {
-  if(SYSTEM()) {
-    num_lines = new_num;
-  }
+  num_lines = new_num;
 }
 
 
