@@ -630,7 +630,7 @@ static void cmd_new_mobile(object user, string cmd, string str) {
   body = MAPD->get_room_by_num(bodynum);
   if((bodynum <= 0) || !body) {
     user->message("You must supply an appropriate body number with a "
-		  + "corresponding body object.  Failed.\r\n");
+		  + "corresponding body object.\r\n" + "Failed.\r\n");
     return;
   }
 
