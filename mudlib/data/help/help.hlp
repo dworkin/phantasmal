@@ -18,15 +18,18 @@ for the second help entry that could match "linkded".  If there's more than
 one, the help system will tell you so.  You'll see it when you ask for help
 without specifying a number, for instance "help linkded".
 
-If all that scrolled by and you can't read it, try setting your rows lower
-with set rows 15 (or however long you'd like between scrolling).
+If that went too fast and you can't read it, try setting your rows
+lower with set_num_lines 10.  Then get help on the set_num_lines
+function to figure out how you want to set it eventually.
+
 }}
 
 
-~name{~enUS{lines, set_lines, scrolling, scroll, terminal}}
+~name{~enUS{lines, set_lines, scrolling, scroll, terminal, row, rows,
+            set_num_lines, num_lines}}
 ~desc{~enUS{
 
-You can use the set_lines command to set the number of lines of output
+You can use the set_num_lines command to set the number of lines of output
 Phantasmal will display in a help entry before it begins scrolling.
 The default is 20 lines.  Scrolling is primarily used in the display of
 help entries though certain other situations may call for the scrolling
