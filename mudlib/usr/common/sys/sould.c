@@ -21,6 +21,7 @@ void upgraded(varargs int clone);
 
 /* Data from SoulD file*/
 mapping sould_strings;
+int     num_soc;
 
 
 static void create(varargs int clone) {
@@ -38,9 +39,14 @@ void upgraded(varargs int clone) {
 
   /* Clear out Soul array before reloading */
   sould_strings = ([ ]);
+  num_soc = 0;
 
   /* We'll need to load the file's contents... */
   load_from_file(SOULD_FILE);
+  num_soc = map_sizeof(sould_strings);
+
+  /* And now we need to update USER's command set */
+  SYSTEM_USER->set_social_commands();
 }
 
 mixed* to_dtd_unq(void) {
@@ -81,6 +87,17 @@ void from_dtd_unq(mixed* unq) {
 
 int is_valid(string verb) {
   return !!sould_strings[verb];
+}
+
+int num_socials(void) {
+  return num_soc;
+}
+
+string* all_socials(void) {
+  mixed* keys;
+
+  keys = map_indices(sould_strings);
+  return keys[..];
 }
 
 string get_social_string(object user, object body,
