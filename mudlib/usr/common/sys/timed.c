@@ -171,6 +171,6 @@ void __priv_co_hook(int how_often) {
   keys = map_indices(per_queue[how_often]);
   for(ctr = 0; ctr < sizeof(keys); ctr++) {
     tmp = per_queue[how_often][keys[ctr]];
-    call_other(keys[ctr], tmp[0], tmp[1]);
+    call_other(keys[ctr], tmp[0], tmp[1]...);
   }
 }
