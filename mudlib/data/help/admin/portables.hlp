@@ -17,39 +17,6 @@ following commands:
 }}
 
 
-~name{~enUS{@set_port_flag, @set_port_flags, @set_portable_flag,
-            @set_portable_flags, set_port_flag, set_port_flags,
-            set_portable_flag, set_portable_flags, set_portflag,
-            set_portflags, setportflag, setportflags, set port flags,
-            set port flag, set portable flags, set portable flag,
-            contain, cont, containment, container, containers,
-            @container, open, open container, set container,
-            set open,descless,nodesc,no_desc}}
-~keywords{admin}
-~desc{
-  ~enUS{
-
-The @set_port_flag (or @set_portable_flag) command sets flags on
-portables, such as whether they are containers and whether they are
-open.  For instance:
-
-  @set_port_flag #237 cont true
-  @set_port_flag #294 open 0
-  @set_portable_flags #748 container no
-  @set_portable_flags #748 nodesc yes
-
-The values should be obviously true or false -- like "true", "false",
-"yes", "no", 1, 0.  The first argument is, of course, the object
-number of a portable registered with PORTABLED.  The middle argument
-is a flag name, and can be "cont" or "container" to set whether the
-object is a container, "open" to set whether it is currently open,
-"nodesc" for scenery objects somewhat similar to details and keywords,
-or other flag names.  There is currently no convenient way to get a
-list of flag names.
-
-}}
-
-
 ~name{~enUS{@new_portable, new_portable, newportable, @newportable,
             new portable, @portablenew, portablenew,
             portable_new, @portable_new, portable new,

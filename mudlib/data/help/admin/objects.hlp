@@ -173,6 +173,42 @@ See also @add_nouns, @add_adj, @set_brief, @set_glance
 }}
 
 
+~name{~enUS{@set_obj_flag, @set_obj_flags, @set_object_flag,
+            @set_object_flags, set_obj_flag, set_obj_flags,
+            set_object_flag, set_object_flags, set_objflag,
+            set_objflags, setobjflag, setobjflags, set obj flags,
+            set obj flag, set object flags, set object flag,
+            contain, cont, containment, container, containers,
+            @container, open, open container, set container,
+            set open,descless,nodesc,no_desc,@set_port_flag,
+            @set_portable_flag, @set_port_flags, @set_portable_flags,
+            set_port_flag, set_portable_flag, set_port_flags,
+            set_portable_flags}}
+~keywords{admin}
+~desc{
+  ~enUS{
+
+The @set_obj_flag (or @set_object_flag) command sets flags on objects,
+such as whether they are containers and whether they are open.  For
+instance:
+
+  @set_obj_flag #237 cont true
+  @set_obj_flag #294 open 0
+  @set_object_flags #748 container no
+  @set_object_flags #748 nodesc yes
+
+The values, if present, should be obviously true or false -- like
+"true", "false", "yes", "no", 1, 0.  If absent, the values default to
+true.  The first argument is the object number of an object registered
+with PORTABLED or MAPD.  The middle argument is a flag name, and can
+be "cont" or "container" to set whether the object is a container,
+"open" to set whether it is currently open, "nodesc" for scenery
+objects somewhat similar to details and keywords, or other flag names.
+There is currently no convenient way to get a list of flag names.
+
+}}
+
+
 ~name{~enUS{@set_object_parent, @set_object_par, @set_obj_parent,
             @set_obj_par, @set_parent, set_object_parent, set_object_par,
             set_obj_parent, set_obj_par, set_parent, set_par,
