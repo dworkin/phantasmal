@@ -5,27 +5,30 @@ tries to be reasonably fast and secure, but prefers robustness to
 speed.  Its primary focus is on features not commonly found in MUDs,
 especially those that should be.  It is currently in the early stages
 of its implementation and competes primarily with Melville, which is
-still more usable in most cases.
+still more usable in most cases.  See
+"http://phantasmal.sourceforge.net/Compare.html" for a comparison of
+Phantasmal to other current DGD MUDLibs.
 
-It is designed primarily for low-volume MUDs (those with a small
-number of simultaneously-connected players) and to allow excellent
-service for that small number.  In this day and age a hobbyist MUD
-that gets 50 to 60 players a night is considered to be doing pretty
-well.  Modern cheap desktop computers are ridiculously powerful when
-serving this small a number.  Many standard concerns about memory
-usage and processor speed are misplaced, and have been for years.
-Naturally this would be different if 3D graphics or even 2D bitmaps
-were involved in large quantity, or if large numbers of NPCs were to
-be reasonably simulated.
+Phantasmal is designed primarily for low-volume MUDs (those with a
+small number of simultaneously-connected players) and to allow
+excellent service for that small number.  In this day and age a
+hobbyist MUD that gets 50 to 60 players a night is considered to be
+doing pretty well.  Modern cheap desktop computers are ridiculously
+powerful when serving this small a number.  Many standard concerns
+about memory usage and processor speed are misplaced, and have been
+for years.  Naturally this would be different if 3D graphics or even
+2D bitmaps were involved in large quantity, or if large numbers of
+NPCs were to be reasonably simulated.
 
 Phantasmal hopes to serve geographically small, dense MUDs with a
 lower number of more complex rooms rather than sprawling but simple
 wildernesses.  Sprawling wildernesses are best created algorithmically
 on the fly (or in a cache) rather than by simply duplicating many,
-many similar rooms -- this is essentially a form of compression,
-trading off the nigh-incredible processor capacity of modern machines
-for vastly reduced memory usage.  Eventually, Phantasmal hopes to
-serve these algorithmically created wildernesses as well.
+many similar rooms -- this algorithmic generation of rooms is
+essentially compression, trading off the amazing processor capacity of
+modern machines for vastly reduced memory usage.  Eventually,
+Phantasmal hopes to serve these algorithmically created wildernesses
+as well.
 
 
                         Current Status
@@ -50,14 +53,13 @@ enough to keep commercial MUDs (like Skotos' servers) up for years.
 It has a powerful OLC system which is the preferred way to create new
 content.  It also allows human-readable and -writable configuration
 and object files for rooms, portables, exits and objects which are an
-excellent alternate way to create content.  They are quite easy to
-generate by automatic scripts or by offline text editing.  These can
-be loaded by administrator characters using only in-MUD commands or by
-the host machine's administrator by directly altering MUD
-configuration files.
+alternate way to create content.  They are quite easy to generate by
+automatic scripts or by offline text editing.  These can be loaded by
+administrator characters using only in-MUD commands or by the host
+machine's administrator by directly altering MUD configuration files.
 
 It sports a powerful help system with rich configuration files, full
-localization, and Soundex matching for near-misses (if they ask for
+localization, and Soundex matching for near-misses (if a user asks for
 help on "polices" instead of "policies", for instance).
 
 See "http://phantasmal.sourceforge.net/Current.html" for a more
