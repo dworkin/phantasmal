@@ -46,7 +46,7 @@ int add_mobile_number(object mobile, int num) {
 
   LOGD->write_syslog("Allocating mobile number: " + newnum, LOG_VERBOSE);
 
-  mobile->set_number(num);
+  mobile->set_number(newnum);
 
   return newnum;
 }
