@@ -33,7 +33,7 @@ int     load_callout;
 
 /* Prototypes */
 void load_unq_help(string path, mixed* data);
-void upgraded(void);
+void upgraded(varargs int clone);
 void reread_help_files(void);
 void clear_help_entries(void);
 void new_help_file(string path);
@@ -69,7 +69,7 @@ void destructed(int clone) {
     destruct_object(help_dtd);
 }
 
-void upgraded(void) {
+void upgraded(varargs int clone) {
   files_to_load = ({ });
   load_callout = -1;
 

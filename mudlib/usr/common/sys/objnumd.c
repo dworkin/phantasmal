@@ -6,7 +6,7 @@ private int     segments_full;
 private int     highest_segment;
 
 /* Prototypes */
-void upgraded(void);
+void upgraded(varargs int clone);
 
 
 static void create(varargs int clone) {
@@ -20,7 +20,7 @@ static void create(varargs int clone) {
   upgraded();
 }
 
-void upgraded(void) {
+void upgraded(varargs int clone) {
   owners = ({ MAPD, EXITD, MOBILED });
 }
 
