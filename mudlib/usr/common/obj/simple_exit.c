@@ -4,7 +4,7 @@
 #include <log.h>
 #include <exit.h>
 
-inherit unq UNQABLE;
+inherit unq DTD_UNQABLE;
 inherit ext EXIT;
 
 #define PHR(x) PHRASED->new_simple_english_phrase(x)

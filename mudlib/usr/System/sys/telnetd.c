@@ -3,8 +3,6 @@
 #include <config.h>
 #include <log.h>
 
-static string suspended_banner, shutdown_banner;
-static object logd;
 static int    suspended, shutdown;
 
 void upgraded(varargs int clone);
@@ -22,14 +20,6 @@ void upgraded(varargs int clone) {
     return;
 
   if(!find_object(SYSTEM_USER)) { compile_object(SYSTEM_USER); }
-
-  logd = find_object(LOGD);
-  suspended_banner = ::read_file(SUSPENDED_MESSAGE);
-  if(!suspended_banner)
-    error("Can't read 'suspended' message file " + SUSPENDED_MESSAGE + "!");
-  shutdown_banner = ::read_file(SHUTDOWN_MESSAGE);
-  if(!shutdown_banner)
-    error("Can't read 'shutdown' message file " + SHUTDOWN_MESSAGE + "!");
 }
 
 void suspend_input(int shutdownp) {

@@ -4,7 +4,7 @@
 #include <log.h>
 
 inherit room ROOM;
-inherit unq UNQABLE;
+inherit unq DTD_UNQABLE;
 
 #define PHR(x) PHRASED->new_simple_english_phrase(x)
 
