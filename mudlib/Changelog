@@ -1,4 +1,4 @@
-Release 0.014:
+| Release 0.014:
 	* Bugfix to @make_room to deal with rooms whose location is nil
 	* Added floating-point support to UNQ load/save
 	* More exit stuff, including load/save
@@ -8,6 +8,11 @@ Release 0.014:
 	* Added w/l/v capacities to @make_room/detail/portable
 	* Changed all the can_* functions to take a user as well so we
 	  can return useful reasons stuff screws up.
+	* ObjectD now uses call_limited() when calling upgrade
+	  functions on objects.
+	* HelpD now specifically calls rlimits{...;-1} to upgrade
+	* HelpD now alphabetizes the words in a help query to avoid needing
+	  multiple orders
 
 Release 0.013:
 	* Added @list, an alias for @list_rooms.
