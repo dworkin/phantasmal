@@ -551,6 +551,8 @@ static void cmd_delete_obj(object user, string cmd, string str) {
     str = STRINGD->trim_whitespace(str);
     if(user->get_location()) {
       objs = user->get_location()->find_contained_objects(user, str);
+      if(!objs)
+	objs = user->get_body()->find_contained_objects(user, str);
       if(!objs || !sizeof(objs)) {
 	user->message("There's nothing matching '" + str + "'.\r\n");
 	return;
