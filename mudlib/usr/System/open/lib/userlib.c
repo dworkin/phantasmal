@@ -1,4 +1,4 @@
-/* $Header: /cvsroot/phantasmal/mudlib/usr/System/open/lib/userlib.c,v 1.9 2004/09/14 05:09:55 angelbob Exp $ */
+/* $Header: /cvsroot/phantasmal/mudlib/usr/System/open/lib/userlib.c,v 1.10 2005/03/24 08:52:36 angelbob Exp $ */
 
 #include <kernel/kernel.h>
 #include <kernel/user.h>
@@ -125,7 +125,8 @@ int is_admin(void)  {
 
   /* Can't just check wiztool's existence because we need to be able to
      restore subscribed admin-only channels using the
-     restore_player_from_file functionality. */
+     restore_player_from_file functionality.  That happens before the
+     wiztool is created for this player object. */
 
   /* Check if an immort */
   if (sizeof(rsrc::query_owners() & ({ name }))) {
@@ -237,15 +238,13 @@ static int restore_user_from_file(string str) {
 nomask int ustate_send_string(string str) {
   if(previous_program() == USER_STATE)
     return ::message(str);
-  else {
-    LOGD->write_syslog("Called by " + previous_program());
+  else
     error("Only USER_STATE can call PHANTASMAL_USER:ustate_send_string!");
-  }
 }
 
 /* This does a lowest-level, unfiltered send to the connection object
-   itself.  Normally message will be filtered through the user_state
-   object(s) active, if any */
+   itself.  Normally sends will be filtered through the user_state
+   object(s) active, if any, but this function is different. */
 static nomask int send_string(string str) {
   return ::message(str);
 }
@@ -269,8 +268,21 @@ int message(string str) {
   }
 }
 
-/* This sends a Phrase, allowing for things like locale and VT settings */
-int send_phrase(object obj) {
+static string phrase_to_string(object "/usr/common/lib/phrase" phrase) {
+  if(locale >= 0) {
+    if(locale < sizeof(content) && content[locale])
+      return content[locale];
+    if(content[LANG_englishUS])
+      return content[LANG_englishUS];
+    if(content[LANG_debugUS])
+      return content[LANG_debugUS];
+    return "(nil)";
+  }
+  return "(Illegal locale)";
+}
+
+/* This sends a Phrase, allowing locale and terminal settings to affect output */
+int send_phrase(object "/usr/common/lib/phrase" obj) {
   if(!SYSTEM() && !COMMON() && !GAME())
     return -1;
 
@@ -278,7 +290,7 @@ int send_phrase(object obj) {
 }
 
 int send_system_phrase(string phrname) {
-  object phr;
+  object "/usr/common/lib/phrase" phr;
 
   if(!SYSTEM() && !COMMON() && !GAME())
     return -1;
@@ -321,7 +333,7 @@ nomask int receive_message(string str)
  */
 static void show_room_to_player(object location) {
   string tmp;
-  object phr;
+  object "/usr/common/lib/phrase" phr;
   int    ctr;
   mixed* objs;
 
