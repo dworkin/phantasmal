@@ -16,6 +16,12 @@ void set_prompt(string new_prompt) {
   prompt = new_prompt;
 }
 
+void set_up_func(varargs string new_prompt) {
+  if(new_prompt) {
+    set_prompt(new_prompt);
+  }
+}
+
 int from_user(string input) {
   if(input == "y" || input == "Y"
      || !STRINGD->stricmp(input, "yes")) {

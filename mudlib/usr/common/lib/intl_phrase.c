@@ -3,6 +3,8 @@
 
 #include <type.h>
 
+inherit PHRASE;
+
 /* Phrase functions */
 
 mixed* content;

@@ -540,7 +540,7 @@ void do_room_resolution(int fully) {
     /* This makes sure there's no final comma */
     tmp += unresolved_rooms[sizeof(unresolved_rooms) - 1]->get_number();
 
-    LOGD->write_syslog(tmp);
+    LOGD->write_syslog("Can't resolve rooms: " + tmp, LOG_FATAL);
     error("Can't resolve all rooms!  Edit room files to fix this!");
   }
 }

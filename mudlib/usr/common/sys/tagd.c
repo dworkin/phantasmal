@@ -103,6 +103,7 @@ mixed object_get_tag_value(object obj, string name) {
   mixed  *tag_arr;
   mixed   tag_val, tmp;
   object *parents;
+  int     ctr;
 
   if(!GAME() && !COMMON() && !SYSTEM())
     error("Only Game code can get object tag values!");
@@ -130,8 +131,8 @@ mixed object_get_tag_value(object obj, string name) {
 	case TAG_INHERIT_MERGE:
 	  tag_val = (tag_arr[0] == T_INT ? 0
 	             : (tag_arr[3] == T_FLOAT ? 0.0
-	             : (tag_arr[3] == T_STRING ? ""
-	             : nil);
+			: (tag_arr[3] == T_STRING ? ""
+			   : nil)));
 	  for(ctr = 0; ctr < sizeof(parents); ctr++) {
 		switch(tag_arr[0]) {
 		  case T_INT:

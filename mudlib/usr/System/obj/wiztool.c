@@ -170,6 +170,7 @@ void upgraded(varargs int clone) {
 	"@delete_object"       : ({ "cmd_delete_obj" }),
 
 	"@new_exit"            : ({ "cmd_new_exit" }),
+	"@add_exit"            : ({ "cmd_new_exit" }),
 	"@clear_exits"         : ({ "cmd_clear_exits" }),
 	"@clear_exit"          : ({ "cmd_clear_exits" }),
 	"@remove_exit"         : ({ "cmd_remove_exit" }),

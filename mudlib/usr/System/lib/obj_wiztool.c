@@ -90,7 +90,7 @@ static void cmd_set_obj_desc(object user, string cmd, string str) {
 
   if(!desc) {
     user->push_new_state(US_OBJ_DESC, obj, look_type, user->get_locale());
-    user->push_new_state(state2, US_ENTER_DATA);
+    user->push_new_state(US_ENTER_DATA);
 
     return;
   }
@@ -826,10 +826,8 @@ static void cmd_make_obj(object user, string cmd, string str) {
   }
 
   state = clone_object(US_MAKE_ROOM);
-  if(typename)
-    state->specify_type(typename);
 
-  user->push_state(state);
+  user->push_new_state(US_MAKE_ROOM, typename);
 }
 
 

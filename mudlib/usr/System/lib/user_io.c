@@ -160,6 +160,8 @@ void push_new_state(mixed state_type, mixed params...) {
   object new_state;
 
   new_state = clone_object(state_type);
+  if(!new_state)
+    error("Can't create new state to push in push_new_state()!");
 
   new_state->set_up_func(params...);
   push_state(new_state);

@@ -71,6 +71,10 @@ static void push_state(object state) {
   user->push_state(state);
 }
 
+static void push_new_state(mixed state_type, mixed params...) {
+  user->push_new_state(state_type, params...);
+}
+
 static void pass_data(mixed data) {
   if(next_state) {
     next_state->pass_data(data);

@@ -17,7 +17,7 @@ static void create(varargs int clone) {
   }
 }
 
-void set_up_func(object obj, string desctype, int desc_loc) {
+void set_up_func(varargs object obj, string desctype, int desc_loc) {
   obj_to_set = obj;
   func_name = desctype;
   locale = desc_loc;

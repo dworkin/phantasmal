@@ -1,213 +1,214 @@
 Release 0.017:
+    * Preliminary terminal support, altered Phrase support
+    * Started adding subtyped object declarations
     * Added support for tag inheritance in TagD
-	* Removed support for non-System wiztool objects.  Oops!
-	* Added support for custom and non-System wiztool objects
-	* Added a custom room-binder object for nonstandard room types
-	* Started support for 'custom' rooms not loaded from UNQ files
-	* SSHD support on second binary TCP port
-	* Debugged extra AUTO object, put it into appropriate places
+    * Removed support for non-System wiztool objects.  Oops!
+    * Added support for custom and non-System wiztool objects
+    * Added a custom room-binder object for nonstandard room types
+    * Started support for 'custom' rooms not loaded from UNQ files
+    * SSHD support on second binary TCP port
+    * Debugged extra AUTO object, put it into appropriate places
 
 Release 0.016:
-	* Improved UNQ error reporting for wrong #'s of fields in structs
-	* Added (optional, currently inactive) stuff for a /usr/common AUTO
-	  object which will enforce call_other calling existing funcs
-	* Updated to DGD 1.2.90
-	* Moved all zone functionality out of ObjNumD into ZoneD
-	* Changed object articles and glance descriptions to 'transitional',
-	  i.e. kiss the current form of them goodbye...
-	* Updated for compatibility with DGD 1.2.68, which breaks back-compat
-	* Removed old %get_config command
-	* Made objects able to specifically remove nouns/adjs for
-	  multiple inheritance
-	* Made load/save files use multiple parents
-	* Made object nouns, adjectives and descs use inheritance
-	* Made objects use multiple inheritance, not just single
-	* Added wiztool commands to manipulate tags, and help for them
-	* Added a number of new Tag-related APIs
-	* Made rooms and zonefiles include tag data in the save files
-	* Made room/object types more modular
+    * Improved UNQ error reporting for wrong #'s of fields in structs
+    * Added (optional, currently inactive) stuff for a /usr/common AUTO
+      object which will enforce call_other calling existing funcs
+    * Updated to DGD 1.2.90
+    * Moved all zone functionality out of ObjNumD into ZoneD
+    * Changed object articles and glance descriptions to 'transitional',
+      i.e. kiss the current form of them goodbye...
+    * Updated for compatibility with DGD 1.2.68, which breaks back-compat
+    * Removed old %get_config command
+    * Made objects able to specifically remove nouns/adjs for
+      multiple inheritance
+    * Made load/save files use multiple parents
+    * Made object nouns, adjectives and descs use inheritance
+    * Made objects use multiple inheritance, not just single
+    * Added wiztool commands to manipulate tags, and help for them
+    * Added a number of new Tag-related APIs
+    * Made rooms and zonefiles include tag data in the save files
+    * Made room/object types more modular
 
 Release 0.015pre2:
-	* Tagged OBJECTs and MOBILEs
-	* Added a 'Tagged' library to manage tags
-	* Added a TagD to track tag types
-	* Moved scripting stuff into Phantasmal from testgame/SoN
-	* Added toggle for first-ever login attempt to player_login()
-	* Minor fix to cmd_help
-	* More debugging on user/userlib interface.
+    * Tagged OBJECTs and MOBILEs
+    * Added a 'Tagged' library to manage tags
+    * Added a TagD to track tag types
+    * Moved scripting stuff into Phantasmal from testgame/SoN
+    * Added toggle for first-ever login attempt to player_login()
+    * Minor fix to cmd_help
+    * More debugging on user/userlib interface.
 
 Release 0.015pre1:
-	* Separated user object into a user and a userlib, with the user
-	  object overridable.  More work to do here
-	* Moved logd_channels from data directory into /usr/System
-	* Added a game driver object, made telnetd defer to it
-	* Simplified /usr/game as more stuff moves into testgame
-	* Moved objects out of /data, and made it easy to do the same for
-	  helpfiles
-	* Moved most Phantasmal headers into include/phantasmal
-	* Modified TimeD to use only real-world time
-	* Moved some headers into /include/phantasmal
-	* Removed 'ask' function and all related hooks & docs
-	* Changed hook function signatures and how enum_mobiles works
-	* Full security audit for /usr/common/sys and /usr/common/obj
-	* Full security audit for /usr/System
-	* Added simple scripting to /usr/game
-	* Added second AUTO object to /usr/game
-	* Made /usr/game configure ConfigD directly
-	* Made /usr/game's initd work
-	* Moved most files out of /data into /usr/System, /usr/common and
-	  /usr/game
-	* Added /usr/game directory
-	* Moved HelpD into ~System
-	* Altered how tick counts for upgraded() work
-	* Changed syntax for @set_obj_parent to allow removing parent
+    * Separated user object into a user and a userlib, with the user
+      object overridable.  More work to do here
+    * Moved logd_channels from data directory into /usr/System
+    * Added a game driver object, made telnetd defer to it
+    * Simplified /usr/game as more stuff moves into testgame
+    * Moved objects out of /data, and made it easy to do the same for
+      helpfiles
+    * Moved most Phantasmal headers into include/phantasmal
+    * Modified TimeD to use only real-world time
+    * Moved some headers into /include/phantasmal
+    * Removed 'ask' function and all related hooks & docs
+    * Changed hook function signatures and how enum_mobiles works
+    * Full security audit for /usr/common/sys and /usr/common/obj
+    * Full security audit for /usr/System
+    * Added simple scripting to /usr/game
+    * Added second AUTO object to /usr/game
+    * Made /usr/game configure ConfigD directly
+    * Made /usr/game's initd work
+    * Moved most files out of /data into /usr/System, /usr/common and
+      /usr/game
+    * Added /usr/game directory
+    * Moved HelpD into ~System
+    * Altered how tick counts for upgraded() work
+    * Changed syntax for @set_obj_parent to allow removing parent
 
 Release 0.014:
-	* Bugfix to @make_room to deal with rooms whose location is nil
-	* Added floating-point support to UNQ load/save
-	* More exit stuff, including load/save
-	* Object weight, volume and length and their capacities load/save
-	* Weight/length/volume commands for modification
-	* Added weight/length/vol to @make_room/@make_detail/@make_portable
-	* Added w/l/v capacities to @make_room/detail/portable
-	* Changed all the can_* functions to take a user as well so we
-	  can return useful reasons stuff screws up.
-	* ObjectD now uses call_limited() when calling upgrade
-	  functions on objects.
-	* HelpD now specifically calls rlimits{...;-1} to upgrade
-	* HelpD now alphabetizes the words in a help query to avoid needing
-	  multiple orders
-	* Objects now save in multiple files by zone
-	* There's now a system for unresolved rooms - this is needed to
-	  deal with zone loading and unloading properly if it's not all
-	  done in one large chunk.
-	* Fixed problem with upgrading -- call_limited won't directly work.
+    * Bugfix to @make_room to deal with rooms whose location is nil
+    * Added floating-point support to UNQ load/save
+    * More exit stuff, including load/save
+    * Object weight, volume and length and their capacities load/save
+    * Weight/length/volume commands for modification
+    * Added weight/length/vol to @make_room/@make_detail/@make_portable
+    * Added w/l/v capacities to @make_room/detail/portable
+    * Changed all the can_* functions to take a user as well so we
+      can return useful reasons stuff screws up.
+    * ObjectD now uses call_limited() when calling upgrade
+      functions on objects.
+    * HelpD now specifically calls rlimits{...;-1} to upgrade
+    * HelpD now alphabetizes the words in a help query to avoid needing
+      multiple orders
+    * Objects now save in multiple files by zone
+    * There's now a system for unresolved rooms - this is needed to
+      deal with zone loading and unloading properly if it's not all
+      done in one large chunk.
+    * Fixed problem with upgrading -- call_limited won't directly work.
 
 Release 0.013:
-	* Added @list, an alias for @list_rooms.
-	* Added @make_detail command.
-	* Made details load and save properly.
-	* Fixed an ObjectD bug with objects that just added an
-	  "upgraded" function.
-	* Made @delete work with details.
-	* Cut down some now-needless stuff in the helpfiles, added
-	  help for some undocumented commands.
-	* The help system now treats space, minus and underscore as
-	  equivalent.  That'll save us some more help entries and
-	  generate more useful responses.
-	* @stat now uses the new object binding functions.
-	* Objects now inherit details from their parent.
-	* @stat now reports on immediate vs inherited details.
-	* Objects now have a removed_details array so they can specifically
-	  remove parental details they don't like without affecting the
-	  parent.
-	* You can now remove details with @set_obj_detail.
-	* Basic data inheritance of details works and is tested.
-	* Removed gossip channel and gossip command.  Updated help.
-	* Removed all "nodesc" functionality.  Replaced by details.
-	* Merged MOBILE_PORTABLE into SIMPLE_PORTABLE
-	* Merged SIMPLE_PORTABLE into SIMPLE_ROOM
-	* Made mobiles able to accept an optional name field as a comment
-	* New prototype parser (thanks to Keith Dunwoody)
-	* Serious rework of EXIT code, including locked and lockable
-	  objects, ability to look at doors, one- and two-way exits.
+    * Added @list, an alias for @list_rooms.
+    * Added @make_detail command.
+    * Made details load and save properly.
+    * Fixed an ObjectD bug with objects that just added an
+      "upgraded" function.
+    * Made @delete work with details.
+    * Cut down some now-needless stuff in the helpfiles, added
+      help for some undocumented commands.
+    * The help system now treats space, minus and underscore as
+      equivalent.  That'll save us some more help entries and
+      generate more useful responses.
+    * @stat now uses the new object binding functions.
+    * Objects now inherit details from their parent.
+    * @stat now reports on immediate vs inherited details.
+    * Objects now have a removed_details array so they can specifically
+      remove parental details they don't like without affecting the
+      parent.
+    * You can now remove details with @set_obj_detail.
+    * Basic data inheritance of details works and is tested.
+    * Removed gossip channel and gossip command.  Updated help.
+    * Removed all "nodesc" functionality.  Replaced by details.
+    * Merged MOBILE_PORTABLE into SIMPLE_PORTABLE
+    * Merged SIMPLE_PORTABLE into SIMPLE_ROOM
+    * Made mobiles able to accept an optional name field as a comment
+    * New prototype parser (thanks to Keith Dunwoody)
+    * Serious rework of EXIT code, including locked and lockable
+      objects, ability to look at doors, one- and two-way exits.
 
 Release 0.012:
-	* More logging and stuff in ObjectD.  And fixed a bug that
-	  caused log messages on rebuild.
-	* Now the upgraded() function for upgraded objects is called
-	  with a call_out, so it executes the new code instead of the
-	  old code.  The compiling() function still executes the
-	  pre-recompile code.
-	* New online help for old Kernel MUDLib commands.  I believe
-	  all the Kernel MUDLib legacy commands are now documented.
-	* Merged help with @help.  Now the regular help command handles
-	  all of it just fine.
-	* Slightly different logfile output format.
-	* Allow subscription to log and error channels with extra
-	  information.  Update "channels" list to show it.
-	* LOGD and ERRORD now send out notifications on the log and
-	  error channels.
-	* Normalized help query strings.  This should let us use fewer
-	  search names per help entry, and generate more good matches.
-	* Merged object flags into ROOM from SIMPLE_PORTABLE, preparatory
-	  to merge of SIMPLE_ROOM and SIMPLE_PORTABLE.
-	* Removed unnecessary cmd_social from the SYSTEM_USER object.
-	* Fixed bug in path_place...  How long have put and remove not
-	  been working?
-	* MAPD now lists problem objects when it can't resolve rooms.
-	* @set_obj_detail command will now add details to objects.
-	* @stat now deals with object details.
-	* Existing user commands (but not wizard commands) now take details.
+    * More logging and stuff in ObjectD.  And fixed a bug that
+      caused log messages on rebuild.
+    * Now the upgraded() function for upgraded objects is called
+      with a call_out, so it executes the new code instead of the
+      old code.  The compiling() function still executes the
+      pre-recompile code.
+    * New online help for old Kernel MUDLib commands.  I believe
+      all the Kernel MUDLib legacy commands are now documented.
+    * Merged help with @help.  Now the regular help command handles
+      all of it just fine.
+    * Slightly different logfile output format.
+    * Allow subscription to log and error channels with extra
+      information.  Update "channels" list to show it.
+    * LOGD and ERRORD now send out notifications on the log and
+      error channels.
+    * Normalized help query strings.  This should let us use fewer
+      search names per help entry, and generate more good matches.
+    * Merged object flags into ROOM from SIMPLE_PORTABLE, preparatory
+      to merge of SIMPLE_ROOM and SIMPLE_PORTABLE.
+    * Removed unnecessary cmd_social from the SYSTEM_USER object.
+    * Fixed bug in path_place...  How long have put and remove not
+      been working?
+    * MAPD now lists problem objects when it can't resolve rooms.
+    * @set_obj_detail command will now add details to objects.
+    * @stat now deals with object details.
+    * Existing user commands (but not wizard commands) now take details.
 
 Release 0.011b:
-	* Added @make_portable command, very similar to @make_room.
-	* Critical fix to setting examine desc for @make_room.
-	* @stat now scrolls its output, takes objects in the room or
-	  inventory as arguments and reports better on mobiles.
-	* Added "openable" flag to portables, and correspondingly to
-	  @stat, @set_obj_flag and the online help.
-	* Critical fix to @set_obj_flag -- didn't work before.
-	* Added open and close commands, usable by all.
-	* Fixed a couple of annoying ObjectD bugs that caused log
-	  messages on %code commands.  Still got a known ObjectD
-	  bug (and a feature request) to go.
+    * Added @make_portable command, very similar to @make_room.
+    * Critical fix to setting examine desc for @make_room.
+    * @stat now scrolls its output, takes objects in the room or
+      inventory as arguments and reports better on mobiles.
+    * Added "openable" flag to portables, and correspondingly to
+      @stat, @set_obj_flag and the online help.
+    * Critical fix to @set_obj_flag -- didn't work before.
+    * Added open and close commands, usable by all.
+    * Fixed a couple of annoying ObjectD bugs that caused log
+      messages on %code commands.  Still got a known ObjectD
+      bug (and a feature request) to go.
 
 Release 0.011:
-	* Lots of refactoring and general code changes.  Always.  Every
-	  release.  This one too.
-	* Moved command-sets and state-stacks into two separate libraries,
-	each inherited by the main user object (/usr/System/obj/user.c).
-	* Social verbs are now usable like regular commands.
-	* Removed old obsolete detail code
-	* Added @set_obj_flag back.  Previously didn't work.
-	* Now the MobileD reloads the binder file when recompiled.  So
-	  now we can add new mobile types at runtime.
-	* Added new "animal" mobile type.  Mobiles can now have extra
-	  data embedded in their mobfile entries, which is a pretty
-	  mandatory thing for more complex mobiles.
-	* Added "idea" command, like bug and typo.  Made sure more
-	  information was included in the reports like where the report
-	  takes place and who reported it.
-	* Added a @make_room command and its associated user states.  The
-	  idea is that you can type @make_room and then just answer the
-	  questions from there to create a new room object.  Simpler but
-	  slower than the older way.
-	* Added generic @delete command that will destroy rooms, exits,
-	  mobiles or portables.
-	* The display of @list_room now scrolls appropriately.
-	
+    * Lots of refactoring and general code changes.  Always.  Every
+      release.  This one too.
+    * Moved command-sets and state-stacks into two separate libraries,
+    each inherited by the main user object (/usr/System/obj/user.c).
+    * Social verbs are now usable like regular commands.
+    * Removed old obsolete detail code
+    * Added @set_obj_flag back.  Previously didn't work.
+    * Now the MobileD reloads the binder file when recompiled.  So
+      now we can add new mobile types at runtime.
+    * Added new "animal" mobile type.  Mobiles can now have extra
+      data embedded in their mobfile entries, which is a pretty
+      mandatory thing for more complex mobiles.
+    * Added "idea" command, like bug and typo.  Made sure more
+      information was included in the reports like where the report
+      takes place and who reported it.
+    * Added a @make_room command and its associated user states.  The
+      idea is that you can type @make_room and then just answer the
+      questions from there to create a new room object.  Simpler but
+      slower than the older way.
+    * Added generic @delete command that will destroy rooms, exits,
+      mobiles or portables.
+    * The display of @list_room now scrolls appropriately.
+    
 Release 0.010:
 
-	* Merged in Keith Dunwoody's patch for merging PORTABLED and MAPD.
-	  (New hooks for MOBILEs are included in that patch)
-	* Added Jay Shaffstall's patch for escape character codes in UNQ
-	parsers.
-	* Added MOBILED to track mobiles
-	* Updated some zone-related commands to save zones across reboots
-	and to create objects in the current zone by default (@new_port,
-	@new_room).
-	* New @list_mob command to list mobiles by number
-	* New @delete_mob command can delete mobiles without accompanying
-	user objects.  Note that this can leave bodies behind.
-	* @stat command now works on mobiles
-	* UNQ DTD error handling now can accept a filename
-	* A basic mobfile is now saved like the roomfile and zonefile.  It
-	still needs more work before it can be restored, though.
-	* Mobiles now have a binder file
-	* There is an "unq" builtin type when UNQ parsing for freeform UNQ
-	content
-	* The %compile command will append a ".c" to the supplied filename
-	if the file as mentioned doesn't exist, but the same name with a
-	".c" exists and is at least one byte long.
-	* There is a @new_mobile command to create a new mobile
-	* Added help for new mobile commands
-	* UNQ DTDs can now import other DTD's.
-	* Improved UNQ DTD type inheritance.
-	* The mobfile can now be restored.
-	* @new_zone command to add new zones
-	* wandering mobiles now work
-	* Builtin 'unq' data now works properly
-	* A basic sould is in place
-	* A "social" command allows socials to be used, slightly awkwardly
-	
+    * Merged in Keith Dunwoody's patch for merging PORTABLED and MAPD.
+      (New hooks for MOBILEs are included in that patch)
+    * Added Jay Shaffstall's patch for escape character codes in UNQ
+    parsers.
+    * Added MOBILED to track mobiles
+    * Updated some zone-related commands to save zones across reboots
+    and to create objects in the current zone by default (@new_port,
+    @new_room).
+    * New @list_mob command to list mobiles by number
+    * New @delete_mob command can delete mobiles without accompanying
+    user objects.  Note that this can leave bodies behind.
+    * @stat command now works on mobiles
+    * UNQ DTD error handling now can accept a filename
+    * A basic mobfile is now saved like the roomfile and zonefile.  It
+    still needs more work before it can be restored, though.
+    * Mobiles now have a binder file
+    * There is an "unq" builtin type when UNQ parsing for freeform UNQ
+    content
+    * The %compile command will append a ".c" to the supplied filename
+    if the file as mentioned doesn't exist, but the same name with a
+    ".c" exists and is at least one byte long.
+    * There is a @new_mobile command to create a new mobile
+    * Added help for new mobile commands
+    * UNQ DTDs can now import other DTD's.
+    * Improved UNQ DTD type inheritance.
+    * The mobfile can now be restored.
+    * @new_zone command to add new zones
+    * wandering mobiles now work
+    * Builtin 'unq' data now works properly
+    * A basic sould is in place
+    * A "social" command allows socials to be used, slightly awkwardly

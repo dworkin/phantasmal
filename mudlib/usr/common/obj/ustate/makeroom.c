@@ -32,14 +32,13 @@ private object obj_detail_of;
 #define SS_PROMPT_OBJ_NUMBER        3
 #define SS_PROMPT_OBJ_PARENT        4
 #define SS_PROMPT_BRIEF_DESC        5
-/* #define SS_PROMPT_GLANCE_DESC       6 */
-#define SS_PROMPT_LOOK_DESC         7
-#define SS_PROMPT_EXAMINE_DESC      8
-#define SS_PROMPT_NOUNS             9
-#define SS_PROMPT_ADJECTIVES       10
-#define SS_PROMPT_WEIGHT           11
-#define SS_PROMPT_VOLUME           12
-#define SS_PROMPT_LENGTH           13
+#define SS_PROMPT_LOOK_DESC         6
+#define SS_PROMPT_EXAMINE_DESC      7
+#define SS_PROMPT_NOUNS             8
+#define SS_PROMPT_ADJECTIVES        9
+#define SS_PROMPT_WEIGHT           10
+#define SS_PROMPT_VOLUME           11
+#define SS_PROMPT_LENGTH           12
 /* Note the gap -- that so that if we add states and recompile, anybody
    who is mid-object-creation won't find themselves mysteriously being
    prompted for something else.  Now we only need to renumber *very*
@@ -64,7 +63,6 @@ static int  prompt_obj_number_input(string input);
 static int  prompt_obj_detail_of_input(string input);
 static int  prompt_obj_parent_input(string input);
 static int  prompt_brief_desc_input(string input);
-/* static int  prompt_glance_desc_input(string input); */
 static void prompt_look_desc_data(mixed data);
 static void prompt_examine_desc_data(mixed data);
 static int  prompt_nouns_input(string input);
@@ -98,12 +96,12 @@ static void create(varargs int clone) {
   }
 }
 
-void specify_type(string type) {
+private void specify_type(string type) {
   if(type == "room" || type == "r")
     obj_type = OT_ROOM;
   else if(type == "port" || type == "portable" || type == "p")
     obj_type = OT_PORTABLE;
-  else if(type == "det" || type == "detail" || type == "p")
+  else if(type == "det" || type == "detail" || type == "d")
     obj_type = OT_DETAIL;
   else
     error("Illegal value supplied to specify_type!");
@@ -113,6 +111,11 @@ void specify_type(string type) {
   } else {
     substate = SS_PROMPT_OBJ_NUMBER;
   }
+}
+
+void set_up_func(varargs string new_type) {
+  if(new_type)
+    specify_type(new_type);
 }
 
 /* This handles input directly from the user.  Handling depends on the
@@ -126,7 +129,7 @@ int from_user(string input) {
     if(!STRINGD->stricmp(quitcheck, "quit")) {
       if(new_obj) {
 	send_string("(Quitting OLC -- not deleting obj #"
-		    + new_obj->get_number() + " -- Cancel!)\r\n");
+		    + new_obj->get_number() + " -- Cancelling!)\r\n");
       } else {
 	send_string("(Quitting OLC -- Cancel!)\r\n");
       }
@@ -151,11 +154,6 @@ int from_user(string input) {
   case SS_PROMPT_BRIEF_DESC:
     ret = prompt_brief_desc_input(input);
     break;
-#if 0
-  case SS_PROMPT_GLANCE_DESC:
-    ret = prompt_glance_desc_input(input);
-    break;
-#endif
   case SS_PROMPT_NOUNS:
     ret = prompt_nouns_input(input);
     break;
@@ -187,6 +185,8 @@ int from_user(string input) {
   case SS_PROMPT_OPEN:
   case SS_PROMPT_OPENABLE:
     send_string("Internal error in state machine!  Cancelling OLC!\r\n");
+    LOGD->write_syslog("Reached from_user() in state " + substate
+		       + " while doing @make_room.  Illegal!", LOG_ERR);
     pop_state();
     return MODE_ECHO;
     break;
@@ -251,6 +251,7 @@ private string blurb_for_substate(int substate) {
 
   case SS_PROMPT_OBJ_PARENT:
     return "Enter the object's parents for data inheritance.\r\n"
+      + "Example: #37 #247 #1343\r\n"
       + "You can also hit enter for no parents, or type 'quit' to quit.\r\n"
       + "Parents are like Skotos ur-objects (see help @set_obj_parent).\r\n";
 
@@ -258,14 +259,6 @@ private string blurb_for_substate(int substate) {
     return "Next, please enter a one-line brief description.\r\n"
       + "Examples of brief descriptions:  "
       + "'a sword', 'John', 'some bacon'.\r\n";
-
-#if 0
-  case SS_PROMPT_GLANCE_DESC:
-    return "Please enter a one-line glance description.\r\n"
-      + "Examples of brief descriptions:  "
-      + "'a red flashing toy gun', 'John the Butcher',"
-      + "or 'about a pound of bacon'.\r\n";
-#endif
 
   case SS_PROMPT_LOOK_DESC:
     return "Now, enter a multiline 'look' description.  This is what an"
@@ -282,8 +275,6 @@ private string blurb_for_substate(int substate) {
   case SS_PROMPT_NOUNS:
     tmp = "Brief:  " + new_obj->get_brief()->to_string(get_user()) + "\r\n";
 
-    /* + "Glance: " + new_obj->get_glance()->to_string(get_user()) + "\r\n"; */
-
     if(sizeof(new_obj->get_archetypes())) {
       tmp += "Parent nouns: ";
       tmp += implode(new_obj->get_nouns(get_user()->get_locale()), ", ");
@@ -298,7 +289,6 @@ private string blurb_for_substate(int substate) {
 
   case SS_PROMPT_ADJECTIVES:
     tmp = "Brief:  " + new_obj->get_brief()->to_string(get_user()) + "\r\n";
-    /* + "Glance: " + new_obj->get_glance()->to_string(get_user()) + "\r\n"; */
 
     if(sizeof(new_obj->get_archetypes())) {
       tmp += "Parent adjectives: ";
@@ -355,6 +345,7 @@ private string blurb_for_substate(int substate) {
   case SS_PROMPT_CONTAINER:
   case SS_PROMPT_OPEN:
   case SS_PROMPT_OPENABLE:
+    return "This blurb should never be used.  Oops!\r\n";
 
   case SS_PROMPT_WEIGHT_CAPACITY:
     if(new_obj && sizeof(new_obj->get_archetypes()))
@@ -727,7 +718,7 @@ static int prompt_obj_parent_input(string input) {
 }
 
 static int prompt_brief_desc_input(string input) {
-  object phr;
+  object PHRASE phr;
 
   if(!input || STRINGD->is_whitespace(input)) {
     send_string("That was all whitespace.  Let's try that again.\r\n");
@@ -740,49 +731,16 @@ static int prompt_brief_desc_input(string input) {
   phr = new_obj->get_brief();
   phr->set_content_by_lang(get_user()->get_locale(), input);
 
-  /* substate = SS_PROMPT_GLANCE_DESC; */
   substate = SS_PROMPT_LOOK_DESC;
 
   send_string(blurb_for_substate(substate));
+  push_new_state(US_ENTER_DATA);
 
   return RET_NORMAL;
 }
 
-#if 0
-static int prompt_glance_desc_input(string input) {
-  object edit_state, phr;
-
-  if(!input || STRINGD->is_whitespace(input)) {
-    send_string("That was all whitespace.  Let's try that again.\r\n");
-    send_string(blurb_for_substate(SS_PROMPT_GLANCE_DESC));
-
-    return RET_NORMAL;
-  }
-
-  input = STRINGD->trim_whitespace(input);
-  phr = new_obj->get_glance();
-  phr->set_content_by_lang(get_user()->get_locale(), input);
-
-  substate = SS_PROMPT_LOOK_DESC;
-
-  send_string("\r\nGlance desc accepted.\r\n");
-  send_string(blurb_for_substate(SS_PROMPT_LOOK_DESC));
-
-  edit_state = clone_object(US_ENTER_DATA);
-  if(edit_state) {
-    push_state(edit_state);
-  } else {
-    LOGD->write_syslog("Couldn't clone US_ENTER_DATA state object!",
-		       LOG_ERROR);
-    return RET_POP_STATE;
-  }
-
-  return RET_NO_PROMPT;
-}
-#endif
-
 static void prompt_look_desc_data(mixed data) {
-  object edit_state, phr;
+  object PHRASE phr;
 
   if(typeof(data) != T_STRING) {
     send_string("Non-string data passed to state!  Huh?  Cancelling.\r\n");
@@ -795,14 +753,7 @@ static void prompt_look_desc_data(mixed data) {
 		+ "Let's try that again.\r\n");
     send_string(blurb_for_substate(SS_PROMPT_LOOK_DESC));
 
-    edit_state = clone_object(US_ENTER_DATA);
-    if(edit_state) {
-      push_state(edit_state);
-    } else {
-      LOGD->write_syslog("Couldn't clone US_ENTER_DATA state object!",
-			 LOG_ERROR);
-      pop_state();
-    }
+    push_new_state(US_ENTER_DATA);
 
     return;
   }
@@ -816,16 +767,7 @@ static void prompt_look_desc_data(mixed data) {
 
   send_string(blurb_for_substate(SS_PROMPT_EXAMINE_DESC));
 
-  edit_state = clone_object(US_ENTER_DATA);
-  if(edit_state) {
-    push_state(edit_state);
-  } else {
-    LOGD->write_syslog("Couldn't clone US_ENTER_DATA state object!",
-		       LOG_ERROR);
-    pop_state();
-    return;
-  }
-
+  push_new_state(US_ENTER_DATA);
 }
 
 static void prompt_examine_desc_data(mixed data) {
@@ -901,7 +843,7 @@ static int prompt_nouns_input(string input) {
 }
 
 static int prompt_adjectives_input(string input) {
-  object phr, edit_state;
+  object PHRASE phr;
   string adjectives;
 
   adjectives = STRINGD->trim_whitespace(input);
@@ -939,15 +881,7 @@ static int prompt_adjectives_input(string input) {
 
   substate = SS_PROMPT_CONTAINER;
 
-  edit_state = clone_object(US_ENTER_YN);
-  if(edit_state) {
-    edit_state->set_prompt("Is the object a container? ");
-    push_state(edit_state);
-  } else {
-    LOGD->write_syslog("Couldn't clone US_ENTER_YN state object!",
-		       LOG_ERROR);
-    return RET_POP_STATE;
-  }
+  push_new_state(US_ENTER_YN, "Is the object a container? ");
 
   return RET_NORMAL;
 }
@@ -1128,7 +1062,6 @@ static int prompt_volume_input(string input) {
 static int prompt_length_input(string input) {
   mapping units;
   string  unitstr;
-  object  edit_state;
   float   value;
   int     use_parent;
 
@@ -1202,23 +1135,13 @@ static int prompt_length_input(string input) {
   send_string("Accepted length.\r\n");
   substate = SS_PROMPT_CONTAINER;
 
-  edit_state = clone_object(US_ENTER_YN);
-  if(edit_state) {
-    edit_state->set_prompt("Is the object a container? ");
-    push_state(edit_state);
-  } else {
-    LOGD->write_syslog("Couldn't clone US_ENTER_YN state object!",
-		       LOG_ERROR);
-    return RET_POP_STATE;
-  }
+  push_new_state(US_ENTER_YN, "Is the object a container? ");
 
   return RET_NORMAL;
 }
 
 
 static void prompt_container_data(mixed data) {
-  object edit_state;
-
   if(typeof(data) != T_INT) {
     send_string("Internal error -- wrong type passed!\r\n");
     pop_state();
@@ -1240,21 +1163,10 @@ static void prompt_container_data(mixed data) {
 
   substate = SS_PROMPT_OPEN;
 
-  edit_state = clone_object(US_ENTER_YN);
-  if(edit_state) {
-    edit_state->set_prompt("Is the container open? ");
-    push_state(edit_state);
-  } else {
-    LOGD->write_syslog("Couldn't clone US_ENTER_YN state object!",
-		       LOG_ERROR);
-    pop_state();
-    return;
-  }
+  push_new_state(US_ENTER_YN, "Is the container open? ");
 }
 
 static void prompt_open_data(mixed data) {
-  object edit_state;
-
   if(typeof(data) != T_INT) {
     send_string("Internal error -- wrong type passed!\r\n");
     pop_state();
@@ -1268,16 +1180,8 @@ static void prompt_open_data(mixed data) {
 
   substate = SS_PROMPT_OPENABLE;
 
-  edit_state = clone_object(US_ENTER_YN);
-  if(edit_state) {
-    edit_state->set_prompt("Is the container freely openable and closeable? ");
-    push_state(edit_state);
-  } else {
-    LOGD->write_syslog("Couldn't clone US_ENTER_YN state object!",
-		       LOG_ERROR);
-    pop_state();
-    return;
-  }
+  push_new_state(US_ENTER_YN,
+		 "Is the container freely openable and closeable? ");
 }
 
 static void prompt_openable_data(mixed data) {

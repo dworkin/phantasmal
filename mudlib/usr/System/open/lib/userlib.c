@@ -1,4 +1,4 @@
-/* $Header: /cvsroot/phantasmal/mudlib/usr/System/open/lib/userlib.c,v 1.10 2005/03/24 08:52:36 angelbob Exp $ */
+/* $Header: /cvsroot/phantasmal/mudlib/usr/System/open/lib/userlib.c,v 1.11 2005/03/24 11:41:30 angelbob Exp $ */
 
 #include <kernel/kernel.h>
 #include <kernel/user.h>
@@ -268,29 +268,32 @@ int message(string str) {
   }
 }
 
-static string phrase_to_string(object "/usr/common/lib/phrase" phrase) {
-  if(locale >= 0) {
-    if(locale < sizeof(content) && content[locale])
-      return content[locale];
-    if(content[LANG_englishUS])
-      return content[LANG_englishUS];
-    if(content[LANG_debugUS])
-      return content[LANG_debugUS];
-    return "(nil)";
-  }
-  return "(Illegal locale)";
+static string phrase_to_string(object PHRASE phrase) {
+  string tmp;
+
+  tmp = phrase->get_content_by_lang(locale);
+  if(tmp) return tmp;
+
+  tmp = phrase->get_content_by_lang(LANG_englishUS);
+  if(tmp) return tmp;
+
+  tmp = phrase->get_content_by_lang(LANG_debugUS);
+  if(tmp) return tmp;
+
+  return "(nil)";
 }
 
-/* This sends a Phrase, allowing locale and terminal settings to affect output */
-int send_phrase(object "/usr/common/lib/phrase" obj) {
+/* This sends a Phrase, allowing locale and terminal settings to
+   affect output */
+int send_phrase(object PHRASE obj) {
   if(!SYSTEM() && !COMMON() && !GAME())
     return -1;
 
-  return message(obj->to_string(this_object()));
+  return message(phrase_to_string(obj));
 }
 
 int send_system_phrase(string phrname) {
-  object "/usr/common/lib/phrase" phr;
+  object PHRASE phr;
 
   if(!SYSTEM() && !COMMON() && !GAME())
     return -1;
@@ -333,7 +336,7 @@ nomask int receive_message(string str)
  */
 static void show_room_to_player(object location) {
   string tmp;
-  object "/usr/common/lib/phrase" phr;
+  object PHRASE phr;
   int    ctr;
   mixed* objs;
 
