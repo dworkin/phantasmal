@@ -1,4 +1,4 @@
-/* $Header: /cvsroot/phantasmal/testgame/usr/game/obj/user.c,v 1.3 2003/12/12 19:55:57 angelbob Exp $ */
+/* $Header: /cvsroot/phantasmal/testgame/usr/game/obj/user.c,v 1.4 2004/02/12 09:26:57 angelbob Exp $ */
 
 #include <kernel/kernel.h>
 #include <kernel/user.h>
@@ -47,6 +47,10 @@ static int game_command(string str);
 
 /* Macros */
 #define NEW_PHRASE(x) PHRASED->new_simple_english_phrase(x)
+
+#define BUG_DATA            "/usr/game/text/bug_reports.txt"
+#define IDEA_DATA           "/usr/game/text/idea_reports.txt"
+#define TYPO_DATA           "/usr/game/text/typo_reports.txt"
 
 
 /*
@@ -109,9 +113,6 @@ void upgraded(varargs int clone) {
 		     "channel"   : "cmd_channels",
 		     "channels"  : "cmd_channels",
 
-		     "g"         : "cmd_look",
-		     "gl"        : "cmd_look",
-		     "glance"    : "cmd_look",
 		     "l"         : "cmd_look",
 		     "look"      : "cmd_look",
 		     "ex"        : "cmd_look",
@@ -308,7 +309,6 @@ static void create_body(void) {
 
     /* Set descriptions and add noun for new name */
     body->set_brief(NEW_PHRASE(Name));
-    body->set_glance(NEW_PHRASE(Name));
     body->set_look(NEW_PHRASE(Name + " wanders the MUD."));
     body->set_examine(nil);
     body->add_noun(NEW_PHRASE(STRINGD->to_lower(name)));
@@ -630,18 +630,45 @@ static int game_command(string str)
     }
 
     if(commands_map[cmd]) {
-      call_other(this_object(),                /* Call on self */
-		 commands_map[cmd],            /* The function */
-		 this_object(),                /* This user */
-		 cmd,                          /* The command */
-		 str == "" ? nil : str);       /* str or nil */
+      string err;
+
+      err = catch(call_other(this_object(),                /* Call on self */
+			     commands_map[cmd],            /* The function */
+			     this_object(),                /* This user */
+			     cmd,                          /* The command */
+			     str == "" ? nil : str)        /* str or nil */
+		  );
+      if(err) {
+	LOGD->write_syslog("Error on command '" + cmd + "/"
+			   + (str ? str : "(nil)") + "'.  Err text: "
+			   + err);
+
+	message("Your command failed with an internal error.\r\n");
+	message("The error has been logged.\r\n");
+
+	/* Return normal status, print a prompt and continue. */
+	return -1;
+      }
       str = nil;
     }
   }
 
   if (str) {
     if (wiztool) {
-      wiztool->command(cmd, str);
+      string err;
+
+      err = catch(wiztool->command(cmd, str));
+      if(err) {
+	LOGD->write_syslog("Error on command '" + cmd + "/"
+			   + (str ? str : "(nil)") + "'.  Err text: "
+			   + err);
+
+	message("Your command failed with an internal error.\r\n");
+	message("The error has been logged.\r\n");
+
+	/* Return normal status, print a prompt and continue. */
+	return -1;
+      }
     } else {
       send_system_phrase("No match");
       message(": " + cmd + " " + str + "\r\n");
@@ -654,19 +681,6 @@ static int game_command(string str)
 
 
 /************** User-level commands *************************/
-
-/* Temporary command for testing the parser */
-static void cmd_parse(object user, string cmd, string str) {
-  mixed output;
-
-  output = PARSED->parse_cmd(str);
-
-  if (output == nil) {
-    message("FAILED!\r\n");
-  } else {
-    message("PARSED!\r\n" + STRINGD->tree_sprint(output, 0) + "\r\n");
-  }
-}
 
 static void cmd_set_lines(object user, string cmd, string str) {
   int new_num_lines;
@@ -856,9 +870,7 @@ static void cmd_look(object user, string cmd, string str) {
 		  + "You check the first one.\r\n\r\n");
   }
 
-  if(cmd[0] == 'g') {
-    user->send_phrase(tmp[0]->get_glance());
-  } else if(cmd[0] == 'e' && tmp[0]->get_examine()) {
+  if(cmd[0] == 'e' && tmp[0]->get_examine()) {
     user->send_phrase(tmp[0]->get_examine());
   } else {
     user->send_phrase(tmp[0]->get_look());
@@ -882,7 +894,7 @@ static void cmd_inventory(object user, string cmd, string str) {
   }
   for(ctr = 0; ctr < sizeof(objs); ctr++) {
     user->message("- ");
-    user->send_phrase(objs[ctr]->get_glance());
+    user->send_phrase(objs[ctr]->get_brief());
     user->message("\r\n");
   }
 }
@@ -924,12 +936,12 @@ static void cmd_put(object user, string cmd, string str) {
 
   if(sizeof(portlist) > 1) {
     user->message("More than one object fits '" + obj1 + "'.  "
-		  + "You pick " + portlist[0]->get_glance() + ".\r\n");
+		  + "You pick " + portlist[0]->get_brief() + ".\r\n");
   }
 
   if(sizeof(contlist) > 1) {
     user->message("More than one open container fits '" + obj2 + "'.  "
-		  + "You pick " + portlist[0]->get_glance() + ".\r\n");
+		  + "You pick " + portlist[0]->get_brief() + ".\r\n");
   }
 
   port = portlist[0];
@@ -978,7 +990,7 @@ static void cmd_remove(object user, string cmd, string str) {
 
   if(sizeof(contlist) > 1) {
     user->message("More than one open container fits '" + obj2 + "'.\r\n");
-    user->message("You pick " + contlist[0]->get_glance() + ".\r\n");
+    user->message("You pick " + contlist[0]->get_brief() + ".\r\n");
   }
   cont = contlist[0];
 
@@ -992,7 +1004,7 @@ static void cmd_remove(object user, string cmd, string str) {
 
   if(sizeof(portlist) > 1) {
     user->message("More than one object fits '" + obj1 + "'.\r\n");
-    user->message("You pick " + portlist[0]->get_glance() + ".\r\n");
+    user->message("You pick " + portlist[0]->get_brief() + ".\r\n");
   }
   port = portlist[0];
 
@@ -1146,7 +1158,7 @@ static void cmd_get(object user, string cmd, string str) {
   if(sizeof(tmp) > 1) {
     message("More than one of those is here.\r\n");
     message("You choose ");
-    send_phrase(tmp[0]->get_glance());
+    send_phrase(tmp[0]->get_brief());
     message(".\r\n");
   }
 
@@ -1157,14 +1169,14 @@ static void cmd_get(object user, string cmd, string str) {
 
   if(tmp[0]->get_detail_of()) {
     message("You can't get that.  It's part of ");
-    send_phrase(tmp[0]->get_detail_of()->get_glance());
+    send_phrase(tmp[0]->get_detail_of()->get_brief());
     message(".\r\n");
     return;
   }
 
   if(!(err = mobile->place(tmp[0], body))) {
     message("You " + cmd + " ");
-    send_phrase(tmp[0]->get_glance());
+    send_phrase(tmp[0]->get_brief());
     message(".\r\n");
   } else {
     message(err + "\r\n");
@@ -1190,12 +1202,12 @@ static void cmd_drop(object user, string cmd, string str) {
 
   if(sizeof(tmp) > 1) {
     message("You have more than one of those.\r\n");
-    message("You drop " + tmp[0]->get_glance() + ".\r\n");
+    message("You drop " + tmp[0]->get_brief() + ".\r\n");
   }
 
   if (!(err = mobile->place(tmp[0], location))) {
     message("You drop ");
-    send_phrase(tmp[0]->get_glance());
+    send_phrase(tmp[0]->get_brief());
     message(".\r\n");
   } else {
     message(err + "\r\n");
@@ -1233,7 +1245,7 @@ static void cmd_open(object user, string cmd, string str) {
 
     message("More than one of those is here.\r\n");
     message("You choose ");
-    send_phrase(tmp[ctr]->get_glance());
+    send_phrase(tmp[ctr]->get_brief());
     message(".\r\n");
   }
 
@@ -1244,7 +1256,7 @@ static void cmd_open(object user, string cmd, string str) {
 
   if(!(err = mobile->open(tmp[ctr]))) {
     message("You open ");
-    send_phrase(tmp[0]->get_glance());
+    send_phrase(tmp[0]->get_brief());
     message(".\r\n");
   } else {
     message(err + "\r\n");
@@ -1282,7 +1294,7 @@ static void cmd_close(object user, string cmd, string str) {
 
     message("More than one of those is here.\r\n");
     message("You choose ");
-    send_phrase(tmp[ctr]->get_glance());
+    send_phrase(tmp[ctr]->get_brief());
     message(".\r\n");
   }
 
@@ -1293,7 +1305,7 @@ static void cmd_close(object user, string cmd, string str) {
 
   if(!(err = mobile->close(tmp[ctr]))) {
     message("You close ");
-    send_phrase(tmp[0]->get_glance());
+    send_phrase(tmp[0]->get_brief());
     message(".\r\n");
   } else {
     message(err + "\r\n");
