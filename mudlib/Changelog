@@ -11,7 +11,13 @@ Release 0.013:
 	  equivalent.  That'll save us some more help entries and
 	  generate more useful responses.
 	* @stat now uses the new object binding functions.
+	* Objects now inherit details from their parent.
 	* @stat now reports on immediate vs inherited details.
+	* Objects now have a removed_details array so they can specifically
+	  remove parental details they don't like without affecting the
+	  parent.
+	* You can now remove details with @set_obj_detail.
+	* Basic data inheritance of details works and is tested.
 
 Release 0.012:
 	* More logging and stuff in ObjectD.  And fixed a bug that
