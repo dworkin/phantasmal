@@ -208,6 +208,7 @@ private string blurb_for_substate(int substate) {
 
   case SS_PROMPT_OBJ_PARENT:
     return "Enter the object's parent for data inheritance.\r\n"
+      + "You can also hit enter for no parent, or type 'quit' to quit.\r\n"
       + "That's like Skotos ur-objects (see help @set_obj_parent).\r\n";
 
   case SS_PROMPT_BRIEF_DESC:
