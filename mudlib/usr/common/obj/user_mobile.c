@@ -47,6 +47,13 @@ void hook_say(mixed *args) {
   }
 }
 
+void hook_emote(mixed *args) {
+  if(user) {
+    user->send_phrase(args[0]->get_brief());
+    user->message(" " + args[1] + "\r\n");
+  }
+}
+
 void hook_whisper(mixed *args) {
   if (user) {
     user->send_phrase(args[0]->get_brief());
