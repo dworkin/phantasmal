@@ -237,14 +237,14 @@ static void cmd_stat(object user, string cmd, string str) {
 		+ PHRASED->locale_name_for_language(user->get_locale())
 		+ ")\r\n";
 
-  tmp += "Brief:\r\n  ";
+  tmp += "Brief: ";
   if(obj->get_brief()) {
     tmp += "'" + obj->get_brief()->to_string(user) + "'\r\n";
   } else {
     tmp += "(none)\r\n";
   }
 
-  tmp += "Glance:\r\n  ";
+  tmp += "Glance: ";
   if(obj->get_glance()) {
     tmp += "'" + obj->get_glance()->to_string(user) + "'\r\n";
   } else {
@@ -292,6 +292,10 @@ static void cmd_stat(object user, string cmd, string str) {
   tmp += implode(words, ", ");
   tmp += "\r\n\r\n";
 
+  tmp += "Its weight is " + obj->get_weight() + " kilograms.\r\n";
+  tmp += "Its volume is " + obj->get_volume() + " cubic decimeters.\r\n";
+  tmp += "Its length is " + obj->get_length() + " centimeters.\r\n";
+
   if(function_object("is_container", obj)) {
     if(obj->is_container()) {
       if(obj->is_open()) {
@@ -304,6 +308,9 @@ static void cmd_stat(object user, string cmd, string str) {
       } else {
 	tmp += "The object may not be freely opened and closed.\r\n";
       }
+      tmp += "Its weight capacity is " + obj->get_weight_capacity() + ".\r\n";
+      tmp += "Its volume capacity is " + obj->get_volume_capacity() + ".\r\n";
+      tmp += "Its maximum height is " + obj->get_length_capacity() + ".\r\n";
     } else {
       tmp += "The object is not a container.\r\n";
     }
@@ -619,6 +626,67 @@ static void cmd_set_obj_parent(object user, string cmd, string str) {
   obj->set_archetype(parent);
   user->message("Done.\r\n");
 }
+
+
+/* This function is called for set_obj_weight, set_obj_volume,
+   and set_obj_height and their synonyms, as well as
+   set_obj_weight_capacity, set_obj_height_capacity,
+   set_obj_volume_capacity and so on. */
+static void cmd_set_obj_value(object user, string cmd, string str) {
+  object  obj;
+  int     objnum, is_cap;
+  float   newvalue;
+  mapping val_names;
+  string  cmd_value_name, cmd_norm_name;
+
+  if(!str || sscanf(str, "%*s %*s %*s") == 3
+     || sscanf(str, "#%d %f", objnum, newvalue) != 2) {
+    user->message("Usage: " + cmd + " #<obj> <value>\r\n");
+    return;
+  }
+
+  val_names = ([
+		"weight" : "weight",
+		"volume" : "volume",
+		"vol"    : "volume",
+		"length" : "length",
+		"height" : "length",
+		]);
+
+  /* For set_obj_weight_capacity and company */
+  if(sscanf(cmd, "%*s_%*s_%s_%*s", cmd_value_name) == 4) {
+    /* Normalize the name. */
+    cmd_norm_name = val_names[cmd_value_name];
+    is_cap = 1;
+  } else if (sscanf(cmd, "%*s_%*s_%s", cmd_value_name) == 3) {
+    /* Not a set_blah_capacity function */
+    cmd_norm_name = val_names[cmd_value_name];
+    is_cap = 0;
+  } else {
+    user->message("Internal parsing error on command name '"
+		  + cmd + "'.  Sorry!\r\n");
+    return;
+  }
+
+  obj = MAPD->get_room_by_num(objnum);
+  if(!obj) {
+    user->message("The object must be a room or portable.  Obj #"
+		  + objnum + " is not.\r\n");
+    return;
+  }
+
+  if(newvalue < 0.0) {
+    user->message("Length, weight and height values must be positive or zero."
+		  + "\r\n.  " + newvalue + " is not.\r\n");
+    return;
+  }
+
+  call_other(obj, "set_" + cmd_norm_name + (is_cap ? "_capacity" : ""),
+	     newvalue);
+
+  user->message("Done.\r\n");
+}
+
 
 static void cmd_set_obj_flag(object user, string cmd, string str) {
   object  obj, link_exit;
