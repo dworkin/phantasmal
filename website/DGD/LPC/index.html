@@ -8,14 +8,191 @@
 	alink="#FF0000">
 
     <h1> LPC:  The LPMUD Programming Language </h1>
-    <h3> DGD edition </h3>
+    <h2> DGD edition </h2>
 
     <address>Original by Ronny Wikh
       <a href="mailto:rw@cd.chalmers.se">(rw@cd.chalmers.se)</a>
-      </address>
+    </address>
 
     <p> DGD Edition modified by Angelbob from the 1996 pre-3.01
-      edition </p>
+      edition.  This work is copyright 1996, 2003 by Ronny Wikh
+      and Noah Gibbs. </p>
+
+    <p> This adaptation is a work in progress.  If you see a
+      line in the table of contents that says &quot;Adaptation
+      Stops Here&quot;, you're seeing a place I haven't worked
+      beyond yet. </p>
+
+    <ul>
+      <li><a name="SEC1" href="section_1.html#SEC1">Copying Conditions</a>
+      </li>
+
+      <li><a name="SEC2" href="section_2.html#SEC2">Introduction</a> </li>
+    <ul>
+      <li><a name="SEC2.1" href="section_2.html#SEC2.1">
+	  i - Acknowledgments</a> </li>
+      <li><a name="SEC2.2" href="section_2.html#SEC2.2">
+	  ii - Tutorial Setup</a> </li>
+      <li><a name="SEC2.3" href="section_2.html#SEC2.3">
+	  iii - History of LPC</a> </li>
+      <li><a name="SEC2.4" href="section_2.html#SEC2.4">
+	  iv - Driver vs Mudlib</a> </li>
+      <li><a name="SEC2.5" href="section_2.html#SEC2.5">
+	  v - Administrative Setup</a> </li>
+      <li><a name="SEC2.6" href="section_2.html#SEC2.6">
+	  vi - Writing code</a> </li>
+    </ul>
+
+    <li><a name="SEC3" href="section_31.html#SEC3">LPC basics</a> </li>
+    <ul>
+      <li><a name="SEC3.1" href="section_31.html#SEC3.1">
+	  Basic programming concepts</a>
+	<ul>
+	  <li><a name="SEC3.1.1" href="section_31.html#SEC3.1.1">
+	      What is programming?</a> </li>
+	  <li><a name="SEC3.1.2" href="section_31.html#SEC3.1.2">
+	      Compiled/Interpreted code</a> </li>
+	  <li><a name="SEC3.1.3" href="section_31.html#SEC3.1.3">
+	      Programs</a> </li>
+	  <li><a name="SEC3.1.4" href="section_31.html#SEC3.1.4">
+	      Objects</a> </li>
+	  <li><a name="SEC3.1.5" href="section_31.html#SEC3.1.5">
+	      Object makeup</a> </li>
+	</ul>
+
+      <li> ADAPTATION STOPS HERE </li>
+
+      <li><a name="SEC3.2" href="section_3.html#SEC3.2">Basic LPC</a>
+	<ul>
+	  <li><a name="SEC17" href="lpc.html#SEC17">Comments</a>
+	  <li><a name="SEC18" href="lpc.html#SEC18">Data types</a>
+	  <li><a name="SEC19" href="lpc.html#SEC19">Variable declarations</a>
+	  <li><a name="SEC20" href="lpc.html#SEC20">Function declarations</a>
+	  <li><a name="SEC21" href="lpc.html#SEC21">Statements and Expressions</a>
+	    <ul>
+	      <li><a name="SEC22" href="lpc.html#SEC22">Statements</a>
+	      <li><a name="SEC23" href="lpc.html#SEC23">Expressions</a>
+	      <li><a name="SEC24" href="lpc.html#SEC24">The block statement</a>
+	      <li><a name="SEC25" href="lpc.html#SEC25">The ';' statement</a>
+	    </ul>
+	  <li><a name="SEC26" href="lpc.html#SEC26">Scope and prototypes</a>
+	  <li><a name="SEC27" href="lpc.html#SEC27">Operator expressions</a>
+	    <ul>
+	      <li><a name="SEC28" href="lpc.html#SEC28">Miscellaneous operators</a>
+	      <li><a name="SEC29" href="lpc.html#SEC29">Arithmetic operators</a>
+	      <li><a name="SEC30" href="lpc.html#SEC30">Boolean operators</a>
+	      <li><a name="SEC31" href="lpc.html#SEC31">Conditional (logical) operators</a>
+	      <li><a name="SEC32" href="lpc.html#SEC32">Comparative operators</a>
+	    </ul>
+	  <li><a name="SEC33" href="lpc.html#SEC33">Prefix allocation</a>
+	  <li><a name="SEC34" href="lpc.html#SEC34">Precedence and Order of evalutaion</a>
+	  <li><a name="SEC35" href="lpc.html#SEC35">Conditionals</a>
+	    <ul>
+	      <li><a name="SEC36" href="lpc.html#SEC36">The if/else statement</a>
+	      <li><a name="SEC37" href="lpc.html#SEC37">The switch statement</a>
+	      <li><a name="SEC38" href="lpc.html#SEC38">The ?: expression</a>
+	    </ul>
+	  <li><a name="SEC39" href="lpc.html#SEC39">Loop statements</a>
+	    <ul>
+	      <li><a name="SEC40" href="lpc.html#SEC40">The for statement</a>
+	      <li><a name="SEC41" href="lpc.html#SEC41">The while statement</a>
+	    </ul>
+	  <li><a name="SEC42" href="lpc.html#SEC42">The break and continue statement</a>
+	  <li><a name="SEC43" href="lpc.html#SEC43">Arrays and Mappings</a>
+	    <ul>
+	      <li><a name="SEC44" href="lpc.html#SEC44">How to declare and use arrays</a>
+	      <li><a name="SEC45" href="lpc.html#SEC45">How to declare and use Mappings</a>
+	    </ul>
+	</ul>
+      <li><a name="SEC46" href="lpc.html#SEC46">The preprocessor</a>
+	<ul>
+	  <li><a name="SEC47" href="lpc.html#SEC47">The #include statement</a>
+	  <li><a name="SEC48" href="lpc.html#SEC48">The #define statement</a>
+	  <li><a name="SEC49" href="lpc.html#SEC49">The #if, #ifdef, #ifndef, #else and #elseif statements</a>
+	</ul>
+    </ul>
+    <li><a name="SEC50" href="lpc.html#SEC50">Essential LPC and Mudlib</a>
+      <ul>
+	<li><a name="SEC51" href="lpc.html#SEC51">Peeking at things to come</a>
+	<li><a name="SEC52" href="lpc.html#SEC52">LPC revisited</a>
+	  <ul>
+	    <li><a name="SEC53" href="lpc.html#SEC53">Function calls</a>
+	      <ul>
+		<li><a name="SEC54" href="lpc.html#SEC54">Making object-internal function calls</a>
+		<li><a name="SEC55" href="lpc.html#SEC55">Making single object-external function calls</a>
+		<li><a name="SEC56" href="lpc.html#SEC56">Making multiple object-external function calls</a>
+</ul>
+<li><a name="SEC57" href="lpc.html#SEC57">Inheriting object classes</a>
+<li><a name="SEC58" href="lpc.html#SEC58">Shadows: Masking functions during runtime</a>
+<li><a name="SEC59" href="lpc.html#SEC59">Type identification</a>
+<li><a name="SEC60" href="lpc.html#SEC60">Type qualifiers</a>
+<ul>
+<li><a name="SEC61" href="lpc.html#SEC61">The static variable qualifier</a>
+<li><a name="SEC62" href="lpc.html#SEC62">The static function qualifier</a>
+<li><a name="SEC63" href="lpc.html#SEC63">The private function/variable qualifier</a>
+<li><a name="SEC64" href="lpc.html#SEC64">The nomask function/variable qualifier</a>
+<li><a name="SEC65" href="lpc.html#SEC65">The public function/variable qualifier</a>
+<li><a name="SEC66" href="lpc.html#SEC66">The varargs function qualifier</a>
+</ul>
+<li><a name="SEC67" href="lpc.html#SEC67">The function data type, part 2</a>
+<li><a name="SEC68" href="lpc.html#SEC68">switch/case part 2</a>
+<li><a name="SEC69" href="lpc.html#SEC69">catch/throw: Error handling during runtime</a>
+<li><a name="SEC70" href="lpc.html#SEC70">Array &#38; Mapping references</a>
+</ul>
+<li><a name="SEC71" href="lpc.html#SEC71">LPC/Mudlib interafce</a>
+<ul>
+<li><a name="SEC72" href="lpc.html#SEC72">Definition of standard and library objects</a>
+<ul>
+<li><a name="SEC73" href="lpc.html#SEC73">The base object class, /std/object.c</a>
+<li><a name="SEC74" href="lpc.html#SEC74">Standard object classes</a>
+<li><a name="SEC75" href="lpc.html#SEC75">Standard library objects</a>
+</ul>
+<li><a name="SEC76" href="lpc.html#SEC76">How to obtain object references</a>
+<ul>
+<li><a name="SEC77" href="lpc.html#SEC77">Object references relative to the current object</a>
+<li><a name="SEC78" href="lpc.html#SEC78">Creating objects</a>
+<li><a name="SEC79" href="lpc.html#SEC79">Finding references relative to another object</a>
+<li><a name="SEC80" href="lpc.html#SEC80">Object references to interactive objects</a>
+<li><a name="SEC81" href="lpc.html#SEC81">Destroying objects</a>
+</ul>
+<li><a name="SEC82" href="lpc.html#SEC82">Object-inherent command handling</a>
+<li><a name="SEC83" href="lpc.html#SEC83">Alarms: Asynchronous function execution</a>
+<li><a name="SEC84" href="lpc.html#SEC84">The inventory and the environment</a>
+<li><a name="SEC85" href="lpc.html#SEC85">String functions</a>
+<li><a name="SEC86" href="lpc.html#SEC86">Bit functions</a>
+<li><a name="SEC87" href="lpc.html#SEC87">Time functions</a>
+<li><a name="SEC88" href="lpc.html#SEC88">Array/string conversion</a>
+<li><a name="SEC89" href="lpc.html#SEC89">Array functions</a>
+<li><a name="SEC90" href="lpc.html#SEC90">Mapping functions</a>
+<li><a name="SEC91" href="lpc.html#SEC91">Type conversion</a>
+<li><a name="SEC92" href="lpc.html#SEC92">Math functions</a>
+<li><a name="SEC93" href="lpc.html#SEC93">File handling</a>
+<li><a name="SEC94" href="lpc.html#SEC94">Directory handling</a>
+<li><a name="SEC95" href="lpc.html#SEC95">Screen input/output</a>
+</ul>
+</ul>
+<li><a name="SEC96" href="lpc.html#SEC96">Advanced LPC and Mudlib</a>
+<ul>
+<li><a name="SEC97" href="lpc.html#SEC97">Function data type, part 3</a>
+<ul>
+<li><a name="SEC98" href="lpc.html#SEC98">The basics of the function type</a>
+<li><a name="SEC99" href="lpc.html#SEC99">Partial argument lists</a>
+<li><a name="SEC100" href="lpc.html#SEC100">Complex function applications</a>
+</ul>
+<li><a name="SEC101" href="lpc.html#SEC101">Writing efficient code</a>
+<ul>
+<li><a name="SEC102" href="lpc.html#SEC102">Efficient loops</a>
+<li><a name="SEC103" href="lpc.html#SEC103">Abusing defines</a>
+</ul>
+<li><a name="SEC104" href="lpc.html#SEC104">Traps and pitfalls</a>
+<li><a name="SEC105" href="lpc.html#SEC105">Mapping/Array security</a>
+<li><a name="SEC106" href="lpc.html#SEC106">Alarm loops</a>
+</ul>
+<li><a name="SEC107" href="lpc.html#SEC107">LPC Index</a>
+<li><a name="SEC108" href="lpc.html#SEC108">Efun/Sfun Index</a>
+<li><a name="SEC109" href="lpc.html#SEC109">Lfun/Macro Index</a>
+<li><a name="SEC110" href="lpc.html#SEC110">Type Index</a>
+    </ul>
 
     <hr> </hr>
     <a href="http://sourceforge.net">
@@ -25,7 +202,7 @@
     </address>
     <!-- Created: Mon Jun 11 21:50:30 PDT 2001 -->
     <!-- hhmts start -->
-Last modified: Tue Apr  8 04:44:04 PDT 2003
+Last modified: Tue Apr  8 12:15:18 PDT 2003
 <!-- hhmts end -->
   </body>
 </html>
