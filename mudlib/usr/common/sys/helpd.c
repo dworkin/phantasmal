@@ -3,6 +3,7 @@
 #include <type.h>
 #include <phrase.h>
 #include <trace.h>
+#include <status.h>
 #include <log.h>
 
 #include <kernel/kernel.h>
@@ -73,7 +74,9 @@ void upgraded(void) {
   load_callout = -1;
 
   clear_help_entries();
-  reread_help_files();
+  rlimits(status()[ST_STACKDEPTH];-1) {
+    reread_help_files();
+  }
 }
 
 
