@@ -1,4 +1,4 @@
-/* $Header: /cvsroot/phantasmal/mudlib/usr/System/obj/user.c,v 1.45 2003/03/10 08:00:34 angelbob Exp $ */
+/* $Header: /cvsroot/phantasmal/mudlib/usr/System/obj/user.c,v 1.46 2003/03/14 22:36:28 angelbob Exp $ */
 
 #include <kernel/kernel.h>
 #include <kernel/user.h>
@@ -1451,20 +1451,6 @@ static void cmd_movement(object user, string cmd, string str) {
   }
 
   show_room_to_player(location);
-}
-
-static void cmd_gossip(object user, string cmd, string str) {
-  str = STRINGD->trim_whitespace(str);
-
-  if(!str || str == "") {
-    send_system_phrase("Usage: ");
-    message(cmd + " <message>\r\n");
-    return;
-  }
-
-  CHANNELD->string_to_channel(CHANNEL_GOSSIP, Name);
-  CHANNELD->phrase_to_channel(CHANNEL_GOSSIP, NEW_PHRASE(" gossips "));
-  CHANNELD->string_to_channel(CHANNEL_GOSSIP, "'" + str + "'.\r\n");
 }
 
 
