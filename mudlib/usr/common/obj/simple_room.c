@@ -39,7 +39,7 @@ string to_unq_text(void) {
 }
 
 void from_dtd_unq(mixed* unq) {
-  int ctr;
+  int ctr, is_room;
 
   if(unq[0] != "room")
     error("Doesn't look like room data!");
@@ -47,15 +47,11 @@ void from_dtd_unq(mixed* unq) {
   for (ctr = 0; ctr < sizeof(unq[1]); ctr++) {
     from_dtd_tag(unq[1][ctr][0], unq[1][ctr][1]);
   }
-
-  set_container(1);
-  set_open(1);
-  set_openable(0);
 }
 
 
 /* function which returns an appropriate error message if this object
- * isn't a container or open this one
+ * isn't a container or isn't open
  */
 private string is_open_cont() {
   if (!is_container()) {
