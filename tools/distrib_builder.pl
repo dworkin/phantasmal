@@ -24,6 +24,7 @@ use File::Spec;
 my $input;
 my $builderdir = cwd();
 my ($phantasmaldir, $driverdir, $testgamedir);
+my $outdir = "phantest";
 
 print "Current dir is $builderdir.\n";
 
@@ -79,12 +80,12 @@ chdir("phantasmal");
 my $kerneldir = $driverdir . "/mud";
 
 # Okay, we should have all the paths set up correctly.
-while(-e "phantest") {
+while(-e "$outdir") {
     print "Delete old bundle? (y/n) ";
     $input = <STDIN>;
     $input = lcfirst(substr($input, 0, 1));
     if($input eq "y") {
-	system("rm -rf phantest");
+	system("rm -rf $outdir");
 	last;
     } elsif ($input eq "n") {
 	last;
@@ -97,48 +98,47 @@ unless(-f "$driverdir/bin/driver") {
 }
 
 print "Copying TestGame from $testgamedir...\n";
-system("cp -r $testgamedir phantest");
+system("cp -r $testgamedir $outdir");
 print "Copying DGD from $driverdir...\n";
-system("cp -r $driverdir phantest/dgd");
+system("cp -r $driverdir $outdir/dgd");
 print "Copying Phantasmal from $phantasmaldir...\n";
-system("cp -r $phantasmaldir phantest/phantasmal");
+system("cp -r $phantasmaldir $outdir/phantasmal");
 
 print "Moving Phantasmal user directories...\n";
-system("rm -rf phantest/usr/System phantest/usr/common");
-system("mv phantest/phantasmal/usr/System phantest/usr/System");
-system("mv phantest/phantasmal/usr/common phantest/usr/common");
+system("rm -rf $outdir/usr/System $outdir/usr/common");
+system("mv $outdir/phantasmal/usr/System $outdir/usr/System");
+system("mv $outdir/phantasmal/usr/common $outdir/usr/common");
 
 print "Moving Kernel Library...\n";
-system("rm -rf phantest/kernel/*");
-system("mv phantest/dgd/mud/kernel/data phantest/kernel/data");
-system("mv phantest/dgd/mud/kernel/sys phantest/kernel/sys");
-system("mv phantest/dgd/mud/kernel/obj phantest/kernel/obj");
-system("mv phantest/dgd/mud/kernel/lib phantest/kernel/lib");
+system("rm -rf $outdir/kernel/*");
+system("mv $outdir/dgd/mud/kernel/data $outdir/kernel/data");
+system("mv $outdir/dgd/mud/kernel/sys $outdir/kernel/sys");
+system("mv $outdir/dgd/mud/kernel/obj $outdir/kernel/obj");
+system("mv $outdir/dgd/mud/kernel/lib $outdir/kernel/lib");
 
-print "Moving data and include directories...\n";
-system("rm -rf phantest/data");
-system("mv phantest/phantasmal/data phantest/data");
-system("mv phantest/phantasmal/include/phantasmal phantest/include/");
-system("mkdir phantest/include/kernel");
+print "Moving include directories...\n";
+system("rm -rf $outdir/include/kernel $outdir/include/phantasmal");
+system("mv $outdir/phantasmal/include/phantasmal $outdir/include/");
+system("mkdir $outdir/include/kernel");
 
 print "Moving Kernel Library headers...\n";
-system("mv phantest/dgd/mud/include/kernel/*.h phantest/include/kernel/");
+system("mv $outdir/dgd/mud/include/kernel/*.h $outdir/include/kernel/");
 
 print "Moving DGD binary directory...\n";
-system("mv phantest/dgd/bin phantest");
+system("mv $outdir/dgd/bin $outdir");
 
 print "Cleaning Phantasmal & DGD dirs...\n";
-system("rm -rf phantest/phantasmal");
-system("rm -rf phantest/dgd");
+system("rm -rf $outdir/phantasmal");
+system("rm -rf $outdir/dgd");
 
 print "Cleaning cvs dirs...\n";
-system("find phantest -name CVS -type d -print > /tmp/distrib_tmp.txt");
+system("find $outdir -name CVS -type d -print > /tmp/distrib_tmp.txt");
 system("rm -rf `cat /tmp/distrib_tmp.txt`");
-system("rm -f phantest/README phantest/INSTALL");
-system("rm -f phantest/usr/README phantest/kernel/README phantest/include/README");
+system("rm -f $outdir/README $outdir/INSTALL");
+system("rm -f $outdir/usr/README $outdir/kernel/README $outdir/include/README");
 
 print "Moving bundle-specific files...\n";
-system("mv phantest/bundled/* phantest/");
-system("rmdir phantest/bundled");
+system("mv $outdir/bundled/* $outdir/");
+system("rmdir $outdir/bundled");
 
 print "*** Finished! ***\n";
