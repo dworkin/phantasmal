@@ -1,6 +1,7 @@
 #include <config.h>
 #include <log.h>
 #include <channel.h>
+#include <type.h>
 
 mixed*  channels;
 int     num_channels;
@@ -28,7 +29,7 @@ void upgraded(varargs int clone) {
   channels = allocate(num_channels);
 
   for(ctr = 0; ctr < num_channels; ctr++) {
-    channels[ctr] = ({ });
+    channels[ctr] = ([ ]);
   }
 
   channel_attributes = ({ ({ "OOC", 0 }),
@@ -37,7 +38,7 @@ void upgraded(varargs int clone) {
 			    });
 }
 
-object* channel_list(int is_admin) {
+mixed* channel_list(int is_admin) {
   mixed* ret, *tmp;
   int    ctr;
 
@@ -45,7 +46,7 @@ object* channel_list(int is_admin) {
   for(ctr = 0; ctr < num_channels; ctr++) {
     if(is_admin || !(channel_attributes[ctr][1] & ATTRIB_ADMIN)) {
       tmp = channel_attributes[ctr];
-      ret += ({ PHRASED->new_simple_english_phrase(tmp[0]) });
+      ret += ({ ({ PHRASED->new_simple_english_phrase(tmp[0]), ctr }) });
     }
   }
 
@@ -66,18 +67,22 @@ int get_channel_by_name(string name, object user) {
 }
 
 void phrase_to_channel(int channel, object phrase) {
-  int ctr;
+  int    ctr;
+  mixed* keys;
 
-  for(ctr = 0; ctr < sizeof(channels[channel]); ctr++) {
-    channels[channel][ctr][0]->send_phrase(phrase);
+  keys = map_indices(channels[channel]);
+  for(ctr = 0; ctr < sizeof(keys); ctr++) {
+    channels[channel][keys[ctr]][0]->send_phrase(phrase);
   }
 }
 
 void string_to_channel(int channel, string str) {
-  int ctr;
+  int    ctr;
+  mixed* keys;
 
-  for(ctr = 0; ctr < sizeof(channels[channel]); ctr++) {
-    channels[channel][ctr][0]->message(str);
+  keys = map_indices(channels[channel]);
+  for(ctr = 0; ctr < sizeof(keys); ctr++) {
+    channels[channel][keys[ctr]][0]->message(str);
   }
 }
 
@@ -96,31 +101,46 @@ int subscribe_user(object user, int channel, string args) {
   if(is_subscribed(user, channel))
     return -1;
 
-  channels[channel] += ({ ({ user, args }) });
+  channels[channel][user->query_name()] = ({ user, args });
   return 1;
 }
 
-int unsubscribe_user(object user, int channel) {
-  int ctr;
+int unsubscribe_user(mixed user, int channel) {
+  string name;
 
-  for(ctr = 0; ctr < sizeof(channels[channel]); ctr++) {
-    if(channels[channel][ctr][0] == user ) {
-      /* Remove user's entry */
-      channels[channel] = channels[channel][..(ctr-1)]
-	+ channels[channel][(ctr + 1)..];
-      return 1;
-    }
+  if(typeof(user) == T_STRING) {
+    name = user;
+  } else if (typeof(user) == T_OBJECT) {
+    name = user->query_name();
   }
+
+  if(channels[channel][name] ) {
+    /* Remove user's entry */
+    channels[channel][name] = nil;
+
+    if(channels[channel][name]) {
+      LOGD->write_syslog("Failed unsubscribe attempt!", LOG_WARNING);
+    }
+
+    return 1;
+  }
+
   return -1;
+}
+
+void unsubscribe_user_from_all(object user) {
+  int ctr, chan;
+
+  for(chan = 0; chan < num_channels; chan++) {
+    unsubscribe_user(user, chan);
+  }
 }
 
 int is_subscribed(object user, int channel) {
   int ctr;
 
-  for(ctr = 0; ctr < sizeof(channels[channel]); ctr++) {
-    if(channels[channel][ctr][0] == user ) {
-      return 1;
-    }
+  if(channels[channel][user->query_name()]) {
+    return 1;
   }
 
   return 0;

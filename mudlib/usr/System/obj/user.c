@@ -1,4 +1,4 @@
-/* $Header: /cvsroot/phantasmal/mudlib/usr/System/obj/user.c,v 1.8 2002/05/20 12:31:50 sarak Exp $ */
+/* $Header: /cvsroot/phantasmal/mudlib/usr/System/obj/user.c,v 1.9 2002/05/27 16:28:27 angelbob Exp $ */
 
 #include <kernel/kernel.h>
 #include <kernel/user.h>
@@ -24,6 +24,7 @@ inherit unq UNQABLE;
 string name;	                /* user name */
 string password;		/* user password */
 int    locale;                  /* chosen output locale */
+int    channel_subs;            /* user channel subscriptions */
 
 /* User-state processing stack */
 private object* state_stack;
@@ -202,6 +203,44 @@ private mixed* load_command_sets_file(string filename) {
   return tmp_cmd;
 }
 
+
+/****** Accessor functions *******/
+
+int get_locale(void) {
+  return locale;
+}
+
+void set_locale(int new_loc) {
+  locale = new_loc;
+}
+
+string get_name(void) {
+  return name;
+}
+
+object get_location(void) {
+  return location;
+}
+
+int get_idle_time(void) {
+  return time() - timestamp;
+}
+
+int is_admin(void)  {
+
+  /* Can't just check wiztool's existence because we need to be able to
+     restore subscribed admin-only channels using the
+     restore_player_from_file functionality. */
+
+  /* Check if an immort */
+  if (sizeof(rsrc::query_owners() & ({ name }))) {
+    return 1;
+  }
+
+  return 0;
+}
+
+
 /****** USER_STATE stack implementation ********/
 
 /* This does a lowest-level, unfiltered send to the connection object
@@ -315,31 +354,50 @@ static string username_to_filename(string str) {
 }
 
 static void save_user_to_file(void) {
+  mixed*  chanlist;
+  int     subcode, ctr;
+
+  chanlist = CHANNELD->channel_list(is_admin());
+  subcode = 0;
+  for(ctr = 0; ctr < sizeof(chanlist); ctr++) {
+    if(CHANNELD->is_subscribed(this_object(), chanlist[ctr][1])) {
+      subcode += 1 << chanlist[ctr][1];
+    }
+  }
+
+  channel_subs = subcode;
   save_object(SYSTEM_USER_DIR + "/" + username_to_filename(name) + ".pwd");
 }
 
-int get_locale(void) {
-  return locale;
-}
+static void restore_user_from_file(string str) {
+  object* chanlist;
+  int     chan_code, channel, subcode;
 
-void set_locale(int new_loc) {
-  locale = new_loc;
-}
+  restore_object(SYSTEM_USER_DIR + "/" + username_to_filename(str) + ".pwd");
 
-string get_name(void) {
-  return name;
-}
+  CHANNELD->unsubscribe_user_from_all(this_object());
 
-object get_location(void) {
-  return location;
-}
+  chan_code = 1;
+  channel = 0;
+  subcode = channel_subs;
+  while(subcode && subcode >= chan_code) {
+    /* If this user should be subbed to this channel */
+    if(subcode & chan_code) {
+      subcode -= chan_code;
+      if(CHANNELD->subscribe_user(this_object(), channel, "") < 0) {
+	LOGD->write_syslog("Couldn't sub user " + Name + " to channel #"
+			   + channel + "!", LOG_ERROR);
+      }
+    }
 
-int get_idle_time(void) {
-  return time() - timestamp;
-}
-
-int is_admin(void) {
-  return (wiztool) ? 1 : 0;
+    /* Next channel... */
+    chan_code += chan_code;
+    channel++;
+  }
+  if(subcode != 0) {
+    LOGD->write_syslog("Subcode " + subcode + " means user didn't sub to all "
+		       + "appropriate channels!", LOG_WARNING);
+  }
 }
 
 
@@ -589,7 +647,7 @@ int login(string str)
     timestamp = time();
     hostname = query_ip_name(this_object());
 
-    restore_object(SYSTEM_USER_DIR + "/" + username_to_filename(str) + ".pwd");
+    restore_user_from_file(str);
 
     if (password) {
       object phr;
@@ -668,6 +726,7 @@ private void player_logout(void)
     }
   }
 
+  CHANNELD->unsubscribe_user_from_all(this_object());
 }
 
 
@@ -1481,7 +1540,7 @@ static void cmd_channels(object user, string cmd, string str) {
       } else {
 	user->message("  ");
       }
-      user->send_phrase(chanlist[ctr]);
+      user->send_phrase(chanlist[ctr][0]);
 
       user->message("\r\n");
     }
@@ -1515,16 +1574,25 @@ static void cmd_channels(object user, string cmd, string str) {
        || !STRINGD->stricmp(subval, "sub")
        || !STRINGD->stricmp(subval, "subscribe")) {
 
-      CHANNELD->subscribe_user(user, chan, "");
-      user->message("Subscribed to " + channelname + ".\r\n");
+      if(CHANNELD->subscribe_user(user, chan, "") < 0) {
+	user->message("You can't subscribe to that channel.\r\n");
+      } else {
+	user->message("Subscribed to " + channelname + ".\r\n");
+	save_user_to_file();
+      }
     } else if(!STRINGD->stricmp(subval, "off")
        || !STRINGD->stricmp(subval, "unsub")
        || !STRINGD->stricmp(subval, "unsubscribe")) {
 
-      CHANNELD->unsubscribe_user(user, chan);
-      user->message("Unsubscribed from " + channelname + ".\r\n");
+      if(CHANNELD->unsubscribe_user(user, chan) < 0) {
+	user->message("You can't unsub from that.  "
+		      + "Are you sure you're subscribed?\r\n");
+      } else {
+	user->message("Unsubscribed from " + channelname + ".\r\n");
+	save_user_to_file();
+      }
     } else {
-      user->message("Huh? Try using 'on' or 'off' for the third value.\r\n");
+      user->message("Huh?  Try using 'on' or 'off' for the third value.\r\n");
       return;
     }
 
