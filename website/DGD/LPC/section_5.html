@@ -14,7 +14,7 @@
 
     <hr size="4">
 
-    <h1> <a name="SEC4.3" href="index.html#SEC4.3">Chapter 5: LPC/Library
+    <h1> <a name="SEC5.0" href="index.html#SEC5.0">Chapter 5: LPC/Library
 	Interface</a> </h1>
 
     <p>
@@ -325,6 +325,237 @@ binary_port = ({ 8889, 8890, 9725 })
     <h2> <a name="SEC5.2" href="index.html#SEC5.2">
 	5.2 DGD Library API </a> </h2>
 
+    <p>
+      A library under DGD is basically a set of LPC programs that
+      respond to events of various kinds, especially network events.
+      The library needs to receive these events from DGD, and to
+      request services from DGD in response.  For instance, DGD might
+      tell the library that a new incoming connection has been
+      attempted, and the library would need to tell DGD to accept the
+      connection and send a banner and login prompt.
+    </p>
+
+    <p>
+      The Driver object accepts notification of various internal and
+      external events.  DGD calls different functions on the Driver to
+      let it know that specific things have occurred.  The Auto object
+      modifies how the library can request services from DGD, and what
+      is or isn't allowed.
+    </p>
+
+    <h3> <a name="SEC5.2.1" href="index.html#SEC5.2.1">
+	The Auto Object </a> </h3>
+
+    <p>
+      Only the Auto object and the Driver object are guaranteed access
+      to DGD's standard functions in their original form.  In most DGD
+      libraries, the Auto object will override some of these functions
+      and substitute new ones with the same names so that the
+      underlying version is masked.  For instance, the Kernel Library
+      uses this to supply a new get_dir function, one that returns
+      a list of compiled objects in the directory along with the
+      file names, sizes and modification times.
+    </p>
+
+    <p>
+      Some libraries use this trick for security.  For instance, the
+      Kernel Library carefully checks all calls to read and write
+      files so that only users with the correct permissions can
+      perform those operations.  The Kernel Library also overrides the
+      create() function to do extra bookkeeping and keep track of
+      owners and creators for LPC objects.
+    </p>
+
+    <p>
+      The Auto object also allows the library to add convenience
+      functions.  The Melville library supplies an input_to()
+      function, which allows an object to set what function will
+      handle the next network input to arrive.  Melville also supplies
+      simple string handling functions and other basic standard
+      library functions which the DGD driver doesn't have by default.
+    </p>
+
+    <h3> <a name="SEC5.2.2" href="index.html#SEC5.2.2">
+	The Driver </a> </h3>
+
+    <p>
+      (Note: big chunks of this section are based on the standard DGD
+      documentation.  The copyright to that documentation is held by
+      Felix Croes, the author of DGD.  The material is used with
+      permission)
+      </p>
+
+    <p>
+      The Driver is notified by DGD when various events occur,
+      and it's also called by DGD to query certain information.
+      It needs to define a lot of functions, which do many and
+      various things.  Those functions are:
+    </p>
+
+    <dl>
+      <dt>void initialize(void)</dt>
+      <dd>
+	This function is called when the system starts up originally,
+	or after a reboot, but not after restoring from a statedump.
+      </dd>
+
+      <dt>void restored(void)</dt>
+      <dd>
+	This function is called when the system is restored from
+	a statedump.
+      </dd>
+
+      <dt>string path_read(string path)</dt>
+      <dd>
+	Used to translate a path for the built-in editor read command.
+	If this function returns nil, the file can't be read.
+      </dd>
+
+      <dt>string path_write(string path)</dt>
+      <dd>
+	Used to translate a path for the built-in editor write command.
+	If this function returns nil, the file can't be written to.
+      </dd>
+
+      <dt>object call_object(string objname)</dt>
+      <dd>
+	When a call_other(object,...) happens, including with the
+	object.call() syntax, DGD calls this function in the Driver to
+	find &quot;object&quot;, the object whose function is being
+	called.  You can call compile_object() from call_object().
+	That may be a good idea if the object isn't already compiled.
+      </dd>
+
+      <dt>object inherit_program(string file, string program, int priv)</dt>
+      <dd>
+	When one program inherits another, DGD calls inherit_program
+	in the Driver to find the LPC object for the program being
+	inherited from.  If priv is 1, it's private inheritance.
+	Otherwise, it's normal inheritance.  &quot;File&quot; is the
+	one choosing to inherit, and &quot;program&quot; is the one
+	being inherited.  You can call compile_object() from
+	inherit_program().  That's probably a good idea if
+	&quot;program&quot; hasn't already been compiled.
+      </dd>
+
+      <dt>string path_include(string file, string path)</dt>
+      <dd>
+	An &quot;include&quot; statement in an LPC file will
+	substitute the text of the included file directly, so nothing
+	needs to be compiled (unlike call_object or inherit_program
+	above).  However, the Driver can still choose what file will
+	be included.  When the file is included, DGD will call the
+	Driver's path_include function, and the returned string is the
+	path of the file that will be included.  If nil is returned,
+	no file will be included and a compile error will occur.  If a
+	path to a file that doesn't exist is returned, pretty much the
+	same thing will happen.
+      </dd>
+
+      <dt>void recompile(object obj)</dt>
+      <dd>
+	This function is called by DGD to indicate to the Driver that
+	the parent class of an object is out of date.  If the Driver
+	responds by actually recompiling the object then it will
+	use the new version of the parent class, and will again be
+	up-to-date.  See the section on inheritance for further
+	details.  This is a pretty complicated subject if you want
+	to do it well.
+      </dd>
+
+      <dt>object telnet_connect(int port)</dt>
+      <dd>
+	Note: this didn't take a &quot;port&quot; parameter in older
+	versions of DGD.<br/> This function should create and return a
+	User object for the new connection on the given telnet port.
+	&quot;Port&quot; will be an offset into the array of telnet
+	ports, so if there's only a single telnet port it will always
+	have a value of zero.  If nil is returned, the new connection
+	will be rejected.  See <a href="#SEC5.2.3">section 5.2.3</a>
+	for details on creating a User object.
+      </dd>
+
+      <dt>object binary_connect(int port)</dt>
+      <dd>
+	Note: this didn't take a &quot;port&quot; parameter in older
+	versions of DGD.<br/> This function should create and return a
+	User object for the new connection on the given binary port.
+	&quot;Port&quot; will be an offset into the array of binary
+	ports, so if there's only a single binary port it will always
+	have a value of zero.  If nil is returned, the new connection
+	will be rejected.  See <a href="#SEC5.2.3">section 5.2.3</a>
+	for details on creating a User object.
+      </dd>
+
+      <dt>void interrupt(void)</dt>
+      <dd>
+	This function is called if DGD receives a kill signal, for
+	instance if the computer's user shuts it down from the command
+	line or the Windows Task Manager.  Normally, it will shut down
+	the system and perhaps dump state.  Sometimes a forcible
+	shutdown happens as a result of a bug, so it may be useful to
+	save additional debugging information when this occurs.
+      </dd>
+
+      <dt>void compile_error(string file, int line, string err)</dt>
+      <dd>
+	DGD calls this function in the driver to let it know that a
+	compile error has occurred.  Usually this is a syntax error of
+	some kind, or a type error.  Several of these can happen in
+	sequence for a single LPC file being compiled before a runtime
+	error results from the failed compilation.  &quot;File&quot;
+	is the file being compiled, &quot;line&quot; is the line
+	number in that file where the error occurred, and
+	&quot;err&quot; is a human-readable description of what the
+	error was.
+      </dd>
+
+      <dt>void runtime_error(string error, int caught, int ticks)</dt>
+      <dd>
+	The driver receives this function call when a runtime error of
+	some kind occurs in normal, non-atomic code.  This may be a
+	failed function call, a lack of ticks or stack space, an
+	explicit error signalled with the error() function, or many
+	other possible problems.  If the error is caught by a
+	<b>catch</b> construct, &quot;caught&quot; will be equal to 1
+	plus an index into the return value of call_trace() indicating
+	the frame in which the error was caught.  &quot;Error&quot; is
+	a human-readable description of the error that occurred.
+	&quot;Ticks&quot; tells how many ticks of processor time were
+	available when the error occurred.  Note that runtime_error is
+	called with unlimited processor time and stack space, so don't
+	worry about it being called when a function runs out of ticks
+	-- that will work just fine.
+      </dd>
+
+      <dt>void atomic_error(string error, int atom, int ticks)</dt>
+      <dd>
+	This function is essentially the same as runtime_error,
+	but is called when the error occurs in atomic code.  &quot;Atom&quot;
+	is an index into the return value of call_trace() indicating the
+	frame in which the atomic code begins.  Atomic_error, like
+	runtime_error, is called with unlimited stack space and processor
+	ticks.<br/>
+	Note that atomic_error, since it is called atomically, may not
+	write to files or network connections.
+      </dd>
+    </dl>
+
+    <h3> <a name="SEC5.2.3" href="index.html#SEC5.2.3">
+	The User Object </a> </h3>
+
+    <p>
+      The User object, like the Driver, defines specific functions
+      that DGD will call to notify it that certain things have
+      happened.
+    </p>
+
+    <p>
+      The User object must be a regular DGD object, usually created
+      with clone_object().  It may not be a Light-Weight Object
+      created with new_object().
+    </p>
+
     <hr>
     <a href="http://sourceforge.net">
       <img src="http://sourceforge.net/sflogo.php?group_id=48659&type=6"
@@ -333,7 +564,7 @@ binary_port = ({ 8889, 8890, 9725 })
     </address>
     <!-- Created: Mon Jun 11 21:50:30 PDT 2001 -->
     <!-- hhmts start -->
-Last modified: Mon Jun 16 20:58:58 PDT 2003
+Last modified: Mon Jun 16 23:05:34 PDT 2003
 <!-- hhmts end -->
   </body>
 </html>
