@@ -11,7 +11,7 @@ static void create(void) {
   object_tags = ([ ]);
 }
 
-void upgraded(void) {
+void upgraded(varargs int clone) {
   if(!COMMON() && !SYSTEM())
     return;
 }
