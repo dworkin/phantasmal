@@ -1,6 +1,7 @@
 regularstring = /((\\\v)|(\\\f)|(\\\a)|(\\\r)|(\\\b)|(\\\t)|(\\\n)|(\\\{)|(\\\})|(\\\~)|(\\\\)|([^~{}\\]))*/
 
 unq_document: unq_string
+unq_document:
 
 substring: regularstring
 substring: substring regularstring ? concat_strings
