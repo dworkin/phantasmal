@@ -1,4 +1,4 @@
-/* $Header: /cvsroot/phantasmal/mudlib/usr/System/open/lib/userlib.c,v 1.4 2003/12/10 11:41:41 angelbob Exp $ */
+/* $Header: /cvsroot/phantasmal/mudlib/usr/System/open/lib/userlib.c,v 1.5 2004/01/09 07:13:32 angelbob Exp $ */
 
 #include <kernel/kernel.h>
 #include <kernel/user.h>
@@ -83,8 +83,6 @@ void upgraded(varargs int clone) {
   if(SYSTEM() || GAME()) {
     if(!find_object(SYSTEM_WIZTOOL)) { compile_object(SYSTEM_WIZTOOL); }
     if(!find_object(DEFAULT_USER_OBJ)) { compile_object(DEFAULT_USER_OBJ); }
-    if(!find_object(USER_MOBILE)) { compile_object(USER_MOBILE); }
-    if(!find_object(SIMPLE_ROOM)) { compile_object(SIMPLE_ROOM); }
 
     io::upgraded(clone);
   } else
@@ -537,7 +535,7 @@ object* find_first_objects(string str, int locations...) {
 
 
 nomask void notify_moved(object obj) {
-  if(previous_program() != USER_MOBILE) {
+  if(function_object("set_number", previous_object()) != MOBILE) {
     error("Only MOBILEs can notify the User object that its body moved.");
   }
 
