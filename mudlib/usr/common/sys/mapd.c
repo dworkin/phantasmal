@@ -16,7 +16,6 @@ private mapping room_objects;
 
 /* zone_segments keeps track of the mapping of what segments contain
    what segments meant for rooms */
-private int*    nozone_segments;
 private int**   zone_segments;
 
 private object  room_dtd;
@@ -27,11 +26,14 @@ private int     initialized;
 /* Prototypes */
 object get_room_by_num(int num);
 int* rooms_in_zone(int zone);
+private int assign_room_to_zone(int num, object room, int zone);
 private int assign_room_number(int num, object room);
 
 
 
 static void create(varargs int clone) {
+  int numzones, ctr;
+
   if(clone)
     error("Cloning mapd is not allowed!");
 
@@ -43,8 +45,11 @@ static void create(varargs int clone) {
     compile_object(SIMPLE_ROOM);
 
   room_objects = ([ ]);
-  nozone_segments = ({ });
   zone_segments = ({ });
+  numzones = ZONED->num_zones();
+  for(ctr = 0; ctr < numzones; ctr++) {
+    zone_segments += ({ ({ }) });
+  }
 
   initialized = 0;
 }
@@ -62,17 +67,36 @@ void init(string dtd) {
 
 void destructed(int clone) {
   mixed* rooms;
-  int    iter;
+  int    numzones, riter, ziter;
 
   if(room_dtd)
     destruct_object(room_dtd);
 
   /* Now go through and destruct all rooms */
-  rooms = rooms_in_zone(0);
-  for(iter = 0; iter < sizeof(rooms); iter++) {
-    destruct_object(get_room_by_num(rooms[iter]));
+  numzones = ZONED->num_zones();
+  for(ziter = 0; ziter < numzones; ziter++) {
+    rooms = rooms_in_zone(ziter);
+    for(riter = 0; riter < sizeof(rooms); riter++) {
+      destruct_object(get_room_by_num(rooms[riter]));
+    }
   }
 }
+
+
+void set_segment_zone(int segment, int newzone, int oldzone) {
+  if(previous_program() != OBJNUMD)
+    error("Only objnumd can notify MAPD of a segment zone change!");
+
+  if(sizeof(zone_segments[oldzone] & ({ segment }))) {
+    zone_segments[oldzone] -= ({ segment });
+  } else {
+    /* This is called atomically -- how can I signal a problem, but
+       not a fatal error? */
+  }
+
+  zone_segments[newzone] += ({ segment });
+}
+
 
 void add_room_object(object room) {
   string name;
@@ -84,28 +108,41 @@ void add_room_object(object room) {
   room_objects[name] = room;
 }
 
-void add_room_number(object room, int num) {
-  int seg, allocated;
+void add_room_to_zone(object room, int num, int req_zone) {
+  int seg, allocated, zone;
 
   allocated = 0;
 
   if(!room_objects[object_name(room)])
     error("Adding num for unregistered object " + object_name(room) + "!");
 
-  num = assign_room_number(num, room);
+  num = assign_room_to_zone(num, room, req_zone);
   if(num < 0) {
     error("Error assigning room number!");
   }
 
   seg = num / 100;
-  if(!sizeof( ({ seg }) & nozone_segments)) {
+  zone = OBJNUMD->get_segment_zone(seg);
+  if(zone != req_zone && req_zone != -1)
+    error("Room assigned to unreasonable segment!  Wrong zone!");
+
+  if(zone == -1)
+    zone = 0;  /* Fix offset */
+
+  /* Check to see if this is a newly-allocated segment */
+  if(!sizeof( ({ seg }) & zone_segments[zone])) {
     if(OBJNUMD->get_segment_owner(seg))
       error("Segment already allocated for non-room use!");
 
-    nozone_segments += ({ seg });
+    zone_segments[zone] += ({ seg });
   }
 
   room->set_number(num);
+}
+
+/* For backwards compatibility */
+void add_room_number(object room, int num) {
+  add_room_to_zone(room, num, -1);
 }
 
 void set_room_alias(string alias, object room) {
@@ -145,20 +182,24 @@ void remove_room_alias(string name) {
 }
 
 object get_room_by_num(int num) {
-  int seg;
-
   if(num < 0) return nil;
+
+  /* TODO: replace check with new zone-checking */
+  /*
+  int seg;
 
   seg = num / 100;
   if(!sizeof(nozone_segments & ({ seg })))
     return nil;
+  */
 
   return OBJNUMD->get_object(num);
 }
 
 
-private int assign_room_number(int num, object room) {
-  int    segnum, ctr;
+/* Find appropriate room number in the requested zone */
+private int assign_room_to_zone(int num, object room, int req_zone) {
+  int    segnum, ctr, zone;
   string segown;
 
   if(num != -1) {
@@ -166,30 +207,50 @@ private int assign_room_number(int num, object room) {
 
     segown = OBJNUMD->get_segment_owner(segnum);
     if(segown && strlen(segown) && segown != MAPD) {
-      LOGD->write_syslog("Can't allocate number " + num
-			 + " in somebody else's segment!", LOG_WARN);
+      LOGD->write_syslog("Can't allocate room number " + num
+			 + " in non-MAPD segment!", LOG_WARN);
       return -1;
     }
+    zone = OBJNUMD->get_segment_zone(segnum);
+    if(zone != req_zone && req_zone != -1)
+      error("Room number (#" + num
+	    + ") not in requested zone (#" + req_zone
+	    + ") in assign_room_to_zone!");
 
     OBJNUMD->allocate_in_segment(segnum, num, room);
-    if(!sizeof(nozone_segments & ({ segnum }))) {
-      nozone_segments += ({ segnum });
+    if(zone == -1) {
+      LOGD->write_syslog("Zone is less than zero!", LOG_WARN);
+      zone = 0;
+    }
+
+    if(!sizeof(zone_segments[zone] & ({ segnum }))) {
+      zone_segments[zone] += ({ segnum });
     }
     return num;
   } else {
-    for(ctr = 0; ctr < sizeof(nozone_segments); ctr++) {
-      num = OBJNUMD->new_in_segment(nozone_segments[ctr], room);
+    zone = req_zone;
+    if(req_zone == -1)
+      zone = 0;
+
+    for(ctr = 0; ctr < sizeof(zone_segments[zone]); ctr++) {
+      num = OBJNUMD->new_in_segment(zone_segments[zone][ctr], room);
       if(num != -1)
 	break;
     }
     if(num == -1) {
       segnum = OBJNUMD->allocate_new_segment();
-      nozone_segments += ({ segnum });
+      
+      zone_segments[zone] += ({ segnum });
       num = OBJNUMD->new_in_segment(segnum, room);
     }
 
     return num;
   }
+}
+
+
+private int assign_room_number(int num, object room) {
+  return assign_room_to_zone(num, room, -1);
 }
 
 
@@ -308,22 +369,25 @@ void add_unq_text_rooms(string text, string filename) {
 }
 
 int* segments_in_zone(int zone) {
-  if(zone == 0)
-    return nozone_segments;
+  if(zone < 0 || zone >= sizeof(zone_segments)) {
+    return nil;
+  }
 
-  return nil;
+  return zone_segments[zone][..];
 }
 
 int* rooms_in_segment(int segment) {
+  /* TODO: make this do new zone checking */
+  /*
   if(sizeof( ({ segment }) & nozone_segments)) {
-    return OBJNUMD->objects_in_segment(segment);
   }
+  */
 
-  return nil;
+  return OBJNUMD->objects_in_segment(segment);
 }
 
 int* rooms_in_zone(int zone) {
-  int* segs, *rooms, *tmp;
+  int *segs, *rooms, *tmp;
   int  iter;
 
   segs = segments_in_zone(zone);

@@ -20,9 +20,9 @@ static void create(varargs int clone) {
 }
 
 void upgraded(varargs int clone) {
-  zone_table = ({ ({ "Unzoned" }),
-		    ({ "Miskatonic University" }),
-		    ({ "Innsmouth" }),
+  zone_table = ({ ({ "Unzoned", ([ ]) }),
+		    ({ "Miskatonic University", ([ ]) }),
+		    ({ "Innsmouth", ([ ]) }),
 		    });
 }
 
@@ -40,4 +40,33 @@ string get_name_for_zone(int zonenum) {
   } else {
     return nil;
   }
+}
+
+mixed* get_segments_in_zone(int zonenum) {
+  mixed* keys;
+
+  keys = map_indices(zone_table[zonenum][1]);
+  return keys;
+}
+
+void add_segment_to_zone(int zonenum, int segment) {
+  if(previous_program() != OBJNUMD)
+    error("Only OBJNUMD can add segments to a zone!");
+  zone_table[zonenum][1][segment] = 1;
+}
+
+void remove_segment_from_zone(int zonenum, int segment) {
+  if(previous_program() != OBJNUMD)
+    error("Only OBJNUMD can remove segments from a zone!");
+  zone_table[zonenum][1][segment] = nil;
+}
+
+int get_zone_for_room(object room) {
+  int roomnum, segment, zone;
+
+  roomnum = room->get_number();
+  segment = roomnum / 100;
+  zone = OBJNUMD->get_segment_zone(segment);
+
+  return zone;
 }

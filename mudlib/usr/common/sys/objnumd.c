@@ -44,10 +44,6 @@ private void set_segment_owner(int segment, int owner, int zonenum) {
     error("Can't allocate negative segment in set_segment_owner!");
 
   if(segments[segment]) {
-    LOGD->write_syslog("Changing segment owner from "
-		       + owners[segments[segment][0]] + " to "
-		       + owners[owner] + " (not changing zone)");
-
     segments[segment][0] = owner;
     return;
   }
@@ -74,12 +70,14 @@ int get_segment_zone(int segment) {
   return -1;
 }
 
-void set_segment_zone(int segment, int zonenum) {
+atomic void set_segment_zone(int segment, int zonenum, varargs int req_own) {
   mixed* seg;
-  int    owner;
+  int    owner, oldzone;
 
   if(previous_program() == SYSTEM_WIZTOOLLIB) {
     owner = -1;
+    if(req_own)
+      owner = req_own;
   } else {
     for(owner = 0; owner < sizeof(owners); owner++) {
       if(previous_program() == owners[owner])
@@ -90,15 +88,29 @@ void set_segment_zone(int segment, int zonenum) {
       error("Unknown owner " + previous_program()
 	    + " calling set_segment_zone!");
   }
+  if(owner != -1 && req_own)
+    error("A normal segment owner may not request to impersonate another!");
 
   seg = segments[segment];
   if(!seg) {
-    error("Can't set_segment_zone on a nonexistent segment!");
+    if(owner == -1) {
+      error("Can't set_segment_zone on a nonexistent, unowned segment!");
+    }
+    set_segment_owner(segment, owner, zonenum);
+    ZONED->add_segment_to_zone(zonenum, segment);
+    return;
   }
   if(owner != -1 && seg[0] != owner)
     error("Can't set zone of somebody else's segment!");
 
+  oldzone = seg[2];
+  ZONED->remove_segment_from_zone(oldzone, segment);
   seg[2] = zonenum;
+  ZONED->add_segment_to_zone(zonenum, segment);
+
+  /* Notify the segment owner */
+  call_other(owners[segments[segment][0]], "set_segment_zone", segment,
+	     zonenum, oldzone);
 }
 
 int allocate_new_segment(void) {
