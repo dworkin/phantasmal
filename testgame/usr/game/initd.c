@@ -6,6 +6,13 @@
 #include <config.h>
 #include <version.h>
 
+/* Normally an object with this path wouldn't need to explicitly
+   include COMMON_AUTO, but this program gets compiled before the
+   GAME_PATH_SPECIAL does.  And since it'll later get recompiled,
+   thus inheriting COMMON_AUTO, it might as well start up with
+   it active. */
+inherit COMMON_AUTO;
+
 static mixed* load_file_with_dtd(string file_path, string dtd_path);
 
 static void config_unq_file(void);
@@ -23,6 +30,16 @@ static void create(void) {
 
   LOGD->write_syslog("**** Starting Test Game, "
 		     + GAME_VERSION + " ****");
+
+  /* GAME_PATH_SPECIAL should be compiled before any other object.  It
+     changes the behavior of other objects because it sets their AUTO
+     objects.  Rather than messing with all that nasty complexity,
+     just compile this first so other objects in /usr/game always
+     inherit from the same AUTO object(s). */
+  if(!find_object(GAME_PATH_SPECIAL))
+    compile_object(GAME_PATH_SPECIAL);
+
+  CONFIGD->set_path_special_object(find_object(GAME_PATH_SPECIAL));
 
   /* Build game driver and set it */
   if(!find_object(GAME_DRIVER))
@@ -58,6 +75,8 @@ static void create(void) {
     LOGD->write_syslog("Can't read object files!  Starting incomplete!",
 		       LOG_ERROR);
   }
+
+  load_custom_rooms();
 
   /* Load the mobilefile into MOBILED */
   mob_file = read_file(MOB_FILE);
@@ -96,7 +115,7 @@ static mixed* load_file_with_dtd(string file_path, string dtd_path) {
 static void set_up_scripting(void) {
   /* Test script obj */
   compile_object("/usr/game/script/test_script");
-  call_other("/usr/game/script/test_script", "???");
+  call_other_unprotected("/usr/game/script/test_script", "???");
 }
 
 /* Read and parse config.unq according to config.dtd.  Then call
@@ -209,7 +228,24 @@ static void load_tagd(void) {
 /* This function looks through the appropriate subdirectories for room
    files and sets them up with the MapD */
 static void load_custom_rooms(void) {
+  mixed **dir_list;
+  int     ctr;
+  string  err, prog_name;
 
+  dir_list = get_dir("/usr/game/rooms/*");
+  for(ctr = 0; ctr < sizeof(dir_list[0]); ctr++) {
+    if(dir_list[1][ctr] == -2) {
+      /* Directory, recurse */
+    } else if(sscanf(dir_list[0][ctr], "%s.c", prog_name) == 1) {
+      /* Custom room file, compile it */
+      LOGD->write_syslog("Compiling file " + prog_name + ".c");
+      err = catch(compile_object("/usr/game/rooms/" + prog_name));
+      if(err) {
+	LOGD->write_syslog("Err compiling file " + dir_list[0][ctr]
+			   + ": " + err, LOG_ERROR);
+      }
+    }
+  }
 }
 
 /* read_object_dir loads all rooms and exits from the specified directory,
