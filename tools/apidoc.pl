@@ -83,7 +83,7 @@ sub link_to_html {
 	    # to, or convert these links to use the full filenames.
 
 	    foreach $filename (keys %priv_objs) {
-		if($filename =~ /$obj/) {
+		if($filename =~ /$obj/i) {
 
 		    foreach $fileref (@{$priv_objs{$filename}}) {
 			if($fileref->{func_name} eq $func) {
