@@ -8,8 +8,10 @@ large?
 
 Everywhere:
   Remove CVS directories, #files#, .#files and files~
+  Remove all .cvsignore files
+  Check for symlinks
 
-include/phantasmal/version.h
+include/phantasmal/version.h, include/version.h
   New version number
 
 usr/System/initd.c

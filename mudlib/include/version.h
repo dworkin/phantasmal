@@ -1,1 +1,1 @@
-#define GAME_VERSION   "Phantasmal Test Game v0.16"
+#define GAME_VERSION   "Phantasmal Test Game v0.016"

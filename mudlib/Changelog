@@ -1,4 +1,6 @@
 Release 0.016:
+	* Updated to DGD 1.2.90
+	* Moved all zone functionality out of ObjNumD into ZoneD
 	* Changed object articles and glance descriptions to 'transitional',
 	  i.e. kiss the current form of them goodbye...
 	* Updated for compatibility with DGD 1.2.68, which breaks back-compat
