@@ -47,7 +47,8 @@ foreach $obj (@objs) {
 
 # For each /usr/XXX/blah/foo.c object, output its files
 foreach $obj (@objs) {
-    print "Object $obj APIs:\n";
+    print "\n* Object $obj APIs:\n";
+    print join(", ", map {$_->{func_name}} @{$priv_objs{$obj}}) . "\n";
 
     html_for_object($obj, @{$priv_objs{$obj}});
 }
@@ -102,7 +103,7 @@ sub read_all_files {
 	$filemap{$entname} = $entry;
 	close(FILE);
 	$filemap{filename} = $file;
-	print "Finished parsing file: '$file'\n";
+	#print "Finished parsing file: '$file'\n";
 
 	$all_api_files{$file} = \%filemap;
     }
@@ -178,7 +179,7 @@ sub set_new_fields {
 	$ref = $priv_objs{$filename};
 	$priv_objs{$filename} = ([ @$ref, $fileref ]);
 
-	unless($fileref->{NAME} =~ /^\s*([a-zA-Z0-9_]+)\s*-\s*(.*)(\n)*$/) {
+	unless($fileref->{NAME} =~ /^\s*([a-zA-Z0-9_]+)\s*-\s*(.*)$/s) {
 	    die "Unrecognized format for entry NAME, '$fileref->{NAME}'" .
 		", file '$fileref->{filename}'!";
 	}
@@ -210,10 +211,10 @@ sub html_for_object {
     my (@filerefs, $fileref, $obj_name);
 
     $obj_name = shift;
-    @filerefs = @_;
+    @filerefs = sort {$a->{func_name} cmp $b->{func_name}} @_;
 
     foreach $fileref (@filerefs) {
-	print "  File: $fileref->{filename}\n";
+	#print "  File: $fileref->{filename}\n";
 	html_for_file($fileref);
     }
 
