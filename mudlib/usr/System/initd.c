@@ -129,6 +129,16 @@ static void create(varargs int clone)
     error("Error occurred while cloning The Void!");
   MAPD->add_room_to_zone(the_void, 0, 0);
 
+  /* Load zone name list information */
+  zone_file = read_file(ZONE_FILE);
+  if(zone_file){
+    ZONED->init_zonelist_from_file(zone_file);
+  } else {
+    DRIVER->message("Can't read zone list!  Starting blank!\n");
+    LOGD->write_syslog("Can't read zone list!  Starting blank!\n", LOG_WARN);
+  }
+
+
   /* Load stuff into MAPD and EXITD */
   objs_file = read_file(ROOM_FILE);
   if(objs_file) {
@@ -163,7 +173,12 @@ static void create(varargs int clone)
      Note: must load after rooms, exits and mobiles have
      already been loaded to avoid losing segments. */
   zone_file = read_file(ZONE_FILE);
-  ZONED->init_from_file(zone_file);
+  if(zone_file){
+    ZONED->init_from_file(zone_file);
+  } else {
+    DRIVER->message("Can't read zone file!  Starting blank!\n");
+    LOGD->write_syslog("Can't read zone file!  Starting blank!\n", LOG_WARN);
+  } 
 
   /* Start up ChannelD and ConfigD */
   if(!find_object(CHANNELD)) compile_object(CHANNELD);
@@ -172,7 +187,7 @@ static void create(varargs int clone)
 
 void save_mud_data(object user, string room_filename, string mob_filename,
 		   string zone_filename, string callback) {
-  int*   objects;
+  int*   objects, *tmpobj;
   int    cohandle, iter;
   mixed  tmp;
 
@@ -227,7 +242,9 @@ void save_mud_data(object user, string room_filename, string mob_filename,
   LOGD->write_syslog("Writing rooms to file " + room_filename, LOG_VERBOSE);
   objects = ({ });
   for(iter = 0; iter < ZONED->num_zones(); iter++) {
-    objects += MAPD->rooms_in_zone(iter);
+    tmpobj = MAPD->rooms_in_zone(iter);
+    if(tmpobj)
+      objects += tmpobj;
   }
   objects -= ({ 0 });
 
