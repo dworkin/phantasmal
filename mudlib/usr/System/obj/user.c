@@ -1,4 +1,4 @@
-/* $Header: /cvsroot/phantasmal/mudlib/usr/System/obj/user.c,v 1.42 2003/03/09 00:04:00 angelbob Exp $ */
+/* $Header: /cvsroot/phantasmal/mudlib/usr/System/obj/user.c,v 1.43 2003/03/10 07:13:13 angelbob Exp $ */
 
 #include <kernel/kernel.h>
 #include <kernel/user.h>
@@ -378,7 +378,7 @@ private string* string_to_words(string str) {
    their details searched, but not objects inside those details. */
 private object* search_contained_objects(object* objs, string str,
 					 varargs int only_details) {
-  object *ret;
+  object *ret, *contents, *details;
   string *words;
 
   words = string_to_words(str);
@@ -387,11 +387,18 @@ private object* search_contained_objects(object* objs, string str,
   while(sizeof(objs)) {
     if(!only_details
        && objs[0]->is_container() && objs[0]->is_open()) {
-      objs += objs[0]->objects_in_container();
+      contents = objs[0]->objects_in_container();
+      if(contents)
+	objs += contents;
     }
 
     if(objs[0]->match_words(this_object(), words)) {
       ret += ({ objs[0] });
+    }
+
+    details = objs[0]->get_details();
+    if(details && sizeof(details)) {
+      objs += details;
     }
 
     objs = objs[1..];
@@ -1232,13 +1239,10 @@ static void cmd_look(object user, string cmd, string str) {
     return;
   }
 
-  tmp = body->find_contained_objects(user, str);
+  tmp = find_first_objects(str, LOC_INVENTORY, LOC_CURRENT_ROOM, LOC_BODY);
   if(!tmp || !sizeof(tmp)) {
-    tmp = location->find_contained_objects(user, str);
-    if(!tmp || !sizeof(tmp)) {
-      user->message("You don't find any '" + str + "'.\r\n");
-      return;
-    }
+    user->message("You don't find any '" + str + "'.\r\n");
+    return;
   }
 
   if(sizeof(tmp) > 1) {
