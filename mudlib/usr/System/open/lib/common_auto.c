@@ -5,22 +5,31 @@
 
 #include <type.h>
 
-/* This is the AUTO object for objects in /usr/common.  It's meant to
- * prevent them from doing anything unpleasant without realizing it.
+/* This is the AUTO object for objects in /usr/common and potentially
+ * other directories.  It's meant to prevent them from doing anything
+ * unpleasant without realizing it.  Specifically, it prevents a
+ * call_other() to any nonexistent function.
  */
+
+static mixed call_other_unprotected(mixed obj, string function,
+				    mixed args...) {
+  return ::call_other(obj, function, args...);
+}
 
 static mixed call_other(mixed obj, string function, mixed args...) {
   /* May want to restrict or error-check call_other later. */
 
   if(typeof(obj) == T_OBJECT && !function_object(function, obj)
      && find_object(LOGD)) {
-    LOGD->write_syslog("Calling nonexistent function "
+    LOGD->write_syslog(object_name(this_object())
+		       + " is calling nonexistent function "
 		       + object_name(obj) + ":" + function + "!\n",
 		       LOG_ERROR);
   } else if(typeof(obj) == T_STRING && find_object(obj)
 	  && !function_object(function, find_object(obj))
 	  && find_object(LOGD)) {
-    LOGD->write_syslog("Calling nonexistent function "
+    LOGD->write_syslog(object_name(this_object())
+		       + " is calling nonexistent function "
 		       + obj + ":" + function + "!\n", LOG_ERROR);
   }
 

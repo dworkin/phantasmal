@@ -15,6 +15,8 @@
 
 #include <phantasmal/lpc_names.h>
 
+inherit COMMON_AUTO;
+
 private object game_path_object;
 
 string path_special(string file) {
@@ -34,8 +36,9 @@ string path_special(string file) {
     return INHERIT_COMMON_AUTO;
   }
 
-  if(game_path_object)
+  if(game_path_object) {
     return game_path_object->path_special(file);
+  }
 
   return nil;
 }

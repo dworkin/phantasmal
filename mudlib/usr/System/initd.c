@@ -230,7 +230,7 @@ static void create(varargs int clone)
   MOBILED->init();
 
   /* Make sure ConfigD is set up for scripting */
-  CONFIGD->set_path_special(nil);
+  CONFIGD->set_path_special_object(nil);
 
   /* Now delegate to the initd in /usr/game, if any. */
   if(read_file(GAME_INITD + ".c", 0, 1) != nil) {
@@ -238,7 +238,7 @@ static void create(varargs int clone)
       if(!find_object(GAME_INITD))
 	compile_object(GAME_INITD);
 
-      call_other(find_object(GAME_INITD), "???");
+      call_other_unprotected(find_object(GAME_INITD), "???");
     } : {
       error("Error in GAME_INITD:create()!");
     }

@@ -7,6 +7,10 @@
 #include <gameconfig.h>
 #include <type.h>
 
+/* Since the ConfigD sets the path_special object, obviously ConfigD
+   gets compiled before the path_special object is set. */
+inherit COMMON_AUTO;
+
 #define AUTHORIZED() (SYSTEM() || KERNEL() || GAME())
 
 /* Prototypes */
@@ -46,7 +50,7 @@ object get_game_driver(void) {
 }
 
 void set_path_special_object(object new_obj) {
-  if(previous_program() == GAME_INITD) {
+  if(previous_program() == GAME_INITD || previous_program() == INITD) {
     PATHSPECIAL->set_game_path_object(new_obj);
 
     INITD->set_path_special_object(find_object(PATHSPECIAL));
