@@ -16,6 +16,18 @@ close(FILE);
 
 #print "Basefiles: " . join(", ", @basefiles) . "\n";
 
+my ($mtime_t1, $mtime_t2, $mtime_header);
+($_,$_,$_,$_,$_,$_,$_,$_,$_,$mtime_t1,$_,$_,$_)
+    = stat("pageheader.html");
+($_,$_,$_,$_,$_,$_,$_,$_,$_,$mtime_t2,$_,$_,$_)
+    = stat("pagefooter.html");
+
+if($mtime_t1 > $mtime_t2) {
+    $mtime_header = $mtime_t1;
+} else {
+    $mtime_header = $mtime_t2;
+}
+
 my ($filename, $outfilename, $contents, %filestate);
 FILENAME: foreach $filename (@basefiles) {
     my ($mtime1, $mtime2);
@@ -33,7 +45,7 @@ FILENAME: foreach $filename (@basefiles) {
     ($_,$_,$_,$_,$_,$_,$_,$_,$_,$mtime2,$_,$_,$_)
 	= stat($outfilename) if -e $outfilename;
 
-    next FILENAME if($mtime2 >= $mtime1);
+    next FILENAME if($mtime2 > $mtime1 and $mtime2 > $mtime_header);
 
     open(FILE, "<$filename") or die "Can't open HTML file $filename: $!";
     $contents = join("", <FILE>);
