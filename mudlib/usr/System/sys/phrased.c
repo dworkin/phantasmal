@@ -116,8 +116,7 @@ object new_simple_english_phrase(string eng_str) {
   locale.
 */
 object unq_to_phrase(mixed unq) {
-  int    iter;
-  int    lang;
+  int    iter, lang;
   object phrase;
   mixed  uitem;
   mixed* tmp;
@@ -149,7 +148,7 @@ object unq_to_phrase(mixed unq) {
 
   /* Set Debug locale automatically, if needed & possible */
   if(phrase->get_content_by_lang(LANG_debugUS) == "Debug") {
-    string tmp;
+    mixed tmp;
 
     tmp = phrase->get_content_by_lang(LANG_englishUS);
     if(tmp) {
