@@ -1,4 +1,4 @@
-/* $Header: /cvsroot/phantasmal/mudlib/usr/game/obj/user.c,v 1.10 2004/09/06 00:08:55 angelbob Exp $ */
+/* $Header: /cvsroot/phantasmal/mudlib/usr/game/obj/user.c,v 1.11 2004/09/07 00:05:33 angelbob Exp $ */
 
 #include <kernel/kernel.h>
 #include <kernel/user.h>
@@ -169,7 +169,7 @@ void player_login(int first_time)
   body = nil;
 
   /* Set up location, body, etc */
-  start_room_num = 0;
+  start_room_num = 300;
   start_room = MAPD->get_room_by_num(start_room_num);
 
   /* If start room can't be found, set the start room to the void */
