@@ -1,6 +1,6 @@
 ~DTD{
   ~obj{number?,location?,detail?,bdesc,gdesc,ldesc,edesc?,article,parent?,
-       nouns,adjectives?,exit*,flags?,weight?,volume?,length?,
+       nouns,adjectives?,exit*,newexit*,flags?,weight?,volume?,length?,
        weight_capacity?,volume_capacity?,length_capacity?,removed_details?}
   ~room:obj{}
   ~number{int}
@@ -23,4 +23,19 @@
   ~length_capacity{float}
   ~volume_capacity{float}
   ~removed_details{int*}
+  ~newexit{rnumber,direction,destination,return,type,rdetail?,rbdesc?,rgdesc?,
+           rldesc?,redesc?,rnouns?,radjectives?,rflags?}
+  ~rnumber{int}
+  ~direction{int}
+  ~destination{int}
+  ~return{int}
+  ~type{int}
+  ~rdetail{int}
+  ~rbdesc{phrase}
+  ~rgdesc{phrase}
+  ~rldesc{phrase}
+  ~redesc{phrase}
+  ~rnouns{phrase+}
+  ~radjectives{phrase*}
+  ~rflags{int}
 }

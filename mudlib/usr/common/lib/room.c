@@ -375,6 +375,8 @@ private string exits_to_unq(void) {
   object shortphr;
 
   ret = "";
+  
+/* old style
   for(ctr = 0; ctr < sizeof(exits); ctr++) {
     exit_arr = exits[ctr];
     exit = exit_arr[1];
@@ -397,13 +399,38 @@ private string exits_to_unq(void) {
       }
     } else
       LOGD->write_syslog("Couldn't find destination!", LOG_WARNING);
+  } */
+
+  /* new style */
+  for(ctr = 0; ctr < sizeof(exits); ctr++) {
+    exit_arr = exits[ctr];
+    exit = exit_arr[1];
+
+    if (exit->get_link() > 0) {
+      dest = exit->get_destination();
+      if(dest) {
+        opp_dir = EXITD->opposite_direction(exit->get_direction());
+        other_exit = dest->get_exit(opp_dir);
+        if(!other_exit || other_exit->get_destination() != this_object()) {
+          LOGD->write_syslog("Problem finding return exit!");
+        } else {
+          if(exit->get_number() < other_exit->get_number()) {
+	    ret += exit->to_unq_text();
+          }
+	}
+      } else {
+        LOGD->write_syslog("Couldn't find destination!", LOG_WARNING);
+      }
+    } else {
+      ret += exit->to_unq_text();
+    }
   }
 
   return ret;
 }
 
 /*
- * string to_unq_flags(void) 
+ * string to_unq_flags(void)
  *
  * creates a string out of the object flags.
  */
@@ -539,23 +566,26 @@ void from_dtd_tag(string tag, mixed value) {
   } else if(tag == "exit") {
     string dirname;
     int    roomnum, dir, exitnum1, exitnum2;
-    
+
     value = STRINGD->trim_whitespace(value);
     if(sscanf(value, "%s: #%d %d %d", dirname, roomnum,
 	      exitnum1, exitnum2) == 4) {
-      
+
       dir = EXITD->direction_by_string(dirname);
       if(dir == -1)
 	error("Can't find direction for dirname " + dirname);
-      
+
       if(tr_num <= 0)
 	error("Can't yet request an exit from an unnumbered room!");
-      
+
       EXITD->room_request_simple_exit(tr_num, roomnum, dir,
 				      exitnum1, exitnum2);
     } else {
       error("Can't parse as exit desc: '" + value + "'");
     }
+  /* newexit stuff */
+  } else if(tag == "newexit") {
+    EXITD->room_request_complex_exit(tr_num, value);
   } else if(tag == "weight") {
     weight = value;
   } else if(tag == "volume") {
@@ -575,7 +605,7 @@ void from_dtd_tag(string tag, mixed value) {
       pending_removed_details = value;
     } else
       error("Unreasonable type for removed_details!");
-  } else { 
+  } else {
     error("Don't recognize tag " + tag + " in function from_dtd_tag()");
   }
 }

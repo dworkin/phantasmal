@@ -16,12 +16,14 @@ private mapping builder_directions;
 /* When loading files, this lets us resolve room numbers *after* all rooms
    load... */
 private mixed*  deferred_add_exit;
+private mixed*  deferred_add_newexit;
 
 /* Prototypes */
 void add_twoway_exit_between(object room1, object room2, int direction,
 			     int num1, int num2);
 void add_oneway_exit_between(object room1, object room2, int direction,
 			     int num1);
+private void add_complex_exit_by_unq(int roomnum1, mixed value);
 void upgraded(varargs int clone);
 
 #define PHR(x) PHRASED->new_simple_english_phrase(x)
@@ -39,6 +41,7 @@ static void create(varargs int clone) {
   exit_segments = ({ });
 
   deferred_add_exit = ({ });
+  deferred_add_newexit = ({ });
 
   upgraded();
 
@@ -137,7 +140,6 @@ int direction_by_string(string direc) {
   return DIR_ERR;
 }
 
-
 int opposite_direction(int direction) {
   if (direction <= 0) {
     error("Can't get the opposite direction of a special direction!");
@@ -164,6 +166,31 @@ private void push_or_add_exit(int roomnum1, int roomnum2, int direction,
   }
 }
 
+private void push_or_add_newexit(int roomnum1, mixed value) {
+  int ctr, roomnum2;
+  object exit1, exit2;
+  object room1, room2;
+
+  for(ctr=0;ctr<sizeof(value);ctr++) {
+    if (value[ctr][0]=="destination") {
+      roomnum2 = value[ctr][1];
+      room1 = MAPD->get_room_by_num(roomnum1);
+      if (roomnum2 > 0) {
+        room2 = MAPD->get_room_by_num(roomnum2);
+        if(room1 && room2) {
+          add_complex_exit_by_unq(roomnum1, value);
+        } else {
+          deferred_add_newexit += ({ ({ roomnum1, value }) });
+        }
+      } else if (room1) {
+          add_complex_exit_by_unq(roomnum1, value);
+      } else {
+          deferred_add_newexit += ({ ({ roomnum1, value }) });
+      }
+    }
+  }
+}
+
 void room_request_simple_exit(int roomnum1, int roomnum2, int direction,
 			      int num1, int num2) {
   if(previous_program() != ROOM) {
@@ -173,6 +200,13 @@ void room_request_simple_exit(int roomnum1, int roomnum2, int direction,
   push_or_add_exit(roomnum1, roomnum2, direction, num1, num2);
 }
 
+void room_request_complex_exit(int roomnum1, mixed value) {
+  if(previous_program() != ROOM) {
+    error("Only ROOM can request deferred exit creation!");
+  }
+  push_or_add_newexit(roomnum1, value);
+}
+
 void add_deferred_exits(void) {
   int    ctr;
   mixed* exits, *ex;
@@ -180,17 +214,29 @@ void add_deferred_exits(void) {
   exits = deferred_add_exit;
   deferred_add_exit = ({ });
 
-  for(ctr = 0; ctr < sizeof(exits); ctr++) {
-    ex = exits[ctr];
-    push_or_add_exit(ex[0], ex[1], ex[2], ex[3], ex[4]);
+  if (sizeof(exits)) {
+    for(ctr = 0; ctr < sizeof(exits); ctr++) {
+      ex = exits[ctr];
+      push_or_add_exit(ex[0], ex[1], ex[2], ex[3], ex[4]);
+    }
+  }
+
+  exits = deferred_add_newexit;
+  deferred_add_newexit = ({ });
+
+  if (sizeof(exits)) {
+    for(ctr = 0; ctr < sizeof(exits); ctr++) {
+      ex = exits[ctr];
+      push_or_add_newexit(ex[0], ex[1]);
+    }
   }
 
 }
 
 int num_deferred_exits(void) {
-  if(!deferred_add_exit) return -1;
+  if(!deferred_add_exit && !deferred_add_newexit) return -1;
 
-  return sizeof(deferred_add_exit);
+  return sizeof(deferred_add_exit)+sizeof(deferred_add_newexit);
 }
 
 private int allocate_exit_obj(int num, object obj) {
@@ -225,6 +271,75 @@ private int allocate_exit_obj(int num, object obj) {
   num = OBJNUMD->new_in_segment(segment, obj);
 
   return num;
+}
+
+private void add_complex_exit_by_unq(int roomnum1, mixed value) {
+  int ctr, ctr2, num1, num2, roomnum2;
+  object exit1, exit2;
+  object room1, room2;
+  mixed nouns, adjectives;
+
+  exit1 = clone_object(SIMPLE_EXIT);
+  exit2 = clone_object(SIMPLE_EXIT);
+  room1 = MAPD->get_room_by_num(roomnum1);
+  exit1->set_from_location(room1);
+
+  for(ctr=0;ctr<sizeof(value);ctr++) {
+    if (value[ctr][0]=="rnumber") {
+      exit1->set_number(value[ctr][1]);
+    } else if (value[ctr][0]=="direction") {
+      exit1->set_direction(value[ctr][1]);
+      exit2->set_direction(opposite_direction(value[ctr][1]));
+    } else if (value[ctr][0]=="destination") {
+        room2 = MAPD->get_room_by_num(value[ctr][1]);
+        exit1->set_destination(room2);
+	exit1->set_from_location(room1);
+	exit2->set_destination(room1);
+	exit2->set_from_location(room2);
+    } else if (value[ctr][0]=="return") {
+      exit2->set_number(value[ctr][1]);
+      exit1->set_link(value[ctr][1]);
+      exit2->set_link(exit1->get_number());
+    } else if (value[ctr][0]=="type") {
+      exit1->set_exit_type(value[ctr][1]);
+      exit2->set_exit_type(value[ctr][1]);
+    } else if (value[ctr][0]=="rdetail") {
+      /* what to do? */
+    } else if (value[ctr][0]=="rbdesc") {
+      exit1->set_brief(value[ctr][1]);
+      exit2->set_brief(value[ctr][1]);
+    } else if (value[ctr][0]=="rgdesc") {
+      exit1->set_glance(value[ctr][1]);
+      exit2->set_glance(value[ctr][1]);
+    } else if (value[ctr][0]=="rldesc") {
+      exit1->set_look(value[ctr][1]);
+      exit2->set_look(value[ctr][1]);
+    } else if (value[ctr][0]=="redesc") {
+      exit1->set_examine(value[ctr][1]);
+      exit2->set_examine(value[ctr][1]);
+    } else if (value[ctr][0]=="rflags") {
+      exit1->set_all_flags(value[ctr][1]);
+      exit2->set_all_flags(value[ctr][1]);
+    } else if(value[ctr][0]=="rnouns") {
+      for(ctr2 = 0; ctr2 < sizeof(value[ctr][1]); ctr2++) {
+        exit1->add_noun(value[ctr][1][ctr2]);
+        exit2->add_noun(value[ctr][1][ctr2]);
+      }
+    } else if(value[ctr][0]=="radjectives") {
+      for(ctr2 = 0; ctr2 < sizeof(value[ctr][1]); ctr2++) {
+        exit1->add_adjective(value[ctr][1][ctr2]);
+        exit2->add_adjective(value[ctr][1][ctr2]);
+      }
+    }
+  }
+
+  room1->add_exit(exit1->get_direction(), exit1);
+  num1 = allocate_exit_obj(-1, exit1);
+
+  if (exit1->get_exit_type()>1) {
+    room2->add_exit(exit2->get_direction(), exit2);
+    num2 = allocate_exit_obj(-1, exit2);
+  }
 }
 
 /* note:  caller must make sure not to override existing exits!!! */

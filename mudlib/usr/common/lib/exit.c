@@ -100,6 +100,85 @@ object get_destination() {
   return destination;
 }
 
+/*  WAS:    ~exit{string}
+ *  NOW:    ~newexit{rnumber,direction,destination,return,type,
+ *                   rdetail?,rbdesc?,rgdesc?,rldesc?,redesc?,
+ *                   rnouns?,radjectives?,rflags?}}
+ */
+string to_unq_text(void) {
+  object dest, shortphr, other_exit;
+  string  ret, tmp_n, tmp_a;
+  int locale, opp_dir;
+
+  ret = "";
+
+  dest = get_destination();
+  shortphr = EXITD->get_short_for_dir(get_direction());
+
+  ret += "  ~newexit{~rnumber{" + get_number() + "}"
+      + " ~direction{" + get_direction() + "}"
+      + " ~destination{" + dest->get_number() + "}"
+      + " ~return{";
+
+  if(get_link() > 0 && dest) {
+    opp_dir = EXITD->opposite_direction(get_direction());
+    other_exit = dest->get_exit(opp_dir);
+    if(!other_exit) {
+      LOGD->write_syslog("Problem finding return exit!");
+    } else {
+      ret += other_exit->get_number() + "}";
+    }
+  } else {
+    ret += "-1}";
+  }
+
+  ret += " ~type{" + get_exit_type() + "}\n";
+
+  if (get_detail_of()) {
+    ret += "    ~rdetail{" + get_detail_of()->get_number() + "}\n";
+  }
+  if(edesc) {
+    ret += "    ~rbdesc{" + bdesc->to_unq_text() + "}\n";
+  }
+  if(gdesc) {
+    ret += "    ~rgdesc{" + gdesc->to_unq_text() + "}\n";
+  }
+  if(ldesc) {
+    ret += "    ~rldesc{" + ldesc->to_unq_text() + "}\n";
+  }
+  if(edesc) {
+    ret += "    ~redesc{" + edesc->to_unq_text() + "}\n";
+  }
+
+  /* Skip debug locale */
+  tmp_n = tmp_a = "";
+  for(locale = 1; locale < sizeof(nouns); locale++) {
+    if(sizeof(nouns[locale])) {
+      tmp_n += "~" + PHRASED->locale_name_for_language(locale) + "{"
+        + implode(nouns[locale], ",") + "}";
+    }
+    if(sizeof(adjectives[locale])) {
+      tmp_a += "~" + PHRASED->locale_name_for_language(locale) + "{"
+        + implode(adjectives[locale], ",") + "}";
+    }
+  }
+
+  /* The double-braces are intentional -- this uses the efficient
+     method of specifying nouns and adjectives rather than the human-
+     friendly one. */
+  if(tmp_n && tmp_n!="") {
+    ret += "    ~rnouns{{" + tmp_n + "}}\n";
+  }
+  if(tmp_a && tmp_a!="") {
+    ret += "    ~radjectives{{" + tmp_a + "}}\n";
+  }
+
+  ret += "    ~rflags{" + objflags + "}}\n";
+
+  return ret;
+}
+
+
 /*
  * flag overrides
  */
@@ -130,6 +209,13 @@ private void set_flags(int flags, int value) {
   } else {
     objflags &= ~flags;
   }
+}
+
+void set_all_flags(int flags) {
+  if(previous_program() != EXITD)
+    error("Only EXITD may set_all_flags!");
+
+  objflags = flags;
 }
 
 /* These may seem a little weird.  The problem is, we need to access
