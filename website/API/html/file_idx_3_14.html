@@ -1,0 +1,70 @@
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title> Phantasmal API Documentation </title>
+    <style type="text/css">
+    <!--
+      p {font-family: serif, font-weight: normal; color: black;
+         font-size: 12pt }
+      h3 {font-family: serif; font-weight: bold; color: #FF20FF;
+          font-size: 18pt}
+      h4 {font-family: serif; font-weight: bold; color: #0000FF;
+          font-size: 16pt}
+     -->
+    </style>
+  </head>
+
+  <body text="#000000" bgcolor="#DDDDDD" link="#0000EF" vlink="#51188E"
+        alink="#FF0000">
+
+    <h3 align="center"> API Function: new_simple_english_phrase </h3>
+
+    <dl>
+      <dt> Summary: </dt>
+      <dd> convert an English string to a
+	Phantasmal phrase structure
+
+ <br/> <br/> </dd>
+
+      <dt> Defined In LPC Object: </dt>
+      <dd> /usr/System/sys/phrased.c <br/> <br/> </dd>
+
+      <dt> Prototype: </dt>
+      <dd> 	object new_simple_english_phrase(string english_string)
+
+ <br/> <br/> </dd>
+
+      <dt> Can Be Called By: </dt>
+      <dd> 	Anybody
+
+ <br/> <br/> </dd>
+
+      <dt> Description: </dt>
+      <dd> <p> 	Returns a Phantasmal phrase structure.  If the phrase is queried
+	in English, it returns the given string.  If queried in other
+	locales, it is undefined, but should be as appropriate as
+	possible.  Don't expect it to do actual translation for you.</p>
+<p> </p> </dd>
+
+      <dt> Return Value:</dt>
+      <dd> <p>	A new Phrase object.  This may be a Lightweight Object (LWO)
+	rather than a full DGD object.</p>
+<p> </p> </dd>
+
+      <dt> Errors:</dt>
+      <dd> 	Usually none.
+
+ <br/> <br/> </dd>
+
+      <dt> See Also:</dt>
+      <dd> set_content_by_lang</dd>
+    </dl>
+
+    <a href="http://sourceforge.net">
+      <img src="http://sourceforge.net/sflogo.php?group_id=48659&type=6"
+           width="210" height="62" border="0"
+           alt="SourceForge.net Logo"></a>
+  </body>
+</html>
+
