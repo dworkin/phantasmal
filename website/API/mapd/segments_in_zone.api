@@ -1,0 +1,25 @@
+FILE
+	/usr/common/sys/mapd.c
+
+NAME
+	segments_in_zone - return the segments that comprise a zone
+
+PROTOTYPE
+	int *segments_in_zone(int zone_number)
+
+CALLED BY
+	System, Common, Game
+
+DESCRIPTION
+	Every zone in Phantasmal consists of one or more segments of
+	rooms.  This function returns the list of MapD segments that
+	are part of the specified zone number.
+
+RETURN VALUE
+	An array of integer segment numbers, or nil.
+
+ERRORS
+	Normally none.
+
+SEE ALSO
+	add_room_to_zone, rooms_in_segment, rooms_in_zone

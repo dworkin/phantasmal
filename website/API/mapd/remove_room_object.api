@@ -1,0 +1,27 @@
+FILE
+	/usr/common/sys/mapd.c
+
+NAME
+	remove_room_object - unregister a room object with the MapD
+
+PROTOTYPE
+	void remove_room_object(object room)
+
+CALLED BY
+	System, Common, Game
+
+DESCRIPTION
+	Unregisters a room object with MapD.  This does not remove it
+	from any zone it might be a member of -- that should be done
+	first.
+
+	The room number -1 is assigned with set_room_number().
+
+RETURN VALUE
+	None.
+
+ERRORS
+	Supplying a room that isn't registered will cause an error.
+
+SEE ALSO
+	add_room_to_zone

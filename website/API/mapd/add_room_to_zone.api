@@ -1,0 +1,29 @@
+FILE
+	/usr/common/sys/mapd.c
+
+NAME
+	add_room_to_zone - add a room to a zone and assign it a number
+
+PROTOTYPE
+	void add_room_to_zone(object room, int num, int req_zone)
+
+CALLED BY
+	System, Common, Game
+
+DESCRIPTION
+	Add a registered room to a zone, or autoassign a zone.  Give
+	the room the specified number, or autoassign a number.  If num
+	or req_zone is -1, the value is autoassigned, otherwise the number
+	specified is used.
+
+	The room's number will be set with set_number().
+
+RETURN VALUE
+	None.
+
+ERRORS
+	If an unregistered room is given, or num or req_zone cannot be used
+	as specified, an error occurs.
+
+SEE ALSO
+	add_room_object, get_room_by_num

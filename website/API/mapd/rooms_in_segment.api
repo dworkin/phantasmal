@@ -1,0 +1,24 @@
+FILE
+	/usr/common/sys/mapd.c
+
+NAME
+	rooms_in_segment - return the rooms in a given segment
+
+PROTOTYPE
+	int *rooms_in_segment(int segment_number)
+
+CALLED BY
+	System, Common, Game
+
+DESCRIPTION
+	Each segment has room for up to 100 rooms.  This function
+	will return what rooms are in the specified segment, if any.
+
+RETURN VALUE
+	An array of integer room numbers, or nil.
+
+ERRORS
+	Normally none.
+
+SEE ALSO
+	add_room_to_zone, segments_in_zone, rooms_in_zone, get_room_by_num

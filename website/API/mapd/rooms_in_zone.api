@@ -1,0 +1,25 @@
+FILE
+	/usr/common/sys/mapd.c
+
+NAME
+	rooms_in_zone - return the rooms that comprise a zone
+
+PROTOTYPE
+	int *rooms_in_zone(int zone_number)
+
+CALLED BY
+	System, Common, Game
+
+DESCRIPTION
+	Every zone in Phantasmal has some number (perhaps even zero)
+	rooms in it.  This function returns a list of room numbers
+	for the specified zone.
+
+RETURN VALUE
+	An array of integer room numbers, or nil.
+
+ERRORS
+	Normally none.
+
+SEE ALSO
+	add_room_to_zone, rooms_in_segment, segments_in_zone, get_room_by_num

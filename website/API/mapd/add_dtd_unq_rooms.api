@@ -1,0 +1,28 @@
+FILE
+	/usr/common/sys/mapd.c
+
+NAME
+	add_dtd_unq_rooms - add rooms in preparsed UNQ format to MapD
+
+PROTOTYPE
+	void add_dtd_unq_rooms(mixed *unq, string filename)
+
+CALLED BY
+	System, Common, Game
+
+DESCRIPTION
+	Adds one or more rooms, in preparsed UNQ form, to the MapD.
+	This will deal with circular dependencies in the data,
+	resolution order, checking for consistency, registering exits
+	and a great deal more.  Or, y'know, you can do it yourself and
+	register all the rooms individually.  If you're a glutton
+	for punishment.
+
+RETURN VALUE
+	None.
+
+ERRORS
+	Bad parameters, bad data and bad MapD state can all cause errors.
+
+SEE ALSO
+	add_room_to_zone, add_room_object, add_unq_text_rooms

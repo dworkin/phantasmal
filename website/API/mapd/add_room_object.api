@@ -1,0 +1,28 @@
+FILE
+	/usr/common/sys/mapd.c
+
+NAME
+	add_room_object - register a room object with the MapD
+
+PROTOTYPE
+	void add_room_object(object room)
+
+CALLED BY
+	System, Common, Game
+
+DESCRIPTION
+	Registers a room object with MapD.  The room does this for itself
+	when its create() function is called.  Any room that doesn't, but
+	that is later added to MapD, will generate an error.
+
+	This does not assign a room number to the room, it simply makes
+	sure that the MapD has seen the room at least once.
+
+RETURN VALUE
+	None.
+
+ERRORS
+	Registering an already-registered room will cause an error.
+
+SEE ALSO
+	add_room_to_zone

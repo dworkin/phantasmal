@@ -1,0 +1,24 @@
+FILE
+	/usr/common/sys/mapd.c
+
+NAME
+	get_room_by_num - finds a room by its room number
+
+PROTOTYPE
+	object get_room_by_num(int room_num)
+
+CALLED BY
+	System, Common, Game
+
+DESCRIPTION
+	Returns a room object given the room number.  The number is
+	assigned by add_room_to_zone.
+
+RETURN VALUE
+	The room object, or nil if it can't be found.
+
+ERRORS
+	Normally none.
+
+SEE ALSO
+	add_room_to_zone

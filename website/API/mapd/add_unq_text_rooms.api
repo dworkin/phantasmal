@@ -1,0 +1,24 @@
+FILE
+	/usr/common/sys/mapd.c
+
+NAME
+	add_unq_text_rooms - add rooms in textual UNQ format to MapD
+
+PROTOTYPE
+	void add_unq_text_rooms(mixed *unq, string filename)
+
+CALLED BY
+	System, Common, Game
+
+DESCRIPTION
+	This function simply parses the textual UNQ supplied using the
+	standard MapD DTD and passes the result to add_dtd_unq_rooms.
+
+RETURN VALUE
+	None.
+
+ERRORS
+	Bad parameters, bad data and bad MapD state can all cause errors.
+
+SEE ALSO
+	add_room_to_zone, add_room_object, add_dtd_unq_rooms
