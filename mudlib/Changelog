@@ -24,6 +24,7 @@ Release 0.012:
 	* MAPD now lists problem objects when it can't resolve rooms.
 	* @set_obj_detail command will now add details to objects.
 	* @stat now deals with object details.
+	* Existing user commands (but not wizard commands) now take details.
 
 Release 0.011b:
 	* Added @make_portable command, very similar to @make_room.
