@@ -409,12 +409,18 @@ EOF
     my ($user, $newuser);
     $user = undef;
     for $obj_name (sort keys %obj_filenames) {
-	if($obj_name =~ /^\/usr\/[A-Za-z0-9_]+\//) {
+	if($obj_name =~ /^\/usr\/([A-Za-z0-9_]+)\//) {
 	    $newuser = $1;
+	} else {
+	    $newuser = "";
 	}
 
 	if(defined($user) and $user ne $newuser) {
-	    print FILE "    </ul>\nBlorp    <ul>\n";
+	    print FILE "    </ul>\n    <ul>\n";
+	    $user = $newuser;
+	}
+	unless(defined($user)) {
+	    $user = $newuser;
 	}
 
 	print FILE "      <li> <a href=\"$obj_filenames{$obj_name}\">"
