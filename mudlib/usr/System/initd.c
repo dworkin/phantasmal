@@ -29,7 +29,7 @@ static void create(varargs int clone)
 {
   object driver, obj, the_void;
   string mapd_dtd, help_dtd, objs_file;
-  int major, minor, patch;
+  int major, minor, patch, rooms_loaded;
 
   /* First things first -- this release needs one of the
      latest versions of DGD, so let's make sure. */
@@ -123,16 +123,24 @@ static void create(varargs int clone)
 
   /* Load stuff into MAPD and EXITD */
   objs_file = read_file(ROOM_FILE);
-  if(!objs_file)
-    error("Can't read file " + ROOM_FILE + "!");
-  MAPD->add_unq_text_rooms(objs_file, ROOM_FILE);
-  EXITD->add_deferred_exits();
+  if(objs_file) {
+    MAPD->add_unq_text_rooms(objs_file, ROOM_FILE);
+    EXITD->add_deferred_exits();
+    rooms_loaded = 1;
+  } else {
+    DRIVER->message("Can't read room file!\n");
+    LOGD->write_syslog("Can't read room file!  Starting blank!", LOG_WARN);
+    rooms_loaded = 0;
+  }
 
   /* Load stuff into PORTABLED */
   objs_file = read_file(PORT_FILE);
-  if(!objs_file)
-    error("Can't read file " + PORT_FILE + "!");
-  PORTABLED->add_unq_text_portables(objs_file, the_void, PORT_FILE);
+  if(objs_file && rooms_loaded) {
+    PORTABLED->add_unq_text_portables(objs_file, the_void, PORT_FILE);
+  } else if(rooms_loaded) {
+    DRIVER->message("Can't read portable file!\n");
+    LOGD->write_syslog("Can't read portable file!  Starting blank!", LOG_WARN);
+  }
 
   if(!find_object(CHANNELD)) compile_object(CHANNELD);
   

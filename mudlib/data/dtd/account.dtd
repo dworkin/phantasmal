@@ -1,0 +1,7 @@
+~DTD{
+  ~account{name,password,locale}
+
+  ~name{string}
+  ~password{string}
+  ~locale{int}
+}
