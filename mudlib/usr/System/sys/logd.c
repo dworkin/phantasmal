@@ -54,6 +54,8 @@ void start_channels(void) {
   if(strlen(dtd_file) > MAX_STRING_SIZE - 3)
     error("LOGD's DTD file is too long!");
   channels_file = read_file(LOG_CHANNELS);
+  if(!channels_file)
+    error("Can't read channels file ('" + LOG_CHANNELS + "')");
   if(strlen(channels_file) > MAX_STRING_SIZE - 3)
     error("LOGD's Channels file is too long!");
 
