@@ -12,7 +12,7 @@ inherit access API_ACCESS;
 inherit rsrc   API_RSRC;
 
 #define HELP_DTD  ("/usr/System/sys/help.dtd")
-#define GAME_INIT ("/usr/game/initd.c")
+#define GAME_INIT ("/usr/game/initd")
 
 /* How many objects can be saved to file in a single call_out? */
 #define SAVE_CHUNK   10
@@ -106,9 +106,13 @@ static void create(varargs int clone)
     DRIVER->message("with DGD beyond 1.2.XX.  Please upgrade Phantasmal!\n");
   }
 
-
   access::create();
   rsrc::create();
+
+  /* To do things like compile objects from these directories, we need
+     them to be users from the rsrcd's point of view. */
+  rsrc::add_owner("common");
+  rsrc::add_owner("game");
 
   driver = find_object(DRIVER);
 
@@ -247,7 +251,7 @@ static void create(varargs int clone)
 
 
   /* Now delegate to the initd in /usr/game, if any. */
-  if(read_file(GAME_INIT, 0, 1) != nil) {
+  if(read_file(GAME_INIT + ".c", 0, 1) != nil) {
     catch {
       if(!find_object(GAME_INIT))
 	compile_object(GAME_INIT);
