@@ -24,7 +24,7 @@
           <td class="content" style="font-size: 120%">
 
           <ul style="margin: 0; padding-left: 10%">
-            <li> <a href="index.html">DGD &amp; LPC Page</a> </li>
+            <li> <a href="../index.html">DGD &amp; LPC Page</a> </li>
 	    <li> <a href="../LPC">LPC Textbook</a> </li>
 	    <li> <a href="../Book">New LPC Introduction</a> </li>
           </ul>
@@ -135,6 +135,124 @@
   </ul>
 
   <hr />
+
+  <h3> More Messages About Using parse_string() </h3>
+
+<pre>
+Date: Fri, 28 Jan 2000 14:34:04 +0100 (CET)
+From: "Felix A. Croes" <felix@dworkin.nl>
+Message-Id: <200001281334.OAA03750@pattern.dworkin.nl>
+To: dgd@list.imaginary.com
+Subject: Re: [DGD]parse_string
+
+Ludger Merkens <balduin@uni-paderborn.de> wrote:
+
+>[...]
+>     grammar = "                     \
+> whitespace=/[ \t\n\r\v\f]+/         \ /* strip some chars */
+> whitespace=/[!-\\[\\]|]+/           \ /* some more        */
+> tag=/<[^<]*>/                       \ /* tags start with <, end with >
+> term =/[a-zA-Z]+'s/                 \ /* e.g. GNU's */
+> term =/\\(*[a-zA-Z`']+\\)*/         \ /* Hello or 'Hello' */
+> eol =/<[^<>]*/                      \ /* < but neither < nor > follows. */
+> s : tag s                           \
+> s : term s                          \
+> s : term                            \
+> s : eol                             \ /* broken tag at end of chunk */
+> s : tag                             \
+> ";
+>
+> First of all, I want to know how the whitespace rules are used, e.g. I 
+> stumbled over a tag containing \n in spite of the first whitespace rule.
+
+Whitespace is matched like any other token: take the longest possible
+match.  The longest possible match for "tag" explicitly allows embedded
+whitespace, as does the longest possible match for "eol".  Also note
+that the rule for tag matches "<foo>>>>>".
+
+
+> Second I need some details about efficiency of parsing. If I use this
+> grammar on a string containing html with length of 1000 chars, I have
+> a cost of about 25240 ticks. Whereas I get for 2000 chars 181664 ticks
+> and for 3000 even 591632. 
+
+This is becaus the grammar is right-recursive for s.  If you replace
+the first two rules with left-recursive rules, the grammar will become
+more efficient:
+
+    s: s tag
+    s: s term
+
+
+> - Which execution costs do I have to expect O(n^2), O(n^3) ... (be n the
+>   length of the string)
+
+Parsing with the (suitably rewritten) grammar above would have cost
+O(n).  The worst case for a LR grammar is O(n^3).  The worse case for
+an ambiguous grammar is O(n^m), where m is the number of rules in the
+grammar.
+
+
+> - In how far is the cost dependend on the grammar, are there rules which
+>   are parsed faster than others? Are there some good books, url's how to
+>   build a well formed (fast parsed) grammar (kfg)
+
+SLR grammars are handled most efficiently, especially if they have no
+recursion or only left recursion.  Next are LALR, LR, non-ambiguous, and
+ambiguous, in that order with the most efficient worst case first.
+
+You can read up on grammars in books about compiler construction, the
+Chomsky language hierarchy, or even in Linux documentation for flex and
+yacc.  A good book about compiler construction is
+
+    Aho, Sethi, Ullman: Compilers -- Principles, Techniques, and Tools
+    Addison Wesley 1986, second edition
+
+Regards,
+Dworkin
+</pre>
+
+<hr />
+
+<pre>
+Date: Tue, 1 Feb 2000 15:10:10 +0100 (CET)
+From: "Felix A. Croes" <felix@dworkin.nl>
+Message-Id: <200002011410.PAA11957@pattern.dworkin.nl>
+To: dgd@list.imaginary.com
+Subject: Re: [DGD]parse_string
+
+Ludger Merkens <balduin@uni-paderborn.de> wrote:
+
+> Another parse_string example
+> I try the following:
+>
+>     grammar = "\
+> whitespace=/[ !-[]+/            \ /* note the [ in the set */
+> tag=/<[a-zA-Z]+>/               \
+> term =/\\(*[A-Za-z`']+\\)*/     \
+> s : term ? _term                \
+> s : tag ?  _tag                 \
+> ";
+>
+> if i call parse_string("! <abc>",grammar) i receive
+> ({"abc"}) and the function _term is called.
+> looks wrong to me.
+
+Token rules, from dgd/doc/parser:
+
+    [set]   a single character in the given set, which is constructed of
+            single characters such as `a' and/or character ranges such as
+            `a-z'.  `\' may be used to escape the characters `]', `^', `-', `\'
+
+The range `!-[' is perhaps more inclusive than you suspected.
+
+The alternative grammar succeeds because `-' at the beginning or end
+of a character set obviously cannot be part of a range, and therefore
+is not interpreted as such.
+
+Regards,
+Dworkin
+</pre>
 
   <p style="text-size: 150%"> <a href="index.html"> Back to DGD &amp; LPC
       Page </a> </p>
