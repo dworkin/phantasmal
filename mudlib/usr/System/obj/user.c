@@ -1,4 +1,4 @@
-/* $Header: /cvsroot/phantasmal/mudlib/usr/System/obj/user.c,v 1.53 2003/03/24 04:05:00 dbd22 Exp $ */
+/* $Header: /cvsroot/phantasmal/mudlib/usr/System/obj/user.c,v 1.54 2003/03/24 19:58:53 dbd22 Exp $ */
 
 #include <kernel/kernel.h>
 #include <kernel/user.h>
@@ -385,10 +385,7 @@ private object* search_contained_objects(object* objs, string str,
   words = string_to_words(str);
 
   ret = ({ });
-
-  err=catch(temp = objs[0]);
-  if (err)
-    return nil;
+  temp = objs[0];
 
   while(sizeof(objs)) {
     if(objs[0] == location
@@ -429,7 +426,7 @@ private object* search_contained_objects(object* objs, string str,
 }
 
 private object* find_objects_in_loc(int loc, string str) {
-  object *objs;
+  object *objs, test;
 
   if(!location &&
      (loc == LOC_CURRENT_ROOM || loc == LOC_IMMEDIATE_CURRENT_ROOM
@@ -1260,7 +1257,7 @@ static void cmd_look(object user, string cmd, string str) {
       user->message("You see more than one '" + str +"'.  You pick one.\r\n");
     }
 
-    if(!tmp[0]->is_container()) {
+    if(!tmp[0]->is_container() && tmp[0]->get_type()!="EXIT") {
       user->message("That's not a container.\r\n");
       return;
     }
@@ -1270,20 +1267,23 @@ static void cmd_look(object user, string cmd, string str) {
       return;
     }
 
-    objs = tmp[0]->objects_in_container();
-    if(objs && sizeof(objs)) {
-      for(ctr = 0; ctr < sizeof(objs); ctr++) {
-	user->message("- ");
-	user->send_phrase(objs[ctr]->get_brief());
-	user->message("\r\n");
-      }
-      user->message("-----\r\n");
+    if (tmp[0]->get_type()=="EXIT") {
+      show_room_to_player(tmp[0]->get_destination());
     } else {
-      user->message("You see nothing in the ");
-      user->send_phrase(tmp[0]->get_brief());
-      user->message(".\r\n");
+      objs = tmp[0]->objects_in_container();
+      if(objs && sizeof(objs)) {
+        for(ctr = 0; ctr < sizeof(objs); ctr++) {
+          user->message("- ");
+          user->send_phrase(objs[ctr]->get_brief());
+          user->message("\r\n");
+        }
+      user->message("-----\r\n");
+      } else {
+        user->message("You see nothing in the ");
+        user->send_phrase(tmp[0]->get_brief());
+        user->message(".\r\n");
+      }
     }
-
     return;
   }
 
@@ -1343,14 +1343,14 @@ static void cmd_put(object user, string cmd, string str) {
     return;
   }
 
-  portlist = find_first_objects(obj1, LOC_INVENTORY, LOC_CURRENT_ROOM,
+  portlist = find_first_objects(obj1, LOC_CURRENT_ROOM, LOC_INVENTORY,
 				LOC_BODY);
   if(!portlist || !sizeof(portlist)) {
     user->message("You can't find any '" + obj1 + "' here.\r\n");
     return;
   }
 
-  contlist = find_first_objects(obj2, LOC_INVENTORY, LOC_CURRENT_ROOM,
+  contlist = find_first_objects(obj2, LOC_CURRENT_ROOM, LOC_INVENTORY,
 				LOC_BODY);
   if(!contlist || !sizeof(contlist)) {
     user->message("You can't find any '" + obj2 + "' here.\r\n");
@@ -1397,7 +1397,7 @@ static void cmd_remove(object user, string cmd, string str) {
     return;
   }
 
-  contlist = find_first_objects(obj2, LOC_INVENTORY, LOC_CURRENT_ROOM,
+  contlist = find_first_objects(obj2, LOC_CURRENT_ROOM, LOC_INVENTORY,
 				LOC_BODY);
   if(!contlist || !sizeof(contlist)) {
     user->message("You can't find any '" + obj2 + "' here.\r\n");
@@ -1702,7 +1702,7 @@ static void cmd_drop(object user, string cmd, string str) {
     return;
   }
 
-  tmp = find_first_objects(str, LOC_INVENTORY, LOC_BODY);
+  tmp = find_first_objects(str, LOC_BODY, LOC_INVENTORY);
   if(!tmp || !sizeof(tmp)) {
     message("You're not carrying any '" + str + "'.\r\n");
     return;
