@@ -33,7 +33,7 @@
 }
 
 ~Old password: {
-  ~enUS{Old ~system{word-password}: }
+  ~enUS{Old password: }
   ~esUS{Contrasena vieja: }
 }
 
@@ -69,7 +69,7 @@
 
 ~Looks like no password{
   ~enUS{You didn't give any password!}
-  ~esUS{Me parece que no hay contrasena.  Te desconecto.}
+  ~esUS{Me parece que no hay contrasena.}
 }
 
 ~must be four characters{
