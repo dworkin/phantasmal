@@ -546,9 +546,17 @@ static void cmd_check_deferred_exits(object user, string cmd, string str) {
 
   if(str && str != "") {
     user->message("Usage: " + cmd + "\r\n");
+    return;
   }
 
   num = EXITD->num_deferred_exits();
 
   user->message("Deferred exits: " + num + ".\r\n");
+}
+
+static void cmd_make_room(object user, string cmd, string str) {
+  if(str && !STRINGD->is_whitespace(str)) {
+    user->message("Usage: " + cmd + "\r\n");
+    return;
+  }
 }
