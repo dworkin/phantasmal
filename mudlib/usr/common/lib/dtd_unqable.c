@@ -1,5 +1,6 @@
 #include <config.h>
 #include <limits.h>
+#include <log.h>
 
 inherit UNQABLE;
 
@@ -78,12 +79,18 @@ private void update_dtd_vars(void) {
 /* This method serializes the object as UNQ text and returns the
    appropriate string, suitable for writing to an UNQ file. */
 string to_unq_text(void) {
+  string result;
+
   if(!dtd) {
     error("You must override the default to_unq_text method for "
 	  + object_name(this_object()) + " or supply a DTD!");
   }
 
-  return dtd->serialize_to_dtd(to_dtd_unq());
+  result = dtd->serialize_to_dtd(to_dtd_unq());
+  if(!result) {
+    LOGD->write_syslog(dtd->get_parse_error_stack(), LOG_WARNING);
+  }
+  return result;
 }
 
 /* This method converts the object to the same sort of template
@@ -141,4 +148,16 @@ void load_from_file(string filename) {
     error("Can't parse UNQ according to DTD!");
 
   from_dtd_unq(dtd_unq);
+}
+
+void write_to_file(string filename) {
+  string str;
+  string unq_str;
+
+  unq_str = to_unq_text();
+  if(!unq_str)
+    error("To_unq_text() returned nil!");
+  if(!write_file(filename, unq_str)) {
+    error("Error writing file!");
+  }
 }
