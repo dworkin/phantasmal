@@ -529,7 +529,9 @@ string to_unq_text(void) {
   ret += "  ~number{" + number + "}\n";
   ret += "  ~body{" + bodynum + "}\n";
   if(function_object("mobile_unq_fields", this_object())) {
+    ret += "  ~data{\n";
     ret += this_object()->mobile_unq_fields();
+    ret += "  }\n";
   }
   ret += "}\n\n";
 
@@ -545,11 +547,10 @@ void from_dtd_unq(mixed* unq) {
    choose to use this.  It extracts the fields it uses, leaving the
    rest.
 */
-static mixed* mobile_from_dtd_unq(mixed* unq) {
+static mixed mobile_from_dtd_unq(mixed* unq) {
   mixed *ret, *ctr;
   int    bodynum;
 
-  ret = ({ });
   ctr = unq;
 
   while(sizeof(ctr) > 0) {
@@ -568,8 +569,10 @@ static mixed* mobile_from_dtd_unq(mixed* unq) {
       number = ctr[0][1];
     } else if(!STRINGD->stricmp(ctr[0][0], "type")) {
       /* Do nothing, already taken care of */
+    } else if(!STRINGD->stricmp(ctr[0][0], "data")) {
+      ret = ({ ctr[0][1] });
     } else {
-      ret += ({ ctr[0] });
+      error("Unrecognized field in mobile structure!");
     }
     ctr = ctr[1..];
   }

@@ -78,14 +78,17 @@ void __vol_hook(void) {
 
 static mixed *animal_from_dtd_unq(mixed* unq) {
   mixed *ret, *ctr;
-  int    bodynum;
+  int    bodynum, aggr;
 
   ret = ({ });
   ctr = unq;
 
   while(sizeof(ctr) > 0) {
     if(!STRINGD->stricmp(ctr[0][0], "aggression")) {
-      aggression = ctr[0][1];
+      if(sscanf(ctr[0][1], "%*d %*s") != 2
+	 && sscanf(ctr[0][1], "%d", aggr) == 1) {
+	aggression = aggr;
+      }
     } else {
       ret += ({ ctr[0] });
     }
@@ -99,10 +102,18 @@ void from_dtd_unq(mixed* unq) {
   /* Set the body, location and number fields */
   unq = mobile_from_dtd_unq(unq);
 
-  /* Now parse the stuff we care about */
+  /* Now parse the data section */
   unq = animal_from_dtd_unq(unq);
+
+  /* Now signal error if there's anything funky in the data
+     section that we don't recognize. */
+  if(sizeof(unq) > 0) {
+    LOGD->write_syslog("Extra fields: " + STRINGD->mixed_sprint(unq),
+		       LOG_ERROR);
+    error("Unrecognized UNQ content in animal mobile data section!");
+  }
 }
 
 string mobile_unq_fields(void) {
-  return "  ~aggression{" + aggression + "}\n";
+  return "    ~aggression{" + aggression + "}\n";
 }
