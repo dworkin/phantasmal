@@ -2,7 +2,7 @@
                       "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
-<title>DGD and LPC: DGD LPC Reference</title>
+<title>DGD and LPC: DGD Driver Details</title>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
 <link href="../../phantasmal.css" rel="stylesheet" type="text/css" />
 </head>
@@ -54,57 +54,57 @@
         <tr>
           <td class="heading">&nbsp;&nbsp;&middot;&nbsp;
 	    <a href="http://phantasmal.sf.net/DGD">DGD Page</a> &gt;
-            <a href="">DGD LPC Reference</a>
+            <a href="">DGD Driver Details</a>
           </td>
         </tr>
         <tr>
           <td class="content">
-    
+  
+  
+  <h2> Miscellaneous DGD Driver Details </h2>
 
-  <h1> An LPC Reference for DGD </h1>
+  <p>
+    There are always a few mixed bits in any bag that don't fit
+    anywhere very exactly.  These are random details about how the DGD
+    Driver does what it does that don't seem particularly relevant
+    anywhere else.
+  </p>
 
-  <ul>
-    <li> <a href="Code_Examples.html"> A Page of LPC Examples </a> </li>
-    <li> <a href="LPC_FAQ.html"> Some Frequently-Asked LPC Language
-        Questions </a> </li>
-    <li> <a href="../LPC"> A partial DGD Textbook, based on Ronny
-        Wikh's </a> </li>
-    <li> <a href="General_Docs.html"> Some LPC Docs for other LPMUDs
-      </a> </li>
-    <li> <a href="Diffs_in_LPC.html"> Differences between DGD's and
-	LPMUD's versions of LPC </a></li>
-    <li> <a href="Driver_Details.html">Random DGD driver implementation
-	details</a> </li>
-  </ul>
+  <p>
+    In the original DGD, the interpreter had only 32 instructions.
+    Kfuns were not part of the interpreter proper.  I don't know if
+    that's still true.
+  </p>
 
-  <span style="font-size: 75%">
+  <p>
+    Mappings are partially hashed.  If a mapping grows by assigning to
+    an index that doesn't exist yet, the index-value pair is
+    stored in a hash table.  Mappings are converted to sorted arrays
+    of index-value pairs when swapped out.
+  </p>
 
-    <p>
-      This page and its sub-pages are all about DGD's version of LPC.
-      If you're using MudOS, LDMUD, Amylaar or any other flavor of
-      LPMUD then don't expect all of this to be true.  Similarly, if
-      you read LPC documents elsewhere on the web, some of it won't
-      work on DGD.  That's especially true of game-specific code since
-      that usually assumes there are a lot of built-in functions that
-      DGD doesn't provide.
-    </p>
+  <p>
+    The compiler is two-pass.  In the first pass, the function is
+    typechecked and a parse tree is constructed.  Constant folding and
+    removal of dead code is done.  In the second pass, code for a
+    virtual stackmachine is generated.  Jumps to jumps are optimized.
+    Optionally, the second pass may generate C code.
+  </p>
 
-    <p>
-      A lot of this page is taken from the mailing list and from
-      Dworkin.  Some is taken from Dworkin and not credited to him at
-      the actual location.  If somebody wants to complain, I'll go
-      through and add attribution to him at each individual location
-      in the file.  Otherwise I'll do what I'm doing now and you
-      should assume that anything really useful in the file is by him
-      and anything that isn't, or that's wrong, was added by me.  To
-      be sure about one thing or another, check the mailing list
-      archives.
-    </p>
+  <p>
+    String hash table sizes are powers of two.  They used to be primes,
+    which is fairly pointless in this implementation.
+  </p>
 
-  </span>
+  <p>
+    Divided allocated memory into 'static' and 'dynamic' memory.
+    Static memory is used for things which need to be kept when
+    everything is swapped out, and dynamic memory is used for the
+    rest.
+  </p>
 
-  <p style="text-size: 150%"> <a href="../index.html"> Back to top level
-    </a> </p>
+  <p style="text-size: 150%"> <a href="index.html"> Back to DGD &amp; LPC
+      Page </a> </p>
             <address>
             <span><a href="mailto:angelbob-remove-spamfree@spamfree.users.sf.net">Noah Gibbs</a></span>
             </address></td>

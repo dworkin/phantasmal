@@ -1,0 +1,369 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+                      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<title>DGD and LPC: DGD LPC Diffs</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<link href="../../phantasmal.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<table width="95%" border="0" cellspacing="0" cellpadding="4">
+  <tr>
+    <td colspan="2"> <table width="100%" border="0" cellspacing="1"
+        cellpadding="0" class="main">
+        <tr>
+          <td class="banner">The DGD Driver</td>
+        </tr>
+      </table></td>
+  </tr>
+  <tr>
+    <td valign="top">
+      <table width="25%"  border="0" cellspacing="1"
+             cellpadding="0"  class="main">
+        <tr>
+          <td class="content" style="font-size: 120%">
+
+          <ul style="margin: 0; padding-left: 10%">
+            <li> <a href="index.html">DGD &amp; LPC Page</a> </li>
+	    <li> <a href="../LPC">LPC Textbook</a> </li>
+	    <li> <a href="../Book">New LPC Introduction</a> </li>
+          </ul>
+
+        </td>
+        </tr>
+        <tr>
+          <td class="content" align="center">
+            <a href="http://validator.w3.org/check/referer">
+            <img src="../../images/valid-xhtml10.gif" alt="Valid XHTML 1.0!"
+             style="border:0;width:88px;height:31px" /></a><br />
+            <img src="../../images/pixel.gif"
+             style="border:0;width:88px;height:1px" alt="" /><br />
+            <a href="http://jigsaw.w3.org/css-validator/check/referer">
+            <img src="http://jigsaw.w3.org/css-validator/images/vcss"
+             alt="Valid CSS!" style="border:0;width:88px;height:31px" />
+            </a><br /><br /><br />
+            <a href="http://sourceforge.net">
+            <img src="http://sourceforge.net/sflogo.php?group_id=48659&amp;type=2"
+             style="border: 0; width: 125; height: 37;"
+	     alt="SourceForge.net Logo" /></a>
+          </td>
+        </tr>
+      </table></td>
+    <td> <table width="100%"  border="0" cellspacing="1" cellpadding="0" 
+          class="main">
+        <tr>
+          <td class="heading">&nbsp;&nbsp;&middot;&nbsp;
+	    <a href="http://phantasmal.sf.net/DGD">DGD Page</a> &gt;
+            <a href="">DGD LPC Diffs</a>
+          </td>
+        </tr>
+        <tr>
+          <td class="content">
+    
+
+  <h2> Differences Between DGD's LPC and LPMUD 3.1.2 </h2>
+
+  <p>
+    While the DGD code is unrelated to any other LPMUD of any kind,
+    the LPC dialect that DGD implements is loosely based on Amylaar
+    version 3.1.2.  This document describes some differences between
+    the LPC dialects, and between the capabilities of the two servers.
+  </p>
+
+  <p>
+    Quite a lot of this file is taken from the Changelog that comes
+    with DGD, and the rest comes from the mailing list.  It may be
+    rearranged or rephrased, but the content is from those two
+    sources.
+  </p>
+
+  <hr />
+
+  <p>
+    Mappings are similar to, but different from, Amylaar (and other
+    LPC) mappings.  In DGD, the standard way to delete an element is
+    to assign nil to that index.
+  </p>
+
+  <p>
+    Typechecking in DGD is unusually strict.  DGD actually has several
+    typechecking modes of varying strictness, but in general, DGD
+    enforces type safety to about the extent possible.
+  </p>
+
+  <p>
+    Array-of-array types like &quot;int****&quot; and &quot;string
+    ***&quot; are possible.
+  </p>
+
+  <p>
+    Initializers are not supported.
+  </p>
+
+  <p>
+    Indexing beyond the end of the array, or with a negative index,
+    are not supported.  DGD gives an error rather than returning
+    anything meaningful.  If you think this should change, please
+    check the mailing list archives before suggesting it &mdash; this
+    is an old topic, and unless you've got a new take on it, you're
+    just going to feel bad when we dismiss your opinion as old hat.
+  </p>
+
+  <p>
+    The call_other() kfun does not require a cast.  If the type is not
+    clear from the context, a cast is recommended.  The construct
+    foo-&gt;bar(baz) maps directly to call_other(foo, bar, baz).  You
+    can thus override its behavior by declaring a new call_other()
+    function appropriately.
+  </p>
+
+  <p>
+    Indexed string assignments such as foo = &quot;bar&quot;; foo[0] =
+    'B'; are possible.  Note that there is no character type, so a
+    string is effectively an array of small integers.
+  </p>
+
+  <p>
+    The zero size array and zero size mapping are not globally shared,
+    so comparisions such as array == ({ }) will fail.
+  </p>
+
+  <p>
+    It is illegal to declare any functions, function prototypes or
+    variables before inheriting.
+  </p>
+
+  <p>
+    Inheritance is completely different.  There are two kinds of
+    inheritance, virtual and labeled.  See <a
+    href="../Kernel/Inheritance.html">documents elsewhere</a> for more
+    details.
+  </p>
+
+  <p>
+    There is an object, often called the Auto object, that is
+    inherited by every object except itself and the Driver object.
+    The driver object may choose to inherit it, but does not do so
+    automatically.
+  </p>
+
+  <p>
+    Predefined functions are called kfuns (kernel functions); the
+    kfuns and the non-private functions declared in the auto object
+    together are called efuns.  Kfuns are assumed to be static
+    functions inherited in the auto object, with the added limitation
+    that they cannot be called with this_object()-&gt;kfun().  All static
+    functions declared in the auto object share this limitation.
+  </p>
+
+  <p>
+     There is no class_specifier inherit &quot;file&quot;; This did
+     not work in LPmud 3.1.2 anyhow.
+  </p>
+
+  <p>
+    Function prototypes are always inherited together with the function.
+  </p>
+
+  <p>
+    Function calls are typechecked if the called function is
+    typechecked.  It is illegal to call a non-varargs function with the
+    wrong number of arguments from a typechecked function, even if the
+    called function is not typechecked itself.
+  </p>
+
+  <p>
+    Kfuns are not treated differently from other inherited functions,
+    so destruct_object(this_object(), this_object()); will not cause a
+    compile-time error in an untypechecked function.
+  </p>
+
+  <p>
+    Inherited functions may be redeclared with a different prototype.
+    Redeclaring an inherited function with different parameters is
+    allowed (runtime typechecking will handle calls from inherited
+    objects to the new function), but the return type still has to
+    match.
+  </p>
+
+  <p>
+    A call to an undeclared function from an untypechecked function implicitly
+    declares a prototype for the undeclared function that matches anything.
+  </p>
+
+  <p>
+    this_object()-&gt;function(); can be used to call static
+    functions, but not private ones.
+  </p>
+
+  <p>
+    Any kfun can be redefined, just as ordinary inherited functions
+    can.  catch() and rlimits() are not considered to be kfuns (they
+    are not true functions because catch(foo, bar) does not &quot;call
+    catch with two arguments&quot;).
+  </p>
+
+  <p>
+    The built-in preprocessor conforms to the ANSI standard, except
+    for the following:
+  </p>
+
+  <ul>
+    <li>No trigraphs</li>
+    <li>Successive string constants are not concatenated (use the + operator
+      instead)</li>
+    <li>The suffixes U and L are not allowed on integer constants</li>
+    <li>No floating point constants (is this still true?) </li>
+  </ul>
+
+  <p>
+    There is a standard include file which is included automatically.
+    The filename is configurable in the .dgd file.
+  </p>
+
+  <p>
+    All #pragma directives are ignored.
+  </p>
+
+  <p>
+    All integer constants may be in decimal (starting with 1-9), octal
+    (starting with 0), hexadecimal (starting with 0x) or a character
+    constant 'x'.  The only escaped characters that are translated
+    into something else in character constants and string constants
+    are \t and \n.
+  </p>
+
+  <p>
+    Objects are pure programs.  They do not have inventories,
+    environments, are not alive, do not have actions (all of this can
+    be simulated).
+  </p>
+
+  <p>
+    Pathnames without a leading slash are considered to be relative to
+    the directory of the current object (i.e. /foo for the
+    object compiled from /foo/bar.c).
+    </p>
+
+    <p>
+      create() is called if a function in an object is called for the first
+      time.  It is not called if an object is loaded because it is inherited.
+    </p>
+
+    <p>
+      reset() is never called by the driver.  Both reset on reference
+      and reset after a fixed period are easily simulated.
+    </p>
+
+    <p>
+      clean_up() is never called by the driver.
+    </p>
+
+    <p>
+      Text typed by a user is passed on by calling
+      receive_message(text) in the interactive object.  The kfun
+      send_message(text) can be used in interactive objects to send
+      text back to the user.
+    </p>
+
+    <p>
+      There is no "master object" as in LPmud 3.1.2, but a
+      &quot;driver object&quot; instead.  It is used only to translate
+      pathnames for #include and inherit, and to supply the object
+      that is used for interactive connections.  It does not inherit
+      the auto object, unless this is done explicitly.
+    </p>
+
+    <p>
+      There is no shadowing.  (Note: if you want to argue the merits
+      of this, check the mailing list archives first, and have a
+      reasonable grasp of code security.  Otherwise, you'll feel bad
+      when we dismiss you as not knowing what you're talking about)
+    </p>
+
+    <p>
+      The default state of any object is swapped out.  Strings and
+      arrays are only shared inside objects.  If an array is exported
+      from one object to another, it will be copied into the new
+      object as soon as the old object is swapped out (this is
+      guaranteed never to happen during execution).
+    </p>
+
+    <p>
+      Self-referential datastructures will be deallocated when no more
+      outside references exist, because they do not belong in any
+      object.
+    </p>
+
+    <p>
+      DGD removes many of the kfuns of LPmud 3.1.2.  Specifically:
+    </p>
+
+    <ul>
+      <li> No kfuns such as environment(), this_player(),
+	add_action().  Simulate them if you want them. </li>
+
+      <li> There is no exec(), heart_beat(), wizlist() (simulate them). </li>
+
+      <li> No parse_command().  It cannot be simulated, so people
+	might want to port it to DGD, but it will never become part of
+	"pure" DGD.  (Note:  parse_string now serves this purpose) </li>
+
+      <li> No alist kfuns.  I prefer mappings, even if alists are more
+	powerful. </li>
+
+      <li> All file kfuns are unprotected.  To get either native or
+	compat mode security, make the proper redefinitions in the auto
+	object. </li>
+
+      <li> The built-in editor uses a temporary file and is very close
+	to ex. </li>
+
+      <li> call_other() is typechecked if the called function is
+	typechecked.  Calling a function that does not exist results in
+	nil being returned.  </li>
+
+      <li> There are no optional flag arguments to any kfun. </li>
+    </ul>
+
+    <p>
+      Doing a call_other() from a destructed object is ignored.
+    </p>
+
+    <p>
+      DGD now automatically generates several files in the first
+      include directory.
+    </p>
+
+    <ul>
+      <li> &quot;float.h&quot; gives information about floating-point
+	numbers and their sizes and limits in DGD </li>
+
+      <li> &quot;limits.h&quot; describes the sizes of datatypes and
+	resources </li>
+
+      <li> &quot;status.h&quot; describes the information returned by
+	the status() kfun, and defines offsets for each piece </li>
+
+      <li> &quot;type.h&quot; gives the constants returned by the
+	typeof() kfun </li>
+
+    </ul>
+
+    <p>
+      Destructing a destructed object gives an error, rather than a
+      fatal error.
+    </p>
+
+    <p style="text-size: 150%"> <a href="../index.html"> Back to LPC &amp; DGD
+	Page
+      </a> </p>
+            <address>
+            <span><a href="mailto:angelbob-remove-spamfree@spamfree.users.sf.net">Noah Gibbs</a></span>
+            </address></td>
+        </tr>
+      </table></td>
+  </tr>
+</table>
+</body>
+</html>
