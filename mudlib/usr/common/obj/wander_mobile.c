@@ -21,9 +21,9 @@ static void create(varargs int clone) {
 
 void upgraded(varargs int clone) {
   if(clone && !registered) {
-    LOGD->write_syslog("Setting up periodic call_out in wander mobile",
+    LOGD->write_syslog("Setting up heart_beat in wander mobile",
 		       LOG_VERBOSE);
-    TIMED->periodic_call_out(TIMED_MUD_MINUTE, "__move_hook");
+    TIMED->set_heart_beat(TIMED_MUD_MINUTE, "__move_hook");
     registered = 1;
   }
 }
