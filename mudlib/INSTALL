@@ -18,8 +18,9 @@ DGD server code and upgrade it when you upgrade DGD.
 
 You'll need a version of DGD recent enough to have full support for
 lightweight objects and multiple incoming network ports.  This MUDLib
-is currently well-tested with DGD 1.2.44 though any more recent 1.2.4X
-version, if available, is very likely to work.
+is currently well-tested with DGD versions listed in TESTED_VERSIONS,
+and the most recent 1.2.4X version is very likely to work with the
+most recent version of Phantasmal.
 
 You'll need to make a .dgd file for Phantasmal.  Copy the mud.dgd file
 in your DGD directory and change a couple of things.  The big ones are
