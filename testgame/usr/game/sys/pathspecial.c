@@ -10,7 +10,7 @@
    object.  This file can't override that. */
 
 string path_special(string filename) {
-  if(sscanf(filename, "/usr/game/rooms/%*s") == 1) {
+  if(sscanf(filename, GAME_ROOMS_DIR + "%*s") == 1) {
     return INHERIT_CUSTOM_ROOM_AUTO;
   }
 

@@ -233,7 +233,7 @@ static void load_custom_rooms(void) {
   int     ctr;
   string  err, prog_name;
 
-  dir_list = get_dir(GAME_ROOMS_DIR . "*");
+  dir_list = get_dir(GAME_ROOMS_DIR + "*");
   for(ctr = 0; ctr < sizeof(dir_list[0]); ctr++) {
     if(dir_list[1][ctr] == -2) {
       /* TODO: Directory, recurse */

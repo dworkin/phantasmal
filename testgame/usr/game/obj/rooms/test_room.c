@@ -1,10 +1,10 @@
-static void create(void) {
-  ::create();
+static void create(varargs int clone) {
+  ::create(clone);
 }
 
-void upgraded(void) {
+void upgraded(varargs int clone) {
   if(SYSTEM()) {
-    ::upgraded();
+    ::upgraded(clone);
   }
 }
 
