@@ -1,4 +1,4 @@
-/* $Header: /cvsroot/phantasmal/mudlib/usr/System/obj/user.c,v 1.23 2002/11/11 11:08:18 sarak Exp $ */
+/* $Header: /cvsroot/phantasmal/mudlib/usr/System/obj/user.c,v 1.24 2002/11/18 00:56:38 angelbob Exp $ */
 
 #include <kernel/kernel.h>
 #include <kernel/user.h>
@@ -748,10 +748,6 @@ private void player_login(void)
     }
     body_num = body->get_number();
 
-    if(!MAPD->get_room_by_num(body_num)) {
-      LOGD->write_syslog("Can't find new body number!", LOG_ERR);
-    }
-
     /* Set descriptions and add noun for new name */
     body->set_brief(NEW_PHRASE(Name));
     body->set_glance(NEW_PHRASE(Name));
@@ -764,7 +760,7 @@ private void player_login(void)
     mobile->set_user(this_object());
 
     mobile->teleport(location, 1);
-    
+
     /* We just set a body number, so we need to save the player data
        file again... */
     save_user_to_file();
