@@ -24,7 +24,7 @@ data/user/*.pwd
   Remove all .pwd files
 
 include/*.h
-  Remove float.h, limits.h, status.h, type.h
+  Remove float.h, limits.h, status.h, type.h, trace.h
 
 include/kernel/*.h
   Remove all .h files
