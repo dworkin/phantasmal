@@ -1,7 +1,3 @@
-~Phil{~enUS{Phillip}
-      ~esUS{Felipe}
-}
-
 ~Exits{~enUS{Exits}
        ~esUS{Salidas}
 }
@@ -23,7 +19,12 @@
 
 ~(no room desc){
   ~enUS{(no room description)}
-  ~esUS{(no descripcion de cuarto)}
+  ~esUS{(no hay descripcion de cuarto)}
+}
+
+~word-password{
+  ~enUS{password}
+  ~esUS{contrasena}
 }
 
 ~Password: {
@@ -32,7 +33,7 @@
 }
 
 ~Old password: {
-  ~enUS{Old password: }
+  ~enUS{Old ~system{word-password}: }
   ~esUS{Contrasena vieja: }
 }
 
@@ -68,7 +69,7 @@
 
 ~Looks like no password{
   ~enUS{You didn't give any password!}
-  ~esUS{Me parece que no hay contrasena.  Te desconecta.}
+  ~esUS{Me parece que no hay contrasena.  Te desconecto.}
 }
 
 ~must be four characters{
