@@ -34,7 +34,8 @@ string get_type(void) {
 
 void __move_hook(void) {
   int    num_ex, ctr;
-  object exit, reason, dest;
+  object exit, dest;
+  string reason;
 
   if(previous_program() != TIMED) {
     error("wander_mobile::__move_hook should only be called by TIMED!");
