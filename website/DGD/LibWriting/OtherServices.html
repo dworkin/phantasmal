@@ -63,12 +63,17 @@
 
   <h2> Implementing Less-Common MUD Protocols in DGD </h2>
 
+  <p>
+    This page is basically just old notes from Phantasmal for possible
+    future implementation, and a message from the DGD mailing list
+    about XMLTerm.
+  </p>
+
 <pre>
 Date: Tue, 16 May 2000 15:37:37 -0400
-From: Ho-Sheng Hsiao <hhh@lost-realities.org>
-To: dgd@list.imaginary.com
+From: Ho-Sheng Hsiao
+To: DGD Mailing List
 Subject: Re: [DGD]DGD HTML?
-Message-ID: <20000516153737.E32043@lost-realities.org>
 
 
 On Tue, May 16, 2000 at 03:22:36PM +0930, Gregory D Lewis wrote:
@@ -87,7 +92,7 @@ VT* codes. Think, Pueblo. This was a modification to the current Mozilla
 browser. Or more precisely, it uses the XUL toolset in Mozilla and some
 other stuff to create the Xterm.
 
-You can check out the site at http://www.xmlterm.com
+You can check out the site at <a href="http://www.xmlterm.com">http://www.xmlterm.com</a>.
 
 Considering that Mozilla has a built in IRC client written mostly in
 Javascript et. al., adapting that serve this. 
@@ -114,7 +119,7 @@ Life is a suicide mission: you gotta do what you should.
 
 <pre>
 MCP - MUD Client Protocol
-  http://www.moo.mud.org/mcp/
+  <a href="http://www.moo.mud.org/mcp/">http://www.moo.mud.org/mcp/</a>
 
 MCP allows some fairly simple actions in addition to the standard
 telnet stuff.  For instance, it can ask the client to display a URL or
@@ -139,7 +144,7 @@ This is used most frequently by MOOs, MUSHes and company.
 ===========================================================================
 
 MCCP - MUD Client Compression Protocol
-  http://www.randomly.org/projects/MCCP/
+  <a href="http://www.randomly.org/projects/MCCP/">http://www.randomly.org/projects/MCCP/</a>
 
 This uses ZLib to compress information going out to the client.
 Conceivably useful, but probably not the real problem in most cases.
@@ -157,7 +162,7 @@ happen before this is a significant possibility.
 ===========================================================================
 
 MXP - MUD eXtension Protocol
-  http://www.zuggsoft.com/zmud/mxp.htm#MXP%20Specification
+  <a href="http://www.zuggsoft.com/zmud/mxp.htm#MXP%20Specification">http://www.zuggsoft.com/zmud/mxp.htm#MXP%20Specification</a>
 
 Vaguely similar to Pueblo or FireClient, MXP is a simplification of HTML
 or XML for use in the MUD environment.  It allows more than markup,
@@ -175,7 +180,7 @@ This is traditionally used by Diku-style MUDs, if at all.
 ===========================================================================
 
 MSP - MUD Sound Protocol
-  http://www.zuggsoft.com/zmud/msp.htm
+  <a href="http://www.zuggsoft.com/zmud/msp.htm">http://www.zuggsoft.com/zmud/msp.htm</a>
 
 This allows a MUD to trigger playing WAV and MID files.  Traditionally
 the sound files are downloaded in advance manually by the user, though
@@ -196,12 +201,12 @@ xmlterm.org
 
 ZMUD
 
-  MCP in ZMUD - http://www.zuggsoft.com/zmud/mcp-dev.htm
-  MXP in ZMUD - http://www.zuggsoft.com/zmud/mxp.htm
+  MCP in ZMUD - <a href="http://www.zuggsoft.com/zmud/mcp-dev.htm">http://www.zuggsoft.com/zmud/mcp-dev.htm</a>
+  MXP in ZMUD - <a href="http://www.zuggsoft.com/zmud/mxp.htm">http://www.zuggsoft.com/zmud/mxp.htm</a>
 
 ===========================================================================
 
-We'll eventually probably want to support Pueblo and Fireclient.
+We may eventually probably want to support Pueblo and Fireclient.
 They're slightly different but they work very similarly to each other.
 Each basically takes a cut-down HTML syntax to embed things like links
 and pictures.  You can easily be compatible with both.
@@ -436,7 +441,7 @@ into problems enhancing your mud, send us mail to the same address.
 You might want to join the pueblo-worlds mailing list. Instructions
 for doing so can be found on the Pueblo/UE website.
 
-The Pueblo/UE website is http://pueblo.sf.net/. It has the Pueblo FAQ,
+The Pueblo/UE website is <a href="http://pueblo.sf.net/">http://pueblo.sf.net/</a>. It has the Pueblo FAQ,
 instructions on downloading the latest version, etc.
 
 ===========================================================================
