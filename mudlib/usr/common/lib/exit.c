@@ -157,13 +157,15 @@ void set_container(int value) {
 
 void set_open(int value) {
   object link_exit;
+  string err;
 
   if(!SYSTEM() && !COMMON())
     error("Only SYSTEM code can currently set an object as open!");
 
   if (get_link()!=-1 && previous_program() != EXIT) {
     link_exit = EXITD->get_exit_by_num(get_link());
-    link_exit->set_open(value);
+    /* why is this necessary on boot-up? */
+    err = catch ( link_exit->set_open(value) );
   }
 
   set_flags(OF_OPEN, value);
