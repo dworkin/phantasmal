@@ -488,7 +488,7 @@ void add_unq_text_rooms(string text, string filename) {
   if(!initialized)
     error("Can't add rooms to uninitialized mapd!");
 
-  unq_data = UNQ_PARSER->unq_parse_with_dtd(text, room_dtd);
+  unq_data = UNQ_PARSER->unq_parse_with_dtd(text, room_dtd, filename);
   if(!unq_data)
     error("Cannot parse text in add_unq_text_rooms!");
 
