@@ -240,25 +240,12 @@ void add_simple_exit_between(object room1, object room2, int direction,
   exit2 = clone_object(SIMPLE_EXIT);
 
   exit1->set_destination(room2);
+  exit1->set_from_location(room1);
   exit1->set_direction(direction);
 
   exit2->set_destination(room1);
+  exit2->set_from_location(room2);
   exit2->set_direction(opposite_direction(direction));
-
-  if(exit1->get_destination() != room2)
-    error("Error assigning dest to exit!");
-
-  if(exit2->get_destination() != room1)
-    error("Error assigning dest to exit!");
-
-  if(exit1->get_direction() != direction) {
-    error("Exit has incorrect dir "
-	  + STRINGD->mixed_sprint(exit1->get_direction()));
-    error("Error assigning dir to exit!");
-  }
-
-  if(exit2->get_direction() != opposite_direction(direction))
-    error("Error assigning dir to exit!");
 
   room1->add_exit(direction, exit1);
   room2->add_exit(opposite_direction(direction), exit2);
