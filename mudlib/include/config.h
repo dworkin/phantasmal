@@ -123,6 +123,9 @@
 #define SYSTEM_USER_IO         "/usr/System/lib/user_io"
 
 
+# define COMMON()	(sscanf(previous_program(), USR + "/common/%*s") != 0)
+
+
 # undef SYS_PERSISTENT
 # undef SYS_DATAGRAMS	    /* off by default */
 
@@ -136,5 +139,4 @@
 #  define BINARY_PORT	8889	/* default binary port */
 # endif
 
-
-# define COMMON()	(sscanf(previous_program(), USR + "/common/%*s") != 0)
+#define CALLOUTRSRC  FALSE  /* don't have callouts as a resource */

@@ -90,11 +90,11 @@ static void create(varargs int clone)
 	  + " form X.Y.ZZ!");
   }
   if((major == 1 && minor < 2)
-     || (major == 1 && minor == 2 && patch < 15)) {
-    /* This used to be 1.2.55, but we specifically need a patch
-       from 1.2.57 */
+     || (major == 1 && minor == 2 && patch < 16)) {
+    /* We specifically need a patch from 1.2.57, so Kernel version
+       16 or 17. */
     error("Need to upgrade to DGD version 1.2.57 or higher!");
-  } else if (major == 1 && minor == 2 && patch > 16) {
+  } else if (major == 1 && minor == 2 && patch > 18) {
     DRIVER->message("This is a very new Kernel Library version, or at\n");
     DRIVER->message("  least newer than this version of Phantasmal.  If\n");
     DRIVER->message("  you have problems, please upgrade Phantasmal!\n");
