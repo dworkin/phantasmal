@@ -2,7 +2,8 @@ Release 0.011:
 	* Moved command-sets and state-stacks into two separate libraries,
 	each inherited by the main user object (/usr/System/obj/user.c).
 	* Social verbs are now usable like regular commands.
-	* 
+	* Removed old obsolete detail code
+	* Added @set_obj_flag back.  Previously didn't work.
 	
 Release 0.010:
 
