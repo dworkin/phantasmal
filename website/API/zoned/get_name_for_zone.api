@@ -1,0 +1,25 @@
+FILE
+	/usr/common/sys/zoned.c
+
+NAME
+	get_name_for_zone - return the name of a zone by number
+
+PROTOTYPE
+	string get_name_for_zone(int zone_number)
+
+CALLED BY
+	System, Common, Game
+
+DESCRIPTION
+	Returns the name for a given zone number.  Zones are
+	numbered consecutively from zero up to the number of zones
+	minus one.
+
+RETURN VALUE
+	Zone name, or nil if query failed.
+
+ERRORS
+	Normally none.
+
+SEE ALSO
+	num_zones, add_new_zone

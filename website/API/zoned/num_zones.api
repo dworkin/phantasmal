@@ -1,0 +1,23 @@
+FILE
+	/usr/common/sys/zoned.c
+
+NAME
+	num_zones - returns the number of zones registered
+
+PROTOTYPE
+	int num_zones(void)
+
+CALLED BY
+	System, Common, Game
+
+DESCRIPTION
+	Returns the number of zones.
+
+RETURN VALUE
+	Number of zones, or -1 if query failed.
+
+ERRORS
+	Normally none.
+
+SEE ALSO
+	get_name_for_zone, add_new_zone

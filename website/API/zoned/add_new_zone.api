@@ -1,0 +1,24 @@
+FILE
+	/usr/common/sys/zoned.c
+
+NAME
+	add_new_zone - add a new zone to the ZoneD
+
+PROTOTYPE
+	int add_new_zone(string zonename)
+
+CALLED BY
+	System, Common, Game
+
+DESCRIPTION
+	Adds a new zone to the zone table.  The index of the new zone
+	is returned.  MapD is also updated.
+
+RETURN VALUE
+	The new zone index, or -1 if the call failed.
+
+ERRORS
+	Normally none.
+
+SEE ALSO
+	num_zones, get_name_for_zone, get_segments_in_zone

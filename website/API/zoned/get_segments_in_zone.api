@@ -1,0 +1,26 @@
+FILE
+	/usr/common/sys/zoned.c
+
+NAME
+	get_segments_in_zone - get list of segments that make up a zone
+
+PROTOTYPE
+	int *get_segments_in_zone(int zone_number)
+
+CALLED BY
+	System, Common, Game
+
+DESCRIPTION
+	Gets a list of segment numbers that comprise a zone.  Those can
+	be segments in MapD, MobileD or ExitD (or conceivably others),
+	and may contain any valid Phantasmal objects with numbers
+	assigned by ObjNumD.
+
+RETURN VALUE
+	The list of integer segment numbers or nil if the call is denied.
+
+ERRORS
+	Normally none.
+
+SEE ALSO
+	num_zones, get_name_for_zone, add_new_zone

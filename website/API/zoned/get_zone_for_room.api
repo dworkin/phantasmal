@@ -1,0 +1,25 @@
+FILE
+	/usr/common/sys/zoned.c
+
+NAME
+	get_zone_for_room - find out what zone number a room is in
+
+PROTOTYPE
+	int get_zone_for_room(object room)
+
+CALLED BY
+	System, Common, Game
+
+DESCRIPTION
+	Gets the zone number for a given room.  Zone 0 is special, and
+	means 'unzoned', or rooms in segments that aren't assigned to
+	any zone.
+
+RETURN VALUE
+	Zone number, or 0 for unzoned, or -1 for query denied.
+
+ERRORS
+	Normally none.
+
+SEE ALSO
+	get_name_for_zone, get_segments_in_zone
