@@ -25,12 +25,18 @@ while(@lines) {
 close(CONFIGFILE);
 close(OUTFILE);
 
-print "New .dgd file created.  Copying it into place.\n";
+print "New .dgd file created.  Copying it into place...\n";
 system("mv new_$filename $filename");
 
-print "Installation done.  If you get an error saying to run the install\n";
-print "script, you should type \"mv new_$filename $filename\" to fix\n";
-print "it.  Otherwise, you're good to go.\n\n";
+unless (-e "../tmp") {
+  print "Creating new temp directory for swapfiles and dumpfiles...\n";
+  system("mkdir ../tmp");
+}
+
+print "Installation done.\n";
+print "If you get an error saying to run the install script, you should\n";
+print "type \"mv new_$filename $filename\" to fix it.\n";
+print "Otherwise, you're good to go.\n\n";
 
 print "To run the MUD, try typing \"./start_mud\".  If that doesn't work\n";
 print "then type \"bin\\driver $filename\" on Windows, or the same thing\n";

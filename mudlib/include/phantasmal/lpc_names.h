@@ -11,6 +11,7 @@
 /* System managers and daemons */
 #define TELNETD     "/usr/System/sys/telnetd"
 #define SSHD        "/usr/System/sys/sshd"
+#define MUDCLIENTD  "/usr/System/sys/mudclientd"
 #define OBJECTD     "/usr/System/sys/objectd"
 #define ERRORD      "/usr/System/sys/errord"
 #define LOGD        "/usr/System/sys/logd"
@@ -49,7 +50,6 @@
 #define TAGGED              "/usr/common/lib/tagged"
 #define PHRASE_REPOSITORY   "/usr/common/lib/phrase_repository"
 #define SCRIPT_AUTO         "/usr/common/lib/script_auto"
-#define PHRASE              "/usr/common/lib/phrase"
 #define COMMON_AUTO         "/usr/System/open/lib/common_auto"
 
 
@@ -59,6 +59,8 @@
 #define EXIT                "/usr/common/lib/exit"
 #define MOBILE              "/usr/common/lib/mobile"
 
+#define PHRASE              "/usr/common/lib/phrase"
+#define INTL_PHRASE         "/usr/common/lib/intl_phrase"
 
 /* Clonable MUD structures */
 #define SYSTEM_WIZTOOL      "/usr/System/obj/wiztool"
