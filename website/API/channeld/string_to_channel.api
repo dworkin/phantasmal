@@ -1,0 +1,23 @@
+FILE
+	/usr/common/sys/configd.c
+
+NAME
+	string_to_channel - send a string to a channel
+
+PROTOTYPE
+	void string_to_channel(int channel, string str, varargs int modifiers)
+
+CALLED BY
+	System, Common, Game
+
+DESCRIPTION
+	Send a text string to a channel by number.  
+
+RETURN VALUE
+	None.
+
+ERRORS
+	Normally none.
+
+SEE ALSO
+	channel_list, get_channel_by_name, subscribe_user

@@ -1,0 +1,28 @@
+FILE
+	/usr/common/sys/configd.c
+
+NAME
+	sub_data_level - return the extra subscription data for a channel
+	subscription
+
+PROTOTYPE
+	int sub_data_level(object user, int channel)
+
+CALLED BY
+	System, Common, Game
+
+DESCRIPTION
+	This is used only for specific channels that specify extra
+	subscription data.  This extra data is currently only used for
+	errors and log messages as a way to subscribe to only certain
+	severities of either or both.
+
+RETURN VALUE
+	An integer, the extra subscription data.  If -1 is returned,
+	the request could not be completed.
+
+ERRORS
+	Normally none
+
+SEE ALSO
+	get_channel_by_name, string_to_channel, subscribe_user

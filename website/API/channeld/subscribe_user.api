@@ -1,0 +1,25 @@
+FILE
+	/usr/common/sys/configd.c
+
+NAME
+	subscribe_user - subscribe a user to a channel
+
+PROTOTYPE
+	int subscribe_user(object user, int channel, varargs int arg)
+
+CALLED BY
+	System, Common, Game
+
+DESCRIPTION
+	Subscribe the user to the given channel.  When content is sent
+	on the channel, the user will receive it.
+
+RETURN VALUE
+	Returns -1 if the user cannot be subscribed for some reason.
+	Returns 1 if the subscription is successful.
+
+ERRORS
+	Normally none
+
+SEE ALSO
+	channel_list, get_channel_by_name, string_to_channel, unsubscribe_user

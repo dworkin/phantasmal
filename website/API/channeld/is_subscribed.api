@@ -1,0 +1,25 @@
+FILE
+	/usr/common/sys/configd.c
+
+NAME
+	is_subscribed - return whether a user is subscribed to a channel
+
+PROTOTYPE
+	int is_subscribed(object user, int channel)
+
+CALLED BY
+	System, Common, Game
+
+DESCRIPTION
+	Returns a number to indicate whether the given user is subscribed
+	to the given channel.
+
+RETURN VALUE
+	Returns 1 if the user is subscribed, 0 if s/he isn't, and -1 if
+	the request cannot be completed.
+
+ERRORS
+	Normally none.
+
+SEE ALSO
+	get_channel_by_name, string_to_channel, subscribe_user

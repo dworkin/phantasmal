@@ -1,0 +1,25 @@
+FILE
+	/usr/common/sys/configd.c
+
+NAME
+	get_channel_by_name - get a channel index by name
+
+PROTOTYPE
+	int get_channel_by_name(string name, object user)
+
+CALLED BY
+	System, Common, Game
+
+DESCRIPTION
+	Get channel number for name.  The name is currently one of
+	OOC, Log and Error.
+
+RETURN VALUE
+	An integer value for the channel number, or -1 if the channel
+	cannot be found.
+
+ERRORS
+	Normally none.
+
+SEE ALSO
+	channel_list, string_to_channel, subscribe_user

@@ -1,0 +1,32 @@
+FILE
+	/usr/common/sys/configd.c
+
+NAME
+	channel_list - returns a list of channels available in the channeld
+
+PROTOTYPE
+	mixed* channel_list(object user)
+
+CALLED BY
+	System, Common, Game
+
+DESCRIPTION
+	The channel list is the one visible to the given user object.
+	An admin, for instance, might be able to see different channels
+	than a regular player.
+
+RETURN VALUE
+	An array of the form:
+
+	[Channel name, Channel number, extra data]
+
+	The extra data is used only for certain channels, to subscribe to
+	only some of the announcements from that channel.  The Channel
+	Name is in the form of a Phrase, and so must be decoded before
+	being displayed to the user.
+
+ERRORS
+	Normally none
+
+SEE ALSO
+	get_channel_by_name, string_to_channel, subscribe_user

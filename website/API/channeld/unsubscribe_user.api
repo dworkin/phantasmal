@@ -1,0 +1,27 @@
+FILE
+	/usr/common/sys/configd.c
+
+NAME
+	unsubscribe_user - remove a user's subscription to a channel
+
+PROTOTYPE
+	int unsubscribe_user(mixed user, int channel)
+
+CALLED BY
+	System, Common, Game
+
+DESCRIPTION
+	Unsubscribe the user from the channel.  User can be specified as
+	a user object or a name string.  The user will no longer receive
+	data sent to the given channel.
+
+RETURN VALUE
+	Returns 1 if successful, -1 if failed.  Normally an unsubscribe
+	will only fail if the user isn't already subscribed.
+
+ERRORS
+	Normally none
+
+SEE ALSO
+	get_channel_by_name, string_to_channel, subscribe_user,
+	unsubscribe_user_from_all

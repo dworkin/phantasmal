@@ -1,0 +1,24 @@
+FILE
+	/usr/common/sys/configd.c
+
+NAME
+	unsubscribe_user_from_all - unsubscribe a user from all channels
+
+PROTOTYPE
+	void unsubscribe_user_from_all(object user)
+
+CALLED BY
+	System, Common, Game
+
+DESCRIPTION
+	Unsubscribes the user from all channels, if any, currently subscribed
+	to.
+
+RETURN VALUE
+	None.
+
+ERRORS
+	Normally none.
+
+SEE ALSO
+	string_to_channel, subscribe_user, unsubscribe_user
