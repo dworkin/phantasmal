@@ -7,8 +7,7 @@
   <body text="#000000" bgcolor="#DDDDDD" link="#0000EF" vlink="#51188E"
 	alink="#FF0000">
 
-    <h1> LPC:  The LPMUD Programming Language </h1>
-    <h2> DGD edition </h2>
+    <h1> Programming the DGD Driver </h1>
 
     <p> Copyright 1996, 2003 Ronny Wikh and Noah Gibbs </p>
 
@@ -79,98 +78,100 @@
   </p>
 
 
-    <h3><a name="SEC3.2.2" href="index.html#SEC3.2.2">Data types</a></h3>
+    <h3><a name="SEC3.2.2" href="index.html#SEC3.2.2">Data Types</a></h3>
 
     <p>
-      The object holds information in <b>variables</b>. As the name
-      hints these are data containers that hold information that may
-      vary from time to time.  The object processes information in
-      <b>functions</b> that both use and return data of various kinds.
+      An object holds information in <b>variables</b>.  Variables
+      are a sort of virtual container that holds information.
+      It's called a variable because the information is allowed to
+      change later.  Most objects process information with
+      <b>functions</b>.  Functions can use and return data of various kinds.
     </p>
 
     <p>
       In principle only one kind of data type is needed, a sort of
-      general container that would cover anything you wanted to do.
-      LPC calls this type 'mixed'.  Usually, it's much more useful if
-      you can distinguish between different types of information.
-      This might seem only to add to the complexity of your
-      programming, but in fact it reduces the risk of faulty code and
-      improves legibility. It <i>greatly</i> improves on the time it
-      takes to write and debug an object.
+      general container that would hold anything you wanted it to.
+      LPC calls this type 'mixed'.  Usually, though, it's much more
+      useful if you can distinguish between different types of
+      information.  Knowing what's in a variable can be a very good
+      thing.  It <i>greatly</i> improves on the time it takes to write
+      and debug an object.
     </p>
 
     <p>
-      In LPC it is possible to use only data of type 'mixed'. In the
-      first versions of the language it was the only data type
-      available.  With modern LPC, however, it is preferable to avoid
-      mixed variables wherever you can.
+      In LPC it is possible to use only data of type 'mixed'.  In the
+      first versions of the language, that was the only data type
+      available.  With modern LPC, however, it's better to avoid mixed
+      variables when you can.
     </p>
 
     <p>
-      The following types of data are defined:
+      LPC lets you declare variables of these types:
 
     <dl compact>
       <dt><tt>void</tt>
       <dd>
-	<a name="IDX1"></a>
-
-	This data type is used exclusively as the return type of
-	functions that don't return any data at all.
+	Void is only used as the return type of functions that don't
+	return any data at all.  You'll never declare a variable of
+	type void, though you'll use it like other types.
       </dd>
 
       <dt><tt>int</tt>
       <dd>
-	<a name="IDX2"></a>
-
-	Whole numbers, normally between -2147483648 and 2147483647. 
-	e.g. <code>3, 17, -32, 999</code>.
+	Integers (LPC calls them 'int' for short) are whole numbers,
+	normally between -2147483648 and 2147483647.  For instance 3,
+	17, -32, and 999 are all perfectly good integers.  You can
+	write integers in a couple of different ways, such as in
+	hexadecimal (base 16), but they're still the same data type
+	underneath, they're just written differently.
       </dd>
 
       <dt><tt>float</tt>
       <dd>
-	<a name="IDX3"></a>
+        <p>
+	Fractional numbers, usually approximately between
+	1.17549435e-38 and 3.40282347e+38.  For instance 1.3, -348.4,
+	2.0 and 4.53e+4 are floating-point numbers (LPC calls them
+	'float').  In case you're not familiar with Scientific
+	Notation for numbers, 4.53e+4 is the same as 4.53 x 10^4, 4.53
+	* 10000, or 45300.
+	</p>
 
-	Decimal numbers of any kind, usually approximately between
-	1.17549435e-38 and 3.40282347e+38. e.g. <code>1.3, -348.4,
-	4.53e+4</code>.
-
-	Please note that numbers like <code>1.</code> or
-	<code>.4711</code> are <i>not</i> recognized as floats.  You
-	have to specify both an integer and a decimal part for every
-	number, even if they're zero for the number you're typing.
+	<p>
+	LPC doesn't recognized numbers like <code>1.</code> or
+	<code>.4711</code> as floats.  You have to specify both an
+	integer and a decimal part for every number, even if they're
+	zero for the number you're typing.  LPC's just funny that way.
+	</p>
       </dd>
 
       <dt><tt>string</tt>
       <dd>
-	<a name="IDX4"></a>
-
 	Strings are simply a series of printable characters.  They're
-	written with the characters in quotes, e.g. <code>"x", "the
-	string", "Another long string with the number 5 in
-	it"</code>. Strings can contain special characters like
-	newline (written as <code>"\n"</code>) to end a line. A lot of
-	LPC expressions can handle strings directly, unlike in C. This
-	makes strings much easier to use.
+	written with the characters in double quotes.  For instance
+	&quot;x&quot;, &quot;the string&quot;, &quot;Another long
+	string with the number 5 in it&quot;. Strings can contain
+	special characters like newline (written as &quot;\n&quot;) to
+	end a line. A lot of LPC operators can handle strings
+	directly, unlike in C.  For instance, you can put two of them
+	together with <code>+</code>.  This makes strings much easier
+	to use.
       </dd>
 
       <dt><tt>mapping</tt>
       <dd>
-	<a name="IDX5"></a>
-
-	Mappings are another handy LPC invention.  A mapping is simply
-	a list of associated values. Assume you want to remember the
+	Mappings are another handy LPC feature.  A mapping is simply a
+	list of associated values. Assume you want to remember the
 	ages of people.  Say that Olle is 23, Peter is 54 and Anna is
 	15.  In LPC you can turn this into the mapping <code>([
 	"Olle":23, "Peter":54, "Anna":15 ])</code>.  The value to the
-	right has been associated to the value to the left. You can
-	then extract the associated value through a simple indexing
-	operation using the left hand value as index.
+	right has been associated to the key to the left. You can then
+	find the value by looking for the key.  DGD lets you do
+	intersections and unions and other operations on mappings.
       </dd>
 
       <dt><tt>object</tt>
       <dd>
-	<a name="IDX6"></a>
-
 	Object pointers are references to LPC programs that have been
 	loaded into memory.  The object pointer may point to an original
 	object, or to a clone.
@@ -178,41 +179,46 @@
 
       <dt><tt>Array</tt>
       <dd>
-	<a name="IDX8"></a>
-
 	All of the above can appear in arrays, indicated by a
 	<code>*</code> in front of the variable name in the
 	declaration.
 
-	Arrays in LPC are more like lists than arrays in C.  A number
-	of functions and operator facilites exist to make them easy
-	and quick to use.
+	Arrays in LPC are more like lists than arrays in C.  LPC and
+	DGD let you do unions and intersections and other array
+	operations that most languages don't.
       </dd>
 
       <dt><tt>mixed</tt>
       <dd>
-	<a name="IDX9"></a>
-
 	Type mixed is a general descriptor covering all the others, a
 	sort of jack-of-all-trades type.  An object of any other type
-	may be stored within a mixed type.  Again, let me stress the
-	fact that using it except when <i>absolutely</i> necessary
-	only provokes mistakes.
+	may be stored within a mixed type.
 
-	When a regular type can be used, it should. Don't use mixed
-	just because you don't want to remember the type's name.  The
-	type system is there to catch errors for you.  Let it.
+	But when a regular type can be used, it should. Don't use
+	mixed just because you don't want to remember the type's name.
+	The type system is there to catch errors for you.  Let it.
       </dd>
     </dl>
+
+    <p>
+      There's also a special value called <code>nil</code>, which is
+      not really any of the types above.  A string, mapping, array or
+      mixed variable that isn't initialized has a value of nil.  A
+      freshly-allocated array is often allocated to nil.  You can do
+      some tricks like assigning nil to an entry in a mapping to
+      remove it.  Nil is like an undefined value, or a zero for things
+      that aren't necessarily numbers.  You'll see more of it in
+      examples later on.
+    </p>
 
     <p>
       If you need to know the limits of integers, characters or
       floating-point numbers, you can check DGD's
       <tt>include/limits.h</tt> and <tt>include/float.h</tt> files.
-      They list limits of the various data types.  Bear in mind
-      that DGD can easily be compiled with different integer and
-      floating point limits, so you would do well to make your
-      code adapt to the new sizes where it really matters.
+      They list limits of the various data types.  Bear in mind that
+      DGD can easily be compiled with different integer and floating
+      point limits, so it's good to make your code check the sizes.
+      They may be different next time your program runs!
     </p>
 
 
@@ -385,9 +391,11 @@ DRIVER->message("This is a better way of " +
 </pre>
 
     <p>
-      Statements in LPC usually end with <code>;</code>.  It's
-      considered good practice to put a newline there as well rather
-      than putting multiple statements on the same line of text.
+      Statements in LPC almost always end with <code>;</code>.  It's
+      considered good practice to put a newline there as well.
+      That is to say, you shouldn't put multiple statements on the same
+      line if you can help it.  Keeping them separate makes them easier
+      to read.
     </p>
 
 
@@ -396,8 +404,7 @@ DRIVER->message("This is a better way of " +
 
     <p>
       An expression is an instruction or set of instructions that
-      results in a value.  Take <code>+</code>, for example. It uses
-      two other expressions to make up a result. A variable is an
+      results in a value.  A variable is an
       expression since it yields its contents as a result.  <code>a +
       b</code> is a valid expression, because <code>a</code> and
       <code>b</code> are variables (expressions) and <code>+</code> is

@@ -4,15 +4,12 @@ General section on getting DGD set up so you can play with this stuff
 
 * General LPC:
 Varargs parameters and "..."
-Explanation of nil values
-More on atomic functions (in part 3?)
-Floating-point misc, C diffs
-Auto-typecasting, and the fact that LPC mostly doesn't
+More examples with atomic functions (in part 4?)
+Floating-point misc
+C diffs, w/ auto-typecasting, and the fact that LPC mostly doesn't
 Call_out statements, incl timing
-parse_string and other efuns
-Thread-local storage -- why it matters
-array and mapping intersection & union -- *before* it's used in the code
-   for mappings!
+garbage collection
+Document efuns, maybe w/ examples
 
 
 * DGD Driver/Auto interface:
@@ -25,10 +22,18 @@ Compile options
 Limits on # of objects
 Precompiled DGD objects
 KFuns
+parse_string
+the editor
+LWOs
+ASN numbers
+Thread-local storage -- why it matters when everything looks single-threaded
 
 
 * Kernel Library:
 Thread-local storage interface
 Modified functions
 Inheritance & Libraries
+Events
+Resource Management
 ObjectD
+kernel/lib/api objects
