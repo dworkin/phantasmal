@@ -136,3 +136,6 @@
 #  define TELNET_PORT	8888	/* default telnet port */
 #  define BINARY_PORT	8889	/* default binary port */
 # endif
+
+
+# define COMMON()	(sscanf(previous_program(), USR + "/common/%*s") != 0)
