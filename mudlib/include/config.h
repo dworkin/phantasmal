@@ -86,11 +86,13 @@
 #define HELP_DTD            "/data/dtd/help.dtd"
 #define LOGD_DTD            "/data/dtd/logchannel.dtd"
 #define CONFIGD_DTD         "/data/dtd/config.dtd"
+#define ZONED_DTD           "/data/dtd/zoned.dtd"
 
 /* Other data files */
 #define CONFIG_FILE         "/data/system/config.unq"
 #define ROOM_FILE           "/data/object/roomfile.unq"
 #define PORT_FILE           "/data/object/portablefile.unq"
+#define ZONE_FILE           "/data/object/zonefile.unq"
 #define SAFE_ROOM_FILE      "/data/object/safe_roomfile.unq"
 #define SAFE_PORT_FILE      "/data/object/safe_portablefile.unq"
 #define BUG_DATA            "/data/text/bug_reports.txt"
