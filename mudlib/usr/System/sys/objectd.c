@@ -22,25 +22,15 @@
 #include <kernel/objreg.h>
 #include <kernel/rsrc.h>
 
-/* TODO:  (fixes)
-   - Made upgraded() calls happen on a call_out with zero time,
-     probably in a way that supports calling a bunch at once.
-*/
 
 /* TODO:  (features)
    - Allow recompiles that destruct and rebuild all necessary stuff
-     - By specifying an object to (re)compile
      - By specifying a list of objects to (re)compile
      - By specifying a list of files that changed
        - Allow to add manually to dependency list?
+       - Compile list automatically by time, or just specify time?
 */
 
-/* Design questions:
-   - Add upgrading() and upgraded() methods for clones?
-     Track clones through objectd?  Depends on presence of upgraded
-     method, perhaps?  Or can we rely on the base object to track its
-     clones?
-*/
 
 inherit objreg API_OBJREG;
 inherit rsrc API_RSRC;
@@ -75,12 +65,19 @@ private object obj_issues;
    is indexed by object name. */
 private mapping dest_issues;
 
+/* Array of objects to upgrade -- normally there should be no more than
+   one object here at a time unless a previous call_out has failed... */
+private object* upgrade_clonables;
+private int     upgrade_callout;
+
 private void   unregister_inherit_data(object issue);
 private void   register_inherit_data(object issue);
 private void   call_upgraded(object obj);
 private object add_clonable(string owner, object obj, string* inherited);
 private object add_lib(string owner, string path, string* inherited);
-string destroyed_obj_list(void);
+        string destroyed_obj_list(void);
+private void   suspend_system(void);
+private void   release_system(void);
 
 
 static void create(varargs int clone)
@@ -106,6 +103,7 @@ static void create(varargs int clone)
   recomp_paths = ([ ]);
   all_libs = ([ ]);
   comp_dep = ({ });
+  upgrade_clonables = ({ });
 
   if(!find_object(ISSUE_LWO))
     compile_object(ISSUE_LWO);
@@ -631,13 +629,39 @@ private object add_lib(string owner, string path, string* inherited) {
 
 private void call_upgraded(object obj) {
   if(function_object("upgraded", obj)) {
+    upgrade_clonables += ({ obj });
+
+    if(!upgrade_callout) {
+      suspend_system();
+      upgrade_callout = call_out("do_upgrade", 0.0, obj);
+      if(upgrade_callout <= 0) {
+	release_system();
+	LOGD->write_syslog("Error scheduling upgrade call_out for "
+			   + object_name(obj) + "!");
+      }
+    }
+  }
+}
+
+static void do_upgrade(object obj) {
+  int ctr;
+
+  release_system();
+  upgrade_callout = 0;
+
+  for(ctr = 0; ctr < sizeof(upgrade_clonables); ctr++) {
     catch {
-      obj->upgraded();
+      rlimits(status()[ST_STACKDEPTH]; -1) {
+	upgrade_clonables[ctr]->upgraded();
+      }
     } : {
-      LOGD->write_syslog("Error in " + object_name(obj) + "->upgraded()!",
+      LOGD->write_syslog("Error in " + object_name(upgrade_clonables[ctr])
+			 + "->upgraded()!",
 			 LOG_ERR);
     }
   }
+
+  upgrade_clonables = ({ });
 }
 
 
