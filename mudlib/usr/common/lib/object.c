@@ -322,6 +322,41 @@ int match_description(object user, string *cmp_adjectives, string* cmp_nouns) {
   return match;
 }
 
+object* find_contained_objects(object user, string namestr) {
+  string  noun, *words;
+  object* ret;
+  int     ctr;
+
+  words = explode(namestr, " ");
+
+  /* Trim */
+  for(ctr = 0; ctr < sizeof(words); ctr++) {
+    if(!words[ctr] || STRINGD->is_whitespace(words[ctr])) {
+      words = words[..ctr-1] + words[ctr+1..];
+    } else {
+      words[ctr] = STRINGD->to_lower(STRINGD->trim_whitespace(words[ctr]));
+    }
+  }
+
+  if(sizeof(words) == 0)
+    return nil;
+
+  ret = ({ });
+  noun = words[sizeof(words) - 1];
+  words = words[..sizeof(words)-2];  /* words is now a list of adjectives */
+
+  for(ctr = 0; ctr < sizeof(objects); ctr++) {
+    if(objects[ctr]->match_description(user, words, ({ noun }))) {
+      ret += ({ objects[ctr] });
+    }
+  }
+
+  if(sizeof(ret))
+    return ret;
+
+  return nil;
+}
+
 object* get_details(void) {
   return details[..];
 }
