@@ -1,0 +1,3 @@
+You should add symlinks in this directory called data, lib, obj and sys.
+They should point to the directories of the same names in your copy of
+the Kernel MUDLib.
