@@ -1,0 +1,183 @@
+    <titledef text="Directory Structure" />
+
+    <h1> Your MUDLib's Directory Structure </h1>
+
+    <p> Where do I <b>put</b> all this stuff? </p>
+
+    <p> You've probably asked yourself that several times already,
+      just getting started.  When you make a new library, or a new
+      clonable, or a new data file, where do you <i>put</i> it?  This
+      document can get you started. </p>
+
+    <p> Where you put stuff is surprisingly important.  The Kernel
+      MUDLib hardcodes a <i>lot</i> of behavior according to the path
+      to a given file.
+      That includes a lot of information about who has access to what,
+      and whether an object is inheritable, clonable or an LWO.  So
+      let's hit some basic guidelines. </p>
+
+    <h2> Where do specific object types go? </h2>
+
+    <p> You'll need to put a &quot;/lib/&quot; directory somewhere in
+      the path to every library (inheritable).  The Kernel MUDLib
+      requires it.  It's good practice.  It's good documentation.  Do
+      it.  You'll also need to <i>not</i> put &quot;/obj/&quot; or
+      &quot;/data/&quot; anywhere in that path.  For more information
+      about those paths, and whether an object is cloneable or
+      inheritable, see the page about <a
+      href="Inheritance.html">Inheritance</a> in the Kernel
+      Library.  It'll explain what's mandatory. </p>
+
+    <p> Daemons are objects like any others, but they're meant to be
+      used by doing a find_object on them and calling their methods
+      with call_other.  Daemons often wind up in a directory with
+      &quot;/sys/&quot; in the name instead of &quot;/lib/&quot;,
+      &quot;/data/&quot; or &quot;/obj/&quot;.  This is purely
+      optional, mostly a form of documentation.  You're just saying
+      that you plan to use objects in that directory as daemons.  It's
+      still a good idea. </p>
+
+    <h2> What about Data? </h2>
+
+    <p> This one's important too, but for different reasons.  You
+      don't need to have a particular piece of your path to open a
+      file with read_file().  But different paths require different
+      permissions to access.  For instance, stuff in
+      &quot;/usr/System&quot; is readable and writable only by the
+      privileged admin user (by default) and by anybody you explicitly
+      grant access to.  In general, permissions are given
+      per-directory You'll want to set aside a place somewhere under
+      /usr/ to put any piece of data, because generally only code in
+      that same user's directory can read it (or everybody can, if you
+      put it in &quot;/usr/Foo/open/&quot;). </p>
+
+    <p> Files with passwords in them are a good example.  While
+      passwords are encrypted, they're not unbreakable, so often you
+      want to avoid giving people read access.  That keeps them from
+      using a password cracking program, or at least makes it harder.
+      You may need to give certain wizards read access to the System
+      directory but not want them to be able to read all the save
+      files.  By putting the save files somewhere else (say under
+      /usr/Secret or something), you can prevent anybody that doesn't
+      have full admin permission from being able to read or write the
+      user data files.  Note that you'll have to write your password
+      code carefully so that <i>it</i> can still read it! </p>
+
+    <h2> What directories does the Kernel Library treat specially? </h2>
+
+    <p> The Kernel Library checks various things about the path in many
+    of its operations.  Let's look at different operations, and what
+    the Kernel Library checks about the path for each one.
+    </p>
+
+    <ul>
+
+      <li> A lot of Kernel MUDLib functions can only be called from
+        objects under /usr/System.  Objects under /usr/System are also
+        allowed to read and write a lot of things automatically,
+        without having to check permissions.  They're also the only
+        objects that can inherit from objects under /kernel.  Only
+        objects under /usr/System may destruct objects that they don't
+        own, though even they can't destruct an object under /kernel.
+        Only objects under /usr/System are allowed to call swapout(),
+        dump_state(), and shutdown() usefully. </li>
+
+      <li> Only objects <i>outside</i> the /usr/System directory can
+        have a special nonstandard AUTO object. </li>
+
+      <li> The /kernel and /include/kernel directories and their
+        subdirectories are guaranteed writable to nobody.  Files under
+        /kernel or /include/kernel may not be written to or deleted.
+        Directories cannot be made or destroyed there, and files
+        cannot be renamed to or from those directories.  Objects under
+        /kernel can only be cloned by other objects under
+        /kernel. </li>
+
+      <li> You can't call_other on any object with /lib in its path.
+        You can't find those objects with find_object(), you can't
+        call their functions.  You can only inherit objects with /lib
+        in their paths and without /obj/ or /data/ in their paths. </li>
+
+      <li> Files with /include in the path can always be included,
+        regardless of read access. (TEST ME, with and without a '..'
+	in the path) </li>
+
+      <li> Files outside of /usr/System are allowed to have a special
+        nonstandard AUTO object.  If a non-System file includes AUTO
+        from /include/std.h, and an objectd is registered, the Kernel
+        Library will call the path_special() function of the objectd
+        to determine what AUTO object should be used.  If a value
+        other than &quot;&quot; or nil is returned, it is assumed to
+        be the path to the nonstandard AUTO object.  This can be used
+        for scripts or other controlled access since built-in
+        functions can be overridden by an AUTO object. </li>
+
+      <li> Objects in /kernel have no maximum rlimits(), so they could
+        theoretically loop infinitely or crash for lack of stack
+        space.  In practice, this essentially never happens.  Objects
+        in /usr/System may voluntarily choose not to limit their
+        number of ticks in rlimits().  This means they may
+        occasionally loop infinitely, especially if coded
+        poorly. </li>
+
+      <li> Files outside /usr, or in /usr/foo/open (for any value of foo)
+        are readable to everybody.  Except stuff under /kernel/, that's
+	not necessarily open to reading. </li>
+
+      <li> A user has full access of every object and file under his
+        own home directory.  Objects under that user's directory have
+        full access to each other, and to files under the user's home
+        directory. </li>
+
+      <li> The create() function that gets called automatically on an
+        object will be called with the 'clone' argument only if /obj/
+        or /data/ is in the object's path.  Otherwise it will be called
+	with no argument. </li>
+
+      <li> Libraries not under /kernel require you to have read access
+        to compile them.  Non-libraries, anything under /kernel, and
+        anything compiled from sources requires write access instead
+        of read access if you want to compile it.  There's an
+        exception if the object doing the compiling is under
+        /usr/System.  And anything not under a /usr/XXX directory can
+        be compiled by anybody.
+        </li>
+
+      <li> An object must have an /obj/ in its path, but no /data/ or
+        /lib/, to be clonable.  Objects outside of the /usr/XXX/ area
+        can't clone another object.  Objects that aren't under
+        /usr/System need read access to an object to clone it. </li>
+
+      <li> Only objects in /usr/System can pass a uid argument to
+        clone_object or new_object.  That's a way to change who owns
+        the new clone or LWO.  You should probably never do
+        this. </li>
+
+      <li> An object to be cloned as an LWO with new_object must have
+        /data/ in the path, but not /obj/ or /lib/. </li>
+
+      <li> Objects outside of /usr/System get an edited call_trace,
+        one with no arguments included. </li>
+
+      <li> Objects outside of /usr/System don't get arguments in the
+        output of status(), and nobody is allowed to see the callouts
+        of objects in /kernel. </li>
+
+      <li> Certain Kernel objects get direct call_outs rather than the
+        usual tracked ones.  If you don't know what this means, don't
+	worry about it.  You'll sleep better. </li>
+    </ul>
+
+    <hr />
+
+    <h2> Specific Projects </h2>
+
+    <p> This is part of the Adding Stuff section, so what kind of stuff
+      should you add?  One simple answer is &quot;everything&quot;, since
+      this document tells you where everything goes.  But there are also
+      some projects you can undertake to improve your MUDLib. </p>
+
+    <p> For instance, a simple thing you can do is to move your user
+      data from its current save location to another, as we suggest
+      above.  Mainly you'll need to modify &quot;user.c&quot;.  Go
+      give it a try! </p>

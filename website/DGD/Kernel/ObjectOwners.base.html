@@ -1,0 +1,26 @@
+    <titledef text="Object Creators and Owners" />
+
+    <h1> Object Creators and Owners </h1>
+
+    <h3> What is an Object's Creator? </h3>
+
+    <p> Finding an object's creator is easy.  The object's name will
+      usually start with /usr/XXX.  That XXX is the object's creator
+      as far as the Kernel MUDLib is concerned. </p>
+
+    <h3> Who Owns the Object? </h3>
+
+    <p> The Kernel MUDLib occasionally does things with objects
+      according to who owns them.  The owner is, conceptually, the user
+      who called clone_object() or the equivalent.  But it's a little
+      trickier than that. </p>
+
+    <p> Say you've just entered a command which causes an object to be
+      cloned.  You're the current user, but you're using code in
+      (for instance) /usr/System to run the command.  So who owns the
+      new object, you or System?  </p>
+
+    <p> Say it's not a clone?  Does that make a difference?  Yup.  If
+      an object isn't a clone then the creator is also the owner.  For
+      instance, that's true if it's the original compiled clonable
+      object, or if it's a library. </p>

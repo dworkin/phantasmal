@@ -1,0 +1,151 @@
+    <titledef text="Kernel Security" />
+
+    <h1> Security and the Kernel MUDLib </h1>
+
+    <h3> Why does it apply to <i>me</i>? </h3>
+
+    <p> You may be thinking to yourself &quot;I'll make <i>my</i> lib
+      secure, the Kernel MUDLib will be secure, everything will be
+      just fine.&quot;  Worse yet, you <i>could</i> be thinking,
+      &quot;the Kernel MUDLib's supposed to be really secure, so
+      I just won't have to worry about it.&quot;  Neither of these
+      is quite true, for reasons I'll go into later. </p>
+
+    <p> Or you <i>could</i> be thinking, &quot;I don't care if it's
+      secure.  I'm never going to have any other wizards working on
+      the MUD that I don't trust.&quot;  That's a more valid response,
+      and in fact security only saves you from malicious users,
+      malicious wizards, and your own mistakes.  If you're fine being
+      left wide open to crashes and data loss of the last two
+      categories then securing your MUDLib <i>does</i> get easier. </p>
+
+    <p> But not trivial.  It's important that you know what even your
+      users can do to you if you miscode commands.  For that reason,
+      you need to understand how the Kernel MUDLib implements its
+      security model, and who it lets get away with what.  Basically
+      the Kernel MUDLib only actually prevents a small number of
+      things, it just restricts the rest to trusted code.  That's
+      fine, but then you <i>need</i> to know what code is trusted
+      and what isn't. </p>
+
+    <h3> What code is trusted? </h3>
+
+    <p> The one-sentence answer is: &quot;code in /usr/System is
+      trusted.&quot; </p>
+
+    <p> There's a lot more to it than that.  The Kernel MUDLib's own
+      code is in /kernel, and it's trusted, and you should never, ever
+      modify it.  The Kernel MUDLib will do its best to keep you from
+      doing this at runtime from a MUDLib written on top of it, but
+      only you can make sure you don't do so when the MUD's not
+      running.  You <i>do</i> run the machine after all.
+    </p>
+
+    <p> Also, trust is delegated in some other ways.  There are
+      directories that are marked as globally readable, so anybody
+      has read access to them.  That also means anybody can clone
+      objects whose code is in these directories, and several
+      other things that read access implies.  Anybody has full
+      read-write access to their own directory -- for instance,
+      a wizard named bob will always have full access to /usr/bob,
+      regardless.  There are lots more little rules like this
+      that we'll hit on a case-by-case basis later. </p>
+
+    <p> You could write a function in /usr/System that is callable
+      from outside /usr/System.  If it calls anything that requires
+      trust and then exports the results, you've just leaked some
+      trust out into the system at large. </p>
+
+    <p> That may be fine.  You may have decided that anybody is allowed
+      to grab the list of clones of /usr/System/obj/room since those
+      clones do their own security-checking.  In that case, you'd be
+      doing the right thing.  You have to leak <i>some</i> trust
+      out into the system or nobody can do anything at all. </p>
+
+    <p> But it's important to understand what people can and can't do with
+      that information.  For instance, in the example above, your
+      decision means that the code of /usr/System/obj/room.c
+      must be <i>absolutely bulletproof</i> if it's to be secure from
+      misuse by your wizards.  For instance, say you kept around a function
+      that would remove an exit from a room but <i>didn't check who
+	called it</i>.  If anybody can get the list of clones, then
+      anybody can remove any exit from any room, thus isolating your
+      MUD's rooms from each other.  Instead, you'd want to make sure
+      that only a wizard with full access to the room (such as
+      the one who owns the zone the room is in) may remove an exit
+      from it. </p>
+
+    <p> As an even more severe example, your object in /usr/System
+      might just keep an array of room clones, and return it to
+      caller.  So when you return the room array an unscrupulous
+      caller could remove objects from the array.  Now whenever
+      somebody else calls the function to get the array of objects,
+      they won't see the objects that were removed!  Those clones
+      have been entirely gotten rid of. </p>
+
+    <p> Security is a big field, and I'm not going to be able to tell
+      you everything about it here.  Even just DGD and LPC security
+      specifics is a pretty big field!  But you'll need to know what
+      privileges your code has in order to avoid giving them away to
+      people that call your functions.  So the most important thing
+      these pages can do is to describe what privileges and what
+      restrictions the Kernel MUDLib gives so you know what's what. </p>
+
+    <hr />
+
+    <h3> General Restrictions </h3>
+
+    <p> First off, I'll quote Bruce Schneier the security expert.  He says
+      that &quot;security is not something you can bolt onto an existing
+      product.&quot;  He's right.  The example with the array above should
+      tell you that you need to think about these things in advance.  You
+      may just be able to copy the array every time, which is fine, but
+      if you already have code that depends on being able to modify it
+      then you have a massive headache with no good solutions.  Think
+      about security <i>early</i>! </p>
+
+    <p> Now let's get down to things the Kernel MUDLib does differently
+      than base DGD.  DGD itself does almost nothing to enforce access
+      control, though it's quite secure.  By &quot;quite secure&quot; I
+      mean it doesn't use pointers, so if you don't give somebody access
+      to something they can't get at it -- they can't go &quot;memory dumpster
+      diving&quot; easily just because they share your same process.
+      You pretty much <i>can't</i> crash the machine although if you do
+      something sufficiently bad DGD won't know what to do and will
+      stop you. </p>
+
+    <p> The Kernel MUDLib adds another layer of robustness onto this.
+      It realizes that there is good, trusted code and bad, untrusted
+      code in the world, and that you're likely to have some of both
+      in your process.  So it keeps track of users, and what those
+      users can access.  It keeps track of programs (individual .c files)
+      and decides what <i>they</i> can access. </p>
+
+    <p> For reasons explained <a href="Inheritance.html">elsewhere</a>,
+      the Kernel MUDLib also adds the <b>library</b> or <b>inheritable</b>
+      abstraction.  It decides that libraries aren't regular objects
+      like <b>clonables</b>.  Instead, the Kernel MUDLib will never pass
+      you a &quot;real&quot; library object, only its path.  That means
+      you can't keep storage space in one since you can never create a
+      clone or LWO of one, nor call it with <b>call_other</b>.  All
+      you can really do with a library is to inherit it from your other
+      code, and in practice that's usually plenty. </p>
+
+    <hr />
+
+    <h3> Specific Operations </h3>
+
+    <p> Note:  all specifics given here are current as of DGD 1.2.35.
+      While the Kernel MUDLib tends to change very little, these
+      operations are, in fact, subject to change at any time by Dworkin.
+    </p>
+
+    <p> Also, this page details only exported APIs -- static and private
+      functions of the Driver object, for instance, aren't listed
+      even though DGD or the Driver itself may call them. </p>
+
+    <ul>
+      <li><a href="Auto_API.html">Auto and Driver operations</a></li>
+      <li><a href="CaseStudies.html">Kernel MUDLib Security Case
+	  Studies</a></li>
+    </ul>

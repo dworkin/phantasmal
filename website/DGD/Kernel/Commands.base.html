@@ -1,0 +1,173 @@
+    <titledef text="Commands in the Kernel"
+
+    <h2> User Commands in the Stock Kernel Library </h2>
+
+    <p>The Kernel MUDLib does very different things for regular users and
+      wizards (those that have special access such as admin).  Let's look
+      at how it works for a regular user first.</p>
+
+    <p>A regular user is anybody that hasn't been specifically made a
+      wizard.  The only exception is &quot;admin&quot;.  S/he is a wizard
+      automatically just because s/he's got that name.  When a regular
+      user logs in they don't need a password.  That's true only for the
+      stock, unmodified kernel MUDLib but so is everything else on
+      this page.  Like everything else here it can be modified if
+      you <a href="index.html">muddle with the MUDLib</a>.</p>
+
+    <p>The regular user can do a number of things.  S/he can use the
+      <b>say</b> command to say stuff.  For instance: </p>
+
+<pre>
+      say Hello, all!
+</pre>
+
+    <p> S/he can use <b>emote</b> to do something similar.  If s/he types
+      &quot;emote jumps for joy!&quot; and his/her name is Panda
+      everybody will see &quot;Panda jumps for joy!&quot;.  If you're
+      impatient you can abbreviate <b>say</b> with a single-quote and
+      <b>emote</b> with a colon.  Just put either punctuation character
+      at the front of a command line right where you'd type <b>say</b>
+      or <b>emote</b>. </p>
+
+    <p> To give a private message to somebody else you can <b>tell</b>
+      them something.  For instance: &quot;tell Panda I'm happy
+      too!&quot; will tell Panda how thrilled you are. </p>
+
+    <p> To find out who's on the MUD you can type <b>users</b>.  It'll
+      give you the list.  Then you can tell them things with the other
+      commands. </p>
+
+    <p> You can set your password with the password command, typed by
+      itself, but that doesn't do anything useful unless you're a
+      wizard. If you are then you can do this.  If you're not then you
+      can still set the password but it does nothing useful.  You
+      won't be asked for it on login. </p>
+
+    <p> And you can quit.  Good to know.  You just type <b>quit</b>. </p>
+
+    <hr />
+
+    <h2> Wizard/Administrator Commands </h2>
+
+    <p> The <b>code</b> command lets you execute a little snippet of code
+      and get the value back.  DGD will automatically make a temporary
+      object for you in a temporary file that executes your code.
+      DGD even predeclares 26 one-letter lowercase variables of type
+      <b>mixed</b> for you to use in your code just in case you need some
+      temp vars.</p>
+
+    <p> You can type <b>history</b> by itself or followed by a number
+      to access
+      the history of values your <b>code</b>, <b>compile</b> and
+      <b>clone</b> commands have been returning.  You can access these
+      values in the arguments of many commands by referring to them
+      as $1, $2, $3, et cetera.</p>
+
+    <p>The <b>clear</b> command clears the command history.</p>
+
+    <p>The <b>compile</b> command recompiles an object.  Some objects
+      won't like being recompiled - for instance if stuff inherits
+      from them.  You give it the filename and it recompiles the file.
+      You can just give the filename without the path if you're in the
+      correct current directory.  See <b>cd</b>, <b>ls</b>,
+      <b>pwd</b>, and so on for how to tell if you're in the correct
+      directory.
+    </p>
+
+    <p>The <b>clone</b> command clones an object and puts it in the
+      command history for your enjoyment and edification.  You can
+      later take the <b>status</b> or <b>destruct</b> it.  Make sure
+      to destruct what you create! </p>
+
+    <p>The <b>destruct</b> command lets you destruct objects.  Doing
+      so can be useful in your efforts to recompile inheritable
+      (library) objects.  You're still better off with an object
+      daemon doing it for you, but <b>destruct</b> will also help you
+      test <i>that</i>.</p>
+
+    <p><b>cd</b>, <b>pwd</b>, <b>ls</b>, <b>cp</b>, <b>mv</b>,
+      <b>rm</b>, <b>mkdir</b>, <b>rmdir</b>: these are just like the
+      regular Unix shell commands of the same names.  For DOS or
+      Windows guys: <b>ls</b> is <b>dir</b>.  <b>cp</b> is
+      <b>copy</b>.  <b>mv</b> is <b>move</b>. <b>rm</b> is
+      <b>del</b>. <b>pwd</b> tells your current directory.
+      <b>mkdir</b> and <b>rmdir</b> are pretty much the same as in
+      DOS.  <b>cd</b> is mostly the same, but typing just <b>cd</b> by
+      itself doesn't print the directory.  Instead it changes to your
+      home directory.  You can use all these commands from your OS
+      instead of inside the MUD, but sometimes it's more convenient to
+      have the command line right there. </p>
+
+    <p>The <b>ed</b> command lets you edit a file using DGD's built-in
+      editor.  Docs on how to use it come with DGD.  You can always
+      just use the editor on your machine if you prefer.  However,
+      Windows users take note: the DGD editor is guaranteed to have
+      the right linebreak behavior and most Windows editors (like
+      Visual Studio, Visual C++ or Notepad) aren't.  So the DGD
+      built-in editor may be a good alternative to grabbing TextPad. </p>
+
+    <p> If you're the admin, another advantage is that your MUD admins
+      can have MUD accounts, but not shell accounts on the server box.
+      They can use the DGD editor and get access only to the files
+      they're supposed to, and not your Unix command line nor other
+      people's files.  That's a cheaper, simpler (and worse)
+      alternative to writing an FTP server into your MUD. </p>
+
+    <p>You can use the <b>access</b> command on a wizard's name to
+      find out what s/he can access.  You can use it with no argument
+      to find out <i>your</i> access.  With the special string
+      &quot;global&quot; you can find out what areas allow everybody
+      read access.  You can use it on a file to find out who has what
+      access to it. </p>
+
+    <p><b>grant</b></p>
+
+    <p><b>ungrant</b></p>
+
+    <p>The <b>quota</b> command lists a wizard's resource usage.  With
+      no arguments it gives the usages for the user that typed it.  With
+      one argument it gives the usages for the wizard whose name is given.
+      With two arguments it takes a wizard's name and a resource type
+      (such as ticks, stack, callouts, etc) to give the usage for.  With
+      three arguments of the form &quot;quota &lt;user&gt; &lt;rsrc&gt;
+      &lt;limit&gt;&quot; it will try to set that user's limit on that
+      resource to the number specified if you've got the necessary
+      privilege to do that.  For most limits, -1 means infinite.
+    </p>
+
+    <p>The <b>rsrc</b> command typed by itself will show the MUD's total
+      usage of the same resources <b>quota</b> affects.  This doesn't just
+      show your usage.  It shows everybody's.
+      With a resource name
+      and a numerical limit <b>rsrc</b> will set the new limit to the
+      given value.  With just a resource name <b>rsrc</b>
+      will list the usage of that resource by all wizards. </p>
+
+    <p>The <b>people</b> command is just a slightly beefier <b>users</b>
+      command.
+      It displays IP addresses of those logged in.</p>
+
+    <p>The <b>status</b> command shows a little summary of driver status.
+      Try it out and see!  You can also use it with an argument to get the
+      status of an object.  Try some object names and some values from the
+      history list. </p>
+
+    <p>The <b>swapout</b> command will attempt to swap out all objects.
+      This could be useful for testing, prior to a statedump, or when
+      the MUD's RAM footprint is objectionably large and not many users
+      are logged in. </p>
+
+    <p>The <b>statedump</b> command will write out a dump of the MUD's
+      current state which could be good for bootstrapping the MUD later,
+      backing up in case of crashes, or duplicating the MUD and running
+      another copy.</p>
+
+    <p>The <b>shutdown</b> command attempts to shut down the MUD. </p>
+
+    <p>The <b>reboot</b> command attempts to reboot the MUD. </p>
+
+    <hr />
+
+    <p> If you try many commands incorrectly they will give you usage
+      information.  This may or may not tell you more about what the command
+      does, but it'll at least tell you how you can try to find out! </p>
