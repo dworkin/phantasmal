@@ -335,11 +335,11 @@ private void add_complex_exit_by_unq(int roomnum1, mixed value) {
   }
 
   room1->add_exit(exit1->get_direction(), exit1);
-  num1 = allocate_exit_obj(-1, exit1);
+  num1 = allocate_exit_obj(exit1->get_number(), exit1);
 
   if (exit1->get_exit_type()>1) {
     room2->add_exit(exit2->get_direction(), exit2);
-    num2 = allocate_exit_obj(-1, exit2);
+    num2 = allocate_exit_obj(exit2->get_number(), exit2);
   }
 }
 
