@@ -13,6 +13,7 @@ private object new_obj;
 /* Data specified by user */
 private int    obj_number;
 private int    obj_type;
+private object obj_detail_of;
 
 
 /* Valid object-type values */
@@ -23,8 +24,8 @@ private int    obj_type;
 
 /* Valid substate values */
 #define SS_PROMPT_OBJ_TYPE          1
-#define SS_PROMPT_OBJ_NUMBER        2
-#define SS_PROMPT_OBJ_DETAIL_OF     3
+#define SS_PROMPT_OBJ_DETAIL_OF     2
+#define SS_PROMPT_OBJ_NUMBER        3
 #define SS_PROMPT_OBJ_PARENT        4
 #define SS_PROMPT_BRIEF_DESC        5
 #define SS_PROMPT_GLANCE_DESC       6
@@ -87,7 +88,11 @@ void specify_type(string type) {
   else
     error("Illegal value supplied to specify_type!");
 
-  substate = SS_PROMPT_OBJ_NUMBER;
+  if(obj_type == OT_DETAIL) {
+    substate = SS_PROMPT_OBJ_DETAIL_OF;
+  } else {
+    substate = SS_PROMPT_OBJ_NUMBER;
+  }
 }
 
 /* This handles input directly from the user.  Handling depends on the
@@ -114,11 +119,11 @@ int from_user(string input) {
   case SS_PROMPT_OBJ_TYPE:
     ret = prompt_obj_type_input(input);
     break;
-  case SS_PROMPT_OBJ_NUMBER:
-    ret = prompt_obj_number_input(input);
-    break;
   case SS_PROMPT_OBJ_DETAIL_OF:
     ret = prompt_obj_detail_of_input(input);
+    break;
+  case SS_PROMPT_OBJ_NUMBER:
+    ret = prompt_obj_number_input(input);
     break;
   case SS_PROMPT_OBJ_PARENT:
     ret = prompt_obj_parent_input(input);
@@ -199,7 +204,7 @@ private string blurb_for_substate(int substate) {
 
   case SS_PROMPT_OBJ_DETAIL_OF:
     return "Enter the base object number for this detail or type 'quit'.\r\n"
-      + "The object must already exist.\r\n";
+      + "That's the existing object that this is a detail of.\r\n";
 
   case SS_PROMPT_OBJ_PARENT:
     return "Enter the object's parent for data inheritance.\r\n"
@@ -242,10 +247,10 @@ private string blurb_for_substate(int substate) {
       + " object.\r\n"
       + "Example: heavy gray dull\r\n";
 
+    /* The following don't have full-on blurbs, just one-line prompts
+       for the ENTER_YN user state.  So no blurb. */
   case SS_PROMPT_CONTAINER:
-
   case SS_PROMPT_OPEN:
-
   case SS_PROMPT_OPENABLE:
 
   default:
@@ -261,7 +266,8 @@ private string blurb_for_substate(int substate) {
 void switch_to(int pushp) {
   if(pushp
      && (substate == SS_PROMPT_OBJ_NUMBER
-	 || substate == SS_PROMPT_OBJ_TYPE)) {
+	 || substate == SS_PROMPT_OBJ_TYPE
+	 || substate == SS_PROMPT_OBJ_DETAIL_OF)) {
     /* Just allocated */
     send_string("Creating a new object.  Type 'quit' at the prompt"
 		+ " (except on multiline prompts) to cancel.\r\n");
@@ -342,12 +348,55 @@ static int prompt_obj_type_input(string input) {
     obj_type = OT_PORTABLE;
   }
 
-  send_string(blurb_for_substate(SS_PROMPT_OBJ_NUMBER));
+  if(obj_type == OT_DETAIL) {
+    substate = SS_PROMPT_OBJ_DETAIL_OF;
+  } else {
+    substate = SS_PROMPT_OBJ_NUMBER;
+  }
 
-  substate = SS_PROMPT_OBJ_NUMBER;
+  send_string(blurb_for_substate(substate));
 
   /* The editor is going to print its own prompt, so don't bother
      with ours. */
+  return RET_NORMAL;
+}
+
+static int prompt_obj_detail_of_input(string input) {
+  int base_num;
+
+  if(!input || STRINGD->is_whitespace(input)) {
+    send_string("\r\nYou have to specify a base object."
+		+ "  Let's try again.\r\n");
+    send_string(blurb_for_substate(substate));
+    return RET_NORMAL;
+  }
+
+  if(sscanf(input, "%*d %*s") == 2
+     || sscanf(input, "%*s %*d") == 2
+     || sscanf(input, "%d", base_num) != 1) {
+    send_string("\r\nYou need to supply a single object number.\r\n");
+    send_string(blurb_for_substate(substate));
+    return RET_NORMAL;
+  }
+
+  if(base_num < 1) {
+    send_string("\r\nObject numbers need to be greater than zero.\r\n");
+    send_string(blurb_for_substate(substate));
+    return RET_NORMAL;
+  }
+
+  obj_detail_of = MAPD->get_room_by_num(base_num);
+  if(!obj_detail_of) {
+    send_string("\r\nThere doesn't seem to be a room or portable #"
+		+ base_num + ".\r\n");
+    send_string(blurb_for_substate(substate));
+    return RET_NORMAL;
+  }
+
+  send_string("\r\nBase object accepted.\r\n");
+  substate = SS_PROMPT_OBJ_NUMBER;
+  send_string(blurb_for_substate(substate));
+
   return RET_NORMAL;
 }
 
@@ -396,11 +445,15 @@ static int prompt_obj_number_input(string input) {
     /* Okay, object number looks good -- continue. */
   }
 
-  location = get_user()->get_location();
-  if(location && obj_type == OT_ROOM) {
-    /* The new room should be put into the same place as the room
-       the user is currently standing in.  Makes a good default. */
-    location = location->get_location();
+  if(obj_type == OT_DETAIL) {
+    location = obj_detail_of;
+  } else {
+    location = get_user()->get_location();
+    if(location && obj_type == OT_ROOM) {
+      /* The new room should be put into the same place as the room
+	 the user is currently standing in.  Makes a good default. */
+      location = location->get_location();
+    }
   }
 
   if(obj_type == OT_ROOM) {
@@ -409,13 +462,18 @@ static int prompt_obj_number_input(string input) {
     /* This is regardless of whether it's OT_PORTABLE or OT_DETAIL */
     new_obj = clone_object(SIMPLE_PORTABLE);
   }
+
   zonenum = -1;
   if(obj_number < 0) {
-    if(get_user()->get_location()) {
+    /* Get zone based on object type and location */
+    if(obj_type == OT_DETAIL) {
+      zonenum = ZONED->get_zone_for_room(obj_detail_of);
+    } else if(get_user()->get_location()) {
       zonenum = ZONED->get_zone_for_room(get_user()->get_location());
     } else {
       zonenum = 0;
     }
+
     if(zonenum < 0) {
       LOGD->write_syslog("Odd, zone is less than 0 in @make_room...",
 			 LOG_WARN);
@@ -426,24 +484,68 @@ static int prompt_obj_number_input(string input) {
 
   zonenum = ZONED->get_zone_for_room(new_obj);
 
-  if(location) {
+  if(obj_type == OT_DETAIL
+     && !obj_detail_of) {
+    send_string("Somebody has deleted the base object between the time you"
+		+ " entered it\r\n  and now.  No detail was created."
+		+ "  Exiting OLC!\r\n");
+    return RET_POP_STATE;
+  }
+
+  if(obj_detail_of) {
+    obj_detail_of->add_detail(new_obj);
+  } else if(location) {
     location->add_to_container(new_obj);
   }
 
   send_string("Added obj #" + new_obj->get_number()
 	      + " to zone #" + zonenum
 	      + " (" + ZONED->get_name_for_zone(zonenum) + ")" + ".\r\n");
-  send_string("Its location is #" + location->get_number()
-	      + "(" + location->get_brief()->to_string(get_user())
+  if(obj_detail_of) {
+    send_string("It is a detail of obj #");
+  } else {
+    send_string("Its location is #");
+  }
+  send_string(location->get_number() + "("
+	      + location->get_brief()->to_string(get_user())
 	      + ")\r\n\r\n");
 
   /* Okay, now keep entering data... */
-  send_string(blurb_for_substate(SS_PROMPT_BRIEF_DESC));
+  substate = SS_PROMPT_OBJ_PARENT;
+  send_string(blurb_for_substate(substate));
 
-	      substate = SS_PROMPT_BRIEF_DESC;
+  return RET_NORMAL;
+}
 
-  /* The editor is going to print its own prompt, so don't bother
-     with ours. */
+static int prompt_obj_parent_input(string input) {
+  int    parnum;
+  object obj_parent;
+
+  if(!input || STRINGD->is_whitespace(input)) {
+    /* No parent -- that works. */
+    parnum = -1;
+    obj_parent = nil;
+  } else if(sscanf(input, "%*s %*d") == 2
+	    || sscanf(input, "%*d %*s") == 2
+	    || sscanf(input, "%d", parnum) != 1
+	    || parnum <= 0) {
+    send_string("Please enter a single positive valid object number, and only"
+		+ "\r\n  an object number.\r\n");
+    send_string(blurb_for_substate(substate));
+    return RET_NORMAL;
+  } else if(!(obj_parent = MAPD->get_room_by_num(parnum))) {
+    send_string("There is no object #" + parnum + ".\r\n");
+    send_string(blurb_for_substate(substate));
+    return RET_NORMAL;
+  }
+
+  if(obj_parent) {
+    new_obj->set_archetype(obj_parent);
+  }
+
+  substate = SS_PROMPT_BRIEF_DESC;
+  send_string(blurb_for_substate(substate));
+
   return RET_NORMAL;
 }
 
@@ -657,7 +759,11 @@ static void prompt_container_data(mixed data) {
 
   if(!data) {
     /* Not a container, so neither open nor openable. */
-    send_string("Done with portable #" + new_obj->get_number() + ".\r\n");
+    if(obj_type == OT_PORTABLE) {
+      send_string("Done with portable #" + new_obj->get_number() + ".\r\n");
+    } else {
+      send_string("Done with detail #" + new_obj->get_number() + ".\r\n");
+    }
     pop_state();
     return;
   }
@@ -717,7 +823,11 @@ static void prompt_openable_data(mixed data) {
     new_obj->set_openable(1);
   }
 
-  send_string("Done with portable #" + new_obj->get_number() + ".\r\n");
+  if(obj_type == OT_PORTABLE) {
+    send_string("Done with portable #" + new_obj->get_number() + ".\r\n");
+  } else {
+    send_string("Done with detail #" + new_obj->get_number() + ".\r\n");
+  }
 
   pop_state();
 }
