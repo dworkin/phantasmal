@@ -32,7 +32,7 @@ private object obj_detail_of;
 #define SS_PROMPT_OBJ_NUMBER        3
 #define SS_PROMPT_OBJ_PARENT        4
 #define SS_PROMPT_BRIEF_DESC        5
-#define SS_PROMPT_GLANCE_DESC       6
+/* #define SS_PROMPT_GLANCE_DESC       6 */
 #define SS_PROMPT_LOOK_DESC         7
 #define SS_PROMPT_EXAMINE_DESC      8
 #define SS_PROMPT_NOUNS             9
@@ -64,7 +64,7 @@ static int  prompt_obj_number_input(string input);
 static int  prompt_obj_detail_of_input(string input);
 static int  prompt_obj_parent_input(string input);
 static int  prompt_brief_desc_input(string input);
-static int  prompt_glance_desc_input(string input);
+/* static int  prompt_glance_desc_input(string input); */
 static void prompt_look_desc_data(mixed data);
 static void prompt_examine_desc_data(mixed data);
 static int  prompt_nouns_input(string input);
@@ -151,9 +151,11 @@ int from_user(string input) {
   case SS_PROMPT_BRIEF_DESC:
     ret = prompt_brief_desc_input(input);
     break;
+#if 0
   case SS_PROMPT_GLANCE_DESC:
     ret = prompt_glance_desc_input(input);
     break;
+#endif
   case SS_PROMPT_NOUNS:
     ret = prompt_nouns_input(input);
     break;
@@ -257,11 +259,13 @@ private string blurb_for_substate(int substate) {
       + "Examples of brief descriptions:  "
       + "'a sword', 'John', 'some bacon'.\r\n";
 
+#if 0
   case SS_PROMPT_GLANCE_DESC:
     return "Please enter a one-line glance description.\r\n"
       + "Examples of brief descriptions:  "
       + "'a red flashing toy gun', 'John the Butcher',"
       + "or 'about a pound of bacon'.\r\n";
+#endif
 
   case SS_PROMPT_LOOK_DESC:
     return "Now, enter a multiline 'look' description.  This is what an"
@@ -276,8 +280,9 @@ private string blurb_for_substate(int substate) {
       + "description.\r\n";
 
   case SS_PROMPT_NOUNS:
-    tmp = "Brief:  " + new_obj->get_brief()->to_string(get_user()) + "\r\n"
-      + "Glance: " + new_obj->get_glance()->to_string(get_user()) + "\r\n";
+    tmp = "Brief:  " + new_obj->get_brief()->to_string(get_user()) + "\r\n";
+
+    /* + "Glance: " + new_obj->get_glance()->to_string(get_user()) + "\r\n"; */
 
     if(sizeof(new_obj->get_archetypes())) {
       tmp += "Parent nouns: ";
@@ -292,8 +297,8 @@ private string blurb_for_substate(int substate) {
     return tmp;
 
   case SS_PROMPT_ADJECTIVES:
-    tmp = "Brief:  " + new_obj->get_brief()->to_string(get_user()) + "\r\n"
-      + "Glance: " + new_obj->get_glance()->to_string(get_user()) + "\r\n";
+    tmp = "Brief:  " + new_obj->get_brief()->to_string(get_user()) + "\r\n";
+    /* + "Glance: " + new_obj->get_glance()->to_string(get_user()) + "\r\n"; */
 
     if(sizeof(new_obj->get_archetypes())) {
       tmp += "Parent adjectives: ";
@@ -734,13 +739,15 @@ static int prompt_brief_desc_input(string input) {
   phr = new_obj->get_brief();
   phr->set_content_by_lang(get_user()->get_locale(), input);
 
-  substate = SS_PROMPT_GLANCE_DESC;
+  /* substate = SS_PROMPT_GLANCE_DESC; */
+  substate = SS_PROMPT_LOOK_DESC;
 
-  send_string(blurb_for_substate(SS_PROMPT_GLANCE_DESC));
+  send_string(blurb_for_substate(substate));
 
   return RET_NORMAL;
 }
 
+#if 0
 static int prompt_glance_desc_input(string input) {
   object edit_state, phr;
 
@@ -771,6 +778,7 @@ static int prompt_glance_desc_input(string input) {
 
   return RET_NO_PROMPT;
 }
+#endif
 
 static void prompt_look_desc_data(mixed data) {
   object edit_state, phr;

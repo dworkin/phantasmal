@@ -861,7 +861,7 @@ string to_unq_flags(void) {
     ret += "  ~location{" + obj::get_location()->get_number() + "}\n";
   }
   ret += "  ~bdesc{" + bdesc->to_unq_text() + "}\n";
-  ret += "  ~gdesc{" + gdesc->to_unq_text() + "}\n";
+  /* ret += "  ~gdesc{" + gdesc->to_unq_text() + "}\n"; */
   ret += "  ~ldesc{" + ldesc->to_unq_text() + "}\n";
   if(edesc) {
     ret += "  ~edesc{" + edesc->to_unq_text() + "}\n";
@@ -872,7 +872,6 @@ string to_unq_flags(void) {
   if(arch && sizeof(arch)) {
     ret += "  ~parent{" + serialize_list(arch) + "}\n";
   }
-  ret += "  ~article{" + desc_article + "}\n";
 
   /* The double-braces are intentional -- this uses the efficient
      method of specifying nouns and adjectives rather than the human-
@@ -996,13 +995,13 @@ void from_dtd_tag(string tag, mixed value) {
   } else if(tag == "bdesc")
     set_brief(value);
   else if(tag == "gdesc")
-    set_glance(value);
+    /* set_glance(value) */;
   else if(tag == "ldesc")
     set_look(value);
   else if(tag == "edesc")
     set_examine(value);
   else if(tag == "article")
-    desc_article = value;
+    /* desc_article = value */;
   else if(tag == "flags")
     objflags = value;
   else if(tag == "parent")

@@ -14,7 +14,6 @@ static void create(varargs int clone) {
   unq::create(clone);
   if(clone) {
     bdesc = PHR("exit");
-    gdesc = PHR("exit");
     ldesc = PHR("You see an exit here.");
     edesc = nil;
   }

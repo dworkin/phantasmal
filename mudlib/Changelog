@@ -1,4 +1,6 @@
 Release 0.016:
+	* Changed object articles and glance descriptions to 'transitional',
+	  i.e. kiss the current form of them goodbye...
 	* Updated for compatibility with DGD 1.2.68, which breaks back-compat
 	* Removed old %get_config command
 	* Made objects able to specifically remove nouns/adjs for

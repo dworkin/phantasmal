@@ -137,9 +137,6 @@ static string to_unq_flags(void) {
   if(bdesc) {
     ret += "    ~rbdesc{" + bdesc->to_unq_text() + "}\n";
   }
-  if(gdesc) {
-    ret += "    ~rgdesc{" + gdesc->to_unq_text() + "}\n";
-  }
   if(ldesc) {
     ret += "    ~rldesc{" + ldesc->to_unq_text() + "}\n";
   }
@@ -199,7 +196,7 @@ static void from_dtd_tag(string tag, mixed value) {
   } else if (tag=="rbdesc") {
      bdesc = value;
   } else if (tag=="rgdesc") {
-    gdesc = value;
+    /* gdesc = value */;
   } else if (tag=="rldesc") {
     ldesc = value;
   } else if (tag=="redesc") {

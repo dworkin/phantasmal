@@ -312,7 +312,7 @@ private void add_complex_exit_by_unq(int roomnum1, mixed value) {
     } else if (value[ctr][0]=="rbdesc") {
       exit1->set_brief(value[ctr][1]);
     } else if (value[ctr][0]=="rgdesc") {
-      exit1->set_glance(value[ctr][1]);
+      /* exit1->set_glance(value[ctr][1]) */ ;
     } else if (value[ctr][0]=="rldesc") {
       exit1->set_look(value[ctr][1]);
     } else if (value[ctr][0]=="redesc") {
@@ -359,7 +359,7 @@ void add_twoway_exit_between(object room1, object room2, int direction,
   exit1->set_exit_type(ET_TWOWAY);
   exit1->set_open(TRUE);
   exit1->set_container(TRUE);
-  exit1->set_glance(dir);
+  /* exit1->set_glance(dir); */
   exit1->set_look(dir);
   exit1->add_noun(dir);
 
@@ -371,7 +371,7 @@ void add_twoway_exit_between(object room1, object room2, int direction,
   exit2->set_open(TRUE);
   exit2->set_container(TRUE);
 
-  exit2->set_glance(opp_dir);
+  /* exit2->set_glance(opp_dir); */
   exit2->set_look(opp_dir);
   exit2->add_noun(opp_dir);
 
@@ -419,7 +419,7 @@ void add_oneway_exit_between(object room1, object room2, int direction,
   exit1->set_exit_type(ET_ONEWAY);
   exit1->set_open(TRUE);
   exit1->set_container(TRUE);
-  exit1->set_glance(dir);
+  /* exit1->set_glance(dir); */
   exit1->set_look(dir);
   exit1->add_noun(dir);
 

@@ -24,9 +24,6 @@ private object location;  /* Same as 'environment' in many MUDLibs */
 /* Descriptions, available to the player when examining the object */
 object bdesc;  /* "Brief" description, such as "a sword" or
 		  "John Kricfalusi" or "some bacon" */
-object gdesc;  /* "Glance" description, a short phrase such as
-		  "John Kricfalusi, the guy behind Ren and Stimpy",
-		  "a red, flashing toy gun", or "about a pound of bacon" */
 object ldesc;  /* A longer standard "look" description */
 object edesc;  /* An "examine" description, meant to convey details only
 		  available when searched for.  Defaults to ldesc. */
@@ -44,9 +41,6 @@ private string** adjectives;  /* An array (by locale) of arrays of
    each child object type, but these are specifically excepted. */
 string **removed_nouns;
 string **removed_adjectives;
-
-int     desc_article; /* This is the article type which may be optionally
-			 prepended to brief and glance descriptions */
 
 /* Tracking number for OBJNUMD */
 static int    tr_num;
@@ -134,47 +128,6 @@ object get_location(void) {
   return location;
 }
 
-/* This private routine takes a locale and a phrase struct and tries
-   to deduce the appropriate article to use for it. */
-private string choose_article(int locale, object desc) {
-  if(locale == LANG_espanolUS) {
-    return "el";
-  } else if(locale == LANG_englishUS) {
-    switch(desc_article) {
-    case ART_DEFINITE:
-      return "the";
-    case ART_PROPER:
-      return "";
-    case ART_INDEFINITE: {
-      if(STRINGD->should_use_an(desc->get_content_by_lang(LANG_englishUS))) {
-	return "an";
-      }
-      return "a";
-    }
-    default:
-      return "some";
-    }
-  }
-
-  return "---";
-}
-
-string get_brief_article(int locale) {
-  return choose_article(locale, bdesc);
-}
-
-string get_glance_article(int locale) {
-  return choose_article(locale, gdesc);
-}
-
-int get_article_type(void) {
-  return desc_article;
-}
-
-void set_article_type(int new_type) {
-  desc_article = new_type;
-}
-
 object get_mobile(void) {
   return mobile;
 }
@@ -190,17 +143,6 @@ object get_brief(void) {
 
 void set_brief(object brief) {
   bdesc = brief;
-}
-
-object get_glance(void) {
-  if(!gdesc && sizeof(archetypes))
-    return archetypes[0]->get_glance();
-
-  return gdesc;
-}
-
-void set_glance(object glance) {
-  gdesc = glance;
 }
 
 object get_look(void) {

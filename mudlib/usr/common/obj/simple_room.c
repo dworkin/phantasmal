@@ -13,7 +13,6 @@ static void create(varargs int clone) {
   unq::create(clone);
   if(clone) {
     bdesc = PHR("a room");
-    gdesc = PHR("a room");
     ldesc = PHR("You see a room here.");
     edesc = nil;
 

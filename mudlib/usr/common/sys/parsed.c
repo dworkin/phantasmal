@@ -267,3 +267,17 @@ mixed *parse_cmd(string cmd){
     return nil;
   }
 }
+
+/* Commands should be passed an array of possible parses, just like
+   parse_cmd returns. */
+mixed *bind_commands(mixed *commands) {
+  int ctr, iclause;
+
+  /* First, iterate through all possible parses */
+  for(ctr = 0; ctr < sizeof(commands); ctr++) {
+
+    /* Then, for each one, iterate through the independent clauses */
+
+  }
+
+}
