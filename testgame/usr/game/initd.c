@@ -26,6 +26,8 @@ static void create(void) {
   /* Register a help directory for the HelpD to use */
   HELPD->new_help_directory("/usr/game/help");
 
+  load_sould();
+
   /* Set up heart_beat functions */
   if(!find_object(HEART_BEAT))
     compile_object(HEART_BEAT);
