@@ -13,14 +13,18 @@ inherit rsrc   API_RSRC;
 #define SAVE_CHUNK   10
 
 private string pending_callback;
+private int __sys_suspended;
 
 /* Prototypes */
 private void suspend_system();
 private void release_system();
 static void __co_write_rooms(object user, int* objects, int ctr,
-		      string roomfile, string portfile);
+			     string roomfile, string portfile,
+			     string zonefile);
 static void __co_write_portables(object user, int* objects, int ctr,
-			  string portfile);
+				 string portfile, string zonefile);
+static void __co_write_zones(object user, int* objects, int ctr,
+			     string zonefile);
 static void __reboot_callback(void);
 static void __shutdown_callback(void);
 
@@ -147,9 +151,10 @@ static void create(varargs int clone)
 }
 
 void save_mud_data(object user, string room_filename, string port_filename,
-		   string callback) {
+		   string zone_filename, string callback) {
   int*   objects;
   int    cohandle;
+  mixed  tmp;
 
   if(!SYSTEM()) {
     error("Only privileged code can call save_mud_data!");
@@ -161,6 +166,12 @@ void save_mud_data(object user, string room_filename, string port_filename,
   }
   pending_callback = callback;
 
+  if(__sys_suspended) {
+    LOGD->write_syslog("System was still suspended! (unsuspending)",
+		       LOG_ERROR);
+    release_system();
+  }
+
   LOGD->write_syslog("Writing World Data to files...", LOG_NORMAL);
 
   remove_file(room_filename + ".old");
@@ -170,6 +181,10 @@ void save_mud_data(object user, string room_filename, string port_filename,
   remove_file(port_filename + ".old");
   rename_file(port_filename, port_filename + ".old");
   remove_file(port_filename);
+
+  remove_file(zone_filename + ".old");
+  rename_file(zone_filename, zone_filename + ".old");
+  remove_file(zone_filename);
 
   if(sizeof(get_dir(room_filename)[0])) {
     LOGD->write_syslog("Can't remove old roomfile -- trying to append!",
@@ -181,11 +196,16 @@ void save_mud_data(object user, string room_filename, string port_filename,
 		       LOG_FATAL);
   }
 
+  if(sizeof(get_dir(zone_filename)[0])) {
+    LOGD->write_syslog("Can't remove old zonefile -- trying to append!",
+		       LOG_FATAL);
+  }
+
   LOGD->write_syslog("Writing rooms to file", LOG_VERBOSE);
   objects = MAPD->rooms_in_zone(0) - ({ 0 });
 
   cohandle = call_out("__co_write_rooms", 0, user, objects, 0,
-		      room_filename, port_filename);
+		      room_filename, port_filename, zone_filename);
   if(cohandle < 1) {
     error("Can't schedule call_out to save objects!");
   } else {
@@ -216,7 +236,8 @@ void prepare_shutdown(void)
     LOGD->write_syslog("Shutting down MUD...", LOG_NORMAL);
   }
 
-  save_mud_data(this_user(), ROOM_FILE, PORT_FILE, "__shutdown_callback");
+  save_mud_data(this_user(), ROOM_FILE, PORT_FILE, ZONE_FILE,
+		"__shutdown_callback");
 }
 
 void reboot(void)
@@ -233,7 +254,7 @@ void reboot(void)
 
 /********* Helper and callout functions ***********************/
 
-/* suspend_system and release_system copied from
+/* suspend_system and release_system based on
    /usr/System/sys/objectd.c */
 
 /*
@@ -245,6 +266,10 @@ void reboot(void)
   new incoming network activity.
 */
 private void suspend_system() {
+  if(__sys_suspended) {
+    LOGD->write_syslog("System already suspended...", LOG_ERROR);
+  }
+  __sys_suspended = 1;
   RSRCD->suspend_callouts();
   TELNETD->suspend_input(0);  /* 0 means "not shutdown" */
 }
@@ -253,6 +278,11 @@ private void suspend_system() {
   Releases everything that suspend_system suspends.
 */
 private void release_system() {
+  if(!__sys_suspended) {
+    LOGD->write_syslog("System not suspended, won't unsuspend.", LOG_ERROR);
+    return;
+  }
+  __sys_suspended = 0;
   RSRCD->release_callouts();
   TELNETD->release_input();
   pending_callback = nil;
@@ -260,92 +290,144 @@ private void release_system() {
 
 
 static void __co_write_rooms(object user, int* objects, int ctr,
-			     string roomfile, string portfile) {
+			     string roomfile, string portfile,
+			     string zonefile) {
   string unq_str;
   object obj;
   int    chunk_ctr;
 
-  for(chunk_ctr = 0; ctr < sizeof(objects) && chunk_ctr < SAVE_CHUNK;
-      ctr++, chunk_ctr++) {
-    obj = MAPD->get_room_by_num(objects[ctr]);
+  catch {
+    for(chunk_ctr = 0; ctr < sizeof(objects) && chunk_ctr < SAVE_CHUNK;
+	ctr++, chunk_ctr++) {
+      obj = MAPD->get_room_by_num(objects[ctr]);
 
-    unq_str = obj->to_unq_text();
+      unq_str = obj->to_unq_text();
 
-    if(!write_file(roomfile, unq_str)) {
-      DRIVER->message("Couldn't write rooms to file!  Fix or kill driver!");
-      error("Couldn't write rooms to file " + roomfile + "!");
+      if(!write_file(roomfile, unq_str)) {
+	DRIVER->message("Couldn't write rooms to file!  Fix or kill driver!");
+	error("Couldn't write rooms to file " + roomfile + "!");
+      }
     }
-  }
 
-  if(ctr < sizeof(objects)) {
-    /* Still saving rooms... */
-    if(call_out("__co_write_rooms", 0, user, objects, ctr, roomfile,
-		portfile) < 1) {
+    if(ctr < sizeof(objects)) {
+      /* Still saving rooms... */
+      if(call_out("__co_write_rooms", 0, user, objects, ctr, roomfile,
+		  portfile, zonefile) < 1) {
+	release_system();
+	error("Can't schedule call_out to continue writing rooms!");
+      }
+      return;
+    }
+
+    /* Done with rooms, start on portables */
+    LOGD->write_syslog("Writing portables to file", LOG_VERBOSE);
+
+    /* Assign a list of all portables to "objects" */
+    {
+      int* tmp, *tmp2;
+
+      objects = ({ });
+      tmp = PORTABLED->get_portable_segments();
+      for(ctr = 0; ctr < sizeof(tmp); ctr++) {
+	tmp2 = PORTABLED->portables_in_segment(tmp[ctr]);
+	if(tmp2)
+	  objects += tmp2;
+      }
+    }
+
+    if(call_out("__co_write_portables", 0, user, objects, 0, portfile,
+		zonefile) < 1) {
       release_system();
-      error("Can't schedule call_out to continue writing rooms!");
+      error("Can't schedule call_out to start writing portables!");
     }
-    return;
-  }
-
-  /* Done with rooms, start on portables */
-  LOGD->write_syslog("Writing portables to file", LOG_VERBOSE);
-
-  /* Assign a list of all portables to "objects" */
-  {
-    int* tmp, *tmp2;
-
-    objects = ({ });
-    tmp = PORTABLED->get_portable_segments();
-    for(ctr = 0; ctr < sizeof(tmp); ctr++) {
-      tmp2 = PORTABLED->portables_in_segment(tmp[ctr]);
-      if(tmp2)
-	objects += tmp2;
-    }
-  }
-
-  if(call_out("__co_write_portables", 0, user, objects, 0, portfile) < 1) {
+  } : {
     release_system();
-    error("Can't schedule call_out to start writing portables!");
+    user->message("Error writing rooms!\n");
+    error("Error writing rooms!");
   }
 }
 
+
 static void __co_write_portables(object user, int* objects, int ctr,
-				 string portfile) {
+				 string portfile, string zonefile) {
   string unq_str;
   object obj;
   int    chunk_ctr;
 
-  for(chunk_ctr = 0; ctr < sizeof(objects) && chunk_ctr < SAVE_CHUNK;
-      ctr++, chunk_ctr++) {
-    obj = PORTABLED->get_portable_by_num(objects[ctr]);
+  catch {
+    for(chunk_ctr = 0; ctr < sizeof(objects) && chunk_ctr < SAVE_CHUNK;
+	ctr++, chunk_ctr++) {
+      obj = PORTABLED->get_portable_by_num(objects[ctr]);
 
-    unq_str = obj->to_unq_text();
+      unq_str = obj->to_unq_text();
 
-    if(!write_file(portfile, unq_str)) {
-      DRIVER
-	->message("Couldn't write portables to file!  Fix or kill driver!");
-      error("Couldn't write portables to file " + portfile + "!");
+      if(!write_file(portfile, unq_str)) {
+	DRIVER->message("Couldn't write portables to file!" +
+			"  Fix or kill driver!");
+	error("Couldn't write portables to file " + portfile + "!");
+      }
     }
-  }
 
-  if(ctr < sizeof(objects)) {
-    /* Still saving rooms... */
-    if(call_out("__co_write_portables", 0, user, objects, ctr, portfile) < 1) {
+    if(ctr < sizeof(objects)) {
+      /* Still saving portables... */
+      if(call_out("__co_write_portables", 0, user, objects, ctr,
+		  portfile, zonefile) < 1) {
+	release_system();
+	error("Can't schedule call_out to continue writing portables!");
+      }
+      return;
+    }
+
+    /* Done with portables, start on zones */
+    LOGD->write_syslog("Writing zones to file", LOG_VERBOSE);
+
+    if(call_out("__co_write_zones", 0, user, objects, 0, zonefile) < 1) {
       release_system();
-      error("Can't schedule call_out to continue writing portables!");
+      error("Can't schedule call_out to start writing portables!");
     }
-    return;
+  } : {
+    release_system();
+    user->message("Error writing portables!\n");
+    error("Error writing portables!");
+  }
+}
+
+
+static void __co_write_zones(object user, int* objects, int ctr,
+			     string zonefile) {
+  string unq_str;
+
+  catch {
+    unq_str = ZONED->to_unq_text();
+    if(!unq_str) {
+      LOGD->write_syslog(ZONED->get_parse_error_stack());
+      release_system();
+      error("Can't serialize ZONED to UNQ!");
+    }
+    write_file(zonefile, unq_str);
+  } : {
+    release_system();
+    user->message("Error writing zones!\n");
+    error("Error writing zones!");
   }
 
-  if(pending_callback) {
-    call_other(this_object(), pending_callback);
-    pending_callback = nil;
+  catch {
+    if(pending_callback) {
+      call_other(this_object(), pending_callback);
+      pending_callback = nil;
+    }
+  } : {
+    release_system();
+    user->message("Error calling callback!\n");
+    error("Error calling callback!");
   }
+
   release_system();
   LOGD->write_syslog("Finished writing saved data...", LOG_NORMAL);
   if(user)
     user->message("Finished writing data.\n");
 }
+
 
 static void __shutdown_callback(void) {
   ::shutdown();
