@@ -273,6 +273,13 @@ void new_help_directory(string path) {
 }
 
 
+void clear_registered_help_dirs(void) {
+  if(SYSTEM() || COMMON() || GAME()) {
+    path_stack = ({ });
+  }
+}
+
+
 /* Note: The mapping (tmp) handles uniqueness of description by
    hashing the descriptions (Phrase LWOs) and taking the map_values.
    The if/for combo actually checks for a match on keywords.  An entry
@@ -485,9 +492,6 @@ void load_unq_help(string path, mixed* data) {
 static void load_helpfiles(void) {
   int     ctr;
   string* files_this_time;
-
-  if(!GAME() && !COMMON() && !SYSTEM())
-    return;
 
   files_this_time = files_to_load[..(FILES_PER_ITER-1)];
   files_to_load = files_to_load[FILES_PER_ITER..];

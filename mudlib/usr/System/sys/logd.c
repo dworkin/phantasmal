@@ -183,6 +183,9 @@ private void read_channels(mixed* unq) {
 }
 
 int channel_sub(string channel) {
+  if(!SYSTEM())
+    return -1;
+
   if(!channels[channel])
     return -1;
   return channels[channel];
