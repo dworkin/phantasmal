@@ -1,0 +1,91 @@
+<titledef text="Sending Output to the User">
+
+<h2> 3.5 Sending Output to the User </h2>
+
+
+<p>
+  In your code statements, you can also use a variable called
+  <var>user</var>.  That variable represents the current user object,
+  which is the network connection that you have to the DGD server.
+  There are certain functions you can call on it to do various things.
+</p>
+
+<p>
+  First, try typing <kbd>code user-&gt;query_conn()</kbd>.  You should
+  see a result like <samp>$25 = &lt;/kernel/obj/telnet#20&gt;</samp>.
+  This means that history variable $25 holds a <dfn>clone</dfn> of the
+  <var>/kernel/obj/telnet</var> object.  That clone is the object that
+  DGD considers the <dfn>connection object</dfn>.  If you type
+  <kbd>code query_ip_name(user-&gt;query_conn())</kbd>, you should see
+  either <samp>$26 = "localhost"</samp> or a similar result with your
+  computer's hostname.  If you type <kbd>code
+  query_ip_number(user-&gt;query_conn())</kbd>, you should see a
+  similar result with &quot;127.0.0.1&quot; or your computer's IP
+  address.  If you don't know what a hostname or IP address is, you
+  should probably learn that before running your own MUD...  Both are
+  used by internet-connected machines to locate other
+  internet-connected machines.
+</p>
+
+<p>
+  Another interesting thing you can do with the user object is to send
+  output to it.  For instance try typing
+  <kbd>user-&gt;message(&quot;Bob!\n&quot;);</kbd>.  You should see
+  the word &quot;Bob!&quot; on a line by itself, and the history
+  variable will have a value of <var>nil</var>.  If you remember,
+  <var>nil</var> was the value that a string has before it gets
+  initialized.  It's also the value that a function returns if you
+  don't specifically return anything at all.
+</p>
+
+<p>
+  The backslash and n after &quot;Bob!&quot;, above, are a
+  <dfn>character escape</dfn>.  A character escape is composed of an
+  <dfn>escape character</dfn>, which is the backslash, followed by
+  another character, in this case an 'n' for the <dfn>newline
+  character</dfn>.  There are certain other character escapes that
+  have meaning, such as \b for backspace, \r for a carriage return and
+  \t for a tab.  Since the backslash and the double-quote have special
+  meaning in strings, there are special character escapes to write
+  them as well &mdash; \\ and \&quot;, respectively.  Note that with
+  some MUD libraries you'll need to write an end-of-line as \n\r or
+  \r\n.  So if your telnet is doing odd things at line endings, try
+  that.  You may also want to see if there's an option in your telnet
+  client for treating line endings differently.  Many telnet clients
+  (including PuTTY on Win32) support changing the behavior with an
+  option.
+</p>
+
+<p>
+  To see more of how the <dfn>newline character</dfn> works, try
+  adding more <dfn>\n</dfn> characters.  Type <kbd>code
+  user-&gt;message(&quot;Line...\n\n\n\n&quot;)</kbd>.  If you leave
+  the semicolon off like that, you won't get <var>nil</var> returned,
+  but rather the number 1.  That's because the user-&gt;message
+  function returns an integer, which is either 1 or 0 for whether the
+  entire message could be sent.
+</p>
+
+<p>
+  When you printed a message with more than one \n, you saw more than
+  one line of space before the returned value.  That's because the
+  user-&gt;message function writes the output directly to your
+  terminal, and it does it immediately.  So you could use it to print
+  fancier output if you wanted to.  Anything you print won't be saved
+  to a history variable, so make sure you're okay with it only being
+  on the screen.  There's way for DGD to get it back and play with it
+  more.
+</p>
+
+
+
+<table style="width: 100%; border: 1px">
+  <tr>
+
+    <td><a href="Tutorial_StringHandling.html"> &lt;&mdash; Prev<br /> Simple String Manipulation </a></td>
+
+    <td align="center"><a href="Tutorial.html"> Up<br /> A Quick LPC Tutorial </a></td>
+
+    <td align="right"><a href="Tutorial_CodeInFiles.html"> Next &mdash;&gt; <br />Making and Using LPC Files </a></td>
+  </tr>
+</table>

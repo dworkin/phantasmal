@@ -1,0 +1,113 @@
+<titledef text="Simple String Manipulation">
+
+<h2> 3.4 Simple String Manipulation </h2>
+
+
+<p>
+  Some time back, we called the status() function, and extracted a
+  result which wasn't a number at all.  It was a <dfn>string</dfn>,
+  which is a set of character values, one after the other.  Of course,
+  it doesn't usually look that way.  It usually looks like a word or
+  phrase or paragraph.
+</p>
+
+<p>
+  In DGD, just like in C, strings use what's called ASCII code.
+  Computers represent everything with numbers internally.  So every
+  printable character (and many special characters with no printable
+  representation) must be assigned a number.  ASCII is one way to
+  assign those numbers.  A DGD string is just a sequence of numbers,
+  each representing a letter, number or other printable character.
+</p>
+
+<p>
+  A DGD string can also hold the empty string, which is written as
+  &quot;&quot;.  That's a sequence of <em>zero</em> characters, and it
+  just means &quot;no string here&quot;.  The string can also hold the
+  special value <dfn>nil</dfn>.  Every string holds <var>nil</var>
+  when you first declare it.  So do certain other data types we'll
+  talk about later.  <var>Nil</var> isn't a valid string, it's just a
+  placeholder meaning that the string isn't usable yet &mdash; you
+  have to assign a value to it first.
+</p>
+
+<p>
+  So go ahead and type <kbd>code &quot;Hello world!&quot;</kbd>.  You
+  should see a result something like <samp>$15 = &quot;Hello
+  world!&quot;</samp>.  The quotation marks around it mean that it's a
+  string.  In LPC, a string is always double-quoted.
+</p>
+
+<p>
+  Just as you can use operations like + and * on numbers, you can also
+  use certain operators on strings.  For instance, the <dfn>+</dfn>
+  operator will concatenate two strings into a single longer one.  Try
+  typing <kbd>code &quot;Hello&quot; + &quot;World!&quot;</kbd>.  Note
+  that you don't automatically get a space in between, so you should
+  have seen a result like <samp>$18 = &quot;HelloWorld!&quot;</samp>.
+</p>
+
+<p>
+  Remember that the string is made of a sequence of numbers which
+  represent characters.  In LPC you can extract one of these numbers
+  with the square-brace operator.  For instance, type <kbd>code
+  &quot;A&quot;[0]</kbd>.  You should see a result like <samp>$20 =
+  65</samp>.  That's because 65 is the ASCII encoding for an uppercase
+  A.  Try using strings other than &quot;A&quot; and you can see more
+  ASCII encodings.  You'll notice that all the uppercase letters are
+  ordered alphabetically within themselves so B is 66, C is 67 and so
+  on.  The lowercase letters do the same thing.
+</p>
+
+<p>
+  The zero in braces, above, specifies what offset in the string to
+  examine.  For instance, if you type <kbd>code
+  &quot;FANDANGO&quot;[4]</kbd>, you'll get 65 also.  That's because
+  the number is square brackets is what character of the string to
+  examine, and character four corresponds to the fifth character,
+  which is an uppercase A in the word &quot;FANDANGO&quot;.  The
+  string's characters are numbered in order, starting with zero.
+</p>
+
+<p>
+  You can also extract more than one character from a string.  But
+  that can't just be an ASCII number.  So if you extract more than one
+  character from a string, LPC gives you another string.  Try typing
+  <kbd>code &quot;Big Bertha&quot;[0..2]</kbd>.  You should get the
+  result &quot;Big&quot;.  That's characters number zero through two
+  &mdash; the first through third characters.
+</p>
+
+<p>
+  You'll find that if you substitute <code>[..2]</code> for
+  <code>[0..2]</code>, it works exactly the same way.  Leaving off the
+  first number means &quot;from the beginning of the string&quot;.
+  Similarly, using <code>[3..]</code> would mean &quot;from the fourth
+  character to the end of the string&quot;.  Perl and some LPC
+  dialects let you specify negative numbers to measure from the end of
+  the string, but DGD does not.  So you should only use positive
+  numbers for your string offsets.
+</p>
+
+<p>
+  You can also find the length of a string in characters.  For
+  instance, type <kbd>code strlen(&quot;Bob's Aunt Polly&quot;)</kbd>.
+  You should get a result like <samp>$24 = 16</samp>.  That's because
+  the string contains sixteen characters &mdash; that includes the
+  apostrophe and both spaces.  Character counting with strlen()
+  includes punctuation and other special characters as well as letters
+  and numbers.
+</p>
+
+
+
+<table style="width: 100%; border: 1px">
+  <tr>
+
+    <td><a href="Tutorial_Loops.html"> &lt;&mdash; Prev<br /> Looping and Iteration </a></td>
+
+    <td align="center"><a href="Tutorial.html"> Up<br /> A Quick LPC Tutorial </a></td>
+
+    <td align="right"><a href="Tutorial_UserOutput.html"> Next &mdash;&gt; <br />Sending Output to the User </a></td>
+  </tr>
+</table>
