@@ -159,15 +159,3 @@ void load_from_file(string filename) {
 
   from_dtd_unq(dtd_unq);
 }
-
-void write_to_file(string filename) {
-  string str;
-  string unq_str;
-
-  unq_str = to_unq_text();
-  if(!unq_str)
-    error("To_unq_text() returned nil!");
-  if(!write_file(filename, unq_str)) {
-    error("Error writing file!");
-  }
-}
