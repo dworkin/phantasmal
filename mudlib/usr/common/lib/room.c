@@ -70,7 +70,7 @@ void set_container(int cont) {
   if(cont) {
     objflags |= OF_CONTAINER;
   } else {
-    objflags ^= ~OF_CONTAINER;
+    objflags &= ~OF_CONTAINER;
   }
 }
 
@@ -78,7 +78,7 @@ void set_open(int open) {
   if(open) {
     objflags |= OF_OPEN;
   } else {
-    objflags ^= ~OF_OPEN;
+    objflags &= ~OF_OPEN;
   }
 }
 
@@ -86,7 +86,7 @@ void set_no_desc(int nodesc) {
   if(nodesc) {
     objflags |= OF_NO_DESC;
   } else {
-    objflags ^= ~OF_NO_DESC;
+    objflags &= ~OF_NO_DESC;
   }
 }
 
