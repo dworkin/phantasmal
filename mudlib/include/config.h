@@ -102,7 +102,6 @@
 #define TYPO_DATA           "/usr/game/text/typo_reports.txt"
 #define SYSTEM_PHRASES      "/usr/System/obj/system.phr"
 #define EXITD_PHRASES       "/usr/common/sys/exitd.phr"
-#define NL_PARSE_FILE       "/usr/common/sys/nl_parser.dpd"
 
 
 /* Random inherited stuff */
