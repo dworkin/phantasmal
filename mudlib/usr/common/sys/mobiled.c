@@ -3,11 +3,22 @@
 #include <kernel/kernel.h>
 #include <log.h>
 
-private int* mobile_segments;
+/* Segments containing mobiles */
+private int*    mobile_segments;
+
+/* Whether the MOBILED has been initialized */
+private int     initialized;
+
+/* The mapping of tag names to files */
+private mapping tag_code;
+
+private object  mobile_dtd;
 
 /* Prototypes */
-void upgraded(varargs int clone);
-private int allocate_mobile_obj(int num, object obj);
+        void   upgraded(varargs int clone);
+private int    allocate_mobile_obj(int num, object obj);
+private object add_struct_for_mobile(mixed* unq);
+        void   add_dtd_unq_mobiles(mixed *unq, string filename);
 
 #define PHR(x) PHRASED->new_simple_english_phrase(x)
 
@@ -15,10 +26,8 @@ static void create(varargs int clone) {
   if(clone)
     error("Cloning mobiled is not allowed!");
 
-  /* if(!find_object(SIMPLE_EXIT))
-     compile_object(SIMPLE_EXIT); */
-
   mobile_segments = ({ });
+  tag_code = ([ ]);
 
   upgraded();
 
@@ -29,7 +38,8 @@ void upgraded(varargs int clone) {
 }
 
 void destructed(int clone) {
-
+  if(mobile_dtd)
+    destruct_object(mobile_dtd);
 }
 
 
@@ -37,7 +47,10 @@ int add_mobile_number(object mobile, int num) {
   int newnum;
 
   if(!mobile)
-    error("No mobile in MOBILED::add_mobile_number!");
+    error("No mobile supplied to MOBILED::add_mobile_number!");
+
+  if(!initialized)
+    error("Can't add mobiles to uninitialized MOBILED!");
 
   newnum = allocate_mobile_obj(num, mobile);
   if(newnum <= 0) {
@@ -77,7 +90,8 @@ private int allocate_mobile_obj(int num, object obj) {
   }
 
   segment = OBJNUMD->allocate_new_segment();
-  LOGD->write_syslog("Allocating segment " + segment + " to MOBILED.");
+  LOGD->write_syslog("Allocating segment " + segment + " to MOBILED.",
+		     LOG_VERBOSE);
 
   mobile_segments += ({ segment });
   num = OBJNUMD->new_in_segment(segment, obj);
@@ -85,8 +99,30 @@ private int allocate_mobile_obj(int num, object obj) {
   return num;
 }
 
+/* This function needs to remove the mobile from the list of mobiles
+   in the mobile's containing room.  Since that list is not directly
+   exported or modifiable, mobiles must currently be destroyed by
+   removing their body from a room, destructing the mobile, then
+   adding the object back. */
 void remove_mobile(object mobile) {
-  destruct_object(mobile);
+  if(mobile) {
+    object body, location;
+
+    body = mobile->get_body();
+    if(body) {
+      location = body->get_location();
+      if(location) {
+	location->remove_from_container(body);
+	destruct_object(mobile);
+	location->add_to_container(body);
+      }
+    }
+
+    if(mobile)
+      destruct_object(mobile);
+  } else {
+    error("Can't usefully remove a (nil) mobile!");
+  }
 }
 
 object get_mobile_by_num(int num) {
@@ -120,6 +156,144 @@ int* all_mobiles(void) {
 }
 
 
-void init(string mobfile_dtd, string binder_dtd) {
-  /* Don't do anything yet -- save before load */
+void init(string mobfile_dtd_string, string binder_dtd_string) {
+  object binder_dtd;
+  string bind_file, tag, file;
+  int    ctr;
+  mixed  unq_data;
+
+  if(!initialized) {
+    binder_dtd = clone_object(UNQ_DTD);
+    binder_dtd->load(binder_dtd_string);
+
+    mobile_dtd = clone_object(UNQ_DTD);
+    mobile_dtd->load(mobfile_dtd_string);
+
+    bind_file = read_file(MOBILE_BIND_FILE);
+    if(!bind_file)
+      error("Cannot read binder file " + MOBILE_BIND_FILE + "!");
+
+    unq_data = UNQ_PARSER->unq_parse_with_dtd(bind_file, binder_dtd);
+    if(!unq_data)
+      error("Cannot parse binder text in MOBILED::init()!");
+
+    if (sizeof(unq_data) % 2)
+      error("Odd sized unq chunk in MOBILED::init()!");
+
+    for (ctr = 0; ctr < sizeof(unq_data); ctr += 2) {
+      if (STRINGD->stricmp(unq_data[ctr],"bind"))
+	error("Not a code/tag binding in MOBILED::init()!");
+
+      if (!STRINGD->stricmp(unq_data[ctr+1][0][0],"tag")) {
+	tag = unq_data[ctr+1][0][1];
+	file = unq_data[ctr+1][1][1];
+      } else {
+	tag = unq_data[ctr+1][1][1];
+	file = unq_data[ctr+1][0][1];
+      }
+
+      if (tag_code[tag] != nil) {
+	error("Tag " + tag + " is already bound in MOBILED::init()!");
+      }
+
+      tag_code[tag] = file;
+      if(!find_object(file))
+	compile_object(file);
+    }
+  } else
+    error("MOBILED is already initialized in MOBILED::init()!");
+
+  if(binder_dtd)
+    destruct_object(binder_dtd);
+
+  initialized = 1;
+}
+
+void add_unq_text_mobiles(string unq_text, string filename) {
+  mixed *unq_data;
+
+  if(!initialized)
+    error("Can't add mobiles to uninitialized MOBILED!");
+
+  unq_data = UNQ_PARSER->unq_parse_with_dtd(unq_text, mobile_dtd);
+  if(!unq_data) {
+    if(filename) { 
+      error("Cannot parse file '" + filename
+	    + "' in add_unq_text_mobiles!");
+   } else {
+      error("Cannot parse text in add_unq_text_mobiles!");
+    }
+  }
+
+  add_dtd_unq_mobiles(unq_data, filename);
+}
+
+void add_dtd_unq_mobiles(mixed *unq, string filename) {
+  int    iter;
+  object mobile;
+
+  if(!initialized)
+    error("Can't add rooms to uninitialized MOBILED!");
+
+  iter = 0;
+  while(iter < sizeof(unq)) {
+    mobile = add_struct_for_mobile( ({ unq[iter], unq [iter + 1] }) );
+    if(!mobile)
+      error("Loaded mobile is (nil) in add_dtd_unq_mobiles!");
+    iter += 2;
+  }
+}
+
+private object add_struct_for_mobile(mixed* unq) {
+  object mobile, body;
+  int    num;
+  mixed* ctr;
+  string type;
+
+  /* no unq passed in, so no mobile passed out */
+  if (!unq || sizeof(unq) == 0) {
+    return nil;
+  }
+
+  if(STRINGD->stricmp(unq[0], "mobile")) {
+    error("UNQ doesn't look like a mobile in add_struct_for_mobile!");
+  }
+
+  ctr = unq[1];
+  while(sizeof(ctr)) {
+    if(!STRINGD->stricmp(ctr[0][0],"type")) {
+      type = ctr[0][1];
+      break;
+    }
+    ctr = ctr[1..];
+  }
+  if(!type) {
+    /* There doesn't seem to be a "type" field in the UNQ passed in */
+    error("Can't find type in UNQ in add_struct_for_mobile!");
+  }
+
+  if(!tag_code[type]) {
+    error("Can't find binding for mobile type '" + type + "'.");
+  }
+
+  mobile = clone_object(tag_code[type]);
+  mobile->from_dtd_unq(unq[1]);
+
+  num = mobile->get_number();
+  num = add_mobile_number(mobile, num);
+  if(num < 0) {
+    error("Can't assign mobile number in add_struct_for_mobile!");
+  }
+  mobile->set_number(num);
+
+  body = mobile->get_body();
+  if(body) {
+    body->set_mobile(mobile);
+  } else {
+    LOGD->write_syslog("Body is (nil), mob #" + num, LOG_WARN);
+  }
+
+  LOGD->write_syslog("Added struct for mobile!", LOG_VERBOSE);
+
+  return mobile;
 }

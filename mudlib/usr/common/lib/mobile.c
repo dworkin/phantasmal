@@ -4,7 +4,7 @@
 #include <phrase.h>
 
 /* Mobile: structure for a sentient, not-necessarily-player critter's
-   mind.  The mobile will also be attached to a body under any normal
+   mind.  The mobile will be attached to a body under any normal
    circumstances.
 */
 
@@ -71,6 +71,8 @@ void set_number(int new_num) {
 }
 
 void notify_moved(object obj) {
+  /* Since only privileged code can reassign a body, this is fine
+     for anybody to call -- it's just a cache update. */
   location = body->get_location();
 }
 
@@ -103,12 +105,13 @@ nomask void say(string msg) {
  */
 
 nomask void emote(string str) {
-  location->enum_room_mobiles("hook_emote", ({ this_object() }), ({ body, str  }));
+  location->enum_room_mobiles("hook_emote", ({ this_object() }),
+			      ({ body, str  }));
 
   if (get_user()) {
     get_user()->message("You " + str + ".\r\n");
   }
-} 
+}
 
 /*
  * void whisper()
@@ -488,12 +491,51 @@ string to_unq_text(void) {
     bodynum = -1;
   }
 
-  ret = "~mobile{\n  ~number{" + number + "}\n";
-  ret += "  ~body{" + bodynum + "}\n}\n\n";
+  ret  = "~mobile{\n";
+  ret += "  ~type{" + this_object()->get_type() + "}\n";
+  ret += "  ~number{" + number + "}\n";
+  ret += "  ~body{" + bodynum + "}\n";
+  ret += "}\n\n";
 
   return ret;
 }
 
 void from_dtd_unq(mixed* unq) {
-  error("Can't parse yet!");
+  error("Override from_dtd_unq to call it!");
+}
+
+/* We don't override from_dtd_unq, but we *do* provide parsing functionality
+   for the really basic stuff like number and body.  Child objects may
+   choose to use this.  It extracts the fields it uses, leaving the
+   rest.
+*/
+mixed* mobile_from_dtd_unq(mixed* unq) {
+  mixed *ret, *ctr;
+  int    bodynum;
+
+  ret = ({ });
+  ctr = unq;
+
+  while(sizeof(ctr) > 0) {
+    if(!STRINGD->stricmp(ctr[0][0], "body")) {
+      bodynum = ctr[0][1];
+      body = MAPD->get_room_by_num(bodynum);
+      if(!body)
+	error("Can't find body for mobile, object #" + bodynum + "!\n");
+      location = body->get_location();
+    } else if(!STRINGD->stricmp(ctr[0][0], "number")) {
+      number = ctr[0][1];
+    } else if(!STRINGD->stricmp(ctr[0][0], "type")) {
+      /* Do nothing, already taken care of */
+    } else {
+      ret += ({ ctr[0] });
+    }
+    ctr = ctr[1..];
+  }
+
+  return ret;
+}
+
+string get_type(void) {
+  error("Called get_type on /usr/common/lib/mobile without overriding!");
 }

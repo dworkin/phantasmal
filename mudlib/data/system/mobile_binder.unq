@@ -2,3 +2,8 @@
   ~tag{wander}
   ~code{/usr/common/obj/wander_mobile}
 }
+
+~bind{
+  ~tag{user}
+  ~code{/usr/common/obj/user_mobile}
+}
