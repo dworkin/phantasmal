@@ -746,6 +746,42 @@ private string exits_to_unq(void) {
   return ret;
 }
 
+
+/* This function serializes tags from TagD so that they can be written
+   into the object file. */
+private string all_tags_to_unq(void) {
+  mixed *all_tags;
+  string ret;
+  int    ctr;
+
+  all_tags = TAGD->object_all_tags(this_object());
+  ret = "";
+
+  for(ctr = 0; ctr < sizeof(all_tags); ctr += 2) {
+    ret += "~" + all_tags[ctr] + "{";
+    switch(TAGD->object_tag_type(all_tags[ctr])) {
+    case T_INT:
+    case T_FLOAT:
+      ret += all_tags[ctr + 1];
+      break;
+
+    case T_STRING:
+      ret += STRINGD->unq_escape(all_tags[ctr + 1]);
+      break;
+
+    case T_OBJECT:
+    case T_ARRAY:
+    case T_MAPPING:
+    default:
+      error("Can't output that tag type yet!");
+    }
+    ret += "}\n        ";
+  }
+
+  return ret;
+}
+
+
 /*
  * string to_unq_flags(void)
  *
@@ -820,13 +856,61 @@ string to_unq_flags(void) {
     ret += "}\n";
   }
 
+  ret += "  ~tags{" + all_tags_to_unq() + "}\n";
+
   return ret;
 }
 
+private void parse_all_tags(mixed* value) {
+  int    ctr, type, do_sscanf;
+  string format_code;
+  mixed  new_val;
+
+  value = UNQ_PARSER->trim_empty_tags(value);
+
+  for(ctr = 0; ctr < sizeof(value); ctr += 2) {
+    value[ctr] = STRINGD->trim_whitespace(value[ctr]);
+    type = TAGD->object_tag_type(value[ctr]);
+
+    switch(type) {
+    case -1:
+      error("No such tag as '" + STRINGD->mixed_sprint(value[ctr])
+	    + "' defined in TagD!");
+
+    case T_INT:
+      do_sscanf = 1;
+      format_code = "%d";
+      break;
+
+    case T_FLOAT:
+      do_sscanf = 1;
+      format_code = "%f";
+      break;
+
+    default:
+      error("Can't parse tags of type " + type + " yet!");
+    }
+
+    if(do_sscanf) {
+      if(typeof(value[ctr + 1]) != T_STRING)
+	error("Internal error:  Can't read tag out of non-string value!");
+
+      value[ctr + 1] = STRINGD->trim_whitespace(value[ctr + 1]);
+
+      sscanf(value[ctr + 1], format_code, new_val);
+      TAGD->set_object_tag(this_object(), value[ctr], new_val);
+    } else {
+      /* Nothing yet, if not sscanf */
+    }
+  } /* END: for(ctr = 0; ctr < sizeof(value); ctr += 2) */
+}
+
 /*
- * void from_dtd_flags(mixed *unq)
+ * void from_dtd_tag(string tag, mixed value)
  *
- * loads data from the unq parsed with a room-derived dtd.
+ * Grabs data from one field of the DTD-parsed UNQ.  This function
+ * is so that child classes can easily add new fields, but still
+ * have the parent parse the fields that are known to it.
  */
 
 void from_dtd_tag(string tag, mixed value) {
@@ -835,7 +919,10 @@ void from_dtd_tag(string tag, mixed value) {
   if(tag == "number")
     tr_num = value;
 
-  else if(tag == "detail") {
+  else if(tag == "obj_type") {
+    /* Nothing...  Already handled */
+
+  } else if(tag == "detail") {
     if(pending_location > -1) {
       LOGD->write_syslog("Detail specified despite pending location!",
 			 LOG_ERR);
@@ -922,6 +1009,10 @@ void from_dtd_tag(string tag, mixed value) {
       pending_removed_details = value;
     } else
       error("Unreasonable type for removed_details!");
+  } else if(tag == "tags") {
+    /* Fill in tags array for this object */
+    parse_all_tags(value);
+
   } else {
     error("Don't recognize tag " + tag + " in function from_dtd_tag()");
   }

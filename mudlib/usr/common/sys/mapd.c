@@ -2,6 +2,7 @@
 
 #include <phantasmal/log.h>
 #include <phantasmal/map.h>
+#include <phantasmal/lpc_names.h>
 
 #include <config.h>
 #include <type.h>
@@ -181,6 +182,25 @@ void set_segment_zone(int segment, int newzone, int oldzone) {
 }
 
 
+void add_unq_binding(string tag_name, string tag_path) {
+  if(!GAME() && !COMMON() && !SYSTEM())
+    error("Only privileged code may add a room binding!");
+
+  if(!tag_name)
+    error("(Nil) isn't a valid tag in add_unq_binding!");
+
+  if (tag_code[tag_name] != nil) {
+    error("Tag name '" + tag_name + "' is already bound in MAPD::init()!");
+  }
+
+  /* Assign file to tag, and make sure it exists and is clonable */
+  if(!find_object(tag_path))
+    compile_object(tag_path);
+
+  /* If we make it through all that without error, do the assignment. */
+  tag_code[tag_name] = tag_path;
+}
+
 void add_room_object(object room) {
   string name;
 
@@ -321,23 +341,45 @@ private int assign_room_number(int num, object room) {
 private object add_struct_for_room(mixed* unq) {
   object room;
   int    num;
+  string tag_name;
 
   /* no unq passed in, so no object passed out */
   if (sizeof(unq) == 0) {
     return nil;
   }
 
-  if (tag_code[unq[0]] == nil) {
-    error("Tag " + unq[0] + " not bound to any code!");
+  if(STRINGD->stricmp(unq[0], "object")) {
+    error("Label '" + unq[0] + "' doesn't look like the start of an object!");
   }
 
-  if (!find_object(tag_code[unq[0]])) {
-    compile_object(tag_code[unq[0]]);
+  if(!STRINGD->stricmp(unq[1][0][0], "obj_type")) {
+    if(typeof(unq[1][0][1]) != T_STRING)
+      error("UNQ obj_type data is not a string!");
+
+    tag_name = STRINGD->trim_whitespace(unq[1][0][1]);
+  } else {
+    /* Default object type */
+    tag_name = "object";
   }
 
-  room = clone_object(tag_code[unq[0]]);
+  if (tag_code[tag_name] == nil) {
+    error("Tag " + tag_name + " not bound to any code!");
+  }
+
+  if (!find_object(tag_code[tag_name])) {
+    catch {
+      compile_object(tag_code[tag_name]);
+    } : {
+      error("Could not compile object '" + tag_code[tag_name]
+	    + "' for tag '" + tag_name + "'!");
+    }
+  }
+
+  room = clone_object(tag_code[tag_name]);
   room->from_dtd_unq(unq);
 
+  /* Get the requested number from the room, or -1 for default.
+     Attempt to assign this number. */
   num = room->get_number();
   num = assign_room_number(num, room);
   if(num < 0) {

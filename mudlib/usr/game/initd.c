@@ -1,6 +1,7 @@
 #include <phantasmal/log.h>
 #include <phantasmal/lpc_names.h>
 
+#include <type.h>
 #include <gameconfig.h>
 #include <config.h>
 
@@ -8,10 +9,6 @@ static void load_sould(void);
 
 static void create(void) {
   string throwaway;
-
-  /* Set up ConfigD */
-  CONFIGD->set_start_room(0);
-  CONFIGD->set_meat_locker(1);
 
   /* Build game driver and set it */
   throwaway = catch (find_object(GAME_DRIVER) ? nil

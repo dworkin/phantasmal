@@ -1,4 +1,4 @@
-~room{
+~object{
   ~number{300}
   ~location{0}
   ~bdesc{
@@ -34,8 +34,11 @@ the middle of the room seems to be built directly into the floor somehow.}}
   ~weight_capacity{2000000}
   ~volume_capacity{27000000}
   ~length_capacity{1500}
+  ~tags{}
+
 }
-~room{
+
+~object{
   ~number{301}
   ~location{0}
   ~bdesc{
@@ -90,8 +93,11 @@ and east.}}
   ~weight_capacity{2000000}
   ~volume_capacity{27000000}
   ~length_capacity{1500}
+  ~tags{}
+
 }
-~room{
+
+~object{
   ~number{302}
   ~location{0}
   ~bdesc{
@@ -163,8 +169,11 @@ the west.}}
   ~weight_capacity{2000000}
   ~volume_capacity{27000000}
   ~length_capacity{1500}
+  ~tags{}
+
 }
-~room{
+
+~object{
   ~number{303}
   ~location{0}
   ~bdesc{
@@ -184,8 +193,11 @@ room for outdoor rooms on the Miskatonic University campus.}}
   ~weight_capacity{2000000}
   ~volume_capacity{27000000}
   ~length_capacity{1500}
+  ~tags{}
+
 }
-~room{
+
+~object{
   ~number{304}
   ~location{0}
   ~bdesc{
@@ -240,8 +252,11 @@ Tower off to the southwest.  A defunct lamp stands beside you.}}
   ~weight_capacity{2000000}
   ~volume_capacity{27000000}
   ~length_capacity{1500}
+  ~tags{}
+
 }
-~room{
+
+~object{
   ~number{305}
   ~location{0}
   ~bdesc{
@@ -296,8 +311,11 @@ academic halls beyond.  The rest of campus stretches out around you.}}
   ~weight_capacity{2000000}
   ~volume_capacity{27000000}
   ~length_capacity{1500}
+  ~tags{}
+
 }
-~room{
+
+~object{
   ~number{306}
   ~location{0}
   ~bdesc{
@@ -352,8 +370,11 @@ south.}}
   ~weight_capacity{2000000}
   ~volume_capacity{27000000}
   ~length_capacity{1500}
+  ~tags{}
+
 }
-~room{
+
+~object{
   ~number{307}
   ~location{0}
   ~bdesc{
@@ -392,8 +413,11 @@ dry and tufted.}}
   ~weight_capacity{2000000}
   ~volume_capacity{27000000}
   ~length_capacity{1500}
+  ~tags{}
+
 }
-~room{
+
+~object{
   ~number{308}
   ~location{0}
   ~bdesc{
@@ -431,8 +455,11 @@ Arkham through the trees to the north and east.}}
   ~weight_capacity{2000000}
   ~volume_capacity{27000000}
   ~length_capacity{1500}
+  ~tags{}
+
 }
-~room{
+
+~object{
   ~number{313}
   ~location{1}
   ~bdesc{
@@ -450,8 +477,11 @@ washing machine back home.}}
   ~weight{0.1}
   ~volume{0.5}
   ~length{6}
+  ~tags{}
+
 }
-~room{
+
+~object{
   ~number{314}
   ~location{1}
   ~bdesc{
@@ -467,8 +497,11 @@ washing machine back home.}}
   ~weight{6}
   ~volume{5}
   ~length{30}
+  ~tags{}
+
 }
-~room{
+
+~object{
   ~number{317}
   ~detail{9}
   ~bdesc{
@@ -485,8 +518,11 @@ guess it's some form of manufacturing artifact.}}
   ~weight{0}
   ~volume{0}
   ~length{0}
+  ~tags{}
+
 }
-~room{
+
+~object{
   ~number{318}
   ~detail{202}
   ~bdesc{
@@ -506,8 +542,11 @@ out what looks like a picture of a pineapple.  Why a pineapple?}}
   ~weight{0}
   ~volume{0}
   ~length{0}
+  ~tags{}
+
 }
-~room{
+
+~object{
   ~number{319}
   ~detail{318}
   ~bdesc{
@@ -526,8 +565,11 @@ pineapple.}}
   ~weight{0}
   ~volume{0}
   ~length{0}
+  ~tags{}
+
 }
-~room{
+
+~object{
   ~number{320}
   ~detail{303}
   ~bdesc{
@@ -546,8 +588,11 @@ even from here.}}
   ~weight{0}
   ~volume{0}
   ~length{0}
+  ~tags{}
+
 }
-~room{
+
+~object{
   ~number{400}
   ~detail{300}
   ~bdesc{
@@ -566,8 +611,11 @@ are quite dirty and worn.  The carpet looks like it was once red or orange.}}
   ~weight{0}
   ~volume{0}
   ~length{0}
+  ~tags{}
+
 }
-~room{
+
+~object{
   ~number{401}
   ~detail{300}
   ~bdesc{
@@ -587,8 +635,11 @@ scratched and generally what you'd expect in a student lounge.}}
   ~weight{0}
   ~volume{0}
   ~length{0}
+  ~tags{}
+
 }
-~room{
+
+~object{
   ~number{402}
   ~detail{300}
   ~bdesc{
@@ -607,8 +658,11 @@ sort of furniture you'd expect to find in a student lounge.}}
   ~weight{0}
   ~volume{0}
   ~length{0}
+  ~tags{}
+
 }
-~room{
+
+~object{
   ~number{403}
   ~detail{301}
   ~bdesc{
@@ -626,8 +680,11 @@ reminds you of other educational institutions.}}
   ~weight{0}
   ~volume{0}
   ~length{0}
+  ~tags{}
+
 }
-~room{
+
+~object{
   ~number{404}
   ~detail{302}
   ~bdesc{
@@ -646,8 +703,11 @@ of Mathematics and Science.}}
   ~weight{0}
   ~volume{0}
   ~length{0}
+  ~tags{}
+
 }
-~room{
+
+~object{
   ~number{405}
   ~detail{302}
   ~bdesc{
@@ -666,8 +726,11 @@ students to socialize out in the fresh air.}}
   ~weight{0}
   ~volume{0}
   ~length{0}
+  ~tags{}
+
 }
-~room{
+
+~object{
   ~number{406}
   ~detail{302}
   ~bdesc{
@@ -689,8 +752,11 @@ then a board is replaced as an old one wears out.}}
   ~weight{0}
   ~volume{0}
   ~length{0}
+  ~tags{}
+
 }
-~room{
+
+~object{
   ~number{407}
   ~detail{302}
   ~bdesc{
@@ -707,8 +773,11 @@ directions from its front hallway.}}
   ~weight{0}
   ~volume{0}
   ~length{0}
+  ~tags{}
+
 }
-~room{
+
+~object{
   ~number{408}
   ~detail{304}
   ~bdesc{
@@ -727,8 +796,11 @@ Ancient History hall.}}
   ~weight{0}
   ~volume{0}
   ~length{0}
+  ~tags{}
+
 }
-~room{
+
+~object{
   ~number{409}
   ~detail{304}
   ~bdesc{
@@ -746,8 +818,11 @@ building where idle students hang out.}}
   ~weight{0}
   ~volume{0}
   ~length{0}
+  ~tags{}
+
 }
-~room{
+
+~object{
   ~number{410}
   ~detail{304}
   ~bdesc{
@@ -766,8 +841,11 @@ East is the home of the English and Literature departments, Merritt Hall.}}
   ~weight{0}
   ~volume{0}
   ~length{0}
+  ~tags{}
+
 }
-~room{
+
+~object{
   ~number{411}
   ~detail{304}
   ~bdesc{
@@ -785,8 +863,11 @@ Tower.}}
   ~weight{0}
   ~volume{0}
   ~length{0}
+  ~tags{}
+
 }
-~room{
+
+~object{
   ~number{412}
   ~detail{305}
   ~bdesc{
@@ -804,8 +885,11 @@ The pattern makes your head hurt if you look at it too long.}}
   ~weight{0}
   ~volume{0}
   ~length{0}
+  ~tags{}
+
 }
-~room{
+
+~object{
   ~number{413}
   ~detail{305}
   ~bdesc{
@@ -823,8 +907,11 @@ be.}}
   ~weight{0}
   ~volume{0}
   ~length{0}
+  ~tags{}
+
 }
-~room{
+
+~object{
   ~number{414}
   ~detail{305}
   ~bdesc{
@@ -842,8 +929,11 @@ trees to the northwest.}}
   ~weight{0}
   ~volume{0}
   ~length{0}
+  ~tags{}
+
 }
-~room{
+
+~object{
   ~number{415}
   ~detail{306}
   ~bdesc{
@@ -865,8 +955,11 @@ the expected small bugs, dirt and weeds.}}
   ~weight{0}
   ~volume{0}
   ~length{0}
+  ~tags{}
+
 }
-~room{
+
+~object{
   ~number{416}
   ~detail{306}
   ~bdesc{
@@ -883,8 +976,11 @@ north and the side of Telman to the south.}}
   ~weight{0}
   ~volume{0}
   ~length{0}
+  ~tags{}
+
 }
-~room{
+
+~object{
   ~number{417}
   ~detail{306}
   ~bdesc{
@@ -911,8 +1007,11 @@ they're twisting in their sockets.  It's not comfortable.}}
   ~weight{0}
   ~volume{0}
   ~length{0}
+  ~tags{}
+
 }
-~room{
+
+~object{
   ~number{418}
   ~detail{306}
   ~bdesc{
@@ -932,8 +1031,11 @@ formed below the windows.}}
   ~weight{0}
   ~volume{0}
   ~length{0}
+  ~tags{}
+
 }
-~room{
+
+~object{
   ~number{419}
   ~detail{307}
   ~bdesc{
@@ -953,8 +1055,11 @@ is very unusual in any case.}}
   ~weight{0}
   ~volume{0}
   ~length{0}
+  ~tags{}
+
 }
-~room{
+
+~object{
   ~number{420}
   ~detail{307}
   ~bdesc{
@@ -971,8 +1076,11 @@ The ground underneath is quite hard.}}
   ~weight{0}
   ~volume{0}
   ~length{0}
+  ~tags{}
+
 }
-~room{
+
+~object{
   ~number{421}
   ~detail{308}
   ~bdesc{
@@ -989,8 +1097,11 @@ of campus.  It looks long and comfortable to walk through or lie in.}}
   ~weight{0}
   ~volume{0}
   ~length{0}
+  ~tags{}
+
 }
-~room{
+
+~object{
   ~number{422}
   ~detail{308}
   ~bdesc{
@@ -1008,4 +1119,7 @@ here.}}
   ~weight{0}
   ~volume{0}
   ~length{0}
+  ~tags{}
+
 }
+

@@ -1,4 +1,4 @@
-~room{
+~object{
   ~number{600}
   ~location{0}
   ~bdesc{
@@ -35,8 +35,11 @@ the east and west appear to be more of the hostel's grounds.}}
   ~weight_capacity{2000000}
   ~volume_capacity{27000000}
   ~length_capacity{1500}
+  ~tags{}
+
 }
-~room{
+
+~object{
   ~number{601}
   ~detail{600}
   ~bdesc{
@@ -57,8 +60,11 @@ building looks like it was once painted green.}}
   ~weight{0}
   ~volume{0}
   ~length{0}
+  ~tags{}
+
 }
-~room{
+
+~object{
   ~number{602}
   ~detail{601}
   ~bdesc{
@@ -78,8 +84,11 @@ of peeling paint even from here.}}
   ~weight{0}
   ~volume{0}
   ~length{0}
+  ~tags{}
+
 }
-~room{
+
+~object{
   ~number{603}
   ~location{0}
   ~bdesc{
@@ -118,4 +127,7 @@ small clear area before the woods and the swamp begin to the southeast.}}
   ~weight_capacity{2000000}
   ~volume_capacity{27000000}
   ~length_capacity{1500}
+  ~tags{}
+
 }
+

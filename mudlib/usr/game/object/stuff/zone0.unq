@@ -1,4 +1,4 @@
-~room{
+~object{
   ~number{1}
   ~location{0}
   ~bdesc{
@@ -148,8 +148,11 @@ walls are.}}
   ~weight_capacity{10000000}
   ~volume_capacity{10000000}
   ~length_capacity{10000}
+  ~tags{}
+
 }
-~room{
+
+~object{
   ~number{2}
   ~location{0}
   ~bdesc{
@@ -189,8 +192,11 @@ It looks very cozy.
   ~weight_capacity{2000000}
   ~volume_capacity{27000000}
   ~length_capacity{1500}
+  ~tags{}
+
 }
-~room{
+
+~object{
   ~number{3}
   ~location{0}
   ~bdesc{
@@ -244,8 +250,11 @@ fur here and there in different colors.}}
   ~weight_capacity{2000000}
   ~volume_capacity{27000000}
   ~length_capacity{1500}
+  ~tags{}
+
 }
-~room{
+
+~object{
   ~number{4}
   ~location{0}
   ~bdesc{
@@ -298,8 +307,11 @@ can be found in the east and west walls.}}
   ~weight_capacity{2000000}
   ~volume_capacity{27000000}
   ~length_capacity{1500}
+  ~tags{}
+
 }
-~room{
+
+~object{
   ~number{5}
   ~location{0}
   ~bdesc{
@@ -341,8 +353,11 @@ dust from the walls settled on the floor -- it's quite clean here.}}
   ~weight_capacity{2000000}
   ~volume_capacity{27000000}
   ~length_capacity{1500}
+  ~tags{}
+
 }
-~room{
+
+~object{
   ~number{6}
   ~location{0}
   ~bdesc{
@@ -366,8 +381,11 @@ Rumor has it that he's Messy-In-A-Hideous-Way.}}
   ~weight_capacity{2000000}
   ~volume_capacity{27000000}
   ~length_capacity{1500}
+  ~tags{}
+
 }
-~room{
+
+~object{
   ~number{7}
   ~location{0}
   ~bdesc{
@@ -394,8 +412,11 @@ an incomplete droid, facing the ceiling.  Its head is open.}}
   ~weight_capacity{2000000}
   ~volume_capacity{27000000}
   ~length_capacity{1500}
+  ~tags{}
+
 }
-~room{
+
+~object{
   ~number{8}
   ~location{6}
   ~bdesc{
@@ -413,8 +434,11 @@ Ghak'La must have been Messy-In-A-Hideous-Way.}}
   ~weight{0}
   ~volume{0}
   ~length{0}
+  ~tags{}
+
 }
-~room{
+
+~object{
   ~number{9}
   ~location{308}
   ~bdesc{
@@ -433,28 +457,11 @@ one place, but it's otherwise unremarkable.}}
   ~weight{0.1}
   ~volume{0.3}
   ~length{4}
+  ~tags{}
+
 }
-~room{
-  ~number{10}
-  ~location{302}
-  ~bdesc{
-    ~enUS{Admin}}
-  ~gdesc{
-    ~enUS{Admin}}
-  ~ldesc{
-    ~enUS{Admin wanders the MUD.}}
-  ~flags{3}
-  ~article{0}
-  ~nouns{{~enUS{admin}}}
-  ~adjectives{{}}
-  ~weight{80}
-  ~volume{45}
-  ~length{180}
-  ~weight_capacity{50}
-  ~volume_capacity{20}
-  ~length_capacity{50}
-}
-~room{
+
+~object{
   ~number{77}
   ~location{0}
   ~bdesc{
@@ -493,8 +500,11 @@ see opalescent light filtering in through the petals.
   ~weight_capacity{2000000}
   ~volume_capacity{27000000}
   ~length_capacity{1500}
+  ~tags{}
+
 }
-~room{
+
+~object{
   ~number{79}
   ~location{0}
   ~bdesc{
@@ -553,8 +563,11 @@ see opalescent light filtering in through the petals.
   ~weight_capacity{2000000}
   ~volume_capacity{27000000}
   ~length_capacity{1500}
+  ~tags{}
+
 }
-~room{
+
+~object{
   ~number{81}
   ~location{0}
   ~bdesc{
@@ -597,8 +610,11 @@ see opalescent light filtering in through the petals.
   ~weight_capacity{2000000}
   ~volume_capacity{27000000}
   ~length_capacity{1500}
+  ~tags{}
+
 }
-~room{
+
+~object{
   ~number{200}
   ~location{302}
   ~bdesc{
@@ -614,8 +630,11 @@ see opalescent light filtering in through the petals.
   ~weight{0.3}
   ~volume{0.5}
   ~length{7}
+  ~tags{}
+
 }
-~room{
+
+~object{
   ~number{201}
   ~location{6}
   ~bdesc{
@@ -634,8 +653,11 @@ doesn't give you any clues.}}
   ~weight{1.5}
   ~volume{2}
   ~length{15}
+  ~tags{}
+
 }
-~room{
+
+~object{
   ~number{202}
   ~location{302}
   ~bdesc{
@@ -655,8 +677,11 @@ on the side may once have advertised the box's maker.}}
   ~weight_capacity{3.5}
   ~volume_capacity{2}
   ~length_capacity{15}
+  ~tags{}
+
 }
-~room{
+
+~object{
   ~number{203}
   ~location{0}
   ~bdesc{
@@ -674,8 +699,11 @@ cutting.}}
   ~weight{0}
   ~volume{0}
   ~length{0}
+  ~tags{}
+
 }
-~room{
+
+~object{
   ~number{204}
   ~location{6}
   ~bdesc{
@@ -700,8 +728,11 @@ Wombat fumes.  About the usual, you hope.}}
   ~weight_capacity{0}
   ~volume_capacity{0}
   ~length_capacity{0}
+  ~tags{}
+
 }
-~room{
+
+~object{
   ~number{205}
   ~location{6}
   ~bdesc{
@@ -720,8 +751,11 @@ Wombat fumes.  About the usual, you hope.}}
   ~weight_capacity{0}
   ~volume_capacity{0}
   ~length_capacity{0}
+  ~tags{}
+
 }
-~room{
+
+~object{
   ~number{206}
   ~location{204}
   ~bdesc{
@@ -737,4 +771,7 @@ Wombat fumes.  About the usual, you hope.}}
   ~weight{0}
   ~volume{0}
   ~length{0}
+  ~tags{}
+
 }
+

@@ -160,3 +160,37 @@ string* object_tag_names(void) {
 
   return map_indices(object_tags);
 }
+
+mixed* mobile_all_tags(object mobile) {
+  if(!GAME() && !COMMON() && !SYSTEM())
+    error("Only game code may call mobile_all_tags!");
+
+  return mobile->get_all_tags();
+}
+
+mixed* object_all_tags(object obj) {
+  if(!GAME() && !COMMON() && !SYSTEM())
+    error("Only game code may call object_all_tags!");
+
+  return obj->get_all_tags();
+}
+
+int mobile_tag_type(string tag_name) {
+  if(!GAME() && !COMMON() && !SYSTEM())
+    error("Only game code may call mobile_tag_type!");
+
+  if(mobile_tags[tag_name])
+    return mobile_tags[tag_name][0];
+
+  return -1;
+}
+
+int object_tag_type(string tag_name) {
+  if(!GAME() && !COMMON() && !SYSTEM())
+    error("Only game code may call object_tag_type!");
+
+  if(object_tags[tag_name])
+    return object_tags[tag_name][0];
+
+  return -1;
+}
