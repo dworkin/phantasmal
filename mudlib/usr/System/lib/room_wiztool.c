@@ -550,21 +550,3 @@ static void cmd_check_deferred_exits(object user, string cmd, string str) {
 
   user->message("Deferred exits: " + num + ".\r\n");
 }
-
-
-static void cmd_add_detail(object user, string cmd, string str) {
-  int objnum, detailnum;
-
-  if(str)
-    str = STRINGD->trim_whitespace(str);
-
-  detailnum = -1;
-  if(sscanf(str, "#%*d #%*d %*s") == 3
-     || (sscanf(str, "#%d #%d", objnum, detailnum) != 2
-	 && sscanf(str, "#%d", objnum) != 1)) {
-    user->message("Usage: " + cmd + " #<objnum> [#<detailnum>]\r\n");
-    return;
-  }
-
-  
-}
