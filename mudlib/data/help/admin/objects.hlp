@@ -217,6 +217,7 @@ See also @add_nouns, @add_adj, @set_brief, @set_glance
             set_objflags, setobjflag, setobjflags,
             contain, cont, containment, container, containers,
             open, open container, openable, openable container, set container,
+	    set locked, set lockable, locked, lockable,
             set open,set openable,descless,nodesc,no_desc,
             set_port_flag, set_portable_flag, set_port_flags,
             set_portable_flags}}
@@ -239,8 +240,9 @@ The first argument is the object number of a room or portable.  The
 middle argument is a flag name, and can be "cont" or "container" to
 set whether the object is a container, "open" to set whether it is
 currently open, "openable" to say whether it can be easily opened or
-closed, "lockable" to say whether it can be locked or not, "nodesc"
-for scenery objects, or possibly other flag names.
+closed, "locked" to say whether it is locked or not, "lockable" to
+say whether it can be locked or not, "nodesc" for scenery objects,
+or possibly other flag names.
 To get a list of flag names, type "@set_obj_flag flagnames".
 
 Note: the "nodesc" flag will be retired soon in favor of actual object

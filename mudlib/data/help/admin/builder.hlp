@@ -23,7 +23,8 @@ help segments
   ~enUS{
 
 Exits are objects registered with EXITD, and thus with objregd.  As
-such, they are numbered and object commands work fine on them.
+such, they are numbered and object commands work fine on them.  Note:
+an exit must be open (default) for mobiles to go through them.
 
 Some commands for exits:
 @new_exit          Creates a new exit between existing rooms

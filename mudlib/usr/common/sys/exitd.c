@@ -22,6 +22,7 @@ void add_twoway_exit_between(object room1, object room2, int direction,
 void add_oneway_exit_between(object room1, object room2, int direction,
 			     int num1);
 void upgraded(varargs int clone);
+
 #define PHR(x) PHRASED->new_simple_english_phrase(x)
 #define FILE(x) PHRASED->file_phrase(EXITD_PHRASES,(x))
 
@@ -229,10 +230,14 @@ private int allocate_exit_obj(int num, object obj) {
 void add_twoway_exit_between(object room1, object room2, int direction,
 			     int num1, int num2) {
   object exit1, exit2;
+  object dir, opp_dir;
 
   if (direction <= 0) {
     error("Can't add an exit in a special direction!");
   }
+
+  dir = get_name_for_dir(direction);
+  opp_dir = get_name_for_dir(opposite_direction(direction));
 
   exit1 = clone_object(SIMPLE_EXIT);
   exit2 = clone_object(SIMPLE_EXIT);
@@ -240,20 +245,26 @@ void add_twoway_exit_between(object room1, object room2, int direction,
   exit1->set_destination(room2);
   exit1->set_from_location(room1);
   exit1->set_direction(direction);
-  exit1->set_type(2); /* two-way */
-/*  exit1->set_container(1); */
-  exit1->set_openable(1);
+  exit1->set_exit_type(2); /* two-way */
+  exit1->set_openable(0);
   exit1->set_open(1);
   exit1->set_lockable(0);
+  exit1->set_glance(dir);
+  exit1->set_brief(dir);
+  exit1->set_look(dir);
+  exit1->add_noun(dir);
 
   exit2->set_destination(room1);
   exit2->set_from_location(room2);
   exit2->set_direction(opposite_direction(direction));
-  exit2->set_type(2); /* two-way */
-/*  exit2->set_container(1); */
-  exit2->set_openable(1);
+  exit2->set_exit_type(2); /* two-way */
+  exit2->set_openable(0);
   exit2->set_open(1);
   exit2->set_lockable(0);
+  exit2->set_glance(opp_dir);
+  exit2->set_brief(opp_dir);
+  exit2->set_look(opp_dir);
+  exit2->add_noun(opp_dir);
 
   room1->add_exit(direction, exit1);
   room2->add_exit(opposite_direction(direction), exit2);
@@ -281,22 +292,26 @@ void add_twoway_exit_between(object room1, object room2, int direction,
 /* note:  caller must make sure not to override existing exits!!! */
 void add_oneway_exit_between(object room1, object room2, int direction,
 			     int num1) {
-  object exit1;
+  object exit1, dir;
 
   if (direction <= 0) {
     error("Can't add an exit in a special direction!");
   }
 
   exit1 = clone_object(SIMPLE_EXIT);
+  dir = get_name_for_dir(direction);
 
   exit1->set_destination(room2);
   exit1->set_from_location(room1);
   exit1->set_direction(direction);
-  exit1->set_type(1); /*one-way */
-/*  exit1->set_container(1); */
-  exit1->set_openable(1);
+  exit1->set_exit_type(1); /*one-way */
+  exit1->set_openable(0);
   exit1->set_open(1);
   exit1->set_lockable(0);
+  exit1->set_glance(dir);
+  exit1->set_brief(dir);
+  exit1->set_look(dir);
+  exit1->add_noun(dir);
 
   room1->add_exit(direction, exit1);
 
@@ -316,17 +331,29 @@ void add_oneway_exit_between(object room1, object room2, int direction,
 }
 
 void fix_exit(object exit, int type, int link) {
-  exit->set_type(type);
+
+  int direction;
+  object dir_name;
+
+  exit->set_exit_type(type);
   exit->set_link(link);
-  exit->set_openable(1);
+  exit->set_openable(0);
   exit->set_open(1);
   exit->set_lockable(0);
+
+  direction = exit->get_direction();
+  dir_name = name_for_dir[exit->get_direction()];
+  exit->set_glance(dir_name);
+  exit->set_brief(dir_name);
+  exit->set_look(dir_name);
+  exit->clear_nouns();
+  exit->add_noun(dir_name);
 }
 
 void remove_exit(object room, object exit) {
   object other_exit, dest;
 
-  if (exit->get_type()==2) { /* two-way door, remove other side first */
+  if (exit->get_exit_type()==2) { /* two-way door, remove other side first */
     other_exit = EXITD->get_exit_by_num(exit->get_link());
     dest = other_exit->get_from_location();
     dest->remove_exit(other_exit);

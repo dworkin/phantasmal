@@ -621,14 +621,14 @@ static void cmd_set_obj_parent(object user, string cmd, string str) {
 }
 
 static void cmd_set_obj_flag(object user, string cmd, string str) {
-  object  obj;
+  object  obj, link_exit;
   int     objnum, flagval;
   string  flagname, flagstring;
   mapping valmap;
 
   if(str) str = STRINGD->trim_whitespace(str);
   if(str && !STRINGD->stricmp(str, "flagnames")) {
-    user->message("Flag names:  cont container open openable lockable\r\n");
+    user->message("Flag names:  cont container open openable locked lockable\r\n");
     return;
   }
 
@@ -673,10 +673,36 @@ static void cmd_set_obj_flag(object user, string cmd, string str) {
      || !STRINGD->stricmp(flagname, "container")) {
     obj->set_container(flagval);
   } else if(!STRINGD->stricmp(flagname, "open")) {
+    if (obj->get_type()=="EXIT") {
+      if (obj->get_link()!=-1) {
+        link_exit = EXITD->get_exit_by_num(obj->get_link());
+        link_exit->set_open(flagval);
+      }
+    }
     obj->set_open(flagval);
   } else if(!STRINGD->stricmp(flagname, "openable")) {
+    if (obj->get_type()=="EXIT") {
+      if (obj->get_link()!=-1) {
+        link_exit = EXITD->get_exit_by_num(obj->get_link());
+        link_exit->set_openable(flagval);
+      }
+    }
     obj->set_openable(flagval);
+  } else if(!STRINGD->stricmp(flagname, "locked")) {
+    if (obj->get_type()=="EXIT") {
+      if (obj->get_link()!=-1) {
+        link_exit = EXITD->get_exit_by_num(obj->get_link());
+        link_exit->set_locked(flagval);
+      }
+    }
+    obj->set_locked(flagval);
   } else if(!STRINGD->stricmp(flagname, "lockable")) {
+    if (obj->get_type()=="EXIT") {
+      if (obj->get_link()!=-1) {
+        link_exit = EXITD->get_exit_by_num(obj->get_link());
+        link_exit->set_lockable(flagval);
+      }
+    }
     obj->set_lockable(flagval);
   }
 

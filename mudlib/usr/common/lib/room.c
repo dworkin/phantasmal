@@ -148,7 +148,7 @@ void remove_exit(object exit) {
 }
 
 
-/* 
+/*
  * flag overrides
  */
 
@@ -489,4 +489,8 @@ void from_dtd_tag(string tag, mixed value) {
   } else { 
     error("Don't recognize tag " + tag + " in function from_dtd_tag()");
   }
+}
+
+string get_type() {  /* override to set a specific type */
+  return "ROOM";
 }

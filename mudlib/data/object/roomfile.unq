@@ -154,7 +154,7 @@ Ghak'La must have been Messy-In-A-Hideous-Way.}}
 }
 ~room{
   ~number{9}
-  ~location{300}
+  ~location{308}
   ~bdesc{
     ~enUS{a rubber ball}}
   ~gdesc{
@@ -236,7 +236,7 @@ see opalescent light filtering in through the petals.
 }
 ~room{
   ~number{200}
-  ~location{202}
+  ~location{302}
   ~bdesc{
     ~enUS{a turnip}}
   ~gdesc{
@@ -267,7 +267,7 @@ doesn't give you any clues.}}
 }
 ~room{
   ~number{202}
-  ~location{300}
+  ~location{302}
   ~bdesc{
     ~enUS{a breadbox}}
   ~gdesc{
@@ -536,8 +536,22 @@ Arkham through the trees to the north and east.}}
   ~adjectives{{}}
 }
 ~room{
+  ~number{311}
+  ~location{304}
+  ~bdesc{
+    ~enUS{Dan}}
+  ~gdesc{
+    ~enUS{Dan}}
+  ~ldesc{
+    ~enUS{Dan wanders the MUD.}}
+  ~flags{3}
+  ~article{0}
+  ~nouns{{~enUS{dan}}}
+  ~adjectives{{}}
+}
+~room{
   ~number{313}
-  ~location{301}
+  ~location{1}
   ~bdesc{
     ~enUS{a mobile turnip}}
   ~gdesc{
@@ -553,7 +567,7 @@ washing machine back home.}}
 }
 ~room{
   ~number{314}
-  ~location{302}
+  ~location{1}
   ~bdesc{
     ~enUS{a dog}}
   ~gdesc{

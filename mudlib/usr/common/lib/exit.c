@@ -9,7 +9,7 @@ inherit OBJECT;
 */
 
 int    direction;           /* 8 compass directions */
-int    type;                /* one-way, two-way, etc. */
+int    type;           /* one-way, two-way, etc. */
 int    link_to;             /* exit # that a two-way links to */
 object from_location;
 object destination;
@@ -49,7 +49,7 @@ void set_destination(object new_dest) {
   } else error("Only EXITD can set exit destinations!");
 }
 
-void set_type(int new_type) {
+void set_exit_type(int new_type) {
   if(previous_program() == EXITD) {
     switch (new_type) {
       case 1: /* one way */
@@ -73,7 +73,7 @@ int get_direction() {
   return direction;
 }
 
-int get_type() {
+int get_exit_type() {
   return type;
 }
 
@@ -87,6 +87,10 @@ object get_from_location() {
 
 object get_destination() {
   return destination;
+}
+
+string get_type() {  /* override to set a specific type */
+  return "EXIT";
 }
 
 /* Return nil if a user can pass through a door, the reason if they cannot */

@@ -1,4 +1,4 @@
-/* $Header: /cvsroot/phantasmal/mudlib/usr/System/obj/user.c,v 1.52 2003/03/24 00:34:23 kdunwoody Exp $ */
+/* $Header: /cvsroot/phantasmal/mudlib/usr/System/obj/user.c,v 1.53 2003/03/24 04:05:00 dbd22 Exp $ */
 
 #include <kernel/kernel.h>
 #include <kernel/user.h>
@@ -378,12 +378,18 @@ private string* string_to_words(string str) {
    their details searched, but not objects inside those details. */
 private object* search_contained_objects(object* objs, string str,
 					 varargs int only_details) {
-  object *ret, *contents, *details;
-  string *words;
+  object *ret, *contents, *details, temp;
+  string *words, err;
+  int ctr;
 
   words = string_to_words(str);
 
   ret = ({ });
+
+  err=catch(temp = objs[0]);
+  if (err)
+    return nil;
+
   while(sizeof(objs)) {
     if(objs[0] == location
        || (!only_details
@@ -403,6 +409,20 @@ private object* search_contained_objects(object* objs, string str,
     }
 
     objs = objs[1..];
+  }
+
+  /* now, if it is a room, check the exits */
+  if (temp == location) {
+    if(function_object("num_exits", location)) {
+      for(ctr = 0; ctr < location->num_exits(); ctr++) {
+        object exit;
+
+        exit = location->get_exit_num(ctr);
+	if(exit->match_words(this_object(), words)) {
+          ret += ({ exit });
+        }
+      }
+    }
   }
 
   return sizeof(ret) ? ret : nil;
@@ -1231,7 +1251,7 @@ static void cmd_look(object user, string cmd, string str) {
      || sscanf(str, "within %s", str) || sscanf(str, "into %s", str)) {
     /* Look inside container */
     str = STRINGD->trim_whitespace(str);
-    tmp = find_first_objects(str, LOC_INVENTORY, LOC_CURRENT_ROOM, LOC_BODY);
+    tmp = find_first_objects(str, LOC_CURRENT_ROOM, LOC_INVENTORY, LOC_BODY);
     if(!tmp) {
       user->message("You don't find any '" + str + "'.\r\n");
       return;
@@ -1267,7 +1287,7 @@ static void cmd_look(object user, string cmd, string str) {
     return;
   }
 
-  tmp = find_first_objects(str, LOC_INVENTORY, LOC_CURRENT_ROOM, LOC_BODY);
+  tmp = find_first_objects(str, LOC_CURRENT_ROOM, LOC_INVENTORY, LOC_BODY);
   if(!tmp || !sizeof(tmp)) {
     user->message("You don't find any '" + str + "'.\r\n");
     return;
@@ -1714,7 +1734,7 @@ static void cmd_open(object user, string cmd, string str) {
     return;
   }
 
-  tmp = find_first_objects(str, LOC_INVENTORY, LOC_CURRENT_ROOM);
+  tmp = find_first_objects(str, LOC_CURRENT_ROOM, LOC_INVENTORY);
   if(!tmp || !sizeof(tmp)) {
     message("You don't find any '" + str + "'.\r\n");
     return;

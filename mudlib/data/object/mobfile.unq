@@ -6,6 +6,13 @@
 }
 
 ~mobile{
+  ~type{user}
+  ~name{Dan}
+  ~number{501}
+  ~body{311}
+}
+
+~mobile{
   ~type{wander}
   ~name{a mobile turnip}
   ~number{502}

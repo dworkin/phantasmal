@@ -67,7 +67,8 @@ mixed*  mobiles;
 #define OF_CONTAINER          1
 #define OF_OPEN               2
 #define OF_OPENABLE           8
-#define OF_LOCKABLE           16
+#define OF_LOCKED             16
+#define OF_LOCKABLE           32
 
 private int objflags;
 
@@ -689,8 +690,16 @@ int is_openable() {
   return objflags & OF_OPENABLE;
 }
 
+int is_locked() {
+  return objflags & OF_LOCKED;
+}
+
 int is_lockable() {
   return objflags & OF_LOCKABLE;
+}
+
+string get_type() {  /* override to set a specific type */
+  return "OBJECT";
 }
 
 private void set_flags(int flags, int value) {
@@ -720,6 +729,13 @@ void set_openable(int value) {
     error("Only SYSTEM code can currently set an object as openable!");
 
   set_flags(OF_OPENABLE, value);
+}
+
+void set_locked(int value) {
+  if(!SYSTEM() && !COMMON())
+    error("Only SYSTEM code can currently set an object as lockable!");
+
+  set_flags(OF_LOCKED, value);
 }
 
 void set_lockable(int value) {
