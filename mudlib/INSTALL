@@ -25,13 +25,13 @@ doc/kfun to the Phantasmal directory under doc/kfun.
 You'll need a version of DGD recent enough to have full support for
 lightweight objects and multiple incoming network ports.  This MUDLib
 has been tested with the DGD version(s) listed in TESTED_VERSIONS, and
-the most recent 1.2.4X or 1.2.5X version is very likely to work with
-the most recent version of Phantasmal.  Note that testing always uses
-the latest versions, so it's possible that the lower-numbered DGD
-versions in TESTED_VERSIONS don't work correctly any more, but they
-have with a recent version of Phantasmal.  When in doubt, upgrade to
-the latest DGD version listed in TESTED_VERSIONS, or to the most
-recent version of DGD.
+the most recent 1.2.5X version is very likely to work with the most
+recent version of Phantasmal.  Note that testing always uses the
+latest versions, so it's possible that the lower-numbered DGD versions
+in TESTED_VERSIONS don't work correctly any more, but they have with a
+recent version of Phantasmal.  When in doubt, upgrade to the latest
+DGD version listed in TESTED_VERSIONS, or to the most recent version
+of DGD.
 
 You'll need to make a .dgd file for Phantasmal.  Copy the mud.dgd file
 in your DGD directory and change a couple of things.  Change the
@@ -53,13 +53,13 @@ paths to point somewhere else.
 
 Once you have the MUD running, you should first log in as admin, then
 make yourself a non-admin account to use.  When you make your new
-account (referred to as "me" in this paragraph) you can grant it full
-adminstrative access by typing "%grant me access" and "%grant me /
-full".  This will be your main administrator account.  You can also
-trivially make as many new unprivileged accounts as you feel like just
-by logging in without bothering to grant them access.  Note the second
-grant command makes the account able to pretty much crash your MUD or
-destroy your data if the account owner feels like it, so use it
+account (referred to as "me" in the follwing paragraph) you can grant
+it full adminstrative access by typing "%grant me access" and "%grant
+me / full".  This will be your main administrator account.  You can
+also trivially make as many new unprivileged accounts as you feel like
+just by logging in without bothering to grant them access.  Note the
+second grant command makes the account able to pretty much crash your
+MUD or destroy your data if the account owner feels like it, so use it
 sparingly and only with people you want to have full administrative
 access.  There will eventually be a less-privileged admin class
 suitable for builders, but that hasn't yet been implemented.
@@ -71,3 +71,10 @@ help.  Player commands have no punctuation on the front and should all
 be documented.  In case of conflict or uncertainty, the lists in
 /usr/System/lib/wiztoollib.c and /data/phrase/user_cmds.unq are
 definitive.
+
+Further information on Phantasmal can be found in various locations.
+The SourceForge forums are excellent for getting help.  The DGD
+mailing list is also an appropriate place to ask general DGD and LPC
+questions rather than Phantasmal-specific ones.  And you can find more
+information linked from "http://phantasmal.sourceforge.net", or the
+SourceForge project at "http://sourceforge.net/projects/phantasmal".
