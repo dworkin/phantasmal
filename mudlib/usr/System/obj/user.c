@@ -1,4 +1,4 @@
-/* $Header: /cvsroot/phantasmal/mudlib/usr/System/obj/user.c,v 1.30 2003/02/05 22:02:32 angelbob Exp $ */
+/* $Header: /cvsroot/phantasmal/mudlib/usr/System/obj/user.c,v 1.31 2003/02/06 09:48:49 angelbob Exp $ */
 
 #include <kernel/kernel.h>
 #include <kernel/user.h>
@@ -675,13 +675,26 @@ static int process_message(string str)
       size = SYSTEM_USER->num_command_sets(locale);
       for(ctr = 0; ctr < size; ctr++) {
 	command = SYSTEM_USER->query_command_sets(locale, ctr, cmd);
-	if(command) {
-	  call_other(this_object(),                /* Call on self... */
+	if(command && sizeof(command) == 1) {
+	  call_other(this_object(),                /* Call on self */
 		     command[0],                   /* The function */
 		     this_object(),                /* This user */
 		     cmd,                          /* The command */
 		     str == "" ? nil : str);       /* str or nil */
 	  str = nil;
+	  break;
+	} else if(command && sizeof(command) == 2
+		  && command[1] == "social") {
+	  call_other(this_object(),                /* Call on self */
+		     "cmd_social",                 /* Function cmd_social */
+		     this_object(),                /* This user */
+		     command[0],                   /* The command */
+		     str == "" ? nil : str);       /* Extra arguments */
+	  str = nil;
+	  break;
+	} if (command && sizeof(command)) {
+	  LOGD->write_syslog("Unrecognized command format: "
+			     + STRINGD->mixed_sprint(command), LOG_ERR);
 	  break;
 	}
       }
@@ -796,41 +809,29 @@ static void print_prompt(void) {
 
 /************** User-level commands *************************/
 
+/* This one is special, and is called specially... */
 static void cmd_social(object user, string cmd, string str) {
-  string  verb;
-  string  target_str;
   object* targets;
 
-  if(!str || str == "") {
-    send_system_phrase("Usage: ");
-    message(cmd + " <verb> [<target>]\r\n");
+  if(!SOULD->is_valid(cmd)) {
+    message(cmd + " doesn't look like a valid social verb.\r\n");
     return;
   }
 
-  if(sscanf(str, "%s %s", verb, target_str) == 2) {
-    if(!SOULD->is_valid(verb)) {
-      message(verb + " doesn't look like a valid verb.\r\n");
-      return;
-    }
-
-    targets = find_object_in_room(user, location, target_str);
+  if(str && str != "") {
+    targets = find_object_in_room(user, location, str);
     if(!targets) {
-      message("You don't see any objects matching '" + target_str
+      message("You don't see any objects matching '" + str
 	      + "' here.\r\n");
       return;
     }
 
     /* For the moment, just pick the first one */
-    mobile->social(verb, targets[0]);
+    mobile->social(cmd, targets[0]);
     return;
   }
 
-  verb = STRINGD->trim_whitespace(str);
-  if(!SOULD->is_valid(verb)) {
-    message(verb + " doesn't look like a valid verb.\r\n");
-    return;
-  }
-  mobile->social(verb, nil);
+  mobile->social(cmd, nil);
 }
 
 static void cmd_set_lines(object user, string cmd, string str) {
