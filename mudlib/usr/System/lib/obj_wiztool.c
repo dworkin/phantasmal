@@ -152,9 +152,11 @@ static void cmd_stat(object user, string cmd, string str) {
   string* words;
   string  tmp;
   mixed*  objs, *art_desc;
+  object *details;
 
   if(!str || STRINGD->is_whitespace(str)) {
     user->message("Usage: " + cmd + " #<obj num>\r\n");
+    user->message("       " + cmd + " <object description>\r\n");
     return;
   }
 
@@ -194,7 +196,12 @@ static void cmd_stat(object user, string cmd, string str) {
     return;
   }
 
-  tmp = "Location: ";
+  tmp  = "Number: " + obj->get_number() + "\r\n";
+  if(obj->get_detail_of()) {
+    tmp += "Detail of: ";
+  } else {
+    tmp += "Location: ";
+  }
   location = obj->get_location();
   if(location) {
     if(typeof(location->get_number()) == T_INT
@@ -311,6 +318,22 @@ static void cmd_stat(object user, string cmd, string str) {
     tmp += "\r\nContains " + sizeof(obj->mobiles_in_container())
 		  + " mobiles.\r\n\r\n";
   }
+
+  details = obj->get_details();
+  if(details && sizeof(details)) {
+    object detail;
+
+    tmp += "Has details [" + sizeof(details) + "]: ";
+    for(ctr = 0; ctr < sizeof(details); ctr++) {
+      detail = details[ctr];
+      if(detail) {
+	tmp += "#" + detail->get_number() + " ";
+      } else {
+	tmp += "<unreg> ";
+      }
+    }
+  }
+  tmp += "\r\n";
 
   if(obj->get_mobile()) {
     tmp += "Object is sentient.\r\n";
@@ -659,4 +682,38 @@ static void cmd_make_obj(object user, string cmd, string str) {
     state->specify_type(typename);
 
   user->push_state(state);
+}
+
+
+static void cmd_set_obj_detail(object user, string cmd, string str) {
+  int    objnum, detailnum;
+  object obj, detail;
+
+  if(!str
+     || sscanf(str, "%*s %*s %*s") == 3
+     || sscanf(str, "#%d #%d", objnum, detailnum) != 2) {
+    user->message("Usage: " + cmd + " #<base_obj> #<detail_obj>\r\n");
+    return;
+  }
+
+  obj = MAPD->get_room_by_num(objnum);
+  detail = MAPD->get_room_by_num(detailnum);
+
+  if(!obj) {
+    user->message("Base object (#" + objnum
+		  + ") doesn't appear to be a room or portable.\r\n");
+  }
+  if(!detail) {
+    user->message("Detail object (#" + detailnum
+		  + ") doesn't appear to be a room or portable.\r\n");
+  }
+
+  if(!obj || !detail) return;
+
+  user->message("Setting obj #" + detailnum + " to be a detail of obj #"
+		+ objnum + ".\r\n");
+  if(detail->get_location())
+    detail->get_location()->remove_from_container(detail);
+  obj->add_detail(detail);
+  user->message("Done.\r\n");
 }
