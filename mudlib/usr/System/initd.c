@@ -90,10 +90,12 @@ static void create(varargs int clone)
     error("Upgrade Phantasmal!");
   }
 
-  /* DGD currently runs with Kernel Library version 16.  We check for
-     this instead of the specific DGD patch number so that Phantasmal
-     doesn't give a big nasty error message every time a new tiny
-     bugfix comes out. */
+  /* DGD keeps a separate version number for the Kernel Library.  We
+     check for this instead of the specific DGD patch number so that
+     Phantasmal doesn't give a big nasty error message every time a
+     new tiny bugfix comes out.  However, Phantasmal *will* give a
+     disclaimer when the Kernel Library changes.  Seems like a good
+     compromise. */
   if(sscanf(KERNEL_LIB_VERSION, "%d.%d.%d", major, minor, patch) != 3) {
     error("Don't recognize Kernel Library version as being of the"
 	  + " form X.Y.ZZ!");
@@ -106,7 +108,7 @@ static void create(varargs int clone)
     DRIVER->message("This version of Phantasmal is not tested\n");
     DRIVER->message("with DGD beyond 1.2.XX.  Please upgrade Phantasmal!\n");
     error("Upgrade Phantasmal!");
-  } else if (minor == 2 && patch > 30) {
+  } else if (minor == 2 && patch > 31) {
     DRIVER->message("This is a very new Kernel Library version, or at\n");
     DRIVER->message("least newer than this version of Phantasmal.  If\n");
     DRIVER->message("you have problems, please upgrade Phantasmal!\n");
@@ -120,7 +122,8 @@ static void create(varargs int clone)
   rsrc::add_owner("common");
   rsrc::add_owner("game");
 
-  /* Set this to enable SSHD to do its thing */
+  /* Set this to enable SSHD to do its thing.  Otherwise it can't get
+     enough ticks. */
   rsrc::rsrc_set_limit("System", "ticks", 3000000);
 
   access::set_global_access("common", READ_ACCESS);
