@@ -11,29 +11,36 @@ you with these setup problems.
 
 You'll want to install your Kernel MUDLib (the mud/kernel subdirectory
 under your DGD installation) into the kernel subdirectory of
-Phantasmal and copy files from the corresponding include/kernel
-subdirectory into Phantasmal's include/kernel (note -- do *not* replace
-Phantasmal's config.h!).  Since the Kernel MUDLib changes with
-successive versions of DGD you should use the one that comes with your
-DGD server code and upgrade it when you upgrade DGD.
+Phantasmal.  You'll also want to copy files from the Kernel MUDLib
+mud/include/kernel subdirectory into Phantasmal's include/kernel (note
+-- do *not* replace Phantasmal's config.h or other stuff in include's
+top directory!).  Since the Kernel MUDLib changes with successive
+versions of DGD you should use the one that comes with your DGD server
+code and upgrade it when you upgrade DGD.  See the README files in
+Phantasmal's "kernel" and "include/kernel" directories.
 
 You'll need a version of DGD recent enough to have full support for
 lightweight objects and multiple incoming network ports.  This MUDLib
-is currently well-tested with DGD versions listed in TESTED_VERSIONS,
-and the most recent 1.2.4X or 1.2.5X version is very likely to work
-with the most recent version of Phantasmal.
+has been tested with the DGD version(s) listed in TESTED_VERSIONS, and
+the most recent 1.2.4X or 1.2.5X version is very likely to work with
+the most recent version of Phantasmal.  Note that testing always uses
+the latest versions, so it's possible that the lower-numbered DGD
+versions in TESTED_VERSIONS don't work correctly any more, but they
+have with a recent version of Phantasmal.  When in doubt, upgrade to
+the latest DGD version listed in TESTED_VERSIONS, or to the most
+recent version of DGD.
 
 You'll need to make a .dgd file for Phantasmal.  Copy the mud.dgd file
-in your DGD directory and change a couple of things.  The big ones are
-the directory it runs in and the port number (if you want).  You'll
-eventually want to change more stuff in the .dgd file, but you'll
-know enough about DGD to handle that yourself by the time it's
+in your DGD directory and change a couple of things.  Change the
+directory it runs in and the port number (if you want).  The binary
+port is for administrator login if something goes drastically wrong.
+You'll never ordinarily use it.  You should also change the number of
+sectors, called "swap_size", from 1024 to 2048, or perhaps even more.
+Eventually you'll want to change more stuff in the .dgd file, but
+you'll know enough about DGD to handle that yourself by the time it's
 necessary.  In any case, *do* remember that the path specified in
 phantasmal.dgd for the MUDLib's directory needs to be absolute, not
-relative.  That means it should *start* with a slash.  Something you
-will probably want to change sooner rather than later is the number of
-sectors allowable (2048 is currently good for a small Phantasmal-based
-MUD).
+relative.  That means it should *start* with a slash.
 
 Once you have the MUD running, you should first log in as admin, then
 make yourself a non-admin account to use.  When you make your new
