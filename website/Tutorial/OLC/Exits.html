@@ -1,0 +1,78 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title> Phantasmal MUDLib Tutorial: Exits </title>
+  </head>
+
+  <body text="#000000" bgcolor="#DDDDDD" link="#0000EF" vlink="#51188E"
+	alink="#FF0000">
+
+    <h2 align="center"> Basic Portables </h2>
+
+    <font size="4">
+
+    <p> You've done a fair bit with rooms, portables and maybe even a
+    creature or two, but still you need to hook it all up with more
+    interesting exits.  Let's talk about how you can do that. </p>
+
+    <p> There are several interesting things about exits, so we'll
+    hit	them in no particular order. </p>
+
+    <h3 align="center"> Deferred Exits </h3>
+
+    <p> Sometimes when you load a zone or other area, not every exit
+    can resolve.  For instance, there's a command called @load_rooms
+    which will let you load just certain rooms from a zone.  That can
+    be useful when you're testing particular rooms.  But if you load
+    just a few specific rooms from a zone, then those rooms are going
+    to have exits that lead to nowhere...  When that happens, you get
+    what are called &quot;deferred&quot; exits.
+
+    <p> You can determine if you've got any of those wacky deferred
+    exits by typing <b>@check_deferred</b> by itself on the command
+    line.  If you have some, you can type <b>@add_deferred</b> or
+    <b>@add_deferred_exits</b> to resolve the deferred exits and
+    make them appear as 'real' exits.  Note that the rooms at
+    <i>both</i> ends of the exit must exist for <b>@add_deferred</b>
+    to work.  If you can't resolve and add all your deferred exits,
+    <b>@add_deferred_exits</b> will tell you so. </p>
+
+    <h3 align="center"> Old-style and New-style Exits </h3>
+
+    <p> If you have some exits added the <a href="Rooms.html">old</a>
+    way, with @new_exit, you'll want to convert them over to the new
+    style.  Simply type <b>@fix_exits</b> and all old-style exits
+    should be painlessly and immediately converted. </p>
+
+    <h3 align="center"> Removing Exits </h3>
+
+    <p> Sometimes you'd like to get rid of an exit you've already
+    created.  The command <b>@clear_exits</b> will delete every exit
+    coming from this room.  If you'd like to be more specific, you
+    can type &quot;@remove_exit &lt;dir&gt;&quot; where dir is a
+    direction like &quot;northwest&quot; or &quot;sw&quot; or
+    &quot;d&quot;.  An exit in that direction will be removed. </p>
+
+    <h3 align="center"> One-way and Two-way Exits </h3>
+
+    <p> You can use the <b>@new_oneway_exit</b> and <b>@new_twoway_exit</b>
+    commands
+    to make new-style one- or two-way exits.  The syntax is like
+    <b>@new_exit</b> --
+    &quot;@new_&lt;num&gt;way_exit &lt;dir&gt; #&lt;room num&gt;&quot;.
+    For instance, &quot;@new_oneway_exit sw #344&quot; would create
+    a new one-way exit from this room, heading southwest, and ending
+    in room #344.  The two-way exit version would also create a return
+    exit. </p>
+
+    <p> What's next?  I'd vote for more <a
+      href="../index.html">tutorials</a>.  <i>Everybody</i> loves
+      tutorials! </p>
+
+  </font>
+
+    <a href="http://sourceforge.net">
+      <img src="http://sourceforge.net/sflogo.php?group_id=48659&type=3"
+	   width="125" height="37" border="0" alt="SourceForge.net Logo"></a>
+  </body>
+</html>
