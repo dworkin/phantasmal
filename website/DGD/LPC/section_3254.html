@@ -14,7 +14,7 @@
 
     <hr size="2">
 
-    <h2><a name="SEC3.2" href="index.html#SEC3.2">Basic LPC</a></h2>
+    <h2><a name="SEC3.2" href="index.html#SEC3.2">3.2 Basic LPC</a></h2>
 
     <p>
       LPC is similar to the language C, although some differences
@@ -204,6 +204,16 @@
 	type system is there to catch errors for you.  Let it.
       </dd>
     </dl>
+
+    <p>
+      If you need to know the limits of integers, characters or
+      floating-point numbers, you can check DGD's
+      <tt>include/limits.h</tt> and <tt>include/float.h</tt> files.
+      They list limits of the various data types.  Bear in mind
+      that DGD can easily be compiled with different integer and
+      floating point limits, so you would do well to make your
+      code adapt to the new sizes where it really matters.
+    </p>
 
 
     <h3><a name="SEC3.2.3" href="index.html#SEC3.2.3">
@@ -468,7 +478,7 @@ if(my_var < 3)
     </address>
     <!-- Created: Mon Jun 11 21:50:30 PDT 2001 -->
     <!-- hhmts start -->
-Last modified: Tue Apr  8 19:48:48 PDT 2003
+Last modified: Tue Apr  8 20:02:02 PDT 2003
 <!-- hhmts end -->
   </body>
 </html>
