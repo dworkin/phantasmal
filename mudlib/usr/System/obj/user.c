@@ -1,4 +1,4 @@
-/* $Header: /cvsroot/phantasmal/mudlib/usr/System/obj/user.c,v 1.16 2002/06/10 21:18:21 angelbob Exp $ */
+/* $Header: /cvsroot/phantasmal/mudlib/usr/System/obj/user.c,v 1.17 2002/06/13 05:03:44 angelbob Exp $ */
 
 #include <kernel/kernel.h>
 #include <kernel/user.h>
@@ -775,8 +775,6 @@ private void player_login(void)
        file again... */
     save_user_to_file();
   } else {
-    /* Move body to start room? */
-
     location = body->get_location();
     mobile = body->get_mobile();
     if(!mobile) {
@@ -784,6 +782,11 @@ private void player_login(void)
       mobile->assign_body(body);
     }
     mobile->set_user(this_object());
+
+    /* Move body to start room */
+    if(location->get_number() == CONFIGD->get_meat_locker()) {
+      move_player(start_room);
+    }
   }
 
   /* Show room to player */
@@ -798,7 +801,22 @@ private void player_login(void)
  */
 private void player_logout(void)
 {
-  /* TODO: Teleport body to meat locker */
+  /* Teleport body to meat locker */
+  if(body) {
+    object meat_locker;
+    int    ml_num;
+
+    ml_num = CONFIGD->get_meat_locker();
+    if(ml_num >= 0) {
+      meat_locker = MAPD->get_room_by_num(ml_num);
+      if(meat_locker) {
+	move_player(meat_locker);
+      } else {
+	LOGD->write_syslog("Can't find room #" + ml_num + " as meat locker!",
+			   LOG_ERR);
+      }
+    }
+  }
 
   CHANNELD->unsubscribe_user_from_all(this_object());
 }
