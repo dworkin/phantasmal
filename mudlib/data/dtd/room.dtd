@@ -23,14 +23,13 @@
   ~length_capacity{float}
   ~volume_capacity{float}
   ~removed_details{int*}
-  ~newexit{rnumber,direction,destination,return,type,rdetail?,rbdesc?,rgdesc?,
+  ~newexit{rnumber,direction,destination,return,type,rbdesc?,rgdesc?,
            rldesc?,redesc?,rnouns?,radjectives?,rflags?}
   ~rnumber{int}
   ~direction{int}
   ~destination{int}
   ~return{int}
   ~type{int}
-  ~rdetail{int}
   ~rbdesc{phrase}
   ~rgdesc{phrase}
   ~rldesc{phrase}

@@ -138,10 +138,7 @@ string to_unq_flags(void) {
 
   ret += "    ~type{" + get_exit_type() + "}\n";
 
-  if (get_detail_of()) {
-    ret += "    ~rdetail{" + get_detail_of()->get_number() + "}\n";
-  }
-  if(edesc) {
+  if(bdesc) {
     ret += "    ~rbdesc{" + bdesc->to_unq_text() + "}\n";
   }
   if(gdesc) {
@@ -201,8 +198,6 @@ void from_dtd_tag(string tag, mixed value) {
     link_to = value;
   } else if (tag=="type") {
     type = value;
-  } else if (tag=="rdetail") {
-      /* what to do? */
   } else if (tag=="rbdesc") {
      bdesc = value;
   } else if (tag=="rgdesc") {
