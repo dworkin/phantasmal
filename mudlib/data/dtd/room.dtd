@@ -1,6 +1,7 @@
 ~DTD{
   ~obj{number?,location?,detail?,bdesc,gdesc,ldesc,edesc?,article,parent?,
-       nouns,adjectives?,exit*,flags?,removed_details?}
+       nouns,adjectives?,exit*,flags?,weight?,volume?,length?,
+       weight_capacity?,volume_capacity?,length_capacity?,removed_details?}
   ~room:obj{}
   ~number{int}
   ~location{int}
@@ -15,5 +16,11 @@
   ~adjectives{phrase*}
   ~exit{string}
   ~flags{int}
+  ~weight{float}
+  ~length{float}
+  ~volume{float}
+  ~weight_capacity{float}
+  ~length_capacity{float}
+  ~volume_capacity{float}
   ~removed_details{int*}
 }
