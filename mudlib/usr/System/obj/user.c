@@ -1,4 +1,4 @@
-/* $Header: /cvsroot/phantasmal/mudlib/usr/System/obj/user.c,v 1.69 2003/11/19 21:56:04 angelbob Exp $ */
+/* $Header: /cvsroot/phantasmal/mudlib/usr/System/obj/user.c,v 1.70 2003/11/29 09:03:29 angelbob Exp $ */
 
 #include <kernel/kernel.h>
 #include <kernel/user.h>
@@ -548,6 +548,8 @@ private int name_is_forbidden(string name) {
   filename = username_to_filename(name);
   filename = STRINGD->to_lower(filename);
 
+  if(filename == "" || filename == nil)
+    return 1;
   if(filename == "game")
     return 1;
   if(sscanf(filename, "common"))
@@ -664,6 +666,7 @@ private void player_login(void)
   if(body_num > 0) {
     body = MAPD->get_room_by_num(body_num);
   }
+
   if(!body) {
     location = start_room;
 
@@ -727,6 +730,15 @@ private void player_login(void)
       MOBILED->add_mobile_number(mobile, -1);
       mobile->assign_body(body);
     }
+
+    if(mobile->get_user()) {
+      LOGD->write_syslog("User is already set for this mobile!",
+			 LOG_ERROR);
+      message("Body and mobile files are misconfigured!  Internal error!\r\n");
+      error("Internal error!");
+      return;
+    }
+
     mobile->set_user(this_object());
     mobile->teleport(location, 1);
 
@@ -927,7 +939,11 @@ static int process_message(string str)
       wiztool = clone_object(SYSTEM_WIZTOOL, name);
     }
 
-    player_login();
+    catch {
+      player_login();
+    } : {
+      return MODE_DISCONNECT;
+    }
     break;
 
   case STATE_OLDPASSWD:
@@ -985,8 +1001,13 @@ static int process_message(string str)
     }
     newpasswd = nil;
 
-    if(!location)
-      player_login();
+    if(!location) {
+      catch {
+	player_login();
+      } : {
+	return MODE_DISCONNECT;
+      }
+    }
 
     break;
   }
