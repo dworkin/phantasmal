@@ -14,11 +14,11 @@ Phantasmal and copy files from the corresponding include/kernel
 subdirectory into Phantasmal's include/kernel (note -- do *not* simply
 replace Phantasmal's config.h!).  Since the Kernel MUDLib changes with
 successive versions of DGD you should use the one that comes with your
-server and upgrade it when you upgrade the server.
+DGD server code and upgrade it when you upgrade DGD.
 
 You'll need a version of DGD recent enough to have full support for
 lightweight objects and multiple incoming network ports.  This MUDLib
-is currently well-tested with DGD 1.2.41 though any more recent 1.2.4X
+is currently well-tested with DGD 1.2.44 though any more recent 1.2.4X
 version, if available, is very likely to work.
 
 You'll need to make a .dgd file for Phantasmal.  Copy the mud.dgd file
@@ -28,9 +28,9 @@ eventually want to change more stuff in there, but you'll almost
 certainly know enough about DGD to handle that yourself by the time
 it's necessary.  In any case, *do* remember that the path specified in
 phantasmal.dgd for the directory needs to be absolute, not relative.
-So it should start with a slash, at least under Unix.  Something you
-may want to change sooner rather than later is the number of sectors
-allowable (2048 is good for a small Phantasmal-based MUD).
+That means it should *start* with a slash.  Something you may want to
+change sooner rather than later is the number of sectors allowable
+(2048 is currently good for a small Phantasmal-based MUD).
 
 Once you have the MUD running, you should first log in as admin, then
 make yourself a non-admin account to use.  When you make your new
@@ -42,7 +42,8 @@ by logging in without bothering to grant them access.  Note the second
 grant command makes the account able to pretty much crash your MUD or
 destroy your data if the account owner feels like it, so use it
 sparingly and only with people you want to have full administrative
-access.
+access.  There will eventually be a less-privileged admin class
+suitable for builders, but that hasn't yet been implemented.
 
 Many of the standard Kernel MUDLib commands have been altered to have
 a % sign in front of the name.  These are documented in the help.
