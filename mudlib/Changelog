@@ -15,4 +15,5 @@ Release 0.10:
 	* UNQ DTD error handling now can accept a filename
 	* A basic mobfile is now saved like the roomfile and zonefile.  It
 	still needs more work before it can be restored, though.
-	
+	* UNQ DTDs can now import other DTD's.
+	* Improved UNQ DTD type inheritance.
