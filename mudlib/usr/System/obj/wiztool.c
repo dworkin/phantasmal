@@ -61,7 +61,6 @@ void upgraded(void) {
 	"@set_obj_parent"      : ({ "cmd_set_obj_parent" }),
 	"@set_object_par"      : ({ "cmd_set_obj_parent" }),
 	"@set_object_parent"   : ({ "cmd_set_obj_parent" }),
-	"@set_ur_object"       : ({ "cmd_set_obj_parent" }),
 	"@set_parent"          : ({ "cmd_set_obj_parent" }),
 	"@add_noun"            : ({ "cmd_add_nouns" }),
 	"@add_nouns"           : ({ "cmd_add_nouns" }),
@@ -96,8 +95,8 @@ void upgraded(void) {
 	"@add_deferred"        : ({ "cmd_add_deferred_exits" }),
 	"@check_deferred"      : ({ "cmd_check_deferred_exits" }),
 
-	"@delete_port"         : ({ "cmd_delete_portable" }),
-	"@delete_portable"     : ({ "cmd_delete_portable" }),
+	"@new_port"            : ({ "cmd_new_portable" }),
+	"@new_portable"        : ({ "cmd_new_portable" }),
 
 	"@segment_map"         : ({ "cmd_segment_map" }),
 	"@seg_map"             : ({ "cmd_segment_map" }),

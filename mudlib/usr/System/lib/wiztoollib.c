@@ -413,7 +413,7 @@ static void cmd_help(object user, string cmd, string str) {
 
 static void cmd_new_portable(object user, string cmd, string str) {
   object port;
-  int    portnum;
+  int    portnum, zonenum;
   string segown;
 
   if(!str || STRINGD->is_whitespace(str)) {
@@ -438,7 +438,15 @@ static void cmd_new_portable(object user, string cmd, string str) {
   port = clone_object(SIMPLE_PORTABLE);
   if(!port)
     error("Can't clone simple portable!");
-  MAPD->add_room_number(port, portnum);
+  zonenum = -1;
+  if(portnum < 0) {
+    zonenum = ZONED->get_zone_for_room(user->get_location());
+    if(zonenum < 0) {
+      LOGD->write_syslog("Odd, zone < 0 when making new portable...");
+      zonenum = 0;
+    }
+  }
+  MAPD->add_room_to_zone(port, portnum, zonenum);
   if(!MAPD->get_portable_by_num(port->get_number())) {
     LOGD->write_syslog("Urgh -- error in cmd_new_portable!", LOG_ERR);
   }
