@@ -105,11 +105,16 @@
       Event Grouping, Perceptual Thresholds, and Automatic Detail Adjustment.
     </p>
 
+    <h4> Object Grouping </h4>
+    
     <p>
-      Object Grouping is described in its own separate document, and
-      relies heavily on the class heirarchy.
+      Object Grouping is described in <a href="ObjGroup.html">its own
+      separate document</a>, and
+      relies heavily on the <a href="ClassHeirarchy.html">class heirarchy</a>.
     </p>
 
+    <h4> Event Grouping </h4>
+    
     <p>
       Event Grouping is the idea that many events occurring simultaneously
       can be grouped into a single message.  For instance, twenty
@@ -121,7 +126,8 @@
     </p>
 
     <p>
-      Similarly, events of different types could be grouped in essentially
+      Similarly, <a href="Actions.html">events of different types could be
+      grouped</a> in essentially
       the same way -- the sound of a cannon roaring, the smell of gunpowder
       and a small tremor in the earth could be grouped together into
       &quot;a cannon fires nearby!  It's incredibly loud!&quot;, but a
@@ -137,7 +143,8 @@
     <p>
       Obviously there's a limit to what events can be grouped, but in
       many cases (such as the cannon above), the events could be
-      dispatched all at once, specifically marked as being mergeable.
+      dispatched all at once, <a href="EventModel.html">specifically
+      marked as being mergeable</a>.
       Characters that could detect all of the events would see them
       as merged, while characters that couldn't perceive one or more
       would see only the relevant parts of the event.  As the grouping
@@ -168,6 +175,8 @@
   > swear like a golfer
 </pre>
 
+    <h4>Perceptual Thresholds</h4>
+
     <p>
       Perceptual Thresholds are a name for preventing a character
       from detecting things that are too far apart in intensity.
@@ -177,6 +186,46 @@
       magnesium powder burning, and when a cannon goes off, it's hard
       to hear yourself think :-)
     </p>
+
+    <p>
+      Mathematically, this means that any character, for a given
+      sense, will have a dynamic range of detail.  For instance,
+      the character will have a perception for smell, which
+      determines how minute an odor can be detected or how much
+      can be found out about an odor, but then will also have
+      a range of smells available, so a high-dynamic-range
+      smeller (like a bloodhound) might be better at tracking
+      traces of an odor past a very powerful other odor like
+      pickled fish or rotten eggs.  The higher the dynamic
+      range, the more powerful the interfering odor can be or
+      the more miniscule the traces of the other odor can be.
+    </p>
+
+    <p>
+      Due to Perceptual Thresholds, you might think it would
+      be impossible to find small things for the sheer rush
+      and bustle of large things.  And that would be correct.
+      Therefore, in implementing commands like
+      &quot;search&quot;, it is important to tune the
+      Perceptual Thresholds appropriately.  Essentially, a
+      search command will broaden a character's dynamic range
+      temporarily (and quite possibly increase his or her
+      basic perceptiveness as well) in return for the
+      character staying
+      in one place and taking no other actions.
+    </p>
+
+    <p>
+      Similarly, it might be a good idea to have a
+      &quot;watch&quot; or &quot;concentrate&quot; command so
+      that the player can pay attention to a particular thing
+      specifically, no matter what distractions are attempted.
+      This would be useful to guard an item, to foil a thief's
+      attempts to hide, or to notice when a particular signal
+      is given.
+    </p>
+
+    <h4>Automatic Detail Adjustment</h4>
 
     <p>
       When a character has a vast amount of information coming in,
@@ -191,3 +240,42 @@
       as noteworthy as the basic room description, and the information
       is simply coming in too fast.
     </p>
+
+    <p>
+      If the character is perceiving many tiny events like the
+      movement of ants and distant birdsong, then a few more
+      obvious nearby events like the motion and sound of a
+      river will drown out the smaller events automatically
+      via Perceptual Thresholds (see above).  However, if the
+      forest is relatively quiet or the perceiver has a wide
+      dynamic range, then all events will be at
+      a fairly similar perceptual level and all will potentially
+      be perceptible.
+    </p>
+
+    <p>
+      When a large number of events are all perceptible at once
+      and Event Grouping (see above) is unable to reduce the
+      amount of detail to something manageable, it becomes necessary
+      to give the player a temporarily-reduced dynamic range of
+      perception, just to reduce the flow of incoming information.
+      Essentially, less perceptible events are dropped from the
+      flow of information to the player, but not necessarily to the
+      character.  A character will still usually react to the stimuli
+      in the normal way.  However, most characters' reactions to most
+      stimuli is to simply observe and ignore.
+    </p>
+
+    <p>
+      The subtlety about this reduced perceptual range is that events
+      will continue to come in at different times, and what events
+      cannot (usually) be predicted in advance.  Therefore, the
+      interface will need to detect when a player is overloaded and
+      throttle back the character's effective dynamic range of
+      perception until the number of events is again manageable.
+      This is conceptually similar to old-style MUD commands like
+      &quot;verbose&quot; and &quot;terse&quot; for room descriptions.
+      The player is requesting a level of detail, and the interface
+      adjusts itself to provide approximately that level of detail.
+    </p>
+]=
