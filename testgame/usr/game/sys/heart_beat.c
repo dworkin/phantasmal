@@ -1,3 +1,4 @@
+#include <phantasmal/lpc_names.h>
 #include <phantasmal/timed.h>
 
 #include <gameconfig.h>

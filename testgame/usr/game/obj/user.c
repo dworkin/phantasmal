@@ -1,9 +1,10 @@
-/* $Header: /cvsroot/phantasmal/testgame/usr/game/obj/user.c,v 1.4 2004/02/12 09:26:57 angelbob Exp $ */
+/* $Header: /cvsroot/phantasmal/testgame/usr/game/obj/user.c,v 1.5 2004/09/05 02:10:00 angelbob Exp $ */
 
 #include <kernel/kernel.h>
 #include <kernel/user.h>
 #include <kernel/rsrc.h>
 
+#include <phantasmal/lpc_names.h>
 #include <phantasmal/log.h>
 #include <phantasmal/phrase.h>
 #include <phantasmal/channel.h>
@@ -51,6 +52,9 @@ static int game_command(string str);
 #define BUG_DATA            "/usr/game/text/bug_reports.txt"
 #define IDEA_DATA           "/usr/game/text/idea_reports.txt"
 #define TYPO_DATA           "/usr/game/text/typo_reports.txt"
+
+/* This is the basic Phantasmal User Mobile */
+#define USER_MOBILE "/usr/common/obj/user_mobile"
 
 
 /*

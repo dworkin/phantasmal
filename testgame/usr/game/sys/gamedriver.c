@@ -1,3 +1,5 @@
+#include <phantasmal/lpc_names.h>
+
 #include <kernel/kernel.h>
 
 #include <config.h>

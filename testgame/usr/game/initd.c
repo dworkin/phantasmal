@@ -1,8 +1,10 @@
+#include <phantasmal/lpc_names.h>
 #include <phantasmal/log.h>
 
 #include <type.h>
 #include <gameconfig.h>
 #include <config.h>
+#include <version.h>
 
 static mixed* load_file_with_dtd(string file_path, string dtd_path);
 
@@ -15,7 +17,7 @@ static void load_sould(void);
 static void load_tagd(void);
 
 static void create(void) {
-  LOGD->write_syslog("**** Starting Seas of Night, version "
+  LOGD->write_syslog("**** Starting Test Game, "
 		     + GAME_VERSION + " ****");
 
   /* Build game driver and set it */

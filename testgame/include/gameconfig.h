@@ -18,5 +18,3 @@
 #define CONFIGD_DTD           "/usr/common/sys/config.dtd"
 
 #define HEART_BEAT            "/usr/game/sys/heart_beat"
-
-#define GAME_VERSION          "0.002"
