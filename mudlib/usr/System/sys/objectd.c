@@ -398,7 +398,8 @@ private void clear_child_data(object issue) {
   index = issue->get_index();
   children = issue->get_children();
   if(!children) {
-    LOGD->write_syslog("Should children be NULL in clear_child_data?");
+    LOGD->write_syslog("Should children be NULL in clear_child_data?",
+		       LOG_WARNING);
     return;
   }
   for(ctr = 0; ctr < sizeof(children); ctr++) {
@@ -497,7 +498,7 @@ private object add_clonable(string owner, object obj, string* inherited) {
   }
 
   if(sscanf(object_name(obj), "%*s#%*d")) {
-    LOGD->write_syslog("Clone passed to add_clonable!");
+    LOGD->write_syslog("Clone passed to add_clonable!", LOG_ERR);
     return nil;
   }
 
@@ -619,7 +620,8 @@ private void call_upgraded(object obj) {
     catch {
       obj->upgraded();
     } : {
-      LOGD->write_syslog("Error in " + object_name(obj) + "->upgraded()!");
+      LOGD->write_syslog("Error in " + object_name(obj) + "->upgraded()!",
+			 LOG_ERR);
     }
   }
 }
@@ -632,7 +634,7 @@ void compile(string owner, object obj, string source,
 	     string inherited...)
 {
   if(previous_program() == DRIVER) {
-    LOGD->write_syslog("compile: " + object_name(obj), LOG_NORMAL);
+    LOGD->write_syslog("compile: " + object_name(obj), LOG_VERBOSE);
 
     add_clonable(owner, obj, inherited);
   }
@@ -643,7 +645,7 @@ void compile_lib(string owner, string path, string source,
 		 string inherited...)
 {
   if(previous_program() == DRIVER) {
-    LOGD->write_syslog("compile_lib: " + path, LOG_NORMAL);
+    LOGD->write_syslog("compile_lib: " + path, LOG_VERBOSE);
 
     add_lib(owner, path, inherited);
   }
@@ -657,7 +659,7 @@ void clone(string owner, object obj)
     int index;
     object issue;
 
-    LOGD->write_syslog("clone: " + object_name(obj), LOG_NORMAL);
+    LOGD->write_syslog("clone: " + object_name(obj), LOG_VERBOSE);
 
     index = status(obj)[O_INDEX];
     issue = obj_issues->index(index);
@@ -676,7 +678,7 @@ void destruct(string owner, object obj)
     object issue;
     string objname;
 
-    LOGD->write_syslog("destruct: " + object_name(obj), LOG_NORMAL);
+    LOGD->write_syslog("destruct: " + object_name(obj), LOG_VERBOSE);
 
     index = status(obj)[O_INDEX];
     issue = obj_issues->index(index);
@@ -718,7 +720,7 @@ void destruct_lib(string owner, string path)
     object issue;
     int    index;
 
-    LOGD->write_syslog("destruct_lib: " + path, LOG_NORMAL);
+    LOGD->write_syslog("destruct_lib: " + path, LOG_VERBOSE);
 
     index = status(path)[O_INDEX];
     issue = obj_issues->index(index);
@@ -754,7 +756,7 @@ void remove_program(string owner, string path, int timestamp, int index)
     object issue, cur;
     mixed* status;
 
-    LOGD->write_syslog("remove: " + path + ", issue #" + index, LOG_NORMAL);
+    LOGD->write_syslog("remove: " + path + ", issue #" + index, LOG_VERBOSE);
 
     /* Get current version */
     cur = find_object(path);
@@ -820,7 +822,8 @@ void compiling(string path)
       catch {
 	obj->upgrading();
       } : {
-	LOGD->write_syslog("Error in " + object_name(obj) + "->upgrading()");
+	LOGD->write_syslog("Error in " + object_name(obj) + "->upgrading()",
+			   LOG_ERR);
       }
     }
   }
@@ -878,7 +881,7 @@ int forbid_inherit(string from, string path, int priv)
 		       LOG_VERBOSE);
 
     /* If we *did* actually forbid something, that would be logged with
-       something other than LOG_VERBOSE... */
+       something other than LOG_VERBOSE probably... */
   }
   return 0;
 }
@@ -1118,6 +1121,7 @@ void recompile_auto_object(object output) {
   int    ctr, ctr2;
   mixed* keys;
 
+  /* This will always be logged at this level */
   LOGD->write_syslog("Doing full rebuild...");
 
   if(!SYSTEM())
@@ -1141,7 +1145,7 @@ void recompile_auto_object(object output) {
        probably fix it. */
     LOGD->write_syslog("Destructing " + ctr2 + "/" + (sizeof(keys) + 1)
 		       + " libs of: AUTO, "
-		       + implode(keys, ", "));
+		       + implode(keys, ", "), LOG_WARN);
   }
 
   /* Recompile all clonables */

@@ -1,6 +1,6 @@
 ~channel{
   ~name{/usr/System/sys/objectd}
-  ~level{5}
+  ~level{2}
 }
 
 ~channel{~name{/usr/common/obj/unq_dtd}   ~level{3}}
