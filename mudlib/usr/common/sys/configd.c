@@ -21,7 +21,7 @@ static void create(void) {
 }
 
 void upgraded(varargs int clone) {
-  if(SYSTEM()) {
+  if(SYSTEM() || COMMON()) {
 
   }
 }

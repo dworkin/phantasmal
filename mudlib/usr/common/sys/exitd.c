@@ -31,9 +31,6 @@ void upgraded(varargs int clone);
 
 
 static void create(varargs int clone) {
-  if(clone)
-    error("Cloning exitd is not allowed!");
-
   ::create(clone);
 
   if(!find_object(SIMPLE_EXIT))
@@ -52,6 +49,9 @@ static void create(varargs int clone) {
 }
 
 void upgraded(varargs int clone) {
+  if(!SYSTEM() && !COMMON())
+    return;
+
   ::upgraded();
 
   name_for_dir = ([ DIR_NORTH : FILE("north"),
@@ -111,7 +111,9 @@ void upgraded(varargs int clone) {
 }
 
 void destructed(int clone) {
+  if(SYSTEM()) {
 
+  }
 }
 
 
@@ -212,6 +214,9 @@ void add_deferred_exits(void) {
   int    ctr;
   mixed* exits, *ex;
 
+  if(!SYSTEM() && !COMMON() && !GAME())
+    return;
+
   exits = deferred_add_exit;
   deferred_add_exit = ({ });
 
@@ -235,6 +240,9 @@ void add_deferred_exits(void) {
 }
 
 int num_deferred_exits(void) {
+  if(!SYSTEM() && !COMMON() && !GAME())
+    return -1;
+
   if(!deferred_add_exit && !deferred_add_newexit) return -1;
 
   return sizeof(deferred_add_exit)+sizeof(deferred_add_newexit);
@@ -330,6 +338,9 @@ void add_twoway_exit_between(object room1, object room2, int direction,
   object exit1, exit2;
   object dir, opp_dir;
 
+  if(!SYSTEM() && !COMMON() && !GAME())
+    return;
+
   if (direction <= 0) {
     error("Can't add an exit in a special direction!");
   }
@@ -389,6 +400,9 @@ void add_twoway_exit_between(object room1, object room2, int direction,
 void add_oneway_exit_between(object room1, object room2, int direction,
 			     int num1) {
   object exit1, dir;
+ 
+  if(!SYSTEM() && !COMMON() && !GAME())
+    return;
 
   if (direction <= 0) {
     error("Can't add an exit in a special direction!");
@@ -424,34 +438,19 @@ void add_oneway_exit_between(object room1, object room2, int direction,
   exit1->set_brief(PHRASED->new_simple_english_phrase("exit"));
 }
 
-void fix_exit(object exit, int type, int link) {
-
-  int direction;
-  object dir_name;
-
-  exit->set_exit_type(type);
-  exit->set_link(link);
-  exit->set_openable(FALSE);
-  exit->set_open(TRUE);
-  exit->set_container(TRUE);
-  exit->set_lockable(FALSE);
-  exit->set_locked(FALSE);
-
-  direction = exit->get_direction();
-  dir_name = name_for_dir[exit->get_direction()];
-  exit->set_glance(dir_name);
-  exit->set_brief(dir_name);
-  exit->set_look(dir_name);
-  exit->clear_nouns();
-  exit->add_noun(dir_name);
-}
-
 void remove_exit(object room, object exit) {
+  if(!SYSTEM() && !COMMON() && !GAME())
+    return;
+
   room->remove_exit(exit);
 }
 
 void clear_exit(object exit) {
   object exit2;
+
+  if(!SYSTEM() && !COMMON() && !GAME())
+    return;
+
   if (exit->get_exit_type() == ET_TWOWAY) {
     exit2 = EXITD->get_exit_by_num(exit->get_link());
     destruct_object(exit2);
@@ -461,6 +460,9 @@ void clear_exit(object exit) {
 
 void clear_all_exits(object room) {
   object exit, exit2;
+
+  if(!SYSTEM() && !COMMON() && !GAME())
+    return;
 
   if(!room)
     error("Passed nil to clear_all_exits!");
@@ -473,11 +475,13 @@ void clear_all_exits(object room) {
     destruct_object(exit);
   }
 
-/*  room->clear_exits(); */
 }
 
 object get_exit_by_num(int num) {
   int seg;
+
+  if(!SYSTEM() && !COMMON() && !GAME())
+    return nil;
 
   if(num < 0) return nil;
   seg = num / 100;
@@ -489,12 +493,18 @@ object get_exit_by_num(int num) {
 }
 
 int* get_exit_segments(void) {
+  if(!SYSTEM() && !COMMON() && !GAME())
+    return nil;
+
   return exit_segments[..];
 }
 
 int* get_all_exits(void) {
   int* exits, *tmp;
   int  iter;
+
+  if(!SYSTEM() && !COMMON() && !GAME())
+    return nil;
 
   exits = ({ });
   for(iter = 0; iter < sizeof(exit_segments); iter++) {
@@ -510,6 +520,9 @@ int* get_all_exits(void) {
 }
 
 int* exits_in_segment(int seg) {
+  if(!SYSTEM() && !COMMON() && !GAME())
+    return nil;
+
   if(sizeof( ({ seg}) & exit_segments )) {
     return OBJNUMD->objects_in_segment(seg);
   }

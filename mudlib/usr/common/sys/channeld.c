@@ -1,3 +1,4 @@
+#include <kernel/kernel.h>
 #include <config.h>
 #include <log.h>
 #include <channel.h>
@@ -8,6 +9,9 @@ int     num_channels;
 mixed*  channel_attributes;
 
 #define ATTRIB_ADMIN       1
+
+/* TODO:  Move this to /usr/game, or make it more configurable from
+   that location */
 
 /* Prototypes */
 void upgraded(varargs int clone);
@@ -25,7 +29,7 @@ static void create(varargs int clone) {
 void upgraded(varargs int clone) {
   int ctr;
 
-  if(!SYSTEM())
+  if(!SYSTEM() && !COMMON())
     return;
 
   /* Note:  these must mesh with include/channel.h.  Don't just modify
