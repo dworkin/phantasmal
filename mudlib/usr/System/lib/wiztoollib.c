@@ -530,6 +530,66 @@ static void cmd_delete_mobile(object user, string cmd, string str) {
 }
 
 
+static void cmd_delete_obj(object user, string cmd, string str) {
+  object *objs;
+  int     obj_num;
+
+  if(!str || STRINGD->is_whitespace(str)) {
+    user->message("Usage: " + cmd + " #<object number>\r\n");
+    user->message("   or  " + cmd + " object description\r\n");
+    return;
+  }
+
+  if(sscanf(str, "#%*d %*s") != 2
+     && sscanf(str, "%*s #%*d") != 2
+     && sscanf(str, "#%d", obj_num) == 1) {
+    /* Delete by object number */
+
+  } else {
+    /* Delete by object name */
+
+    str = STRINGD->trim_whitespace(str);
+    if(user->get_location()) {
+      objs = user->get_location()->find_contained_objects(user, str);
+      if(!objs || !sizeof(objs)) {
+	user->message("There's nothing matching '" + str + "'.\r\n");
+	return;
+      }
+      if(sizeof(objs) > 1) {
+	user->message("There are multiple things matching '" + str + "'.\r\n");
+	user->message("Specify just one.\r\n");
+	return;
+      }
+      obj_num = objs[0]->get_number();
+    } else {
+      user->message("You're nowhere.  You can't delete things there.\r\n");
+      return;
+    }
+  }
+
+  if(MOBILED->get_mobile_by_num(obj_num)) {
+    /* Do a mobile delete */
+    cmd_delete_mobile(user, "@delete_mobile", "#" + obj_num);
+  } else if(MAPD->get_room_by_num(obj_num)) {
+    /* Do a room delete */
+    cmd_delete_room(user, "@delete_room", "#" + obj_num);
+  } else if(EXITD->get_exit_by_num(obj_num)) {
+    object exit;
+
+    user->message("Removing exit...\r\n");
+    /* Do an exit delete */
+    exit = EXITD->get_exit_by_num(obj_num);
+    EXITD->remove_exit(exit->get_from_location(), exit);
+
+    user->message("Done.\r\n");
+  } else {
+    user->message("That's not a portable, a room, a mobile or an exit.\r\n");
+    user->message("Either it doesn't exist, or @delete can't delete it.\r\n");
+    return;
+  }
+}
+
+
 static void cmd_segment_map(object user, string cmd, string str) {
   int hs, ctr;
 
