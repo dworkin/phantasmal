@@ -1,0 +1,142 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+                      "http://www.w3.org/TR/xhtml1/DTD/strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<title>The Kernel Library for DGD: Kernel Overhead</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<link href="../../phantasmal.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<table width="95%" border="0" cellspacing="0" cellpadding="4">
+  <tr>
+    <td colspan="2"> <table width="100%" border="0" cellspacing="1"
+        cellpadding="0" class="main">
+        <tr>
+          <td class="banner">The DGD Kernel Library</td>
+        </tr>
+      </table></td>
+  </tr>
+  <tr>
+    <td valign="top">
+      <table width="25%"  border="0" cellspacing="1"
+             cellpadding="0"  class="main">
+        <tr>
+          <td class="content" style="font-size: 120%">
+
+          <ul style="margin: 0; padding-left: 10%">
+            <li> <a href="../index.html">DGD &amp; LPC Page</a> </li>
+	    <li> <a href="../LPC">LPC Textbook</a> </li>
+	    <li> <a href="http://www.sf.net/projects/phantasmal">Phantasmal
+	      SourceForge</a> </li>
+          </ul>
+
+        </td>
+        </tr>
+        <tr>
+          <td class="content" align="center">
+            <a href="http://validator.w3.org/check/referer">
+            <img src="../../images/valid-xhtml10.gif" alt="Valid XHTML 1.0!"
+             style="border:0;width:88px;height:31px" /></a><br />
+            <img src="../../images/pixel.gif"
+             style="border:0;width:88px;height:1px" alt="" /><br />
+            <a href="http://jigsaw.w3.org/css-validator/check/referer">
+            <img src="http://jigsaw.w3.org/css-validator/images/vcss"
+             alt="Valid CSS!" style="border:0;width:88px;height:31px" />
+            </a><br /><br /><br />
+            <a href="http://sourceforge.net">
+            <img src="http://sourceforge.net/sflogo.php?group_id=48659&amp;type=2"
+             style="border: 0; width: 125; height: 37;"
+	     alt="SourceForge.net Logo" /></a>
+          </td>
+        </tr>
+      </table></td>
+    <td> <table width="100%"  border="0" cellspacing="1" cellpadding="0" 
+          class="main">
+        <tr>
+          <td class="heading">&nbsp;&nbsp;&middot;&nbsp;
+	    <a href="http://phantasmal.sf.net/DGD">DGD Page</a> &gt;
+            <a href="index.html">Kernel Library</a> &gt;
+            <a href="">Kernel Overhead</a>
+          </td>
+        </tr>
+        <tr>
+          <td class="content">
+    
+
+  <h2> Overhead and the Kernel Library </h2>
+
+<pre>
+From: DGD Mailing List (Felix A. Croes)
+Date: Sat Feb 21 04:41:01 2004
+Subject: [DGD] Resolve Path & Array Efficiency
+
+"Steve Foley" wrote:
+
+>[...]
+> When I think of the normalize_path function, I think the major inefficiency that
+> could crop up is memory allocation (caused by new arrays).  Felix's
+> normalize_path basically minimizes the number of new arrays, and I honestly
+> couldn't write a more efficient algorithm (but that isn't saying a whole lot).
+> But you're right, it's not real easy to follow.
+
+The kernel library imposes some overhead.  I've done by best to make
+this overhead as small as possible, while still cramming in all the
+functionality that I want.  Most of the code is written for speed.
+
+DGD's memory allocation is very efficient (with profiling using a
+2.4.5-based mudlib, memory management measures about 2% of total
+execution time), but creating the smallest amount of intermediate
+values that require memory allocations -- strings, arrays, mappings
+and objects -- is still a good stragegy.
+
+Regards,
+Dworkin
+</pre>
+
+<hr />
+
+<pre>
+From: dgd at list.imaginary.com (Noah Gibbs)
+Date: Tue Jan  6 16:45:01 2004
+Subject: [DGD] A simple lib
+
+  This is old, but I meant to reply.
+
+--- Robert Forshaw wrote:
+> I was most detered from the kernel lib because
+> it looked like it would 
+> consume too much resources. My MUD will be
+> making heavy use of very short 
+> (milisecond) callouts and I don't want it
+> lagging because the resource 
+> manager itself is hogging the CPU. Am I wrong
+> in this assessment?
+
+  Possibly.  I've never had any performance problems
+with it, but I'm also doing something that acts a lot
+like a regular MUD.  Since a regular MUD uses an order
+of magnitude less CPU than a modern desktop machine
+provides (if that!), the small amount of waste that
+the Kernel Library involves is simply not an issue.
+
+  If you're going to do something that requires nearly
+your entire CPU load, and you're going to do it in
+tiny amounts at millisecond precision, then security
+and sanity-checking both need to go.  They're too
+expensive.  So you can write a less-secure and
+less-debuggable version than the Kernel, which will be
+faster.
+
+  Of course, if you're doing something that
+performance-intensive and precise, why are you using
+LPC?
+</pre>
+            <address>
+            <span><a href="mailto:angelbob-remove-spamfree@spamfree.users.sf.net">Noah Gibbs</a></span>
+            </address></td>
+        </tr>
+      </table></td>
+  </tr>
+</table>
+</body>
+</html>
