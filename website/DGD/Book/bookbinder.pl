@@ -354,6 +354,7 @@ sub write_out_html {
 	or die "Can't open index file ($outdir/index.base.html) "
 	    . "for writing\n: $!";
 
+    print FILE "<titledef text=\"Top Level\">\n\n";
     print FILE "<h1> Top-Level </h1>\n";
     print FILE "<ul>\n";
 
@@ -421,6 +422,8 @@ sub html_for_section {
 	or die "Can't open section file $filename: $!";
 
     print "Printing to SECFILE $filename.base.html...\n";
+
+    print SECFILE "<titledef text=\"$title\">\n\n";
 
     print SECFILE "<h2> $secnum $title </h2>\n";
     print SECFILE $content;
