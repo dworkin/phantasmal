@@ -1204,6 +1204,47 @@ Regards,
 Dworkin
 </pre>
 
+<hr />
+
+<pre>
+From dgd at list.imaginary.com  Tue Jan  6 07:29:01 2004
+From: dgd at list.imaginary.com (Felix A. Croes)
+Date: Tue Jan  6 07:29:01 2004
+Subject: [DGD] parse_string question
+In-Reply-To: <20040106083936.29574.qmail@web12823.mail.yahoo.com>
+Message-ID: <200401061328.i06DSJo6022374@pattern.dworkin.nl>
+
+Noah Gibbs <noah_gibbs@yahoo.com> wrote:
+
+> Then I add a 'bad token' rule.  The rule looks like
+> this:
+>
+> bad_token = /.*/
+>
+> It comes after all other token rules in the file.  So
+> it shouldn't affect any existing parseable grammars,
+> but it should make a bunch of inputs stop giving
+> "Invalid token at offset XXX" errors and start just
+> returning nil.
+>
+> No dice.  It turns out that adding the bad token rule
+> suddenly makes simple transitive verbs ("get lamp",
+> "look road") stop parsing.
+
+The bad_token matches everything, and parse_string() gives
+preference to the longest possible match.  So one token
+only matches "get" and another matches all of "get lamp"
+as a single token, and the latter one will be considered
+to be the real match.
+
+The ordering of tokens in the grammar only comes into play
+when two tokens match the same input string.  That doesn't
+happen here, "get lamp" is matched only by bad_token.
+
+Regards,
+Dworkin
+</pre>
+
   <p style="text-size: 150%"> <a href="index.html"> Back to DGD &amp; LPC
       Page </a> </p>
             <address>

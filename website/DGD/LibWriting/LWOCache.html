@@ -348,6 +348,55 @@ Easy to say, sometimes hard to really burn into your cortex.
 Zell
 </pre>
 
+<hr />
+
+<pre>
+From dgd at list.imaginary.com  Thu Jan  8 09:44:00 2004
+From: dgd at list.imaginary.com (Par Winzell)
+Date: Thu Jan  8 09:44:00 2004
+Subject: [DGD] What are lightweight objects good for?
+In-Reply-To: <BAY10-F41ztwLJQjTps000296a5@hotmail.com>
+References: <BAY10-F41ztwLJQjTps000296a5@hotmail.com>
+Message-ID: <1073576646.18539.16.camel@alyx.workpc.tds.net>
+
+> I have read about lightweight objects and understand what they do, but I 
+> don't see how they are useful. Do they use less memory? I take it that's 
+> what the 'lightweight' is about. Where would I want to use a lightweight 
+> object rather than a regular object?
+
+Traditional, 'heavy' objects have a permanent existance of their own.
+They will stay around explicitly destructed. LWO's are light in that
+when the last reference to them disappears, so do they -- at that point,
+there's no way to ever reacquire a pointer to them.
+
+With DGD, the main reason not to use LWO's for everything is that they
+have a lot of limitations. If they had no limitations, you'd have a Java
+style environment where -all- objects are garbage collected when their
+last reference disappears, and where you e.g. run daemon threads (which
+count as references) if they should lead self-sufficient lives.
+
+In DGD, the best first use of LWO's is to replace all your old hacks
+where you use arrays and mappings to represent what really ought to be
+abstracted data structure. Most LPMuds that are 'grown up' versions of
+2.4.5 have a lot of these around... fooConfig[FOO_CONF_FLAGS] &
+FOO_FLAG_HUNGRY and such where you really should have
+fooConfig->is_hungry(). Once you've completed a few rewrites like that,
+you have a much better feel for what they can do.
+
+After that, use them any time you want to be able to tie data and logic
+in a single bundle that you can easily pass around, but which you don't
+need to worry about destructing afterwards. If you're used to Java or
+so, it should be completely natural.
+
+For me, what happened was that I found myself trying to increasingly
+simulate LWO's with 'heavy' objects. I'd put in little self-destructing
+zero second callouts in objects that I wanted to be able to clone and
+forget about. When LWO's came out, they were the answer to many a
+prayer.
+
+Zell
+</pre>
+
   <p style="text-size: 150%"> <a href="../index.html"> Back to top level
     </a> </p>
             <address>

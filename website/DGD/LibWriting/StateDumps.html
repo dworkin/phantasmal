@@ -85,6 +85,224 @@ cold-start we'd be screwed anyway. It's all in the dumpfile.
 Zell
 </pre>
 
+<hr />
+
+<pre>
+Date: Tue, 4 May 1999 13:47:16 +0200 (CEST)
+From: "Felix A. Croes" <felix@dworkin.nl>
+Message-Id: <199905041147.NAA13119@pattern.dworkin.nl>
+To: dgd@list.imaginary.com
+Subject: Re: [DGD]Problem with state-dump
+
+balduin@uni-paderborn.de wrote:
+
+> After dworkins hint how to handle more than 64k objects with
+> dgd, i now decided to use dgd's state-dump for object 
+> persistency and use the database for indexing purposes only.
+>
+> I currently have some problems with this:
+>
+> - When I first did a dump_state() followed by a shutdown(),
+>   I noticed after restart, that the connection objects
+>   (cloned by connection() in e.g. the telnet port object to 
+>    represent the connection) (oops many "connection"s in this sentence)
+>   where still existent. I now close down all connections
+>   when preparing dump_state() to avoid dumping them.
+
+It is best not to close them in advance, but to store a copy of users()
+in the driver object just before every state dump, so you can destruct
+the objects on a restore.
+
+
+>[...]
+>   Nevertheless the server is shutting down and the dump-file seems to
+>   be ok. But i'd like to have a clue what is happening.
+
+shutdown() doesn't abort the current thread.  Rather, it takes action
+immediately after the current thread has completed.  The same is true
+for dump_state().
+
+
+> - This leads to the next problem. I'd like to do a state-dump once in
+>   a while, just to reduce my risk in case of emergency. Lets say shortage
+>   of electricity. Or a server crash during development. Is there a way
+>   to do this without saving/loosing the connection objects to avoid the 
+>   object leak mentioned above ?
+
+Yes, destruct the connection objects immediately after a restore
+instead of before creating a state dump.
+
+Regards,
+Dworkin
+
+
+Date: Wed, 10 May 2000 15:49:50 -0400
+From: Kris Van Hees <aedil@alchar.org>
+To: dgd@list.imaginary.com
+Subject: Re: [DGD]statedumping
+Message-ID: <20000510154950.A21405@alchar.org>
+
+The state dump mechanism of DGD is not a system where a snapshot is taken
+of the core memory image of the running process (such as suspend systems
+on laptops tend to do), but rather a persistent store to keep the object
+world across server reboots.
+
+It is quite intimately connected to the swapping mechanism that actually
+addresses your other concern.  As objects are swapped out, the memory space
+they took up is released to the driver again.  Every now and then a full
+sync is done with the swap (I didn't check this in the code, so this might
+have changed since the last time I dealt with that code).  At that moment,
+most of the allocated memory is released again, what tends to deal nicely
+with possible fragmentation that occured in between two such syncs.
+
+So in the end, the swapping mechanism cleans up memory junk (such as circular
+referencing data structures that cannot be cleaned up through reference
+counting) and the state dump just makes it so that the object world is saved
+in a persistent state, to be loaded again after a server reboot.  It is not
+an OS-based suspended image of the process, but rather a driver-implemented
+system.
+
+	Kris
+
+On Wed, May 10, 2000 at 10:33:52PM +0300, Risto Karjalainen wrote:
+> 
+>    I may be stupid or I just know too little of things but there's
+>    
+>    one things that bugs me like hell:
+>    
+>    
+>    
+>    Isn't those reboots needed to clear the computer's memory of the shite
+>    that
+>    
+>    the mud-driver has created there? And if so, how does these statedumps
+>    work
+>    
+>    then? If I reboot and restore the mud state from a state-dump, isn't
+>    the memory
+>    
+>    filled up with that old shite again as all those unnecessary objects
+>    are loaded
+>    
+>    in the memory again? Or is that statedump just a kind of a crash
+>    recovery
+>    
+>    system and it's not necessary to boot the MUD at all?
+>    
+>    
+>    
+>    I'm out of thoughts.
+>    
+>    
+>    
+>    Regards,
+>    
+>    Risto Karjalainen
+
+-- 
+Software Developer & Creator of Worlds
+
+List config page:  http://list.imaginary.com/mailman/listinfo/dgd
+
+
+
+
+Date: Wed, 10 May 2000 23:28:00 +0200 (CEST)
+From: "Felix A. Croes" <felix@dworkin.nl>
+Message-Id: <200005102128.XAA09837@dworkin.nl>
+To: dgd@list.imaginary.com
+Subject: Re: [DGD]statedumping
+
+Stephen Schmidt <schmidsj@union.edu> wrote:
+
+>[...]
+> Ah, a slightly different question then: What does DGD do if the
+> swap file exceeds the maximum size? I don't know. I imagine it
+> does something that raises a problem for true perpetuality, but
+> what is it?
+
+It stops running, notifying you of the problem.  Of course, you
+should have noticed it some time before, and rebooted the mud with
+a larger swapfile size limit.
+
+
+> > Good point altogether.  I was of course making the assumption that the
+> > mudlib itself has been written in a decent way to not leave garbage around.
+>
+> In principle, of course, that should be true; in practice, proving
+> that any mudlib complex enough to be interesting actually satisfied
+> that assumption is non-trivial. I don't know for sure but I would
+> imagine the large majority of publically available mudlibs probably
+> have at least some small leaks in them. If you're going to reboot
+> the mud every so often anyway, then they wouldn't be noticed; but
+> if you went to true perpetuality they'd eventually rear their
+> heads and bite.
+
+But that is not the end of it.  In a persistent mud, there will be
+ample opportunity to track down these garbage objects, even if
+they're not cleaned up automatically.
+
+The strategy followed by many MOOs, as well as the kernel lib for DGD,
+is that wizards are responsible for their own objects, with some
+(flexible) limit on the amount of objects they can have.  If wizards
+have to recycle their garbage before they can create new objects, or
+even have to write areas that do such recycling automatically because
+they just won't work otherwise, muds will have much less of a garbage
+problem.  Quotas also avoid the problem of someone other than the
+wizard in question having to decide what is or is not garbage.
+
+On LambdaMOO, quotas have been used successfully to <reduce> the
+overall size of the mud.
+
+Regards,
+Dworkin
+
+
+
+
+
+Date:   Mon, 11 Jun 2001 11:21:32 +0200 (MET DST)
+From: Ludger Merkens <balduin@uni-paderborn.de>
+X-Sender: balduin@violine
+To: dgd@list.imaginary.com
+Subject: Re: [DGD]How many objects can I have?
+
+On Mon, 11 Jun 2001, mtaylor wrote:
+
+> Kind of continuing the theme of swaps and the possibility of keeping a Mud
+> running. I'm not entirely sure I know how to swap objects out that aren't
+> being used. I would like to use the full functionality of DGD and employ
+> this great feature.
+> 
+> I'm just wondering how it works exactly. Is it that objects not in use are
+> saved to disk? How do you tell if an object is in use or not? When they are
+> needed again how do you reload the object you saved?
+
+You just don't see it. All objects regardless if on disk or in memory are
+handled as if in memory. For a programmers view, it just doesn't matter.
+Probably the only difference is when starting the driver. Then you
+probably have to distinguish between a restart from state-file and a 
+start from scratch, because in the latter case, you might want to create
+some initial objects. Think about connection objects, they have to be
+recloned even on restart, but thats all.
+
+> 
+> I'm so sorry if I am sounding really stupid, or if all these questions have
+> been asked ... It's just I keep feeling I'm out of my depth ;)
+
+I don't know many systems with this degree of ease when using persistency. 
+So questions must occur.
+> 
+> I really like the DGD driver and I am at the stage with a mudlib where we
+> are starting to develop skills, rooms etc. We completely built a mudlib from
+> the bottom up and it all seems to be working fine.
+
+[security stuff skipped]
+> 
+
+Ludger Merkens
+</pre>
+
   <p style="text-size: 150%"> <a href="../index.html"> Back to top level
     </a> </p>
             <address>

@@ -474,5 +474,93 @@ protocol, and should be treated like one.
 noah_gibbs@yahoo.com
 </pre>
 
+<hr />
+
+<pre>
+From dgd at list.imaginary.com  Fri Jan  9 13:01:01 2004
+From: dgd at list.imaginary.com (Par Winzell)
+Date: Fri Jan  9 13:01:01 2004
+Subject: [DGD] Re: Hide text
+In-Reply-To: <BAY10-F62UZwZWdI7Bd0002de91@hotmail.com>
+References: <BAY10-F62UZwZWdI7Bd0002de91@hotmail.com>
+Message-ID: <3FFEFA7F.2050506@skotos.net>
+
+> I've repeatedly tried using send_message(0) to hide the input echoing, 
+> and it simply refuses to work. I've tried including it everywhere in my 
+> code and I still see what is being entered, except for that one line 
+> which ends in 'Password: ' which seems to automatically hide the input. 
+> I've even tried send_message(1) in case it was the wrong flag! Anyhow, 
+> it seems impossible for me to hide user input with this function.
+
+If there is magicaly behaviour on the word 'Password', then I imagine 
+that's something the client does, not DGD. Perhaps your client simply 
+ignores the TELNET command to stop echo? Lots do.
+
+Zell
+
+
+From dgd at list.imaginary.com  Fri Jan  9 13:14:01 2004
+From: dgd at list.imaginary.com (Robert Forshaw)
+Date: Fri Jan  9 13:14:01 2004
+Subject: [DGD] Re: Hide text
+Message-ID: <BAY10-F118R35ocSyXz0002f468@hotmail.com>
+
+>From: Par Winzell <zell@skotos.net>
+>>I've repeatedly tried using send_message(0) to hide the input echoing, and 
+>>it simply refuses to work. I've tried including it everywhere in my code 
+>>and I still see what is being entered, except for that one line which ends 
+>>in 'Password: ' which seems to automatically hide the input. I've even 
+>>tried send_message(1) in case it was the wrong flag! Anyhow, it seems 
+>>impossible for me to hide user input with this function.
+>
+>If there is magicaly behaviour on the word 'Password', then I imagine 
+>that's something the client does, not DGD. Perhaps your client simply 
+>ignores the TELNET command to stop echo? Lots do.
+
+That's quite possible, and something that didn't occur to me. I'd like to 
+hide the password input regardless of client though. That is possible, isn't 
+it?
+
+_________________________________________________________________
+It's fast, it's easy and it's free. Get MSN Messenger today! 
+http://www.msn.co.uk/messenger
+
+
+From dgd at list.imaginary.com  Fri Jan  9 13:41:01 2004
+From: dgd at list.imaginary.com (Erwin Harte)
+Date: Fri Jan  9 13:41:01 2004
+Subject: [DGD] Re: Hide text
+In-Reply-To: <BAY10-F118R35ocSyXz0002f468@hotmail.com>
+References: <BAY10-F118R35ocSyXz0002f468@hotmail.com>
+Message-ID: <20040109194038.GS13070@sleepy.dwarf>
+
+On Fri, Jan 09, 2004 at 07:13:22PM +0000, Robert Forshaw wrote:
+> >From: Par Winzell <zell@skotos.net>
+[...]
+> >If there is magicaly behaviour on the word 'Password', then I imagine 
+> >that's something the client does, not DGD. Perhaps your client simply 
+> >ignores the TELNET command to stop echo? Lots do.
+> 
+> That's quite possible, and something that didn't occur to me. I'd like to 
+> hide the password input regardless of client though. That is possible, 
+> isn't it?
+
+Not if the client is braindead. :-)
+
+You could use both send_message(0) and reorder the output to have
+'Password' at the beginning of the line both times?
+
+    Password:
+    Password (verify):
+
+... Certainly make sure you test the results with something other than
+your own telnet executable.  There are various mud/telnet
+implementations that you could use for this.
+
+Erwin.
+-- 
+Erwin Harte <harte@is-here.com>
+</pre>
+
   <p style="text-size: 150%"> <a href="../index.html"> Back to top level
     </a> </p>

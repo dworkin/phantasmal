@@ -1,0 +1,271 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+                      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<title>DGD and LPC: Player vs Body</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<link href="../../phantasmal.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<table width="95%" border="0" cellspacing="0" cellpadding="4">
+  <tr>
+    <td colspan="2"> <table width="100%" border="0" cellspacing="1"
+        cellpadding="0" class="main">
+        <tr>
+          <td class="banner">The DGD Driver</td>
+        </tr>
+      </table></td>
+  </tr>
+  <tr>
+    <td valign="top">
+      <table width="25%"  border="0" cellspacing="1"
+             cellpadding="0"  class="main">
+        <tr>
+          <td class="content" style="font-size: 120%">
+
+          <ul style="margin: 0; padding-left: 10%">
+            <li> <a href="index.html">DGD &amp; LPC Page</a> </li>
+	    <li> <a href="../LPC">LPC Textbook</a> </li>
+	    <li> <a href="../Book">New LPC Introduction</a> </li>
+          </ul>
+
+        </td>
+        </tr>
+        <tr>
+          <td class="content" align="center">
+            <a href="http://validator.w3.org/check/referer">
+            <img src="../../images/valid-xhtml10.gif" alt="Valid XHTML 1.0!"
+             style="border:0;width:88px;height:31px" /></a><br />
+            <img src="../../images/pixel.gif"
+             style="border:0;width:88px;height:1px" alt="" /><br />
+            <a href="http://jigsaw.w3.org/css-validator/check/referer">
+            <img src="http://jigsaw.w3.org/css-validator/images/vcss"
+             alt="Valid CSS!" style="border:0;width:88px;height:31px" />
+            </a><br /><br /><br />
+            <a href="http://sourceforge.net">
+            <img src="http://sourceforge.net/sflogo.php?group_id=48659&amp;type=2"
+             style="border: 0; width: 125; height: 37;"
+	     alt="SourceForge.net Logo" /></a>
+          </td>
+        </tr>
+      </table></td>
+    <td> <table width="100%"  border="0" cellspacing="1" cellpadding="0" 
+          class="main">
+        <tr>
+          <td class="heading">&nbsp;&nbsp;&middot;&nbsp;
+	    <a href="http://phantasmal.sf.net/DGD">DGD Page</a> &gt;
+            <a href="">Player vs Body</a>
+          </td>
+        </tr>
+        <tr>
+          <td class="content">
+  
+
+  <h2> Separating Player LPC Objects from Body Objects </h2>
+
+  <p>
+    It's possible to separate a player's in-game presence into many
+    parts, or few.  You can have separate LPC objects for the player,
+    the network connection, the mobile (Skotos uses the phrase 'combat
+    brain' for this) and the material body, or you can combine any or
+    all of them into fewer objects, or just a single object.
+  </p>
+
+  <p>
+    Melville separates the player&frasl;user&frasl;connection object
+    from the physical body object.  Phantasmal goes a step further and
+    separates out the idea of a mobile into its own object.  These
+    methods make it possible to do tricks like swapping bodies more
+    easily, and to otherwise reassign network connections, at the cost
+    of more files, and perhaps more complexity, in the player data.
+  </p>
+
+  <p>
+    Phantasmal separates the mobile object out specifically to more
+    easily allow NPC actions and player actions to share code.  By
+    making player actions &quot;more like&quot; NPC actions, the same
+    functions can operate for both.
+  </p>
+
+<pre>
+Date: Sat, 13 Jan 2001 22:30:50 -0500 (EST)
+From: Stephen Schmidt <schmidsj@union.edu>
+To: dgd@list.imaginary.com
+Subject: Re: [DGD]DGD and Melville
+
+On Sun, 14 Jan 2001, John West McKenna wrote:
+> It's confusing.  I'm not really sure why Melville does things the way it
+> does.
+
+For Deeply Philosophical Reasons. :)
+
+The idea is that you should distinguish between the person
+playing the game, and their character in the game world.
+Those ought to be, in most reasonable game designs,
+separate concepts. user.c is the former and player.c
+(normally) is the latter. It has a number of advantages.
+If you want a player to change his game identity, you
+can change his body without having to change anything
+about his connection or identity. For instance, this
+can permit wizards to assume NPC identities in a very
+seamless way - just have their user object point at
+the NPC body (and put their wizard body on ice in
+the interim). TMI-2 mudlib has commands to do that.
+This is also how TMI-2 handles death; destroy the
+player's body (it's dead now, so you replace it with
+a corpse object), clone a ghost object, and point the
+user object at the ghost. Melville is a barebones lib,
+so it doesn't do that sort of thing, but the capacity
+is there.
+You can also do possession (two users both pointing
+at the same body), and dopplegangers (two users
+pointing at separate but identical bodies) and a
+host of other Fun Stuff this way.
+
+If you wanted to, you could also have different bodies
+for different races; thus, elf.c, dwarf.c, orge.c,
+pixie.c, vampire.c. Then each race could have totally
+different code. The only thing I ever knew that used
+that ability was TMI-2's ghost object - the move_player()
+code in ghost.c didn't include the check for doors,
+so that ghosts could move through doors even if they
+were closed and locked. You can imagine doing that
+in a vastly more differentiated way to make real
+serious differences between races. Doing that, you
+could ultimately start to break down the PC vs. NPC,
+player.c vs. monster.c distinction, which I thought
+then (and still do) is important from a game-design
+perspective.
+
+Of course, there are practical advantages, such as handling
+net-dead players (and this method would be even more
+important, I think, in a persistent game).
+
+> Melville seems to follow a similar path, but with a few little differences
+> (for reasons that I don't understand).  It has the user object handling
+> the player's email address and real name.  To me, that belongs in the
+> player object.
+
+It's because different users might, conceivably, run the
+same game world character (and conversely, one user might
+have several game world characters - certainly a wizard
+might do that). The email and real name are part of the
+real player, not the game character.
+ 
+I think John's system and mine are essentially the same,
+and I agree that, unless you want to switch to a single
+user/player joint object, that's the method to follow.
+I think one should have the two-object system for
+theoretical reasons, but in practice there certainly
+is some convenience to the single-object way.
+
+Steve 
+
+"Bill Gates' biggest fear is not that some kid is brewing up the next killer
+app in his garage in Kenosha. His biggest fear is that some kid will brew up
+the next killer app in his garage in Kenosha and Microsoft won't own it."
+	Seattle Times, 4/1-7 2000
+
+
+
+
+Date: Fri, 25 May 2001 22:31:26 -0400 (EDT)
+From: Stephen Schmidt <schmidsj@union.edu>
+To: <dgd@list.imaginary.com>
+Subject: Re: [DGD]Inherit and include
+Message-ID: <Pine.OSF.4.33.0105252220310.76690-100000@idol.union.edu>
+
+On Sat, 26 May 2001, mtaylor wrote:
+> We have a player.c
+> which holds all the information for the Players Character (name, stats etc)
+> and also the functions that deal with the connection stuff. Is this a bad
+> idea?
+
+Probably not. It simplifies things a little bit. There are two
+reasons to have two separate objects, one practical, one aesthetic.
+The practical one - you may want a user to be able to change the
+player (or perhaps monster) object that he/she is controlling.
+For instance, you might want a wizard to take over an NPC body.
+Or you might want to have a player switch from a regular body
+to a ghost body when he/she dies. (That avoids the problems
+involved with a death shadow. You can also implement different
+functionality in the two. For instance, the TMI-2 mudlib has
+different move_player() functions; the ghost body bypasses the
+check for a door, so that ghosts can walk through doors.)
+The aesthetic one is that, conceptually, the real person who
+is playing the game, and their game alter ego, are separate
+entities; they should be represented by two different objects.
+The Melville system of user.c and player.c conforms to this
+aesthetic issue - all information about the real person (name,
+email address, password) is in user.c, and all information
+about the game alter ego (description, location in the game
+world, stats if you add them) are in player.c. The kernel
+mudlib does not quite conform to it - specifically, the
+kernel's user.c (which is analagous to Melville's player.c)
+contains some information about the real person playing the
+game which, according to the aesthetic principle, should be
+in connection.c (which is analagous to Melville's user.c).
+
+But if you are not planning to do body swapping, and if you
+are not concerned about the aesthetic design issue, then having
+them as a single object is fine.
+
+> Now if I have a close function in the player.c I have two big problems. One
+> is that if I call destruct_object(this_object()) then it says Too many
+> arguments for function close.
+
+Wherever close() is being invoked, your are sending more arguments
+than your close() function is planning to receive. Should be an
+easy fix - just add the required argument to your close() function.
+(If you are using the kernel lib, it is Considered Harmful to
+alter the kernel lib, so if the close() function is being called
+from within the kernel, don't change the call; change your function.)
+
+On the other questions I defer to those more knowledgeable.
+
+Steve
+</pre>
+
+<hr />
+
+<pre>
+From dgd at list.imaginary.com  Thu Jan  8 10:35:02 2004
+From: dgd at list.imaginary.com (Stephen Schmidt)
+Date: Thu Jan  8 10:35:02 2004
+Subject: [DGD] Persistance
+In-Reply-To: <BAY10-F524W6ws5Bp9d00040144@hotmail.com>
+Message-ID: <Pine.OSF.4.40.0401081131220.333277-100000@idol.union.edu>
+
+On Thu, 8 Jan 2004, Robert Forshaw wrote:
+> Don't you have to destruct the user object in order for their connection to
+> be dropped?
+
+-This- is why the connection object and the user object should
+be different objects  :)
+
+It does raise the point that if there is data in the connection
+object, you have to save that when you drop the connection. I
+would argue that any data describing the human player playing
+the game should be stored in the connection object. The player's
+password, in particular, ought to be there. That probably has
+to go into a save file, for this reason. But the connection
+object really doesn't need much more data than that. Melville
+stores password, real name, last time logged on, IP address
+of last login, and one or two more things. All of which are
+not part of the game world, but are accounting dealing with
+the human player on the other end of the connection.
+
+Steve
+</pre>
+
+  <p style="text-size: 150%"> <a href="../index.html"> Back to top level
+    </a> </p>
+            <address>
+            <span><a href="mailto:angelbob-remove-spamfree@spamfree.users.sf.net">Noah Gibbs</a></span>
+            </address></td>
+        </tr>
+      </table></td>
+  </tr>
+</table>
+</body>
+</html>
