@@ -1,4 +1,4 @@
-/* $Header: /cvsroot/phantasmal/mudlib/usr/System/obj/user.c,v 1.66 2003/11/12 22:26:18 angelbob Exp $ */
+/* $Header: /cvsroot/phantasmal/mudlib/usr/System/obj/user.c,v 1.67 2003/11/15 20:06:59 angelbob Exp $ */
 
 #include <kernel/kernel.h>
 #include <kernel/user.h>
@@ -173,11 +173,16 @@ static void save_user_to_file(void) {
   save_object(SYSTEM_USER_DIR + "/" + username_to_filename(name) + ".pwd");
 }
 
-static void restore_user_from_file(string str) {
+static int restore_user_from_file(string str) {
   object* chanlist;
   int     chan_code, channel, subcode;
 
-  restore_object(SYSTEM_USER_DIR + "/" + username_to_filename(str) + ".pwd");
+  if(!restore_object(SYSTEM_USER_DIR + "/" + username_to_filename(str)
+		     + ".pwd")) {
+    /* No such file, can't restore */
+    CHANNELD->unsubscribe_user_from_all(this_object());
+    return 0;
+  }
 
   CHANNELD->unsubscribe_user_from_all(this_object());
 
@@ -216,6 +221,8 @@ static void restore_user_from_file(string str) {
     LOGD->write_syslog("Subcode " + subcode + " means user didn't sub to all "
 		       + "appropriate channels!", LOG_WARNING);
   }
+
+  return 1;
 }
 
 
@@ -520,13 +527,16 @@ void notify_moved(object obj) {
  * Returns true if the name isn't allowed
  */
 private int name_is_forbidden(string name) {
-  string str;
+  string filename;
 
-  str = STRINGD->to_lower(name);
+  filename = username_to_filename(name);
+  filename = STRINGD->to_lower(filename);
 
-  if(str == "common")
+  if(filename == "game")
     return 1;
-  if(str == "system")
+  if(filename == "common")
+    return 1;
+  if(filename == "system")
     return 1;
 }
 
@@ -554,6 +564,8 @@ int login(string str)
       return MODE_DISCONNECT;
     }
     Name = name = str;
+
+    /* Capitalize first letter of Name (but not name) */
     if (Name[0] >= 'a' && Name[0] <= 'z') {
       Name[0] -= 'a' - 'A';
     }
@@ -573,7 +585,10 @@ int login(string str)
       set_state(previous_object(), STATE_LOGIN);
     } else {
       /* no password; login immediately */
+
+      /* Set our connection object to the one that just called us */
       connection(previous_object());
+
       message_all_users(Name + " ");
       system_phrase_all_users("logs in.");
       message_all_users("\r\n");
