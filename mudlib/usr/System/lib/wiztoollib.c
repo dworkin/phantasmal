@@ -557,13 +557,21 @@ static void cmd_set_segment_zone(object user, string cmd, string str) {
 
 
 static void cmd_zone_map(object user, string cmd, string str) {
+  int ctr, num_zones;
+
   if(str && !STRINGD->is_whitespace(str)) {
     user->message("Usage: " + cmd + "\r\n");
     return;
   }
 
+  num_zones = ZONED->num_zones();
+
   user->message("Zones:\r\n");
-  user->message("  1:   Miskatonic University\r\n");
+  for(ctr = 0; ctr < num_zones; ctr++) {
+    user->message(ralign(ctr + "", 3) + ": " + ZONED->get_name_for_zone(ctr)
+		  + "\r\n");
+    /* user->message("  1:   Miskatonic University\r\n"); */
+  }
   user->message("-----\r\n");
 }
 
