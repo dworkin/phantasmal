@@ -3,7 +3,7 @@
 #include <kernel/kernel.h>
 #include <log.h>
 
-/* Segments containing mobiles */
+/* MobileD-owned Segments */
 private int*    mobile_segments;
 
 /* Whether the MOBILED has been initialized */
@@ -12,7 +12,8 @@ private int     initialized;
 /* The mapping of tag names to files */
 private mapping tag_code;
 
-private object  mobile_dtd;
+private object  mobfile_dtd;
+private object  binder_dtd;
 
 /* Prototypes */
         void   upgraded(varargs int clone);
@@ -27,19 +28,88 @@ static void create(varargs int clone) {
     error("Cloning mobiled is not allowed!");
 
   mobile_segments = ({ });
-  tag_code = ([ ]);
 
   upgraded();
 
 }
 
-void upgraded(varargs int clone) {
+private void load_tag_codes(void) {
+  string bind_file, tag, file;
+  int    ctr;
+  mixed  unq_data;
 
+  bind_file = read_file(MOBILE_BIND_FILE);
+  if(!bind_file)
+    error("Cannot read binder file " + MOBILE_BIND_FILE + "!");
+
+  unq_data = UNQ_PARSER->unq_parse_with_dtd(bind_file, binder_dtd);
+  if(!unq_data)
+    error("Cannot parse binder text in MOBILED::init()!");
+
+  if (sizeof(unq_data) % 2)
+    error("Odd sized unq chunk in MOBILED::init()!");
+
+  for (ctr = 0; ctr < sizeof(unq_data); ctr += 2) {
+    if (STRINGD->stricmp(unq_data[ctr],"bind"))
+      error("Not a code/tag binding in MOBILED::init()!");
+
+    if (!STRINGD->stricmp(unq_data[ctr+1][0][0],"tag")) {
+      tag = unq_data[ctr+1][0][1];
+      file = unq_data[ctr+1][1][1];
+    } else {
+      tag = unq_data[ctr+1][1][1];
+      file = unq_data[ctr+1][0][1];
+    }
+
+    if (tag_code[tag] != nil) {
+      error("Tag " + tag + " is already bound in MOBILED::init()!");
+    }
+
+    tag_code[tag] = file;
+    if(!find_object(file))
+      compile_object(file);
+  }
+}
+
+void upgraded(varargs int clone) {
+  /* Reload the Binder */
+  tag_code = ([ ]);
+
+  if(mobfile_dtd && binder_dtd) {
+    load_tag_codes();
+  }
 }
 
 void destructed(int clone) {
-  if(mobile_dtd)
-    destruct_object(mobile_dtd);
+  if(mobfile_dtd)
+    destruct_object(mobfile_dtd);
+  if(binder_dtd)
+    destruct_object(mobfile_dtd);
+}
+
+void init(void) {
+  string mobfile_dtd_string, binder_dtd_string;
+
+  if(!initialized) {
+    mobfile_dtd_string = read_file(MOB_FILE_DTD);
+    if(!mobfile_dtd_string)
+      error("Can't read file " + MOB_FILE_DTD + "!");
+
+    binder_dtd_string = read_file(BIND_DTD);
+    if(!binder_dtd_string)
+      error("Can't read file " + BIND_DTD + "!");
+
+    binder_dtd = clone_object(UNQ_DTD);
+    binder_dtd->load(binder_dtd_string);
+
+    mobfile_dtd = clone_object(UNQ_DTD);
+    mobfile_dtd->load(mobfile_dtd_string);
+
+    load_tag_codes();
+  } else
+    error("MOBILED is already initialized in MOBILED::init()!");
+
+  initialized = 1;
 }
 
 
@@ -156,59 +226,6 @@ int* all_mobiles(void) {
 }
 
 
-void init(string mobfile_dtd_string, string binder_dtd_string) {
-  object binder_dtd;
-  string bind_file, tag, file;
-  int    ctr;
-  mixed  unq_data;
-
-  if(!initialized) {
-    binder_dtd = clone_object(UNQ_DTD);
-    binder_dtd->load(binder_dtd_string);
-
-    mobile_dtd = clone_object(UNQ_DTD);
-    mobile_dtd->load(mobfile_dtd_string);
-
-    bind_file = read_file(MOBILE_BIND_FILE);
-    if(!bind_file)
-      error("Cannot read binder file " + MOBILE_BIND_FILE + "!");
-
-    unq_data = UNQ_PARSER->unq_parse_with_dtd(bind_file, binder_dtd);
-    if(!unq_data)
-      error("Cannot parse binder text in MOBILED::init()!");
-
-    if (sizeof(unq_data) % 2)
-      error("Odd sized unq chunk in MOBILED::init()!");
-
-    for (ctr = 0; ctr < sizeof(unq_data); ctr += 2) {
-      if (STRINGD->stricmp(unq_data[ctr],"bind"))
-	error("Not a code/tag binding in MOBILED::init()!");
-
-      if (!STRINGD->stricmp(unq_data[ctr+1][0][0],"tag")) {
-	tag = unq_data[ctr+1][0][1];
-	file = unq_data[ctr+1][1][1];
-      } else {
-	tag = unq_data[ctr+1][1][1];
-	file = unq_data[ctr+1][0][1];
-      }
-
-      if (tag_code[tag] != nil) {
-	error("Tag " + tag + " is already bound in MOBILED::init()!");
-      }
-
-      tag_code[tag] = file;
-      if(!find_object(file))
-	compile_object(file);
-    }
-  } else
-    error("MOBILED is already initialized in MOBILED::init()!");
-
-  if(binder_dtd)
-    destruct_object(binder_dtd);
-
-  initialized = 1;
-}
-
 string get_file_by_mobile_type(string mobtype) {
   if(!SYSTEM())
     error("Only SYSTEM code can query the MOBILED for mobile types!");
@@ -227,7 +244,7 @@ void add_unq_text_mobiles(string unq_text, string filename) {
   if(!initialized)
     error("Can't add mobiles to uninitialized MOBILED!");
 
-  unq_data = UNQ_PARSER->unq_parse_with_dtd(unq_text, mobile_dtd);
+  unq_data = UNQ_PARSER->unq_parse_with_dtd(unq_text, mobfile_dtd);
   if(!unq_data) {
     if(filename) { 
       error("Cannot parse file '" + filename
@@ -245,7 +262,7 @@ void add_dtd_unq_mobiles(mixed *unq, string filename) {
   object mobile;
 
   if(!initialized)
-    error("Can't add rooms to uninitialized MOBILED!");
+    error("Can't add mobiles to uninitialized MOBILED!");
 
   iter = 0;
   while(iter < sizeof(unq)) {

@@ -154,10 +154,7 @@ static void create(varargs int clone)
   }
 
   /* Set up the MOBILED */
-  mobfile_dtd = read_file(MOB_FILE_DTD);
-  if(!mobfile_dtd)
-    error("Can't read file " + MOB_FILE_DTD + "!");
-  MOBILED->init(mobfile_dtd, bind_dtd);
+  MOBILED->init();
 
   /* Load the mobilefile into MOBILED */
   mob_file = read_file(MOB_FILE);
