@@ -15,5 +15,15 @@ Release 0.10:
 	* UNQ DTD error handling now can accept a filename
 	* A basic mobfile is now saved like the roomfile and zonefile.  It
 	still needs more work before it can be restored, though.
+	* Mobiles now have a binder file
+	* There is an "unq" builtin type when UNQ parsing for freeform UNQ
+	content
+	* The %compile command will append a ".c" to the supplied filename
+	if the file as mentioned doesn't exist, but the same name with a
+	".c" exists and is at least one byte long.
+	* There is a @new_mobile command to create a new mobile, currently
+	only in very restricted ways.
+	* Added help for new mobile commands
 	* UNQ DTDs can now import other DTD's.
 	* Improved UNQ DTD type inheritance.
+	* The mobfile can now be restored.
