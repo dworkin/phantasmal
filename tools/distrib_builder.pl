@@ -20,7 +20,7 @@ use File::Spec;
 my $input;
 my $builderdir = cwd();
 my ($phantasmaldir, $driverdir, $testgamedir);
-my $outdir = "phantest";
+my $outdir = "game_bundle";
 
 print "Current dir is $builderdir.\n";
 
@@ -65,13 +65,16 @@ sub check_directory {
     }
 }
 
-$phantasmaldir = check_directory(["mudlib"], "phantasmal.dgd",
+$phantasmaldir = check_directory(["mudlib", "phantasmal"],
+				 "phantasmal.dgd",
 				 "Phantasmal MUDLib");
 
-$testgamedir = check_directory(["testgame"], "testgame.dgd",
-			       "Test Game");
+$testgamedir = check_directory(["testgame", "mudlib", "phantasmal"],
+			       "usr/game/obj/user.c",
+			       "Bundled Game");
 
-$driverdir = check_directory(["dgd", "../dgd", "~/dgd"], "src/dgd.c",
+$driverdir = check_directory(["dgd", "../dgd", "~/dgd"],
+			     "src/dgd.c",
 			     "DGD Driver");
 
 
@@ -95,7 +98,7 @@ unless(-f "$driverdir/bin/driver") {
     die "You haven't built DGD yet!";
 }
 
-print "Copying TestGame from $testgamedir...\n";
+print "Copying Bundled Game from $testgamedir...\n";
 system("cp -r $testgamedir $outdir");
 print "Copying DGD from $driverdir...\n";
 system("cp -r $driverdir $outdir/dgd");
@@ -132,6 +135,7 @@ system("rm -rf $outdir/dgd");
 system("rm -rf $outdir/bundled");
 
 system("rm -f $outdir/usr/game/users/*.pwd");
+system("rm -f $outdir/kernel/data/access.data");
 
 system("rm -f $outdir/tmp/swap $outdir/log/System.log "
        . " $outdir/bin/driver.old "
@@ -146,9 +150,11 @@ system("rm -rf `cat /tmp/distrib_tmp.txt`");
 
 # Remove all README, INSTALL, UPDATES and .cvsignore files
 system("find $outdir -name README -exec rm \\{\\} \\;");
-system("find $outdir -name INSTALL -exec rm \\{\\} \\;");
-system("find $outdir -name UPDATES -exec rm \\{\\} \\;");
 system("find $outdir -name .cvsignore -exec rm \\{\\} \\;");
+
+# Remove all customization stuff from regular Phantasmal
+system("rm -rf $outdir/doc $outdir/docs PROBLEMS SETUP UPDATES INSTALL");
+system("rm -rf Changelog TESTED_VERSIONS");
 
 system("find . -name \"*~\" -exec rm \\{\\} \\;");
 system("find . -name \"#*\" -exec rm \\{\\} \\;");
@@ -165,7 +171,7 @@ system("echo 'DGD Version:' >> $outdir/VERSIONS");
 system("cat $driverdir/src/version.h >> $outdir/VERSIONS");
 system("echo 'Phantasmal Version:' >> $outdir/VERSIONS");
 system("cat $phantasmaldir/include/phantasmal/version.h >> $outdir/VERSIONS");
-system("echo 'Test Game Version:' >> $outdir/VERSIONS");
+system("echo 'Bundled Game Version:' >> $outdir/VERSIONS");
 system("cat $testgamedir/include/version.h >> $outdir/VERSIONS");
 
 print "*** Finished! ***\n";
