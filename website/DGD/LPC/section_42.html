@@ -358,162 +358,139 @@ string mixed_print_to_string(mixed arg)
     <p>
       <a name="IDX66"></a>
 
-      This is a confusing qualifier since it works differently even
-      for local variables than for global variables.  Global variables
-      are defined in the file <i>outside</i> any function. These
-      variables are available in all functions defined after they are,
-      so their <b>scope</b> is object-wide rather than limited to one
-      function.
+      Static variables must be global variables.  Global variables are
+      defined in the file <i>outside</i> any function. These variables
+      are available in all functions defined after they are, so their
+      <b>scope</b> is object-wide rather than limited to one function.
     </p>
 
     <p>
-      It is possible to save all global variables in an object with a
+      It is possible to save global variables in an object with a
       special function called <code>save_object</code>, described
       later.  If the global variable is declared as
       <code>static</code>, it is <i>not</i> saved along with the
-      others.
+      others.  Note that DGD doesn't particularly recommend using
+      <code>save_object</code> anyway -- it's better to use statedumps
+      or some other form of structured storage in most cases.
     </p>
 
     <pre>
 static string   TempName;        /* A non-saved global var. */
     </pre>
 
-    <p> (static local vars) </p>
 
-
-<h4><a name="SEC4.2.4.2" href="index.html#SEC4.2.4.2">
+    <h4><a name="SEC4.2.4.2" href="index.html#SEC4.2.4.2">
 	The static function qualifier</a></h4>
-<p>
-<a name="IDX67"></a>
+    <p>
+      <a name="IDX67"></a>
 
-</p>
-<p>
-A function that is declared <code>static</code> can not be called using
-external calls, only internal. This makes the function 'invisible' and
-inaccessable for other objects.
-
-</p>
-
-
-<h4><a name="SEC63" href="index.html#SEC63">The private function/variable qualifier</a></h4>
-<p>
-<a name="IDX68"></a>
-
-</p>
-<p>
-A variable or function that has been declared as <code>private</code> will not be
-inherited down to another object. They can only be accessed within
-the object that defines it.
-
-</p>
+      A function that is declared <code>static</code> can not be
+      called using external calls, only internal. This makes the
+      function 'invisible' and inaccessable for other objects.  Note
+      that child classes of the object may call static functions, so
+      it may not be a perfect security solution.  <code>Private</code>
+      functions, or functions that check the caller with
+      <code>previous_program()</code> may be better for security
+      purposes.
+    </p>
 
 
-<h4><a name="SEC64" href="index.html#SEC64">The nomask function/variable qualifier</a></h4>
-<p>
-<a name="IDX69"></a>
+    <h4><a name="SEC4.2.4.3" href="index.html#SEC4.2.4.3">
+	The private function/variable qualifier</a></h4>
+    <p>
+      <a name="IDX68"></a>
 
-</p>
-<p>
-Functions and variables that are declared as <code>nomask</code> can not be
-masked in any way, neither by shadowing nor inheriting. If you try you
-will be given an error message.
-
-</p>
-
-
-<h4><a name="SEC65" href="index.html#SEC65">The public function/variable qualifier</a></h4>
-<p>
-<a name="IDX70"></a>
-
-</p>
-<p>
-This is the default qualifier for all functions. It means there is no
-limits other than those which the language imposes on accessing, saving
-and masking.
-
-</p>
+      A variable or function that has been declared as
+      <code>private</code> will not be inherited by child objects.
+      Private functions and variables can only be accessed by the
+      object that defines them.  They are also not saved by
+      <code>save_object()</code>.  Note that in MudOS, private
+      functions and variables cause an error if they're accessed by a
+      child class.  In DGD, they are simply invisible from the child
+      objects.
+    </p>
 
 
-<h4><a name="SEC66" href="index.html#SEC66">The varargs function qualifier</a></h4>
-<p>
-<a name="IDX71"></a>
+    <h4><a name="SEC4.2.4.4" href="index.html#SEC4.2.4.4">
+	The nomask function/variable qualifier</a></h4>
 
-</p>
-<p>
-Sometimes you want a function to be able to receive a variable amount
-of arguments. There's two ways of doing this and it can be discussed
-if it's correct to put both explanations in this chapter, but it's
-sort of logical to do so and not too hard to find.
+    <p>
+      <a name="IDX69"></a>
 
-</p>
-<p>
-A function that is defined <code>varargs</code> will be able to receive a
-variable amount of arguments. The variables that aren't specified
-at the call will be set to 0.
+      Functions and variables that are declared as <code>nomask</code>
+      can not be masked by inheritance.  Attempting to do so gives an
+      error message.
+    </p>
 
-</p>
-
-<pre>
-varargs void
-myfun(int a, string str, float c);
-{
-}
-</pre>
-
-<p>
-The call <code>myfun(1);</code> will set <code>a</code> to <code>1</code>, <code>str</code> and 
-<code>c</code> to <code>0</code>. Make sure you test the potentially unused variables
-before you try to use them so that they do contain a value you can use.
-
-</p>
-<p>
-There's another way as well. You can specify default values to the
-variables that you're uncertain about. Then you don't have to declare
-the function <code>varargs</code> and you will have proper default values
-in the unused argument variables as well.
-
-</p>
-
-<pre>
-void
-myfun(int a, string str = &quot;pelle&quot;, float c = 3.0);
-{
-}
-</pre>
-
-<p>
-This function must be called with at least one argument, the first, as
-it wasn't given a default value. The call <code>myfun(1, &quot;apa&quot;);</code> will
-set <code>a</code> to <code>1</code>, <code>str</code> to <code>&quot;apa&quot;</code> and <code>c</code> to 
-<code>3.0</code>.
-
-</p>
+    <p>
+      Since an internal call will still use the child class's method
+      definition by default, <code>nomask</code> functions provide a
+      way to be sure what method is being called.  Functions that are
+      declared as both <code>static</code> and <code>nomask</code> are
+      a powerful way to make sure a function can be called only by
+      child classes, but the definition of the function will always be
+      known for any child class.
+    </p>
 
 
-<h3><a name="SEC68" href="index.html#SEC68">switch/case part 2</a></h3>
-<p>
-<a name="IDX73"></a>
-<a name="IDX74"></a>
+    <h4><a name="SEC4.2.4.5" href="index.html#SEC4.2.4.5">
+	The atomic function qualifier</a></h4>
 
-</p>
-<p>
-The LPC switch statement is very intelligent, it can also use ranges in
-integers:
+    <p>
+      <a name="IDX71"></a>
 
-</p>
+      Atomic functions are very powerful, and are unique to DGD among
+      LPC dialects.  Only functions may be declared atomic, not
+      variables.  The <code>atomic</code> modifier is used just like
+      the <code>static</code> or <code>nomask</code> modifier, before
+      a function's name.
+    </p>
 
-<pre>
-public void
-wheel_of_fortune()
+    <p>
+      If a function is declared <code>atomic</code>, it may not read
+      or write files in any way, nor may it read or write network data
+      on network connections.  Any attempt to do so will cause an
+      error.  Atomic functions also use a different Error handler than
+      do non-atomic functions.  They use twice the ticks of other
+      functions (see <code>rlimits</code> for an explanation of
+      ticks).
+    </p>
+
+    <p>
+      So what's different about them?  The fact that they will either
+      fully execute, or nothing will happen.  You can write to global
+      variables and data structures in an atomic function, even if
+      those variables or data structures are in a different object
+      than the atomic function.  If an error occurs and the function
+      terminates, those writes to variables and data structures will
+      be fully undone.  It is as though the atomic function has never
+      been called at all, except for the fact that it causes an error.
+    </p>
+
+    <p>
+      Atomic functions are one of the most powerful features of DGD.
+      They are found in almost no other language.  They are the reason
+      for several of the unusual limits DGD has, such as lack of
+      callout to code in other computer languages.
+    </p>
+
+
+    <h3><a name="SEC4.2.5" href="index.html#SEC4.2.5">
+	switch/case part 2</a></h3>
+
+    <p>
+      <a name="IDX73"></a>
+      <a name="IDX74"></a>
+
+      The LPC switch statement is very intelligent, it can also use
+      ranges in integers:
+
+    <pre>
+void wheel_of_fortune()
 {
     int i;
 
-    i = random(10);     /* Get a random number 0 - 9
-                           Strictly speaking, this local variable isn't
-                           necessary, it's just there to demonstrate the
-                           use and make things clearer. I could have 
-                           switched on 'random(10)' directly instead if
-                           I had wanted to. */
+    i = random(10);     /* Get a random number from 0 to 9 */
 
     switch (i)
     {
@@ -538,80 +515,79 @@ wheel_of_fortune()
         break;
     }
 }
-</pre>
+    </pre>
+  </p>
 
 
 
-<h3><a name="SEC69" href="index.html#SEC69">catch/throw: Error handling during runtime</a></h3>
-<p>
-<a name="IDX75"></a>
+    <h3><a name="SEC4.2.6" href="index.html#SEC4.2.6">
+	catch/error: Error handling at runtime</a></h3>
 
-</p>
-<p>
-It happens now and then that you need to make function calls you know 
-<i>might</i> result in a runtime error. For example you might try to
-clone an object (described later) or read a file. If the files aren't
-there or your privileges are wrong you will get a runtime error and
-execution will stop. In these circumstances it is desireable to be able
-to intercept the error and either display some kind of message or
-perform other actions instead. The special LPC function operator
-<code>catch()</code> will do this for you. It returns 1 (true) if an error
-occurs during evaluation of the given function and 0 (false) otherwise.
+    <p>
+      <a name="IDX75"></a>
 
-</p>
+      It happens now and then that you need to make function calls you
+      know <i>might</i> result in a runtime error. For example you
+      might try to clone an object (described later) or read a
+      file. If the files aren't there or your privileges are wrong you
+      will get a runtime error and execution will stop. In these
+      circumstances it is desirable to intercept the error and either
+      alert a user or try alternate solutions to the problem.  The
+      special LPC function operator <code>catch()</code> will do this
+      for you.  If an error occurs during evaluation of the given
+      function, the error is returned.
+    </p>
 
-<pre>
+    <pre>
 int catch(function)
 e.g.
-    if (catch(tail(&quot;/d/Relic/fatty/hidden_donut_map&quot;)))
+    if (catch(write_file("/usr/bob/logfile", "It works!")))
     {
-        write(&quot;Sorry, not possible to read that file.\n&quot;);
+        DRIVER->message(&quot;You don't have permission to write!\n&quot;);
         return;
     }
-</pre>
+    </pre>
 
-<p>
-<a name="IDX76"></a>
-It's also possible to cause error interrupts. This is particularly useful
-when you want to notify the user of an unplanned for event that occured
-during execution. Typically you want to do this in the 'default' case of a
-switch statement, unless (naturally) you use default as a sort of catch-it-all
-position. In any case <code>throw()</code> will generate a runtime error
-with the message you specify. A <code>catch()</code> statement issued prior to
-calling the function that uses <code>throw()</code> will naturally intercept the
-error as usual.
+    <p>
+      <a name="IDX76"></a>
 
-</p>
+      It's also possible to cause errors.  This is particularly useful
+      when you want to notify the user of an unplanned event that
+      occured during execution.  For instance, you often want to do
+      this in the 'default' case of a switch statement.  In any case,
+      <code>error()</code> will generate a runtime error with the
+      message you specify.  A <code>catch()</code> statement issued
+      prior to calling the function that uses <code>throw()</code>
+      will intercept the error as usual.
+    </p>
 
-<pre>
-throw(mixed info)
+    <pre>
+error(string message)
 e.g.
     if (test &lt; 5)
-        throw(&quot;The variable 'test' is less than 5\n&quot;);
-</pre>
+        error(&quot;The variable 'test' is less than 5\n&quot;);
+    </pre>
 
 
+    <h3><a name="SEC4.2.7" href="index.html#SEC4.2.7">
+	Array and Mapping references</a></h3>
 
-<h3><a name="SEC70" href="index.html#SEC70">Array &amp; Mapping references</a></h3>
-<p>
-<a name="IDX77"></a>
-<a name="IDX78"></a>
+    <p>
+      <a name="IDX77"></a>
+      <a name="IDX78"></a>
 
-</p>
-<p>
-In comp sci terms, arrays and mappings are used as <b>reference by pointer</b>
-and the other types as <b>reference by value</b>. This means that arrays and
-mappings, unlike other variables, aren't copied every time they are moved
-around. Instead, what is moved is a reference to the original array or
-mapping. What does this mean then?
+      In computer science terms, arrays and mappings are copied <b>by
+      reference</b> and simpler types are copied <b>by value</b> This
+      means that arrays and mappings, unlike other variables, aren't
+      copied every time they are moved around. Instead, what is moved
+      is a reference to the original array or mapping. What does this
+      mean then?
+    </p>
 
-</p>
-<p>
-Well... simply this:
+    <p>
+      Here's an example:
 
-</p>
-
-<pre>
+    <pre>
 object *arr, *copy_arr;
 
 arr = ({ 1, 2, 3, 4 });    /* An array */
@@ -621,48 +597,66 @@ copy_arr = arr;	             /* Assume (wrongly) that a copy_arr becomes
 
 /* Change the first value (1) into 5. */
 copy_arr[0] = 5;
-</pre>
+    </pre>
+  </p>
 
-<p>
-... Now... this far down the code it's logical to assume that the first
-value of <code>copy_arr</code> is 5 while the first value or <code>arr</code> is 1.
-That's not so however, because what got copied into <code>copy_arr</code> was
-not the array itself, but a reference to the same array as <code>arr</code>.
-This means that your operation later where you changed an element,
-changed that element in the original array which both variables refer
-to.  <code>copy_arr</code> and <code>arr</code> will both seem to have changed,
-while in fact it was only the original array that both refered to that
-changed.
+    <p>
+      It might be logical to assume that the first value of
+      <code>copy_arr</code> is 5 while the first value or
+      <code>arr</code> is 1.  That's not the case, because what got
+      copied into <code>copy_arr</code> was not the array itself, but
+      a reference to the same array as <code>arr</code>.  This means
+      that assigning an element changed that element in the original
+      array to which both variables refer.  <code>copy_arr</code> and
+      <code>arr</code> will both seem to have changed, while in fact
+      it was only the original array that changed.
+    </p>
 
-</p>
-<p>
-Exactly the same thing will happen if you use mappings since they work
-the same way in this respect.
+    <p>
+      Exactly the same thing will happen for mappings since
+      they are also copied by reference.
+    </p>
 
-</p>
-<p>
-So... how do you get around this then? I mean... most times you really want
-to work on a copy and not the original array or mapping. The solution is
-very simple actually. You just make sure that the copy is created from
-another array or mapping instead.
+    <p>
+      How do you copy an array or mapping by value?  Usually you want
+      to work on a copy and not the original array or mapping.
+    </p>
 
-</p>
-
-<pre>
+    <pre>
               _ This is just an empty array
              /
 copy_arr = ({ }) + arr;
                     \_ This is the one we want to make unique
-</pre>
+    </pre>
 
-<p>
-In this example <code>copy_arr</code> becomes the sum of the empty array and
-the <code>arr</code> array created as an entirely new array. This leaves
-the original unchanged, just as we wanted. You can do exactly the same
-thing with mappings. It doesn't matter if you add the empty array or
-mapping first or last, just as long as you do it.
+    <p>
+      In this example <code>copy_arr</code> becomes the sum of the
+      empty array and the <code>arr</code> array created as an
+      entirely new array. This leaves the original unchanged, just as
+      we wanted. You can do exactly the same thing with mappings. It
+      doesn't matter if you add the empty array or mapping first or
+      last, just as long as you do it.
+    </p>
 
-</p>
+    <p>
+      You can also copy arrays using array-slice notation.  This is
+      probably the most common in existing DGD code.
+    <pre>
+copy_arr = arr[..];
+    </pre>
+  </p>
+
+    <p>
+      At the end of a thread of execution, any array that is in a new
+      object will be copied into that object.  So you can't just store
+      references to a single array in a lot of your objects and use
+      them to share data.  At the end of their first thead of
+      execution, they'll all be copied into their new objects.  To
+      share data that way, you should put the array in a single object
+      and make a function that returns it for modification.  You could
+      also have separate &quot;get&quot; and &quot;set&quot;
+      functions, which would be slower but easier to control.
+    </p>
 
     <hr>
     <a href="http://sourceforge.net">
@@ -672,7 +666,7 @@ mapping first or last, just as long as you do it.
     </address>
     <!-- Created: Mon Jun 11 21:50:30 PDT 2001 -->
     <!-- hhmts start -->
-Last modified: Sat Apr 12 15:31:40 PDT 2003
+Last modified: Mon Apr 14 15:28:46 PDT 2003
 <!-- hhmts end -->
   </body>
 </html>
