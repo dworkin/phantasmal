@@ -195,6 +195,10 @@ static void create(varargs int clone)
   if(!find_object(MOBILED)) { compile_object(MOBILED); }
   if(!find_object(TAGD)) { compile_object(TAGD); }
 
+  /* Load command parser *before* loading objects/rooms/etc!  It needs
+   * to be around to receive noun/adj/etc registration. */
+  if (!find_object(PARSED)) { compile_object(PARSED); }
+
   mapd_dtd = read_file(MAPD_ROOM_DTD);
   if(!mapd_dtd)
     error("Can't read file " + MAPD_ROOM_DTD + "!");
@@ -259,9 +263,6 @@ static void create(varargs int clone)
   if(!find_object(CHANNELD)) compile_object(CHANNELD);
   if(!find_object(CONFIGD)) compile_object(CONFIGD);
   if(!find_object(SOULD)) compile_object(SOULD);
-
-  /* Load command parser */
-  if (!find_object(PARSED)) { compile_object(PARSED); }
 
   /* Make sure ConfigD is set up for scripting */
   CONFIGD->set_path_special(nil);
