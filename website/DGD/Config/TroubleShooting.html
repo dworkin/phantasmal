@@ -2,7 +2,7 @@
                       "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
-<title>DGD and LPC: @@TITLE@@</title>
+<title>DGD and LPC: Troubleshooting DGD</title>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
 <link href="../../phantasmal.css" rel="stylesheet" type="text/css" />
 </head>
@@ -54,9 +54,69 @@
         <tr>
           <td class="heading">&nbsp;&nbsp;&middot;&nbsp;
 	    <a href="http://phantasmal.sf.net/DGD">DGD Page</a> &gt;
-	    <a href="http://phantasmal.sf.net/DGD/GameDesign">Game Design</a> &gt;
-            <a href="">@@TITLE@@</a>
+	    <a href="http://phantasmal.sf.net/DGD/Config">Getting DGD</a> &gt;
+            <a href="">Troubleshooting DGD</a>
           </td>
         </tr>
         <tr>
           <td class="content">
+    
+
+  <h2> Troubleshooting Your New DGD Installation </h2>
+
+  <ul>
+    <li> <a href="WindowsProb.html">Windows-Specific Problems</a> </li>
+    <li> <a href="NetworkPatch.html">Problems with the Network Patch</a> </li>
+    <li> <a href="IPv6.html">IPv6 Problems</a> </li>
+  </ul>
+
+<hr />
+
+<pre>
+From: dgd at list.imaginary.com (Felix A. Croes)
+Date: Sat Feb 15 14:15:01 2003
+Subject: [DGD] Problems with PC/MAC
+
+"Rickard Nilsson" wrote:
+
+> I have a DGD-server on my PC machine which works fine, but when my
+> friend tries to connect to my MUD it doesnt work. It has nothing to
+> do with the firewall, cause if I put up another server on the same
+> port it works fine, but however, he can't connect to my MUD.
+
+Nevertheless, given that you can connect to the MUD yourself, this is
+some firewall or routing problem.
+
+Regards,
+Dworkin
+</pre>
+
+<hr />
+
+<pre>
+From: DGD Mailing List (Felix A. Croes)
+Date: Wed Mar  3 18:44:01 2004
+Subject: [DGD] IPv6
+
+I've tested IPv6 on MacOS X, the *BSD family, Linux and Solaris.  It
+is turned on by default.  To compile without it, add -DINET6=0 to
+CCFLAGS in dgd/src/Makefile.
+
+IPv6 support for Windows will follow later -- I don't currently have
+a suitable Windows machine on which to compile and test it.
+
+Regards,
+Dworkin
+</pre>
+
+  <p style="font-size: 150%"> <a href="../index.html"> Back to top level
+    </a> </p>
+            <address>
+            <span><a href="mailto:angelbob-remove-spamfree@spamfree.users.sf.net">Noah Gibbs</a></span>
+            </address></td>
+        </tr>
+      </table></td>
+  </tr>
+</table>
+</body>
+</html>

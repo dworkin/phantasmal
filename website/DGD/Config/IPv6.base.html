@@ -1,0 +1,147 @@
+    <titledef text="IPv6" />
+
+  <h2> Problems with IPv6 on DGD </h2>
+
+<pre>
+From: Noah Gibbs
+Subject: [DGD] Stupid config question...
+Date: Sat, 4 Sep 2004 11:37:38 -0700 (PDT)
+
+  I'm sure this has been answered before.
+
+  I'm trying to get DGD running on a new machine.  I tried grabbing
+both 1.2.90 and 1.2.93 with the same results.  I've compiled with the
+host set to LINUX and to DARWIN.  The machine is actually running
+Fedora Core 1, which is based strongly on RedHat Linux, and distributed
+by RedHat.
+
+  Every time I run DGD (at least if the config file is right, *grin*),
+I get the error message:  "socket IPv6: Address family not supported by
+protocol".
+
+  I haven't figured out where this message is coming from yet, so I'm
+not sure where in the code to play with.  Any hints?
+
+  Note that I'm not running Phantasmal, just the Kernel Library.
+</pre>
+
+<hr />
+
+<pre>
+From: Noah Gibbs
+Subject: Re: [DGD] Stupid config question...
+Date: Sat, 4 Sep 2004 11:56:06 -0700 (PDT)
+
+  It appears that DGD dislikes something about the way Fedora does
+IPv6, and it looks like there's no IPv6->IPv4 failover in
+dgd/src/host/unix/connect.c - if IPv6 is present but fails, DGD simply
+doesn't start up.
+
+  I've undefined INET6 and AF_INET6 at the top of the file as a
+temporary hack to get it working.  Note to Dworkin:  minor typo in the
+comment line where you do the AF_INET6 defines at the top of
+dgd/src/host/unix/connect.c -- you wrote AT_INET6 where you meant
+AF_INET6 once.
+
+  Looks like my hack works, so I'll go back to ignoring the existence
+of IPv6 for a bit :-)
+
+--- Noah Gibbs wrote:
+
+>   I'm sure this has been answered before.
+> 
+>   I'm trying to get DGD running on a new machine.  I tried grabbing
+> both 1.2.90 and 1.2.93 with the same results.  I've compiled with the
+> host set to LINUX and to DARWIN.  The machine is actually running
+> Fedora Core 1, which is based strongly on RedHat Linux, and
+> distributed
+> by RedHat.
+</pre>
+
+<hr />
+
+<pre>
+From: "Felix A. Croes"
+Subject: Re: [DGD] Stupid config question...
+Date: Sat, 4 Sep 2004 23:05:21 +0200
+
+Noah Gibbs wrote:
+
+>   I'm sure this has been answered before.
+>
+>   I'm trying to get DGD running on a new machine.  I tried grabbing
+> both 1.2.90 and 1.2.93 with the same results.  I've compiled with the
+> host set to LINUX and to DARWIN.  The machine is actually running
+> Fedora Core 1, which is based strongly on RedHat Linux, and distributed
+> by RedHat.
+>
+>   Every time I run DGD (at least if the config file is right, *grin*),
+> I get the error message:  "socket IPv6: Address family not supported by
+> protocol".
+
+It looks like the include files define AF_INET6, but the kernel doesn't
+support it.  In the main Makefile, add INET6=0 to the options, make clean
+and rebuild.
+
+Regards,
+Dworkin
+</pre>
+
+<hr />
+
+<pre>
+From: Noah Gibbs
+Subject: Re: [DGD] Stupid config question...
+Date: Sat, 4 Sep 2004 15:51:57 -0700 (PDT)
+
+  Did this.  It seems to work fine.  I added "-DINET6=0" to the DEFINES
+variable, which I assume is what you meant below.
+
+--- "Felix A. Croes" wrote:
+> 
+> It looks like the include files define AF_INET6, but the kernel
+> doesn't
+> support it.  In the main Makefile, add INET6=0 to the options, make
+> clean
+> and rebuild.
+> 
+> Regards,
+> Dworkin
+> _________________________________________________________________
+> List config page:  http://list.imaginary.com/mailman/listinfo/dgd
+> 
+</pre>
+
+<hr />
+
+<pre>
+From: Lord Lerkista
+Subject: Re: [DGD] Stupid config question...
+Date: Sat, 04 Sep 2004 17:57:55 -0500
+
+Noah Gibbs wrote:
+
+>  I'm sure this has been answered before.
+>
+>  I'm trying to get DGD running on a new machine.  I tried grabbing
+>both 1.2.90 and 1.2.93 with the same results.  I've compiled with the
+>host set to LINUX and to DARWIN.  The machine is actually running
+>Fedora Core 1, which is based strongly on RedHat Linux, and distributed
+>by RedHat.
+>
+>  Every time I run DGD (at least if the config file is right, *grin*),
+>I get the error message:  "socket IPv6: Address family not supported by
+>protocol".
+>
+>  I haven't figured out where this message is coming from yet, so I'm
+>not sure where in the code to play with.  Any hints?
+>
+>  Note that I'm not running Phantasmal, just the Kernel Library.
+>
+You only need to load the ipv6 module, modprobe ipv6 and that's all =)
+I have the same problem with Slackware 10, and i fixed loading that
+module =)
+</pre>
+
+  <p style="font-size: 150%"> <a href="../index.html"> Back to top level
+    </a> </p>

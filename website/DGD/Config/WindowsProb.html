@@ -2,7 +2,7 @@
                       "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
-<title>DGD and LPC: @@TITLE@@</title>
+<title>DGD and LPC: Windows Problems</title>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
 <link href="../../phantasmal.css" rel="stylesheet" type="text/css" />
 </head>
@@ -54,9 +54,74 @@
         <tr>
           <td class="heading">&nbsp;&nbsp;&middot;&nbsp;
 	    <a href="http://phantasmal.sf.net/DGD">DGD Page</a> &gt;
-	    <a href="http://phantasmal.sf.net/DGD/GameDesign">Game Design</a> &gt;
-            <a href="">@@TITLE@@</a>
+	    <a href="http://phantasmal.sf.net/DGD/Config">Getting DGD</a> &gt;
+            <a href="">Windows Problems</a>
           </td>
         </tr>
         <tr>
           <td class="content">
+    
+
+  <h2> Problems Specific to Microsoft Windows on DGD </h2>
+
+<pre>
+From: dgd at list.imaginary.com (Felix A. Croes)
+Date: Wed Dec 12 07:48:01 2001
+Subject: [DGD] (no subject)
+
+Shevek wrote:
+
+> Please ignore that last msg as I finally figured out what I was doing wrong.
+> When you cd into /usr/System you have to be sure to use System, not system.
+> The capitilisation is all important.
+
+This is an annoying problem on Windows and MacOS.  I've looked into
+verifying that pathnames have proper capitalization, but that would be
+costly and still would prevent the simultaneous (distinct) existance
+of /usr/System and /usr/system, which is perfectly allowable under unix.
+Right now, I do not have a good solution.
+
+I will change the errormessage so that there will be more of a hint as to
+what is wrong.
+
+Regards,
+Dworkin
+</pre>
+
+<hr />
+
+<pre>
+From: dgd at list.imaginary.com (Felix A. Croes)
+Date: Thu Oct 24 12:18:00 2002
+Subject: [DGD] melville with dgd for win binary
+
+"Albert Deinbeck" wrote:
+
+> I have recently installed the compiled binary of dgd v1.2p2 for windows. =
+> It runs ok with the minimal mudlib provided.=20
+> Now I tried to setup melville mudlib and it doesn't work. I tried =
+> melville v0.9.1 and v0.8 . My main problem is that the driver dies =
+> silently, without giving any notice about what choked him, so I have no =
+> chance to change the melville-code as needed.=20
+
+Try starting the driver directly, without configuration file.  Then
+select a configuration file from the File menu and run it.  Started in
+this manner, DGD will not exit when encountering a fatal error, but will
+continue to display the error until the user selects exit from the File
+menu.
+
+Regards,
+Dworkin
+</pre>
+
+  <p style="font-size: 150%"> <a href="../index.html"> Back to top level
+    </a> </p>
+            <address>
+            <span><a href="mailto:angelbob-remove-spamfree@spamfree.users.sf.net">Noah Gibbs</a></span>
+            </address></td>
+        </tr>
+      </table></td>
+  </tr>
+</table>
+</body>
+</html>

@@ -133,6 +133,8 @@
     to an object.
   </p>
 
+<hr />
+
 <pre>
 From: dgd at list.imaginary.com (Erwin Harte)
 Date: Wed Mar 20 23:03:00 2002
@@ -200,6 +202,42 @@ Cheers,
 Erwin.
 -- 
 Erwin Harte
+</pre>
+
+<hr />
+
+<pre>
+From: DGD Mailing List (Par Winzell)
+Date: Sat Mar 13 10:13:01 2004
+Subject: [DGD] getting started with DGD
+
+>>   You can search one string for another using "explode" if you're
+>> clever.  Or with parse_string.  The position of an element in an array
+>> is just going to require you to use a for() loop.
+> 
+> Wow.  these seem like fairly basic things.  Its like the three bears.  
+> for() is too low level (papa bear), parse_string is too high level (mama 
+> bear), and using explode for string search sounds the the crazy uncle 
+> bear that nobody wants to talk about.  :)
+
+The idea is that DGD focuses on doing the driver part right, and the 
+things you'd consider essential to writing a mudlib -- like a string 
+search function -- belong in a middle layer. If you chose to reject the 
+existing middle layers, as many do, you also forfeit the right to say 
+that DGD is too minimalistic.
+
+All three bears are examples of how a kernel (or System) level library 
+could choose to implement a user-friendly function. A mudlib developer 
+should not need to meet the bears in person.
+
+
+> Doesn't pretty much every one end up having to write their own 
+> proprietary string library?
+
+Well, the term 'proprietary' is a little misleading, since by and large 
+everybody who writes something for DGD publishes it to the world...
+
+Zell
 </pre>
 
   <p style="text-size: 150%"> <a href="../index.html"> Back to top level
