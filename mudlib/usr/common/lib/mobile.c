@@ -207,21 +207,22 @@ nomask int ask(object to, string str) {
  * rem_path & add_path must already be in the proper order -- no checks
  * are performed.
  */
-private atomic void path_place(object *rem_path, object *add_path, object obj) {
+private atomic void path_place(object user, object *rem_path,
+			       object *add_path, object obj) {
   int i;
   object env;
   string reason;
 
   /* assume the full move can be performed.  If it can't we'll throw an error,
      which will cause this function to be completely undone when the error
-     passes out of the function.  Hurray for atomics!
+     occurs.  Hurray for atomics!
   */
 
   for (i = 0; i < sizeof(rem_path); ++i) {
     env = rem_path[i]->get_location();
-    if ((reason = rem_path[i]->can_remove(body, obj, env)) ||
-	(reason = obj->can_get(body, env)) ||
-	(reason = env->can_put(body, obj, rem_path[i]))) {
+    if ((reason = rem_path[i]->can_remove(get_user(), body, obj, env)) ||
+	(reason = obj->can_get(get_user(), body, env)) ||
+	(reason = env->can_put(get_user(), body, obj, rem_path[i]))) {
       error("$" + reason);
     } else {
       /* call function in object for removing from the current room */
@@ -236,9 +237,9 @@ private atomic void path_place(object *rem_path, object *add_path, object obj) {
   /* now add this object to the objects in the add path in order */
   for (i = 0; i < sizeof(add_path); ++i) {
     env = add_path[i]->get_location();
-    if ((reason = add_path[i]->can_put(body, obj, env)) ||
-	(reason = obj->can_get(body, add_path[i])) ||
-	(reason = env->can_remove(body, obj, add_path[i]))) {
+    if ((reason = add_path[i]->can_put(get_user(), body, obj, env)) ||
+	(reason = obj->can_get(get_user(), body, add_path[i])) ||
+	(reason = env->can_remove(get_user(), body, obj, add_path[i]))) {
       error("$" + reason);
     } else {
       obj->get(body, add_path[i]);
@@ -254,8 +255,8 @@ private atomic void path_place(object *rem_path, object *add_path, object obj) {
  * place()
  *
  * move the object obj from its current position into the object to.
- * obj and to must both be descendents (but not necessarily children)
- * of the current room.
+ * obj and to must both be contained somewhere in the current room,
+ * though not necessarily directly in it.
  *
  * returns nil on success, a reason for the failure on failure
  */
@@ -325,7 +326,7 @@ nomask string place(object obj, object to) {
     rem_tree = rem_tree[..(sizeof(rem_tree)-common-1)];
   }
 
-  err = catch(path_place(rem_tree, add_tree, obj));
+  err = catch(path_place(get_user(), rem_tree, add_tree, obj));
 
   if (err) {
     /* non-serious errors will be prefixed with a '$' -- in which case we
@@ -463,15 +464,16 @@ nomask string move(int dir) {
   }
 
   /* NB.  I do want a = (not == ), as in other places like this*/
-  if (reason = location->can_leave(body, dir)) {
+  if (reason = location->can_leave(get_user(), body, dir)) {
     return reason;
   }
 
-  if (reason = exit->can_pass(body)) {
+  if (reason = exit->can_pass(get_user(), body)) {
     return reason;
   }
 
-  if (reason = dest->can_enter(body, EXITD->opposite_direction(dir))) {
+  if (reason = dest->can_enter(get_user(), body,
+			       EXITD->opposite_direction(dir))) {
     return reason;
   }
   
@@ -505,12 +507,12 @@ nomask string teleport(object dest, int force) {
 
   if (!force) {
     if (location) {
-      if (reason = location->can_leave(body, DIR_TELEPORT)) {
+      if (reason = location->can_leave(get_user(), body, DIR_TELEPORT)) {
 	return reason;
       }
     }
     
-    if (reason = dest->can_enter(body, DIR_TELEPORT)) {
+    if (reason = dest->can_enter(get_user(), body, DIR_TELEPORT)) {
       return reason;
     }
   }

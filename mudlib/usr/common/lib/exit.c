@@ -294,7 +294,7 @@ void set_lockable(int value) {
 }
 
 /* Return nil if a user can pass through a door, the reason if they cannot */
-string can_pass(object pass_object) {
+string can_pass(object user, object pass_object) {
   if (!is_open())
     return "The door is closed.";
 }

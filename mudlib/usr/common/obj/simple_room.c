@@ -68,20 +68,20 @@ private string is_open_cont() {
  * overloaded room notification functions
  */
 
-string can_get(object mover, object new_env) {
+string can_get(object user, object mover, object new_env) {
   if(mobile)
     return "You can't pick up a sentient being!";
 }
 
-string can_put(object mover, object movee, object old_env) {
+string can_put(object user, object mover, object movee, object old_env) {
   return is_open_cont();
 }
 
-string can_remove(object mover, object movee, object new_env) {
+string can_remove(object user, object mover, object movee, object new_env) {
   return is_open_cont();
 }
 
-string can_enter(object enter_object, int dir) {
+string can_enter(object user, object enter_object, int dir) {
   if(mobile)
     return "You can't enter a sentient being!  Don't be silly.";
 
@@ -96,7 +96,7 @@ string can_enter(object enter_object, int dir) {
   }
 } 
 
-string can_leave(object leave_object, int dir) {
+string can_leave(object user, object leave_object, int dir) {
   if(mobile)
     return "You can't leave a sentient being!"
       + "  In fact, you shouldn't even be here.";

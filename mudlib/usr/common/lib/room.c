@@ -308,12 +308,12 @@ void set_openable(int value) {
  * Reason is printed out to the user if the user can't enter */
 
 /* leave_object is the body attempting to leave, dir is the direction. */
-string can_leave(object leave_object, int dir) {
+string can_leave(object user, object leave_object, int dir) {
   return nil;
 }
 
 /* enter_object is the body attempting to enter, dir is the direction. */
-string can_enter(object enter_object, int dir) {
+string can_enter(object user, object enter_object, int dir) {
   return nil;
 }
 
@@ -348,12 +348,14 @@ void enter(object enter_object, int dir) {
  * the parent or a child of this object.
  */
 
-/* mover is the body of the mobile doing the moving,
-   movee is the object being moved (one of this object's contained objects)
-   new_env is the location that the object will shortly be in, which is
+/*
+  user is the user who will see the reason returned
+  mover is the body of the mobile doing the moving,
+  movee is the object being moved (one of this object's contained objects)
+  new_env is the location that the object will shortly be in, which is
            contained by this object or contains this object.
 */
-string can_remove(object mover, object movee, object new_env) {
+string can_remove(object user, object mover, object movee, object new_env) {
   return nil;
 }
 
@@ -377,10 +379,12 @@ void remove(object mover, object movee, object new_env) {
  */
 
 /* This function is called to see whether this object may be taken.
-   mover is the body of the mobile attempting to move this object
-   new_env is where it will be moving it to
+
+  user is the user who will see the reason returned
+  mover is the body of the mobile attempting to move this object
+  new_env is where it will be moving it to
 */
-string can_get(object mover, object new_env) {
+string can_get(object user, object mover, object new_env) {
   if (get_detail_of())
     return "That's attached!  You can't get it.";
 
@@ -389,6 +393,8 @@ string can_get(object mover, object new_env) {
 
 /* This function notifies us that somebody has gotten/moved this
    object.
+
+   user is the user who will see the reason returned
    mover is the body of the mobile doing the moving
    new_env is where it is moving us to
 
@@ -406,13 +412,30 @@ void get(object mover, object new_env) {
  * object can be the parent or a child.
  */
 
+/*
+  This function determines whether an object may be put
+  somewhere.
 
-string can_put(object mover, object movee, object old_env) {
+  user is the user who will see the reason returned
+  mover is the body of the one doing the moving
+  movee is the object being moved
+  old_env is the location of the object now containing the movee
+*/
+
+string can_put(object user, object mover, object movee, object old_env) {
   return nil;
 }
 
+/*
+  This function notifies us that an object has been put.
+
+  mover is the body of the one doing the moving
+  movee is the object being moved
+  old_env is the location of the object that just contained movee
+*/
 void put(object mover, object movee, object old_env) {
 }
+
 
 /********* UNQ serialization helper functions */
 
