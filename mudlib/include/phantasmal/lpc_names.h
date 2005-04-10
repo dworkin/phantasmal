@@ -66,6 +66,7 @@
 #define SYSTEM_WIZTOOL      "/usr/System/obj/wiztool"
 #define SYSTEM_USER_OBJ     "/usr/System/obj/user"
 #define DEFAULT_USER_OBJ    "/usr/game/obj/user"
+#define MUDCLIENT_CONN      "/usr/System/obj/mudclient_connection"
 #define SIMPLE_EXIT         "/usr/common/obj/simple_exit"
 #define SIMPLE_ROOM         "/usr/common/obj/simple_room"
 #define UNQ_PARSER          "/usr/common/obj/basic_unq_parser"
