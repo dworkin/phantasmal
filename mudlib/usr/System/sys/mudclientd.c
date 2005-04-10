@@ -43,14 +43,14 @@ void upgraded(varargs int clone) {
 
   support_protocol = 0;
   protocol_names = ([
-		     "MCP" => PROTOCOL_MCP,
-		     "IMP" => PROTOCOL_IMP,
-		     "FIRECLIENT" => PROTOCOL_FIRECLIENT,
-		     "PUEBLO" => PROTOCOL_PUEBLO,
-		     "MXP" => PROTOCOL_MXP,
-		     "MSP" => PROTOCOL_MSP,
-		     "XMLTERM" => PROTOCOL_XMLTERM,
-		     "MCCP" => PROTOCOL_MCCP,
+		     "MCP" : PROTOCOL_MCP,
+		     "IMP" : PROTOCOL_IMP,
+		     "FIRECLIENT" : PROTOCOL_IMP,
+		     "PUEBLO" : PROTOCOL_PUEBLO,
+		     "MXP" : PROTOCOL_MXP,
+		     "MSP" : PROTOCOL_MSP,
+		     "XMLTERM" : PROTOCOL_XMLTERM,
+		     "MCCP" : PROTOCOL_MCCP,
 		     ]);
 }
 
@@ -86,7 +86,7 @@ object select(string str)
   game_driver = CONFIGD->get_game_driver();
 
   conn = clone_object(MUDCLIENT_CONN);
-  conn->
+  /* TODO: set protocol information in connection */
 
   return conn;
 }

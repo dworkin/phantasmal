@@ -1,3 +1,6 @@
+#include <kernel/kernel.h>
+#include <kernel/user.h>
+#include "phantasmal/lpc_names.h"
 #include "phantasmal/telnet.h"
 #include "phantasmal/log.h"
 
@@ -35,6 +38,8 @@ inherit user LIB_USER;
 
 private string buffer;
 private mixed* input_lines;
+
+private int new_telnet_input(string str);
 
 static void create(int clone)
 {
@@ -177,7 +182,7 @@ int receive_message(string str)
 
     line = get_input_line();
     while(line) {
-      mode = user_input(input_line);
+      mode = user_input(line);
       if(mode == MODE_DISCONNECT || mode >= MODE_UNBLOCK)
 	return mode;
 
@@ -231,6 +236,7 @@ private void subnegotiation_string(string str) {
    for double-TP_IAC series, so we don't have to worry about those.
 */
 static string scan_iac_series(string series) {
+  string pre, post;
 
   /* If there's nothing, we're not done yet */
   if(!series || !strlen(series))
@@ -323,7 +329,7 @@ static void crlfbs_filter(void)
  * read, set input_line appropriately.
  */
 private int new_telnet_input(string str) {
-  string iac_series, iac_str, chunk, tmpbuf, post;
+  string iac_series, iac_str, chunk, tmpbuf, post, series;
 
   iac_str = " "; iac_str[0] = TP_IAC;
   buffer += str;
