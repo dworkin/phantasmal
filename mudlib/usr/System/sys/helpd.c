@@ -395,9 +395,6 @@ private void new_unq_entry(string path, object names, object desc,
     kw_arr = ({ });
   }
 
-  /* Trim leading and trailing whitespace from the description */
-  desc->trim_whitespace();
-
   for(locale = 0; locale < num_loc; locale++) {
     string tmp;
 
