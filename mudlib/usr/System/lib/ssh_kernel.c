@@ -149,12 +149,20 @@ static int ssh_check_password(string str)
 }
 
 /*
- * NAME:	ssh_do_login()
+ * NAME:	ssh_login()
  * DESCRIPTION:	actually login the user
  */
-static void ssh_do_login()
+static void ssh_login()
 {
     query_user()->do_login();
+}
+
+/*
+ * NAME:	ssh_shell()
+ * DESCRIPTION:	a shell session has been started
+ */
+static void ssh_shell()
+{
 }
 
 /*

@@ -48,7 +48,8 @@ static string base64_decode(string str)
  */
 static string parse_public_key(string str)
 {
-    if (sscanf(str, "ssh-dss %s ", str) == 0) {
+    if (sscanf(str, "ssh-dss %s ", str) == 0 &&
+	sscanf(str, "ssh-rsa %s ", str) == 0) {
 	return nil;
     }
     return base64_decode(str);
@@ -80,6 +81,9 @@ static string hexdump(string str)
 
     result = str + str + str;
     len = strlen(str);
+    if (!len) {
+	return "";
+    }
     for (i = 0; i < len; i++) {
 	int ch;
 
@@ -119,14 +123,44 @@ static string random_string(int length)
 	str += str;
     }
     str = str[.. length - 1];
-    for (n = length & ~1; n != 0; ) {
-	/* create two random bytes at a time */
-	rand = random(65536);
+    for (n = length - length % 3; n != 0; ) {
+	/* create three random bytes at a time */
+	rand = random(0x1000000);
+	str[--n] = rand >> 16;
 	str[--n] = rand >> 8;
 	str[--n] = rand;
     }
-    if (length & 1) {
-	str[length - 1] = random(256);
+
+    switch (length % 3) {
+    case 1:
+	str[length - 1] = random(0x100);
+	break;
+
+    case 2:
+	rand = random(0x10000);
+	str[length - 2] = rand >> 8;
+	str[length - 1] = rand;
+	break;
+    }
+
+    return str;
+}
+
+/*
+ * NAME:	better_random_string()
+ * DESCRIPTION:	create a slightly more random string
+ */
+static string better_random_string(int length)
+{
+    string str;
+
+    str = "";
+    while (length >= 20) {
+	str += hash_sha1(random_string(20));
+	length -= 20;
+    }
+    if (length >= 0) {
+	str += hash_sha1(random_string(length))[.. length - 1];
     }
 
     return str;
@@ -226,47 +260,6 @@ static string get_mpint(string b, int i)
     len = (b[i] << 24) + (b[i + 1] << 16) + (b[i + 2] << 8) + b[i + 3];
     return b[i + 4 .. i + 3 + len];
 }
-
-/*
- * NAME:	asn1_scan_int()
- * DESCRIPTION:	look for the next int in an ASN.1/DER encoded string
- */
-static int asn1_scan_int(string str, int offset)
-{
-    int tag, length, size;
-
-    for (;;) {
-	tag = str[offset++] & ASN_EXTENSION_ID;
-	if (tag == ASN_EXTENSION_ID) {
-	    /* ignore multi-octet identifier */
-	    while (str[offset++] & ASN_BIT) ;
-	}
-
-	length = str[offset++];
-	if (length & ASN_LONG_LEN) {
-	    /* multi-octet length */
-	    size = (length & 0xff) & ~ASN_LONG_LEN;
-	    length = 0;
-	    while (size != 0) {
-		length = (length << 8) + str[offset++];
-		--size;
-	    }
-	}
-
-	switch (tag) {
-	case ASN_INTEGER:
-	    return (length << 16) + offset;
-
-	case ASN_SEQUENCE:
-	    break;
-
-	default:	/* anything else */
-	    offset += length;
-	    break;
-	}
-    }
-}
-
 
 #define STRCASE(foo) case foo: return #foo
 

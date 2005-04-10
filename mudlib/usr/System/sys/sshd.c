@@ -53,10 +53,11 @@ static create()
      * initialize
      */
     rsrc::create();
-    /* rsrc::rsrc_set_limit("System", "ticks", 3000000); */
+    /*rsrc::rsrc_set_limit("System", "ticks", 3000000);*/
     compile_object(SSH_TRANSPORT);
     compile_object(SSH_CONNECTION);
     userd = find_object(USERD);
+    userd->set_binary_manager(0, this_object());
     version = "SSH-2.0-LPCssh_1.0";
 }
 
@@ -151,18 +152,28 @@ int valid_public_key(string name, string publickey)
 		return 1;
 	    }
 	}
+	str = read_file("~" + name + "/.ssh/id_rsa.pub");
+	if (str) {
+	    string pkey;
+
+	    sscanf(str, "%s\n", str);
+	    pkey = parse_public_key(str);
+	    if (pkey && pkey == publickey) {
+		return 1;
+	    }
+	}
 	str = read_file("~" + name + "/.ssh/authorized_keys");
 	if (str) {
 	    int    i, sz;
 	    string *lines;
 
-	    lines = explode(implode(explode(str, "\r"), "\n"), "\n");
+	    lines = explode(implode(explode(str, "\r"), ""), "\n");
 	    sz = sizeof(lines);
 	    for (i = 0; i < sz; i++) {
 		if (lines[i] && strlen(lines[i])) {
 		    string pkey;
 
-		    pkey = parse_public_key(str);
+		    pkey = parse_public_key(lines[i]);
 		    if (pkey && pkey == publickey) {
 			return 1;
 		    }

@@ -82,8 +82,8 @@ static void create(varargs int clone)
 	  + " form DGD X.Y.ZZ!");
   }
   if((major == 1 && minor < 2)
-     || (major == 1 && minor == 2 && patch < 90)) {
-    error("Need to upgrade to DGD version 1.2.90 or higher!");
+     || (major == 1 && minor == 2 && patch < 105)) {
+    error("Need to upgrade to DGD version 1.2.105 or higher!");
   } else if (major > 1 || (major == 1 && minor > 2)) {
     DRIVER->message("This version of Phantasmal is not tested\n");
     DRIVER->message("with DGD beyond 1.2.XX.  Please upgrade Phantasmal!\n");
@@ -102,8 +102,8 @@ static void create(varargs int clone)
   }
   if(major < 1
      || (major == 1 && minor < 2)
-     || (major == 1 && minor == 2 && patch < 30)) {
-    error("Need to upgrade to DGD version 1.2.90 or higher!");
+     || (major == 1 && minor == 2 && patch < 33)) {
+    error("Need to upgrade to DGD version 1.2.105 or higher!");
   } else if (major > 1 || (major == 1 && minor > 2)) {
     DRIVER->message("This version of Phantasmal is not tested\n");
     DRIVER->message("with DGD beyond 1.2.XX.  Please upgrade Phantasmal!\n");

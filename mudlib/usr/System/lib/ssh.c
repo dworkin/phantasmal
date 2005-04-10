@@ -1,8 +1,10 @@
 # include "phantasmal/ssh.h"
+# include "phantasmal/ssh_asn1.h"
 
 # define DEBUG SSH_DEBUG
 
 inherit glue SSH_GLUE;
+private inherit ASN1_UTILS;
 private inherit SSH_UTILS;
 
 
@@ -59,13 +61,10 @@ private string encrypt_packet(string str)
     length = strlen(str);
     encrypted = allocate(length / 8);
     for (i = n = 0; i < length; i += 8, n++) {
-	estate = encrypt("DES",
-			 decrypt("DES",
-				 encrypt("DES",
-					 asn_xor(str[i .. i + 7], estate),
-					 ekey1),
-				 ekey2),
-			 ekey3);
+	estate = encrypt("DES", ekey3,
+			 decrypt("DES", ekey2,
+				 encrypt("DES", ekey1,
+					 asn_xor(str[i .. i + 7], estate)))),
 	encrypted[n] = estate;
     }
     return implode(encrypted, "");
@@ -84,11 +83,9 @@ private string decrypt_string(string str)
     decrypted = allocate(length / 8);
     for (i = n = 0; i < length; i += 8, n++) {
 	chunk = str[i .. i + 7];
-	decrypted[n] = asn_xor(decrypt("DES",
-				       encrypt("DES",
-					       decrypt("DES", chunk, dkey3),
-					       dkey2),
-				       dkey1),
+	decrypted[n] = asn_xor(decrypt("DES", dkey1,
+				       encrypt("DES", dkey2,
+					       decrypt("DES", dkey3, chunk))),
 			       dstate);
 	dstate = chunk;
     }
@@ -120,7 +117,7 @@ private string hmac(string key, string str)
  */
 private atomic int __send_packet(string str)
 {
-    DEBUG(1, "__send_packet:  " + dump_ssh_msg_type(str[0]));
+    DEBUG(2, "__send_packet:  " + dump_ssh_msg_type(str[0]));
 
     str = make_packet(str);
     if (server_mac) {
@@ -332,52 +329,28 @@ private void flush_packet_buffer()
 }
 
 /*
- * NAME:	better_random_string()
- * DESCRIPTION:	create a slightly more random string
- */
-static string better_random_string(int length)
-{
-    string str;
-
-    str = "";
-    while (length >= 20) {
-	str += hash_sha1(random_string(20));
-	length -= 20;
-    }
-    if (length >= 0) {
-	str += hash_sha1(random_string(length))[.. length - 1];
-    }
-
-    return str;
-}
-
-/*
  * NAME:	ssh_dss_sign()
  * DESCRIPTION:	sign m with the host key
  */
 private string ssh_dss_sign(string m, string host_key)
 {
-    int offset, length;
     string p, q, g, x;
     string k, r, s;
+    mixed *asn1;
 
-    /* retrieve params from key */
-    offset = asn1_scan_int(host_key, 0);
-    length = offset >> 16; offset &= 0xffff;
-    offset = asn1_scan_int(host_key, offset + length);
-    length = offset >> 16; offset &= 0xffff;
-    p = host_key[offset .. offset + length - 1];
-    offset = asn1_scan_int(host_key, offset + length);
-    length = offset >> 16; offset &= 0xffff;
-    q = host_key[offset .. offset + length - 1];
-    offset = asn1_scan_int(host_key, offset + length);
-    length = offset >> 16; offset &= 0xffff;
-    g = host_key[offset .. offset + length - 1];
-    offset = asn1_scan_int(host_key, offset + length);
-    length = offset >> 16; offset &= 0xffff;
-    offset = asn1_scan_int(host_key, offset + length);
-    length = offset >> 16; offset &= 0xffff;
-    x = host_key[offset .. offset + length - 1];
+    asn1 = parse_asn1(host_key, 0);
+    if (!asn1) {
+	error("Invalid Host Key");
+    }
+
+    /* parse_asn1() returns ({ parsed-data, offset }) */
+    asn1 = asn1[0];
+
+    /* Assume it's a sequence of 6 integers. */
+    p = asn1[ASN_CONTENTS][1][ASN_CONTENTS];
+    q = asn1[ASN_CONTENTS][2][ASN_CONTENTS];
+    g = asn1[ASN_CONTENTS][3][ASN_CONTENTS];
+    x = asn1[ASN_CONTENTS][5][ASN_CONTENTS];
 
     /* k = random 0 < k < q */
     do {
@@ -461,7 +434,7 @@ static string query_session_id()
  */
 static void start_transport(string version)
 {
-    DEBUG(0, "client version is " + version);
+    DEBUG(1, "client version is " + version);
 
     state = TRANSPORT_KEXINIT;
     client_version = version;
@@ -491,7 +464,7 @@ private int receive_packet(string str)
 {
     int offset;
 
-    DEBUG(1, "receive_packet: " + dump_ssh_msg_type(str[0]));
+    DEBUG(2, "receive_packet: " + dump_ssh_msg_type(str[0]));
 
     if (state == TRANSPORT_SKIP) {
 	state = TRANSPORT_KEXDH;
@@ -506,7 +479,7 @@ private int receive_packet(string str)
 	break;
 
     case SSH_MSG_UNIMPLEMENTED:
-	DEBUG(0, "received SSH_MSG_UNIMPLEMENTED for packet " + get_int(str, 1));
+	DEBUG(1, "received SSH_MSG_UNIMPLEMENTED for packet " + get_int(str, 1));
 	break;
 
     case SSH_MSG_DEBUG:
@@ -536,7 +509,7 @@ private int receive_packet(string str)
 	    __send_packet(server_kexinit);
 	    packet_buffer = ({ });
 	} else if (state != TRANSPORT_KEXINIT) {
-	    DEBUG(0, "Unexpected SSH_MSG_KEXINIT received");
+	    DEBUG(1, "Unexpected SSH_MSG_KEXINIT received");
 	    break;
 	}
 
@@ -596,7 +569,7 @@ private int receive_packet(string str)
 	    __send_packet(str);
 	    state = TRANSPORT_NEWKEYS;
 	} else {
-	    DEBUG(0, "Unexpected SSH_MSG_KEXDH_INIT received");
+	    DEBUG(1, "Unexpected SSH_MSG_KEXDH_INIT received");
 	}
 	break;
 
@@ -610,7 +583,7 @@ private int receive_packet(string str)
 		flush_packet_buffer();
 	    }
 	} else {
-	    DEBUG(0, "Unexpected SSH_MSG_NEWKEYS received");
+	    DEBUG(1, "Unexpected SSH_MSG_NEWKEYS received");
 	}
 	break;
 
@@ -618,7 +591,7 @@ private int receive_packet(string str)
 	if (state == TRANSPORT_TRANSPORT) {
 	    return userauth(str);
 	} else {
-	    DEBUG(0, "Unexpected packet type " + str[0] + " received");
+	    DEBUG(1, "Unexpected packet type " + str[0] + " received");
 	}
 	break;
     }
