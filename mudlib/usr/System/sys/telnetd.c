@@ -87,12 +87,12 @@ string query_banner(object connection)
   game_driver = CONFIGD->get_game_driver();
   if(!game_driver) {
     if(shutdown)
-      return "MUD is shutting down...  Try again later.\r\n";
+      return "MUD is shutting down...  Try again later.\n";
 
     if(suspended)
-      return "MUD is suspended.  Try again in a minute or two.\r\n";
+      return "MUD is suspended.  Try again in a minute or two.\n";
 
-    return "Phantasmal (no gamedriver)\r\n\r\nLogin: ";
+    return "Phantasmal (no gamedriver)\n\nLogin: ";
   }
 
   if(shutdown)
