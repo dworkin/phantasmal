@@ -63,8 +63,11 @@ int not_english(void) {
   return FALSE;
 }
 
+#if 0
 void trim_whitespace(void) {
   int iter;
+
+  error("Nobody seems to use this...  Good.");
 
   for(iter = 0; iter < sizeof(content); iter++) {
     if(content[iter]) {
@@ -78,6 +81,7 @@ void trim_whitespace(void) {
     }
   }
 }
+#endif
 
 string to_unq_text(void) {
   string ret;
