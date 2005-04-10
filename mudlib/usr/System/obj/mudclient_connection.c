@@ -1,8 +1,9 @@
 #include <kernel/kernel.h>
 #include <kernel/user.h>
-#include "phantasmal/lpc_names.h"
-#include "phantasmal/telnet.h"
-#include "phantasmal/log.h"
+#include <phantasmal/lpc_names.h>
+#include <phantasmal/telnet.h>
+#include <phantasmal/mudclient.h>
+#include <phantasmal/log.h>
 
 inherit conn LIB_CONN;
 inherit user LIB_USER;
@@ -38,8 +39,11 @@ inherit user LIB_USER;
 
 private string buffer;
 private mixed* input_lines;
+private int    allowed_protocols;
+private int    active_protocols;
 
 private int new_telnet_input(string str);
+private string debug_escape_str(string line);
 
 static void create(int clone)
 {
@@ -47,6 +51,7 @@ static void create(int clone)
       conn::create("telnet");	/* Treat it like a telnet object */
       buffer = "";
       input_lines = ({ });
+      allowed_protocols = active_protocols = 0;
     }
 }
 
@@ -66,6 +71,13 @@ void datagram_challenge(string str)
 int datagram(string str)
 {
     return 0;
+}
+
+void permit_protocols(int protocols) {
+  if(previous_program() == MUDCLIENTD) {
+    allowed_protocols = protocols;
+  } else
+    error("Only privileged code can call permit_protocols!");
 }
 
 /*
@@ -114,7 +126,8 @@ void set_mode(int mode)
  */
 static int user_input(string str)
 {
-    return conn::receive_message(nil, str);
+  LOGD->write_syslog("MCC user_input: " + str, LOG_WARN);
+  return conn::receive_message(nil, str);
 }
 
 /*
@@ -151,10 +164,15 @@ static int message_done()
  * NAME:	message()
  * DESCRIPTION:	send a message to the other side
  */
-static int message(string str)
+int message(string str)
 {
-  /* Do appropriate send-filtering first */
-  return user::message(str);
+  if(previous_program() == LIB_USER) {
+    /* Do appropriate send-filtering first */
+    LOGD->write_syslog("MCC message: " + str, LOG_WARN);
+    return user::message(str);
+  } else {
+    error("Unprivileged code calling MCC::message()!");
+  }
 }
 
 private string get_input_line(void) {
@@ -177,7 +195,10 @@ int receive_message(string str)
   string line;
   int    mode;
 
-  if (previous_program() == LIB_CONN) {
+  if (previous_program() == LIB_CONN || previous_program() == MUDCLIENTD) {
+    LOGD->write_syslog("Received raw mode input: '"
+		       + debug_escape_str(str) + "'", LOG_WARN);
+
     new_telnet_input(str);
 
     line = get_input_line();
@@ -188,9 +209,11 @@ int receive_message(string str)
 
       line = get_input_line();
     }
+
+    return MODE_NOCHANGE;
   }
 
-  return MODE_NOCHANGE;
+  error("Illegal call!");
 }
 
 
@@ -202,13 +225,28 @@ int receive_message(string str)
 /************************************************************************/
 /************************************************************************/
 
+private string debug_escape_str(string line) {
+  string ret;
+  int    ctr;
+
+  ret = "";
+  for(ctr = 0; ctr < strlen(line); ctr++) {
+    if(line[ctr] >= 32 && line[ctr] <= 127)
+      ret += line[ctr..ctr];
+    else
+      ret += "\\" + line[ctr];
+  }
+
+  return ret;
+}
+
 private string double_iac_filter(string input_line) {
   string pre, post, outstr, iac_str;
 
   outstr = "";
   post = input_line;
   iac_str = " "; iac_str[0] = TP_IAC;
-  while(sscanf(post, "%s\x255\x255%s", pre, post) == 2) {
+  while(sscanf(post, "%s" + iac_str + iac_str + "%s", pre, post) == 2) {
     outstr += pre + iac_str;
   }
   outstr += post;
@@ -218,6 +256,7 @@ private string double_iac_filter(string input_line) {
 
 private void negotiate_option(int command, int option) {
   /* Currently, ignore */
+  LOGD->write_syslog("Ignoring telnet option " + option, LOG_WARN);
 }
 
 /* This function is called on any subnegotiation string sent.  The string
@@ -227,6 +266,8 @@ private void subnegotiation_string(string str) {
   str = double_iac_filter(str);
 
   /* Now, ignore it.  We don't yet accept any subnegotiation. */
+  LOGD->write_syslog("Ignoring subnegotiation, option " + str[0] + ": '"
+		     + debug_escape_str(str) + "'", LOG_WARN);
 }
 
 /* Scan off a series starting with TP_IAC and return the remainder.
@@ -236,7 +277,10 @@ private void subnegotiation_string(string str) {
    for double-TP_IAC series, so we don't have to worry about those.
 */
 static string scan_iac_series(string series) {
-  string pre, post;
+  string pre, post, iac_str, se_str;
+
+  LOGD->write_syslog("Scan_IAC_Series: '" + debug_escape_str(series)
+		     + "'", LOG_WARN);
 
   /* If there's nothing, we're not done yet */
   if(!series || !strlen(series))
@@ -255,7 +299,9 @@ static string scan_iac_series(string series) {
 
   case TP_SB:
     /* Scan for IAC SB ... IAC SE sequence */
-    if(sscanf(series, "%s\x255\x240%s", pre, post) == 2) {
+    iac_str = " "; iac_str[0] = TP_IAC;
+    se_str = " "; se_str[0] = TP_SE;
+    if(sscanf(series, "%s" + iac_str + se_str + "%s", pre, post) == 2) {
       subnegotiation_string(pre[1..]);
       return post;
     } else {
@@ -336,12 +382,15 @@ private int new_telnet_input(string str) {
   iac_series = "";
   tmpbuf = "";
 
+  LOGD->write_syslog("New total buffer: '" + debug_escape_str(buffer)
+		     + "'", LOG_WARN);
+
   /* Note: can't use double_iac_filter function here, because then we
      might collapse double-IAC sequences in the wrong place in the
      input and it'd corrupt other IAC sequences. */
 
-  /* TP_IAC is 255.  So we scan for it. */
-  while(sscanf(buffer, "%s\x255%s", chunk, series) == 2) {
+  /* Scan for TP_IAC. */
+  while(sscanf(buffer, "%s" + iac_str + "%s", chunk, series) == 2) {
     tmpbuf += chunk;
     if(strlen(series) && series[0] == TP_IAC) {
       tmpbuf += iac_str;
@@ -351,6 +400,8 @@ private int new_telnet_input(string str) {
     post = scan_iac_series(series);
     if(!post) {
       /* Found an incomplete IAC series, wait for the rest */
+      LOGD->write_syslog("Incomplete IAC series: '" + debug_escape_str(series)
+			 + "'", LOG_WARN);
       iac_series = iac_str + series;
       break;
     }

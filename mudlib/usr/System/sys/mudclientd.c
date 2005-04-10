@@ -4,18 +4,10 @@
 #include <phantasmal/log.h>
 #include <phantasmal/lpc_names.h>
 #include <phantasmal/telnet.h>
+#include <phantasmal/mudclient.h>
 
 static int    suspended, shutdown;
 
-/* There are a whole bunch of protocols we don't (yet?) support, but
-   we'd like to be able to. */
-#define PROTOCOL_MCP                1
-#define PROTOCOL_IMP                2   /* FireClient */
-#define PROTOCOL_PUEBLO             4
-#define PROTOCOL_MXP                8
-#define PROTOCOL_MSP               16
-#define PROTOCOL_XMLTERM           32
-#define PROTOCOL_MCCP              64
 
 int support_protocol;
 mapping protocol_names;
@@ -86,7 +78,8 @@ object select(string str)
   game_driver = CONFIGD->get_game_driver();
 
   conn = clone_object(MUDCLIENT_CONN);
-  /* TODO: set protocol information in connection */
+  conn->permit_protocols(support_protocol);
+  conn->receive_message(str);
 
   return conn;
 }
@@ -98,8 +91,6 @@ int query_timeout(object connection)
 
   if(suspended || shutdown)
     return -1;
-
-  connection->set_mode(MODE_RAW);
 
   return DEFAULT_TIMEOUT;
 }
