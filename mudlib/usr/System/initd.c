@@ -108,7 +108,7 @@ static void create(varargs int clone)
     DRIVER->message("This version of Phantasmal is not tested\n");
     DRIVER->message("with DGD beyond 1.2.XX.  Please upgrade Phantasmal!\n");
     error("Upgrade Phantasmal!");
-  } else if (minor == 2 && patch > 31) {
+  } else if (minor == 2 && patch > 33) {
     DRIVER->message("This is a very new Kernel Library version, or at\n");
     DRIVER->message("least newer than this version of Phantasmal.  If\n");
     DRIVER->message("you have problems, please upgrade Phantasmal!\n");

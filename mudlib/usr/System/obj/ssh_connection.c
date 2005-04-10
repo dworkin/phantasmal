@@ -1,10 +1,11 @@
 # include "phantasmal/ssh.h"
+# include "phantasmal/ssh_asn1.h"
 
 # define DEBUG SSH_DEBUG
 
 inherit SSH_TRANSPORT;
 private inherit SSH_UTILS;
-
+private inherit ASN1_UTILS;
 
 static int client(string str);
 
@@ -27,51 +28,110 @@ private int userauth_banner(string str)
 }
 
 /*
- * NAME:        ssh_dsa_verify()
- * DESCRIPTION: verify that the signature was created with a given key
+ * NAME:        ssh_dss_verify()
+ * DESCRIPTION: verify that the signature was created with a given key, be it
+ *              DSA or RSA.
  */
-private int ssh_dsa_verify(string m, string public_key, string signature)
+private int ssh_dss_verify(string algo, string m, string public_key, string signature)
 {
-    string p, q, g, y, r, s, s_blob, u, v, w, c;
+    string p, q, g, y, r, s, s_blob, u, v, w, c, e, n;
     int offset, length;
     string format;
-
-    offset = 0;
-    format = get_string(public_key, offset); offset += 4 + strlen(format);
-    p      = get_mpint(public_key, offset);  offset += 4 + strlen(p);
-    q      = get_mpint(public_key, offset);  offset += 4 + strlen(q);
-    g      = get_mpint(public_key, offset);  offset += 4 + strlen(g);
-    y      = get_mpint(public_key, offset);  offset += 4 + strlen(y);
-
-    if (format != "ssh-dss") {
-	/* Invalid public key format. */
-	return 0;
-    }
 
     offset = 0;
     format = get_string(signature, offset); offset += 4 + strlen(format);
     s_blob = get_string(signature, offset); offset += 4 + strlen(s_blob);
 
-    if (format != "ssh-dss") {
-	/* Invalid signature format. */
-	return 0;
+    if (format != algo) {
+	/* The wrong type of signature. */
+	return FALSE;
     }
-    if (strlen(s_blob) != 40) {
-	/* The signature blob should be 40 bytes long, two 160 bit integers. */
-	return 0;
+
+    offset = 0;
+    format = get_string(public_key, offset); offset += 4 + strlen(format);
+
+    if (format != algo) {
+	/* The wrong type of public key. */
+	return FALSE;
     }
-    r = "\0" + s_blob[ 0..19];
-    s = "\0" + s_blob[20..39];
 
-    w = asn_pow(s, asn_sub(q, "\2", q), q);
-    u = asn_mult(w, "\0" + hash_sha1(m), q);
-    v = asn_mult(w, r, q);
+    switch (format) {
+    case "ssh-dss":
+	p      = get_mpint(public_key, offset);  offset += 4 + strlen(p);
+	q      = get_mpint(public_key, offset);  offset += 4 + strlen(q);
+	g      = get_mpint(public_key, offset);  offset += 4 + strlen(g);
+	y      = get_mpint(public_key, offset);  offset += 4 + strlen(y);
 
-    return asn_cmp(asn_mod(asn_mult(asn_pow(g, u, p),
-				    asn_pow(y, v, p),
-				    p),
-			   q),
-		   r) == 0;
+	if (strlen(s_blob) != 40) {
+	    /* Signature blob should be 40 bytes long, two 160 bit integers. */
+	    return FALSE;
+	}
+	r = "\0" + s_blob[ 0..19];
+	s = "\0" + s_blob[20..39];
+	
+	w = asn_pow(s, asn_sub(q, "\2", q), q);
+	u = asn_mult(w, "\0" + hash_sha1(m), q);
+	v = asn_mult(w, r, q);
+	return asn_cmp(asn_mod(asn_mult(asn_pow(g, u, p),
+					asn_pow(y, v, p),
+					p),
+			       q),
+		       r) == 0;
+    case "ssh-rsa": {
+	int i, sz;
+
+	e = get_mpint(public_key, offset); offset += 4 + strlen(e);
+	n = get_mpint(public_key, offset); offset += 4 + strlen(n);
+
+	s = "\0" + s_blob;
+	v = asn_pow(s, e, n);
+
+	if (strlen(v) == 0 || v[0] != 0x01) {
+	    return FALSE;
+	}
+	for (i = 1, sz = strlen(v); i < sz; i++) {
+	    switch (v[i]) {
+	    case 0xff:
+		break;
+	    case 0x00: {
+		mixed *asn1;
+
+		v = v[i + 1 ..];
+		asn1 = parse_asn1(v, 0);
+		if (asn1) {
+		    /*
+		     * Format looks like this:
+		     *
+		     * ASN_SEQUENCE {
+		     *   ASN_SEQUENCE {
+		     *     ASN_OBJECT_ID 2B:0E:03:02:1A
+		     *     ASN_NULL
+		     *   }
+		     *   ASN_OCTET_STR ...SHA1 result...
+		     * }
+		     *
+		     * See also ftp://ftp.isi.edu/in-notes/rfc2437.txt
+		     */
+		    asn1 = asn1[0];
+		    return
+			asn1[ASN_TYPE]   == ASN_CONSTRUCTOR &&
+			asn1[ASN_NUMBER] == ASN_SEQUENCE &&
+			sizeof(asn1[ASN_CONTENTS]) >= 2 &&
+			asn1[ASN_CONTENTS][1][ASN_TYPE]     == ASN_PRIMITIVE &&
+			asn1[ASN_CONTENTS][1][ASN_NUMBER]   == ASN_OCTET_STR &&
+			asn1[ASN_CONTENTS][1][ASN_CONTENTS] == hash_sha1(m);
+		}
+		return FALSE;
+	    }
+	    default:
+		return FALSE;
+	    }
+	}
+	return FALSE;
+    }
+    default:
+	return FALSE;
+    }
 }
 
 /*
@@ -121,6 +181,7 @@ static int userauth(string str)
 			blob = get_string(str, offset + 1 + 4 + strlen(algo));
 			switch (algo) {
 			case "ssh-dss":
+			case "ssh-rsa":
 			    if (SSHD->valid_public_key(name, blob)) {
 				::message(make_mesg(SSH_MSG_USERAUTH_PK_OK) +
 					  make_string(algo) +
@@ -150,40 +211,45 @@ static int userauth(string str)
 			offset += 4 + strlen(publickey);
 			signature = get_string(str, offset);
 
-			/*
-			 * Signature is made from this data:
-			 *
-			 * string    session identifier
-			 * byte      SSH_MSG_USERAUTH_REQUEST
-			 * string    user name
-			 * string    service
-			 * string    "publickey"
-			 * boolean   TRUE
-			 * string    public key algorithm name
-			 * string    public key to be used for authentication
-			 */
-			data =
-			    make_string(query_session_id()) +
-			    make_mesg(SSH_MSG_USERAUTH_REQUEST) +
-			    make_string(name) +
-			    make_string(service) +
-			    make_string("publickey") +
-			    "\1" +
-			    make_string("ssh-dss") +
-			    make_string(publickey);
-
-			if (SSHD->valid_public_key(name, publickey) &&
-			    ssh_dsa_verify(data, publickey, signature)) {
-			    if (ssh_get_user(name)) {
-				logged_in = TRUE;
-				ssh_do_login();
-				::message(make_mesg(SSH_MSG_USERAUTH_SUCCESS));
+			if (algo == "ssh-dss" || algo == "ssh-rsa") {
+			    /*
+			     * Signature is made from this data:
+			     *
+			     * string    session identifier
+			     * byte      SSH_MSG_USERAUTH_REQUEST
+			     * string    user name
+			     * string    service
+			     * string    "publickey"
+			     * boolean   TRUE
+			     * string    public key algorithm name
+			     * string    public key to be used for authentication
+			     */
+			    data =
+				make_string(query_session_id()) +
+				make_mesg(SSH_MSG_USERAUTH_REQUEST) +
+				make_string(name) +
+				make_string(service) +
+				make_string("publickey") +
+				"\1" +
+				make_string(algo) +
+				make_string(publickey);
+			    if (SSHD->valid_public_key(name, publickey) &&
+				(ssh_dss_verify(algo, data, publickey, signature))) {
+				if (ssh_get_user(name)) {
+				    ssh_login();
+				    logged_in = TRUE;
+				    ::message(make_mesg(SSH_MSG_USERAUTH_SUCCESS));
+				} else {
+				    /* no such user? */
+				    ::message(make_mesg(SSH_MSG_USERAUTH_FAILURE) +
+					      make_string("publickey,password") +
+					      "\0");
+				    return MODE_DISCONNECT;
+				}
 			    } else {
-				/* no such user? */
 				::message(make_mesg(SSH_MSG_USERAUTH_FAILURE) +
 					  make_string("publickey,password") +
 					  "\0");
-				return MODE_DISCONNECT;
 			    }
 			} else {
 			    ::message(make_mesg(SSH_MSG_USERAUTH_FAILURE) +
@@ -197,8 +263,8 @@ static int userauth(string str)
 			password = get_string(str, offset + 1);
 			if (ssh_get_user(name) && ssh_check_password(password))
 			{
+			    ssh_login();
 			    logged_in = TRUE;
-			    ssh_do_login();
 			    ::message(make_mesg(SSH_MSG_USERAUTH_SUCCESS));
 			    break;
 			}
@@ -351,6 +417,7 @@ static int client(string str)
 		::message(make_mesg(SSH_MSG_CHANNEL_SUCCESS) +
 			  make_int(channel_id));
 	    }
+	    ssh_shell();
 	} else if (str[offset]) {
 	    ::message(make_mesg(SSH_MSG_CHANNEL_FAILURE) +
 		      make_int(channel_id));
