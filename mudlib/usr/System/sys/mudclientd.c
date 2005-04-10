@@ -182,4 +182,6 @@ string autodetect_client_str(void) {
 
   if(support_protocol & PROTOCOL_PUEBLO)
     ret += "This world is Pueblo 2.50 enhanced.\r\n";
+
+  return ret;
 }
