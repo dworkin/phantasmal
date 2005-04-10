@@ -7,7 +7,21 @@
 
 static int    suspended, shutdown;
 
+/* There are a whole bunch of protocols we don't (yet?) support, but
+   we'd like to be able to. */
+#define PROTOCOL_MCP                1
+#define PROTOCOL_IMP                2   /* FireClient */
+#define PROTOCOL_PUEBLO             4
+#define PROTOCOL_MXP                8
+#define PROTOCOL_MSP               16
+#define PROTOCOL_XMLTERM           32
+#define PROTOCOL_MCCP              64
+
+int support_protocol;
+mapping protocol_names;
+
 void upgraded(varargs int clone);
+string autodetect_client_str(void);
 
 static void create(varargs int clone) {
   if(clone) {
@@ -25,9 +39,19 @@ void upgraded(varargs int clone) {
      any Common or System things that it'll need compiled should
      be compiled for it here.  Ditto for PHANTASMAL_USER. */
   if(!find_object(US_SCROLL_TEXT)) compile_object(US_SCROLL_TEXT);
-  if(!find_object(SYSTEM_USER_OBJ)) compile_object(SYSTEM_USER_OBJ);
+  if(!find_object(MUDCLIENT_CONN)) compile_object(MUDCLIENT_CONN);
 
-  if(!find_object(DEFAULT_USER_OBJ)) compile_object(DEFAULT_USER_OBJ);
+  support_protocol = 0;
+  protocol_names = ([
+		     "MCP" => PROTOCOL_MCP,
+		     "IMP" => PROTOCOL_IMP,
+		     "FIRECLIENT" => PROTOCOL_FIRECLIENT,
+		     "PUEBLO" => PROTOCOL_PUEBLO,
+		     "MXP" => PROTOCOL_MXP,
+		     "MSP" => PROTOCOL_MSP,
+		     "XMLTERM" => PROTOCOL_XMLTERM,
+		     "MCCP" => PROTOCOL_MCCP,
+		     ]);
 }
 
 void suspend_input(int shutdownp) {
@@ -54,17 +78,17 @@ void release_input(void) {
 
 object select(string str)
 {
-  object game_driver;
+  object game_driver, conn;
 
   if(!SYSTEM() && !KERNEL())
     return nil;
 
   game_driver = CONFIGD->get_game_driver();
 
-  if(game_driver)
-    return game_driver->new_user_connection(str);
+  conn = clone_object(MUDCLIENT_CONN);
+  conn->
 
-  return clone_object(DEFAULT_USER_OBJ);
+  return conn;
 }
 
 int query_timeout(object connection)
@@ -74,6 +98,8 @@ int query_timeout(object connection)
 
   if(suspended || shutdown)
     return -1;
+
+  connection->set_mode(MODE_RAW);
 
   return DEFAULT_TIMEOUT;
 }
@@ -111,7 +137,10 @@ string query_banner(object connection)
   */
 
   send_back = game_driver->get_welcome_message(connection);
-  if(!send_back) return send_back;
+  if(!send_back)
+    error("(nil) welcome message on Mudclient port!");
+
+  send_back = autodetect_client_str() + send_back;
 
   /* Return IAC WONT TELOPT_ECHO, IAC DO TELOPT_LINEMODE */
   telnet_options = "      ";
@@ -122,4 +151,35 @@ string query_banner(object connection)
   telnet_options[4] = TP_DO;
   telnet_options[5] = TELOPT_LINEMODE;
   return telnet_options + send_back;
+}
+
+void protocol_allow(string protocol, int should_attempt) {
+  int pnum;
+
+  protocol = STRINGD->to_upper(protocol);
+
+  if(protocol_names[protocol]) {
+    pnum = protocol_names[protocol];
+  } else {
+    error("Unrecognized protocol " + protocol + " requested in MUDCLIENTD!");
+  }
+
+  if(should_attempt)
+    support_protocol |= pnum;
+  else
+    support_protocol &= ~pnum;
+}
+
+string autodetect_client_str(void) {
+  string ret;
+
+  ret = "";
+  if(support_protocol & PROTOCOL_IMP)
+    ret += "Autodetecting IMP...v1.30\r\n";
+
+  if(support_protocol & PROTOCOL_MCP)
+    ret += "#$#mcp version: 2.1 to: 2.1\r\n";
+
+  if(support_protocol & PROTOCOL_PUEBLO)
+    ret += "This world is Pueblo 2.50 enhanced.\r\n";
 }

@@ -1,6 +1,5 @@
-# include "phantasmal/telnet.h"
-
-/* # define DEBUG SSH_DEBUG */
+#include "phantasmal/telnet.h"
+#include "phantasmal/log.h"
 
 inherit conn LIB_CONN;
 inherit user LIB_USER;
@@ -66,7 +65,7 @@ int datagram(string str)
 
 /*
  * NAME:	login()
- * DESCRIPTION:	accept a SSH connection
+ * DESCRIPTION:	accept connection
  */
 int login(string str)
 {
@@ -153,15 +152,6 @@ static int message(string str)
   return user::message(str);
 }
 
-/*
- * Add new characters to buffer.  Filter newlines, backspaces and
- * telnet IAC codes appropriately.  If a full line of input has been
- * read, set input_line appropriately.
- */
-private int new_telnet_input(string str) {
-  buffer += str;
-}
-
 private string get_input_line(void) {
   string tmp;
 
@@ -172,11 +162,6 @@ private string get_input_line(void) {
   }
   return nil;
 }
-
-/******************************************************************/
-/******************************************************************/
-/******************************************************************/
-/******************************************************************/
 
 /*
  * NAME:	receive_message()
@@ -201,4 +186,173 @@ int receive_message(string str)
   }
 
   return MODE_NOCHANGE;
+}
+
+
+/************************************************************************/
+/************************************************************************/
+/************************************************************************/
+/* Specifics of telnet protocol                                         */
+/************************************************************************/
+/************************************************************************/
+/************************************************************************/
+
+private string double_iac_filter(string input_line) {
+  string pre, post, outstr, iac_str;
+
+  outstr = "";
+  post = input_line;
+  iac_str = " "; iac_str[0] = TP_IAC;
+  while(sscanf(post, "%s\x255\x255%s", pre, post) == 2) {
+    outstr += pre + iac_str;
+  }
+  outstr += post;
+
+  return outstr;
+}
+
+private void negotiate_option(int command, int option) {
+  /* Currently, ignore */
+}
+
+/* This function is called on any subnegotiation string sent.  The string
+   passed in was originally between an IAC SB and an IAC SE. */
+private void subnegotiation_string(string str) {
+  /* First, remove doubling of TP_IAC characters in string */
+  str = double_iac_filter(str);
+
+  /* Now, ignore it.  We don't yet accept any subnegotiation. */
+}
+
+/* Scan off a series starting with TP_IAC and return the remainder.
+   The function will return nil if the series isn't a complete IAC
+   sequence.  The caller is assumed to have stripped off the leading
+   TP_IAC character of 'series'.  The caller has also already filtered
+   for double-TP_IAC series, so we don't have to worry about those.
+*/
+static string scan_iac_series(string series) {
+
+  /* If there's nothing, we're not done yet */
+  if(!series || !strlen(series))
+    return nil;
+
+  switch(series[0]) {
+  case TP_WILL:
+  case TP_WONT:
+  case TP_DO:
+  case TP_DONT:
+    if(strlen(series) < 2)
+      return nil;
+
+    negotiate_option(series[0], series[1]);
+    return series[2..];
+
+  case TP_SB:
+    /* Scan for IAC SB ... IAC SE sequence */
+    if(sscanf(series, "%s\x255\x240%s", pre, post) == 2) {
+      subnegotiation_string(pre[1..]);
+      return post;
+    } else {
+      /* Don't have whole series yet */
+      return nil;
+    }
+    break;
+
+  default:
+    /* Unrecognized, ignore */
+    return series[1..];
+  }
+}
+
+/*
+ * This function filters for newlines (CR,LF, or CRLF) and backspaces.
+ * It then chops up input into the line array.  Much code taken from
+ * the Kernel Library binary connection object.
+ */
+static void crlfbs_filter(void)
+{
+    int mode, len;
+    string str, head, pre;
+
+    while (this_object() &&
+	   (mode=query_mode()) != MODE_BLOCK && mode != MODE_DISCONNECT)
+      {
+
+	/* We only bother to process the buffer for this stuff if
+	   there's a line waiting. */
+	if (sscanf(buffer, "%s\r\n%s", str, buffer) != 0 ||
+	    sscanf(buffer, "%s\n%s", str, buffer) != 0) {
+
+	  while (sscanf(str, "%s\b%s", head, str) != 0) {
+
+	    /* Process 'DEL' character in a string with backspaces */
+	    while (sscanf(head, "%s\x7f%s", pre, head) != 0) {
+	      len = strlen(pre);
+	      if (len != 0) {
+		head = pre[0 .. len - 2] + head;
+	      }
+	    }
+
+	    len = strlen(head);
+	    if (len != 0) {
+	      str = head[0 .. len - 2] + str;
+	    }
+	  }
+
+	  /* Process 'DEL' character after all backspaces are gone */
+	  while (sscanf(str, "%s\x7f%s", head, str) != 0) {
+	    len = strlen(head);
+	    if (len != 0) {
+	      str = head[0 .. len - 2] + str;
+	    }
+	  }
+
+	  input_lines += ({ str });
+
+	  /* Currently, log all input */
+	  LOGD->write_syslog("MCC input: '" + str + "'", LOG_WARN);
+	} else {
+	  break; /* No more newline-delimited input.  Out of full lines. */
+	}
+      }
+}
+
+/*
+ * Add new characters to buffer.  Filter newlines, backspaces and
+ * telnet IAC codes appropriately.  If a full line of input has been
+ * read, set input_line appropriately.
+ */
+private int new_telnet_input(string str) {
+  string iac_series, iac_str, chunk, tmpbuf, post;
+
+  iac_str = " "; iac_str[0] = TP_IAC;
+  buffer += str;
+  iac_series = "";
+  tmpbuf = "";
+
+  /* Note: can't use double_iac_filter function here, because then we
+     might collapse double-IAC sequences in the wrong place in the
+     input and it'd corrupt other IAC sequences. */
+
+  /* TP_IAC is 255.  So we scan for it. */
+  while(sscanf(buffer, "%s\x255%s", chunk, series) == 2) {
+    tmpbuf += chunk;
+    if(strlen(series) && series[0] == TP_IAC) {
+      tmpbuf += iac_str;
+      buffer = series[1..];
+      continue;
+    }
+    post = scan_iac_series(series);
+    if(!post) {
+      /* Found an incomplete IAC series, wait for the rest */
+      iac_series = iac_str + series;
+      break;
+    }
+    buffer = post;
+  }
+  buffer = tmpbuf + buffer;
+
+  crlfbs_filter();  /* Handle newline stuff, backspace and DEL.  Chunk out
+		       complete lines into input_lines. */
+  buffer += iac_series;  /* Add back incomplete IAC series, if any */
 }
