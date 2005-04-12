@@ -143,19 +143,22 @@ void disconnect()
  * NAME:	message_done()
  * DESCRIPTION:	forward message_done to user
  */
-static int message_done()
+int message_done()
 {
     object user;
     int mode;
 
-    user = query_user();
-    if (user) {
+    if(previous_program() == LIB_CONN) {
+      user = query_user();
+      if (user) {
 	mode = user->message_done();
 	if (mode == MODE_DISCONNECT || mode >= MODE_UNBLOCK) {
-	    return mode;
+	  return mode;
 	}
-    }
-    return MODE_NOCHANGE;
+      }
+      return MODE_NOCHANGE;
+    } else
+      error("Illegal call to message_done()!");
 }
 
 /*
@@ -209,7 +212,7 @@ int receive_message(string str)
     }
     if(!suppress_ga && !strlen(buffer)) {
       /* Have read all pending lines, nothing uncompleted in buffer */
-      user::message(tel_goahead);
+      return user::message(tel_goahead);
     }
 
     return MODE_NOCHANGE;
