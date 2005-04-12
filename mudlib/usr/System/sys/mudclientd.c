@@ -6,6 +6,8 @@
 #include <phantasmal/telnet.h>
 #include <phantasmal/mudclient.h>
 
+inherit COMMON_AUTO;
+
 private int     suspended, shutdown;
 private mapping telopt_handler;
 
@@ -91,7 +93,6 @@ object select(string str)
   game_driver = CONFIGD->get_game_driver();
 
   conn = clone_object(MUDCLIENT_CONN);
-  conn->permit_protocols(support_protocol);
   conn->receive_message(str);
 
   return conn;

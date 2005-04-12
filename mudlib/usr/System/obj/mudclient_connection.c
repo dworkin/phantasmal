@@ -5,6 +5,7 @@
 #include <phantasmal/mudclient.h>
 #include <phantasmal/log.h>
 
+inherit COMMON_AUTO;
 inherit conn LIB_CONN;
 inherit user LIB_USER;
 
@@ -43,6 +44,7 @@ private int    active_protocols;
 
 /* telnet options */
 private int    suppress_ga;
+private int    suppress_echo;
 private string tel_goahead;
 
 private int new_telnet_input(string str);
@@ -57,6 +59,7 @@ static void create(int clone)
       active_protocols = 0;
 
       tel_goahead = " "; tel_goahead[0] = TP_GA;
+      suppress_ga = suppress_echo = 0;
     }
 }
 
@@ -106,15 +109,20 @@ void logout(int quit)
 
 /*
  * NAME:	set_mode()
- * DESCRIPTION:	pass on mode changes to the binary connection object
+ * DESCRIPTION:	pass mode changes to the binary connection object
  */
 void set_mode(int mode)
 {
     if (SYSTEM() && mode >= MODE_UNBLOCK) {
 	query_conn()->set_mode(mode);
 
-	/* TODO: If we're unblocking input, should we dispatch any
-	   remaining lines in the array of waiting lines? */
+	if(suppress_echo && mode == MODE_ECHO) {
+	  suppress_echo = 0;
+	  this_object()->send_telnet_option(TP_DO, TELOPT_ECHO);
+	} else if(!suppress_echo && mode == MODE_NOECHO) {
+	  suppress_echo = 1;
+	  this_object()->send_telnet_option(TP_DONT, TELOPT_ECHO);
+	}
     }
 }
 
@@ -256,9 +264,9 @@ nomask int send_telnet_subnegotiation(int option, string arguments) {
   return user::message(options);
 }
 
-int should_suppress_ga(int do_suppress) {
+void should_suppress_ga(int do_suppress) {
   if(SYSTEM()
-     || previous_program() == MUDCLIENTD->get_telopt_handler(TELOPT_SGA)) {
+     || previous_object() == MUDCLIENTD->get_telopt_handler(TELOPT_SGA)) {
     suppress_ga = do_suppress;
   } else
     error("Only privileged code may call should_suppress_ga!");
