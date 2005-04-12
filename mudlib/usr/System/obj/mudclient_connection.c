@@ -39,8 +39,11 @@ inherit user LIB_USER;
 
 private string buffer;
 private mixed* input_lines;
-private int    allowed_protocols;
 private int    active_protocols;
+
+/* telnet options */
+private int    suppress_ga;
+private string tel_goahead;
 
 private int new_telnet_input(string str);
 private string debug_escape_str(string line);
@@ -51,7 +54,9 @@ static void create(int clone)
       conn::create("telnet");	/* Treat it like a telnet object */
       buffer = "";
       input_lines = ({ });
-      allowed_protocols = active_protocols = 0;
+      active_protocols = 0;
+
+      tel_goahead = " "; tel_goahead[0] = TP_GA;
     }
 }
 
@@ -71,13 +76,6 @@ void datagram_challenge(string str)
 int datagram(string str)
 {
     return 0;
-}
-
-void permit_protocols(int protocols) {
-  if(previous_program() == MUDCLIENTD) {
-    allowed_protocols = protocols;
-  } else
-    error("Only privileged code can call permit_protocols!");
 }
 
 /*
@@ -209,6 +207,10 @@ int receive_message(string str)
 
       line = get_input_line();
     }
+    if(!suppress_ga && !strlen(buffer)) {
+      /* Have read all pending lines, nothing uncompleted in buffer */
+      user::message(tel_goahead);
+    }
 
     return MODE_NOCHANGE;
   }
@@ -216,6 +218,48 @@ int receive_message(string str)
   error("Illegal call!");
 }
 
+nomask int send_telnet_option(int command, int option) {
+  string opts;
+
+  if(!SYSTEM() && previous_object() != MUDCLIENTD->get_telopt_handler(option))
+    error("Only SYSTEM code and telopt handlers can send telnet options!");
+
+  if(command != TP_DO && command != TP_DONT && command != TP_WILL
+     && command != TP_WONT)
+    error("Invalid command in send_telnet_option!");
+
+  opts = "   ";
+  opts[0] = TP_IAC;
+  opts[1] = command;
+  opts[2] = option;
+
+  return user::message(opts);
+}
+
+nomask int send_telnet_subnegotiation(int option, string arguments) {
+  string tmp, options;
+
+  if(!SYSTEM() && previous_object() != MUDCLIENTD->get_telopt_handler(option))
+    error("Only SYSTEM code and telopt handlers can send telnet options!");
+
+  tmp = "  ";
+  tmp[0] = TP_IAC;
+  tmp[1] = TP_SB;
+
+  options = tmp + arguments;
+  tmp[1] = TP_SE;
+  options = options + tmp;
+
+  return user::message(options);
+}
+
+int should_suppress_ga(int do_suppress) {
+  if(SYSTEM()
+     || previous_program() == MUDCLIENTD->get_telopt_handler(TELOPT_SGA)) {
+    suppress_ga = do_suppress;
+  } else
+    error("Only privileged code may call should_suppress_ga!");
+}
 
 /************************************************************************/
 /************************************************************************/
@@ -255,19 +299,46 @@ private string double_iac_filter(string input_line) {
 }
 
 private void negotiate_option(int command, int option) {
-  /* Currently, ignore */
-  LOGD->write_syslog("Ignoring telnet option " + option, LOG_WARN);
+  object handler;
+
+  handler = MUDCLIENTD->get_telopt_handler(option);
+  if(handler) {
+    switch(command) {
+    case TP_WILL:
+      handler->telnet_will(option);
+      break;
+    case TP_WONT:
+      handler->telnet_wont(option);
+      break;
+    case TP_DO:
+      handler->telnet_do(option);
+      break;
+    case TP_DONT:
+      handler->telnet_dont(option);
+      break;
+    }
+  } else {
+    /* If no handler, ignore */
+    LOGD->write_syslog("Ignoring telnet option " + option, LOG_WARN);
+  }
 }
 
 /* This function is called on any subnegotiation string sent.  The string
    passed in was originally between an IAC SB and an IAC SE. */
 private void subnegotiation_string(string str) {
+  object handler;
+
   /* First, remove doubling of TP_IAC characters in string */
   str = double_iac_filter(str);
 
-  /* Now, ignore it.  We don't yet accept any subnegotiation. */
-  LOGD->write_syslog("Ignoring subnegotiation, option " + str[0] + ": '"
-		     + debug_escape_str(str) + "'", LOG_WARN);
+  handler = MUDCLIENTD->get_telopt_handler(str[0]);
+  if(handler) {
+    handler->telnet_sb(str[0], str[1..]);
+  } else {
+    /* Now, ignore it.  We don't yet accept any subnegotiation. */
+    LOGD->write_syslog("Ignoring subnegotiation, option " + str[0] + ": '"
+		       + debug_escape_str(str) + "'", LOG_WARN);
+  }
 }
 
 /* Scan off a series starting with TP_IAC and return the remainder.
@@ -333,6 +404,8 @@ static void crlfbs_filter(void)
 	/* We only bother to process the buffer for this stuff if
 	   there's a line waiting. */
 	if (sscanf(buffer, "%s\r\n%s", str, buffer) != 0 ||
+	    sscanf(buffer, "%s\r\0%s", str, buffer) != 0 ||
+	    sscanf(buffer, "%s\r%s", str, buffer) != 0 ||
 	    sscanf(buffer, "%s\n%s", str, buffer) != 0) {
 
 	  while (sscanf(str, "%s\b%s", head, str) != 0) {

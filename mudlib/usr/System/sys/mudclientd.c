@@ -6,8 +6,8 @@
 #include <phantasmal/telnet.h>
 #include <phantasmal/mudclient.h>
 
-static int    suspended, shutdown;
-
+private int     suspended, shutdown;
+private mapping telopt_handler;
 
 int support_protocol;
 mapping protocol_names;
@@ -24,6 +24,8 @@ static void create(varargs int clone) {
 }
 
 void upgraded(varargs int clone) {
+  object handler;
+
   if(!SYSTEM())
     return;
 
@@ -41,8 +43,19 @@ void upgraded(varargs int clone) {
 		     "PUEBLO" : PROTOCOL_PUEBLO,
 		     "MXP" : PROTOCOL_MXP,
 		     "MSP" : PROTOCOL_MSP,
-		     "XMLTERM" : PROTOCOL_XMLTERM,
+		     "ZMP" : PROTOCOL_ZMP,
+		     "ZENITH" : PROTOCOL_ZMP,
 		     "MCCP" : PROTOCOL_MCCP,
+		     ]);
+  if(!find_object(TELOPT_DEFAULT_HANDLER))
+    compile_object(TELOPT_DEFAULT_HANDLER);
+  handler = find_object(TELOPT_DEFAULT_HANDLER);
+
+  telopt_handler = ([
+		     TELOPT_ECHO : handler,
+		     TELOPT_SGA : handler,
+		     TELOPT_TM : handler,
+		     TELOPT_LINEMODE : handler,
 		     ]);
 }
 
@@ -92,13 +105,15 @@ int query_timeout(object connection)
   if(suspended || shutdown)
     return -1;
 
+  connection->set_mode(MODE_RAW);
+
   return DEFAULT_TIMEOUT;
 }
 
 string query_banner(object connection)
 {
   object game_driver;
-  string send_back, telnet_options;
+  string send_back, telnet_options, proto_options;
 
   if(!SYSTEM() && !KERNEL())
      return nil;
@@ -133,7 +148,7 @@ string query_banner(object connection)
 
   send_back = autodetect_client_str() + send_back;
 
-  /* Return IAC WONT TELOPT_ECHO, IAC DO TELOPT_LINEMODE */
+  /* Start with IAC WONT TELOPT_ECHO, IAC DO TELOPT_LINEMODE */
   telnet_options = "      ";
   telnet_options[0] = TP_IAC;
   telnet_options[1] = TP_WONT;
@@ -141,6 +156,24 @@ string query_banner(object connection)
   telnet_options[3] = TP_IAC;
   telnet_options[4] = TP_DO;
   telnet_options[5] = TELOPT_LINEMODE;
+
+  proto_options = "   ";
+  proto_options[0] = TP_IAC;
+  proto_options[1] = TP_WILL;
+
+  if(support_protocol & PROTOCOL_MXP) {
+    proto_options[2] = TELOPT_MXP;
+    telnet_options = telnet_options + proto_options;
+  }
+  if(support_protocol & PROTOCOL_MSP) {
+    proto_options[2] = TELOPT_MSP;
+    telnet_options = telnet_options + proto_options;
+  }
+  if(support_protocol & PROTOCOL_ZMP) {
+    proto_options[2] = TELOPT_ZMP;
+    telnet_options = telnet_options + proto_options;
+  }
+
   return telnet_options + send_back;
 }
 
@@ -175,4 +208,23 @@ string autodetect_client_str(void) {
     ret += "This world is Pueblo 2.50 enhanced.\r\n";
 
   return ret;
+}
+
+void set_telopt_handler(int option_num, object handler) {
+  if(SYSTEM() || COMMON() || GAME()) {
+    if(option_num == TELOPT_SGA || option_num == TELOPT_ECHO
+       || option_num == TELOPT_TM || option_num == TELOPT_LINEMODE) {
+      LOGD->write_syslog("Setting uncommon handler for standard telnet"
+			 + "option!", LOG_WARN);
+    }
+
+    telopt_handler[option_num] = handler;
+  } else {
+    error("Non-privileged code attempted to call "
+	  + "MUDCLIENTD::set_telopt_handler!");
+  }
+}
+
+object get_telopt_handler(int option_num) {
+  return telopt_handler[option_num];
 }
