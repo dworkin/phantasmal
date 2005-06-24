@@ -503,5 +503,67 @@ such a thing?  How do players of such muds interact with each other?
 /will
 </pre>
 
+<hr />
+
+<pre>
+From: dgd@dworkin.nl (Greg Lewis)
+Date: Sat May  7 06:07:01 2005
+Subject: [DGD] Question: Implementing ANSI
+
+On Sat, May 07, 2005 at 04:17:26AM +1000, Trance Junkie wrote:
+> So my question is this: Is anyone aware of a downloadable, relatively 
+> up-to-date version of DGD (1.2 would be ideal) that supports ansi 
+> capabilities AND works out of the box for Win32 OS's, and if not, and of 
+> course if Dworkin is not opposed to the idea, is there anyone willing to 
+> create one for distribution?
+
+A patch against 1.2p4 is available at
+
+ftp://ftp.freebsd.org/pub/FreeBSD/ports/local-distfiles/glewis/dgd/ansi.diff
+
+-- 
+Greg Lewis                          Email   : glewis@eyesbeyond.com
+Eyes Beyond                         Web     : http://www.eyesbeyond.com
+Information Technology              FreeBSD : glewis@FreeBSD.org
+</pre>
+
+<hr />
+
+<pre>
+From: dgd@dworkin.nl (Felix A. Croes)
+Date: Tue May 31 20:17:01 2005
+Subject: [DGD] LPC parsing in DGD
+
+"Shaun  deRost  Vantuil" wrote:
+
+> Does DGD compile LPC for use later on, or does it parse the code every time 
+> the LPC is run? I hope Im making sense here. 
+
+LPC is compiled to byte code for the internal VM.  The byte code is
+also saved in state dumps.
+
+Regards,
+Dworkin
+</pre>
+
+<hr />
+
+<pre>
+From: dgd@dworkin.nl (Par Winzell)
+Date: Tue May 31 20:20:01 2005
+Subject: [DGD] LPC parsing in DGD
+
+Shaun deRost Vantuil wrote:
+
+> Does DGD compile LPC for use later on, or does it parse the code every time 
+> the LPC is run? I hope Im making sense here. 
+
+DGD compiles the LPC (once) to bytecode, which it interprets at runtime.
+It's pretty fast. It is also capable of compiling the LPC to C in an
+offline process. The resulting code is even faster.
+
+Zell
+</pre>
+
   <p style="font-size: 150%"> <a href="index.html"> Back to DGD
       Documentation </a> </p>
