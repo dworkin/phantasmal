@@ -231,6 +231,53 @@
       around for awhile so they may have more information available
       when you click on them. </p>
 
+<hr />
+
+<pre>
+(From a message by Par Winzell:)
+
+As you seem to have already figured out, there's two substantially 
+different ways to compile DGD for Windows; one's native to Windows, uses 
+the Windows API, and requires Visual C++... and one compiles DGD as a 
+Unix application, on top of Cygwin. Presuming you can't find somebody to 
+compile DGD+ANSI for you using Visual C++ (I loathe the Microsoft IDE's 
+and try hard to keep them away from my computer), by far your best bet 
+is to use Cygwin. So...
+
+... first of all, DGD compiles cleanly under Cygwin and runs without 
+trouble. It does need to use the 'SYSV' Makefile in dgd/src/host rather 
+than the 'BSD' one. I understand you were frustated with Cygwin by the 
+time you quit, but I suggest you persist. If things continue to go 
+wrong, please let us know what 'missing files' actually means. 
+Meanwhile, these commands should fully compile DGD under Cygwin, if you 
+have a sufficient installation:
+
+   *  wget --passive-ftp ftp://ftp.dworkin.nl/pub/dgd/dgd-1.2p4.tar.gz
+   *  tar -xzvf dgd-1.2p4.tar.gz
+   *  cd dgd/src
+   *  cp -p host/Makefile.sysv host/Makefile
+   *  make install
+
+If all goes well, you will have a binary in dgd/bin/driver. The Cygwin 
+version, not being a native Windows application, is also not a GUI one; 
+you'd do
+
+   * cd ..
+   * bin/driver mud.dgd
+
+after modifying mud.dgd with the correct absolute path(s).
+
+Finally, please don't worry overly much about installing Cygwin on your 
+machine. It's not going to do any harm and I don't think it gets into 
+the guts of your installation. You don't even really need to uninstall 
+it if you get tired of it; delete i.e. C:\Cygwin and remove the links 
+from the start menu, and I believe it's pretty much gone. You might even 
+find that you get used to having it around. As tools go for making 
+Windows sane, it's unparallelled in competence.
+
+And please dump Wordpad!! :)
+</pre>
+
     <p style="font-size: 150%"> <a href="../index.html"> Back to top level
       </a> </p>
             <address>

@@ -374,6 +374,37 @@ Joshua P. Dady
 http://www.indecisive.com/
 </pre>
 
+<hr />
+
+<pre>
+From: dgd@dworkin.nl (Par Winzell)
+Date: Sat May  7 15:28:01 2005
+Subject: [DGD] Question: Implementing ANSI
+
+Trance Junkie wrote:
+> Hello again, and thanks to everyone who answered my last query.
+> 
+> This might sound a bit backwards after my last question, but I do tend 
+> to think/do things in strange ways sometimes. Basically, I'm wondering 
+> if there's a relatively easy way to add ansi colour capabilities to the 
+> DGD driver. There's a bit of documentation on the SourceForge site on 
+> this, and some more on Dworkin's DGD FAQ, but again I have stumbled into 
+> a couple of hurdles.
+
+To summarize what's already been said and add some of my own --
+
+The DGD driver has 'telnet' ports and 'binary' ports. The telnet ports 
+have an implementation of the Telnet protocol inside DGD itself. I'd 
+probably argue a modern mudlib should implement this on the mudlib 
+level, but it's convenient to have it in DGD, especially because it's 
+such a confusing protocol with so many broken implementations out in the 
+wild. The ANSI patch to DGD, as far as I can remember, just removes a 
+few lines of code in DGD that explicitly strips escape sequences such as 
+ANSI colour codes.
+
+Zell
+</pre>
+
   <p style="text-size: 150%"> <a href="../index.html"> Back to top level
     </a> </p>
             <address>

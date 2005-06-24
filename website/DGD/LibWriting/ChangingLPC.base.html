@@ -1,0 +1,46 @@
+  <titledef text="Changing LPC" />
+
+  <h2> Can You Modify LPC as DGD Understands It? </h2>
+
+
+<hr />
+
+<pre>
+From: dgd@dworkin.nl (Par Winzell)
+Date: Tue May  3 16:32:01 2005
+Subject: [DGD] Question: Implementing foreach()
+
+[...]
+
+So if a sane foreach design relies on specific mudlib classes, then
+obviously the foreach implementation itself should be in the mudlib. To
+do this, as Noah says, means you take over compile_object() and do your
+own pass over the source code before you hand it over to DGD's compiler.
+At that point you could (if you still cared enough) expand e.g.
+
+  foreach (item : player->query_inventory()) {
+      item->explode();
+  }
+
+to something like
+
+  {
+    object "/lib/iterator" __tmpiter345;
+    __tmpiter345 = player->query_inventory()->get_safe_iterator();
+    while (__tmpiter345->has_more()) {
+      item = __tmpiter345->get_next();
+      item->explode();
+    }
+  }
+
+
+My personal opinion is increasingly that it's better to resist the lure
+of syntactic sugar. Verbose code is not necessarily less readable, and
+once you start modifying LPC, it's incredibly hard to resist bloating
+the language.
+
+Zell
+</pre>
+
+  <p style="text-size: 150%"> <a href="../index.html"> Back to top level
+    </a> </p>

@@ -1,0 +1,435 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+                      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<title>DGD and LPC: DGD/MP and Threads</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<link href="../../phantasmal.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<table width="95%" border="0" cellspacing="0" cellpadding="4">
+  <tr>
+    <td colspan="2"> <table width="100%" border="0" cellspacing="1"
+        cellpadding="0" class="main">
+        <tr>
+          <td class="banner">The DGD Driver</td>
+        </tr>
+      </table></td>
+  </tr>
+  <tr>
+    <td valign="top">
+      <table width="25%"  border="0" cellspacing="1"
+             cellpadding="0"  class="main">
+        <tr>
+          <td class="content" style="font-size: 120%">
+
+          <ul style="margin: 0; padding-left: 10%">
+            <li> <a href="../index.html">DGD &amp; LPC Page</a> </li>
+	    <li> <a href="../LPC">LPC Textbook</a> </li>
+	    <li> <a href="../Book/html/">New LPC Introduction</a> </li>
+          </ul>
+
+        </td>
+        </tr>
+        <tr>
+          <td class="content" align="center">
+            <a href="http://validator.w3.org/check/referer">
+            <img src="../../images/valid-xhtml10.gif" alt="Valid XHTML 1.0!"
+             style="border:0;width:88px;height:31px" /></a><br />
+            <img src="../../images/pixel.gif"
+             style="border:0;width:88px;height:1px" alt="" /><br />
+            <a href="http://jigsaw.w3.org/css-validator/check/referer">
+            <img src="http://jigsaw.w3.org/css-validator/images/vcss"
+             alt="Valid CSS!" style="border:0;width:88px;height:31px" />
+            </a><br /><br /><br />
+            <a href="http://sourceforge.net">
+            <img src="http://sourceforge.net/sflogo.php?group_id=48659&amp;type=2"
+             style="border: 0; width: 125; height: 37;"
+	     alt="SourceForge.net Logo" /></a>
+          </td>
+        </tr>
+      </table></td>
+    <td> <table width="100%"  border="0" cellspacing="1" cellpadding="0" 
+          class="main">
+        <tr>
+          <td class="heading">&nbsp;&nbsp;&middot;&nbsp;
+	    <a href="http://phantasmal.sf.net/DGD">DGD Page</a> &gt;
+            <a href="">DGD/MP and Threads</a>
+          </td>
+        </tr>
+        <tr>
+          <td class="content">
+  
+  
+  <h2> DGD/MP and Multiple Threads </h2>
+
+<pre>
+From: dgd@dworkin.nl (Felix A. Croes)
+Date: Mon Apr  4 21:57:01 2005
+Subject: [DGD] DGD MP and a TLS idea
+
+Steve Wooster wrote:
+
+>      The current version of the kernel isn't MP optimized, right? At least 
+> for version 1.2.86 (I think that's the version I have) it looks like 
+> call_outs are registered in a central daemon... Since I'm fiddling around 
+> with creating a mudlib from scratch (I'm only doing it for fun, not because 
+> I expect to actually get far on it), I was wondering if there's a good way 
+> to handle things like being able to pause call_outs that isn't effectively 
+> single-threaded.
+
+I'm not sure what you mean by this.  But the MP version will simulate
+a single-threaded succession of LPC execution rounds, so it's not going
+to be any different for the mudlib programmer in that respect.
+
+
+>      Also, for thread local storage, it occurred to me that the argument 
+> passed could be a mapping instead of an array... then you could have things 
+> like: (I forgot the exact code, so this probably won't work... but it 
+> should give you the general idea)
+> Inside the auto object:
+>
+> static void set_tls( mixed setting, mixed value )
+> {
+>      if (trace()[1][FIRST_ARG][this_object()] == nil)
+>          trace()[1][FIRST_ARG][this_object()] = ([]);
+>      trace()[1][FIRST_ARG] [this_object()][setting] = value;
+> }
+>
+> static mixed query_tls( mixed setting )
+> {
+>      return( trace()[1][FIRST_ARG] [this_object()][setting] );
+> }
+
+The point of having TLS is that it's shared between all objects.  If each
+object has its own TLS variables, they might as well be in the object. :)
+
+Regards,
+Dworkin
+</pre>
+
+<hr />
+
+<pre>
+From: dgd@dworkin.nl (Steve Wooster)
+Date: Mon Apr  4 22:09:02 2005
+Subject: [DGD] DGD MP and a TLS idea
+
+     It occurred to me that what I meant by my description of call_outs 
+being "effectively single-threaded" might not have been clear... From what 
+I can tell, only one call_out can occur at a time. You can't have two 
+different call_outs running on two different processors, since they'll 
+always conflict with each other when checking if they've been suspended. 
+(or is this not true, since they don't necessarily write to variables?)
+
+-Steve Wooster
+</pre>
+
+<hr />
+
+<pre>
+From: dgd@dworkin.nl (Felix A. Croes)
+Date: Mon Apr  4 23:09:01 2005
+Subject: [DGD] DGD MP and a TLS idea
+
+Steve Wooster wrote:
+
+>      It occurred to me that what I meant by my description of call_outs 
+> being "effectively single-threaded" might not have been clear... From what 
+> I can tell, only one call_out can occur at a time. You can't have two 
+> different call_outs running on two different processors, since they'll 
+> always conflict with each other when checking if they've been suspended. 
+> (or is this not true, since they don't necessarily write to variables?)
+
+It's all right to have two threads simultaneously access the same object,
+as long as neither modifies it.  But suspension of all callouts in a mud
+should be a sufficiently rare event that there isn't much point in
+optimizing for it.
+
+
+>[...]
+> I figured it might be useful for cases where you want data stored 
+> per-object, but don't want two threads with the same object to conflict. 
+> ...maybe I don't know enough about what will or won't cause two threads to 
+> conflict with each other.
+
+I am deliberately going to keep this vague since implementation details
+which might well change should not influence mudlib design to that extend.
+But you should assume that it's fine for a thread to modify the object it
+starts in.  Beyond that, the fewer objects modified the better.
+
+Regards,
+Dworkin
+</pre>
+
+<hr />
+
+<pre>
+From: dgd@dworkin.nl (Felix A. Croes)
+Date: Mon Apr  4 23:22:01 2005
+Subject: [DGD] 3 golden rules for MP
+
+1) Try to modify as few objects as possible in a single execution round,
+   other than the object you start in.
+2) Try to avoid modifying the object you add a callout for.  If possible,
+   delay modification until when the callout actually executes.
+3) Avoid starting all execution rounds from the same small set of objects.
+
+About terminology: I decided to call the time slice during which an LPC
+event program is running an "execution round".  It's not really a thread,
+and talking about them as "threads" confuses the issue when you also have
+to deal with actual threads.
+
+Regards,
+Dworkin
+</pre>
+
+<hr />
+
+<pre>
+From dgd@dworkin.nl  Tue Apr  5 01:14:01 2005
+From: dgd@dworkin.nl (Par Winzell)
+Date: Tue Apr  5 00:14:01 2005
+Subject: [DGD] 3 golden rules for MP
+
+> 1) Try to modify as few objects as possible in a single execution round,
+>    other than the object you start in.
+> 2) Try to avoid modifying the object you add a callout for.  If possible,
+>    delay modification until when the callout actually executes.
+> 3) Avoid starting all execution rounds from the same small set of objects.
+
+To my mind, 1) and 3) are fairly intuitive, and I think I know
+reasonably well how to go about structuring a mudlib to avoid lots of
+clashes. But 2) seems problematic to me, especially if 3) prohibits us
+from offloading hearbeat-style issues on central objects.
+
+At least in terms of virtual worlds, almost everything of interest needs
+timed events, almost certainly involving objects with continuously
+fluctuating state -- players, NPCs, items, rooms, ...
+
+Some of these timed events can be deferred, perhaps using call_touch()
+somehow. For a traditional example, if we know the health of a monster
+increases linearly with time, query_health() can just figure out how
+much healing has taken place since the last time health was queried.
+Generally, we might have a way to update any deferrable state changes
+whenever they're requested.
+
+But that's only some kinds of state. In games, we generally rely on
+state changes to push out to players... in a text game, descriptive
+statements are transmitted; in a 3D world, little packets are sent out
+telling the clients to update their view of the world. In effect, this
+is sensory state and for practical purposes we have to treat it as if it
+is continuously queried, and no deferred updates are really possible.
+
+What's an architecture that does the right thing with threads here? If
+we have a text game where a player tosses an egg into the air, we need a
+3-second timed event for when the egg lands. It's pretty likely that
+after three seconds, the state has changed in the room, the player doing
+the tossing, and many of the lookers-on. Even if nobody touches their
+keyboards, three seconds later, we need an asynchronous message telling
+us about the egg smacking into the floor.
+
+Should every 'important' object have a little time-keeper object whose
+only purpose in life is to maintain callouts? If its only duty is to
+start message-sending threads in other players, does that count as
+damagable state?
+
+And just how careful does one have to be about all this?
+
+Zell
+</pre>
+
+<hr />
+
+<pre>
+From: dgd@dworkin.nl (Felix A. Croes)
+Date: Tue Apr  5 01:21:01 2005
+Subject: [DGD] 3 golden rules for MP
+
+Par Winzell wrote:
+
+> > 1) Try to modify as few objects as possible in a single execution round,
+> >    other than the object you start in.
+> > 2) Try to avoid modifying the object you add a callout for.  If possible,
+> >    delay modification until when the callout actually executes.
+> > 3) Avoid starting all execution rounds from the same small set of objects.
+>
+> To my mind, 1) and 3) are fairly intuitive, and I think I know
+> reasonably well how to go about structuring a mudlib to avoid lots of
+> clashes. But 2) seems problematic to me, especially if 3) prohibits us
+> from offloading hearbeat-style issues on central objects.
+
+The second rule follows from the first.  If you have an occasion where
+a lot of objects are modified together -- for example, a message broadcast
+to all players -- you can lessen the impact by breaking it up with callouts.
+The broadcaster does not directly force each player to process a message,
+but instead starts a zero-delay callout in each player object to do so.
+
+This introduces a whole new reason for having zero-delay callouts, and
+I expect that the amount of them will probably exceed the "normal"
+callouts by at least one order of magnitude.  The second rule must be
+seen in that context.  It applies to all of such "followup" callouts,
+and therefore to the vast majority of callouts.  Of course, there are
+still a number of "ordinary" callouts for which it makes no sense.
+
+None of the rules are absolute, and all of them can be broken when
+there is sufficient reason for doing so.  Rule 2 is very important
+when you mask call_out() in the auto object, it would be a disaster
+if there is some variable modified along with <every> added callout.
+
+Regards,
+Dworkin
+</pre>
+
+<hr />
+
+<pre>
+From: dgd@dworkin.nl (Felix A. Croes)
+Date: Tue Apr  5 01:26:01 2005
+Subject: [DGD] 3 golden rules for MP
+
+Steve Wooster wrote:
+
+>[...]
+> For 3, what about a heartbeat-ish daemon for objects in combat to ensure 
+> that objects which take more CPU don't end up with less rounds of combat, 
+> or healing more slowly/etc? Would that just be a necessary evil to ensure 
+> that certain types of actions occur at the same speed? More importantly, is 
+> there a better way to do that than to have it notify each object using a 
+> different time-slice (using call_out with a delay of 0), then do a call_out 
+> for the next round?
+
+That's fine, as long as it doesn't break rule 1 (i.e. it shouldn't, in
+a single execution round, modify the internal state of all players/monsters
+in combat in the mud).  It only violates rule 3 when there are a lot of
+competing callouts trying to simultaneously run in that heartbeat daemon.
+
+Regards,
+Dworkin
+</pre>
+
+<hr />
+
+<pre>
+From: dgd@dworkin.nl (Felix A. Croes)
+Date: Fri Apr 15 02:50:01 2005
+Subject: [DGD] DGD/MP 1.0
+
+I've just put together a version of DGD/MP which I'll call 1.0.  It has
+working MP support :-)  Though I still have a lot of debugging to do and
+disabled subsystems to complete.  The mostly-bugfree version will be 1.1,
+and 1.2 will run on platforms other than a Mac.  1.2 will be the first
+version I am going to release, which should be in a few months.  After
+that, I intend that both DGD and DGD/MP advance to version 1.3
+simultaneously.
+
+I've been planning to create a MP capable version of DGD for a long
+time; since 1997, in fact.  Many other features came first (parse_string,
+private inheritance, nil, atomic functions, light-weight objects,
+arbitrary size numbers with crypto, call_touch, IPv6 support...)  At this
+point, DGD finally has everything I wanted it to have 10 years ago.
+
+Implementing multi-processor support has taken me a lot more time and
+effort than I thought it would.  I've found that doing MP properly is
+hard.  Very, very hard.  It's so easy to overlook something and make it
+merely multi-threaded, with all threads depending on some bottleneck,
+and without properly utilizing all processors.
+
+It's going to take still more time to tune things properly for an actual
+mudlib designed for MP.  Most of that will happen after version 1.3.
+
+Anyway, the first milestone has been reached.
+
+Regards,
+Dworkin
+</pre>
+
+<hr />
+
+<pre>
+From: dgd@dworkin.nl (Felix A. Croes)
+Date: Tue Apr 19 14:07:01 2005
+Subject: [DGD] DGD/MP 1.0
+
+"Christopher Allen" wrote:
+
+> I was trying to find a description of the approach that you've taken with
+> DGD/MP to give someone else. My less then CompSci interpretation of what
+> makes it unique is that programatically you program largely as if you are
+> single-threaded, but that DGD/MP will handle the issues of multiprocessor
+> message passing bottlenecks and throttling through both intelligent design
+> and through rollback of functions marked atomic. Obviously some care has to
+> be taken with "single-thread" style code, but that largely it is much easier
+> to program.
+>
+> However, my non-CompSci description of the merits of your approach is not
+> suitable to passing on to others. Can you write up something brief about
+> your unique approach and why it is superior to some of the other methods of
+> programming for MP?
+
+The compsci version:
+
+    Maurice Herlihy: "A methodology for implementing highly concurrent
+    data objects," ACM Transactions on Programming Languages and Systems,
+    15(5):745-770, 1993.
+
+The intermediate version:
+
+    The server concurrently runs threads of finite duration on a copy
+    of the data.  Once a thread completes, the changes it made in the
+    copy will be committed to the original data if no other thread has
+    modified that part of the original data in the meanwhile; otherwise
+    the thread will be rescheduled.
+
+Atomic functions are not involved in this, though they are conceptually
+similar.
+
+I actually started using the term "execution round" instead of "thread"
+because it makes more sense, but that may be considered incomprehensible
+jargon, you be the judge.  It may require explaining the LPC execution
+model. :)
+
+The non-compsci version:
+
+    A single-threaded server is simulated using a MP server, and there
+    is nothing to worry about.
+
+
+In all cases, the advantage of this approach is that the great complexity
+of MP design is hidden from the LPC programmer.
+
+Regards,
+Dworkin
+</pre>
+
+<hr />
+
+<pre>
+From: dgd@dworkin.nl (Par Winzell)
+Date: Tue May 10 16:59:01 2005
+Subject: [DGD] Command Finders
+
+Noah Gibbs wrote:
+>   The way you'll want to do this_player() is to have a variable somewhere that
+> gets set appropriately and queried with a function (maybe called "this_player")
+> in your AUTO object.
+
+I'd say allocate a TLS (Thread Local Storage) slot, and stuff it with a
+LWO of your own making at the beginning of every thread. This LWO could
+keep track of things like the current this_player() per thread, rather
+than globally.
+
+Zell
+</pre>
+
+  <p style="text-size: 150%"> <a href="index.html"> Back to DGD &amp; LPC
+      Page </a> </p>
+            <address>
+            <span><a href="mailto:angelbob-remove-spamfree@spamfree.users.sf.net">Noah Gibbs</a></span>
+            </address></td>
+        </tr>
+      </table></td>
+  </tr>
+</table>
+</body>
+</html>

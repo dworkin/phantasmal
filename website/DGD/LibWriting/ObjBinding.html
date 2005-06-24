@@ -142,9 +142,11 @@ intermediate rules that differ only in the LPC function called.
 
 Regards,
 Dworkin
+</pre>
 
+<hr />
 
-
+<pre>
 From: "Jason Cone"
 To: DGD Mailing List
 Subject: RE: [DGD]parse_string
@@ -433,6 +435,94 @@ in a verb. For the 'check' example, you'd sort of like 'check my sword'
 to still perform basic noun lookup, but if you mark the direct object 
 role of check as 'raw', it's always going to be raw. That remains an 
 unsolved irritation. Many other designs are no doubt possible.
+
+Zell
+</pre>
+
+<hr />
+
+<pre>
+From: dgd@dworkin.nl (Par Winzell)
+Date: Tue Apr 19 17:04:01 2005
+Subject: [DGD] Inheriting the same program twice
+
+Petter Nyström wrote:
+
+> But your mail have had intended effect, and I find myself indeed
+> reconsidering. I will for sure give it some more thought. Maybe I will
+> come up with something that I feel sure enough about to replace my
+> current plans.
+> 
+> I know that you at Skotos have done things like this, and if you have
+> any online material covering this, please point me there. (I vaguely
+> recall reading some article over at your website, but can't find it in a
+> brief search.)
+
+I suspect the DGD mailing list is probably as likely a place to find
+mails describing this as any internal Skotos documentation. Anyway, the
+idea is very simple, and I don't mind re-summarizing it.
+
+The Skotos approach -- and so far it looks like this will remain the
+architecture in SkotOS 2.0 -- begins by cleanly separating the virtual
+world from any interface considerations. The simplest way to keep this
+abstraction clean is to always imagine maintaining a Quake interface to
+the virtual world as well as the text interface, and ideally also make
+sure a NPC can react to anything a player can react to without having to
+parse text.
+
+A simple example:
+
+ - I type 'gently place my sword on the ground' onto my command line.
+
+ - My user object, which is a clone of an object in the TextIF module,
+sends my command line to the central text parser. The parser knows there
+is a place verb, it knows the place verb can take a direct object as
+well as an object prepositioned by 'on', and it finds that I am carrying
+precisely one sword. It finishes the interface input handling by
+ordering my body to execute the general action ACT_PLACE, which takes an
+object in my possession and a destination as arguments. Note:
+      * Everything is an object pointer, at this point; the text input
+is long gone.
+      * The ACT_PLACE action could equally well have been caused by the
+QuakeIF module as a response to e.g. right-clicking on an object in your
+inventory in the GUI, or it could have been triggered by a NPC as part
+of a script. In neither of these cases is text involved.
+      * The injection of ACT_PLACE into the virtual world could be done
+in a zero-second callout without problem, drastically reducing the
+danger of thread contention in a DGD/MP world.
+
+ - In the virtual world, ACT_PLACE performs a minor state change -- it
+atomically changes the environment (and perhaps proximity) of the object
+in question. But -- vitally -- it finishes by firing off a state change
+notification event to any object that cares.
+
+ - Almost certainly any player within view does care, and so in practice
+control passes back to the interface modules. The TextIF module, for
+example, is now asked to describe an event that occured in the virtual
+world. It doesn't care that in this case it ordered the action a few
+milliseconds ago; the action might just as well have been ordered by a
+Cursed Ring of Sword Dropping.
+
+ - Various hideously complicated text generation algorithms are now run
+which end up telling the player that he gently placed a sword on the
+ground; the sword that the player gently placed it on the ground; the
+ground that the player gently placed a sword on it, and any witness that
+the player gently placed a sword on the ground.
+      * Alternately, any observer that happens to be running the Quake
+interface, receives a stream of UDP packets ordering the client to show
+me placing my sword on the ground. Or an NPC can directly respond to the
+event by subscribing to it.
+      * Every event description can occur in a separate zero-second
+callout... as long as there is some sanity to the order in which the
+callouts are processed. I have yet to really think this through for
+DGD/MP, and I'm a little nervous about it.
+
+
+
+OK, so that all sounds very complicated compared to the 2.4.5 approach
+now that I type it out. There are probably other modern approaches that
+do not rely on a central parser... but I'm not sure those would be any
+simpler, and I really like the clean design of this one.
 
 Zell
 </pre>

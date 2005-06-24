@@ -79,6 +79,18 @@ if I thought a feature desirable, I would have implemented it myself. :)
   </pre>
 
   <p>
+    He also says:
+  </p>
+
+<pre>
+I'll retain backward compatibility with LPMud 2.4.5, and with LPC in
+previous DGD versions.  Beyond that I'm not interested in introducing
+new features just because some other LPC driver has it.  If you want
+some feature from MudOS/LDmud/etc, then perhaps your needs are better
+served by MudOS/LDMud/etc.
+</pre>
+
+  <p>
     However, you can make a patch to DGD and keep it up to date
     separately or just use it in your personal copy and not update
     often.  There are several people who maintain these patches to DGD
@@ -102,7 +114,8 @@ if I thought a feature desirable, I would have implemented it myself. :)
     ASCII characters with the high bit set.  The normal DGD driver
     does a bitwise-and of all outgoing bytes with 0x7F, which strips
     off the high bit.  That means no ANSI color.  If you want it, you
-    can install the package.
+    can install the package or have your library implement it using
+    a binary port.
   </p>
 
   <h3> Foreign-Language Characters</h3>
@@ -262,18 +275,28 @@ if I thought a feature desirable, I would have implemented it myself. :)
     source and it's not interoperable with modern DGD.
   </p>
 
+    <p>
+      You can find a little information about implementing certain
+      standards <a href="../LibWriting/index.html#SpecificComponents">here</a>.
+    </p>
+
   <h3> Foreach statements </h3>
 
   <p>
-    Says Dworkin: foreach has theoretical problems with mutable
-    expressions such as mappings; also I have doubts about the
-    addition of variable declarations in a statement, and non-mutable
-    loop variables, to LPC.
+    Says Dworkin: With regard to foreach in particular, I am skeptical
+    about the use of this loop construct over a mutable datatype.  I
+    think of LPC as a simple, fairly low-level language and foreach
+    hides details that should not be hidden.  What's worse is that the
+    implementation in other LPC drivers is plain wrong.  [...] Also I
+    have doubts about the addition of variable declarations in a
+    statement, and non-mutable loop variables, to LPC.
   </p>
 
   <p>
     Obviously you can also do the same thing as a 'foreach' just fine
-    in existing LPC.
+    in existing LPC.  You can't write a 'foreach' function, but
+    foreach doesn't do anything that you can't rewrite as a 'for'
+    loop.
   </p>
 
   <h3> Exit Codes </h3>
