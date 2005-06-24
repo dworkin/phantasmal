@@ -66,7 +66,7 @@
 
   <p>
     If you're planning to precompile LPC objects, take a good look at
-    dgd&frasl;src&frasl;lpc&frasl;Makefile in the DGD driver source.
+    dgd/src/lpc/Makefile in the DGD driver source.
     There are some commented-out lines in there that you can uncomment
     (while commenting others).  Doing so will precompile the kernel
     library if you compile DGD.  It's fairly easy to figure out.
@@ -75,21 +75,20 @@
   <p>
     If you're looking to precompile for the speed advantage, measure
     the code performance first.  Using a mostly-hardcoded tool in LPC
-    like parse_string or implode()&frasl;explode() can vastly improve
-    your performance, often to better than a precompiled LPC solution
-    would give.  Measure, measure, measure.
+    like parse_string, implode(), or explode() can vastly improve your
+    performance.  They're often better than a precompiling your LPC,
+    and they're far more portable.  Measure, measure, measure.
   </p>
 
   <p>
     Similarly, before moving functionality into the driver itself and
     requiring all your users to run a patched DGD, first try an LPC
-    solution, and then a precompiled LPC solution.  These solutions
-    are all very similar speeds.  You're not likely to get even a two
-    times difference between one and another.  DGD is already quite
-    efficient, even when interpreted.  So when in doubt, measure.
-    When optimizing, optimize your algorithm first.  It will make
-    much, much more difference than optimizing what language your code
-    is compiled from.
+    solution, and then a precompiled LPC solution.  You're not likely
+    to get even a two times difference between one and another.  DGD
+    is already quite efficient, even when interpreted.  So when in
+    doubt, measure.  When optimizing, optimize your algorithm first.
+    It will make much, much more difference than optimizing what your
+    code is compiled into.
   </p>
 
   <p style="text-size: 150%"> <a href="../index.html"> Back to top level

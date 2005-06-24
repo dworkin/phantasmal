@@ -6,7 +6,8 @@
     Have a set of core objects that define basic behaviour and
     limitations which cannot be rewritten from within the mud, not
     even by the mud administrator.  The Kernel Library puts these in
-    the &frasl;kernel directory.  This is to enforce security limits.
+    the /kernel directory.  It does this to enforce security limits.
+    You should too if you don't already have the Kernel do it for you.
   </p>
 
   <p>
@@ -15,16 +16,24 @@
     access to files outside the mudlib, such as the password file on
     the host system.  Changing it can also allow your MUD to
     masquerade as a different service, and potentially open different
-    incoming ports.  If you're using the network package, it can
-    easily cause your MUD to be usable as a relay or a zombie for a
-    distributed attack on other systems.
+    incoming ports.
   </p>
+
+    <p>
+      If you've patched DGD with the network package,
+      it can easily cause your MUD to be usable as a relay or a zombie
+      for a distributed attack on other systems.  So be careful how
+      this can be used from LPC, and pay attention to what particular
+      users can or cannot do.
+    </p>
 
   <p>
     Don't put the swapfile in the mudlib directory, either, since
     information which is otherwise hidden inside objects will be
     readable from it.
   </p>
+
+<hr />
 
 <pre>
 From: DGD Mailing List (Stephen Schmidt)
