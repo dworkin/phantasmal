@@ -1,0 +1,40 @@
+  <titledef text="What Does It Do?" />
+
+  <h1> What, Exactly, Does DGD Do? </h1>
+
+  <p>
+    Different programming languages have different runtime models.
+    Most languages have a stack, for instance, where functions' copies
+    of local variables get stored.  Some languages have garbage
+    collection, automatic locking or other features that operate at
+    different times.  DGD has its own set of interesting features that
+    do interesting things at interesting times.
+  </p>
+
+  <h2> When Does DGD Code Execute? </h2>
+
+  <p>
+    DGD retains more control over its execution model than most
+    languages.  Almost all code written in DGD is meant to run very
+    briefly in response to an event of some kind, and then exit.  When
+    code is run in response to an event and then completes, it is
+    called a single 'Execution Round'.  You may also see it called a
+    'thread' or 'DGD thread', though this is <i>not</i> similar to the
+    way threading works in other languages.
+  </p>
+
+  <p>
+    An Execution Round may be triggered by any of the following events:
+  </p>
+
+  <ul>
+    <li> A new network connection </li>
+    <li> Input on an existing network connection </li>
+    <li> A programmatically scheduled event, called a call_out </li>
+  </ul>
+
+  <h3> The End of the Execution Round </h3>
+
+
+  <p style="text-size: 150%"> <a href="../index.html"> Back to top level
+    </a> </p>
