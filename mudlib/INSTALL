@@ -12,7 +12,7 @@ mailing list can also help you with these setup problems.
 You'll need a recent version of DGD with full support for a bunch of
 the latest features.  This MUDLib has been tested with the DGD
 version(s) listed in TESTED_VERSIONS.  A recent experimental version
-(like, say, 1.2.101) is very likely to work with the most recent
+(like, say, 1.2.110) is very likely to work with the most recent
 version of Phantasmal.  Note that my testing normally uses the latest
 versions.  It's possible that the lower-numbered DGD versions in
 TESTED_VERSIONS don't work correctly any more, but they have with a
