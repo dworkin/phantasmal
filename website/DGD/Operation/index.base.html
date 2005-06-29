@@ -35,6 +35,21 @@
 
   <h3> The End of the Execution Round </h3>
 
+  <p>
+    When an execution round completes, DGD does a number of things.
+    If any objects are to be recompiled or destructed, that happens
+    after the execution round that requested the change is complete,
+    but before the next round starts.  If the server is going to shut
+    down, reboot, or make a statedump file, that will also happen at
+    that time.  A lot of <a href="Swapping.html">memory management</a>
+    happens at the end of the execution round as well.
+  </p>
+
+  <ul>
+    <li> <a href="Swapping.html">Swapping</a> </li>
+    <li> <a href="StateDumps.html">StateDumps</a> </li>
+    <li> <a href="LWOCache.html">LWOs and Swapping</a> </li>
+  </ul>
 
   <p style="text-size: 150%"> <a href="../index.html"> Back to top level
     </a> </p>

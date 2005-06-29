@@ -163,17 +163,18 @@
 
   <p>
     One way DGD simulates a single continuous run of the program is
-    the <a href="StateDumps.html">State Dump</a>.  A State Dump dumps
-    a copy of all your LPC objects, whether in memory or swapped out,
-    with all connections between them, to a file.  You may then,
-    later, start DGD from that State Dump file and it will pick up
-    precisely where it left off.  There are a (very) few things that
-    necessarily change, such as the time and date, and what network
-    connections are active.  But mostly, a persistent DGD program can
-    keep all objects around forever.  When you restore from a dump, it
-    just looks like the clock skipped, or like you took awhile to run
-    the next thread of execution, and like all the network connections
-    suddenly dropped.  Effectively, that's what just happened.
+    the <a href="../Operation/StateDumps.html">State Dump</a>.  A
+    State Dump dumps a copy of all your LPC objects, whether in memory
+    or swapped out, with all connections between them, to a file.  You
+    may then, later, start DGD from that State Dump file and it will
+    pick up precisely where it left off.  There are a (very) few
+    things that necessarily change, such as the time and date, and
+    what network connections are active.  But mostly, a persistent DGD
+    program can keep all objects around forever.  When you restore
+    from a dump, it just looks like the clock skipped, or like you
+    took awhile to run the next thread of execution, and like all the
+    network connections suddenly dropped.  Effectively, that's what
+    just happened.
   </p>
 
   <p>
@@ -200,12 +201,12 @@
     Normally, keeping all of your objects in RAM at all times would
     mean using a ridiculous amount of memory.  However, DGD is a
     disk-based server, and believes very strongly in <a
-    href="Swapping.html">swapping things to disk</a> constantly to
-    save memory.  This means that if you store data as 'in memory' LPC
-    objects, they wind up taking no more memory or disk space than if
-    you saved all your idle objects to disk.  But you can access LPC
-    objects in memory instantly, and DGD will transparently handle all
-    swapping.
+    href="../Operation/Swapping.html">swapping things to disk</a>
+    constantly to save memory.  This means that if you store data as
+    'in memory' LPC objects, they wind up taking no more memory or
+    disk space than if you saved all your idle objects to disk.  But
+    you can access LPC objects in memory instantly, and DGD will
+    transparently handle all swapping.
   </p>
 
   <h3> Persistence and Player Bodies </h3>

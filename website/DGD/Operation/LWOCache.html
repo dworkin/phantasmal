@@ -2,7 +2,7 @@
                       "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
-<title>DGD and LPC: What Does It Do?</title>
+<title>DGD and LPC: LWOs and Swapping</title>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
 <link href="../../phantasmal.css" rel="stylesheet" type="text/css" />
 </head>
@@ -55,63 +55,60 @@
           <td class="heading">&nbsp;&nbsp;&middot;&nbsp;
 	    <a href="http://phantasmal.sf.net/DGD">DGD Page</a> &gt;
 	    <a href="http://phantasmal.sf.net/DGD/Operation">Runtime</a> &gt;
-            <a href="">What Does It Do?</a>
+            <a href="">LWOs and Swapping</a>
           </td>
         </tr>
         <tr>
           <td class="content">
   
 
-  <h1> What, Exactly, Does DGD Do? </h1>
+  <h2> Using Regular DGD Objects and LWOs &mdash; Swapping Behavior </h2>
 
   <p>
-    Different programming languages have different runtime models.
-    Most languages have a stack, for instance, where functions' copies
-    of local variables get stored.  Some languages have garbage
-    collection, automatic locking or other features that operate at
-    different times.  DGD has its own set of interesting features that
-    do interesting things at interesting times.
-  </p>
-
-  <h2> When Does DGD Code Execute? </h2>
-
-  <p>
-    DGD retains more control over its execution model than most
-    languages.  Almost all code written in DGD is meant to run very
-    briefly in response to an event of some kind, and then exit.  When
-    code is run in response to an event and then completes, it is
-    called a single 'Execution Round'.  You may also see it called a
-    'thread' or 'DGD thread', though this is <i>not</i> similar to the
-    way threading works in other languages.
+    Before dealing specifically with LWOs, make sure you understand
+    DGD's <a href="Swapping.html">normal swapping behavior</a>.
   </p>
 
   <p>
-    An Execution Round may be triggered by any of the following events:
+    An LWO is an object whcih is 'embedded' in another DGD object.
+    Regular DGD objects swap as usual, but an LWO swaps as part of
+    another object's data.  When the LWO's 'parent' object (not in an
+    inheritance sense, but in the sense of whose data space contains
+    references to it) is swapped out, so is the LWO.  The LWO doesn't
+    get its own sectors in the swapfile.  Instead, the LWO is part of
+    the space taken up by its host object.
   </p>
-
-  <ul>
-    <li> A new network connection </li>
-    <li> Input on an existing network connection </li>
-    <li> A programmatically scheduled event, called a call_out </li>
-  </ul>
-
-  <h3> The End of the Execution Round </h3>
 
   <p>
-    When an execution round completes, DGD does a number of things.
-    If any objects are to be recompiled or destructed, that happens
-    after the execution round that requested the change is complete,
-    but before the next round starts.  If the server is going to shut
-    down, reboot, or make a statedump file, that will also happen at
-    that time.  A lot of <a href="Swapping.html">memory management</a>
-    happens at the end of the execution round as well.
+    Like an array or mapping, an LWO is copied if an object (other
+    than its host object) has a reference to it at the end of a thread
+    of execution.  That is, the LWO is referenced by more than one
+    regular DGD object for <i>no longer</i> than one thread of
+    execution.  After that, it is copied.  Be careful passing
+    references to LWOs around for this reason &mdash; you don't want
+    duplicate copies, which are large, wasteful and may cause data
+    inconsistencies.
   </p>
 
-  <ul>
-    <li> <a href="Swapping.html">Swapping</a> </li>
-    <li> <a href="StateDumps.html">StateDumps</a> </li>
-    <li> <a href="LWOCache.html">LWOs and Swapping</a> </li>
-  </ul>
+  <p>
+    Like arrays or mappings, LWOs are garbage collected, so when the
+    last reference to them disappears, so do they.  This is true even
+    in circular structures.  LWOs may not be explicitly destructed.
+  </p>
+
+  <p>
+    LWOs cannot be used as an editor, user or parser object, nor can
+    they have callouts.  It is not clear (to me, right this second)
+    whether a parse_string() call in an LWO will store its generated
+    automaton cache in the LWO or the host heavyweight DGD object.  If
+    the master object of an LWO is destructed, the LWO is destroyed as
+    well, along with all others created from that master object.
+  </p>
+
+  <p>
+    If you've been looking for structures in DGD, LWOs fill roughly
+    that need.
+  </p>
 
   <p style="text-size: 150%"> <a href="../index.html"> Back to top level
     </a> </p>

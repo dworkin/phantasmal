@@ -54,7 +54,7 @@
         <tr>
           <td class="heading">&nbsp;&nbsp;&middot;&nbsp;
 	    <a href="http://phantasmal.sf.net/DGD">DGD Page</a> &gt;
-	    <a href="http://phantasmal.sf.net/DGD/LibWriting">MUDLibs</a> &gt;
+	    <a href="http://phantasmal.sf.net/DGD/Operation">Runtime</a> &gt;
             <a href="">Swapping</a>
           </td>
         </tr>
@@ -81,21 +81,22 @@
     swap_fragment.  That's the fraction of all objects that should be
     removed from memory.  For instance, if swap_fragment is equal to
     20, then one-twentieth of all objects will be swapped out at the
-    end of every thread of execution.  A smaller swap_fragment will
-    cause DGD to use less memory, but will also mean more disk access
-    is necessary as objects are written.
+    end of every execution round.  A smaller swap_fragment will cause
+    DGD to use less memory at a time, but will also mean more disk
+    access happens after each execution round as objects are written
+    to disk.
   </p>
 
   <p>
-    Objects are stored as sectors.  The sector_size parameter tells
-    how large a single sector is, in bytes.  Every object takes up a
-    multiple of the sector size in the swap file.  So if the sector
-    size were 1024, no object could take less than one kilobyte to
-    store in the swap file.  An object with 3217 bytes of data would
-    wind up actually taking 4096 bytes in the swap file, or four
-    sectors.  A small sector size can save some space that way, though
-    a very small sector size (like, say, 64 bytes) will require the
-    DGD server to use up a lot of processor time and memory in
+    Objects are stored on disk as sectors.  The sector_size parameter
+    tells DGD how large a single sector is, in bytes.  Every object
+    takes up a multiple of the sector size in the swap file.  So if
+    the sector size were 1024, no object could take less than one
+    kilobyte to store in the swap file.  An object with 3217 bytes of
+    data would wind up actually taking 4096 bytes in the swap file, or
+    four sectors.  A small sector size can save some space that way,
+    though a very small sector size (like, say, 64 bytes) will require
+    the DGD server to use up a lot of processor time and memory in
     managing so many sectors.
   </p>
 
@@ -110,15 +111,19 @@
   <p>
     All of this nifty swapping stuff Just Happens(tm).  That is, you
     should never, as a programmer, specifically need to request it.
-    Objects are swapped out at the end of threads according to the
-    swap_fragment configuration parameter, and they're swapped in when
-    you use them.  It should never be necessary to explicitly request
-    a swap-in for an object.
+    Objects are swapped out at the end of execution rounds according
+    to the swap_fragment configuration parameter, and they're swapped
+    in when you use them.  It should never be necessary to explicitly
+    request a swap-in for an object - just call a function of the
+    object, even if that function doesn't exist, and the object will
+    be swapped in.
   </p>
 
   <p>
     If you ever wish to explicitly request a swap-out, there's a kfun
-    called swapout() which will swap <i>every</i> object out.
+    called swapout() which will swap <i>every</i> object out.  The
+    function will take effect at the end of the execution round that
+    requested it.
   </p>
 
   <p>
@@ -169,7 +174,7 @@
     turn off ordinary swapping, but not certain operations where all
     objects are swapped out to make room for larger contiguous blocks
     of static memory.  By setting static_chunk to 0 as well, you can
-    eliminate all swapping in your application, even those operations.
+    entirely eliminate all swapping in your application.
   </p>
 
   <p>
@@ -190,7 +195,7 @@
   <p>
     Luckily, there is essentially no penalty for have a very large
     maximum number of objects, at least if you have the disk space to
-    permit it, and the RAM to hold the ones that are currently in
+    permit it and the RAM to hold the ones that are currently in
     memory.
   </p>
 
@@ -198,10 +203,10 @@
     The maximum number of possible objects depends on your operating
     system and your version of DGD.  But remember that your swapfile
     will have to be no larger than the largest file your operating
-    system supports, which can be as small as 2GB or smaller.  Also,
-    with the default data type for object numbers, you can't have more
-    than 4 billion objects total.  That's changeable, but it would
-    require significant effort.
+    system supports.  That can be as small as 2GB or smaller for some
+    operating systems.  Also, with the default data type for object
+    numbers, you can't have more than 4 billion objects total.  You
+    can change that limit, but it would require significant effort.
   </p>
 
 <hr />
