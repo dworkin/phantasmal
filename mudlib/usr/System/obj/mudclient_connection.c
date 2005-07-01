@@ -38,7 +38,7 @@ inherit user LIB_USER;
   brilliance continues to intimidate me?
 */
 
-private string buffer;
+private string buffer, outbuf;
 private mixed* input_lines;
 private int    active_protocols;
 
@@ -55,6 +55,7 @@ static void create(int clone)
     if (clone) {
       conn::create("telnet");	/* Treat it like a telnet object */
       buffer = "";
+      outbuf = nil;
       input_lines = ({ });
       active_protocols = 0;
 
@@ -170,15 +171,37 @@ int message_done()
 }
 
 /*
+ * NAME:        binary_message
+ * DESCRIPTION: does a buffered send on the underlying binary connection
+ */
+int binary_message(string str) {
+  if(user::query_conn()) {
+    if(outbuf) {
+      user::message(outbuf);
+      outbuf = nil;
+    }
+
+    return user::message(str);
+  } else {
+    if(!outbuf) {
+      outbuf = str;
+      return strlen(str);
+    }
+    outbuf += str;
+    return strlen(str);
+  }
+}
+
+/*
  * NAME:	message()
  * DESCRIPTION:	send a message to the other side
  */
 int message(string str)
 {
-  if(previous_program() == LIB_USER) {
+  if(previous_program() == LIB_USER || previous_program() == PHANTASMAL_USER) {
     /* Do appropriate send-filtering first */
     LOGD->write_syslog("MCC message: " + str, LOG_WARN);
-    return user::message(str);
+    return binary_message(str);
   } else {
     error("Unprivileged code calling MCC::message()!");
   }
@@ -205,9 +228,6 @@ int receive_message(string str)
   int    mode;
 
   if (previous_program() == LIB_CONN || previous_program() == MUDCLIENTD) {
-    LOGD->write_syslog("Received raw mode input: '"
-		       + debug_escape_str(str) + "'", LOG_WARN);
-
     new_telnet_input(str);
 
     line = get_input_line();
@@ -220,7 +240,7 @@ int receive_message(string str)
     }
     if(!suppress_ga && !strlen(buffer)) {
       /* Have read all pending lines, nothing uncompleted in buffer */
-      return user::message(tel_goahead);
+      return binary_message(tel_goahead);
     }
 
     return MODE_NOCHANGE;
@@ -239,12 +259,15 @@ nomask int send_telnet_option(int command, int option) {
      && command != TP_WONT)
     error("Invalid command in send_telnet_option!");
 
+  LOGD->write_syslog("Sending telnet option IAC " + command + " "
+		     + option, LOG_WARN);
+
   opts = "   ";
   opts[0] = TP_IAC;
   opts[1] = command;
   opts[2] = option;
 
-  return user::message(opts);
+  return binary_message(opts);
 }
 
 nomask int send_telnet_subnegotiation(int option, string arguments) {
@@ -257,11 +280,15 @@ nomask int send_telnet_subnegotiation(int option, string arguments) {
   tmp[0] = TP_IAC;
   tmp[1] = TP_SB;
 
-  options = tmp + arguments;
+  options = tmp;
+
+  tmp[1] = option;
+  options = options + tmp[1..1] + arguments;
+
   tmp[1] = TP_SE;
   options = options + tmp;
 
-  return user::message(options);
+  return binary_message(options);
 }
 
 void should_suppress_ga(int do_suppress) {
@@ -286,9 +313,9 @@ private string debug_escape_str(string line) {
 
   ret = "";
   for(ctr = 0; ctr < strlen(line); ctr++) {
-    if(line[ctr] >= 32 && line[ctr] <= 127)
+  /*if(line[ctr] >= 32 && line[ctr] <= 127)
       ret += line[ctr..ctr];
-    else
+      else */
       ret += "\\" + line[ctr];
   }
 
@@ -346,7 +373,7 @@ private void subnegotiation_string(string str) {
   if(handler) {
     handler->telnet_sb(str[0], str[1..]);
   } else {
-    /* Now, ignore it.  We don't yet accept any subnegotiation. */
+    /* Now, ignore it.  We don't yet accept subnegotiation on that option. */
     LOGD->write_syslog("Ignoring subnegotiation, option " + str[0] + ": '"
 		       + debug_escape_str(str) + "'", LOG_WARN);
   }
@@ -361,9 +388,6 @@ private void subnegotiation_string(string str) {
 static string scan_iac_series(string series) {
   string pre, post, iac_str, se_str;
 
-  LOGD->write_syslog("Scan_IAC_Series: '" + debug_escape_str(series)
-		     + "'", LOG_WARN);
-
   /* If there's nothing, we're not done yet */
   if(!series || !strlen(series))
     return nil;
@@ -376,6 +400,8 @@ static string scan_iac_series(string series) {
     if(strlen(series) < 2)
       return nil;
 
+    LOGD->write_syslog("Processing option: " + series[0] + " / " + series[1],
+		       LOG_WARN);
     negotiate_option(series[0], series[1]);
     return series[2..];
 
@@ -384,6 +410,10 @@ static string scan_iac_series(string series) {
     iac_str = " "; iac_str[0] = TP_IAC;
     se_str = " "; se_str[0] = TP_SE;
     if(sscanf(series, "%s" + iac_str + se_str + "%s", pre, post) == 2) {
+      LOGD->write_syslog("Processing sub-neg: IAC SB '" + pre[1] + " "
+			 + debug_escape_str(pre[2..]) + "' IAC SE",
+			 LOG_WARN);
+
       subnegotiation_string(pre[1..]);
       return post;
     } else {
@@ -465,9 +495,6 @@ private int new_telnet_input(string str) {
   buffer += str;
   iac_series = "";
   tmpbuf = "";
-
-  LOGD->write_syslog("New total buffer: '" + debug_escape_str(buffer)
-		     + "'", LOG_WARN);
 
   /* Note: can't use double_iac_filter function here, because then we
      might collapse double-IAC sequences in the wrong place in the
