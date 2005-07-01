@@ -361,5 +361,154 @@ than globally.
 Zell
 </pre>
 
+<hr />
+
+<pre>
+From: dgd@dworkin.nl (Kris Van Hees)
+Date: Thu Jun 23 00:51:01 2005
+Subject: [DGD] Why export data structures?
+
+Older versions of DGD actually handled arrays and mappings as references to a
+single instance of the structure, until the object got swapped out (which did
+cause the object to getits own copy of the structure data).  Because swapping
+of objects was unpredictable, that behaviour got changed to be more specific.
+I remember long conversations with Dworkin about that logic, because I was in
+fact implementing just that as part of my Master's Thesis.  The logic in  DGD
+reflects the same concept, with Dworkin's own implementation (and as far as I
+can see that implementation has of course also evolved over time  with  other
+features being added to DGD).
+
+	Cheers,
+	Kris
+
+
+On Wed, Jun 22, 2005 at 03:44:37PM -0700, Noah Gibbs wrote:
+>   There are probably many fine reasons.  One reason is that the way DGD handles
+> memory strongly suggests it.  DGD handles its memory in very explicit chunks -
+> specifically, each DGD 'object' is managed as a single chunk.  Objects can
+> point at each other, but pointing at sub-objects (like mappings, LWOs or
+> arrays) inside other DGD objects would require the memory management to be
+> messier.
+> 
+>   Currently DGD can have a single identifier for each DGD object, so you can
+> potentially have four billion of them.  Being able to point to sub-objects
+> would give you less 'name space' in that sense.  I guess you could point to
+> sub-objects as offsets from the start of their actual object - but then, that's
+> pretty much the equivalent of how you handle them now in LPC.
+> 
+>   Also, currently it's easy to tell when you might be pulling a bunch of new
+> stuff into memory.  If you could reference other people's sub-objects without
+> using DGD object pointers, you'd have a bunch of other cases where you could be
+> pulling their stuff into memory.
+> 
+>   None of this actually demands that you not be able to touch other people's
+> sub-objects, they're just reasons why it's basically a good idea not to.  I
+> don't know of any reason why DGD couldn't be altered to do this, though I
+> expect it'd be a lot of work.
+> 
+> --- Petter Nyström wrote:
+> 
+> > Hello!
+> > 
+> > This is really just a question out of curiousity. I was thinking of coding 
+> > something that relied on several objects having access to the same data 
+> > structure - in this case a mapping. But then I learned that such data 
+> > structures are made into individual copies in all objects referencing it 
+> > at the end of the execution thread. So as I understand it, the objects 
+> > would no longer be referencing the same data in later threads.
+> > 
+> > Now, I have no reason to be upset why it works like this. I am merely 
+> > being curious as to the reasons. Why does DGD do this? If someone's got 
+> > the time to satiate my curiousity, I'd be happy!
+> > 
+> > Regards,
+> > 
+> > Jimorie
+</pre>
+
+<hr />
+
+<pre>
+From: dgd@dworkin.nl (Felix A. Croes)
+Date: Thu Jun 23 00:54:01 2005
+Subject: [DGD] Why export data structures?
+
+[oops -- original response not sent to the list]
+
+=?ISO-8859-1?Q?Petter_Nystr=F6m?= wrote:
+
+> This is really just a question out of curiousity. I was thinking of coding
+> something that relied on several objects having access to the same data
+> structure - in this case a mapping. But then I learned that such data
+> structures are made into individual copies in all objects referencing it
+> at the end of the execution thread. So as I understand it, the objects
+> would no longer be referencing the same data in later threads.
+>
+> Now, I have no reason to be upset why it works like this. I am merely
+> being curious as to the reasons. Why does DGD do this? If someone's got
+> the time to satiate my curiousity, I'd be happy!
+
+That way, all data remains local to a (persistent) object.  The only
+crossreferences between objects are those that pass through an object
+reference, which is handled in a special way.  As a result, memory
+management and swapfile allocation become much simpler and scale
+better.
+
+This is even more important for DGD/MP.
+
+Regards,
+Dworkin
+</pre>
+
+<hr />
+
+<pre>
+From: dgd@dworkin.nl (Felix A. Croes)
+Date: Thu Jun 23 01:30:01 2005
+Subject: [DGD] Why export data structures?
+
+Dread Quixadhal wrote:
+
+> My guess would be that it has to do with two features of the driver in 
+> particular.  First, it would make life much simpler for multi-processor 
+> support if every thread could have distinct data segments that didn't 
+> rely on conflicting access with other threads.  When those threads are 
+> running concurrently, there are all sorts of locking techniques you need 
+> to use if they can touch the same bits of data.
+
+When data is not local to objects, you'd need a separate lock for every
+datastructure that can be referenced...  you might call that "death by
+a thousand locks." :)
+
+
+> Secondly, it seems like having separate copies of each thread's data 
+> structures would make atomic function roll-back considerably simpler.  
+> If thread N calls a function that fails and gets rolled back, it doesn't 
+> have to then also mark threads O..Z as "dirty" since they all still have 
+> their own data which might (or might not) work for them.
+
+This isn't true because atomic rollback happens within an execution
+round, where data <can> be shared between objects.  Atomic rollback
+therefore is implemented for datastructures, not for object dataspaces,
+but the overhead is still quite reasonable, precisely because the
+situation can only persist for the duration of the execution round.
+
+
+> To satisfy my own curiosity, is it actually always copied, or is it 
+> copy-on-write?  IE:  If two threads both start with the same (statically 
+> declared and filled?) array, and both read from it but don't modify it, 
+> do we have two copies in memory, or just one with two pointers?
+
+There would be three instances: one original which is only modified when
+a change is committed, and two copies, one in each thread's own memory
+space.  Memory is cheap these days, and avoiding locking is more important
+than saving space.
+
+DGD/MP uses much, much more memory than DGD.
+
+Regards,
+Dworkin
+</pre>
+
   <p style="text-size: 150%"> <a href="index.html"> Back to DGD &amp; LPC
       Page </a> </p>
