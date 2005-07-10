@@ -2,7 +2,7 @@
                       "http://www.w3.org/TR/xhtml1/DTD/strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
-<title>Innsmouth MUD Design: MUD Design</title>
+<title>Innsmouth MUD Design: Mobile Code</title>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
 <link href="../phantasmal.css" rel="stylesheet" type="text/css" />
 </head>
@@ -59,62 +59,34 @@
           <td class="heading">&nbsp;&nbsp;&middot;&nbsp;
 	    <a href="../index.html">Phantasmal</a> &gt;
             <a href="index.html">Innsmouth</a> &gt;
-            <a href="">MUD Design</a>
+            <a href="">Mobile Code</a>
           </td>
         </tr>
         <tr>
           <td class="content">
 
 
-  <h2 style="text-align: center"> MUD Design material tailored for
-    Innsmouth and Phantasmal </h2>
+  <h3 style="text-align: center"> Coding Phantasmal Mobiles </h3>
 
-  <ul>
-    <li> <a href="Articles.html">Articles on MUD Design</a>, culled
-      from <a href="http://www.skotos.net/articles">Skotos</a>
-      and elsewhere. </li>
-    <li> <a href="ProcWorld.html">Procedural World Generation</a>,
-      mostly summarized from MUD-Dev, and especially from J.C.
-      Lawrence's posts to that list </li>
-    <li> Ideas about <a href="ProceduralSystems.html">Procedural
-      Generation of Systems (like towns, populations, countries)</a>
-      in a MUD. </li>
-    <li> Some thoughts about <a href="Persistence.html">persistence in
-      a MUD</a> and how to deal
-      with it in an environment where servers go up and down, and
-      computational resources are finite. </li>
-  </ul>
+  <p>
+    Code for mobiles in Phantasmal should obey some basic guidelines.
+  </p>
 
-  <h3> Designing for (Eventual) Phantasmal - Visibility, Actions and Events </h3>
+  <p>
+    Phantasmal has a <a href="Verbs.html">process to allow mobiles to prevent
+    other mobiles from taking actions</a>.  Make sure your action plays nice
+    with this process.  Make sure your action is appropriately preventable
+    and doesn't try to get around the usual process.
+  </p>
 
-  <ul>
-    <li> Various mostly-original speculations on
-      <a href="ObjGroup.html">Object Grouping</a> and its relatives.
-    </li>
-    <li> Speculations on
-      <a href="ClassHeirarchy.html">Class Heirarchy</a> and how it
-      affects other aspects of the MUD.
-    </li>
-    <li> Speculations on
-      <a href="Visibility.html">Visibility</a> in the MUD, including
-      details on perception, object grouping and event grouping.
-    </li>
-    <li> <a href="Actions.html">Actions and Events</a>, and how
-      Phantasmal might deal with them. </li>
-    <li> <a href="EventModel.html">Phantasmal's Event Model</a>, further
-      pondering. </li>
-    <li> <a href="SpecifyingPerception.html">Propagation of sound,
-      light, temperature, smell, etc</a> in terms of perceptual
-      thresholds and difficulty.</li>
-  </ul>
-
-  <h3> Designing for Phantasmal - Precedence of Scripted Object Actions </h3>
-  
-  <ul>
-    <li> <a href="MobActions.html">Player and Mobile Actions</a> </li>
-    <li> <a href="Verbs.html">Verbs, Notifications and Preventing Actions</a> </li>
-    <li> <a href="MobCode.html">Code in Phantasmal Mobiles</a> </li>
-  </ul>
+  <p>
+    Just as your mobile's actions should be preventable with the normal
+    Phantasmal prevention process (which has priority over it), it should also
+    play nice with the processes that are lower-priority.  Make sure that your
+    action can be prevented on certain objects, mobiles or locations so that
+    if somebody wants to override your action for plot reasons, that can be
+    done.  Tags can be a great way to do this.
+  </p>
             <address> 
             <span><a href="mailto:angelbob-remove-spamfree@spamfree.users.sf.net">Noah Gibbs</a></span> 
             </address></td> 

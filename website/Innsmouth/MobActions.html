@@ -2,7 +2,7 @@
                       "http://www.w3.org/TR/xhtml1/DTD/strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
-<title>Innsmouth MUD Design: MUD Design</title>
+<title>Innsmouth MUD Design: Mobile Actions</title>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
 <link href="../phantasmal.css" rel="stylesheet" type="text/css" />
 </head>
@@ -59,62 +59,60 @@
           <td class="heading">&nbsp;&nbsp;&middot;&nbsp;
 	    <a href="../index.html">Phantasmal</a> &gt;
             <a href="index.html">Innsmouth</a> &gt;
-            <a href="">MUD Design</a>
+            <a href="">Mobile Actions</a>
           </td>
         </tr>
         <tr>
           <td class="content">
 
 
-  <h2 style="text-align: center"> MUD Design material tailored for
-    Innsmouth and Phantasmal </h2>
+  <h3 style="text-align: center"> Player and Mobile Actions </h3>
 
-  <ul>
-    <li> <a href="Articles.html">Articles on MUD Design</a>, culled
-      from <a href="http://www.skotos.net/articles">Skotos</a>
-      and elsewhere. </li>
-    <li> <a href="ProcWorld.html">Procedural World Generation</a>,
-      mostly summarized from MUD-Dev, and especially from J.C.
-      Lawrence's posts to that list </li>
-    <li> Ideas about <a href="ProceduralSystems.html">Procedural
-      Generation of Systems (like towns, populations, countries)</a>
-      in a MUD. </li>
-    <li> Some thoughts about <a href="Persistence.html">persistence in
-      a MUD</a> and how to deal
-      with it in an environment where servers go up and down, and
-      computational resources are finite. </li>
-  </ul>
+  <p>
+    In a game where you have players, mobiles and objects separated as Phantasmal
+    separates them, there is necessarily a heirarchy of action types.  There are
+    'actions' in the sense of events, as described
+    <a href="Actions.html">elsewhere</a>.  There are also voluntary player and
+    mobile actions.
+  </p>
 
-  <h3> Designing for (Eventual) Phantasmal - Visibility, Actions and Events </h3>
+  <p>
+    Some commands that a player enters change the MUD's interface to the player.
+    For instance, setting the preferred output language, or the number of columns
+    or rows on the player's display, has no analog in the MUD world.  It simply
+    alters the player's interface.  These will be called &quot;pure player
+    commands&quot;.
+  </p>
 
-  <ul>
-    <li> Various mostly-original speculations on
-      <a href="ObjGroup.html">Object Grouping</a> and its relatives.
-    </li>
-    <li> Speculations on
-      <a href="ClassHeirarchy.html">Class Heirarchy</a> and how it
-      affects other aspects of the MUD.
-    </li>
-    <li> Speculations on
-      <a href="Visibility.html">Visibility</a> in the MUD, including
-      details on perception, object grouping and event grouping.
-    </li>
-    <li> <a href="Actions.html">Actions and Events</a>, and how
-      Phantasmal might deal with them. </li>
-    <li> <a href="EventModel.html">Phantasmal's Event Model</a>, further
-      pondering. </li>
-    <li> <a href="SpecifyingPerception.html">Propagation of sound,
-      light, temperature, smell, etc</a> in terms of perceptual
-      thresholds and difficulty.</li>
-  </ul>
+  <p>
+    Commands that can conceivably be executed by any mobile are more common.  For
+    instance, movement, gossip or chat, combat, or manipulating items are all
+    quite well-defined even if done by a non-player character, though not all
+    of these actions may be possible for all non-player characters.  Phantasmal
+    should have the ability to execute any of these actions for any mobile, though
+    the result may be an irate message in the system log.
+  </p>
 
-  <h3> Designing for Phantasmal - Precedence of Scripted Object Actions </h3>
-  
-  <ul>
-    <li> <a href="MobActions.html">Player and Mobile Actions</a> </li>
-    <li> <a href="Verbs.html">Verbs, Notifications and Preventing Actions</a> </li>
-    <li> <a href="MobCode.html">Code in Phantasmal Mobiles</a> </li>
-  </ul>
+  <p>
+    There should be a command structure to encapsulate a request for such a
+    mobile action, so that a character may go through a string of such
+    requests, in order, possibly with scripts running in between.  The
+    command structure can be instantiated by the command parser (if a
+    player types a text command) or by a script or other interface, which
+    need not use the same syntax.  Having this queue of mobile actions for
+    a given mobile also makes it reasonable to add delays or other side
+    effects to prevent players (or mobiles) from being able to execute
+    commands as quickly as they can type.
+  </p>
+
+  <p>
+    Note that pure player commands do <i>not</i> have an entry in the
+    queue of mobile actions.  Pure player commands are executed instantly,
+    but they should also have no significant effect on the game world.
+    The player can change from having a display in English to one in
+    Spanish as many times per second as he likes without it being in any
+    way exploitable.
+  </p>
             <address> 
             <span><a href="mailto:angelbob-remove-spamfree@spamfree.users.sf.net">Noah Gibbs</a></span> 
             </address></td> 

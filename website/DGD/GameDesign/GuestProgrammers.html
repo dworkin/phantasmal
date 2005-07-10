@@ -26,7 +26,7 @@
           <ul style="margin: 0; padding-left: 10%">
             <li> <a href="../index.html">DGD &amp; LPC Page</a> </li>
 	    <li> <a href="../LPC">LPC Textbook</a> </li>
-	    <li> <a href="../Book">New LPC Introduction</a> </li>
+	    <li> <a href="../Book/html">New LPC Introduction</a> </li>
           </ul>
 
         </td>
@@ -62,43 +62,130 @@
           <td class="content">
   
 
-  <h2> Programming By Guests and Players </h2>
+  <h2> Programming By Guests, Players and Builders </h2>
 
   <p>
-    In some MUDs, everybody can program.  Look at MUSHes, for
-    instance.  In other MUDs, only trusted 'craftsman' players can
+    In some MUDs, everybody can write little programs and run them
+    somehow.  Look at MUSHes, for instance, and how their object
+    creation works.  In other MUDs, only trusted 'craftsman' players can
     program, and only in highly restricted ways.  Think of clan halls,
     for instance.  In other MUDs, only builders and administrators can
-    program.  And in still others, not even builders can.
+    program at all.  And in some, not even builders can - look at
+    simple DikuMUDs or CircleMUDs, for instance.
   </p>
 
   <p>
     You'll need to decide how much programming your MUD allows people
     to do.  Remember that restricting player programming only helps
-    security so much...  They can still make macros or bots to do
-    repetitive operations for them, which you may not allow as policy,
-    but are hard to prevent 100% of the time.
+    security so much...  Players can still make macros or bots to do
+    repetitive operations for them.  You may not allow macros or bots,
+    but they're hard to prevent 100% of the time.
   </p>
 
+  <p>
+    One of the large problems with letting players write or run code
+    on your MUD is that it can cause DGD to
+    <a href="../Running/DGDCrash.html">crash in certain situations</a>.
+    You'll need to figure out how to keep that from happening.  For
+    instance, if only builders can write code for your MUD, you're
+    fairly safe - especially if you can find out who crashed the MUD
+    after the fact.  But if anonymous guests can crash your MUD, you
+    have a problem.
+  </p>
+
+  <h3> Limiting Processor Time and Stack Space</h3>
+
+  <p>
+    One of the ways DGD allows you to limit programs is with the
+    <a href="../LibWriting/Rlimits.html">rlimits()</a> statement.
+    You'll need to decide how long you can afford to let your MUD
+    hang if bad code happens.  For code written by a random anonymous
+    guest, you probably want to give no longer than a small fraction
+    of a second.  For builders, you may choose to be more lenient.
+    Still, remember that these things add up - if a builder makes
+    an object that can stall your whole MUD for half a second, you
+    don't want to let players get sixty of the objects and stall your
+    MUD completely for half a minute.
+  </p>
+
+  <p>
+    The Kernel library has resource limits on ticks.  If you manage
+    your scripts correctly, the Kernel will make sure that no builder's
+    scripts take up too much time.  Understand these limits and how
+    they work.  If you use the Kernel Library, use them appropriately.
+    If you don't use the Kernel Library, build some similar facility
+    into your own library.
+  </p>
+
+  <h3> Limiting Memory Space </h3>
+
+  <p>
+    Unfortunately, malicious players can still crash DGD by using up
+    all your free memory in an LPC program.  You can't stop them while\
+    letting them run unrestricted LPC.  However, there are some limits
+    built into DGD so that innocent players won't accidentally cause
+    the same problem in most cases.
+  </p>
+
+  <p>
+    The Kernel Library keeps track of how large objects and files are,
+    and its resource limits can be set to keep an administrator from
+    making DGD objects that are too large.  This allows DGD to determine
+    when too much memory is being used and free it, if necessary.  Have
+    a look at how the Kernel Library does this, and either use the Kernel
+    or build some similar facility into your own library.
+  </p>
+
+  <p>
+    Similarly, you should periodically
+    <a href="../LibWriting/Cleanup.html">clean up abandoned objects in
+    memory</a>, especially from guest programmers.
+  </p>
+
+  <p>
+    DGD has a maximum size for arrays and mappings.  You can always have
+    more items in a collection than this - use an array of arrays or a
+    mapping of arrays, for instance.  However, this keeps a simple loop
+    from making an infinitely large array accidentally.  Similarly, DGD
+    strings have a maximum size.  Neither will normally cause any
+    performance penalty, and both make it harder for innocent guest
+    programmers to crash DGD due to lack of memory.
+  </p>
+
+  <h3> Limiting Operations </h3>
+
+  <p>
+    None of this does any good if players can easily overwrite all your
+    files, or destroy all your data in memory.  Luckily, DGD allows you to
+    <a href="../LibWriting/LargeAuto.html">write an AUTO object</a>, which
+    will let you change the behavior of all DGD's functions.  You can
+    use this to prevent operations that the guest code should be allowed
+    to perform.  If you're using the Kernel Library, you can easily
+    <a href="../Kernel/SecondAuto.html">change the AUTO object for only
+    certain code</a>, which can make security even easier.
+  </p>
+
+  <p>
+    Since <a href="../Programming/CallOut.html">the call_out() function</a> is
+    one of the ones you can change in the AUTO object, you can easily alter
+    what functions guest code can call.  You can also alter what objects
+    can be returned to guest code by <b>find_object()</b>, which can prevent
+    guest code from calling functions on privileged objects.
+  </p>
+
+  <h3> Extreme Solutions </h3>
+
+  <p>
+    Certain libraries like LPMOO take guest code and translate it into rather
+    different LPC code.  There are similar solutions for compiling LPC in
+    nonstandard ways.  This allows you to address all problems above, because
+    you can define how your own language deals with running out of processor
+    time or memory space.
+  </p>
+
+<hr />
+
 <pre>
-Date: Sun Aug 26 19:45:01 2001
-Subject: [DGD] array_size
-
-Thomas Conner Annandale wrote:
-
->   Are there any disadvantages (memory overhead) to setting the maximum
-> size for arrays and mappings really high?  For example, is there a
-> performance difference between setting array_size to 100 and 100000,
-> assuming that in both cases the actual sizes of the mappings is the same
-> (say, under 50)?
-
-There is no performance penalty.  The limit exists for muds with guest
-programmers.
-
-Regards,
-Dworkin
-
-
 From: DGD Mailing List (Par Winzell)
 Date: Fri Jan 11 12:38:01 2002
 Subject: [DGD] Large dumpfile?
@@ -126,101 +213,6 @@ swapout() kfun? If you want to get a mudlib-wide total, that is.
 Dworkin?
 
 Zell
-
-
-
-From: DGD Mailing List (Felix A. Croes)
-Date: Fri Feb  6 08:28:02 2004
-Subject: [DGD] Melville under the Kernel Lib
-
-Noah Gibbs wrote:
-
->   You've provided a great way to limit processor use and stack use
-> (rlimits) for guest scripts.  You've provided a good way to vet most
-> privileged operations (secondary AUTO objects).  You've provided ways
-> to limit use of call_outs, cloning of objects and other things that can
-> cause problems.  All of this is very good, and some is impossible
-> without language support.  Well done.
->
->   However, I see one remaining obvious attack on DGD and I don't yet
-> see how to address it.  Imagine you provide builders with the ability
-> to write an object or the equivalent, such as the Kernel Library's code
-> command.  The obvious attack on DGD would be to allocate an array, put
-> big strings in N-1 of its elements, allocate another array, put it into
-> the final element, and recurse.  In other words, produce an object out
-> of things other than heavyweight DGD objects, and make sure that object
-> is very large.
->
->   If that's true, won't the object take an unbounded number of sectors?
->  If it does, DGD will run out of sectors and halt.  Not crash exactly,
-> but it won't stay up and running, either.
-
-There is no need to wait for DGD to run out of sectors.  It will run out
-of memory, and crash.
-
-This is part of the LPmud heritage.  The attack in its classical form is
-
-    str = "foo";
-    for (;;) {
-	str += str;
-    }
-
-DGD has a limit on string length, which helps to prevent accidental
-mistakes.  But there is no good way to stop this attack in the mudlib,
-unless you go the LPMOO route.  Otherwise it would require driver
-support, and even then it would get very tricky.  The driver would have
-to know about resource owners, not just for objects but for individual
-strings and arrays.  An attacker could probably still cause significant
-problems for a mud by staying just within the limits, or by causing this
-to happen within badly-coded objects owned by other people.  To prevent
-the latter, a completely different runtime model would be needed, such
-as the process model in Unix.
-
-I used to worry about this, but in the end I decided that LPC's
-object/runtime model just doesn't lend itself to this type of security.
-Instead, I concentrated on making it easier to identify an attacker
-(or bumbling programmer) with object ownership and file security.
-
-To sum it up: either trust your guest programmers, or give them only a
-very limited, sandboxed environment.
-
-Regards,
-Dworkin
-
-
-
-From: DGD Mailing List (Felix A. Croes)
-Date: Mon Mar 29 14:40:02 2004
-Subject: [DGD] rlimits
-
-Steve Wooster wrote:
-
-> Could that allow code to do something like this without running out of 
-> ticks? (assume depth comes first, ticks comes second in the argument list)
-
-The syntax is: rlimits (depth; ticks) { ... }
-
-
-> void func()
-> {
->      // Assume I have 100 ticks remaining.
->      // Assume rlimits uses 5 ticks.
->      rlimits (0,95)
->      {
->          Code that takes up 90 ticks;
->      }
->      rlimits (0,90)
->      {
->          Code that takes up 85 ticks;
->      }
->      // Are there still about 90 ticks left despite having
->      // executed 175 ticks worth of code?
-> }
-
-Yes.
-
-Regards,
-Dworkin
 </pre>
 
   <p style="text-size: 150%"> <a href="../index.html"> Back to top level

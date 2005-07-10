@@ -1,0 +1,49 @@
+<titledef text="Mobile Actions" />
+
+  <h3 style="text-align: center"> Player and Mobile Actions </h3>
+
+  <p>
+    In a game where you have players, mobiles and objects separated as Phantasmal
+    separates them, there is necessarily a heirarchy of action types.  There are
+    'actions' in the sense of events, as described
+    <a href="Actions.html">elsewhere</a>.  There are also voluntary player and
+    mobile actions.
+  </p>
+
+  <p>
+    Some commands that a player enters change the MUD's interface to the player.
+    For instance, setting the preferred output language, or the number of columns
+    or rows on the player's display, has no analog in the MUD world.  It simply
+    alters the player's interface.  These will be called &quot;pure player
+    commands&quot;.
+  </p>
+
+  <p>
+    Commands that can conceivably be executed by any mobile are more common.  For
+    instance, movement, gossip or chat, combat, or manipulating items are all
+    quite well-defined even if done by a non-player character, though not all
+    of these actions may be possible for all non-player characters.  Phantasmal
+    should have the ability to execute any of these actions for any mobile, though
+    the result may be an irate message in the system log.
+  </p>
+
+  <p>
+    There should be a command structure to encapsulate a request for such a
+    mobile action, so that a character may go through a string of such
+    requests, in order, possibly with scripts running in between.  The
+    command structure can be instantiated by the command parser (if a
+    player types a text command) or by a script or other interface, which
+    need not use the same syntax.  Having this queue of mobile actions for
+    a given mobile also makes it reasonable to add delays or other side
+    effects to prevent players (or mobiles) from being able to execute
+    commands as quickly as they can type.
+  </p>
+
+  <p>
+    Note that pure player commands do <i>not</i> have an entry in the
+    queue of mobile actions.  Pure player commands are executed instantly,
+    but they should also have no significant effect on the game world.
+    The player can change from having a display in English to one in
+    Spanish as many times per second as he likes without it being in any
+    way exploitable.
+  </p>

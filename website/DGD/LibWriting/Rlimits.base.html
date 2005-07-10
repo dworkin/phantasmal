@@ -276,5 +276,43 @@ the current object is a System object.
 Regards,
 Dworkin
 </pre>
+
+<hr />
+
+<pre>
+From: DGD Mailing List (Felix A. Croes)
+Date: Mon Mar 29 14:40:02 2004
+Subject: [DGD] rlimits
+
+Steve Wooster wrote:
+
+> Could that allow code to do something like this without running out of 
+> ticks? (assume depth comes first, ticks comes second in the argument list)
+
+The syntax is: rlimits (depth; ticks) { ... }
+
+
+> void func()
+> {
+>      // Assume I have 100 ticks remaining.
+>      // Assume rlimits uses 5 ticks.
+>      rlimits (0,95)
+>      {
+>          Code that takes up 90 ticks;
+>      }
+>      rlimits (0,90)
+>      {
+>          Code that takes up 85 ticks;
+>      }
+>      // Are there still about 90 ticks left despite having
+>      // executed 175 ticks worth of code?
+> }
+
+Yes.
+
+Regards,
+Dworkin
+</pre>
+
   <p style="text-size: 150%"> <a href="../index.html"> Back to top level
     </a> </p>
