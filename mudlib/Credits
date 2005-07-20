@@ -15,10 +15,10 @@ password changing, and for some miscellaneous other bugfinding
 parser, as well as additional testing to Phantasmal UNQ and Help code
 on his own MUD
 
+- Neil McBride for miscellaneous code and ideas, and for ObjectD debugging
+
 - Gary Preston (muphicks at mups dot co dot united-kingdom) for a useful
 patch for the zonefile and general brainstorming and debugging
-
-- Neil McBride for miscellaneous code and ideas
 
 - Mark Luszniak for requesting more documentation, and for submitting
 simple object code.
