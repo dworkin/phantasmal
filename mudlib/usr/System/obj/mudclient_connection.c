@@ -16,8 +16,13 @@ inherit user LIB_USER;
   Library separates the connection and user object from each other
   anyway.
 
-  [binary conn] <-> [Mudclient_conn]
-                     [telnet conn]    <-> [normal user object]
+   [bin conn] <-> [LIB_USER]       [LIB_CONN] <-> [Phant User]
+                       A               A
+                       \               /
+                        --- Inherits --
+                               |
+                               |
+                       mudclient_connection
 
   The Mudclient Connection object gets its input from a standard
   Kernel binary connection in raw mode.  It processes that input and
@@ -49,6 +54,7 @@ private string tel_goahead;
 
 private int new_telnet_input(string str);
 private string debug_escape_str(string line);
+private int process_input(string str);
 
 static void create(int clone)
 {
@@ -90,6 +96,11 @@ int login(string str)
 {
     if (previous_program() == LIB_CONN) {
 	user::connection(previous_object());
+
+	process_input(str);
+
+	/* Don't call ::login() or we'll see a separate connection for
+	   the MUDClient connection, not just the 'real' user conn. */
     }
     return MODE_RAW;
 }
@@ -114,17 +125,29 @@ void logout(int quit)
  */
 void set_mode(int mode)
 {
-    if (SYSTEM() && mode >= MODE_UNBLOCK) {
-	query_conn()->set_mode(mode);
+  if (KERNEL() || SYSTEM()) {
+    if(mode >= MODE_NOECHO) {
+      query_conn()->set_mode(mode);
 
-	if(suppress_echo && mode == MODE_ECHO) {
-	  suppress_echo = 0;
-	  this_object()->send_telnet_option(TP_DO, TELOPT_ECHO);
-	} else if(!suppress_echo && mode == MODE_NOECHO) {
-	  suppress_echo = 1;
-	  this_object()->send_telnet_option(TP_DONT, TELOPT_ECHO);
-	}
-    }
+      if(suppress_echo && mode == MODE_NOECHO)
+	LOGD->write_syslog("Already suppressing echo!");
+
+      if(!suppress_echo && mode == MODE_ECHO)
+	LOGD->write_syslog("Already allowing echo!");
+
+      if(suppress_echo && mode == MODE_ECHO) {
+	suppress_echo = 0;
+	this_object()->send_telnet_option(TP_DO, TELOPT_ECHO);
+	LOGD->write_syslog("Doing echo in set_mode!");
+      } else if(!suppress_echo && mode == MODE_NOECHO) {
+	suppress_echo = 1;
+	this_object()->send_telnet_option(TP_DONT, TELOPT_ECHO);	
+	LOGD->write_syslog("Suppressing echo in set_mode!");
+      }
+    } else
+      error("Illegal mode #" + mode + " passed to MCC:set_mode!");
+  } else
+    error("Illegal caller '" + previous_program() + "' of MCC:set_mode!");
 }
 
 /*
@@ -133,7 +156,7 @@ void set_mode(int mode)
  */
 static int user_input(string str)
 {
-  LOGD->write_syslog("MCC user_input: " + str, LOG_WARN);
+  LOGD->write_syslog("MCC user_input: " + str);
   return conn::receive_message(nil, str);
 }
 
@@ -200,7 +223,7 @@ int message(string str)
 {
   if(previous_program() == LIB_USER || previous_program() == PHANTASMAL_USER) {
     /* Do appropriate send-filtering first */
-    LOGD->write_syslog("MCC message: " + str, LOG_WARN);
+    LOGD->write_syslog("MCC message: " + str);
     return binary_message(str);
   } else {
     error("Unprivileged code calling MCC::message()!");
@@ -218,32 +241,36 @@ private string get_input_line(void) {
   return nil;
 }
 
+private int process_input(string str) {
+  string line;
+  int    mode;
+
+  new_telnet_input(str);
+
+  line = get_input_line();
+  while(line) {
+    mode = user_input(line);
+    if(mode == MODE_DISCONNECT || mode >= MODE_UNBLOCK)
+      return mode;
+
+    line = get_input_line();
+  }
+  if(!suppress_ga && !strlen(buffer)) {
+    /* Have read all pending lines, nothing uncompleted in buffer */
+    return binary_message(tel_goahead);
+  }
+
+  return MODE_NOCHANGE;
+}
+
 /*
  * NAME:	receive_message()
  * DESCRIPTION:	receive a message
  */
 int receive_message(string str)
 {
-  string line;
-  int    mode;
-
   if (previous_program() == LIB_CONN || previous_program() == MUDCLIENTD) {
-    new_telnet_input(str);
-
-    line = get_input_line();
-    while(line) {
-      mode = user_input(line);
-      if(mode == MODE_DISCONNECT || mode >= MODE_UNBLOCK)
-	return mode;
-
-      line = get_input_line();
-    }
-    if(!suppress_ga && !strlen(buffer)) {
-      /* Have read all pending lines, nothing uncompleted in buffer */
-      return binary_message(tel_goahead);
-    }
-
-    return MODE_NOCHANGE;
+    return process_input(str);
   }
 
   error("Illegal call!");
@@ -260,7 +287,7 @@ nomask int send_telnet_option(int command, int option) {
     error("Invalid command in send_telnet_option!");
 
   LOGD->write_syslog("Sending telnet option IAC " + command + " "
-		     + option, LOG_WARN);
+		     + option, LOG_VERBOSE);
 
   opts = "   ";
   opts[0] = TP_IAC;
@@ -401,7 +428,7 @@ static string scan_iac_series(string series) {
       return nil;
 
     LOGD->write_syslog("Processing option: " + series[0] + " / " + series[1],
-		       LOG_WARN);
+		       LOG_VERBOSE);
     negotiate_option(series[0], series[1]);
     return series[2..];
 
@@ -412,7 +439,7 @@ static string scan_iac_series(string series) {
     if(sscanf(series, "%s" + iac_str + se_str + "%s", pre, post) == 2) {
       LOGD->write_syslog("Processing sub-neg: IAC SB '" + pre[1] + " "
 			 + debug_escape_str(pre[2..]) + "' IAC SE",
-			 LOG_WARN);
+			 LOG_VERBOSE);
 
       subnegotiation_string(pre[1..]);
       return post;
@@ -476,7 +503,7 @@ static void crlfbs_filter(void)
 	  input_lines += ({ str });
 
 	  /* Currently, log all input */
-	  LOGD->write_syslog("MCC input: '" + str + "'", LOG_WARN);
+	  LOGD->write_syslog("MCC input: '" + str + "'");
 	} else {
 	  break; /* No more newline-delimited input.  Out of full lines. */
 	}
@@ -511,8 +538,6 @@ private int new_telnet_input(string str) {
     post = scan_iac_series(series);
     if(!post) {
       /* Found an incomplete IAC series, wait for the rest */
-      LOGD->write_syslog("Incomplete IAC series: '" + debug_escape_str(series)
-			 + "'", LOG_WARN);
       iac_series = iac_str + series;
       break;
     }
