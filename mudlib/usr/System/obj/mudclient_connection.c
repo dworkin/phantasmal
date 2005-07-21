@@ -233,7 +233,7 @@ int message(string str)
 
     /* Do newline expansion */
     str = implode(explode(str, "\r"), "");
-    str = implode(explode(str, "\n"), "\n\r");
+    str = implode(explode("\n" + str + "\n", "\n"), "\r\n");
 
     return binary_message(str);
   } else {
