@@ -1,4 +1,4 @@
-/* $Header: /cvsroot/phantasmal/mudlib/usr/System/open/lib/userlib.c,v 1.15 2005/07/20 23:36:32 angelbob Exp $ */
+/* $Header: /cvsroot/phantasmal/mudlib/usr/System/open/lib/userlib.c,v 1.16 2005/07/21 18:49:33 angelbob Exp $ */
 
 #include <kernel/kernel.h>
 #include <kernel/user.h>
@@ -48,7 +48,6 @@ static int timestamp;           /* Last network input */
 static string hostname;         /* Hostname they're logging in from */
 static mapping state;		/* state for a connection object */
 static int first_login;         /* whether this was the first login */
-static int mudclient_conn;      /* whether this is an LPC-telnet conn */
 
 /* Cached vars */
 static object body;             /* Body object */
@@ -304,20 +303,6 @@ int send_system_phrase(string phrname) {
     LOGD->write_syslog("Can't find system phrase " + phrname + "!", LOG_ERR);
   }
   return send_phrase(phr);
-}
-
-/* For a mudclient connection, this sets echo to true. */
-private void set_echo(void) {
-  if(mudclient_conn) {
-    LOGD->write_syslog("Doing set_echo on MCC!"); 
-  }
-}
-
-/* For a mudclient connection, this sets echo to false. */
-private void set_no_echo(void) {
-  if(mudclient_conn) {
-    LOGD->write_syslog("Doing set_no_echo on MCC!"); 
-  }
 }
 
 /*
@@ -647,16 +632,6 @@ int login(string str)
       /* Set our connection object to the one that just called us */
       connection(previous_object());
 
-      /* If the connection object is a MUDCLIENT_CONN, this connection
-	 needs specific echo notification. */
-      if(sscanf(object_name(previous_object()), MUDCLIENT_CONN + "%*s") == 1) {
-	mudclient_conn = 1;
-	LOGD->write_syslog("Conn is MUDclient!");
-      } else {
-	mudclient_conn = 0;
-	LOGD->write_syslog("Conn is not MUDclient!");
-      }
-
       message_all_users(Name + " ");
       system_phrase_all_users("logs in.");
       message_all_users("\n");
@@ -666,7 +641,6 @@ int login(string str)
 
       /* Check if an immort */
       if (sizeof(rsrc::query_owners() & ({ str })) == 0) {
-	set_no_echo();
 	return MODE_NOECHO;
       }
 
@@ -677,7 +651,6 @@ int login(string str)
 	  error("Can't clone wiztool!");
       }
     }
-    set_no_echo();
     return MODE_NOECHO;
   }
 
@@ -768,7 +741,6 @@ static int process_message(string str)
     message("\n");
     send_system_phrase("New password: ");
     set_state(previous_object(), STATE_NEWPASSWD1);
-    set_no_echo();
     return MODE_NOECHO;
 
   case STATE_NEWPASSWD1:
@@ -778,7 +750,6 @@ static int process_message(string str)
       message("\n");
       if(password && strlen(password)) {
 	send_system_phrase("Password change cancelled");
-	set_no_echo();
 	return MODE_NOECHO;
       }
 
@@ -789,14 +760,12 @@ static int process_message(string str)
       send_system_phrase("must be four characters");
       message("\n");
       send_system_phrase("New password: ");
-      set_no_echo();
       return MODE_NOECHO;
     }
     newpasswd = str;
     message("\n");
     send_system_phrase("Retype new password: ");
     set_state(previous_object(), STATE_NEWPASSWD2);
-    set_no_echo();
     return MODE_NOECHO;
 
   case STATE_NEWPASSWD2:
@@ -813,7 +782,6 @@ static int process_message(string str)
 
       set_state(previous_object(), STATE_NEWPASSWD1);
       send_system_phrase("New password: ");
-      set_no_echo();
       return MODE_NOECHO;
     }
     newpasswd = nil;
@@ -836,7 +804,6 @@ static int process_message(string str)
   }
 
   set_state(previous_object(), STATE_NORMAL);
-  set_echo();
   return MODE_ECHO;
 }
 

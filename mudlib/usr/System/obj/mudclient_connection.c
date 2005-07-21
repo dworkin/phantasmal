@@ -126,26 +126,32 @@ void logout(int quit)
 void set_mode(int mode)
 {
   if (KERNEL() || SYSTEM()) {
-    if(mode >= MODE_NOECHO) {
+    if(mode != MODE_ECHO && mode != MODE_NOECHO) {
       query_conn()->set_mode(mode);
+      /* Don't destruct the object on disconnect, because the
+	 connection library will have already done that. */
+      return;
+    }
 
-      if(suppress_echo && mode == MODE_NOECHO)
-	LOGD->write_syslog("Already suppressing echo!");
+    if(suppress_echo && mode == MODE_NOECHO) {
+      LOGD->write_syslog("Already suppressing echo!", LOG_VERBOSE);
+      return;
+    }
 
-      if(!suppress_echo && mode == MODE_ECHO)
-	LOGD->write_syslog("Already allowing echo!");
+    if(!suppress_echo && mode == MODE_ECHO) {
+      LOGD->write_syslog("Already allowing echo!", LOG_VERBOSE);
+      return;
+    }
 
-      if(suppress_echo && mode == MODE_ECHO) {
-	suppress_echo = 0;
-	this_object()->send_telnet_option(TP_DO, TELOPT_ECHO);
-	LOGD->write_syslog("Doing echo in set_mode!");
-      } else if(!suppress_echo && mode == MODE_NOECHO) {
-	suppress_echo = 1;
-	this_object()->send_telnet_option(TP_DONT, TELOPT_ECHO);	
-	LOGD->write_syslog("Suppressing echo in set_mode!");
-      }
-    } else
-      error("Illegal mode #" + mode + " passed to MCC:set_mode!");
+    if(suppress_echo && mode == MODE_ECHO) {
+      suppress_echo = 0;
+      this_object()->send_telnet_option(TP_WONT, TELOPT_ECHO);	
+      LOGD->write_syslog("Doing echo in set_mode!", LOG_VERBOSE);
+    } else if(!suppress_echo && mode == MODE_NOECHO) {
+      suppress_echo = 1;
+      this_object()->send_telnet_option(TP_WILL, TELOPT_ECHO);
+      LOGD->write_syslog("Suppressing echo in set_mode!", LOG_VERBOSE);
+    }
   } else
     error("Illegal caller '" + previous_program() + "' of MCC:set_mode!");
 }
@@ -156,7 +162,7 @@ void set_mode(int mode)
  */
 static int user_input(string str)
 {
-  LOGD->write_syslog("MCC user_input: " + str);
+  LOGD->write_syslog("MCC user_input: " + str, LOG_VERBOSE);
   return conn::receive_message(nil, str);
 }
 
@@ -223,7 +229,12 @@ int message(string str)
 {
   if(previous_program() == LIB_USER || previous_program() == PHANTASMAL_USER) {
     /* Do appropriate send-filtering first */
-    LOGD->write_syslog("MCC message: " + str);
+    LOGD->write_syslog("MCC message: " + str, LOG_VERBOSE);
+
+    /* Do newline expansion */
+    str = implode(explode(str, "\r"), "");
+    str = implode(explode(str, "\n"), "\n\r");
+
     return binary_message(str);
   } else {
     error("Unprivileged code calling MCC::message()!");
@@ -502,8 +513,7 @@ static void crlfbs_filter(void)
 
 	  input_lines += ({ str });
 
-	  /* Currently, log all input */
-	  LOGD->write_syslog("MCC input: '" + str + "'");
+	  LOGD->write_syslog("MCC input: '" + str + "'", LOG_VERBOSE);
 	} else {
 	  break; /* No more newline-delimited input.  Out of full lines. */
 	}
