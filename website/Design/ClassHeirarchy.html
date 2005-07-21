@@ -2,7 +2,7 @@
                       "http://www.w3.org/TR/xhtml1/DTD/strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
-<title>Innsmouth MUD Design: MUD Design</title>
+<title>Phantasmal Design: Class Heirarchy</title>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
 <link href="../phantasmal.css" rel="stylesheet" type="text/css" />
 </head>
@@ -12,7 +12,7 @@
     <td colspan="2"> <table width="100%" border="0" cellspacing="1"
         cellpadding="0" class="main">
         <tr>
-          <td class="banner">Innsmouth MUD Design</td>
+          <td class="banner">Phantasmal Design</td>
         </tr>
       </table></td>
   </tr>
@@ -25,13 +25,11 @@
 
           <ul style="margin: 0; padding-left: 10%">
             <li> <a href="../DGD/index.html">DGD &amp; LPC Page</a> </li>
-	    <li> <a href="../DGD/LPC">LPC Textbook</a> </li>
             <li> <a href="../index.html">Phantasmal Main</a> </li>
 	    <li> <a href="http://www.sf.net/projects/phantasmal">Phantasmal
 	      SourceForge</a> </li>
-	    <li> <a href="index.html">Innsmouth Main</a> </li>
-	    <li> <a href="../Design">MUD Design Page</a> </li>
-	    <li> <a href="Articles.html">Selected Articles</a> </li>
+	    <li> <a href="index.html">Phantasmal Design Main</a> </li>
+	    <li> <a href="../Innsmouth/Articles.html">Selected Articles</a> </li>
           </ul>
 
         </td>
@@ -58,31 +56,46 @@
         <tr>
           <td class="heading">&nbsp;&nbsp;&middot;&nbsp;
 	    <a href="../index.html">Phantasmal</a> &gt;
-            <a href="index.html">Innsmouth</a> &gt;
-            <a href="">MUD Design</a>
+            <a href="index.html">Phant Design</a> &gt;
+            <a href="">Class Heirarchy</a>
           </td>
         </tr>
         <tr>
           <td class="content">
 
 
-  <h2 style="text-align: center"> MUD Design material </h2>
+    <h3 style="text-align: center"> Class Heirarchy for Phantasmal </h3>
 
-  <ul>
-    <li> <a href="Articles.html">Articles on MUD Design</a>, culled
-      from <a href="http://www.skotos.net/articles">Skotos</a>
-      and elsewhere. </li>
-    <li> <a href="ProcWorld.html">Procedural World Generation</a>,
-      mostly summarized from MUD-Dev, and especially from J.C.
-      Lawrence's posts to that list </li>
-    <li> Ideas about <a href="ProceduralSystems.html">Procedural
-      Generation of Systems (like towns, populations, countries)</a>
-      in a MUD. </li>
-    <li> Some thoughts about <a href="Persistence.html">persistence in
-      a MUD</a> and how to deal
-      with it in an environment where servers go up and down, and
-      computational resources are finite. </li>
-  </ul>
+    <p>
+      Phantasmal will eventually (I hope) have a multiple-inheritance
+      class heirarchy of objects, which may inherit properties from
+      each other.  An object will by default allow its parent class to
+      define most of its properties, but may override specific properties
+      that are important to the class (such as default volume, weight, etc).
+      The object will have a Primary parent class, the first on the
+      inheritance list, from which such properties are inherited.  To
+      inherit a numerical property from a non-Primary parent, it must
+      be overridden.  Some properties, like lists of nouns and adjectives,
+      are inherited by merging from all parents.
+    </p>
+
+    <p>
+      The class heirarchy is an important way to categorize player
+      perception.  Any given object may require particular skills or
+      properties on the player's part to recognize.  For instance,
+      a Chinese vase might not be recognizable without some knowledge of
+      China, and would thus default entirely to appearing as a vase to
+      a player without such lore.
+    </p>
+
+    <p>
+      Object Grouping would also work into the Class Heirarchy -- every
+      object type could be marked as a Grouping, perhaps with a scale
+      factor to tell how preferentially it should be chosen.  Thus, a
+      very specific group like &quot;scimitar&quot; would have a high
+      scale factor and be chosen readily, while a vaguer description like
+      &quot;farm equipment&quot; would be chosen less often.
+    </p>
             <address> 
             <span><a href="mailto:angelbob-remove-spamfree@spamfree.users.sf.net">Noah Gibbs</a></span> 
             </address></td> 
