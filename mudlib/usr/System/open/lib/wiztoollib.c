@@ -261,11 +261,11 @@ static mixed evaluate_lpc_code(object user, string lpc_code)
 static void cmd_people(object user, string cmd, string str)
 {
   object *users, usr;
-  string *owners, name;
+  string *owners, name, ipstr;
   int i, sz;
 
   if (str && str != "") {
-    message("Usage: " + cmd + "\r\n");
+    message("Usage: " + cmd + ", like, whatever\n");
     return;
   }
 
@@ -275,10 +275,18 @@ static void cmd_people(object user, string cmd, string str)
   for (i = 0, sz = sizeof(users); i < sz; i++) {
     usr = users[i];
     name = usr->query_name();
-    str += (query_ip_number(usr->query_conn()) + SPACE16)[.. 15] +
-      (usr->get_idle_time() + " seconds idle" + SPACE16)[..18] +
-      ((sizeof(owners & ({ name })) == 0) ? " " : "*") +
-      name + "\r\n";
+    if(usr->query_conn()) {
+      ipstr = query_ip_number(usr->query_conn());
+      if(!ipstr)
+	ipstr = "--host?--";
+
+      str += (ipstr + SPACE16)[.. 15];
+    } else {
+      str += ("--disc--" + SPACE16)[.. 15];
+    }
+    str += (usr->get_idle_time() + " seconds idle" + SPACE16)[..18];
+    str += ((sizeof(owners & ({ name })) == 0) ? " " : "*");
+    str += name + "\n";
   }
   message(str);
 }
