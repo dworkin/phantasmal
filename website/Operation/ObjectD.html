@@ -1,0 +1,206 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+                      "http://www.w3.org/TR/xhtml1/DTD/strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<title>Phantasmal Operation: ObjectD</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<link href="../phantasmal.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<table width="95%" border="0" cellspacing="0" cellpadding="4">
+  <tr>
+    <td colspan="2"> <table width="100%" border="0" cellspacing="1"
+        cellpadding="0" class="main">
+        <tr>
+          <td class="banner">Phantasmal Design</td>
+        </tr>
+      </table></td>
+  </tr>
+  <tr>
+    <td valign="top">
+      <table width="25%"  border="0" cellspacing="1"
+             cellpadding="0"  class="main">
+        <tr>
+          <td class="content" style="font-size: 120%">
+
+          <ul style="margin: 0; padding-left: 10%">
+            <li> <a href="../DGD/index.html">DGD &amp; LPC Page</a> </li>
+            <li> <a href="../index.html">Phantasmal Main</a> </li>
+	    <li> <a href="http://www.sf.net/projects/phantasmal">Phantasmal
+	      SourceForge</a> </li>
+	    <li> <a href="index.html">Phantasmal Operation Main</a> </li>
+          </ul>
+
+        </td>
+        </tr>
+        <tr>
+          <td class="content" align="center">
+            <a href="http://validator.w3.org/check/referer">
+            <img src="../images/valid-xhtml10.gif" alt="Valid XHTML 1.0!"
+             style="border:0;width:88px;height:31px" /></a><br />
+            <img src="../images/pixel.gif"
+             style="border:0;width:88px;height:1px" alt="" /><br />
+            <a href="http://jigsaw.w3.org/css-validator/check/referer">
+            <img src="http://jigsaw.w3.org/css-validator/images/vcss"
+             alt="Valid CSS!" style="border:0;width:88px;height:31px" />
+            </a><br /><br /><br />
+            <a href="http://sourceforge.net">
+            <img src="http://sourceforge.net/sflogo.php?group_id=48659&amp;type=2"
+             style="border: 0; width: 125; height: 37;"
+	     alt="SourceForge.net Logo" /></a>
+          </td>
+        </tr>
+      </table></td>
+    <td> <table width="100%"  border="0" cellspacing="1" cellpadding="0"  class="main">
+        <tr>
+          <td class="heading">&nbsp;&nbsp;&middot;&nbsp;
+	    <a href="../index.html">Phantasmal</a> &gt;
+            <a href="index.html">Phant Design</a> &gt;
+            <a href="">ObjectD</a>
+          </td>
+        </tr>
+        <tr>
+          <td class="content">
+
+
+<h2 style="text-align: center"> Phantasmal's Object Manager </h2>
+
+<h3> Design Notes for Phantasmal Object Manager </h3>
+
+<p>
+  Major data:
+</p>
+
+<dl>
+  <dt>obj_issues</dt>
+  <dd>
+    This is a HEAVY_ARRAY of issue numbers for each clonable and library.
+  </dd>
+
+  <dt>dest_issues</dt>
+  <dd>
+    The is a mapping, keyed by object name, of objects whose most
+    recent issue has been destructed.
+  </dd>
+
+  <dt>fixups</dt>
+  <dd>
+    This mapping exists only during initialization.  It is created by
+    the recompile_to_track_libs function from recomp_paths.  It maps
+    from a library to the set of child objects that the library
+    inherits.
+  </dd>
+
+  <dt>recomp_paths</dt>
+  <dd>
+    This mapping is useful only during initialization.  It is keyed by
+    object name, and the value is a list of what objects the key
+    object is inherited by.  It is set indirectly by compile_object
+    and compile_lib, so it is indirectly set by recompiling all
+    objects during init.
+  </dd>
+
+  <dt>all_libs</dt>
+  <dd>
+    This is a mapping of library names to their most current issue
+    numbers.
+  </dd>
+</dl>
+
+<hr />
+
+<p>
+  Initialization call sequence:
+</p>
+
+<ul>
+  <li>recompile_every_object:
+    <ul>
+      <li>recompile_every_clonable</li>
+      <li>recompile_to_track_libs</li>
+      <li>fix_parent_arrays</li>
+      <li>fix_child_arrays</li>
+    </ul> </li>
+  <li>count_clones</li>
+</ul>
+
+<p>
+  Remember that when an object is recompiled, add_clonable or add_lib
+  is called.  Either will call convert_inherited_str_to_mixed, which
+  will add any tracked libraries the object inherits to all_libs.  The
+  function will also add appropriate dependencies to recomp_paths if
+  called during init.
+</p>
+
+<hr />
+
+<p>
+  Major functions of ObjectD:
+</p>
+
+<dl>
+  <dt>recompile_to_track_libs</dt>
+  <dd>
+    Builds the fixups array from recomp_paths, while destructing and
+    recompiling every library in recomp_paths.
+  </dd>
+
+  <dt>fix_parent_arrays</dt>
+  <dd>
+    For each library L in fixups, for each child C to fix it for,
+    replace L's program name with L's issue number in C's parent
+    array.
+  </dd>
+
+  <dt>fix_child_arrays</dt>
+  <dd>
+    For every library, clear the previous issue number and the list of
+    children.  For every library, register_inherit_data().  For every
+    object in ObjRegD (plus TELNET_CONN and BINARY_CONN), call
+    register_inherit_data() on its issue.
+  </dd>
+
+  <dt>recompile_every_clonable</dt>
+  <dd>
+    For each object in ObjRegD plus TELNET_CONN and BINARY_CONN,
+    recompile every non-clone object.
+  </dd>
+
+  <dt>recompile_every_object</dt>
+  <dd>
+    First, recompile_every_clonable().  Then
+    recompile_to_track_libs(), fix_parent_arrays(), and
+    fix_child_arrays().  This is most of the init sequence.
+  </dd>
+
+  <dt>count_clones</dt>
+  <dd>
+    Go through ObjRegD, adding clones to their appropriate issue
+    structures.
+  </dd>
+
+  <dt>unregister_inherit_data(object issue)</dt>
+  <dd>
+    Remove this issue from its children's &quot;parent&quot; lists.
+  </dd>
+
+  <dt>register_inherit_data(object issue)</dt>
+  <dd>
+    Add this issue to its children's &quot;parent&quot; lists.
+  </dd>
+
+  <dt>clear_child_data(object issue)</dt>
+  <dd>
+    Remove this issue from its parents' &quot;child&quot; lists.
+  </dd>
+
+</dl>
+            <address> 
+            <span><a href="mailto:angelbob-remove-spamfree@spamfree.users.sf.net">Noah Gibbs</a></span> 
+            </address></td> 
+        </tr> 
+      </table></td> 
+  </tr> 
+</table> 
+</body>
+</html>
