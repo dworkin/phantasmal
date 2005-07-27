@@ -62,9 +62,9 @@ string to_unq_text(void) {
   if(SYSTEM() || COMMON() || GAME()) {
     string filename;
 
-    if(!sscanf(object_name(this_object()), "/usr/game/rooms/%s", filename)) {
-      LOGD->write_syslog("Can't parse object name in to_unq_text!");
-      filename = "invalid_file";
+    if(!sscanf(object_name(this_object()), GAME_ROOMS_DIR + "%s", filename)) {
+      error("Can't parse object name " + object_name(this_object())
+	    + " in to_unq_text!");
     }
     return "~object{\n  ~obj_type{custom:/" + filename + "}\n"
       + to_unq_flags()

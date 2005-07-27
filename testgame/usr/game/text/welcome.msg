@@ -7,8 +7,7 @@ Type "help copying" for details.
 
                      The Seas of Night
 
-         A Collaborative Story of Postmortem Piracy
-                 Upon the Highest of Seas
+           A Collaborative Story of Maritime Terror
 
                     and, simultaneously,
 

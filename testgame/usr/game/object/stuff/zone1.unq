@@ -1,6 +1,6 @@
 ~object{
   ~obj_type{simple room}
-  ~number{100}
+  ~number{500}
   ~location{0}
   ~bdesc{
     ~enUS{Glowing Portal}}
@@ -11,10 +11,10 @@ You can't seem to approach it, only to recede.}}
   ~nouns{{~enUS{portal, vortex}}}
   ~adjectives{{~enUS{glowing, swirling}}}
   ~newexit{
-    ~rnumber{312}
+    ~rnumber{140}
     ~direction{2}
-    ~destination{101}
-    ~return{313}
+    ~destination{501}
+    ~return{141}
     ~type{2}
     ~rflags{3}}
   ~weight{2000}
@@ -29,7 +29,7 @@ You can't seem to approach it, only to recede.}}
 
 ~object{
   ~obj_type{simple room}
-  ~number{101}
+  ~number{501}
   ~location{0}
   ~bdesc{
     ~enUS{Pulsing Nexus}}
@@ -38,16 +38,16 @@ You can't seem to approach it, only to recede.}}
 mass, a nexus of light, that pulses rapidly and irregularly.  You could watch
 it, or slip away to the north.}}
   ~edesc{
-    ~enUS{The nexus is bright and powerful for about three feet across, and
+    ~enUS{The nexus is bright and powerful up to about three feet across, and
 barely visible until it's about ten feet across.}}
   ~flags{3}
   ~nouns{{}}
   ~adjectives{{}}
   ~newexit{
-    ~rnumber{313}
+    ~rnumber{141}
     ~direction{1}
-    ~destination{100}
-    ~return{312}
+    ~destination{500}
+    ~return{140}
     ~type{2}
     ~rflags{3}}
   ~weight{2000}

@@ -71,7 +71,7 @@ string type_for_room_num(int num) {
   if(!room)
     return nil;
 
-  if(sscanf(object_name(room), "/usr/game/rooms/%s#%*d", filename) != 2) {
+  if(sscanf(object_name(room), GAME_ROOMS_DIR + "%s#%*d", filename) != 2) {
     /* Can't parse object name */
     return nil;
   }
