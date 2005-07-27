@@ -1,0 +1,31 @@
+Fix directory problem with usernames, perhaps by creating a directory
+at the right time and deleting the one the Kernel wants to make.  This
+fixes the upper/lower-case problem.
+
+Sort out system suspend stuff...  Should all use some central
+location.  See INITD, TELNETD, MUDCLIENTD, SSHD, OBJECTD.  Maybe also
+grep for "suspend".
+
+ObjectD - figure out where untracked library instances are coming from.
+
+Fix multi-arg problem with @new_mob.
+
+----------------------
+
+Make nice modular system to answer questions for use with @make_room
+and corresponding edit-type mode.  This could also be used for object
+attributes and OLC of more flexible attributes.
+
+Make a nice system for UNQ tags being replaced with things like ANSI
+color codes.  Generally, put together a usable terminal-type interface.
+
+Make an action system for mobile actions to be queued up and handled.
+
+Currently, actions in the user object (including PHANTASMAL_USER) seem
+to use an odd blend of parsing at the command-line and parsing in the
+code for the action.  That should be cleanly separated out, even
+before we've got a 'real' parser.
+
+Make a set of canonical exits which individual exit instances will
+inherit from.  This will avoid putting a fully-localized version of,
+say, "north", in every northbound exit.
