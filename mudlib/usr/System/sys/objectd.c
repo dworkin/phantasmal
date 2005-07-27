@@ -15,6 +15,7 @@
 #include <kernel/kernel.h>
 #include <kernel/objreg.h>
 #include <kernel/rsrc.h>
+#include <kernel/user.h>
 
 #include <phantasmal/log.h>
 #include <phantasmal/lpc_names.h>
@@ -231,6 +232,16 @@ private void fix_child_arrays(string* owners) {
     register_inherit_data(issue);
   }
 
+  /* There are two objects in the Kernel Library - TELNET_CONN and
+     BINARY_CONN - that ObjRegD does not list. */
+  status_idx = status(find_object(TELNET_CONN))[O_INDEX];
+  issue = obj_issues->index(status_idx);
+  register_inherit_data(issue);
+
+  status_idx = status(find_object(BINARY_CONN))[O_INDEX];
+  issue = obj_issues->index(status_idx);
+  register_inherit_data(issue);
+
   /* Iterate through all owners to make sure prev fields are clear and
      to register their inherit data. */
   for(ctr = 0; ctr < sizeof(owners); ctr++) {
@@ -261,6 +272,10 @@ private void recompile_every_clonable(string* owners) {
   int     ctr, ctr2;
   object  index, first;
   object* obj_arr;
+
+  /* These are special objects that ObjRegD doesn't contain. */
+  compile_object(TELNET_CONN);
+  compile_object(BINARY_CONN);
 
   /* First, for all owners recompile all owned (non-lib) objects. */
   for(ctr = 0; ctr < sizeof(owners); ctr++) {
@@ -384,7 +399,8 @@ private void unregister_inherit_data(object issue) {
   for(ctr = 0; ctr < sizeof(parents); ctr++) {
     if(typeof(parents[ctr]) == T_STRING) {
       if(aggro_recompile > 1) {
-	LOGD->write_syslog("Uncorrected parent string!", LOG_ERR);
+	LOGD->write_syslog("Uncorrected parent string '" + parents[ctr]
+			   + "'!", LOG_ERR);
       }
     } else {
       inh_issue = obj_issues->index(parents[ctr]);
@@ -439,7 +455,7 @@ private void register_inherit_data(object issue) {
   for(ctr = 0; ctr < sizeof(parents); ctr++) {
     if(typeof(parents[ctr]) == T_STRING) {
       if(aggro_recompile > 1) {
-	LOGD->write_syslog("Uncorrected parent string!", LOG_ERR);
+	LOGD->write_syslog("Uncorrected parent string! [2]", LOG_ERR);
       }
     } else if(typeof(parents[ctr]) == T_NIL) {
       LOGD->write_syslog("Parents[" + ctr + "] is nil for issue #" + index
@@ -1002,6 +1018,7 @@ void do_initial_obj_setup(void) {
   if(!SYSTEM())
     return;
 
+  /* This just makes sure that do_initial_obj_setup() is only called once */
   if(setup_done) return;
   setup_done = 1;
 
