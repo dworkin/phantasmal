@@ -62,6 +62,9 @@ static void create(varargs int clone) {
     current_weight = 0.0;
     current_volume = 0.0;
 
+    weight = volume = length = -1.0;
+    weight_capacity = volume_capacity = length_capacity = -1.0;
+
     pending_parents = nil;
     pending_location = -1;
     pending_detail_of = -1;
@@ -860,12 +863,14 @@ string to_unq_flags(void) {
   } else if (obj::get_location()) {
     ret += "  ~location{" + obj::get_location()->get_number() + "}\n";
   }
-  ret += "  ~bdesc{" + bdesc->to_unq_text() + "}\n";
-  /* ret += "  ~gdesc{" + gdesc->to_unq_text() + "}\n"; */
-  ret += "  ~ldesc{" + ldesc->to_unq_text() + "}\n";
-  if(edesc) {
+
+  if(bdesc)
+    ret += "  ~bdesc{" + bdesc->to_unq_text() + "}\n";
+  if(ldesc)
+    ret += "  ~ldesc{" + ldesc->to_unq_text() + "}\n";
+  if(edesc)
     ret += "  ~edesc{" + edesc->to_unq_text() + "}\n";
-  }
+
   ret += "  ~flags{" + objflags + "}\n";
 
   arch = obj::get_archetypes();
@@ -889,13 +894,24 @@ string to_unq_flags(void) {
 
   ret += exits_to_unq();
 
-  ret += "  ~weight{" + weight + "}\n";
-  ret += "  ~volume{" + volume + "}\n";
-  ret += "  ~length{" + length + "}\n";
+  if(weight >= 0.0)
+    ret += "  ~weight{" + weight + "}\n";
+
+  if(volume >= 0.0)
+    ret += "  ~volume{" + volume + "}\n";
+
+  if(length >= 0.0)
+    ret += "  ~length{" + length + "}\n";
+
   if(is_container()) {
-    ret += "  ~weight_capacity{" + weight_capacity + "}\n";
-    ret += "  ~volume_capacity{" + volume_capacity + "}\n";
-    ret += "  ~length_capacity{" + length_capacity + "}\n";
+    if(weight_capacity >= 0.0)
+      ret += "  ~weight_capacity{" + weight_capacity + "}\n";
+
+    if(volume_capacity >= 0.0)
+      ret += "  ~volume_capacity{" + volume_capacity + "}\n";
+
+    if(length_capacity >= 0.0)
+      ret += "  ~length_capacity{" + length_capacity + "}\n";
   }
 
   rem = get_removed_details();
@@ -994,14 +1010,10 @@ void from_dtd_tag(string tag, mixed value) {
 
   } else if(tag == "bdesc")
     set_brief(value);
-  else if(tag == "gdesc")
-    /* set_glance(value) */;
   else if(tag == "ldesc")
     set_look(value);
   else if(tag == "edesc")
     set_examine(value);
-  else if(tag == "article")
-    /* desc_article = value */;
   else if(tag == "flags")
     objflags = value;
   else if(tag == "parent")

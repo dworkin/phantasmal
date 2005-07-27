@@ -428,7 +428,7 @@ private void release_system() {
   __sys_suspended = 0;
   RSRCD->release_callouts();
   TELNETD->release_input();
-  SSHD->suspend_input();
+  SSHD->release_input();
   MUDCLIENTD->release_input();
   pending_callback = nil;
 }

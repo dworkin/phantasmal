@@ -69,7 +69,7 @@ object select(string str)
 int query_timeout(object connection)
 {
   if(!SYSTEM() && !KERNEL())
-    return -1;
+    error("Invalid call to query_timeout!");
 
   if(suspended || shutdown)
     return -1;

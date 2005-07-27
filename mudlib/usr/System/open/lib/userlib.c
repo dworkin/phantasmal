@@ -1,4 +1,4 @@
-/* $Header: /cvsroot/phantasmal/mudlib/usr/System/open/lib/userlib.c,v 1.16 2005/07/21 18:49:33 angelbob Exp $ */
+/* $Header: /cvsroot/phantasmal/mudlib/usr/System/open/lib/userlib.c,v 1.17 2005/07/27 23:11:14 angelbob Exp $ */
 
 #include <kernel/kernel.h>
 #include <kernel/user.h>
@@ -30,8 +30,9 @@ inherit io   SYSTEM_USER_IO;
 #define SYSTEM_USER_DIR     "/usr/game/users"
 
 /* Saved by save_object */
-string name;	                /* user name */
+string name;	                /* user filename and login name */
 string password;		/* user password */
+string Name;                    /* human-readable user name */
 int    locale;                  /* chosen output locale */
 int    channel_subs;            /* user channel subscriptions */
 int    log_chan_level;          /* Level of output on CHANNEL_LOG */
@@ -40,7 +41,6 @@ int    body_num;                /* number of body object */
 
 
 /* Random unsaved */
-static string Name;		/* capitalized user name */
 static string newpasswd;	/* new password */
 static object wiztool;		/* command handler */
 static int nconn;		/* # of connections */
@@ -125,7 +125,7 @@ int is_admin(void)  {
 
   /* Can't just check wiztool's existence because we need to be able to
      restore subscribed admin-only channels using the
-     restore_player_from_file functionality.  That happens before the
+     restore_user_from_file functionality.  That happens before the
      wiztool is created for this player object. */
 
   /* Check if an immort */
@@ -138,12 +138,15 @@ int is_admin(void)  {
 
 /****************/
 
+/* This currently extracts only alphabetic characters from a name, and
+   converts it to lowercase. */
 static string username_to_filename(string str) {
   int iter;
   int len;
   string ret;
 
   ret = "";
+  if(!str) return nil;
   len = strlen(str);
   for(iter = 0; iter < len; iter++) {
     if(str[iter] >= 'a' && str[iter] <= 'z')
@@ -156,9 +159,12 @@ static string username_to_filename(string str) {
   return ret;
 }
 
-static void save_user_to_file(void) {
+static void save_user_to_file() {
+  string  user_filename;
   mixed*  chanlist;
   int     subcode, ctr;
+
+  user_filename = SYSTEM_USER_DIR + "/" + name + ".pwd";
 
   chanlist = CHANNELD->channel_list(this_object());
   subcode = 0;
@@ -177,7 +183,7 @@ static void save_user_to_file(void) {
   }
 
   channel_subs = subcode;
-  save_object(SYSTEM_USER_DIR + "/" + username_to_filename(name) + ".pwd");
+  save_object(user_filename);
 }
 
 static int restore_user_from_file(string str) {
@@ -579,9 +585,29 @@ static int get_state(object key_obj) {
 int login(string str)
 {
   if (previous_program() == LIB_CONN) {
-    string check_name;
+    /* Note:  'filename', as used here, isn't the actual filename
+       with extension.  It's just the alpha characters from the
+       supplied name, in lowercase */
+    string filename, check_name;
 
-    if(this_object()->name_is_forbidden(str)) {
+    filename = username_to_filename(str);
+
+    /* Check for security problems */
+    if(filename == "" || filename == nil
+
+       /* Bad ideas for security reasons */
+       || filename == "game"
+       || (sscanf(filename, "%*scommon%*s") == 2)
+       || (sscanf(filename, "%*ssystem%*s") == 2)
+
+       /* No trailing spaces or slashes in names allowed */
+       || (sscanf(str, "%*s ") != 0)
+       || (sscanf(str, "%*s/") != 0)
+
+       /* And let the game code add more restrictions if it likes */
+       || this_object()->name_is_forbidden(str)
+       || this_object()->filename_is_forbidden(filename)) {
+
       previous_object()->message("\nThat name is forbidden.\n"
 				 + "Please log in with a different one.\n");
       return MODE_DISCONNECT;
@@ -592,7 +618,8 @@ int login(string str)
     }
     nconn++;
 
-    Name = name = check_name = str;
+    name = filename;
+    Name = str;
 
     /* Capitalize first letter of Name (but not name) */
     if (Name[0] >= 'a' && Name[0] <= 'z') {
@@ -603,8 +630,9 @@ int login(string str)
     hostname = query_ip_name(this_object());
 
     name = nil;
-    restore_user_from_file(str);
-    if(name && STRINGD->stricmp(name, check_name)) {
+    restore_user_from_file(filename);
+    check_name = username_to_filename(name);
+    if(name && STRINGD->strcmp(filename, check_name)) {
       LOGD->write_syslog("Internal error restoring player from file!",
 			 LOG_FATAL);
       previous_object()->message("Something went wrong logging you in.\n"
@@ -614,7 +642,7 @@ int login(string str)
 
     if(!name) {
       first_login = 1;
-      name = check_name;
+      name = filename;
     } else
       first_login = 0;
 

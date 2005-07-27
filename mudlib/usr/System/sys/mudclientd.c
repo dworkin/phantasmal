@@ -114,7 +114,7 @@ int query_timeout(object connection)
 string query_banner(object connection)
 {
   object game_driver;
-  string send_back, telnet_options, proto_options;
+  string send_back, telnet_options;
 
   if(!SYSTEM() && !KERNEL())
      return nil;
@@ -122,58 +122,65 @@ string query_banner(object connection)
   game_driver = CONFIGD->get_game_driver();
   if(!game_driver) {
     if(shutdown)
-      return "MUD is shutting down...  Try again later.\r\n";
+      return "MUD is shutting down...  Try again later.\n\r";
 
     if(suspended)
-      return "MUD is suspended.  Try again in a minute or two.\r\n";
+      return "MUD is suspended.  Try again in a minute or two.\n\r";
 
-    return "Phantasmal (no gamedriver)\r\n\r\nLogin: ";
+    return "Phantasmal (no gamedriver)\n\r\n\rLogin: ";
   }
+
+  telnet_options = "";
 
   if(shutdown)
-    return game_driver->get_shutdown_message(connection);
+    send_back = game_driver->get_shutdown_message(connection);
+  else if(suspended)
+    send_back = game_driver->get_suspended_message(connection);
+  else {
+    string proto_options;
 
-  if(suspended)
-    return game_driver->get_suspended_message(connection);
+    /* Okay, so if all of that doesn't happen...  Then we should
+       probably negotiate a proper telnet connection, not just send a
+       message telling them to bugger off and then close the connection.
 
-  /* Okay, so if all of that doesn't happen...  Then we should
-     probably negotiate a proper telnet connection, not just send a
-     message telling them to bugger off and then close the connection.
+       It's a shame, really.  I *like* closing the connection on them.
+    */
 
-     It's a shame, really.  I *like* closing the connection on them.
-  */
+    send_back = game_driver->get_welcome_message(connection);
+    if(!send_back)
+      error("(nil) welcome message on Mudclient port!");
 
-  send_back = game_driver->get_welcome_message(connection);
-  if(!send_back)
-    error("(nil) welcome message on Mudclient port!");
+    send_back = autodetect_client_str() + send_back;
 
-  send_back = autodetect_client_str() + send_back;
+    /* Start with IAC WONT TELOPT_ECHO, IAC DO TELOPT_LINEMODE */
+    telnet_options = "      ";
+    telnet_options[0] = TP_IAC;
+    telnet_options[1] = TP_WONT;
+    telnet_options[2] = TELOPT_ECHO;
+    telnet_options[3] = TP_IAC;
+    telnet_options[4] = TP_DO;
+    telnet_options[5] = TELOPT_LINEMODE;
 
-  /* Start with IAC WONT TELOPT_ECHO, IAC DO TELOPT_LINEMODE */
-  telnet_options = "      ";
-  telnet_options[0] = TP_IAC;
-  telnet_options[1] = TP_WONT;
-  telnet_options[2] = TELOPT_ECHO;
-  telnet_options[3] = TP_IAC;
-  telnet_options[4] = TP_DO;
-  telnet_options[5] = TELOPT_LINEMODE;
+    proto_options = "   ";
+    proto_options[0] = TP_IAC;
+    proto_options[1] = TP_WILL;
 
-  proto_options = "   ";
-  proto_options[0] = TP_IAC;
-  proto_options[1] = TP_WILL;
-
-  if(support_protocol & PROTOCOL_MXP) {
-    proto_options[2] = TELOPT_MXP;
-    telnet_options = telnet_options + proto_options;
+    if(support_protocol & PROTOCOL_MXP) {
+      proto_options[2] = TELOPT_MXP;
+      telnet_options = telnet_options + proto_options;
+    }
+    if(support_protocol & PROTOCOL_MSP) {
+      proto_options[2] = TELOPT_MSP;
+      telnet_options = telnet_options + proto_options;
+    }
+    if(support_protocol & PROTOCOL_ZMP) {
+      proto_options[2] = TELOPT_ZMP;
+      telnet_options = telnet_options + proto_options;
+    }
   }
-  if(support_protocol & PROTOCOL_MSP) {
-    proto_options[2] = TELOPT_MSP;
-    telnet_options = telnet_options + proto_options;
-  }
-  if(support_protocol & PROTOCOL_ZMP) {
-    proto_options[2] = TELOPT_ZMP;
-    telnet_options = telnet_options + proto_options;
-  }
+
+  send_back = implode(explode(send_back, "\r"), "");
+  send_back = implode(explode(send_back, "\n"), "\n\r");
 
   return telnet_options + send_back;
 }
@@ -200,13 +207,13 @@ string autodetect_client_str(void) {
 
   ret = "";
   if(support_protocol & PROTOCOL_IMP)
-    ret += "Autodetecting IMP...v1.30\r\n";
+    ret += "Autodetecting IMP...v1.30\n\r";
 
   if(support_protocol & PROTOCOL_MCP)
-    ret += "#$#mcp version: 2.1 to: 2.1\r\n";
+    ret += "#$#mcp version: 2.1 to: 2.1\n\r";
 
   if(support_protocol & PROTOCOL_PUEBLO)
-    ret += "This world is Pueblo 2.50 enhanced.\r\n";
+    ret += "This world is Pueblo 2.50 enhanced.\n\r";
 
   return ret;
 }

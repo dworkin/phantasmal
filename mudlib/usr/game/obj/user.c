@@ -1,4 +1,4 @@
-/* $Header: /cvsroot/phantasmal/mudlib/usr/game/obj/user.c,v 1.15 2005/04/04 07:56:39 angelbob Exp $ */
+/* $Header: /cvsroot/phantasmal/mudlib/usr/game/obj/user.c,v 1.16 2005/07/27 23:11:28 angelbob Exp $ */
 
 #include <kernel/kernel.h>
 #include <kernel/user.h>
@@ -123,32 +123,23 @@ void upgraded(varargs int clone) {
 
 
 /*
- * Returns true if the name isn't allowed
+ * Returns true if the filename isn't allowed
+ */
+int filename_is_forbidden(string filename) {
+  if(previous_program() != PHANTASMAL_USER)
+    error("Wrong program calling filename_is_forbidden!");
+
+  return 0;
+}
+
+/*
+ * Returns true if the long name isn't allowed
  */
 int name_is_forbidden(string name) {
-  string filename;
-
   if(previous_program() != PHANTASMAL_USER)
     error("Wrong program calling name_is_forbidden!");
 
-  /* No trailing spaces or slashes in names allowed */
-  if (!name || strlen(name) == 0 || sscanf(name, "%*s ") != 0 ||
-      sscanf(name, "%*s/") != 0) {
-    return 1;
-  }
-
-  filename = username_to_filename(name);
-  filename = STRINGD->to_lower(filename);
-
-  /* These are all bad ideas for security reasons */
-  if(filename == "" || filename == nil)
-    return 1;
-  if(filename == "game")
-    return 1;
-  if(sscanf(filename, "%*scommon%*s") == 2)
-    return 1;
-  if(sscanf(filename, "%*ssystem%*s") == 2)
-    return 1;
+  return 0;
 }
 
 
@@ -246,7 +237,7 @@ void player_login(int first_time)
     body->set_brief(NEW_PHRASE(Name));
     body->set_look(NEW_PHRASE(Name + " wanders the MUD."));
     body->set_examine(nil);
-    body->add_noun(NEW_PHRASE(STRINGD->to_lower(name)));
+    body->add_noun(NEW_PHRASE(STRINGD->to_lower(Name)));
 
     /* Can't just clone mobile here, it causes problems later */
     mobile = MOBILED->clone_mobile_by_type("user");
@@ -582,7 +573,7 @@ static void cmd_impbug(object user, string cmd, string str) {
 }
 
 static void cmd_whoami(object user, string cmd, string str) {
-  message("You are '" + name + "'.\n");
+  message("You are '" + Name + "'.\n");
 }
 
 static void cmd_locale(object user, string cmd, string str) {

@@ -2,6 +2,8 @@
 # include <kernel/user.h>
 # include <kernel/rsrc.h>
 
+# include "phantasmal/lpc_names.h"
+# include "phantasmal/log.h"
 # include "phantasmal/ssh.h"
 
 inherit LIB_CONN;
@@ -12,6 +14,7 @@ object userd;		/* user daemon */
 string version;		/* version string */
 string host_key;	/* private host key */
 string pub_host_key;	/* public host key */
+static int suspended, shutdown;
 
 /*
  * NAME:	create()
@@ -62,6 +65,28 @@ static create()
 }
 
 
+void suspend_input(int shutdownp) {
+  if(!SYSTEM() && !KERNEL())
+    error("Invalid call to suspend_input!");
+
+  if(suspended)
+    LOGD->write_syslog("Suspended again without release!", LOG_ERR);
+
+  suspended = 1;
+  if(shutdownp)
+    shutdown = 1;
+}
+
+void release_input(void) {
+  if(!SYSTEM() && !KERNEL())
+    error("Invalid call to suspend_input!");
+
+  if(!suspended)
+    LOGD->write_syslog("Released without suspend!", LOG_ERR);
+
+  suspended = 0;
+}
+
 /*
  * NAME:	select()
  * DESCRIPTION:	select protocol
@@ -91,7 +116,10 @@ int login(string str)
  */
 int query_timeout(object obj)
 {
-    return 30;
+  if(suspended || shutdown)
+    return -1;
+
+  return DEFAULT_TIMEOUT;
 }
 
 /*
