@@ -42,7 +42,7 @@
 
 
 /* System Libraries -- inheritable, not clonable */
-#define SYSTEM_WIZTOOLLIB   "/usr/System/open/lib/wiztoollib"
+#define SYSTEM_WIZTOOLLIB   "/usr/System/lib/wiztoollib"
 #define SYSTEM_USER_IO      "/usr/System/lib/user_io"
 #define USER_STATE          "/usr/common/lib/user_state"
 #define ISSUE_LWO           "/usr/common/lib/issue_lwo"
