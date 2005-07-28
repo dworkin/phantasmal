@@ -1,7 +1,9 @@
 Release 0.017:
-    * Fixed ObjectD to handle DGD 1.2.110 changes to ObjRegD.
+    * Fixed @new_mob syntax to handle the three-argument version correctly
+    * Fixed ObjectD to handle untracked lib instances from startup
+    * Fixed ObjectD to handle DGD 1.2.110 changes to ObjRegD
     * Changed the login process to handle separate login names and
-      player-readable names.
+      player-readable names.  Updated the wiztool to handle this
     * Initial support for LPC telnet code on a binary port
     * Preliminary terminal support, altered Phrase support
     * Started adding subtyped object declarations

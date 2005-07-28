@@ -1,14 +1,3 @@
-Fix directory problem with usernames, perhaps by creating a directory
-at the right time and deleting the one the Kernel wants to make.  This
-fixes the upper/lower-case problem.
-
-Sort out system suspend stuff...  Should all use some central
-location.  See INITD, TELNETD, MUDCLIENTD, SSHD, OBJECTD.  Maybe also
-grep for "suspend".
-
-ObjectD - figure out where untracked library instances are coming from.
-
-Fix multi-arg problem with @new_mob.
 
 ----------------------
 

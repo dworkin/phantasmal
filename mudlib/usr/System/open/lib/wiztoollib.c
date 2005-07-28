@@ -24,8 +24,6 @@ inherit objwiz  SYSTEM_OBJWIZTOOLLIB;
 private string owner;		/* owner of this object */
 private string directory;	/* current directory */
 
-private object port_dtd;        /* DTD for portable def'n */
-
 mixed* command_sets;
 
 
@@ -97,7 +95,7 @@ static void cmd_shutdown(object user, string cmd, string str)
     if(str == "force") {
       find_object(INITD)->force_shutdown();
     } else {
-      user->message("Unrecognized argument.  Try again.\r\n");
+      user->message("Unrecognized argument.  Try again.\n");
       return;
     }
   } else {
@@ -115,7 +113,7 @@ static void cmd_compile(object user, string cmd, string str)
 {
   string objname;
 
-  user->message("Compiling '" + str + "'.\r\n");
+  user->message("Compiling '" + str + "'.\n");
 
   if(!sscanf(str, "$%*d") && sscanf(str, "%s.c", objname)) {
     mixed* status;
@@ -125,7 +123,7 @@ static void cmd_compile(object user, string cmd, string str)
       /* Check to see if there are children and most recent issue is
 	 destroyed... */
       if(status[3] && sizeof(status[3]) && !status[6]) {
-	user->message("Can't recompile -- library issue has children!\r\n");
+	user->message("Can't recompile -- library issue has children!\n");
 	return;
       }
     }
@@ -133,7 +131,7 @@ static void cmd_compile(object user, string cmd, string str)
 
   if(!sscanf(str, "$%*d") && !sscanf(str, "%*s.c")) {
     if(!read_file(str, 0, 1) && read_file(str + ".c", 0, 1)) {
-      user->message("(compiling " + str + ".c)\r\n");
+      user->message("(compiling " + str + ".c)\n");
       str += ".c";
     }
   }
@@ -142,8 +140,8 @@ static void cmd_compile(object user, string cmd, string str)
     wiz::cmd_compile(user, cmd, str);
   } : {
     if(ERRORD->last_compile_errors()) {
-      user->message("===Compile errors:\r\n" + ERRORD->last_compile_errors());
-      user->message("---\r\n");
+      user->message("===Compile errors:\n" + ERRORD->last_compile_errors());
+      user->message("---\n");
     }
 
     if(ERRORD->last_runtime_error()) {
@@ -153,46 +151,46 @@ static void cmd_compile(object user, string cmd, string str)
       }
 
       user->message("===Runtime error: '" + ERRORD->last_runtime_error()
-		    + "'.\r\n");
-      user->message("---\r\n");
+		    + "'.\n");
+      user->message("---\n");
     }
 
     if(ERRORD->last_stack_trace()) {
       user->message("===Stack trace: '" + ERRORD->last_stack_trace()
-		    + "'.\r\n");
-      user->message("---\r\n");
+		    + "'.\n");
+      user->message("---\n");
     }
 
     return;
   }
 
-  user->message("Done.\r\n");
+  user->message("Done.\n");
 }
 
 
 static void cmd_destruct(object user, string cmd, string str)
 {
-  user->message("Destructing '" + str + "'.\r\n");
+  user->message("Destructing '" + str + "'.\n");
 
   catch {
     wiz::cmd_destruct(user, cmd, str);
   } : {
     if(ERRORD->last_runtime_error()) {
       user->message("===Runtime error: '" + ERRORD->last_runtime_error()
-		    + "'.\r\n");
-      user->message("---\r\n");
+		    + "'.\n");
+      user->message("---\n");
     }
 
     if(ERRORD->last_stack_trace()) {
       user->message("===Stack trace: '" + ERRORD->last_stack_trace()
-		    + "'.\r\n");
-      user->message("---\r\n");
+		    + "'.\n");
+      user->message("---\n");
     }
 
     return;
   }
 
-  user->message("Done.\r\n");
+  user->message("Done.\n");
 }
 
 /* This currently extracts only alphabetic characters from a name, and
@@ -382,7 +380,7 @@ static void cmd_writelog(object user, string cmd, string str)
   if(str) {
     LOGD->write_syslog(str, LOG_ERR_FATAL);
   } else {
-    user->message("Usage: " + cmd + " <string to log>\r\n");
+    user->message("Usage: " + cmd + " <string to log>\n");
   }
 }
 
@@ -399,7 +397,7 @@ static void cmd_log_subscribe(object user, string cmd, string str) {
   if(str && sscanf(str, "%s %d", chan, lev) == 2) {
     LOGD->set_channel_sub(chan, lev);
     user->message("Setting channel sub for '" + chan + "' to "
-		  + lev + "\r\n");
+		  + lev + "\n");
     return;
   } else if (str && sscanf(str, "%s %s", chan, levname) == 2
 	     && LOGD->get_level_by_name(levname)) {
@@ -408,25 +406,25 @@ static void cmd_log_subscribe(object user, string cmd, string str) {
     level = LOGD->get_level_by_name(levname);
     LOGD->set_channel_sub(chan, level);
     user->message("Setting channel sub for '" + chan + "' to "
-		  + level + "\r\n");
+		  + level + "\n");
     return;
   } else if (str && sscanf(str, "%s", chan)) {
     lev = LOGD->channel_sub(chan);
     if(lev == -1) {
-      user->message("No subscription to channel '" + chan + "'\r\n");
+      user->message("No subscription to channel '" + chan + "'\n");
     } else {
-      user->message("Sub to channel '" + chan + "' is " + lev + "\r\n");
+      user->message("Sub to channel '" + chan + "' is " + lev + "\n");
     }
     return;
   } else {
-    user->message("Usage: %log_subscribe <channel> <level>\r\n");
+    user->message("Usage: %log_subscribe <channel> <level>\n");
   }
 }
 
 static void cmd_list_dest(object user, string cmd, string str)
 {
   if(str && !STRINGD->is_whitespace(str)) {
-    user->message("Usage: " + cmd + "\r\n");
+    user->message("Usage: " + cmd + "\n");
     return;
   }
 
@@ -450,20 +448,20 @@ static void cmd_od_report(object user, string cmd, string str)
   i = -1;
   if(!str || (sscanf(str, "$%d%s", i, str) == 2 &&
 	      (i < 0 || i >= hmax || str != ""))) {
-    message("Usage: " + cmd + " <obj> | $<ident>\r\n");
+    message("Usage: " + cmd + " <obj> | $<ident>\n");
     return;
   }
 
   if (i >= 0) {
     obj = fetch(i);
     if(typeof(obj) != T_OBJECT) {
-      message("Not an object.\r\n");
+      message("Not an object.\n");
       return;
     }
   } else if (sscanf(str, "$%s", str)) {
     obj = ::ident(str);
     if (!obj) {
-      message("Unknown: $ident.\r\n");
+      message("Unknown: $ident.\n");
       return;
     }
   } else if (sscanf(str, "#%*d")) {
@@ -476,9 +474,9 @@ static void cmd_od_report(object user, string cmd, string str)
 
   str = catch(report = OBJECTD->report_on_object(obj));
   if(str) {
-    str += "\r\n";
+    str += "\n";
   } else if (!report) {
-    str = "Nil report from Object Manager!\r\n";
+    str = "Nil report from Object Manager!\n";
   } else {
     str = report;
   }
@@ -489,24 +487,24 @@ static void cmd_od_report(object user, string cmd, string str)
 
 static void cmd_full_rebuild(object user, string cmd, string str) {
   if(str && !STRINGD->is_whitespace(str)) {
-    user->message("Usage: " + cmd + "\r\n");
+    user->message("Usage: " + cmd + "\n");
     return;
   }
 
   if(!access(user->query_name(), "/", FULL_ACCESS)) {
     user->message("Currently only those with full administrative access "
-		  + "may do a full rebuild.\r\n");
+		  + "may do a full rebuild.\n");
     return;
   }
 
-  user->message("Recompiling auto object...\r\n");
+  user->message("Recompiling auto object...\n");
 
   catch {
     OBJECTD->recompile_auto_object(user);
   } : {
     if(ERRORD->last_compile_errors()) {
-      user->message("===Compile errors:\r\n" + ERRORD->last_compile_errors());
-      user->message("---\r\n");
+      user->message("===Compile errors:\n" + ERRORD->last_compile_errors());
+      user->message("---\n");
     }
 
     if(ERRORD->last_runtime_error()) {
@@ -516,20 +514,20 @@ static void cmd_full_rebuild(object user, string cmd, string str) {
       }
 
       user->message("===Runtime error: '" + ERRORD->last_runtime_error()
-		    + "'.\r\n");
-      user->message("---\r\n");
+		    + "'.\n");
+      user->message("---\n");
     }
 
     if(ERRORD->last_stack_trace()) {
       user->message("===Stack trace: '" + ERRORD->last_stack_trace()
-		    + "'.\r\n");
-      user->message("---\r\n");
+		    + "'.\n");
+      user->message("---\n");
     }
 
     return;
   }
 
-  user->message("Done.\r\n");
+  user->message("Done.\n");
 }
 
 
@@ -540,7 +538,7 @@ static void cmd_list_mobiles(object user, string cmd, string str) {
   string tmp;
 
   if(str && !STRINGD->is_whitespace(str)) {
-    user->message("Usage: " + cmd + "\r\n");
+    user->message("Usage: " + cmd + "\n");
     return;
   }
 
@@ -560,10 +558,10 @@ static void cmd_list_mobiles(object user, string cmd, string str) {
     } else {
       tmp += "<bodiless mob>";
     }
-    tmp += "\r\n";
+    tmp += "\n";
     user->message(tmp);
   }
-  user->message("-----\r\n");
+  user->message("-----\n");
 }
 
 
@@ -574,27 +572,27 @@ static void cmd_delete_mobile(object user, string cmd, string str) {
   if(!str || STRINGD->is_whitespace(str)
      || sscanf(str, "%*s %*s") == 2
      || sscanf(str, "#%d", mobnum) != 1) {
-    user->message("Usage: " + cmd + " #<mobile number>\r\n");
+    user->message("Usage: " + cmd + " #<mobile number>\n");
     return;
   }
 
   mob = MOBILED->get_mobile_by_num(mobnum);
   if(!mob) {
     user->message("No mobile #" + mobnum
-		  + " is registered with MOBILED.  Failed.\r\n");
+		  + " is registered with MOBILED.  Failed.\n");
     return;
   }
 
   if(mob->get_user()) {
     user->message("Mobile is still hooked up to a network connection."
-		  + "  Failed.\r\n");
+		  + "  Failed.\n");
     return;
   }
 
   /* Need to remove mobile from any room lists it currently occupies. */
   MOBILED->remove_mobile(mob);
 
-  user->message("Mobile #" + mobnum + " successfully destructed.\r\n");
+  user->message("Mobile #" + mobnum + " successfully destructed.\n");
 }
 
 
@@ -603,8 +601,8 @@ static void cmd_delete_obj(object user, string cmd, string str) {
   int     obj_num;
 
   if(!str || STRINGD->is_whitespace(str)) {
-    user->message("Usage: " + cmd + " #<object number>\r\n");
-    user->message("   or  " + cmd + " object description\r\n");
+    user->message("Usage: " + cmd + " #<object number>\n");
+    user->message("   or  " + cmd + " object description\n");
     return;
   }
 
@@ -622,17 +620,17 @@ static void cmd_delete_obj(object user, string cmd, string str) {
       if(!objs)
 	objs = user->get_body()->find_contained_objects(user, str);
       if(!objs || !sizeof(objs)) {
-	user->message("There's nothing matching '" + str + "'.\r\n");
+	user->message("There's nothing matching '" + str + "'.\n");
 	return;
       }
       if(sizeof(objs) > 1) {
-	user->message("There are multiple things matching '" + str + "'.\r\n");
-	user->message("Specify just one.\r\n");
+	user->message("There are multiple things matching '" + str + "'.\n");
+	user->message("Specify just one.\n");
 	return;
       }
       obj_num = objs[0]->get_number();
     } else {
-      user->message("You're nowhere.  You can't delete things there.\r\n");
+      user->message("You're nowhere.  You can't delete things there.\n");
       return;
     }
   }
@@ -646,15 +644,15 @@ static void cmd_delete_obj(object user, string cmd, string str) {
   } else if(EXITD->get_exit_by_num(obj_num)) {
     object exit;
 
-    user->message("Removing exit...\r\n");
+    user->message("Removing exit...\n");
     /* Do an exit delete */
     exit = EXITD->get_exit_by_num(obj_num);
     EXITD->clear_exit(exit);
 
-    user->message("Done.\r\n");
+    user->message("Done.\n");
   } else {
-    user->message("That's not a portable, a room, a mobile or an exit.\r\n");
-    user->message("Either it doesn't exist, or @delete can't delete it.\r\n");
+    user->message("That's not a portable, a room, a mobile or an exit.\n");
+    user->message("Either it doesn't exist, or @delete can't delete it.\n");
     return;
   }
 }
@@ -664,20 +662,20 @@ static void cmd_segment_map(object user, string cmd, string str) {
   int hs, ctr;
 
   if(str && !STRINGD->is_whitespace(str)) {
-    user->message("Usage: " + cmd + "\r\n");
+    user->message("Usage: " + cmd + "\n");
     return;
   }
 
-  user->message("Segments:\r\n");
+  user->message("Segments:\n");
   hs = OBJNUMD->get_highest_segment();
   for(ctr = 0; ctr <= hs; ctr++) {
     user->message((OBJNUMD->get_segment_owner(ctr) != nil) ?
                 ((ctr + SPACE16)[..6]
                 + (OBJNUMD->get_segment_owner(ctr) + SPACE16)[..30]
                 + ZONED->get_segment_zone(ctr)
-                + "\r\n") : "");
+                + "\n") : "");
   }
-  user->message("--------\r\n");
+  user->message("--------\n");
 }
 
 
@@ -689,23 +687,23 @@ static void cmd_set_segment_zone(object user, string cmd, string str) {
 
   if(!str || STRINGD->is_whitespace(str)
      || sscanf(str, "#%d #%d", segnum, zonenum) != 2) {
-    user->message("Usage: " + cmd + " #<segnum> #<zonenum>\r\n");
+    user->message("Usage: " + cmd + " #<segnum> #<zonenum>\n");
     return;
   }
 
   if(!OBJNUMD->get_segment_owner(segnum)) {
-    user->message("Can't find segment #" + segnum + ".  Try @segmap.\r\n");
+    user->message("Can't find segment #" + segnum + ".  Try @segmap.\n");
     return;
   }
   if(zonenum >= ZONED->num_zones()) {
-    user->message("Can't find zone #" + zonenum + ".  Try @zonemap.\r\n");
+    user->message("Can't find zone #" + zonenum + ".  Try @zonemap.\n");
     return;
   }
   ZONED->set_segment_zone(segnum, zonenum);
 
   user->message("Set segment #" + segnum + " (object #" + (segnum * 100)
 		+ "-#" + (segnum * 100 + 99) + ") to be in zone #" + zonenum
-		+ " (" + ZONED->get_name_for_zone(zonenum) + ").\r\n");
+		+ " (" + ZONED->get_name_for_zone(zonenum) + ").\n");
 }
 
 
@@ -713,30 +711,30 @@ static void cmd_zone_map(object user, string cmd, string str) {
   int ctr, num_zones;
 
   if(str && !STRINGD->is_whitespace(str)) {
-    user->message("Usage: " + cmd + "\r\n");
+    user->message("Usage: " + cmd + "\n");
     return;
   }
 
   num_zones = ZONED->num_zones();
 
-  user->message("Zones:\r\n");
+  user->message("Zones:\n");
   for(ctr = 0; ctr < num_zones; ctr++) {
     user->message(ralign(ctr + "", 3) + ": " + ZONED->get_name_for_zone(ctr)
-		  + "\r\n");
+		  + "\n");
   }
-  user->message("-----\r\n");
+  user->message("-----\n");
 }
 
 static void cmd_new_zone(object user, string cmd, string str) {
   int ctr, new_zonenum;
   if(!str || STRINGD->is_whitespace(str)) {
-    user->message("Usage: " + cmd + " <zone name>\r\n");
+    user->message("Usage: " + cmd + " <zone name>\n");
     return;
   }
 
   new_zonenum = ZONED->add_new_zone( str );
 
-  user->message("Added zone #"+new_zonenum+"\r\n");
+  user->message("Added zone #"+new_zonenum+"\n");
 }
 
 static void cmd_new_mobile(object user, string cmd, string str) {
@@ -745,13 +743,20 @@ static void cmd_new_mobile(object user, string cmd, string str) {
   object mobile, body;
 
   mobnum = -1;
-  if(!str || sscanf(str, "%*s %*s %*s %*s") == 4
-     || ((sscanf(str, "#%d %s", bodynum, mobtype) != 2)
-	 && (sscanf(str, "#%d #%d %s", mobnum, bodynum, mobtype) != 3))) {
+  if(!str || sscanf(str, "%*s %*s %*s %*s") == 4) {
     user->message("Usage: " + cmd
-		  + " #<new mob num> #<body num> <mobile type>\r\n");
+		  + " #<new mob num> #<body num> <mobile type>\n");
     user->message("    or " + cmd
-		  + " #<body num> <mobile type>\r\n");
+		  + " #<body num> <mobile type>\n");
+    return;
+  }
+
+  if((sscanf(str, "#%d #%d %s", mobnum, bodynum, mobtype) != 3)
+     && (sscanf(str, "#%d %s", bodynum, mobtype) != 2)) {
+    user->message("Usage: " + cmd
+		  + " #<new mob num> #<body num> <mobile type>\n");
+    user->message("    or " + cmd
+		  + " #<body num> <mobile type>\n");
     return;
   }
 
@@ -759,37 +764,39 @@ static void cmd_new_mobile(object user, string cmd, string str) {
 
   if(mobtype == "user") {
     user->message("I know you're an administrator, but it's a bad idea "
-		  + "to create random\r\n"
-		  + "  user mobiles.  I'm stopping you.\r\n");
+		  + "to create random\n"
+		  + "  user mobiles.  I'm stopping you.\n");
     return;
   }
 
   body = MAPD->get_room_by_num(bodynum);
   if((bodynum <= 0) || !body) {
     user->message("You must supply an appropriate body number with a "
-		  + "corresponding body object.\r\n" + "Failed.\r\n");
+		  + "corresponding body object.\n"
+		  + "Object #" + bodynum
+		  + " was not found in MAPD.  Failed.\n");
     return;
   }
 
   if(mobnum > 0) {
     if(MOBILED->get_mobile_by_num(mobnum)) {
       user->message("There is already a mobile #" + mobnum
-		    + " registered!\r\n");
+		    + " registered!\n");
       return;
     }
 
     segown = OBJNUMD->get_segment_owner(mobnum / 100);
     if(segown && segown != MOBILED) {
       user->message("That number is in a segment reserved for "
-		    + "non-mobiles!\r\n");
+		    + "non-mobiles by '" + segown + "'!\n");
       return;
     }
   }
 
   if(!MOBILED->get_file_by_mobile_type(mobtype)) {
     user->message("MOBILED doesn't recognize type '" + mobtype
-		  + "',\r\n  so you can't create one.\r\n");
-    user->message("  Maybe you need to add it to the binder?\r\n");
+		  + "',\n  so you can't create one.\n");
+    user->message("  Maybe you need to add it to the binder?\n");
     return;
   }
 
@@ -800,7 +807,7 @@ static void cmd_new_mobile(object user, string cmd, string str) {
   mobile->assign_body(body);
 
   MOBILED->add_mobile_number(mobile, mobnum);
-  user->message("Added mobile #" + mobile->get_number() + ".\r\n");
+  user->message("Added mobile #" + mobile->get_number() + ".\n");
 }
 
 static void cmd_new_tag_type(object user, string cmd, string str) {
@@ -825,21 +832,21 @@ static void cmd_new_tag_type(object user, string cmd, string str) {
 	 && (sscanf(str, "%s %s %s %s", scope, name, type, getter) != 4)
 	 && (sscanf(str, "%s %s %s", scope, name, type) != 3))) {
     user->message("Usage: " + cmd
-		  + " <obj|mob> <name> <type> [<getter> [<setter>]]\r\n");
+		  + " <obj|mob> <name> <type> [<getter> [<setter>]]\n");
     return;
   }
 
   scope = STRINGD->trim_whitespace(STRINGD->to_lower(scope));
   if(!scope_strings[scope]) {
-    user->message("Scope '" + scope + "' isn't recognized.\r\n");
-    user->message("Should be 'object' or 'mobile'.\r\n");
+    user->message("Scope '" + scope + "' isn't recognized.\n");
+    user->message("Should be 'object' or 'mobile'.\n");
     return;
   }
 
   type = STRINGD->trim_whitespace(STRINGD->to_lower(type));
   if(!type_strings[type]) {
-    user->message("Type '" + type + "' isn't recognized.\r\n");
-    user->message("Should be 'int' or 'float'.\r\n");
+    user->message("Type '" + type + "' isn't recognized.\n");
+    user->message("Should be 'int' or 'float'.\n");
     return;
   }
 
@@ -857,7 +864,7 @@ static void cmd_new_tag_type(object user, string cmd, string str) {
 	       name, type_strings[type], getter, setter);
     break;
   }
-  user->message("Added new tag type '" + name + "'.\r\n");
+  user->message("Added new tag type '" + name + "'.\n");
 }
 
 static void cmd_set_tag(object user, string cmd, string str) {
@@ -866,15 +873,15 @@ static void cmd_set_tag(object user, string cmd, string str) {
   int    index;
   mixed  chk, *split_tmp;
 
-  usage_string = "Usage: " + cmd + " #<obj> <tag name> <value>\r\n"
-    + "       " + cmd + " $<hist> <tag name> <value>\r\n";
+  usage_string = "Usage: " + cmd + " #<obj> <tag name> <value>\n"
+    + "       " + cmd + " $<hist> <tag name> <value>\n";
   if(sscanf(str, "#%d %s", index, str2) == 2) {
     obj_to_set = MAPD->get_room_by_num(index);
     if(!obj_to_set)
       obj_to_set = MOBILED->get_mobile_by_num(index);
 
     if(!obj_to_set) {
-      user->message("Can't find object #" + index + "!\r\n" + usage_string);
+      user->message("Can't find object #" + index + "!\n" + usage_string);
       return;
     }
   } else if (sscanf(str, "$%d %s", index, str2) == 2) {
@@ -883,18 +890,18 @@ static void cmd_set_tag(object user, string cmd, string str) {
       if(typeof(chk) == T_OBJECT)
 	obj_to_set = chk;
       else {
-	user->message("History entry $" + index + " isn't an object!\r\n");
+	user->message("History entry $" + index + " isn't an object!\n");
 	return;
       }
 
       if(function_object("get_tag", obj_to_set) != TAGGED) {
 	user->message("History entry $" + index
-		      + " isn't a tagged object!\r\n");
+		      + " isn't a tagged object!\n");
 	return;
       }
 
     } else {
-      user->message("Can't find history entry $" + index + ".\r\n");
+      user->message("Can't find history entry $" + index + ".\n");
       return;
     }
 
@@ -912,20 +919,20 @@ static void cmd_set_tag(object user, string cmd, string str) {
   str2 = implode(split_tmp[1..], " ");
 
   user->message("Evaluating code w/ obj, '" + tag_name + "', code: '"
-		+ str2 + "'.\r\n");
+		+ str2 + "'.\n");
 
   /* Now we have obj_to_set, and str2 contains the remaining command line */
   /* err = catch (chk = evaluate_lpc_code(user, str2)); */
   chk = evaluate_lpc_code(user, str2);
   if(err) {
-    user->message("Error evaluating code: " + err + "\r\n");
+    user->message("Error evaluating code: " + err + "\n");
     return;
   }
 
   store(chk);
   TAGD->set_tag_value(obj_to_set, tag_name, chk);
   user->message("Set value of tag '" + tag_name + "' to "
-		+ STRINGD->mixed_sprint(chk) + ".\r\n");
+		+ STRINGD->mixed_sprint(chk) + ".\n");
 }
 
 static void cmd_list_tags(object user, string cmd, string str) {
@@ -944,7 +951,7 @@ static void cmd_list_tags(object user, string cmd, string str) {
 
   if(!str || !strlen(str)
      || ((str != "object") && (str != "mobile"))) {
-    user->message("Usage: " + cmd + " <object|mobile>\r\n");
+    user->message("Usage: " + cmd + " <object|mobile>\n");
     return;
   }
 
@@ -960,11 +967,11 @@ static void cmd_list_tags(object user, string cmd, string str) {
   }
 
   if(sizeof(all_tags) == 0) {
-    user->message("There are none.\r\n");
+    user->message("There are none.\n");
     return;
   }
 
-  msg = "Tag Names & Types:\r\n";
+  msg = "Tag Names & Types:\n";
   for(ctr = 0; ctr < sizeof(all_tags); ctr++) {
     int type;
 
@@ -979,7 +986,7 @@ static void cmd_list_tags(object user, string cmd, string str) {
       error("Internal error!");
     }
 
-    msg += "  " + type_names[type] + "  " + all_tags[ctr] + "\r\n";
+    msg += "  " + type_names[type] + "  " + all_tags[ctr] + "\n";
   }
 
   user->message_scroll(msg);
