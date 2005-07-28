@@ -44,8 +44,10 @@ inherit rsrc API_RSRC;
 private int     aggro_recompile;
 
 /* Keep track of recomp_paths and all_libs to see what to recompile
-   during init's aggressive recompile. */
-private mapping recomp_paths, all_libs;
+   during init's aggressive recompile.  Untracked_libs is the set of
+   libraries that existed during ObjectD's init, so there's one
+   untracked issue of each to be removed. */
+private mapping recomp_paths, all_libs, untracked_libs;
 
 /* For compiling(), include(), compiled_failed(), etc we need to
    track files.  This mechanism attempts to track what's being
@@ -315,6 +317,8 @@ private void recompile_every_clonable(string* owners) {
    to track them properly. */
 private void recompile_every_object(string* owners) {
   mapping fixups;
+  string *lib_names;
+  int     ctr;
 
   /* set aggressive recompiles -- need to find all libraries */
   aggro_recompile = 1;
@@ -326,8 +330,20 @@ private void recompile_every_object(string* owners) {
      tracking yet */
   fixups = ([ ]);
   recompile_to_track_libs(fixups);
+
   fix_parent_arrays(fixups);
-  fix_child_arrays(owners); /* Uses all_libs var */
+  /* Now all_libs exists */
+
+  /* Set up untracked_libs */
+  lib_names = map_indices(all_libs);
+  untracked_libs = ([ ]);
+  for(ctr = 0; ctr < sizeof(lib_names); ctr++) {
+    LOGD->write_syslog("Adding " + lib_names[ctr] + " to untracked_libs",
+		       LOG_VERBOSE);
+    untracked_libs[lib_names[ctr]] = 1;
+  }
+
+  fix_child_arrays(owners);
 
   /* Add faked AUTO object */
   add_lib("System", AUTO, ({ }));
@@ -894,7 +910,15 @@ void remove_program(string owner, string path, int timestamp, int index)
       if(function_object("get_children", issue))
 	clear_child_data(issue);
     } else if(aggro_recompile > 1) {
-      LOGD->write_syslog("Removing unregistered issue of " + path, LOG_WARN);
+      /* This is either a mistake in ObjectD's tracking or an issue
+	 of a library from ObjectD's initialization. */
+      if(untracked_libs && untracked_libs[path]) {
+	untracked_libs[path]--;
+	if(untracked_libs[path] <= 0) {
+	  untracked_libs[path] = nil;
+	}
+      } else
+	LOGD->write_syslog("Removing unregistered issue of " + path, LOG_WARN);
     }
 
     obj_issues->set_index(index, nil);
