@@ -213,6 +213,8 @@ void upgraded(varargs int clone) {
 	"@people"              : ({ "cmd_people" }),
 	"%who"                 : ({ "cmd_people" }),
 	"@who"                 : ({ "cmd_people" }),
+	"%whoami"              : ({ "cmd_whoami" }),
+	"@whoami"              : ({ "cmd_whoami" }),
 
 	"%status"              : ({ "cmd_status" }),
 

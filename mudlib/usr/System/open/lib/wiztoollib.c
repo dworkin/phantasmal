@@ -89,6 +89,8 @@ mixed* get_command_sets(object wiztool) {
 
 /******************* Command functions *********************/
 
+/**** Repackaged wiztool commands from default wiztoollib ***/
+
 static void cmd_shutdown(object user, string cmd, string str)
 {
   if(str && str != "") {
@@ -107,18 +109,6 @@ static void cmd_reboot(object user, string cmd, string str) {
   /* DRIVER will do this for us, so we don't need to */
   /* find_object(INITD)->prepare_reboot(); */
   wiz::cmd_reboot(user, cmd, str);
-}
-
-static void cmd_datadump(object user, string cmd, string str) {
-  find_object(INITD)->save_mud_data(user, ROOM_DIR, MOB_FILE, ZONE_FILE,
-				    nil);
-  user->message("Data save commenced.\n");
-}
-
-static void cmd_safesave(object user, string cmd, string str) {
-  find_object(INITD)->save_mud_data(user, SAFE_ROOM_DIR, SAFE_MOB_FILE,
-				    SAFE_ZONE_FILE, nil);
-  user->message("Safe data save commenced.\n");
 }
 
 static void cmd_compile(object user, string cmd, string str)
@@ -205,6 +195,91 @@ static void cmd_destruct(object user, string cmd, string str)
   user->message("Done.\r\n");
 }
 
+/* This currently extracts only alphabetic characters from a name, and
+   converts it to lowercase.  If this changes, change it in
+   PHANTASMAL_USER as well. */
+static string username_to_filename(string str) {
+  int iter;
+  int len;
+  string ret;
+
+  ret = "";
+  if(!str) return nil;
+
+  if(str == "Ecru" || str == "System") return str;
+
+  len = strlen(str);
+  for(iter = 0; iter < len; iter++) {
+    if(str[iter] >= 'a' && str[iter] <= 'z')
+      ret += str[iter..iter];
+    else if(str[iter] >= 'A' && str[iter] <= 'Z') {
+      str[iter] += 'a' - 'A';
+      ret += str[iter..iter];
+    }
+  }
+  return ret;
+}
+
+static void cmd_access(object user, string cmd, string str) {
+  if(str)
+    str = username_to_filename(str);
+
+  wiz::cmd_access(user, cmd, str);
+}
+
+static void cmd_grant(object user, string cmd, string str) {
+  string who, dir_and_type;
+
+  if (str &&
+      (sscanf(str, "%s %s", who, dir_and_type) == 2)) {
+    who = username_to_filename(who);
+    str = who + " " + dir_and_type;
+  }
+
+  wiz::cmd_grant(user, cmd, str);
+}
+
+static void cmd_ungrant(object user, string cmd, string str) {
+  string who, dir;
+
+  if (str &&
+      (sscanf(str, "%s %s", who, dir) == 2)) {
+    who = username_to_filename(who);
+    str = who + " " + dir;
+  }
+
+  wiz::cmd_ungrant(user, cmd, str);
+}
+
+static void cmd_quota(object user, string cmd, string str) {
+  string who, what;
+
+  if(str) {
+    if(sscanf(str, "%s %s", who, what) == 2) {
+      who = username_to_filename(who);
+      str = who + " " + what;
+    } else {
+      str = username_to_filename(str);
+    }
+  }
+
+  wiz::cmd_quota(user, cmd, str);
+}
+
+/**** Phantasmal-specific wiztool commands */
+
+static void cmd_datadump(object user, string cmd, string str) {
+  find_object(INITD)->save_mud_data(user, ROOM_DIR, MOB_FILE, ZONE_FILE,
+				    nil);
+  user->message("Data save commenced.\n");
+}
+
+static void cmd_safesave(object user, string cmd, string str) {
+  find_object(INITD)->save_mud_data(user, SAFE_ROOM_DIR, SAFE_MOB_FILE,
+				    SAFE_ZONE_FILE, nil);
+  user->message("Safe data save commenced.\n");
+}
+
 
 /*
  * NAME:	evaluate_lpc_code()
@@ -258,6 +333,17 @@ static mixed evaluate_lpc_code(object user, string lpc_code)
 }
 
 
+static void cmd_whoami(object user, string cmd, string str)
+{
+  if (str && str != "") {
+    message("Usage: " + cmd + "\n");
+    return;
+  }
+
+  message("You are '" + user->get_Name() + "'.  Login name: '"
+	  + user->get_name() + "'.\n");
+}
+
 static void cmd_people(object user, string cmd, string str)
 {
   object *users, usr;
@@ -265,7 +351,7 @@ static void cmd_people(object user, string cmd, string str)
   int i, sz;
 
   if (str && str != "") {
-    message("Usage: " + cmd + ", like, whatever\n");
+    message("Usage: " + cmd + "\n");
     return;
   }
 

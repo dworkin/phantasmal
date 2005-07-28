@@ -1,4 +1,4 @@
-/* $Header: /cvsroot/phantasmal/mudlib/usr/System/open/lib/userlib.c,v 1.17 2005/07/27 23:11:14 angelbob Exp $ */
+/* $Header: /cvsroot/phantasmal/mudlib/usr/System/open/lib/userlib.c,v 1.18 2005/07/28 00:31:49 angelbob Exp $ */
 
 #include <kernel/kernel.h>
 #include <kernel/user.h>
@@ -139,7 +139,8 @@ int is_admin(void)  {
 /****************/
 
 /* This currently extracts only alphabetic characters from a name, and
-   converts it to lowercase. */
+   converts it to lowercase.  If this changes, change it in the
+   WIZTOOLLIB as well. */
 static string username_to_filename(string str) {
   int iter;
   int len;
@@ -147,6 +148,9 @@ static string username_to_filename(string str) {
 
   ret = "";
   if(!str) return nil;
+
+  if(str == "Ecru" || str == "System") return str;
+
   len = strlen(str);
   for(iter = 0; iter < len; iter++) {
     if(str[iter] >= 'a' && str[iter] <= 'z')
@@ -597,6 +601,8 @@ int login(string str)
 
        /* Bad ideas for security reasons */
        || filename == "game"
+       || filename == "Ecru"
+       || filename == "System"
        || (sscanf(filename, "%*scommon%*s") == 2)
        || (sscanf(filename, "%*ssystem%*s") == 2)
 
