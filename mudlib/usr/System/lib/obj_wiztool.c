@@ -74,19 +74,19 @@ static void cmd_set_obj_desc(object user, string cmd, string str) {
   desc = nil;
   if(!str || str == "") {
     obj = user->get_location();
-    user->message("(This location)\r\n");
+    user->message("(This location)\n");
   } else if(sscanf(str, "%s %s", objname, desc) == 2
 	    || sscanf(str, "%s", objname)) {
     obj = resolve_object_name(user, objname);
   }
 
   if(!obj) {
-    user->message("Not a valid object to be set!\r\n");
+    user->message("Not a valid object to be set!\n");
     return;
   }
 
   user->message("Locale is ");
-  user->message(PHRASED->name_for_language(user->get_locale()) + "\r\n");
+  user->message(PHRASED->name_for_language(user->get_locale()) + "\n");
 
   if(!desc) {
     user->push_new_state(US_OBJ_DESC, obj, look_type, user->get_locale());
@@ -99,7 +99,7 @@ static void cmd_set_obj_desc(object user, string cmd, string str) {
     object phr;
 
     user->message("Setting " + look_type + " desc on object #"
-		  + obj->get_number() + "\r\n");
+		  + obj->get_number() + "\n");
 
     if(!function_object("get_" + look_type, obj))
       error("Can't find getter function for " + look_type + " in "
@@ -134,25 +134,25 @@ private void priv_mob_stat(object user, object mob) {
   if(mobbody) {
     tmp += "#" + mobbody->get_number() + " (";
     tmp += mobbody->get_brief()->to_string(user);
-    tmp += ")\r\n";
+    tmp += ")\n";
   } else {
-    tmp += "(none)\r\n";
+    tmp += "(none)\n";
   }
 
   tmp += "User: ";
   if(mobuser) {
-    tmp += mobuser->get_name() + "\r\n";
+    tmp += mobuser->get_name() + "\n";
   } else {
-    tmp += "(NPC, not player)\r\n";
+    tmp += "(NPC, not player)\n";
   }
 
   tags = TAGD->mobile_all_tags(mob);
   if(!sizeof(tags)) {
-    tmp += "\r\nNo tags set.\r\n";
+    tmp += "\nNo tags set.\n";
   } else {
     for(ctr = 0; ctr < sizeof(tags); ctr+=2) {
       tmp += "  " + tags[ctr] + ": " + STRINGD->mixed_sprint(tags[ctr + 1])
-	+ "\r\n";
+	+ "\n";
     }
   }
 
@@ -169,8 +169,8 @@ static void cmd_stat(object user, string cmd, string str) {
   object *details, *archetypes;
 
   if(!str || STRINGD->is_whitespace(str)) {
-    user->message("Usage: " + cmd + " #<obj num>\r\n");
-    user->message("       " + cmd + " <object description>\r\n");
+    user->message("Usage: " + cmd + " #<obj num>\n");
+    user->message("       " + cmd + " <object description>\n");
     return;
   }
 
@@ -179,7 +179,7 @@ static void cmd_stat(object user, string cmd, string str) {
 
     if(!STRINGD->stricmp(str, "here")) {
       if(!user->get_location()) {
-	user->message("You aren't anywhere!\r\n");
+	user->message("You aren't anywhere!\n");
 	return;
       }
       objnum = user->get_location()->get_number();
@@ -189,12 +189,12 @@ static void cmd_stat(object user, string cmd, string str) {
 				      LOC_BODY, LOC_CURRENT_EXITS);
       if(!objs) {
 	user->message("You don't find any object matching '"
-		      + str + "' here.\r\n");
+		      + str + "' here.\n");
 	return;
       }
 
       if(sizeof(objs) > 1) {
-	user->message("More than one object matches.  You choose one.\r\n");
+	user->message("More than one object matches.  You choose one.\n");
       }
 
       objnum = objs[0]->get_number();
@@ -213,14 +213,14 @@ static void cmd_stat(object user, string cmd, string str) {
 
     if(!mob) {
       user->message("No object #" + objnum
-		    + " found registered with MAPD, EXITD or MOBILED.\r\n");
+		    + " found registered with MAPD, EXITD or MOBILED.\n");
       return;
     }
     priv_mob_stat(user, mob);
     return;
   }
 
-  tmp  = "Number: " + obj->get_number() + "\r\n";
+  tmp  = "Number: " + obj->get_number() + "\n";
   if(obj->get_detail_of()) {
     tmp += "Detail of: ";
   } else {
@@ -235,44 +235,44 @@ static void cmd_stat(object user, string cmd, string str) {
       if(location->get_brief()) {
 	tmp += " (";
 	tmp += location->get_brief()->to_string(user);
-	tmp += ")\r\n";
+	tmp += ")\n";
       } else {
-	tmp += "\r\n";
+	tmp += "\n";
       }
     } else {
-      tmp += " (unregistered)\r\n";
+      tmp += " (unregistered)\n";
     }
   } else {
-    tmp += " (none)\r\n";
+    tmp += " (none)\n";
   }
 
   tmp += "Descriptions ("
 		+ PHRASED->locale_name_for_language(user->get_locale())
-		+ ")\r\n";
+		+ ")\n";
 
   tmp += "Brief: ";
   if(obj->get_brief()) {
-    tmp += "'" + obj->get_brief()->to_string(user) + "'\r\n";
+    tmp += "'" + obj->get_brief()->to_string(user) + "'\n";
   } else {
-    tmp += "(none)\r\n";
+    tmp += "(none)\n";
   }
 
-  tmp += "Look:\r\n  ";
+  tmp += "Look:\n  ";
   if(obj->get_look()) {
-    tmp += "'" + obj->get_look()->to_string(user) + "'\r\n";
+    tmp += "'" + obj->get_look()->to_string(user) + "'\n";
   } else {
-    tmp += "(none)\r\n";
+    tmp += "(none)\n";
   }
 
-  tmp += "Examine:\r\n  ";
+  tmp += "Examine:\n  ";
   if(obj->get_examine()) {
     if(obj->get_examine() == obj->get_look()) {
-      tmp += "(defaults to Look desc)\r\n";
+      tmp += "(defaults to Look desc)\n";
     } else {
-      tmp += "'" + obj->get_examine()->to_string(user) + "'\r\n";
+      tmp += "'" + obj->get_examine()->to_string(user) + "'\n";
     }
   } else {
-    tmp += "(none)\r\n";
+    tmp += "(none)\n";
   }
 
   /* Show user the nouns and adjectives */
@@ -281,49 +281,49 @@ static void cmd_stat(object user, string cmd, string str) {
     + "): ";
   words = obj->get_nouns(user->get_locale());
   tmp += implode(words, ", ");
-  tmp += "\r\n";
+  tmp += "\n";
 
   tmp += "Adjectives ("
     + PHRASED->locale_name_for_language(user->get_locale())
     + "): ";
   words = obj->get_adjectives(user->get_locale());
   tmp += implode(words, ", ");
-  tmp += "\r\n\r\n";
+  tmp += "\n\n";
 
   if(function_object("get_weight", obj)) {
-    tmp += "Its weight is " + obj->get_weight() + " kilograms.\r\n";
-    tmp += "Its volume is " + obj->get_volume() + " liters.\r\n";
-    tmp += "Its length is " + obj->get_length() + " centimeters.\r\n";
+    tmp += "Its weight is " + obj->get_weight() + " kilograms.\n";
+    tmp += "Its volume is " + obj->get_volume() + " liters.\n";
+    tmp += "Its length is " + obj->get_length() + " centimeters.\n";
   }
 
   if(function_object("is_container", obj)) {
     if(obj->is_container()) {
       if(obj->is_open()) {
-	tmp += "The object is an open container.\r\n";
+	tmp += "The object is an open container.\n";
       } else {
-	tmp += "The object is a closed container.\r\n";
+	tmp += "The object is a closed container.\n";
       }
       if(obj->is_openable()) {
-	tmp += "The object may be freely opened and closed.\r\n";
+	tmp += "The object may be freely opened and closed.\n";
       } else {
-	tmp += "The object may not be freely opened and closed.\r\n";
+	tmp += "The object may not be freely opened and closed.\n";
       }
       if(function_object("get_weight_capacity", obj)) {
 	tmp += "It contains " + obj->get_current_weight()
 	  + " of a max of " + obj->get_weight_capacity()
-	  + " kilograms.\r\n";
+	  + " kilograms.\n";
 	tmp += "It contains " + obj->get_current_volume()
 	  + " of a max of " + obj->get_volume_capacity()
-	  + " liters.\r\n";
+	  + " liters.\n";
 	tmp += "Its maximum height/length is " + obj->get_length_capacity()
-	  + " centimeters.\r\n";
+	  + " centimeters.\n";
       }
     } else {
-      tmp += "The object is not a container.\r\n";
+      tmp += "The object is not a container.\n";
     }
   }
 
-  tmp += "\r\n";
+  tmp += "\n";
 
   if(function_object("num_objects_in_container", obj)) {
     tmp += "Contains objects [" + obj->num_objects_in_container()
@@ -337,8 +337,8 @@ static void cmd_stat(object user, string cmd, string str) {
 	tmp += "<unreg> ";
       }
     }
-    tmp += "\r\nContains " + sizeof(obj->mobiles_in_container())
-		  + " mobiles.\r\n\r\n";
+    tmp += "\nContains " + sizeof(obj->mobiles_in_container())
+		  + " mobiles.\n\n";
   }
 
   details = obj->get_immediate_details();
@@ -354,7 +354,7 @@ static void cmd_stat(object user, string cmd, string str) {
 	tmp += "<unreg> ";
       }
     }
-    tmp += "\r\n";
+    tmp += "\n";
   }
   details = obj->get_details();
   archetypes = obj->get_archetypes();
@@ -370,27 +370,27 @@ static void cmd_stat(object user, string cmd, string str) {
 	tmp += "<unreg> ";
       }
     }
-    tmp += "\r\n";
+    tmp += "\n";
   }
 
   tags = TAGD->object_all_tags(obj);
   if(!sizeof(tags)) {
-    tmp += "\r\nNo tags set.\r\n";
+    tmp += "\nNo tags set.\n";
   } else {
-    tmp += "\r\nTag Name: Value\r\n";
+    tmp += "\nTag Name: Value\n";
     for(ctr = 0; ctr < sizeof(tags); ctr+=2) {
       tmp += "  " + tags[ctr] + ": " + STRINGD->mixed_sprint(tags[ctr + 1])
-	+ "\r\n";
+	+ "\n";
     }
   }
-  tmp += "\r\n";
+  tmp += "\n";
 
   if(obj->get_mobile()) {
-    tmp += "Object is sentient.\r\n";
+    tmp += "Object is sentient.\n";
     if(obj->get_mobile()->get_user()) {
       tmp += "Object is "
 	+ obj->get_mobile()->get_user()->query_name()
-	+ "'s body.\r\n";
+	+ "'s body.\n";
     }
   }
 
@@ -401,13 +401,13 @@ static void cmd_stat(object user, string cmd, string str) {
 	+ " (" + archetypes[ctr]->get_brief()->to_string(user)
 	+ ")";
     }
-    tmp += ".\r\n";
+    tmp += ".\n";
   }
   if(room) {
-    tmp += "Registered with MAPD as a room or portable.\r\n";
+    tmp += "Registered with MAPD as a room or portable.\n";
   }
   if(exit) {
-    tmp += "Registered with EXITD as an exit.\r\n";
+    tmp += "Registered with EXITD as an exit.\n";
   }
 
   user->message_scroll(tmp);
@@ -423,14 +423,14 @@ static void cmd_add_nouns(object user, string cmd, string str) {
     str = STRINGD->trim_whitespace(str);
 
   if(!str || str == "" || !sscanf(str, "%*s %*s")) {
-    user->message("Usage: " + cmd + " #<objnum> [<noun> <noun>...]\r\n");
+    user->message("Usage: " + cmd + " #<objnum> [<noun> <noun>...]\n");
     return;
   }
 
   words = explode(str, " ");
   obj = resolve_object_name(user, words[0]);
   if(!obj) {
-    user->message("Can't find object '" + words[0] + "'.\r\n");
+    user->message("Can't find object '" + words[0] + "'.\n");
     return;
   }
 
@@ -440,11 +440,11 @@ static void cmd_add_nouns(object user, string cmd, string str) {
 
   user->message("Adding nouns ("
 		+ PHRASED->locale_name_for_language(user->get_locale())
-		+ ").\r\n");
+		+ ").\n");
   phr = new_object(LWO_PHRASE);
   phr->set_content_by_lang(user->get_locale(), implode(words[1..],","));
   obj->add_noun(phr);
-  user->message("Done.\r\n");
+  user->message("Done.\n");
 }
 
 
@@ -454,16 +454,16 @@ static void cmd_clear_nouns(object user, string cmd, string str) {
   if(str)
     str = STRINGD->trim_whitespace(str);
   if(!str || str == "" || sscanf(str, "%*s %*s")) {
-    user->message("Usage: " + cmd + "\r\n");
+    user->message("Usage: " + cmd + "\n");
     return;
   }
 
   obj = resolve_object_name(user, str);
   if(obj) {
     obj->clear_nouns();
-    user->message("Cleared.\r\n");
+    user->message("Cleared.\n");
   } else {
-    user->message("Couldn't find object '" + str + "'.\r\n");
+    user->message("Couldn't find object '" + str + "'.\n");
   }
 }
 
@@ -477,14 +477,14 @@ static void cmd_add_adjectives(object user, string cmd, string str) {
     str = STRINGD->trim_whitespace(str);
 
   if(!str || str == "" || !sscanf(str, "%*s %*s")) {
-    user->message("Usage: " + cmd + " #<objnum> [<adj> <adj>...]\r\n");
+    user->message("Usage: " + cmd + " #<objnum> [<adj> <adj>...]\n");
     return;
   }
 
   words = explode(str, " ");
   obj = resolve_object_name(user, words[0]);
   if(!obj) {
-    user->message("Can't find object '" + words[0] + "'.\r\n");
+    user->message("Can't find object '" + words[0] + "'.\n");
     return;
   }
 
@@ -494,11 +494,11 @@ static void cmd_add_adjectives(object user, string cmd, string str) {
 
   user->message("Adding adjectives ("
 		+ PHRASED->locale_name_for_language(user->get_locale())
-		+ ").\r\n");
+		+ ").\n");
   phr = new_object(LWO_PHRASE);
   phr->set_content_by_lang(user->get_locale(), implode(words[1..],","));
   obj->add_adjective(phr);
-  user->message("Done.\r\n");
+  user->message("Done.\n");
 }
 
 
@@ -508,16 +508,16 @@ static void cmd_clear_adjectives(object user, string cmd, string str) {
   if(str)
     str = STRINGD->trim_whitespace(str);
   if(!str || str == "" || sscanf(str, "%*s %*s")) {
-    user->message("Usage: " + cmd + "\r\n");
+    user->message("Usage: " + cmd + "\n");
     return;
   }
 
   obj = resolve_object_name(user, str);
   if(obj) {
     obj->clear_adjectives();
-    user->message("Cleared.\r\n");
+    user->message("Cleared.\n");
   } else {
-    user->message("Couldn't find object '" + str + "'.\r\n");
+    user->message("Couldn't find object '" + str + "'.\n");
   }
 }
 
@@ -530,14 +530,14 @@ static void cmd_move_obj(object user, string cmd, string str) {
   if(!str || sscanf(str, "%*s %*s %*s") == 3
      || ((sscanf(str, "#%d #%d", objnum1, objnum2) != 2)
 	 && (sscanf(str, "#%d %s", objnum1, second) != 2))) {
-    user->message("Usage: " + cmd + " #<obj> #<location>\r\n");
-    user->message("    or " + cmd + " #<obj> here\r\n");
+    user->message("Usage: " + cmd + " #<obj> #<location>\n");
+    user->message("    or " + cmd + " #<obj> here\n");
     return;
   }
 
   if(second && STRINGD->stricmp(second, "here")) {
-    user->message("Usage: " + cmd + " #<obj> #<location>\r\n");
-    user->message("    or " + cmd + " #<obj> here\r\n");
+    user->message("Usage: " + cmd + " #<obj> #<location>\n");
+    user->message("    or " + cmd + " #<obj> here\n");
   }
 
   if(second) {
@@ -545,7 +545,7 @@ static void cmd_move_obj(object user, string cmd, string str) {
       objnum2 = user->get_location()->get_number();
     } else {
       user->message("You can't move an object to your current location "
-		    + "unless you have one!\r\n");
+		    + "unless you have one!\n");
       return;
     }
   }
@@ -553,7 +553,7 @@ static void cmd_move_obj(object user, string cmd, string str) {
   obj2 = MAPD->get_room_by_num(objnum2);
   if(!obj2) {
     user->message("The second argument must be a room.  Obj #"
-		  + objnum2 + " is not.\r\n");
+		  + objnum2 + " is not.\n");
     return;
   }
 
@@ -564,7 +564,7 @@ static void cmd_move_obj(object user, string cmd, string str) {
 
   if(!obj1) {
     user->message("Obj #" + objnum1 + " doesn't appear to be a registered "
-		  + "room or exit.\r\n");
+		  + "room or exit.\n");
     return;
   }
 
@@ -577,7 +577,7 @@ static void cmd_move_obj(object user, string cmd, string str) {
   user->send_phrase(obj1->get_brief());
   user->message(" (#" + obj1->get_number() + ") into ");
   user->send_phrase(obj2->get_brief());
-  user->message(" (#" + obj2->get_number() + ").\r\n");
+  user->message(" (#" + obj2->get_number() + ").\n");
 }
 
 
@@ -590,8 +590,8 @@ static void cmd_set_obj_parent(object user, string cmd, string str) {
 
   if(!str
      || (sscanf(str, "#%d %s", objnum, parentstr) != 2)) {
-    user->message("Usage: " + cmd + " #<obj> #<parent> [#<parent2>...]\r\n");
-    user->message("       " + cmd + " #<obj> none\r\n");
+    user->message("Usage: " + cmd + " #<obj> #<parent> [#<parent2>...]\n");
+    user->message("       " + cmd + " #<obj> none\n");
     return;
   }
 
@@ -600,7 +600,7 @@ static void cmd_set_obj_parent(object user, string cmd, string str) {
   obj = MAPD->get_room_by_num(objnum);
   if(!obj) {
     user->message("The object must be a room or portable.  Obj #"
-		  + objnum + " is not.\r\n");
+		  + objnum + " is not.\n");
     return;
   }
 
@@ -608,7 +608,7 @@ static void cmd_set_obj_parent(object user, string cmd, string str) {
 
   if(!STRINGD->stricmp(parentstr, "none")) {
     obj->set_archetypes( ({ }) );
-    user->message("Object is now unparented.\r\n");
+    user->message("Object is now unparented.\n");
     return;
   }
 
@@ -621,8 +621,8 @@ static void cmd_set_obj_parent(object user, string cmd, string str) {
 
   if(!par_kw[par_entries[0]]) {
     user->message("The operation keyword must be one of 'none', 'add' or "
-		  + "remove.\r\n  Your keyword, '" + par_entries[0]
-		  + "', was not.\r\n  See help entry.\r\n");
+		  + "remove.\n  Your keyword, '" + par_entries[0]
+		  + "', was not.\n  See help entry.\n");
     return;
   }
 
@@ -635,9 +635,9 @@ static void cmd_set_obj_parent(object user, string cmd, string str) {
 
     if(!sscanf(par_entries[objnum], "#%d", parentnum)) {
       user->message("Post-keyword arguments must be parent object numbers ("
-		    + "#<num>).\r\n"
+		    + "#<num>).\n"
 		    + "  Your argument, '" + par_entries[objnum]
-		    + "', was not.\r\n");
+		    + "', was not.\n");
       return;
     }
 
@@ -646,7 +646,7 @@ static void cmd_set_obj_parent(object user, string cmd, string str) {
     if(!parent) {
       user->message("The parent must be a room or portable.  Obj #"
 		    + parentnum
-		    + " is not.\r\n");
+		    + " is not.\n");
       return;
     }
 
@@ -657,7 +657,7 @@ static void cmd_set_obj_parent(object user, string cmd, string str) {
   case "none":
     /* Should never get this far */
     user->message("Don't include any object numbers with the keyword 'none'."
-		  + "\r\n");
+		  + "\n");
     return;
 
   case "add":
@@ -669,11 +669,11 @@ static void cmd_set_obj_parent(object user, string cmd, string str) {
     break;
   default:
     user->message("Internal error based on keyword name.  "
-		  + "Throwing an exception.\r\n");
+		  + "Throwing an exception.\n");
     error("Internal error!  Should never get here!");
   }
 
-  user->message("Done setting parents.\r\n");
+  user->message("Done setting parents.\n");
 }
 
 
@@ -690,7 +690,7 @@ static void cmd_set_obj_value(object user, string cmd, string str) {
 
   if(!str || sscanf(str, "%*s %*s %*s") == 3
      || sscanf(str, "#%d %f", objnum, newvalue) != 2) {
-    user->message("Usage: " + cmd + " #<obj> <value>\r\n");
+    user->message("Usage: " + cmd + " #<obj> <value>\n");
     return;
   }
 
@@ -714,27 +714,27 @@ static void cmd_set_obj_value(object user, string cmd, string str) {
     is_cap = 0;
   } else {
     user->message("Internal parsing error on command name '"
-		  + cmd + "'.  Sorry!\r\n");
+		  + cmd + "'.  Sorry!\n");
     return;
   }
 
   obj = MAPD->get_room_by_num(objnum);
   if(!obj) {
     user->message("The object must be a room or portable.  Obj #"
-		  + objnum + " is not.\r\n");
+		  + objnum + " is not.\n");
     return;
   }
 
   if(newvalue < 0.0) {
     user->message("Length, weight and height values must be positive or zero."
-		  + "\r\n.  " + newvalue + " is not.\r\n");
+		  + "\n.  " + newvalue + " is not.\n");
     return;
   }
 
   call_other(obj, "set_" + cmd_norm_name + (is_cap ? "_capacity" : ""),
 	     newvalue);
 
-  user->message("Done.\r\n");
+  user->message("Done.\n");
 }
 
 
@@ -746,15 +746,15 @@ static void cmd_set_obj_flag(object user, string cmd, string str) {
 
   if(str) str = STRINGD->trim_whitespace(str);
   if(str && !STRINGD->stricmp(str, "flagnames")) {
-    user->message("Flag names:  cont container open openable locked lockable\r\n");
+    user->message("Flag names:  cont container open openable locked lockable\n");
     return;
   }
 
   if(!str || sscanf(str, "%*s %*s %*s %*s") == 4
      || (sscanf(str, "#%d %s %s", objnum, flagname, flagstring) != 3
 	 && sscanf(str, "#%d %s", objnum, flagname) != 2)) {
-    user->message("Usage: " + cmd + " #<obj> flagname [flagvalue]\r\n");
-    user->message("       " + cmd + " flagnames\r\n");
+    user->message("Usage: " + cmd + " #<obj> flagname [flagvalue]\n");
+    user->message("       " + cmd + " flagnames\n");
     return;
   }
 
@@ -762,7 +762,7 @@ static void cmd_set_obj_flag(object user, string cmd, string str) {
   if(!obj) {
     obj = EXITD->get_exit_by_num(objnum);
     if (!obj) {
-      user->message("Can't find object #" + objnum + "!\r\n");
+      user->message("Can't find object #" + objnum + "!\n");
       return;
     }
   }
@@ -780,7 +780,7 @@ static void cmd_set_obj_flag(object user, string cmd, string str) {
       flagval = valmap[flagstring];
     } else {
       user->message("I can't tell if value '" + flagstring
-		    + "' is true or false!\r\n");
+		    + "' is true or false!\n");
       return;
     }
   } else {
@@ -800,7 +800,7 @@ static void cmd_set_obj_flag(object user, string cmd, string str) {
     obj->set_lockable(flagval);
   }
 
-  user->message("Done.\r\n");
+  user->message("Done.\n");
 }
 
 
@@ -809,7 +809,7 @@ static void cmd_make_obj(object user, string cmd, string str) {
   string typename;
 
   if(str && !STRINGD->is_whitespace(str)) {
-    user->message("Usage: " + cmd + "\r\n");
+    user->message("Usage: " + cmd + "\n");
     return;
   }
 
@@ -821,7 +821,7 @@ static void cmd_make_obj(object user, string cmd, string str) {
     typename = "detail";
   } else {
     user->message("I don't recognize the kind of object "
-		  + "you're trying to make.\r\n");
+		  + "you're trying to make.\n");
     return;
   }
 
@@ -838,7 +838,7 @@ static void cmd_set_obj_detail(object user, string cmd, string str) {
   if(!str
      || sscanf(str, "%*s %*s %*s") == 3
      || sscanf(str, "#%d #%d", objnum, detailnum) != 2) {
-    user->message("Usage: " + cmd + " #<base_obj> #<detail_obj>\r\n");
+    user->message("Usage: " + cmd + " #<base_obj> #<detail_obj>\n");
     return;
   }
 
@@ -847,28 +847,28 @@ static void cmd_set_obj_detail(object user, string cmd, string str) {
 
   if(objnum != -1 && !obj) {
     user->message("Base object (#" + objnum
-		  + ") doesn't appear to be a room or portable.\r\n");
+		  + ") doesn't appear to be a room or portable.\n");
   }
   if(!detail) {
     user->message("Detail object (#" + detailnum
-		  + ") doesn't appear to be a room or portable.\r\n");
+		  + ") doesn't appear to be a room or portable.\n");
   }
 
   if(!obj || !detail) return;
 
   if(obj && detail->get_detail_of()) {
     user->message("Object #" + detailnum + " is already a detail of object #"
-		  + detail->get_detail_of()->get_number() + "!\r\n");
+		  + detail->get_detail_of()->get_number() + "!\n");
     return;
   } else if(!obj && !detail->get_detail_of()) {
     user->message("Object #" + detailnum
-		  + " isn't a detail of anything!\r\n");
+		  + " isn't a detail of anything!\n");
     return;
   }
 
   if(obj) {
     user->message("Setting object #" + detailnum + " to be a detail of obj #"
-		  + objnum + ".\r\n");
+		  + objnum + ".\n");
     if(detail->get_location())
       detail->get_location()->remove_from_container(detail);
     obj->add_detail(detail);
@@ -876,9 +876,9 @@ static void cmd_set_obj_detail(object user, string cmd, string str) {
     obj = detail->get_detail_of();
 
     user->message("Removing detail #" + detailnum + " from object #"
-		  + obj->get_number() + ".\r\n");
+		  + obj->get_number() + ".\n");
     obj->remove_detail(detail);
   }
 
-  user->message("Done.\r\n");
+  user->message("Done.\n");
 }
