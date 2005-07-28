@@ -1,12 +1,20 @@
 <titledef text="ObjectD" />
 
-<h2 style="text-align: center"> Phantasmal's Object Manager </h2>
+<h2 style="text-align: center"> Design Notes for
+  Phantasmal's Object Manager </h2>
 
-<h3> Design Notes for Phantasmal Object Manager </h3>
+<h3> Known Bugs </h3>
 
 <p>
-  Major data:
+  Don't compile a library that isn't used by anything before the
+  ObjectD gets compiled.  If you do, then when you rebuild that
+  library (say, during a full rebuild), you'll get a log message
+  saying that an unregistered issue of the lib is being removed.  This
+  is an artifact of the way Phantasmal's ObjectD does object discovery
+  during its initialiation.
 </p>
+
+<h3>Major data</h3>
 
 <dl>
   <dt>obj_issues</dt>
@@ -44,36 +52,7 @@
   </dd>
 </dl>
 
-<hr />
-
-<p>
-  Initialization call sequence:
-</p>
-
-<ul>
-  <li>recompile_every_object:
-    <ul>
-      <li>recompile_every_clonable</li>
-      <li>recompile_to_track_libs</li>
-      <li>fix_parent_arrays</li>
-      <li>fix_child_arrays</li>
-    </ul> </li>
-  <li>count_clones</li>
-</ul>
-
-<p>
-  Remember that when an object is recompiled, add_clonable or add_lib
-  is called.  Either will call convert_inherited_str_to_mixed, which
-  will add any tracked libraries the object inherits to all_libs.  The
-  function will also add appropriate dependencies to recomp_paths if
-  called during init.
-</p>
-
-<hr />
-
-<p>
-  Major functions of ObjectD:
-</p>
+<h3>Major Functions</h3>
 
 <dl>
   <dt>recompile_to_track_libs</dt>
@@ -132,3 +111,24 @@
   </dd>
 
 </dl>
+
+<h3>Initialization call sequence</h3>
+
+<ul>
+  <li>recompile_every_object:
+    <ul>
+      <li>recompile_every_clonable</li>
+      <li>recompile_to_track_libs</li>
+      <li>fix_parent_arrays</li>
+      <li>fix_child_arrays</li>
+    </ul> </li>
+  <li>count_clones</li>
+</ul>
+
+<p>
+  Remember that when an object is recompiled, add_clonable or add_lib
+  is called.  Either will call convert_inherited_str_to_mixed, which
+  will add any tracked libraries the object inherits to all_libs.  The
+  function will also add appropriate dependencies to recomp_paths if
+  called during init.
+</p>
