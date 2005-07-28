@@ -224,7 +224,7 @@ void remove_room_object(object room) {
   }
   room_objects[name] = nil;
 
-  room->set_room_number(-1);
+  room->set_number(-1);
 }
 
 object get_room_by_num(int num) {
