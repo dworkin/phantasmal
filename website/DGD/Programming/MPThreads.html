@@ -571,6 +571,90 @@ Regards,
 Dworkin
 </pre>
 
+<hr />
+
+<pre>
+From dgd@dworkin.nl  Thu Jun 23 01:54:01 2005
+From: dgd@dworkin.nl (Felix A. Croes)
+Date: Thu Jun 23 00:54:01 2005
+Subject: [DGD] Why export data structures?
+
+[oops -- original response not sent to the list]
+
+> This is really just a question out of curiousity. I was thinking of coding
+> something that relied on several objects having access to the same data
+> structure - in this case a mapping. But then I learned that such data
+> structures are made into individual copies in all objects referencing it
+> at the end of the execution thread. So as I understand it, the objects
+> would no longer be referencing the same data in later threads.
+>
+> Now, I have no reason to be upset why it works like this. I am merely
+> being curious as to the reasons. Why does DGD do this? If someone's got
+> the time to satiate my curiousity, I'd be happy!
+
+That way, all data remains local to a (persistent) object.  The only
+crossreferences between objects are those that pass through an object
+reference, which is handled in a special way.  As a result, memory
+management and swapfile allocation become much simpler and scale
+better.
+
+This is even more important for DGD/MP.
+
+Regards,
+Dworkin
+</pre>
+
+<hr />
+
+<pre>
+From dgd@dworkin.nl  Thu Jun 23 02:30:01 2005
+From: dgd@dworkin.nl (Felix A. Croes)
+Date: Thu Jun 23 01:30:01 2005
+Subject: [DGD] Why export data structures?
+
+Dread Quixadhal wrote:
+
+> My guess would be that it has to do with two features of the driver in 
+> particular.  First, it would make life much simpler for multi-processor 
+> support if every thread could have distinct data segments that didn't 
+> rely on conflicting access with other threads.  When those threads are 
+> running concurrently, there are all sorts of locking techniques you need 
+> to use if they can touch the same bits of data.
+
+When data is not local to objects, you'd need a separate lock for every
+datastructure that can be referenced...  you might call that "death by
+a thousand locks." :)
+
+
+> Secondly, it seems like having separate copies of each thread's data 
+> structures would make atomic function roll-back considerably simpler.  
+> If thread N calls a function that fails and gets rolled back, it doesn't 
+> have to then also mark threads O..Z as "dirty" since they all still have 
+> their own data which might (or might not) work for them.
+
+This isn't true because atomic rollback happens within an execution
+round, where data <can> be shared between objects.  Atomic rollback
+therefore is implemented for datastructures, not for object dataspaces,
+but the overhead is still quite reasonable, precisely because the
+situation can only persist for the duration of the execution round.
+
+
+> To satisfy my own curiosity, is it actually always copied, or is it 
+> copy-on-write?  IE:  If two threads both start with the same (statically 
+> declared and filled?) array, and both read from it but don't modify it, 
+> do we have two copies in memory, or just one with two pointers?
+
+There would be three instances: one original which is only modified when
+a change is committed, and two copies, one in each thread's own memory
+space.  Memory is cheap these days, and avoiding locking is more important
+than saving space.
+
+DGD/MP uses much, much more memory than DGD.
+
+Regards,
+Dworkin
+</pre>
+
   <p style="text-size: 150%"> <a href="index.html"> Back to DGD &amp; LPC
       Page </a> </p>
             <address>
