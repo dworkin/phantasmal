@@ -40,6 +40,9 @@ log/
 doc/
   Remove kernel MUDLib stuff, update other stuff
 
+bundled/
+  For non-bundled releases, remove this directory
+
 tmp/
   Remove swapfiles and/or statedumps
 

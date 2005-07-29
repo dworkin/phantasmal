@@ -1,1 +1,1 @@
-#define PHANTASMAL_VERSION    "0.017"
+#define PHANTASMAL_VERSION    "0.019"
