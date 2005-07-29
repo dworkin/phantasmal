@@ -4,6 +4,8 @@
 #include <phantasmal/log.h>
 #include <phantasmal/lpc_names.h>
 
+#include <gameconfig.h>
+
 static int    suspended, shutdown;
 
 void upgraded(varargs int clone);
@@ -68,11 +70,17 @@ object select(string str)
 
 int query_timeout(object connection)
 {
+  object game_driver;
+
   if(!SYSTEM() && !KERNEL())
     error("Invalid call to query_timeout!");
 
-  if(suspended || shutdown)
+  game_driver = find_object(GAME_DRIVER);
+  if(suspended || shutdown
+     || (query_ip_number(connection) && game_driver
+	 && game_driver->site_is_banned(query_ip_number(connection)))) {
     return -1;
+  }
 
   return DEFAULT_TIMEOUT;
 }
@@ -81,8 +89,7 @@ string query_banner(object connection)
 {
   object game_driver;
 
-  if(!SYSTEM() && !KERNEL())
-     return nil;
+  if(!SYSTEM() && !KERNEL())     return nil;
 
   game_driver = CONFIGD->get_game_driver();
   if(!game_driver) {
@@ -100,6 +107,11 @@ string query_banner(object connection)
 
   if(suspended)
     return game_driver->get_suspended_message(connection);
+
+  if(query_ip_number(connection)
+     && game_driver->site_is_banned(query_ip_number(connection))) {
+    return game_driver->get_sitebanned_message(connection);
+  }
 
   return game_driver->get_welcome_message(connection);
 }

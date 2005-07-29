@@ -25,6 +25,11 @@ static void create(void) {
   if(!file_tmp)
     error("Can't read /usr/game/text/suspended.msg!");
   suspended_message = file_tmp;
+
+  file_tmp = read_file("/usr/game/text/sitebanned.msg");
+  if(!file_tmp)
+    error("Can't read /usr/game/text/suspended.msg!");
+  suspended_message = file_tmp;
 }
 
 #define GAME_USER "/usr/game/obj/user"
@@ -58,4 +63,11 @@ string get_suspended_message(object connection) {
     return nil;
 
   return suspended_message;
+}
+
+string get_sitebanned_message(object connection) {
+  if(!AUTHORIZED())
+    return nil;
+
+  return sitebanned_message;
 }

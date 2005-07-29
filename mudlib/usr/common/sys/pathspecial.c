@@ -20,7 +20,7 @@ inherit COMMON_AUTO;
 private object game_path_object;
 
 string path_special(string file) {
-  string user, subdir;
+  string user, subdir, tmp;
 
   if(file == COMMON_AUTO)
     return nil;
@@ -37,7 +37,11 @@ string path_special(string file) {
   }
 
   if(game_path_object) {
-    return game_path_object->path_special(file);
+    tmp = game_path_object->path_special(file);
+    if(!tmp || tmp == "")
+      return INHERIT_COMMON_AUTO;
+
+    return tmp;
   }
 
   return nil;

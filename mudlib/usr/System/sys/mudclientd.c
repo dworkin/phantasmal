@@ -6,6 +6,8 @@
 #include <phantasmal/telnet.h>
 #include <phantasmal/mudclient.h>
 
+#include <gameconfig.h>
+
 inherit COMMON_AUTO;
 
 private int     suspended, shutdown;
@@ -100,11 +102,17 @@ object select(string str)
 
 int query_timeout(object connection)
 {
+  object game_driver;
+
   if(!SYSTEM() && !KERNEL())
     return -1;
 
-  if(suspended || shutdown)
+  game_driver = find_object(GAME_DRIVER);
+  if(suspended || shutdown
+     || (query_ip_number(connection) && game_driver
+	 && game_driver->site_is_banned(query_ip_number(connection)))) {
     return -1;
+  }
 
   connection->set_mode(MODE_RAW);
 
@@ -136,6 +144,9 @@ string query_banner(object connection)
     send_back = game_driver->get_shutdown_message(connection);
   else if(suspended)
     send_back = game_driver->get_suspended_message(connection);
+  else if(query_ip_number(connection)
+	  && game_driver->site_is_banned(query_ip_number(connection)))
+    return game_driver->get_sitebanned_message(connection);
   else {
     string proto_options;
 

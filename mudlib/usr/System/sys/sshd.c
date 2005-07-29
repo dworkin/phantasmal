@@ -6,6 +6,8 @@
 # include "phantasmal/log.h"
 # include "phantasmal/ssh.h"
 
+# include "gameconfig.h"
+
 inherit LIB_CONN;
 inherit rsrc API_RSRC;
 private inherit SSH_UTILS;
@@ -114,10 +116,19 @@ int login(string str)
  * NAME:	query_timeout()
  * DESCRIPTION:	return login timeout
  */
-int query_timeout(object obj)
+int query_timeout(object connection)
 {
+  object game_driver;
+
   if(suspended || shutdown)
     return -1;
+
+  game_driver = find_object(GAME_DRIVER);
+
+  if(game_driver && query_ip_number(connection)
+     && game_driver->site_is_banned(query_ip_number(connection))) {
+    return -1;
+  }
 
   return DEFAULT_TIMEOUT;
 }
