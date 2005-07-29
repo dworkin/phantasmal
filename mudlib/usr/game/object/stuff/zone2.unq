@@ -105,3 +105,20 @@ small clear area before the woods and the swamp begin to the southeast.}}
 
 }
 
+~object{
+  ~obj_type{simple room}
+  ~number{604}
+  ~detail{601}
+  ~bdesc{
+    ~enUS{paint}}
+  ~ldesc{
+    ~enUS{The building looks like it was once painted green, though it's hard to
+be sure from the few remaining shreds of peeling paint.  The porch still
+has a bit of red paint flaking off it.}}
+  ~flags{0}
+  ~nouns{{~enUS{paint, shred, shreds}}}
+  ~adjectives{{~enUS{red, green, peeling}}}
+  ~tags{}
+
+}
+

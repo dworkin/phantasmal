@@ -1,4 +1,6 @@
-Release 0.017:
+Release 0.019:
+
+Release 0.017/0.018:
     * Fixed @new_mob syntax to handle the three-argument version correctly
     * Fixed ObjectD to handle untracked lib instances from startup
     * Fixed ObjectD to handle DGD 1.2.110 changes to ObjRegD
