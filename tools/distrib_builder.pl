@@ -146,8 +146,9 @@ system("rm -f $outdir/tmp/swap $outdir/log/System.log "
 
 # Remove CVS dirs.  Use a tempfile since find wants to descend into those
 # directories, and we've just removed them.
-system("find $outdir -name CVS -type d -print > /tmp/distrib_tmp.txt");
-system("rm -rf `cat /tmp/distrib_tmp.txt`");
+system("find $outdir -name CVS -type d -print > $outdir/distrib_tmp.txt");
+system("rm -rf `cat $outdir/distrib_tmp.txt`");
+system("rm -f $outdir/distrib_tmp.txt");
 
 # Remove all README, INSTALL, UPDATES and .cvsignore files
 system("find $outdir -name README -exec rm \\{\\} \\;");
