@@ -1,0 +1,24 @@
+                      Seas of Night
+
+SoN uses a lot of standard Phantasmal stuff like the ConfigD, the
+SoulD, the MapD, a fairly standard game driver, and so on.  One of the
+most interesting things it does, though, is to set up custom room
+types.
+
+   * Custom Room Types *
+
+SoN sets up a path_special object with Phantasmal to make the
+GAME_ROOMS_DIR inherit from a different AUTO object than usual.  That
+makes every file in that directory inherit from a specific custom room
+object, /usr/game/open/lib/cr_auto.  That sets particular kinds of room
+behavior for objects in that directory or its subdirectories.
+
+SoN also sets up a custom room binder with MAPD, using
+MAPD->set_binding_handler().  This allows SoN to use particular
+special kinds of rooms and decide on the fly what room type they're
+supposed to be.  That lets the custom rooms be used in standard
+Phantasmal room data files, but with custom object types.
+
+Currently, anything that looks like "custom:/dir/roomfile" is mapped
+to the file "GAME_ROOMS_DIR/dir/roomfile.c".  That's a nice simple way
+to map room names to room objects in the UNQ output files.

@@ -1,7 +1,8 @@
 #include "phantasmal/log.h"
 
 static void room_created(void) {
-  LOGD->write_syslog("Room has been created.", LOG_WARNING);
+  LOGD->write_syslog("Room #" + get_number()
+		     + " has been created.", LOG_WARNING);
 }
 
 static void room_upgraded(void) {

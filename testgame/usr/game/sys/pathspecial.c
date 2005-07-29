@@ -14,5 +14,6 @@ string path_special(string filename) {
     return INHERIT_CUSTOM_ROOM_AUTO;
   }
 
-  return INHERIT_COMMON_AUTO;
+  /* Nothing special - go for the usual. */
+  return "";
 }

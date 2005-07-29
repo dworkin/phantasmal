@@ -15,19 +15,19 @@
 inherit room ROOM;
 inherit unq DTD_UNQABLE;
 
-/* Override how create/destruct/upgraded work! */
+/* Override how create/destructed/upgraded work! */
 
 nomask static void create(varargs int clone) {
-  room::create();
-  unq::create();
+  room::create(clone);
+  unq::create(clone);
 
   if(clone) {
     MAPD->add_room_object(this_object());
-    GAME_ROOM_REGISTRY->add_room();
-  }
-
-  if(function_object("room_created", this_object())) {
-    this_object()->room_created();
+    if(function_object("room_created", this_object())) {
+      this_object()->room_created();
+    }
+  } else {
+    GAME_ROOM_REGISTRY->add_room_type();
   }
 }
 
@@ -39,10 +39,10 @@ nomask void destructed(varargs int clone) {
   unq::destructed(clone);
   if(clone) {
     MAPD->remove_room_object(this_object());
-  }
 
-  if(function_object("room_destructed", this_object())) {
-    this_object()->room_destructed();
+    if(function_object("room_destructed", this_object())) {
+      this_object()->room_destructed();
+    }
   }
 }
 

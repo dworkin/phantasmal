@@ -65,6 +65,11 @@ static void create(void) {
   /* Load the SoulD with social commands */
   load_sould();
 
+  /* We have to load the custom room types before we read all the
+     rooms into MAPD.  That way, rooms of custom types will
+     successfully find the binder code that they need. */
+  load_custom_rooms();
+
   compile_object(GAME_ROOM_BINDER);
   MAPD->set_binding_handler(find_object(GAME_ROOM_BINDER));
 
@@ -76,8 +81,6 @@ static void create(void) {
     LOGD->write_syslog("Can't read object files!  Starting incomplete!",
 		       LOG_ERROR);
   }
-
-  load_custom_rooms();
 
   /* Load the mobilefile into MOBILED */
   mob_file = read_file(MOB_FILE);
@@ -232,6 +235,7 @@ static void load_custom_rooms(void) {
   mixed **dir_list;
   int     ctr;
   string  err, prog_name;
+  object  new_obj;
 
   dir_list = get_dir(GAME_ROOMS_DIR + "*");
   for(ctr = 0; ctr < sizeof(dir_list[0]); ctr++) {
@@ -239,22 +243,16 @@ static void load_custom_rooms(void) {
       /* TODO: Directory, recurse */
     } else if(sscanf(dir_list[0][ctr], "%s.c", prog_name) == 1) {
       /* Custom room file, make sure the room is used */
-      if(!GAME_ROOM_REGISTRY->room_for_type("/" + prog_name)) {
-	LOGD->write_syslog("Compiling room " + prog_name);
-	/* Try to compile object for use. */
-	compile_object(GAME_ROOMS_DIR + prog_name);
-	if(find_object(GAME_ROOMS_DIR + prog_name)) {
-	  object newobj;
-	  /* Clone the object so it'll show up in the registry */
-	  newobj = clone_object(GAME_ROOMS_DIR + prog_name);
-	  if(newobj) {
-	    MAPD->add_room_to_zone(newobj, -1, 0);
-	  } else {
-	    LOGD->write_syslog("Couldn't clone " + prog_name
-			       + ", not enough memory?");
-	  }
-	}
-      }
+      LOGD->write_syslog("Compiling room " + prog_name);
+      /* Try to compile object for use. */
+      compile_object(GAME_ROOMS_DIR + prog_name);
+      new_obj = find_object(GAME_ROOMS_DIR + prog_name);
+      if(new_obj)
+	/* Add the object type to the room binder by calling its create() */
+	call_other_unprotected(new_obj, "???");
+      else
+	error("Can't find room type " + GAME_ROOMS_DIR + prog_name
+	      + "!  Aborting!");
     }
   }
 }

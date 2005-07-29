@@ -19,15 +19,17 @@ static void create(varargs int clone) {
   upgraded();
 }
 
-void add_room(void) {
+void add_room_type(void) {
   string type;
 
   if(previous_program() != CUSTOM_ROOM_PARENT)
-    error("Only privileged code can call room_registry:add_room!");
+    error("Only privileged code can call room_registry:add_room_type!");
 
-  if(sscanf(object_name(previous_object()), "/usr/game/obj/rooms/%s#%*d",
-	    type) != 2)
-    error("Can't parse object name in room_registry:add_room!");
+  if(sscanf(object_name(previous_object()), GAME_ROOMS_DIR + "%s",
+	    type) != 1)
+    error("Object name '" + object_name(previous_object())
+	  + "' doesn't seem to start with '" + GAME_ROOMS_DIR
+	  + "' in room_registry:add_room_type!");
 
   type = "/" + type;
   if(!rooms[type])
