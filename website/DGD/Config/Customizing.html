@@ -62,9 +62,7 @@
           <td class="content">
     
 
-  <h2> Customizing Your Copy of DGD </h2>
-
-  <h3> Customizing DGD </h3>
+  <h2> Compiling and Customizing Your Copy of DGD </h2>
 
   <ul>
       <li> <a href="#Tools">
@@ -106,7 +104,11 @@
 	  tools</a> are excellent.  You'll definitely want them if you're
 	using the experimental branch of DGD even if you compile with
 	Visual C++ or another non-GNU compiler.  They also come with a
-	Windows version of GCC, which may be worth considering.
+	Windows version of GCC, which may be worth considering.  If you
+        compile with Cygwin's GCC, remember to use 'DMAKE=gmake' or
+        whatever you choose to call CygWin make.  Basically, you'll need
+        to let DGD's makefile know what tools to use if any of them
+        don't have the standard names.
       </li>
       <li>
 	<a href="http://www.textpad.com">Textpad</a> is supposed to be
