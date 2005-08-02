@@ -1,4 +1,4 @@
-/* $Header: /cvsroot/phantasmal/testgame/usr/game/obj/user.c,v 1.12 2005/07/27 23:08:52 angelbob Exp $ */
+/* $Header: /cvsroot/phantasmal/testgame/usr/game/obj/user.c,v 1.13 2005/08/02 21:20:50 angelbob Exp $ */
 
 #include <kernel/kernel.h>
 #include <kernel/user.h>
@@ -116,8 +116,6 @@ void upgraded(varargs int clone) {
 		     "typo"      : "cmd_typo",
 		     "idea"      : "cmd_idea",
 		     "tell"      : "cmd_tell",
-		     "lines"     : "cmd_set_lines",
-		     "set_lines" : "cmd_set_lines",
 
 		     "channel"   : "cmd_channels",
 		     "channels"  : "cmd_channels",
