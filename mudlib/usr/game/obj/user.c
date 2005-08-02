@@ -1,4 +1,4 @@
-/* $Header: /cvsroot/phantasmal/mudlib/usr/game/obj/user.c,v 1.16 2005/07/27 23:11:28 angelbob Exp $ */
+/* $Header: /cvsroot/phantasmal/mudlib/usr/game/obj/user.c,v 1.17 2005/08/02 21:20:01 angelbob Exp $ */
 
 #include <kernel/kernel.h>
 #include <kernel/user.h>
@@ -89,8 +89,6 @@ void upgraded(varargs int clone) {
 		     "typo"      : "cmd_typo",
 		     "idea"      : "cmd_idea",
 		     "tell"      : "cmd_tell",
-		     "lines"     : "cmd_set_lines",
-		     "set_lines" : "cmd_set_lines",
 
 		     "channel"   : "cmd_channels",
 		     "channels"  : "cmd_channels",
@@ -495,21 +493,6 @@ static void cmd_parse(object user, string cmd, string str) {
     message("Binding done!\n" + STRINGD->tree_sprint(binder_output, 0)
 	    + "\n\n");
   }
-}
-
-static void cmd_set_lines(object user, string cmd, string str) {
-  int new_num_lines;
-
-  if(!str || str == ""
-     || sscanf(str, "%*s %*s") == 2
-     || sscanf(str, "%d", new_num_lines) != 1) {
-    send_system_phrase("Usage: ");
-    message(cmd + " <num lines>\n");
-    return;
-  }
-
-  set_num_lines(new_num_lines);
-  message("Set number of lines to " + new_num_lines + ".\n");
 }
 
 static void cmd_ooc(object user, string cmd, string str) {
