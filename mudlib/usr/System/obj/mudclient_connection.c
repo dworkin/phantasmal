@@ -45,16 +45,21 @@ inherit user LIB_USER;
 
 private string buffer, outbuf;
 private mixed* input_lines;
-private int    active_protocols;
 
 /* telnet options */
 private int    suppress_ga;
 private int    suppress_echo;
 private string tel_goahead;
 
+/* MUD client stuff */
+private int     active_protocols, total_linecount;
+private int     imp_version;
+private mapping terminal_types;
+
 private int new_telnet_input(string str);
 private string debug_escape_str(string line);
 private int process_input(string str);
+void upgraded(varargs int clone);
 
 static void create(int clone)
 {
@@ -67,7 +72,17 @@ static void create(int clone)
 
       tel_goahead = " "; tel_goahead[0] = TP_GA;
       suppress_ga = suppress_echo = 0;
+      terminal_types = ([ ]);
+
+      upgraded();
     }
+}
+
+void upgraded(varargs int clone) {
+  if(SYSTEM()) {
+
+  } else
+    error("Non-system code trying to call upgraded!");
 }
 
 
@@ -127,7 +142,11 @@ void set_mode(int mode)
 {
   if (KERNEL() || SYSTEM()) {
     if(mode != MODE_ECHO && mode != MODE_NOECHO) {
-      query_conn()->set_mode(mode);
+      if(query_conn())
+	query_conn()->set_mode(mode);
+      else if(mode == MODE_DISCONNECT)
+	destruct_object(this_object());
+
       /* Don't destruct the object on disconnect, because the
 	 connection library will have already done that. */
       return;
@@ -227,7 +246,7 @@ int binary_message(string str) {
  */
 int message(string str)
 {
-  if(previous_program() == LIB_USER || previous_program() == PHANTASMAL_USER) {
+  if(KERNEL() || SYSTEM() || previous_program() == PHANTASMAL_USER) {
     /* Do appropriate send-filtering first */
     LOGD->write_syslog("MCC message: " + str, LOG_VERBOSE);
 
@@ -256,9 +275,33 @@ private int process_input(string str) {
   string line;
   int    mode;
 
+  if(!imp_version && (active_protocols & PROTOCOL_IMP)) {
+    string pre, post;
+
+    if(sscanf(str, "%sv1.%d%s", pre, imp_version, post) == 3) {
+      /* We've got a response from an IMP-enabled client */
+      LOGD->write_syslog("IMP-enabled client!");
+      message("<IMPDEMO>");
+
+      /* Remove "v1.%d" from the input stream */
+      str = pre + post;
+
+      /* All that was left was an IMP response string */
+      if(!str || str == "")
+	return MODE_NOCHANGE;
+    }
+
+    /* If we go more than five lines without seeing an IMP response,
+       assume that no IMP response is forthcoming. */
+    if(total_linecount > 5 && !imp_version) {
+      active_protocols &= ~PROTOCOL_IMP;
+    }
+  }
+
   new_telnet_input(str);
 
   line = get_input_line();
+  total_linecount++;
   while(line) {
     mode = user_input(line);
     if(mode == MODE_DISCONNECT || mode >= MODE_UNBLOCK)
@@ -310,6 +353,7 @@ nomask int send_telnet_option(int command, int option) {
 
 nomask int send_telnet_subnegotiation(int option, string arguments) {
   string tmp, options;
+  int    ctr;
 
   if(!SYSTEM() && previous_object() != MUDCLIENTD->get_telopt_handler(option))
     error("Only SYSTEM code and telopt handlers can send telnet options!");
@@ -317,6 +361,15 @@ nomask int send_telnet_subnegotiation(int option, string arguments) {
   tmp = "  ";
   tmp[0] = TP_IAC;
   tmp[1] = TP_SB;
+
+  /* Double all telnet IAC characters (255) in the arguments. */
+  for(ctr = 0; ctr < strlen(arguments); ctr++) {
+    if(arguments[ctr] == TP_IAC) {
+      /* Note:  tmp[0] is currently equal to TP_IAC, so this works. */
+      arguments = arguments[..ctr] + tmp[0..0] + arguments[ctr+1..];
+      ctr++;  /* Advance past the now-doubled telnet IAC */
+    }
+  }
 
   options = tmp;
 
@@ -337,10 +390,58 @@ void should_suppress_ga(int do_suppress) {
     error("Only privileged code may call should_suppress_ga!");
 }
 
+void support_protocols(int proto) {
+  if(previous_program() != MUDCLIENTD)
+    error("Only MUDCLIENTD may call support_protocols() on a conn!");
+
+  active_protocols = proto;
+}
+
+/* This function, if called by the appropriate telnet option handler,
+   tells us that the option will be used for this connection. */
+void set_telopt(int telopt, int will_use) {
+  if(previous_object() != MUDCLIENTD->get_telopt_handler(telopt))
+    error("Only the handler for a telnet option may notify a connection!");
+
+  switch(telopt) {
+  case TELOPT_TTYPE:
+    /* Not sure we care about this one.  Hard to say yet. */
+    break;
+  case TELOPT_NAWS:
+    /* If this is true, we don't want to use the old default window size
+       at all... */
+    break;
+  }
+}
+
+int register_terminal_type(string term_type) {
+  if(previous_object() != MUDCLIENTD->get_telopt_handler(TELOPT_TTYPE))
+    error("Only the TELOPT_TTYPE handler may register terminal types!");
+
+  if(terminal_types[term_type]) {
+    LOGD->write_syslog("Repeat terminal type '" + term_type + "'",
+		       LOG_ULTRA_VERBOSE);
+    return 1;  /* This is a repeat of a previous terminal */
+  }
+
+  LOGD->write_syslog("Registering terminal type '" + term_type + "'",
+		     LOG_VERBOSE);
+
+  terminal_types[term_type] = 1;
+  return 0;
+}
+
+/* This is called when the TELOPT_NAWS option specifies a new window
+   size. */
+void naws_window_size(int width, int height) {
+  LOGD->write_syslog("Setting window size to " + width + "," + height,
+		     LOG_VERBOSE);
+}
+
 /************************************************************************/
 /************************************************************************/
 /************************************************************************/
-/* Specifics of telnet protocol                                         */
+/* Internals of telnet protocol                                         */
 /************************************************************************/
 /************************************************************************/
 /************************************************************************/

@@ -11,7 +11,7 @@
 inherit COMMON_AUTO;
 
 private int     suspended, shutdown;
-private mapping telopt_handler;
+private mapping telopt_handler, ext_telopt_handler;
 
 int support_protocol;
 mapping protocol_names;
@@ -28,7 +28,7 @@ static void create(varargs int clone) {
 }
 
 void upgraded(varargs int clone) {
-  object handler;
+  object handler, extra_handler;
 
   if(!SYSTEM())
     return;
@@ -39,7 +39,7 @@ void upgraded(varargs int clone) {
   if(!find_object(US_SCROLL_TEXT)) compile_object(US_SCROLL_TEXT);
   if(!find_object(MUDCLIENT_CONN)) compile_object(MUDCLIENT_CONN);
 
-  support_protocol = 0;
+  support_protocol = PROTOCOL_EXT_TELNET;
   protocol_names = ([
 		     "MCP" : PROTOCOL_MCP,
 		     "IMP" : PROTOCOL_IMP,
@@ -50,10 +50,14 @@ void upgraded(varargs int clone) {
 		     "ZMP" : PROTOCOL_ZMP,
 		     "ZENITH" : PROTOCOL_ZMP,
 		     "MCCP" : PROTOCOL_MCCP,
+		     "EXTENDED TELNET" : PROTOCOL_EXT_TELNET,
 		     ]);
   if(!find_object(TELOPT_DEFAULT_HANDLER))
     compile_object(TELOPT_DEFAULT_HANDLER);
+  if(!find_object(TELOPT_EXTRA_HANDLER))
+    compile_object(TELOPT_EXTRA_HANDLER);
   handler = find_object(TELOPT_DEFAULT_HANDLER);
+  extra_handler = find_object(TELOPT_EXTRA_HANDLER);
 
   telopt_handler = ([
 		     TELOPT_ECHO : handler,
@@ -61,6 +65,11 @@ void upgraded(varargs int clone) {
 		     TELOPT_TM : handler,
 		     TELOPT_LINEMODE : handler,
 		     ]);
+
+  ext_telopt_handler = ([
+			 TELOPT_NAWS : extra_handler,
+			 TELOPT_TTYPE : extra_handler,
+			 ]);
 }
 
 void suspend_input(int shutdownp) {
@@ -95,6 +104,7 @@ object select(string str)
   game_driver = CONFIGD->get_game_driver();
 
   conn = clone_object(MUDCLIENT_CONN);
+  conn->support_protocols(support_protocol);
   conn->receive_message(str);
 
   return conn;
@@ -176,6 +186,16 @@ string query_banner(object connection)
     proto_options[0] = TP_IAC;
     proto_options[1] = TP_WILL;
 
+    if(support_protocol & PROTOCOL_EXT_TELNET) {
+      proto_options[1] = TP_DO;
+      proto_options[2] = TELOPT_TTYPE;
+      telnet_options = telnet_options + proto_options;
+
+      proto_options[2] = TELOPT_NAWS;
+      telnet_options = telnet_options + proto_options;
+
+      proto_options[1] = TP_WILL;
+    }
     if(support_protocol & PROTOCOL_MXP) {
       proto_options[2] = TELOPT_MXP;
       telnet_options = telnet_options + proto_options;
@@ -245,5 +265,15 @@ void set_telopt_handler(int option_num, object handler) {
 }
 
 object get_telopt_handler(int option_num) {
-  return telopt_handler[option_num];
+  object tmp;
+
+  if(SYSTEM() || COMMON() || GAME()) {
+    tmp = telopt_handler[option_num];
+    if(!tmp && (support_protocol & PROTOCOL_EXT_TELNET))
+      return ext_telopt_handler[option_num];
+
+    return tmp;
+  }
+  error("Non-privileged code attempted to call "
+	  + "MUDCLIENTD::get_telopt_handler!");
 }

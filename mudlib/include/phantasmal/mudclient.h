@@ -7,6 +7,7 @@
 #define PROTOCOL_MSP               16
 #define PROTOCOL_ZMP               32
 #define PROTOCOL_MCCP              64
+#define PROTOCOL_EXT_TELNET       128
 
 #define TELOPT_MCCP_OLD            85  /* COMPRESS option, obsolete */
 #define TELOPT_MCCP                86  /* COMPRESS2 option for MCCP */
