@@ -96,6 +96,9 @@ static void create(void) {
     compile_object(HEART_BEAT);
   HEART_BEAT->set_up_heart_beat();
 
+  /* Support particular MUDclient protocols */
+  MUDCLIENTD->protocol_allow("FIRECLIENT", 1);
+
   LOGD->write_syslog("Configured Phantasmal from /usr/game!");
 }
 
