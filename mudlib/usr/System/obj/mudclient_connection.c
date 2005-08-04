@@ -59,6 +59,7 @@ private mapping terminal_types;
 private int new_telnet_input(string str);
 private string debug_escape_str(string line);
 private int process_input(string str);
+private int binary_message(string str);
 void upgraded(varargs int clone);
 
 static void create(int clone)
@@ -111,8 +112,7 @@ int login(string str)
 {
     if (previous_program() == LIB_CONN) {
 	user::connection(previous_object());
-
-	process_input(str);
+	binary_message(nil);  /* Send buffered stuff */
 
 	/* Don't call ::login() or we'll see a separate connection for
 	   the MUDClient connection, not just the 'real' user conn. */
@@ -222,14 +222,15 @@ int message_done()
  * NAME:        binary_message
  * DESCRIPTION: does a buffered send on the underlying binary connection
  */
-int binary_message(string str) {
+private int binary_message(string str) {
   if(user::query_conn()) {
     if(outbuf) {
       user::message(outbuf);
       outbuf = nil;
     }
 
-    return user::message(str);
+    if(str != nil)
+      return user::message(str);
   } else {
     if(!outbuf) {
       outbuf = str;
@@ -266,6 +267,7 @@ private string get_input_line(void) {
   if(sizeof(input_lines)) {
     tmp = input_lines[0];
     input_lines = input_lines[1..];
+    total_linecount++;
     return tmp;
   }
   return nil;
@@ -275,13 +277,21 @@ private int process_input(string str) {
   string line;
   int    mode;
 
+  LOGD->write_syslog("Process input: '" + str + "'");
+
   if(!imp_version && (active_protocols & PROTOCOL_IMP)) {
     string pre, post;
 
     if(sscanf(str, "%sv1.%d%s", pre, imp_version, post) == 3) {
       /* We've got a response from an IMP-enabled client */
-      LOGD->write_syslog("IMP-enabled client!");
-      message("<IMPDEMO>");
+      LOGD->write_syslog("IMP-enabled client, version 1." + imp_version,
+			 LOG_VERBOSE);
+
+      /* TODO: make sure no more than a single \r\n is removed */
+      while(post && strlen(post)
+	    && (post[0] == '\n' || post[0] == '\r')) {
+	post = post[1..];
+      }
 
       /* Remove "v1.%d" from the input stream */
       str = pre + post;
@@ -301,7 +311,6 @@ private int process_input(string str) {
   new_telnet_input(str);
 
   line = get_input_line();
-  total_linecount++;
   while(line) {
     mode = user_input(line);
     if(mode == MODE_DISCONNECT || mode >= MODE_UNBLOCK)
@@ -614,7 +623,8 @@ static void crlfbs_filter(void)
 
 	  input_lines += ({ str });
 
-	  LOGD->write_syslog("MCC input: '" + str + "'", LOG_VERBOSE);
+	  LOGD->write_syslog("MCC telnet-processed input: '" + str + "'",
+			     LOG_ULTRA_VERBOSE);
 	} else {
 	  break; /* No more newline-delimited input.  Out of full lines. */
 	}
@@ -633,6 +643,9 @@ private int new_telnet_input(string str) {
   buffer += str;
   iac_series = "";
   tmpbuf = "";
+
+  LOGD->write_syslog("MCC new telnet input: '" + str + "'",
+		     LOG_ULTRA_VERBOSE);
 
   /* Note: can't use double_iac_filter function here, because then we
      might collapse double-IAC sequences in the wrong place in the

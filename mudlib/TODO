@@ -1,3 +1,8 @@
+Simple or short-term:
+
+Figure out newline handling, both incoming and outgoing, and write down
+Phantasmal's conventions about it somewhere.  Note:  telnet protocol
+demands that newline always be '\r\n'.  However, many MUDs screw it up.
 
 ----------------------
 

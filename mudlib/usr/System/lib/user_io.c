@@ -5,6 +5,13 @@
 
 #include <type.h>
 
+/*
+ * This library implements the user-side stuff for terminal
+ * processing, user state stacks and similar tricks involving telnet,
+ * MUD clients, and various forms of user interaction that doesn't
+ * take place at the regular command prompt.
+ */
+
 inherit COMMON_AUTO;
 
 /* User-state processing stack */
@@ -14,6 +21,7 @@ private object  scroll_state;
 
 /* Saved by save_object? */
 int    num_lines;               /* how many lines on terminal */
+int    num_cols;                /* how many columns the terminal has */
 
 /* Prototypes */
 void   push_state(object state);
@@ -27,6 +35,7 @@ static void create(void) {
 
     /* More defaults */
     num_lines = 20;
+    num_cols = 78;
 
     upgraded();
 }
@@ -136,7 +145,7 @@ void push_state(object state) {
     error("Only privileged code can call push_state()!");
 
   if(!SYSTEM() && !COMMON() && !GAME())
-    return;
+    error("Unprivileged code calling SYSTEM_USER_IO:push_state!");
 
   if(!state_stack) {
     state_stack = ({ });
@@ -158,6 +167,9 @@ void push_state(object state) {
 
 void push_new_state(mixed state_type, mixed params...) {
   object new_state;
+
+  if(!SYSTEM() && !COMMON() && !GAME())
+    error("Unprivileged code calling SYSTEM_USER_IO:push_new_state!");
 
   new_state = clone_object(state_type);
   if(!new_state)
