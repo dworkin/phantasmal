@@ -19,8 +19,13 @@ private object* state_stack;
 
 private object  scroll_state;
 
-/* Saved by save_object? */
-int    num_lines;               /* how many lines on terminal */
+/* Terminal-type variables: */
+private mapping substitutions;
+private int     subs_correct;
+private int     mudclient_conn;
+
+/* Saved by save_object */
+int    num_lines;               /* how many lines the terminal has */
 int    num_cols;                /* how many columns the terminal has */
 
 /* Prototypes */
@@ -30,14 +35,14 @@ void   upgraded(varargs int clone);
 /* Macros */
 #define NEW_PHRASE(x) PHRASED->new_simple_english_phrase(x)
 
-static void create(void) {
+static void create(varargs int clone) {
     state_stack = ({ });
 
     /* More defaults */
     num_lines = 20;
     num_cols = 78;
 
-    upgraded();
+    upgraded(clone);
 }
 
 void upgraded(varargs int clone) {
@@ -240,4 +245,74 @@ mixed state_receive_message(string str) {
     return nil;
 
   return state_stack[0]->from_user(str);
+}
+
+/**********************************************/
+
+/* UNQ markup stuff */
+
+void set_up_substitutions(void) {
+  object  conn;
+  mapping info;
+
+  if(subs_correct)
+    return;
+
+  conn = this_object()->query_conn();
+  if(conn) {
+    if(sscanf(object_name(conn), MUDCLIENT_CONN + "#%*d") == 1) {
+      LOGD->write_syslog("Is MUDclient conn!");
+      mudclient_conn = 1;
+    } else {
+      LOGD->write_syslog("Not MUDclient conn!");
+      mudclient_conn = 0;
+    }
+  } else {
+    return;  /* Can't set up subs yet */
+  }
+
+  if(!mudclient_conn) {
+    /* This connection was made on a non-MUDclient port.  That means
+       no term types, no ANSI color, no window size... */
+
+    substitutions = ([ ]);
+
+    subs_correct = 1;
+    return;
+  }
+
+  info = conn->terminal_info();
+  if(info["protocol"] == "telnet") {
+    substitutions = ([ ]);
+  } else if(info["protocol"] == "imp") {
+    substitutions = ([
+		      "client-startup" : "<IMPDEMO>",
+		      "black" : "<FONT COLOR=\"black\"",
+		      "/black" : "</FONT>",
+		      "blue" : "<FONT COLOR=\"blue\"",
+		      "/blue" : "</FONT>",
+		      "green" : "<FONT COLOR=\"green\"",
+		      "/green" : "</FONT>",
+		      "cyan" : "<FONT COLOR=\"cyan\"",
+		      "/cyan" : "</FONT>",
+		      "red" : "<FONT COLOR=\"red\"",
+		      "/red" : "</FONT>",
+		      "purple" : "<FONT COLOR=\"purple\"",
+		      "/purple" : "</FONT>",
+		      ]);
+  } else {
+    error("Unrecognized protocol when setting up substitution maps!");
+  }
+
+  subs_correct = 1;
+}
+
+int supports_tag(string tag) {
+  if(!subs_correct)
+    set_up_substitutions();
+
+  if(substitutions[tag])
+    return 1;
+
+  return 0;
 }

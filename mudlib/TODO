@@ -31,3 +31,6 @@ interface side, not the Phantasmal side.
 Make a set of canonical exits which individual exit instances will
 inherit from.  This will avoid putting a fully-localized version of,
 say, "north", in every northbound exit.
+
+Make help entries include more fields like "See Also" and "Examples".
+Convert all help entries to HTML, and cross-link these things.

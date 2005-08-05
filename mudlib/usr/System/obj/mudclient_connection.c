@@ -54,7 +54,8 @@ private string tel_goahead;
 /* MUD client stuff */
 private int     active_protocols, total_linecount;
 private int     imp_version;
-private mapping terminal_types;
+private string* terminal_types;
+private int     naws_width, naws_height;
 
 private int new_telnet_input(string str);
 private string debug_escape_str(string line);
@@ -73,7 +74,7 @@ static void create(int clone)
 
       tel_goahead = " "; tel_goahead[0] = TP_GA;
       suppress_ga = suppress_echo = 0;
-      terminal_types = ([ ]);
+      terminal_types = ({ });
 
       upgraded();
     }
@@ -277,8 +278,7 @@ private int process_input(string str) {
   string line;
   int    mode;
 
-  LOGD->write_syslog("Process input: '" + str + "'");
-
+  /*********** FIRECLIENT/IMP ************************************/
   if(!imp_version && (active_protocols & PROTOCOL_IMP)) {
     string pre, post;
 
@@ -308,6 +308,14 @@ private int process_input(string str) {
     }
   }
 
+  if(imp_version) {
+    /* Take input from FireClient - no newline when IMP is active */
+    mode = user_input(str);
+    if(mode == MODE_DISCONNECT || mode >= MODE_UNBLOCK)
+      return mode;
+  }
+
+  /*********** TELNET ********************************************/
   new_telnet_input(str);
 
   line = get_input_line();
@@ -427,7 +435,7 @@ int register_terminal_type(string term_type) {
   if(previous_object() != MUDCLIENTD->get_telopt_handler(TELOPT_TTYPE))
     error("Only the TELOPT_TTYPE handler may register terminal types!");
 
-  if(terminal_types[term_type]) {
+  if(sizeof(terminal_types & ({ term_type }))) {
     LOGD->write_syslog("Repeat terminal type '" + term_type + "'",
 		       LOG_ULTRA_VERBOSE);
     return 1;  /* This is a repeat of a previous terminal */
@@ -436,15 +444,43 @@ int register_terminal_type(string term_type) {
   LOGD->write_syslog("Registering terminal type '" + term_type + "'",
 		     LOG_VERBOSE);
 
-  terminal_types[term_type] = 1;
+  terminal_types += ({term_type});
   return 0;
 }
 
 /* This is called when the TELOPT_NAWS option specifies a new window
    size. */
 void naws_window_size(int width, int height) {
+  if(previous_object() != MUDCLIENTD->get_telopt_handler(TELOPT_NAWS))
+    error("Only the TELOPT_NAWS handler may register window sizes!");
+
   LOGD->write_syslog("Setting window size to " + width + "," + height,
 		     LOG_VERBOSE);
+  naws_width = width;
+  naws_height = height;
+}
+
+mapping terminal_info(void) {
+  mapping ret;
+
+  if(previous_program() != SYSTEM_USER_IO)
+    error("Illegal program calling terminal_info!");
+
+  ret = ([
+	  "active" : active_protocols,
+	  "naws" : ({ naws_width, naws_height }),
+	  "terminals" : terminal_types[..],
+	  ]);
+
+  if(imp_version) {
+    ret += ([ "imp_version" : imp_version,
+	      "protocol" : "imp" ]);
+  } else {
+    ret += ([ "telnet_version" : 1,
+	      "protocol" : "telnet" ]);
+  }
+
+  return ret;
 }
 
 /************************************************************************/
