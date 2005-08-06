@@ -63,26 +63,6 @@ int not_english(void) {
   return FALSE;
 }
 
-#if 0
-void trim_whitespace(void) {
-  int iter;
-
-  error("Nobody seems to use this...  Good.");
-
-  for(iter = 0; iter < sizeof(content); iter++) {
-    if(content[iter]) {
-      if(typeof(content[iter]) == T_STRING)
-	content[iter] = STRINGD->trim_whitespace(content[iter]);
-      else {
-	/* Just trim the beginning of the first string, and the
-	   end of the last one. */
-	error("Trim_whitespace not yet implemented for all phrases!");
-      }
-    }
-  }
-}
-#endif
-
 string to_unq_text(void) {
   string ret;
   int    ctr;

@@ -616,7 +616,7 @@ private mixed parse_to_builtin(string type, mixed unq) {
       error("Don't recognized parsed UNQ object in parse_to_builtin(phrase)!");
 
     err = catch(tmp = PHRASED->unq_to_phrase(unq));
-    
+
     if (err != nil) {
       accum_error += err;
       return nil;
