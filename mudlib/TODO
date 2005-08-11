@@ -1,8 +1,17 @@
 Simple or short-term:
 
+Fix up taglist_phrase.c, user_io.c, phrase.c and phrased.c to handle a
+uniform taglist format.  Either the taglist must list each UNQ/XML tag
+and piece of content in a single list (for easy conversion) or it must
+nest it consistently (for easy matching of start to end).
+
 Figure out newline handling, both incoming and outgoing, and write down
 Phantasmal's conventions about it somewhere.  Note:  telnet protocol
 demands that newline always be '\r\n'.  However, many MUDs screw it up.
+
+Consider making a newline constant or function that can be used to get
+the current default newline either for the MUD in general, or
+per-connection.
 
 ----------------------
 

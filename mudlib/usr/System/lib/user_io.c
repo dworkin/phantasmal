@@ -1,6 +1,8 @@
 #include <kernel/kernel.h>
+#include <kernel/user.h>
 
 #include <phantasmal/log.h>
+#include <phantasmal/phrase.h>
 #include <phantasmal/lpc_names.h>
 
 #include <type.h>
@@ -13,6 +15,7 @@
  */
 
 inherit COMMON_AUTO;
+inherit LIB_USER;
 
 /* User-state processing stack */
 private object* state_stack;
@@ -27,20 +30,29 @@ private int     mudclient_conn;
 /* Saved by save_object */
 int    num_lines;               /* how many lines the terminal has */
 int    num_cols;                /* how many columns the terminal has */
+int    locale;                  /* chosen output locale */
 
 /* Prototypes */
 void   push_state(object state);
+object peek_state(void);
+void   to_state_stack(string str);
+static nomask int send_string(string str);
 void   upgraded(varargs int clone);
 
 /* Macros */
 #define NEW_PHRASE(x) PHRASED->new_simple_english_phrase(x)
 
 static void create(varargs int clone) {
-    state_stack = ({ });
+    if(clone) {
+      /* More defaults */
+      num_lines = 20;
+      num_cols = 78;
 
-    /* More defaults */
-    num_lines = 20;
-    num_cols = 78;
+      /* Default to enUS locale */
+      locale = PHRASED->language_by_name("english");
+
+      state_stack = ({ });
+    }
 
     upgraded(clone);
 }
@@ -64,8 +76,125 @@ static void set_num_lines(int new_num) {
   num_lines = new_num;
 }
 
+int get_locale(void) {
+  return locale;
+}
+
+static void set_locale(int new_loc) {
+  locale = new_loc;
+}
+
+
+/****** User Message Functions *****************/
+
+int message(string str) {
+  if(!SYSTEM() && !COMMON() && !GAME())
+    return -1;
+
+  if(peek_state()) {
+    to_state_stack(str);
+  } else {
+    return send_string(str);
+  }
+}
+
+/*
+ * NAME:	message_all_users()
+ * DESCRIPTION:	send message to listening users
+ */
+static void message_all_users(string str)
+{
+    object *users, user;
+    int i;
+
+    if(!SYSTEM() && !COMMON() && !GAME())
+      return;
+
+    users = users();
+    for (i = sizeof(users); --i >= 0; ) {
+	user = users[i];
+	if (user && user != this_object()) {
+	    user->message(str);
+	}
+    }
+}
+
+/*
+ * NAME:	system_phrase_all_users()
+ * DESCRIPTION:	send message to listening users
+ */
+static void system_phrase_all_users(string str)
+{
+    object *users, user;
+    int i;
+
+    if(!SYSTEM() && !COMMON() && !GAME())
+      return;
+
+    users = users();
+    for (i = sizeof(users); --i >= 0; ) {
+	user = users[i];
+	if (user != this_object()) {
+	    user->send_system_phrase(str);
+	}
+    }
+}
+
+static string phrase_to_string(object PHRASE phrase) {
+  string tmp;
+
+  tmp = phrase->get_content_by_lang(locale);
+  if(tmp) return tmp;
+
+  tmp = phrase->get_content_by_lang(LANG_englishUS);
+  if(tmp) return tmp;
+
+  tmp = phrase->get_content_by_lang(LANG_debugUS);
+  if(tmp) return tmp;
+
+  return "(nil)";
+}
+
+/* This sends a Phrase, allowing locale and terminal settings to
+   affect output */
+int send_phrase(object PHRASE obj) {
+  if(!SYSTEM() && !COMMON() && !GAME())
+    return -1;
+
+  return message(phrase_to_string(obj));
+}
+
+int send_system_phrase(string phrname) {
+  object PHRASE phr;
+
+  if(!SYSTEM() && !COMMON() && !GAME())
+    return -1;
+
+  phr = PHRASED->file_phrase(SYSTEM_PHRASES, phrname);
+  if(!phr) {
+    LOGD->write_syslog("Can't find system phrase " + phrname + "!", LOG_ERR);
+  }
+  return send_phrase(phr);
+}
 
 /****** USER_STATE stack implementation ********/
+
+/* This is called only by the USER_STATE object, and is used to send
+   already-filtered output on the channel.
+*/
+nomask int ustate_send_string(string str) {
+  if(previous_program() == USER_STATE)
+    return ::message(str);
+  else
+    error("Only USER_STATE can call PHANTASMAL_USER:ustate_send_string!");
+}
+
+/* This does a lowest-level, unfiltered send to the connection object
+   itself.  Normally sends will be filtered through the user_state
+   object(s) active, if any, but this function is different. */
+static nomask int send_string(string str) {
+  return ::message(str);
+}
 
 void to_state_stack(string str) {
   if(SYSTEM() || COMMON() || GAME()) {
@@ -194,58 +323,15 @@ object peek_state(void) {
   return state_stack[0];
 }
 
-
-/****************/
-
-/*
- * NAME:	message_all_users()
- * DESCRIPTION:	send message to listening users
- */
-static void message_all_users(string str)
-{
-    object *users, user;
-    int i;
-
-    if(!SYSTEM() && !COMMON() && !GAME())
-      return;
-
-    users = users();
-    for (i = sizeof(users); --i >= 0; ) {
-	user = users[i];
-	if (user && user != this_object()) {
-	    user->message(str);
-	}
-    }
-}
-
-
-/*
- * NAME:	system_phrase_all_users()
- * DESCRIPTION:	send message to listening users
- */
-static void system_phrase_all_users(string str)
-{
-    object *users, user;
-    int i;
-
-    if(!SYSTEM() && !COMMON() && !GAME())
-      return;
-
-    users = users();
-    for (i = sizeof(users); --i >= 0; ) {
-	user = users[i];
-	if (user != this_object()) {
-	    user->send_system_phrase(str);
-	}
-    }
-}
-
 mixed state_receive_message(string str) {
   if(!SYSTEM() && !COMMON() && !GAME())
     return nil;
 
   return state_stack[0]->from_user(str);
 }
+
+/****************/
+
 
 /**********************************************/
 

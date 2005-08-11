@@ -1,4 +1,4 @@
-/* $Header: /cvsroot/phantasmal/mudlib/usr/System/open/lib/userlib.c,v 1.18 2005/07/28 00:31:49 angelbob Exp $ */
+/* $Header: /cvsroot/phantasmal/mudlib/usr/System/open/lib/userlib.c,v 1.19 2005/08/11 21:47:09 angelbob Exp $ */
 
 #include <kernel/kernel.h>
 #include <kernel/user.h>
@@ -14,7 +14,6 @@
 #include <type.h>
 
 inherit COMMON_AUTO;
-inherit LIB_USER;
 inherit user API_USER;
 inherit rsrc API_RSRC;
 inherit io   SYSTEM_USER_IO;
@@ -33,7 +32,6 @@ inherit io   SYSTEM_USER_IO;
 string name;	                /* user filename and login name */
 string password;		/* user password */
 string Name;                    /* human-readable user name */
-int    locale;                  /* chosen output locale */
 int    channel_subs;            /* user channel subscriptions */
 int    log_chan_level;          /* Level of output on CHANNEL_LOG */
 int    err_chan_level;          /* Level of output on CHANNEL_ERR */
@@ -74,9 +72,6 @@ static void create(int clone)
     rsrc::create();
     io::create();
 
-    /* Default to enUS locale */
-    locale = PHRASED->language_by_name("english");
-
     state = ([ ]);
   } else {
     upgraded(clone);
@@ -92,14 +87,6 @@ void upgraded(varargs int clone) {
 
 
 /****** Accessor functions *******/
-
-int get_locale(void) {
-  return locale;
-}
-
-static void set_locale(int new_loc) {
-  locale = new_loc;
-}
 
 string get_name(void) {
   return name;
@@ -242,22 +229,6 @@ static int restore_user_from_file(string str) {
   return 1;
 }
 
-/* This is called only by the USER_STATE object, and is used to send
-   already-filtered output on the channel.
-*/
-nomask int ustate_send_string(string str) {
-  if(previous_program() == USER_STATE)
-    return ::message(str);
-  else
-    error("Only USER_STATE can call PHANTASMAL_USER:ustate_send_string!");
-}
-
-/* This does a lowest-level, unfiltered send to the connection object
-   itself.  Normally sends will be filtered through the user_state
-   object(s) active, if any, but this function is different. */
-static nomask int send_string(string str) {
-  return ::message(str);
-}
 
 void user_state_data(mixed data) {
   if(data == nil && (SYSTEM() || COMMON())) {
@@ -267,53 +238,6 @@ void user_state_data(mixed data) {
   }
 }
 
-int message(string str) {
-  if(!SYSTEM() && !COMMON() && !GAME())
-    return -1;
-
-  if(peek_state()) {
-    to_state_stack(str);
-  } else {
-    return send_string(str);
-  }
-}
-
-static string phrase_to_string(object PHRASE phrase) {
-  string tmp;
-
-  tmp = phrase->get_content_by_lang(locale);
-  if(tmp) return tmp;
-
-  tmp = phrase->get_content_by_lang(LANG_englishUS);
-  if(tmp) return tmp;
-
-  tmp = phrase->get_content_by_lang(LANG_debugUS);
-  if(tmp) return tmp;
-
-  return "(nil)";
-}
-
-/* This sends a Phrase, allowing locale and terminal settings to
-   affect output */
-int send_phrase(object PHRASE obj) {
-  if(!SYSTEM() && !COMMON() && !GAME())
-    return -1;
-
-  return message(phrase_to_string(obj));
-}
-
-int send_system_phrase(string phrname) {
-  object PHRASE phr;
-
-  if(!SYSTEM() && !COMMON() && !GAME())
-    return -1;
-
-  phr = PHRASED->file_phrase(SYSTEM_PHRASES, phrname);
-  if(!phr) {
-    LOGD->write_syslog("Can't find system phrase " + phrname + "!", LOG_ERR);
-  }
-  return send_phrase(phr);
-}
 
 /*
  * NAME:	receive_message()

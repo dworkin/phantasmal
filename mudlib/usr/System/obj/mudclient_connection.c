@@ -46,14 +46,17 @@ inherit user LIB_USER;
 private string buffer, outbuf;
 private mixed* input_lines;
 
+/* MUD client stuff */
+private int     active_protocols, total_linecount;
+private string  primary_protocol;
+
+/* FireClient options */
+private int     imp_version;
+
 /* telnet options */
 private int    suppress_ga;
 private int    suppress_echo;
 private string tel_goahead;
-
-/* MUD client stuff */
-private int     active_protocols, total_linecount;
-private int     imp_version;
 private string* terminal_types;
 private int     naws_width, naws_height;
 
@@ -129,9 +132,11 @@ void logout(int quit)
 {
     if (previous_program() == LIB_CONN) {
 	conn::close(nil, quit);
+#if 0
 	if (quit) {
 	    destruct_object(this_object());
 	}
+#endif
     }
 }
 
@@ -274,37 +279,64 @@ private string get_input_line(void) {
   return nil;
 }
 
+static void new_imp_input(string str) {
+
+}
+
 private int process_input(string str) {
   string line;
   int    mode;
 
-  /*********** FIRECLIENT/IMP ************************************/
-  if(!imp_version && (active_protocols & PROTOCOL_IMP)) {
-    string pre, post;
+  LOGD->write_syslog("MCC new telnet input: '" + str + "'",
+		     LOG_ULTRA_VERBOSE);
 
-    if(sscanf(str, "%sv1.%d%s", pre, imp_version, post) == 3) {
-      /* We've got a response from an IMP-enabled client */
-      LOGD->write_syslog("IMP-enabled client, version 1." + imp_version,
-			 LOG_VERBOSE);
+  if(primary_protocol) {
+    /* Add to the array of input lines as appropriate */
+    call_other(this_object(), "new_" + primary_protocol + "_input",
+	       str);
+  } else {
+    /*********** CHECK FOR PROTOCOLS *******************************/
 
-      /* TODO: make sure no more than a single \r\n is removed */
-      while(post && strlen(post)
-	    && (post[0] == '\n' || post[0] == '\r')) {
-	post = post[1..];
+    /* FireClient/IMP */
+    if(active_protocols & PROTOCOL_IMP) {
+      string pre, post;
+
+      if(sscanf(str, "%sv1.%d%s", pre, imp_version, post) == 3) {
+	/* We've got a response from an IMP-enabled client */
+	LOGD->write_syslog("IMP-enabled client, version 1." + imp_version,
+			   LOG_VERBOSE);
+	primary_protocol = "imp";
+
+	/* TODO: make sure no more than a single \r\n is removed */
+	while(post && strlen(post)
+	      && (post[0] == '\n' || post[0] == '\r')) {
+	  post = post[1..];
+	}
+
+	/* Remove "v1.%d" from the input stream */
+	str = pre + post;
+
+	/* All that was left was an IMP response string */
+	if(!str || str == "")
+	  return MODE_NOCHANGE;
       }
 
-      /* Remove "v1.%d" from the input stream */
-      str = pre + post;
-
-      /* All that was left was an IMP response string */
-      if(!str || str == "")
-	return MODE_NOCHANGE;
+      /* If we go more than five lines without seeing an IMP response,
+	 assume that no IMP response is forthcoming. */
+      if(total_linecount > 5 && (primary_protocol != "imp")) {
+	active_protocols &= ~PROTOCOL_IMP;
+      }
     }
 
-    /* If we go more than five lines without seeing an IMP response,
-       assume that no IMP response is forthcoming. */
-    if(total_linecount > 5 && !imp_version) {
-      active_protocols &= ~PROTOCOL_IMP;
+    /* Until we've set a different primary protocol, we assume
+       telnet */
+    if(!primary_protocol)
+      new_telnet_input(str);
+
+    /* If nothing but telnet and extended telnet are possible,
+       treat the imput method as being telnet */
+    if((active_protocols & ~PROTOCOL_EXT_TELNET) == 0) {
+      primary_protocol = "telnet";
     }
   }
 
@@ -314,9 +346,6 @@ private int process_input(string str) {
     if(mode == MODE_DISCONNECT || mode >= MODE_UNBLOCK)
       return mode;
   }
-
-  /*********** TELNET ********************************************/
-  new_telnet_input(str);
 
   line = get_input_line();
   while(line) {
@@ -679,9 +708,6 @@ private int new_telnet_input(string str) {
   buffer += str;
   iac_series = "";
   tmpbuf = "";
-
-  LOGD->write_syslog("MCC new telnet input: '" + str + "'",
-		     LOG_ULTRA_VERBOSE);
 
   /* Note: can't use double_iac_filter function here, because then we
      might collapse double-IAC sequences in the wrong place in the
