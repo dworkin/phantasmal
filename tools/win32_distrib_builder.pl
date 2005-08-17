@@ -126,6 +126,7 @@ system("mv $outdir/dgd/mud/include/kernel/*.h $outdir/include/kernel/");
 print "Moving DGD binary directory...\n";
 system("rm -rf $outdir/bin");
 system("mv $outdir/dgd/bin $outdir");
+system("mv $outdir/bin/driver $outdir/bin/driver.exe");
 
 print "Cleaning up non-game files & dirs...\n";
 system("rm -rf $outdir/phantasmal");
