@@ -6,7 +6,7 @@ use Cwd;
 my @lines;
 my $line;
 
-my $filename = "testgame.dgd";
+my $filename = "phantasmal.dgd";
 
 open(CONFIGFILE, $filename) or die "Can't open $filename: $!";
 @lines = <CONFIGFILE>;
@@ -39,5 +39,5 @@ print "type \"mv new_$filename $filename\" to fix it.\n";
 print "Otherwise, you're good to go.\n\n";
 
 print "To run the MUD, try typing \"./start_mud\".  If that doesn't work\n";
-print "then type \"bin\\driver $filename\" on Windows, or the same thing\n";
+print "then type \"bin\\driver.exe $filename\" on Windows, or the same thing\n";
 print "with a slash instead of a backslash on Unix.\n";
