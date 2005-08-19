@@ -1,4 +1,4 @@
-/* $Header: /cvsroot/phantasmal/mudlib/usr/System/open/lib/userlib.c,v 1.19 2005/08/11 21:47:09 angelbob Exp $ */
+/* $Header: /cvsroot/phantasmal/mudlib/usr/System/open/lib/userlib.c,v 1.20 2005/08/19 21:41:47 angelbob Exp $ */
 
 #include <kernel/kernel.h>
 #include <kernel/user.h>
@@ -67,10 +67,10 @@ static  void   print_prompt(void);
  */
 static void create(int clone)
 {
+  io::create(clone);
   if (clone) {
     user::create();
     rsrc::create();
-    io::create();
 
     state = ([ ]);
   } else {

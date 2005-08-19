@@ -60,7 +60,7 @@ private string tel_goahead;
 private string* terminal_types;
 private int     naws_width, naws_height;
 
-private int new_telnet_input(string str);
+static  int new_telnet_input(string str);
 private string debug_escape_str(string line);
 private int process_input(string str);
 private int binary_message(string str);
@@ -701,7 +701,7 @@ static void crlfbs_filter(void)
  * telnet IAC codes appropriately.  If a full line of input has been
  * read, set input_line appropriately.
  */
-private int new_telnet_input(string str) {
+static int new_telnet_input(string str) {
   string iac_series, iac_str, chunk, tmpbuf, post, series;
 
   iac_str = " "; iac_str[0] = TP_IAC;

@@ -90,8 +90,6 @@ static mixed *unq_data_to_taglist(mixed *unq) {
 
   taglist = ({ });
 
-  error("This doesn't work - fix it!");
-
   for(ctr = 0; ctr < sizeof(unq); ctr += 2) {
     unq[ctr] = STRINGD->trim_whitespace(unq[ctr]);
 
@@ -101,13 +99,10 @@ static mixed *unq_data_to_taglist(mixed *unq) {
     } else {
       tmp_taglist = unq_data_to_taglist(unq[ctr + 1]);
       if(unq[ctr] && strlen(unq[ctr])) {
-	/* Now we've got the parsed taglist that the unq[ctr] tag
-	   surrounds. */
-
-      } else {
-	/* Empty outer tag */
-	taglist += tmp_taglist;
+        taglist += ({ unq[ctr], "" });
       }
+      /* Empty outer tag */
+      taglist += tmp_taglist;
     }
   }
 
