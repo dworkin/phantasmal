@@ -104,12 +104,13 @@
     that doesn't have a direct text representation.  A taglist is an
     array of even length which alternates between tag, text, tag,
     text, et cetera.  If there's no tag around the opening text, the
-    list begins with an empty string.  Instead of having nested tagged
+    first element of the list is an empty string.  Instead of having
+    nested tagged
     text like the UNQ markup, the taglist is a single flat list.  Tag
     names start with an opening or closing curly brace to indicate
     whether they're opening or closing a tag's scope, or an asterisk
-    to indicate that the tag is freestanding and doesn't mark any
-    text.
+    to indicate that the tag is freestanding and doesn't enclose any
+    other list items.
   </p>
 
   <p>
@@ -127,7 +128,7 @@
     be illegal to have a taglist like ({ &quot;{green&quot;,
     &quot;bob&quot;, &quot;{red&quot;, &quot;sam&quot;,
     &quot}green&quot;, &quot;&quot;, &quot;}red&quot;, &quot;&quot;
-    }).  Similarly, it is illegal to have an opening tag without a
+    }).  It is also illegal to have an opening tag without a
     corresponding closing tag.
   </p>
 
