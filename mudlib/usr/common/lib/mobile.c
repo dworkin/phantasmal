@@ -168,7 +168,7 @@ nomask void whisper(object to, string str) {
     get_user()->message(": " + str + "\r\n");
   }
   location->enum_room_mobiles("hook_whisper_other",
-			      ({ this_object(), mob }), body, to);
+                              ({ this_object(), mob }), body, to);
   
   return;
 }
@@ -182,7 +182,7 @@ nomask void whisper(object to, string str) {
  * are performed.
  */
 private atomic void path_place(object user, object *rem_path,
-			       object *add_path, object obj) {
+                               object *add_path, object obj) {
   int i;
   object env, my_user;
   string reason;
@@ -197,8 +197,8 @@ private atomic void path_place(object user, object *rem_path,
   for (i = 0; i < sizeof(rem_path); ++i) {
     env = rem_path[i]->get_location();
     if ((reason = rem_path[i]->can_remove(my_user, body, obj, env)) ||
-	(reason = obj->can_get(my_user, body, env)) ||
-	(reason = env->can_put(my_user, body, obj, rem_path[i]))) {
+        (reason = obj->can_get(my_user, body, env)) ||
+        (reason = env->can_put(my_user, body, obj, rem_path[i]))) {
       error("$" + reason);
     } else {
       /* call function in object for removing from the current room */
@@ -214,8 +214,8 @@ private atomic void path_place(object user, object *rem_path,
   for (i = 0; i < sizeof(add_path); ++i) {
     env = add_path[i]->get_location();
     if ((reason = add_path[i]->can_put(my_user, body, obj, env)) ||
-	(reason = obj->can_get(my_user, body, add_path[i])) ||
-	(reason = env->can_remove(my_user, body, obj, add_path[i]))) {
+        (reason = obj->can_get(my_user, body, add_path[i])) ||
+        (reason = env->can_remove(my_user, body, obj, add_path[i]))) {
       error("$" + reason);
     } else {
       obj->get(body, add_path[i]);
@@ -261,9 +261,9 @@ nomask string place(object obj, object to) {
        * location
        */
       if (get_user()) {
-	err = obj->get_brief()->to_string(get_user());
+        err = obj->get_brief()->to_string(get_user());
       } else {
-	err = obj->get_brief()->get_content_by_lang(LANG_englishUS);
+        err = obj->get_brief()->as_markup(MARKUP_DEBUG);
       }
       err += " is not in this room";
       return err;
@@ -283,9 +283,9 @@ nomask string place(object obj, object to) {
        * so return an error
        */
       if (get_user()) {
-	err = to->get_brief()->to_string(get_user()); + " is not in this room";
+        err = to->get_brief()->to_string(get_user()); + " is not in this room";
       } else {
-	err = to->get_brief()->get_content_by_lang(LANG_englishUS);
+        err = to->get_brief()->as_markup(MARKUP_DEBUG);
       }
       err += " is not in this room";
 
@@ -461,7 +461,7 @@ nomask string move(int dir) {
   }
 
   if (reason = dest->can_enter(get_user(), body,
-			       EXITD->opposite_direction(dir))) {
+                               EXITD->opposite_direction(dir))) {
     return reason;
   }
   
@@ -499,7 +499,7 @@ nomask string teleport(object dest, int force) {
   if (!force) {
     if (location) {
       if (reason = location->can_leave(get_user(), body, DIR_TELEPORT)) {
-	return reason;
+        return reason;
       }
     }
     
@@ -571,9 +571,7 @@ string to_unq_text(void) {
 
   ret  = "~mobile{\n";
   ret += "  ~type{" + this_object()->get_type() + "}\n";
-  ret += "  ~name{"
-    + body->get_brief()->get_content_by_lang(LANG_englishUS)
-    + "}\n";
+  ret += "  ~name{" + body->get_brief()->as_unq() + "}\n";
   ret += "  ~number{" + number + "}\n";
   ret += "  ~body{" + bodynum + "}\n";
   if(function_object("mobile_unq_fields", this_object())) {
@@ -605,13 +603,13 @@ static mixed mobile_from_dtd_unq(mixed* unq) {
     if(!STRINGD->stricmp(ctr[0][0], "body")) {
       bodynum = ctr[0][1];
       if(bodynum != -1) {
-	body = MAPD->get_room_by_num(bodynum);
-	if(!body)
-	  error("Can't find body for mobile, object #" + bodynum + "!\n");
-	location = body->get_location();
+        body = MAPD->get_room_by_num(bodynum);
+        if(!body)
+          error("Can't find body for mobile, object #" + bodynum + "!\n");
+        location = body->get_location();
       } else {
-	body = nil;
-	location = nil;
+        body = nil;
+        location = nil;
       }
     } else if(!STRINGD->stricmp(ctr[0][0], "number")) {
       number = ctr[0][1];

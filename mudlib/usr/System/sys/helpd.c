@@ -121,15 +121,15 @@ private string normalize_help_query(string query) {
     if(words[ctr]) {
       word = "";
       for(ctr2 = 0; ctr2 < strlen(words[ctr]); ctr2++) {
-	if((words[ctr][ctr2] >= "A"[0] && words[ctr][ctr2] <= "Z"[0])
-	   || (words[ctr][ctr2] >= "a"[0] && words[ctr][ctr2] <= "z"[0])
-	   || (words[ctr][ctr2] >= "0"[0] && words[ctr][ctr2] <= "9"[0])) {
-	  word += words[ctr][ctr2..ctr2];
-	}
+        if((words[ctr][ctr2] >= "A"[0] && words[ctr][ctr2] <= "Z"[0])
+           || (words[ctr][ctr2] >= "a"[0] && words[ctr][ctr2] <= "z"[0])
+           || (words[ctr][ctr2] >= "0"[0] && words[ctr][ctr2] <= "9"[0])) {
+          word += words[ctr][ctr2..ctr2];
+        }
       }
 
       if(strlen(word)) {
-	querylist += ({ word });
+        querylist += ({ word });
       }
     }
   }
@@ -165,7 +165,7 @@ void reread_help_files(void) {
     for(iter = 0; iter < sizeof(path_stack); iter++) {
       new_help_directory(path_stack[iter]);
       if(iter > 10) {
-	error("Error in iteration...\n");
+        error("Error in iteration...\n");
       }
     }
   }
@@ -217,11 +217,11 @@ void new_help_file(string path) {
     }
 
     err = catch (unq_data
-		 = UNQ_PARSER->unq_parse_with_dtd(contents, help_dtd, path));
+                 = UNQ_PARSER->unq_parse_with_dtd(contents, help_dtd, path));
 
     if (err != nil) {
       LOGD->write_syslog("Helpd got parse error parsing " + path,
-			 LOG_ERR);
+                         LOG_ERR);
       error(err);
     }
     if(!unq_data || !typeof(unq_data) == T_ARRAY)
@@ -252,24 +252,24 @@ void new_help_directory(string path) {
     left = "";
     for(ctr = 0; ctr < sizeof(dir[0]); ctr++) {
       if(dir[1][ctr] == -2) {
-	if(!exclude_path(path + "/" + dir[0][ctr])) {
-	  new_help_directory(path + "/" + dir[0][ctr]);
-	}
+        if(!exclude_path(path + "/" + dir[0][ctr])) {
+          new_help_directory(path + "/" + dir[0][ctr]);
+        }
       } else if(sscanf(dir[0][ctr], "%*s.hlp%s", left) == 2) {
-	if(left == "") {
-	  files_to_load += ({ path + "/" + dir[0][ctr] });
+        if(left == "") {
+          files_to_load += ({ path + "/" + dir[0][ctr] });
 
-	  if(load_callout < 0) {
+          if(load_callout < 0) {
 #if 0
-	    load_callout = call_out("load_helpfiles", 0);
-	    if(load_callout < 0)
-	      LOGD->write_syslog("Couldn't load all helpfiles?", LOG_ERR);
+            load_callout = call_out("load_helpfiles", 0);
+            if(load_callout < 0)
+              LOGD->write_syslog("Couldn't load all helpfiles?", LOG_ERR);
 #else
-	    /* Temporary hack to keep from using the call_out loading */
-	    load_helpfiles();
+            /* Temporary hack to keep from using the call_out loading */
+            load_helpfiles();
 #endif
-	  }
-	}
+          }
+        }
       }
     }
   }
@@ -305,9 +305,9 @@ private mixed* filter_for_keywords(mixed* entries, mixed* kw) {
       /* Not a repeat of an existing entry */
 
       if(sizeof(kw & entries[ctr][4]) == sizeof(entries[ctr][4])) {
-	/* If all keywords in the entry are also in kw, we'll
-	   put it into tmp. */
-	tmp[entries[ctr][1]] = entries[ctr];
+        /* If all keywords in the entry are also in kw, we'll
+           put it into tmp. */
+        tmp[entries[ctr][1]] = entries[ctr];
       }
     }
   }
@@ -367,12 +367,12 @@ mixed* query_soundex_with_keywords(string sdx_key, object user, string* kw) {
     return nil;
 }
 
-private void new_unq_entry(string path, object names, object desc,
-			   string keywords) {
-  int    locale, len, ctr;
-  mixed* keys, arr, kw_arr;
-  string sdx;
-  object phr;
+private void new_unq_entry(string path, object PHRASE names, object PHRASE desc,
+                           string keywords) {
+  int     locale, len, ctr, tag_ctr;
+  mixed*  keys, arr, kw_arr;
+  string* taglist;
+  string  sdx;
 
   if(!GAME() && !COMMON() && !SYSTEM())
     return;
@@ -387,52 +387,64 @@ private void new_unq_entry(string path, object names, object desc,
       kw_arr[ctr] = STRINGD->trim_whitespace(kw_arr[ctr]);
 
       if(kw_arr[ctr] != "admin") {
-	LOGD->write_syslog("Unknown help keyword '" + kw_arr[ctr]
-			   + "' loading helpfiles!", LOG_WARN);
+        LOGD->write_syslog("Unknown help keyword '" + kw_arr[ctr]
+                           + "' loading helpfiles!", LOG_WARN);
       }
     }
   } else {
     kw_arr = ({ });
   }
 
-  for(locale = 0; locale < num_loc; locale++) {
-    string tmp;
+  taglist = names->as_taglist();
+  locale = LANG_enUS;
+  for(tag_ctr = 0; tag_ctr < sizeof(taglist); tag_ctr += 2) {
+    if(taglist[tag_ctr] != "") {
+      switch(taglist[tag_ctr][0]) {
+      case '{':
+        locale = PHRASED->language_by_name(taglist[tag_ctr][1..]);
+        if(locale == -1)
+          error("Bad language tag '" + taglist[tag_ctr][1..]
+                + " adding file '" + path + "' to HelpD!");
+        break;
+      case '}':
+        locale = LANG_enUS;
+        break;
+      default:
+        error("Illegal tag '" + taglist[tag_ctr] + "' in phrase when adding '"
+              + path + "' entry to HelpD!");
+      }
+    }
 
-    tmp = names->get_content_by_lang(locale);
-    if(!tmp || tmp == "")
-      continue;
-
-    keys = explode(names->get_content_by_lang(locale), ",");
+    keys = explode(taglist[tag_ctr + 1], ",");
     len = sizeof(keys);
-
     for(ctr = 0; ctr < len; ctr++) {
       keys[ctr] = normalize_help_query(keys[ctr]);
       if(STRINGD->string_has_char('\n', keys[ctr])) {
-	LOGD->write_syslog("Embedded newline in name(s) of help entry \""
-				  + keys[0] + "\"", LOG_ERR);
+        LOGD->write_syslog("Embedded newline in name(s) of help entry \""
+                                  + keys[0] + "\"", LOG_ERR);
       }
 
       /* If no entry, init array */
       if(!exact_entries[locale][keys[ctr]])
-	exact_entries[locale][keys[ctr]] = ({ });
+        exact_entries[locale][keys[ctr]] = ({ });
 
       if(locale == LANG_englishUS) {
-	/* Generate Soundex key */
-	sdx = soundex->get_key(keys[ctr]);
+        /* Generate Soundex key */
+        sdx = soundex->get_key(keys[ctr]);
       } else {
-	/* If it's not English, don't bother with Soundex */
-	sdx = "";
+        /* If it's not English, don't bother with Soundex */
+        sdx = "";
       }
 
       /* Compose entry */
       arr = ({keys[ctr], desc, path, sdx, kw_arr });
 
       if(locale == LANG_englishUS) {
-	if(!sdx_entries[sdx])
-	  sdx_entries[sdx] = ({ });
+        if(!sdx_entries[sdx])
+          sdx_entries[sdx] = ({ });
 
-	/* If it's English, put its Soundex into the sdx_entries array */
-	sdx_entries[sdx] += ({ arr });
+        /* If it's English, put its Soundex into the sdx_entries array */
+        sdx_entries[sdx] += ({ arr });
       }
 
       /* Put exact entry into specified locale */
@@ -447,7 +459,7 @@ void load_unq_help(string path, mixed* data) {
   object names, desc;
 
   if(!GAME() && !COMMON() && !SYSTEM())
-    return;
+    error("Can't call unprivileged!");
 
   len = sizeof(data);
   if(len % 2)
@@ -456,32 +468,32 @@ void load_unq_help(string path, mixed* data) {
   for(ctr = 0; ctr < len; ctr+=2) {
     if(data[ctr] == "name") {
       if(names) {
-	new_unq_entry(path, names, desc, keywords);
+        new_unq_entry(path, names, desc, keywords);
 
-	names = desc = nil;
-	keywords = nil;
+        names = desc = nil;
+        keywords = nil;
       }
 
       names = data[ctr + 1];
       if(!names)
-	error("Bad name data in " + path);
+        error("Bad name data in " + path);
     } else if(data[ctr] == "desc") {
       if(desc)
-	error("Description entry already present in help file " + path);
+        error("Description entry already present in help file " + path);
 
       desc = data[ctr + 1];
       if(!desc)
-	error("Bad description data in " + path);
+        error("Bad description data in " + path);
     } else if(data[ctr] == "keywords") {
       if(keywords)
-	error("Keywords entry already present in help file " + path);
+        error("Keywords entry already present in help file " + path);
 
       keywords = data[ctr + 1];
       if(!keywords)
-	error("Bad keyword data in " + path);
+        error("Bad keyword data in " + path);
     } else {
       error("Unrecognized tag " + STRINGD->mixed_sprint(data[ctr])
-	    + " parsing help file...");
+            + " parsing help file...");
     }
   }
 
@@ -501,7 +513,7 @@ static void load_helpfiles(void) {
     load_callout = call_out("load_helpfiles", 0);
     if(load_callout < 0)
       LOGD->write_syslog("Couldn't schedule call_out for helpfile loading!",
-			 LOG_ERR);
+                         LOG_ERR);
   }
 
   for(ctr = 0; ctr < FILES_PER_ITER; ctr++) {

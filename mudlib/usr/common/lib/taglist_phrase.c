@@ -11,6 +11,15 @@ static void create(varargs int clone)
 {
 }
 
+string *as_taglist(void) {
+  if(!content) return nil;
+  return content[..];
+}
+
+void from_taglist(string *new_content) {
+  content = new_content;
+}
+
 string as_xml(void) {
   return taglist_to_xml(content);
 }
@@ -23,31 +32,33 @@ string as_unq(void) {
   return taglist_to_unq(content);
 }
 
+string as_markup(int markup_type) {
+  switch(markup_type) {
+  case MARKUP_UNQ:
+    return as_unq();
+  case MARKUP_XML:
+    return as_xml();
+  default:
+    error("Illegal markup type in as_markup!");
+  }
+}
+
 void from_unq(string unq_markup) {
   content = unq_to_taglist(unq_markup);
 }
 
-private string taglist_to_string(object user, mixed *tl) {
-  int ctr;
-
-  if(!tl) return "";
-
-  for(ctr = 0; ctr < sizeof(tl); ctr += 2) {
-
-
-    switch(tl[ctr]) {
-
-    }
+void from_unq_data(mixed unq) {
+  if(typeof(unq) == T_STRING) {
+    from_taglist( ({ "", unq }) );
+  } else {
+    content = unq_data_to_taglist(unq);
   }
 }
 
 string to_string(object user) {
-  return taglist_to_string(user, content);
+  return user->taglist_to_string(content);
 }
 
 string to_unq_text(void) {
-  string ret;
-
-  ret = taglist_to_unq(content);
-  return ret;
+  return taglist_to_unq(content);
 }

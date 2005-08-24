@@ -32,45 +32,57 @@ static string taglist_to_markup(mixed *taglist, int markup_type) {
 
   result = "";
   for(ctr = 0; ctr < sizeof(taglist); ctr+=2) {
-    label = nil;
-    if(taglist[ctr] && taglist[ctr] != "") {
-      label = taglist[ctr];
+    label = taglist[ctr];
+    if(label == nil)
+      error("(nil) label converting a taglist!");
+
+    if(label != "") {
+      switch(label[0]) {
+
+      /* Standalone tag, no closing */
+      case '*':
+        switch(markup_type) {
+        case MARKUP_UNQ:
+          result += "~" + label[1..] + "{}";
+          break;
+        case MARKUP_XML:
+          result += "<" + label[1..] + " />";
+          break;
+        }
+        break;
+
+      /* Opening tag */
+      case '{':
+        switch(markup_type) {
+        case MARKUP_UNQ:
+          result += "~" + label[1..] + "{";
+          break;
+        case MARKUP_XML:
+          result += "<" + label[1..] + ">";
+          break;
+        }
+        break;
+
+      /* Closing tag */
+      case '}':
+        switch(markup_type) {
+        case MARKUP_UNQ:
+          result += "}";
+          break;
+        case MARKUP_XML:
+          result += "</" + label[1..] + ">";
+          break;
+        }
+        break;
+
+      /* All labels should be marked as opening, standalone, or closing! */
+      default:
+        error("Malformed label converting a taglist!");
+      }
     }
 
-    switch(typeof(taglist[ctr + 1])) {
-    case T_STRING:
-      body = taglist[ctr + 1];
-      break;
-    case T_ARRAY:
-      body = taglist_to_markup(taglist[ctr + 1], markup_type);
-      break;
-    default:
-      error("Malformed taglist in taglist_to_unq!");
-    }
-
-    if(body == "") {
-      /* Empty tag */
-      switch(markup_type) {
-      case MARKUP_UNQ:
-	result += "~" + label + "{}";
-	break;
-      case MARKUP_XML:
-	result += "<" + label + " />";
-	break;
-      }
-    } else if(label) {
-      /* Non-empty tag */
-      switch(markup_type) {
-      case MARKUP_UNQ:
-	result += "~" + label + "{" + body + "}";
-	break;
-      case MARKUP_XML:
-	result += "<" + label + ">" + body + "</label>";
-	break;
-      }
-    } else {
-      result += body;
-    }
+    /* Now add body text after label */
+    result += taglist[ctr + 1];
   }
 
   return result;
@@ -84,9 +96,12 @@ static string taglist_to_xml(mixed *taglist) {
   return taglist_to_markup(taglist, MARKUP_XML);
 }
 
-static mixed *unq_data_to_taglist(mixed *unq) {
+static string *unq_data_to_taglist(mixed *unq) {
   string *taglist, *tmp_taglist;
   int     ctr;
+
+  if(typeof(unq) == T_STRING)
+    return ({ "", unq });
 
   taglist = ({ });
 
@@ -95,31 +110,41 @@ static mixed *unq_data_to_taglist(mixed *unq) {
 
     if(typeof(unq[ctr + 1]) == T_STRING) {
       unq[ctr + 1] = STRINGD->trim_whitespace(unq[ctr + 1]);
-      taglist += ({ unq[ctr], unq[ctr + 1] });
+      if(unq[ctr + 1] == "") {
+        taglist += ({ "*" + unq[ctr], "" });
+      } else {
+        taglist += ({ "{" + unq[ctr], unq[ctr + 1], "}" + unq[ctr], "" });
+      }
     } else {
       tmp_taglist = unq_data_to_taglist(unq[ctr + 1]);
-      if(unq[ctr] && strlen(unq[ctr])) {
-        taglist += ({ unq[ctr], "" });
-      }
-      /* Empty outer tag */
+      taglist += ({ unq[ctr], "" });
       taglist += tmp_taglist;
     }
   }
 
-  /* TODO:  Go through this just once at the end rather than
+  /* If the very first element was a blank label, use an empty string */
+  if(sizeof(taglist) && taglist[0] && (strlen(taglist[0]) == 1)) {
+    taglist[0] = "";
+  }
+
+  /* TODO:  Go through this just once per call rather than
      at every recursive level. */
   /* Go through and remove pairs of empty strings.  They're
      an artifact of the way we convert from UNQ. */
-  for(ctr = 1; ctr < sizeof(taglist); ctr += 2) {
+  if(sizeof(taglist) <= 2) return taglist;
+
+  for(ctr = 1; ctr + 1 < sizeof(taglist); ctr += 2) {
     if(taglist[ctr] == "" && taglist[ctr + 1] == "") {
       taglist = taglist[..ctr-1] + taglist[ctr+2..];
       ctr -= 2;
     }
   }
+
+  if(sizeof(taglist) % 1) error("Odd-sized taglist being returned!");
   return taglist;
 }
 
-static mixed *unq_to_taglist(string unq_string) {
+static string *unq_to_taglist(string unq_string) {
   mixed *unq;
 
   /* Parse the UNQ, remove any tags where the label (if any) and content
@@ -130,11 +155,11 @@ static mixed *unq_to_taglist(string unq_string) {
   return unq_data_to_taglist(unq);
 }
 
-static mixed *xml_to_taglist(string xml_string) {
+static string *xml_to_taglist(string xml_string) {
   error("Not yet implemented!");
 }
 
-static mixed *markup_to_taglist(string markup, int markup_type) {
+static string *markup_to_taglist(string markup, int markup_type) {
   switch(markup_type) {
   case MARKUP_UNQ:
     return unq_to_taglist(markup);

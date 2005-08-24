@@ -729,7 +729,7 @@ static int prompt_brief_desc_input(string input) {
 
   input = STRINGD->trim_whitespace(input);
   phr = new_obj->get_brief();
-  phr->set_content_by_lang(get_user()->get_locale(), input);
+  phr->from_unq(input);
 
   substate = SS_PROMPT_LOOK_DESC;
 
@@ -760,7 +760,7 @@ static void prompt_look_desc_data(mixed data) {
 
   data = STRINGD->trim_whitespace(data);
   phr = new_obj->get_look();
-  phr->set_content_by_lang(get_user()->get_locale(), data);
+  phr->from_unq(data);
 
   substate = SS_PROMPT_EXAMINE_DESC;
   send_string("\r\nLook desc accepted.\r\n");
@@ -813,9 +813,7 @@ private mixed process_words(string input) {
     words[ctr] = STRINGD->to_lower(words[ctr]);
   }
 
-  phr = new_object(LWO_PHRASE);
-  phr->set_content_by_lang(get_user()->get_locale(),
-			   implode(words[0..],","));
+  phr = PHRASED->new_simple_english_phrase(implode(words[0..], ","));
 
   return phr;
 }

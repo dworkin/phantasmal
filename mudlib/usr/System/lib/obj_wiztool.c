@@ -111,7 +111,7 @@ static void cmd_set_obj_desc(object user, string cmd, string str) {
       phr = PHRASED->new_simple_english_phrase("CHANGE ME!");
       must_set = 1;
     }
-    phr->set_content_by_lang(user->get_locale(), desc);
+    phr->from_unq(desc);
     if(must_set) {
       call_other(obj, "set_" + look_type, phr);
     }
@@ -442,7 +442,7 @@ static void cmd_add_nouns(object user, string cmd, string str) {
 		+ PHRASED->locale_name_for_language(user->get_locale())
 		+ ").\n");
   phr = new_object(LWO_PHRASE);
-  phr->set_content_by_lang(user->get_locale(), implode(words[1..],","));
+  phr->from_unq("~enUS" + "{" + implode(words[1..],",") + "}");
   obj->add_noun(phr);
   user->message("Done.\n");
 }
@@ -496,7 +496,7 @@ static void cmd_add_adjectives(object user, string cmd, string str) {
 		+ PHRASED->locale_name_for_language(user->get_locale())
 		+ ").\n");
   phr = new_object(LWO_PHRASE);
-  phr->set_content_by_lang(user->get_locale(), implode(words[1..],","));
+  phr->from_unq("~enUS{" + implode(words[1..],",") + "}");
   obj->add_adjective(phr);
   user->message("Done.\n");
 }

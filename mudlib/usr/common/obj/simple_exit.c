@@ -90,6 +90,8 @@ string *get_nouns(int locale) {
   string *tmp, loc_str;
   object  dir;
 
+  error("Who uses this?");
+
   dir = EXITD->get_name_for_dir(direction);
   tmp = ::get_nouns(locale);
 

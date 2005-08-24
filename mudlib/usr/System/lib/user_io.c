@@ -99,8 +99,8 @@ int message(string str) {
 }
 
 /*
- * NAME:	message_all_users()
- * DESCRIPTION:	send message to listening users
+ * NAME:        message_all_users()
+ * DESCRIPTION: send message to listening users
  */
 static void message_all_users(string str)
 {
@@ -112,16 +112,16 @@ static void message_all_users(string str)
 
     users = users();
     for (i = sizeof(users); --i >= 0; ) {
-	user = users[i];
-	if (user && user != this_object()) {
-	    user->message(str);
-	}
+        user = users[i];
+        if (user && user != this_object()) {
+            user->message(str);
+        }
     }
 }
 
 /*
- * NAME:	system_phrase_all_users()
- * DESCRIPTION:	send message to listening users
+ * NAME:        system_phrase_all_users()
+ * DESCRIPTION: send message to listening users
  */
 static void system_phrase_all_users(string str)
 {
@@ -133,46 +133,32 @@ static void system_phrase_all_users(string str)
 
     users = users();
     for (i = sizeof(users); --i >= 0; ) {
-	user = users[i];
-	if (user != this_object()) {
-	    user->send_system_phrase(str);
-	}
+        user = users[i];
+        if (user != this_object()) {
+            user->send_system_phrase(str);
+        }
     }
-}
-
-static string phrase_to_string(object PHRASE phrase) {
-  string tmp;
-
-  tmp = phrase->get_content_by_lang(locale);
-  if(tmp) return tmp;
-
-  tmp = phrase->get_content_by_lang(LANG_englishUS);
-  if(tmp) return tmp;
-
-  tmp = phrase->get_content_by_lang(LANG_debugUS);
-  if(tmp) return tmp;
-
-  return "(nil)";
 }
 
 /* This sends a Phrase, allowing locale and terminal settings to
    affect output */
 int send_phrase(object PHRASE obj) {
   if(!SYSTEM() && !COMMON() && !GAME())
-    return -1;
+    error("Can't send phrase!  Not privileged!");
 
-  return message(phrase_to_string(obj));
+  return message(obj->to_string(this_object()));
 }
 
 int send_system_phrase(string phrname) {
   object PHRASE phr;
 
   if(!SYSTEM() && !COMMON() && !GAME())
-    return -1;
+    error("Can't send system phrase!  Not privileged!");
 
   phr = PHRASED->file_phrase(SYSTEM_PHRASES, phrname);
   if(!phr) {
     LOGD->write_syslog("Can't find system phrase " + phrname + "!", LOG_ERR);
+    return -1;
   }
   return send_phrase(phr);
 }
@@ -215,7 +201,7 @@ void message_scroll(string str) {
       push_state(scroll_state);
     } else {
       LOGD->write_syslog("Couldn't clone US_SCROLL_TEXT state object!",
-			 LOG_ERROR);
+                         LOG_ERROR);
     }
   }
 }
@@ -234,12 +220,10 @@ void pop_state(object state) {
   object prev_state, next_state;
 
   if(!SYSTEM() && !COMMON() && !GAME())
-    return;
+    error("Unprivileged code calling pop_state!");
 
-  if(!state_stack || !sizeof(state_stack)) {
-    destruct_object(state);
+  if(!state_stack || !sizeof(state_stack))
     error("Popping empty stack!");
-  }
 
   if(!(state_stack && ({ state })))
     error("Popping state not in stack!");
@@ -250,10 +234,10 @@ void pop_state(object state) {
     first_state = 0;
     for(ctr = 1; ; ctr++) {
       if(state_stack[ctr] == state) {
-	prev_state = state_stack[ctr - 1];
-	if(ctr + 1 < sizeof(state_stack))
-	  next_state = state_stack[ctr + 1];
-	break;
+        prev_state = state_stack[ctr - 1];
+        if(ctr + 1 < sizeof(state_stack))
+          next_state = state_stack[ctr + 1];
+        break;
       }
     }
   }
@@ -325,7 +309,7 @@ object peek_state(void) {
 
 mixed state_receive_message(string str) {
   if(!SYSTEM() && !COMMON() && !GAME())
-    return nil;
+    error("Not privileged!");
 
   return state_stack[0]->from_user(str);
 }
@@ -357,11 +341,27 @@ void set_up_substitutions(void) {
     return;  /* Can't set up subs yet */
   }
 
+  /* Currently hardcode, no locale stuff */
+  substitutions = ([ "{enUS" : "", "}enUS" : "" ]);
+
   if(!mudclient_conn) {
     /* This connection was made on a non-MUDclient port.  That means
        no term types, no ANSI color, no window size... */
 
-    substitutions = ([ ]);
+    substitutions += ([
+                       "{black" : "",
+                       "}black" : "",
+                       "{blue" : "",
+                       "}blue" : "",
+                       "{green" : "",
+                       "}green" : "",
+                       "{cyan" : "",
+                       "}cyan" : "",
+                       "{red" : "",
+                       "}red" : "",
+                       "{purple" : "",
+                       "}purple" : "",
+    ]);
 
     subs_correct = 1;
     return;
@@ -369,23 +369,36 @@ void set_up_substitutions(void) {
 
   info = conn->terminal_info();
   if(info["protocol"] == "telnet") {
-    substitutions = ([ ]);
+    substitutions += ([
+                       "{black" : "<FONT COLOR=\"black\"",
+                       "}black" : "</FONT>",
+                       "{blue" : "<FONT COLOR=\"blue\"",
+                       "}blue" : "</FONT>",
+                       "{green" : "<FONT COLOR=\"green\"",
+                       "}green" : "</FONT>",
+                       "{cyan" : "<FONT COLOR=\"cyan\"",
+                       "}cyan" : "</FONT>",
+                       "{red" : "<FONT COLOR=\"red\"",
+                       "}red" : "</FONT>",
+                       "{purple" : "<FONT COLOR=\"purple\"",
+                       "}purple" : "</FONT>",
+                       ]);
   } else if(info["protocol"] == "imp") {
-    substitutions = ([
-		      "client-startup" : "<IMPDEMO>",
-		      "black" : "<FONT COLOR=\"black\"",
-		      "/black" : "</FONT>",
-		      "blue" : "<FONT COLOR=\"blue\"",
-		      "/blue" : "</FONT>",
-		      "green" : "<FONT COLOR=\"green\"",
-		      "/green" : "</FONT>",
-		      "cyan" : "<FONT COLOR=\"cyan\"",
-		      "/cyan" : "</FONT>",
-		      "red" : "<FONT COLOR=\"red\"",
-		      "/red" : "</FONT>",
-		      "purple" : "<FONT COLOR=\"purple\"",
-		      "/purple" : "</FONT>",
-		      ]);
+    substitutions += ([
+                       "*client-startup" : "<IMPDEMO>",
+                       "{black" : "<FONT COLOR=\"black\"",
+                       "}black" : "</FONT>",
+                       "{blue" : "<FONT COLOR=\"blue\"",
+                       "}blue" : "</FONT>",
+                       "{green" : "<FONT COLOR=\"green\"",
+                       "}green" : "</FONT>",
+                       "{cyan" : "<FONT COLOR=\"cyan\"",
+                       "}cyan" : "</FONT>",
+                       "{red" : "<FONT COLOR=\"red\"",
+                       "}red" : "</FONT>",
+                       "{purple" : "<FONT COLOR=\"purple\"",
+                       "}purple" : "</FONT>",
+                       ]);
   } else {
     error("Unrecognized protocol when setting up substitution maps!");
   }
@@ -401,4 +414,51 @@ int supports_tag(string tag) {
     return 1;
 
   return 0;
+}
+
+string taglist_to_string(mixed *taglist) {
+  int ctr;
+  string result;
+  mapping my_subs;
+
+  if(!SYSTEM() && !COMMON() && !GAME())
+    error("Only privileged code may call this!");
+
+  catch {
+
+  if(!subs_correct)
+    set_up_substitutions();
+
+  if(!subs_correct) {
+    /* Conn's not set up yet...  Trouble! */
+    my_subs = ([ "{enUS" : "", "}enUS" : "" ]);
+  } else {
+    my_subs = substitutions;
+  }
+
+  result = "";
+
+  for(ctr = 0; ctr < sizeof(taglist); ctr += 2) {
+    if(my_subs[taglist[ctr]]) {
+      /* do stuff */
+      result += my_subs[taglist[ctr]];
+    } else {
+      if(taglist[ctr] != "" && taglist[ctr][0] == '{') {
+        string close_tag;
+
+        close_tag = taglist[ctr];
+        close_tag[0] = '}';
+        /* Skip until closing tag */
+        while(taglist[ctr] != close_tag) ctr+=2;
+      }
+    }
+    result += taglist[ctr + 1];
+  }
+
+  } : {
+    LOGD->write_syslog("Error in taglist_to_string, with taglist '"
+                       + STRINGD->mixed_sprint(taglist) + "', counter " + ctr, LOG_ERR);
+  }
+
+  return result;
 }

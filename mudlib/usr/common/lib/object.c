@@ -23,18 +23,18 @@ private object location;  /* Same as 'environment' in many MUDLibs */
 
 /* Descriptions, available to the player when examining the object */
 object bdesc;  /* "Brief" description, such as "a sword" or
-		  "John Kricfalusi" or "some bacon" */
+                  "John Kricfalusi" or "some bacon" */
 object ldesc;  /* A longer standard "look" description */
 object edesc;  /* An "examine" description, meant to convey details only
-		  available when searched for.  Defaults to ldesc. */
+                  available when searched for.  Defaults to ldesc. */
 
 /* Specifiers, determining how the player may refer to the object. */
 private string** nouns;   /* An array (by locale) of arrays of phrases
-			     for the various nouns which can specify
-			     this object */
+                             for the various nouns which can specify
+                             this object */
 private string** adjectives;  /* An array (by locale) of arrays of
-				 phrases for allowable adjectives that
-				 specify this object */
+                                 phrases for allowable adjectives that
+                                 specify this object */
 
 /* These are arrays of removed nouns and verbs from parent objects.
    Usually a parent's nouns and verbs are inherited automatically by
@@ -216,59 +216,98 @@ void remove_archetype(object arch_to_remove) {
   error("Not yet implemented!");
 }
 
-private atomic void add_remove_noun(object phr, int do_add) {
-  int    locale, ctr2;
-  string tmp;
-  mixed* words;
-
-  unregister_my_nouns();
+private atomic void add_remove_noun_adj(object phr, int do_add, int is_noun) {
+  int     locale, ctr, ctr2;
+  mixed*  taglist;
+  string* words;
 
   if(PHRASED->num_locales() > sizeof(nouns)) {
     error("Fix objects to support dynamic adding of locales!");
   }
 
-  for(locale = 0; locale < PHRASED->num_locales(); locale++) {
-    string *cur_nouns;
+  taglist = phr->as_taglist();
+  if(!taglist) return;
 
-    tmp = phr->get_content_by_lang(locale);
-    cur_nouns = get_nouns(locale);
+  if(is_noun)
+    unregister_my_nouns();
+  else
+    unregister_my_adjs();
 
-    if(tmp) {
-      words = explode(tmp, ",");
-      for(ctr2 = 0; ctr2 < sizeof(words); ctr2++) {
-	words[ctr2] = STRINGD->trim_whitespace(words[ctr2]);
+  locale = LANG_enUS;
 
-	if(words[ctr2] && words[ctr2] != "") {
-	  if(do_add) {
-	    removed_nouns[locale] -= ({ words[ctr2] });
+  for(ctr = 0; ctr < sizeof(taglist); ctr += 2) {
+    string *cur_words;
 
-	    /* If no parent defines this already, add it to this
-	       object */
-	    if(!sizeof(cur_nouns & ({ words[ctr2] }))) {
-	      nouns[locale] += ({ words[ctr2] });
-	    }
-	  } else {
-	    nouns[locale] -= ({ words[ctr2] });
+    if(taglist[ctr] != "") {
+      switch(taglist[ctr][0]) {
+      case '{':
+        locale = PHRASED->language_by_name(taglist[ctr][1..]);
+        if(locale == -1)
+          error("Bad language tag " + taglist[ctr][1..]
+                + " passed when modifying nouns/adjs!");
+        break;
+      case '}':
+        locale = LANG_enUS;
+        break;
+      default:
+        error("Illegal phrase passed when modifying nouns/adjs!");
+      }
+    }
 
-	    /* If a parent defines this, put it into the 'removed' list */
-	    if(sizeof(cur_nouns & ({ words[ctr2] }))) {
-	      removed_nouns[locale] += ({ words[ctr2] });
-	    }
-	  }
-	}
+    /* Now modify nouns or adjs */
+    if(is_noun)
+      cur_words = get_nouns(locale);
+    else
+      cur_words = get_adjectives(locale);
+
+    words = explode(taglist[ctr + 1], ",");
+
+    for(ctr2 = 0; ctr2 < sizeof(words); ctr2++) {
+      words[ctr2] = STRINGD->trim_whitespace(words[ctr2]);
+
+      if(words[ctr2] && words[ctr2] != "") {
+        if(do_add) {
+          if(is_noun)
+            removed_nouns[locale] -= ({ words[ctr2] });
+          else
+            removed_adjectives[locale] -= ({ words[ctr2] });
+
+          /* If no parent defines this already, add it to this
+             object */
+          if(is_noun && !sizeof(cur_words & ({ words[ctr2] }))) {
+            nouns[locale] += ({ words[ctr2] });
+          } else if(!is_noun && !sizeof(cur_words & ({ words[ctr2] }))) {
+            adjectives[locale] += ({ words[ctr2] });
+          }
+        } else {
+          if(is_noun)
+            nouns[locale] -= ({ words[ctr2] });
+          else
+            adjectives[locale] -= ({ words[ctr2] });
+
+          /* If a parent defines this, put it into the 'removed' list */
+          if(is_noun && sizeof(cur_words & ({ words[ctr2] }))) {
+            removed_nouns[locale] += ({ words[ctr2] });
+          } else if(!is_noun && sizeof(cur_words & ({ words[ctr2] }))) {
+            removed_adjectives[locale] += ({ words[ctr2] });
+          }
+        }
       }
     }
   }
 
-  register_my_nouns();
+  if(is_noun)
+    register_my_nouns();
+  else
+    register_my_adjs();
 }
 
 void add_noun(object phr) {
-  add_remove_noun(phr, 1);
+  add_remove_noun_adj(phr, 1, 1);
 }
 
 void remove_noun(object phr) {
-  add_remove_noun(phr, 0);
+  add_remove_noun_adj(phr, 0, 1);
 }
 
 
@@ -303,7 +342,7 @@ string* get_nouns(int locale) {
     }
   }
 
-  return nouns[locale] + ret;
+  return (nouns[locale] + ret) - removed_nouns[locale];
 }
 
 string** get_immediate_nouns(void) {
@@ -335,7 +374,7 @@ string* get_adjectives(int locale) {
     }
   }
 
-  return adjectives[locale] + ret;
+  return (adjectives[locale] + ret) - removed_adjectives[locale];
 }
 
 string** get_immediate_adjectives(void) {
@@ -345,59 +384,12 @@ string** get_immediate_adjectives(void) {
   return adjectives;
 }
 
-
-private void add_remove_adjective(object phr, int do_add) {
-  int    locale, ctr2;
-  string tmp;
-  mixed* words;
-
-  if(PHRASED->num_locales() > sizeof(nouns)) {
-    error("Fix objects to support dynamic adding of locales!");
-  }
-
-  unregister_my_adjs();
-
-  for(locale = 0; locale < PHRASED->num_locales(); locale++) {
-    string *cur_adjectives;
-
-    tmp = phr->get_content_by_lang(locale);
-    cur_adjectives = get_adjectives(locale);
-
-    if(tmp) {
-      words = explode(tmp, ",");
-      for(ctr2 = 0; ctr2 < sizeof(words); ctr2++) {
-	words[ctr2] = STRINGD->trim_whitespace(words[ctr2]);
-	if(words[ctr2] && words[ctr2] != "") {
-	  if(do_add) {
-	    removed_adjectives[locale] -= ({ words[ctr2] });
-
-	    /* If no parent defines this already, add it to this
-	       object */
-	    if(!sizeof(cur_adjectives & ({ words[ctr2] }))) {
-	      adjectives[locale] += ({ words[ctr2] });
-	    }
-	  } else {
-	    adjectives[locale] -= ({ words[ctr2] });
-
-	    /* If a parent defines this, put it into the 'removed' list */
-	    if(sizeof(cur_adjectives & ({ words[ctr2] }))) {
-	      removed_adjectives[locale] += ({ words[ctr2] });
-	    }
-	  }
-	}
-      }
-    }
-  }
-
-  register_my_adjs();
-}
-
 void add_adjective(object phr) {
-  add_remove_adjective(phr, 1);
+  add_remove_noun_adj(phr, 1, 0);
 }
 
 void remove_adjective(object phr) {
-  add_remove_adjective(phr, 0);
+  add_remove_noun_adj(phr, 0, 0);
 }
 
 
@@ -433,8 +425,8 @@ private int match_str_array(string* words, string* array) {
 
     for(ctr2 = 0; ctr2 < sizeof(array); ctr2++) {
       if(STRINGD->prefix_string(words[ctr], array[ctr2])) {
-	match = 1;
-	break;
+        match = 1;
+        break;
       }
     }
 
@@ -454,7 +446,7 @@ private int match_str_array(string* words, string* array) {
    the adjectives.  The matching criteria are according to
    match_str_array, documented above. */
 private int match_adj_and_nouns(object user, string *cmp_adjectives,
-				string* cmp_nouns) {
+                                string* cmp_nouns) {
   int locale, match;
 
   locale = user->get_locale();
@@ -580,7 +572,7 @@ void set_location(object new_loc) {
   if(previous_program() == OBJECT) {
     if(detail_of && detail_of != new_loc) {
       LOGD->write_syslog("Setting location of obj #" + tr_num
-			 + " despite detail_of being set!", LOG_ERROR);
+                         + " despite detail_of being set!", LOG_ERROR);
     }
 
     location = new_loc;
@@ -774,9 +766,9 @@ void add_detail(object obj) {
 
     if(obj->get_detail_of()) {
       /* This is still a detail of somebody else, probably our
-	 parent (directly or indirectly).  We already removed the
-	 override, it's not legal to make it our own detail when
-	 it's somebody else's, so let's just return. */
+         parent (directly or indirectly).  We already removed the
+         override, it's not legal to make it our own detail when
+         it's somebody else's, so let's just return. */
       return;
     }
   }

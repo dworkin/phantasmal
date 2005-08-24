@@ -48,7 +48,7 @@ void pass_data(mixed data) {
     phr = PHRASED->new_simple_english_phrase("CHANGE ME!");
     call_other(obj_to_set, "set_" + func_name, phr);
   }
-  phr->set_content_by_lang(locale, data);
+  phr->from_unq(data);
 
   send_string("Set " + func_name + " description.\n");
 
