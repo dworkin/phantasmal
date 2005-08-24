@@ -12,7 +12,7 @@
  */
 
 static mixed call_other_unprotected(mixed obj, string function,
-				    mixed args...) {
+                                    mixed args...) {
   return ::call_other(obj, function, args...);
 }
 
@@ -21,16 +21,16 @@ static mixed call_other(mixed obj, string function, mixed args...) {
 
   if(typeof(obj) == T_OBJECT && !function_object(function, obj)
      && find_object(LOGD)) {
-    LOGD->write_syslog(object_name(this_object())
-		       + " is calling nonexistent function "
-		       + object_name(obj) + ":" + function + "!\n",
-		       LOG_ERROR);
+    ::call_other(LOGD, "write_syslog", object_name(this_object())
+                       + " is calling nonexistent function "
+                       + object_name(obj) + ":" + function + "!\n",
+                       LOG_ERROR);
   } else if(typeof(obj) == T_STRING && find_object(obj)
-	  && !function_object(function, find_object(obj))
-	  && find_object(LOGD)) {
-    LOGD->write_syslog(object_name(this_object())
-		       + " is calling nonexistent function "
-		       + obj + ":" + function + "!\n", LOG_ERROR);
+          && !function_object(function, find_object(obj))
+          && find_object(LOGD)) {
+    ::call_other(LOGD, "write_syslog", object_name(this_object())
+                       + " is calling nonexistent function "
+                       + obj + ":" + function + "!\n", LOG_ERROR);
   }
 
   return ::call_other(obj, function, args...);
@@ -45,7 +45,7 @@ static string previous_program(varargs int n) {
     tmp = ::previous_program(idx);
     if(tmp != "/usr/System/open/lib/common_auto") {
       if(!n) {
-	return tmp;
+        return tmp;
       }
       n--;
     }
@@ -79,7 +79,7 @@ static mixed **call_trace(void) {
   driver = ::find_object(DRIVER);
   for (i = sizeof(trace) - 1; --i >= 0; ) {
     if (sizeof(call = trace[i]) > TRACE_FIRSTARG &&
-	creator != driver->creator(call[TRACE_PROGNAME])) {
+        creator != driver->creator(call[TRACE_PROGNAME])) {
       /* remove arguments */
       trace[i] = call[.. TRACE_FIRSTARG - 1];
     }
