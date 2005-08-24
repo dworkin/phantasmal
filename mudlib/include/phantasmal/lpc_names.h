@@ -61,6 +61,7 @@
 
 #define PHRASE              "/usr/common/lib/phrase"
 #define INTL_PHRASE         "/usr/common/lib/intl_phrase"
+#define TAGLIST_PHRASE      "/usr/common/lib/taglist_phrase"
 
 /* Clonable MUD structures */
 #define SYSTEM_WIZTOOL      "/usr/System/obj/wiztool"
