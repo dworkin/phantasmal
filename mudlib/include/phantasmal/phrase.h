@@ -11,3 +11,4 @@
 /* Used by Phrase subtypes for conversion calls */
 #define MARKUP_UNQ      0
 #define MARKUP_XML      1
+#define MARKUP_DEBUG    MARKUP_UNQ
