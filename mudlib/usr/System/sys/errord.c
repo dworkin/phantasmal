@@ -72,7 +72,7 @@ void runtime_error(string error, int caught, mixed** trace)
       case "bad":
       case "_F_":
       case "_Q_":
-	continue;
+        continue;
       }
     }
     if(len < 17) {
@@ -83,11 +83,11 @@ void runtime_error(string error, int caught, mixed** trace)
     if(progname != objname) {
       len = strlen(progname);
       if(len < strlen(objname) && progname == objname[.. len - 1]
-	 && objname[len] == '#') {
-	objname = objname[len..];
+         && objname[len] == '#') {
+        objname = objname[len..];
       }
       str += line + " " + function + " " + progname + " (" + objname
-	+ ")\n";
+        + ")\n";
     } else {
       str += line + " " + function + " " + progname + "\n";
     }
@@ -177,7 +177,7 @@ void atomic_error(string error, int atom, mixed** trace)
       case "bad":
       case "_F_":
       case "_Q_":
-	continue;
+        continue;
       }
     }
     if (len < 17) {
@@ -188,11 +188,11 @@ void atomic_error(string error, int atom, mixed** trace)
     if (progname != objname) {
       len = strlen(progname);
       if (len < strlen(objname) && progname == objname[.. len - 1] &&
-	  objname[len] == '#') {
-	objname = objname[len ..];
+          objname[len] == '#') {
+        objname = objname[len ..];
       }
       str += line + " " + function + " " + progname + " (" + objname +
-	")\n";
+        ")\n";
     } else {
       str += line + " " + function + " " + progname + "\n";
     }
@@ -230,11 +230,11 @@ void compile_error(string file, int line, string error)
   comp_err += file + ":" + line + "  " + error + "\n";
 
   log->write_syslog("Compile error: " + file + ":" + (string)line
-		    + ": " + error);
+                    + ": " + error);
   send_message("Compile error!");
   if(in_init_sequence) {
     DRIVER->message("Compile error: " + file + ": " + (string)line
-		    + ": " + error + "\n");
+                    + ": " + error + "\n");
   }
 }
 
@@ -256,7 +256,7 @@ string last_stack_trace(void) {
   if(SYSTEM())
     return last_st;
 
-  return nil;
+  error("No stack trace for you!");
 }
 
 void clear_errors(void) {
