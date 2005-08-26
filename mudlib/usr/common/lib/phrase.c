@@ -115,7 +115,7 @@ static string *unq_data_to_taglist(mixed *unq, varargs int no_trim) {
       tmp_taglist = unq_data_to_taglist(unq[ctr + 1], 1);
     }
 
-    if(ctr == 0 && !unq[ctr]) {
+    if(!unq[ctr]) {
       taglist += tmp_taglist;
     } else if (sizeof(tmp_taglist) == 0
                || (sizeof(tmp_taglist) == 2 && tmp_taglist[1] == "")) {
