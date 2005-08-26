@@ -324,6 +324,8 @@ mixed state_receive_message(string str) {
 void set_up_substitutions(void) {
   object  conn;
   mapping info;
+  string *colors;
+  int     ctr;
 
   if(subs_correct)
     return;
@@ -341,6 +343,8 @@ void set_up_substitutions(void) {
     return;  /* Can't set up subs yet */
   }
 
+  colors = ({ "black", "red", "yellow", "green", "blue", "magenta", "cyan", "white" });
+
   /* Currently hardcode, no locale stuff */
   substitutions = ([ "{enUS" : "", "}enUS" : "" ]);
 
@@ -348,20 +352,10 @@ void set_up_substitutions(void) {
     /* This connection was made on a non-MUDclient port.  That means
        no term types, no ANSI color, no window size... */
 
-    substitutions += ([
-                       "{black" : "",
-                       "}black" : "",
-                       "{blue" : "",
-                       "}blue" : "",
-                       "{green" : "",
-                       "}green" : "",
-                       "{cyan" : "",
-                       "}cyan" : "",
-                       "{red" : "",
-                       "}red" : "",
-                       "{purple" : "",
-                       "}purple" : "",
-    ]);
+    for(ctr = 0; ctr < sizeof(colors); ctr++) {
+      substitutions["{" + colors[ctr]] = "";
+      substitutions["}" + colors[ctr]] = "";
+    }
 
     subs_correct = 1;
     return;
@@ -369,35 +363,30 @@ void set_up_substitutions(void) {
 
   info = conn->terminal_info();
   if(info["protocol"] == "telnet") {
+    string esc_start;
+
+    esc_start = "\033[";
+    for(ctr = 0; ctr < sizeof(colors); ctr++) {
+      substitutions["}" + colors[ctr]] = esc_start + "0m";
+    }
     substitutions += ([
-                       "{black" : "<FONT COLOR=\"black\"",
-                       "}black" : "</FONT>",
-                       "{blue" : "<FONT COLOR=\"blue\"",
-                       "}blue" : "</FONT>",
-                       "{green" : "<FONT COLOR=\"green\"",
-                       "}green" : "</FONT>",
-                       "{cyan" : "<FONT COLOR=\"cyan\"",
-                       "}cyan" : "</FONT>",
-                       "{red" : "<FONT COLOR=\"red\"",
-                       "}red" : "</FONT>",
-                       "{purple" : "<FONT COLOR=\"purple\"",
-                       "}purple" : "</FONT>",
+                       "{black" : esc_start + "30m",
+                       "{red" : esc_start + "31m",
+                       "{green" : esc_start + "32m",
+                       "{yellow" : esc_start + "33m",
+                       "{blue" : esc_start + "34m",
+                       "{magenta" : esc_start + "35m",
+                       "{cyan" : esc_start + "36m",
+                       "{white" : esc_start + "37m",
+                       "*reset" : esc_start + "0m",
                        ]);
   } else if(info["protocol"] == "imp") {
+    for(ctr = 0; ctr < sizeof(colors); ctr++) {
+      substitutions["{" + colors[ctr]] = "<FONT COLOR=\"" + colors[ctr] + "\">";
+      substitutions["}" + colors[ctr]] = "</FONT>";
+     }
     substitutions += ([
                        "*client-startup" : "<IMPDEMO>",
-                       "{black" : "<FONT COLOR=\"black\"",
-                       "}black" : "</FONT>",
-                       "{blue" : "<FONT COLOR=\"blue\"",
-                       "}blue" : "</FONT>",
-                       "{green" : "<FONT COLOR=\"green\"",
-                       "}green" : "</FONT>",
-                       "{cyan" : "<FONT COLOR=\"cyan\"",
-                       "}cyan" : "</FONT>",
-                       "{red" : "<FONT COLOR=\"red\"",
-                       "}red" : "</FONT>",
-                       "{purple" : "<FONT COLOR=\"purple\"",
-                       "}purple" : "</FONT>",
                        ]);
   } else {
     error("Unrecognized protocol when setting up substitution maps!");
