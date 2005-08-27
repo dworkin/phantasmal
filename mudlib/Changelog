@@ -1,4 +1,7 @@
 Release 0.019:
+    * ANSI color support in UNQ markup
+    * UNQ markup tag support in helpfile, descriptions, etc.
+    * Basic FireClient support
     * Allow games to specifically turn off all non-basic telnet options
     * Phantasmal now supports telnet options NAWS and TTYPE
 
