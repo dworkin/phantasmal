@@ -1,4 +1,4 @@
-/* $Header: /cvsroot/phantasmal/testgame/usr/game/obj/user.c,v 1.13 2005/08/02 21:20:50 angelbob Exp $ */
+/* $Header: /cvsroot/phantasmal/testgame/usr/game/obj/user.c,v 1.14 2005/08/27 07:17:28 angelbob Exp $ */
 
 #include <kernel/kernel.h>
 #include <kernel/user.h>
@@ -63,8 +63,8 @@ static int  game_command(string str);
 
 
 /*
- * NAME:	create()
- * DESCRIPTION:	initialize user object
+ * NAME:        create()
+ * DESCRIPTION: initialize user object
  */
 static void create(int clone)
 {
@@ -77,66 +77,66 @@ void upgraded(varargs int clone) {
     ::upgraded(clone);
 
     commands_map = ([
-		     "say"       : "cmd_say",
-		     "emote"     : "cmd_emote",
-		     "ooc"       : "cmd_ooc",
-		     "impbug"    : "cmd_impbug",
+                     "say"       : "cmd_say",
+                     "emote"     : "cmd_emote",
+                     "ooc"       : "cmd_ooc",
+                     "impbug"    : "cmd_impbug",
 
-		     "n"         : "cmd_movement",
-		     "s"         : "cmd_movement",
-		     "e"         : "cmd_movement",
-		     "w"         : "cmd_movement",
-		     "nw"        : "cmd_movement",
-		     "sw"        : "cmd_movement",
-		     "ne"        : "cmd_movement",
-		     "se"        : "cmd_movement",
-		     "u"         : "cmd_movement",
-		     "d"         : "cmd_movement",
+                     "n"         : "cmd_movement",
+                     "s"         : "cmd_movement",
+                     "e"         : "cmd_movement",
+                     "w"         : "cmd_movement",
+                     "nw"        : "cmd_movement",
+                     "sw"        : "cmd_movement",
+                     "ne"        : "cmd_movement",
+                     "se"        : "cmd_movement",
+                     "u"         : "cmd_movement",
+                     "d"         : "cmd_movement",
 
-		     "north"     : "cmd_movement",
-		     "south"     : "cmd_movement",
-		     "east"      : "cmd_movement",
-		     "west"      : "cmd_movement",
-		     "northwest" : "cmd_movement",
-		     "southwest" : "cmd_movement",
-		     "northeast" : "cmd_movement",
-		     "southeast" : "cmd_movement",
-		     "up"        : "cmd_movement",
-		     "down"      : "cmd_movement",
-		     "in"        : "cmd_movement",
-		     "out"       : "cmd_movement",
+                     "north"     : "cmd_movement",
+                     "south"     : "cmd_movement",
+                     "east"      : "cmd_movement",
+                     "west"      : "cmd_movement",
+                     "northwest" : "cmd_movement",
+                     "southwest" : "cmd_movement",
+                     "northeast" : "cmd_movement",
+                     "southeast" : "cmd_movement",
+                     "up"        : "cmd_movement",
+                     "down"      : "cmd_movement",
+                     "in"        : "cmd_movement",
+                     "out"       : "cmd_movement",
 
-		     "help"      : "cmd_help",
-		     "locale"    : "cmd_locale",
-		     "locales"   : "cmd_locales",
-		     "users"     : "cmd_users",
-		     "who"       : "cmd_users",
-		     "whoami"    : "cmd_whoami",
-		     "bug"       : "cmd_bug",
-		     "typo"      : "cmd_typo",
-		     "idea"      : "cmd_idea",
-		     "tell"      : "cmd_tell",
+                     "help"      : "cmd_help",
+                     "locale"    : "cmd_locale",
+                     "locales"   : "cmd_locales",
+                     "users"     : "cmd_users",
+                     "who"       : "cmd_users",
+                     "whoami"    : "cmd_whoami",
+                     "bug"       : "cmd_bug",
+                     "typo"      : "cmd_typo",
+                     "idea"      : "cmd_idea",
+                     "tell"      : "cmd_tell",
 
-		     "channel"   : "cmd_channels",
-		     "channels"  : "cmd_channels",
+                     "channel"   : "cmd_channels",
+                     "channels"  : "cmd_channels",
 
-		     "l"         : "cmd_look",
-		     "look"      : "cmd_look",
-		     "ex"        : "cmd_look",
-		     "exa"       : "cmd_look",
-		     "examine"   : "cmd_look",
+                     "l"         : "cmd_look",
+                     "look"      : "cmd_look",
+                     "ex"        : "cmd_look",
+                     "exa"       : "cmd_look",
+                     "examine"   : "cmd_look",
 
-		     "get"       : "cmd_get",
-		     "take"      : "cmd_get",
-		     "drop"      : "cmd_drop",
-		     "i"         : "cmd_inventory",
-		     "inv"       : "cmd_inventory",
-		     "inventory" : "cmd_inventory",
-		     "put"       : "cmd_put",
-		     "place"     : "cmd_put",
-		     "remove"    : "cmd_remove",
-		     "open"      : "cmd_open",
-		     "close"     : "cmd_close",
+                     "get"       : "cmd_get",
+                     "take"      : "cmd_get",
+                     "drop"      : "cmd_drop",
+                     "i"         : "cmd_inventory",
+                     "inv"       : "cmd_inventory",
+                     "inventory" : "cmd_inventory",
+                     "put"       : "cmd_put",
+                     "place"     : "cmd_put",
+                     "remove"    : "cmd_remove",
+                     "open"      : "cmd_open",
+                     "close"     : "cmd_close",
     ]);
 
   }
@@ -159,7 +159,7 @@ static void print_console_menu(void) {
   message_scroll("          CONSOLE OPTIONS\n\n");
 
   message_scroll(" Current: " + get_num_lines() + " lines, locale is "
-		 + PHRASED->name_for_language(get_locale()) + ".\n");
+                 + PHRASED->name_for_language(get_locale()) + ".\n");
   message_scroll(" Type 'lines <number>' to set the number of lines.\n");
   message_scroll(" Type 'menu' to go back to the account menu.\n");
   message_scroll("\n");
@@ -229,12 +229,12 @@ static void connect_to_body(void) {
   }
   if(other_user && other_user->get_name() != name) {
     LOGD->write_syslog("User is already set for this mobile!",
-		       LOG_ERROR);
+                       LOG_ERROR);
     message("Body and mobile files are misconfigured!  Internal error!\n");
     message("Make sure you landed in the right body...\n");
     other_user->message("Somebody's attempting to take your body.\n");
     other_user->message("If you didn't just log in on another "
-			+ "connection, then talk\n");
+                        + "connection, then talk\n");
     other_user->message("to an admin.  This is a bug!\n");
   }
 
@@ -244,14 +244,15 @@ static void connect_to_body(void) {
        right, because this user, from /usr/game, won't be able to
        destruct a connection object cloned by /usr/System. */
     other_user->message(
-	  "Somebody has entered the game with your name and account!\n");
+          "Somebody has entered the game with your name and account!\n");
     other_user->message("Closing your connection now...\n");
     destruct_object(other_user);
   }
 
   if(!body) {
-    message("Internal error connecting you to your body!\n");
-    error("Can't find body!");
+    message("Internal error connecting you to your body!  Can't find it!\n");
+    LOGD->write_syslog("Can't find body.  Problem from previous crash?", LOG_WARN);
+    return;
   }
 
   location = body->get_location();
@@ -344,8 +345,8 @@ static void create_body(void) {
 
 
 /*
- * NAME:	player_login()
- * DESCRIPTION:	Create the player body, set the account info and so on...
+ * NAME:        player_login()
+ * DESCRIPTION: Create the player body, set the account info and so on...
  */
 void player_login(int first_login)
 {
@@ -385,8 +386,8 @@ void player_login(int first_login)
 
 
 /*
- * NAME:	player_logout()
- * DESCRIPTION:	Deal with player body, update account info and so on...
+ * NAME:        player_logout()
+ * DESCRIPTION: Deal with player body, update account info and so on...
  */
 static void player_logout(void)
 {
@@ -403,13 +404,13 @@ static void player_logout(void)
     if(ml_num >= 0) {
       meat_locker = MAPD->get_room_by_num(ml_num);
       if(meat_locker) {
-	if (location) {
-	  mobile = body->get_mobile();
-	  mobile->teleport(meat_locker, 1);
-	}
+        if (location) {
+          mobile = body->get_mobile();
+          mobile->teleport(meat_locker, 1);
+        }
       } else {
-	LOGD->write_syslog("Can't find room #" + ml_num + " as meat locker!",
-			   LOG_ERR);
+        LOGD->write_syslog("Can't find room #" + ml_num + " as meat locker!",
+                           LOG_ERR);
       }
     }
   }
@@ -444,25 +445,25 @@ int process_command(string str)
 
     if(str == "1") {
       if(body) {
-	message(
+        message(
     "You already have a character.  Currently you can only have one.\n"
   + "You can delete the old character first, or use your current one.\n"
     );
-	return -1;
+        return -1;
       }
 
       if(body_num > 0) {
-	message(
+        message(
   "Weird.  We couldn't connect you to your body for some reason.\n"
   + "You could delete your character or contact an admin for more help.\n"
   );
-	return -1;
+        return -1;
       }
 
       errstr = catch (create_body());
       if(errstr) {
-	message("We couldn't create your body:  '" + errstr + "'.\n");
-	return -1;
+        message("We couldn't create your body:  '" + errstr + "'.\n");
+        return -1;
       }
 
       message("Created successfully.\n");
@@ -478,9 +479,9 @@ int process_command(string str)
 
     if(str == "G" || str == "g") {
       if(!body) {
-	message("You have no body, or you're not connected to yours.\n"
-		+ "Create a character first, or contact an admin.\n");
-	return -1;
+        message("You have no body, or you're not connected to yours.\n"
+                + "Create a character first, or contact an admin.\n");
+        return -1;
       }
 
       account_state = ASTATE_GAME;
@@ -500,8 +501,8 @@ int process_command(string str)
       string help_req;
 
       if(sscanf(str, "help%s", help_req)) {
-	cmd_help(this_object(), "help", help_req);
-	return -1;
+        cmd_help(this_object(), "help", help_req);
+        return -1;
       }
       message("Couldn't parse your help request.\n");
       return -1;
@@ -514,16 +515,16 @@ int process_command(string str)
       sscanf(str, "%s %s", cmd, arg);
       err = catch(wiztool->command(cmd, arg));
       if(err) {
-	LOGD->write_syslog("Error on admin command '" + (cmd ? cmd : "(nil)")
-			   + "/"
-			   + (str ? str : "(nil)") + "'.  Err text: "
-			   + err);
+        LOGD->write_syslog("Error on admin command '" + (cmd ? cmd : "(nil)")
+                           + "/"
+                           + (str ? str : "(nil)") + "'.  Err text: "
+                           + err);
 
-	message("Your command failed with an internal error.\n");
-	message("The error has been logged.\n");
+        message("Your command failed with an internal error.\n");
+        message("The error has been logged.\n");
 
-	/* Return normal status, print a prompt and continue. */
-	return -1;
+        /* Return normal status, print a prompt and continue. */
+        return -1;
       }
       /* Success running wiz command!  Return normal status. */
       return -1;
@@ -531,8 +532,8 @@ int process_command(string str)
       message("That doesn't seem to be on the menu.\n");
       menu_tally++;
       if(menu_tally > 2) {
-	print_account_menu();
-	menu_tally = 0;
+        print_account_menu();
+        menu_tally = 0;
       }
     }
 
@@ -554,13 +555,13 @@ int process_command(string str)
       string errcheck;
 
       if(sscanf(str, "lines %d%s", nlines, errcheck) == 2
-	 && errcheck && strlen(errcheck)) {
-	message("Just type 'lines', a space and a number.  No more.\n");
-	return -1;
+         && errcheck && strlen(errcheck)) {
+        message("Just type 'lines', a space and a number.  No more.\n");
+        return -1;
       }
       if(nlines && nlines >= -1) {
-	set_num_lines(nlines);
-	print_console_menu();
+        set_num_lines(nlines);
+        print_console_menu();
       }
       return -1;
     }
@@ -607,53 +608,53 @@ static int game_command(string str)
     if (strlen(cmd) != 0) {
       switch (cmd[0]) {
       case '\'':
-	if (strlen(cmd) > 1) {
-	  str = cmd[1..];
-	} else {
-	  str = "";
-	}
-	cmd = "say";
-	break;
+        if (strlen(cmd) > 1) {
+          str = cmd[1..];
+        } else {
+          str = "";
+        }
+        cmd = "say";
+        break;
 
       case ':':
-	if (strlen(cmd) > 1) {
-	  str = cmd[1..];
-	} else {
-	  str = "";
-	}
-	cmd = "emote";
-	break;
+        if (strlen(cmd) > 1) {
+          str = cmd[1..];
+        } else {
+          str = "";
+        }
+        cmd = "emote";
+        break;
 
       default:
-	/* If single word, leave cmd the same.  If multiword, put
-	   first word in cmd. */
-	if(sscanf(cmd, "%s %s", cmd, str) != 2) {
-	  str = "";
-	}
-	break;
+        /* If single word, leave cmd the same.  If multiword, put
+           first word in cmd. */
+        if(sscanf(cmd, "%s %s", cmd, str) != 2) {
+          str = "";
+        }
+        break;
       }
     }
 
     if(cmd && strlen(cmd)) {
       switch (cmd) {
       case "password":
-	if(str && strlen(str))
-	  message("(Arguments ignored...)\n");
+        if(str && strlen(str))
+          message("(Arguments ignored...)\n");
 
-	if (password) {
-	  send_system_phrase("Old password: ");
-	  set_state(previous_object(), STATE_OLDPASSWD);
-	} else {
-	  send_system_phrase("New password: ");
-	  set_state(previous_object(), STATE_NEWPASSWD1);
-	}
-	return MODE_NOECHO;
+        if (password) {
+          send_system_phrase("Old password: ");
+          set_state(previous_object(), STATE_OLDPASSWD);
+        } else {
+          send_system_phrase("New password: ");
+          set_state(previous_object(), STATE_NEWPASSWD1);
+        }
+        return MODE_NOECHO;
 
       case "quit":
-	if(str && strlen(str))
-	  message("(Arguments ignored...)\n");
+        if(str && strlen(str))
+          message("(Arguments ignored...)\n");
 
-	return MODE_DISCONNECT;
+        return MODE_DISCONNECT;
       }
     }
 
@@ -666,21 +667,21 @@ static int game_command(string str)
       string err;
 
       err = catch(call_other(this_object(),                /* Call on self */
-			     commands_map[cmd],            /* The function */
-			     this_object(),                /* This user */
-			     cmd,                          /* The command */
-			     str == "" ? nil : str)        /* str or nil */
-		  );
+                             commands_map[cmd],            /* The function */
+                             this_object(),                /* This user */
+                             cmd,                          /* The command */
+                             str == "" ? nil : str)        /* str or nil */
+                  );
       if(err) {
-	LOGD->write_syslog("Error on command '" + cmd + "/"
-			   + (str ? str : "(nil)") + "'.  Err text: "
-			   + err);
+        LOGD->write_syslog("Error on command '" + cmd + "/"
+                           + (str ? str : "(nil)") + "'.  Err text: "
+                           + err);
 
-	message("Your command failed with an internal error.\n");
-	message("The error has been logged.\n");
+        message("Your command failed with an internal error.\n");
+        message("The error has been logged.\n");
 
-	/* Return normal status, print a prompt and continue. */
-	return -1;
+        /* Return normal status, print a prompt and continue. */
+        return -1;
       }
       str = nil;
     }
@@ -692,15 +693,15 @@ static int game_command(string str)
 
       err = catch(wiztool->command(cmd, str));
       if(err) {
-	LOGD->write_syslog("Error on command '" + cmd + "/"
-			   + (str ? str : "(nil)") + "'.  Err text: "
-			   + err);
+        LOGD->write_syslog("Error on command '" + cmd + "/"
+                           + (str ? str : "(nil)") + "'.  Err text: "
+                           + err);
 
-	message("Your command failed with an internal error.\n");
-	message("The error has been logged.\n");
+        message("Your command failed with an internal error.\n");
+        message("The error has been logged.\n");
 
-	/* Return normal status, print a prompt and continue. */
-	return -1;
+        /* Return normal status, print a prompt and continue. */
+        return -1;
       }
     } else {
       send_system_phrase("No match");
@@ -824,7 +825,7 @@ static void cmd_locale(object user, string cmd, string str) {
   }
   set_locale(loc);
   message("Setting locale to " + PHRASED->name_for_language(loc)
-	  + ".\n");
+          + ".\n");
   save_user_to_file();
 }
 
@@ -901,7 +902,7 @@ static void cmd_look(object user, string cmd, string str) {
 
   if(sizeof(tmp) > 1) {
     user->message("More than one of those is here.  "
-		  + "You check the first one.\n\n");
+                  + "You check the first one.\n\n");
   }
 
   if(cmd[0] == 'e' && tmp[0]->get_examine()) {
@@ -955,14 +956,14 @@ static void cmd_put(object user, string cmd, string str) {
   }
 
   portlist = find_first_objects(obj1, LOC_INVENTORY, LOC_CURRENT_ROOM,
-				LOC_BODY);
+                                LOC_BODY);
   if(!portlist || !sizeof(portlist)) {
     user->message("You can't find any '" + obj1 + "' here.\n");
     return;
   }
 
   contlist = find_first_objects(obj2, LOC_INVENTORY, LOC_CURRENT_ROOM,
-				LOC_BODY);
+                                LOC_BODY);
   if(!contlist || !sizeof(contlist)) {
     user->message("You can't find any '" + obj2 + "' here.\n");
     return;
@@ -970,12 +971,12 @@ static void cmd_put(object user, string cmd, string str) {
 
   if(sizeof(portlist) > 1) {
     user->message("More than one object fits '" + obj1 + "'.  "
-		  + "You pick " + portlist[0]->get_brief() + ".\n");
+                  + "You pick " + portlist[0]->get_brief() + ".\n");
   }
 
   if(sizeof(contlist) > 1) {
     user->message("More than one open container fits '" + obj2 + "'.  "
-		  + "You pick " + portlist[0]->get_brief() + ".\n");
+                  + "You pick " + portlist[0]->get_brief() + ".\n");
   }
 
   port = portlist[0];
@@ -1016,7 +1017,7 @@ static void cmd_remove(object user, string cmd, string str) {
   }
 
   contlist = find_first_objects(obj2, LOC_INVENTORY, LOC_CURRENT_ROOM,
-				LOC_BODY);
+                                LOC_BODY);
   if(!contlist || !sizeof(contlist)) {
     user->message("You can't find any '" + obj2 + "' here.\n");
     return;
@@ -1067,7 +1068,7 @@ static void cmd_users(object user, string cmd, string str) {
     name_idx = users[i]->query_name();
     if (name_idx) {
       str += "   " + name_idx + "       Idle: " + users[i]->get_idle_time()
-	+ " seconds\n";
+        + " seconds\n";
     }
   }
   message(str + "\n");
@@ -1084,10 +1085,10 @@ private string bug_header(string cmd, object user) {
   catch {
     if(location) {
       /* Currently, include the room name the way the user sees it.
-	 Could even be useful for debugging internationalization
-	 problems. */
+         Could even be useful for debugging internationalization
+         problems. */
       ret += "In room #" + STRINGD->mixed_sprint(location->get_number())
-	+ " (" + location->get_brief()->to_string(user) + ")\n";
+        + " (" + location->get_brief()->to_string(user) + ")\n";
     } else {
       ret += "In no location at all!\n";
     }
@@ -1152,7 +1153,7 @@ static void cmd_social(object user, string cmd, string str) {
     targets = location->find_contained_objects(user, str);
     if(!targets) {
       message("You don't see any objects matching '" + str
-	      + "' here.\n");
+              + "' here.\n");
       return;
     }
 
@@ -1270,7 +1271,7 @@ static void cmd_open(object user, string cmd, string str) {
   if(sizeof(tmp) > 1) {
     for(ctr = 0; ctr < sizeof(tmp); ctr++) {
       if(tmp[ctr]->is_openable())
-	break;
+        break;
     }
     if(ctr >= sizeof(tmp)) {
       message("None of those can be opened.\n");
@@ -1319,7 +1320,7 @@ static void cmd_close(object user, string cmd, string str) {
   if(sizeof(tmp) > 1) {
     for(ctr = 0; ctr < sizeof(tmp); ctr++) {
       if(tmp[ctr]->is_openable())
-	break;
+        break;
     }
     if(ctr >= sizeof(tmp)) {
       message("None of those can be opened.\n");
