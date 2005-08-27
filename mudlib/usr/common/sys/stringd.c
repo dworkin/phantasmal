@@ -96,6 +96,30 @@ string trim_whitespace(string str) {
 }
 
 
+string trim_leading_whitespace(string str) {
+  int start;
+
+  if(!str || str == "") return str;
+  start = 0;
+  while((start < strlen(str) - 1) && char_is_whitespace(str[start]))
+    start ++;
+
+  return str[start..];
+}
+
+
+string trim_trailing_whitespace(string str) {
+  int end;
+
+  if(!str || str == "") return str;
+  end = strlen(str) - 1;
+  while((0 <= end) && char_is_whitespace(str[end]))
+    end--;
+
+  return str[..end];
+}
+
+
 string to_lower(string text) {
   int ctr;
   int len;

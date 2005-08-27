@@ -108,7 +108,7 @@ static string *unq_data_to_taglist(mixed *unq, varargs int no_trim) {
     unq[ctr] = STRINGD->trim_whitespace(unq[ctr]);
 
     if(typeof(unq[ctr + 1]) == T_STRING) {
-      unq[ctr + 1] = STRINGD->trim_whitespace(unq[ctr + 1]);
+      /* unq[ctr + 1] = STRINGD->trim_whitespace(unq[ctr + 1]); */
       tmp_taglist = ({ "", unq[ctr + 1] });
     } else {
       /* Recursive call, but don't trim tags */
@@ -155,10 +155,9 @@ static string *unq_data_to_taglist(mixed *unq, varargs int no_trim) {
 static string *unq_to_taglist(string unq_string) {
   mixed *unq;
 
-  /* Parse the UNQ, remove any tags where the label (if any) and content
-     are both whitespace */
+  /* Parse the UNQ */
   unq = UNQ_PARSER->basic_unq_parse(unq_string);
-  unq = UNQ_PARSER->trim_empty_tags(unq);
+  /* unq = UNQ_PARSER->trim_empty_tags(unq); */
 
   return unq_data_to_taglist(unq);
 }

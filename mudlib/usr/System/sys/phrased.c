@@ -115,6 +115,7 @@ object new_simple_english_phrase(string eng_str) {
   if(!find_object(LWO_PHRASE))
     { compile_object(LWO_PHRASE); }
   phr = new_object(LWO_PHRASE);
+  eng_str = STRINGD->trim_whitespace(eng_str);
   phr->from_taglist( ({ "", eng_str }) );
 
   return phr;
@@ -145,8 +146,15 @@ object unq_to_phrase(mixed unq) {
     { compile_object(LWO_PHRASE); }
   phrase = new_object(LWO_PHRASE);
 
-  unq = UNQ_PARSER->trim_empty_tags(unq);
+  /* unq = UNQ_PARSER->trim_empty_tags(unq); */
 
+  if(sizeof(unq) > 0) {
+    if(typeof(unq[1]) == T_STRING)
+      unq[1] = STRINGD->trim_leading_whitespace(unq[1]);
+    if(typeof(unq[sizeof(unq) - 1]) == T_STRING)
+      unq[sizeof(unq) - 1]
+        = STRINGD->trim_trailing_whitespace(unq[sizeof(unq) - 1]);
+  }
   phrase->from_unq_data(unq);
 
   return phrase;
