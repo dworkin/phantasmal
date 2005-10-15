@@ -67,7 +67,7 @@ I'll call the non-admin account "me" in the following paragraph,
 though it could be almost any word.  When you make your new non-admin
 account, you can grant it full adminstrative access by typing "%grant
 me access" and "%grant me / full".  That's "%grant", space, your
-account name, space, slash, space, "full", space, but without the
+account name, space, slash, space, "full", enter key - but without the
 quotes.  The "me" account can now be your main administrator account
 so you don't have to be called "admin", and so you can test better
 later.  The second grant command makes the account able to pretty much
