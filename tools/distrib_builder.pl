@@ -14,10 +14,11 @@
 # you.
 
 use strict;
-use Cwd;
 use File::Spec;
+use Cwd;
 
 my $input;
+#my $builderdir = File::Spec->curdir();
 my $builderdir = cwd();
 my ($phantasmaldir, $driverdir, $testgamedir);
 my $outdir = "game_bundle";
@@ -34,18 +35,22 @@ sub check_directory {
     my @dirnames = @$dirlistref;
 
     foreach $dirname (@dirnames) {
-	if(-f $dirname . "/" . $filename) {
+	$cpath = File::Spec->catfile($builderdir, $dirname);
+	$cpath = File::Spec->canonpath($cpath);
+	if(-f File::Spec->catfile($cpath, $filename)) {
 	    do {
-		$cpath = cwd() . "/" . $dirname;
-		print "Use $cpath as the $en_name directory (y/n)? ";
+		print "Use $cpath as the $en_name directory [Y/n]? ";
 		$input = <STDIN>;
 		chomp $input;
+		if($input eq "") { $input = "y"; }
 		$input = lcfirst(substr($input, 0, 1));
 	    } while ($input ne 'n' and $input ne 'y');
 
 	    if(substr($input, 0) eq 'y') {
 		return $cpath;
 	    }
+	} else {
+	    #print "Not finding file '$filename' in '$cpath'.\n";
 	}
     }
 
@@ -65,15 +70,17 @@ sub check_directory {
     }
 }
 
-$phantasmaldir = check_directory([".", "mudlib", "phantasmal"],
+$phantasmaldir = check_directory([".", "mudlib", "phantasmal", "../mudlib",
+                                  "../phantasmal"],
 				 "phantasmal.dgd",
 				 "Phantasmal MUDLib");
 
-$testgamedir = check_directory([".", "testgame", "mudlib", "phantasmal"],
+$testgamedir = check_directory([".", "testgame", "mudlib", "phantasmal",
+                                "../testgame", "../mudlib", "../phantasmal"],
 			       "usr/game/obj/user.c",
 			       "Bundled Game");
 
-$driverdir = check_directory([".", "dgd", "../dgd", "~/dgd"],
+$driverdir = check_directory([".", "dgd", "../dgd", "../../dgd", "~/dgd"],
 			     "src/dgd.c",
 			     "DGD Driver");
 
@@ -94,8 +101,11 @@ while(-e "$outdir") {
     }
 }
 
-unless(-f "$driverdir/bin/driver") {
+unless(-f File::Spec->catfile($driverdir, "bin", "driver")) {
     # TODO:  just build DGD here if we need to
+    print "Looking for '" . File::Spec->catfile($driverdir, "bin", "driver")
+	. "'\n";
+    print "No DGD driver!  Configure src/Makefile and 'make; make install'\n";
     die "You haven't built DGD yet!";
 }
 

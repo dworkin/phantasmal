@@ -2,7 +2,7 @@
 
 use strict;
 
-my (@basefiles, $headerdata, $footerdata);
+my (@basefiles, $fileout, $headerdata, $footerdata);
 
 open(FILE, "<pageheader.html") or die "Can't open page header: $!";
 $headerdata = join("", <FILE>);
@@ -12,7 +12,12 @@ open(FILE, "<pagefooter.html") or die "Can't open page footer: $!";
 $footerdata = join("", <FILE>);
 close(FILE);
 
-@basefiles = split /\s+/, `ls *.base.html`;
+$fileout = `echo *.base.html`;
+chomp $fileout;
+if($fileout eq '*.base.html') {
+    $fileout = "";
+}
+@basefiles = split /\s+/, $fileout;
 
 #print "Basefiles: " . join(", ", @basefiles) . "\n";
 
