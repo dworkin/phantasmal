@@ -1,0 +1,26 @@
+BASE=$(wildcard *.base.html)
+HTML=$(patsubst %.base.html,%.html,$(BASE))
+HF=pagefooter.html pageheader.html
+DIRS_RMAKE=$(patsubst %,%_make,$(DIRS))
+DIRS_RCLEAN=$(patsubst %,%_clean,$(DIRS))
+
+recursive: all msubdirs
+rclean: clean csubdirs
+
+all: $(HTML)
+
+msubdirs: $(DIRS_RMAKE)
+csubdirs: $(DIRS_RCLEAN)
+
+$(DIRS_RMAKE): 
+	$(MAKE) recursive -C $(patsubst %_make,%,$@)
+$(DIRS_RCLEAN): 
+	$(MAKE) rclean -C $(patsubst %_clean,%,$@)
+
+.PHONY: all clean $(DIRS) $(SUBDIRS)
+
+clean:
+	rm -f $(HTML)
+
+$(HTML): %.html: %.base.html $(HF)
+	$(PAGEGEN)
