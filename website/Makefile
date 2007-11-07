@@ -1,11 +1,11 @@
 PAGEGEN=../tools/pagecreate.pl
 DIRS=API Design DGD Innsmouth Operation Setup Tutorial
 
-recursive:
+rhtml:
 prereq: api book
 pclean: cleanapi cleanbook
 
-dall: prereq recursive
+dist: prereq rhtml
 dclean: pclean rclean
 include Makefile.in
 
