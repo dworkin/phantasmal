@@ -6,7 +6,7 @@ prereq: api book
 pclean: cleanapi cleanbook
 
 dist: prereq rhtml
-dclean: pclean rclean
+dclean: rclean pclean
 include Makefile.in
 
 api:
