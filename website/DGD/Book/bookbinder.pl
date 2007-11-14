@@ -362,11 +362,9 @@ sub write_out_html {
 
     print FILE "<titledef text=\"Top Level\">\n\n";
     print FILE "<h1> Top-Level </h1>\n";
-    print FILE "<ul>\n";
 
     print FILE $toc_accum;
 
-    print FILE "</ul>\n";
     close(FILE);
 }
 
@@ -389,6 +387,7 @@ sub write_out_sections {
 
     my ($section, $next);
     $index = 0;
+    $toc_accum .= (" " x $toc_indent) . "<ul>";
     foreach $section (@sections) {
 	if($index == (scalar @sections) - 1) {
 	    $next = $next_page;
@@ -401,15 +400,16 @@ sub write_out_sections {
 	$sec_index{$section} = $secnum;
 
 	$toc_accum .= (" " x $toc_indent)
-	    . "<li><ul> <!-- subsections of $parent_section -->\n";
+	    . "<!-- subsections of $parent_section -->\n";
 	$toc_indent += 2;
 
 	html_for_section($section, $secnum, $parent_section, $next);
 
 	$toc_indent -= 2;
 	$toc_accum .= (" " x $toc_indent)
-	    . "</ul></li> <!-- $parent_section -->\n";
+	    . "<!-- $parent_section -->\n";
     }
+    $toc_accum .= (" " x $toc_indent) . "</ul>";
 }
 
 my $most_recent_secname = "";
