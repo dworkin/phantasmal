@@ -5,4 +5,4 @@ include ../../Makefile.in
 cleanbook:
 	cd html && rm -f *.base.html
 book:
-	./bookbinder.pl
+	../../../tools/bookbinder.pl

@@ -9,6 +9,8 @@ dist: prereq rhtml
 dclean: rclean pclean
 include Makefile.in
 
+.PHONY: api cleanapi book cleanbook prereq pclean dist dclean
+
 api:
 	make api -C API
 cleanapi:

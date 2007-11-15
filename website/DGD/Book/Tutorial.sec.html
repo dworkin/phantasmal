@@ -147,15 +147,15 @@
 </p>
 
 <p>
-  You've already seen the <dfn>+</dfn> operator.  There's also a
-  minus, <dfn>-</dfn> which works the way you'd expect &mdash; it can
-  be used to make a number or variable negative, or to subtract two
-  numbers.  The asterisk <dfn>*</dfn> means multiplication, and the
-  forward-slash, <dfn>/</dfn> represents division.  Remember that you
-  can only add, multiply, subtract or divide integers with integers
-  and decimal numbers (also called floating point) with other floating
-  point numbers.  If you try to do otherwise, such as by typing
-  <kbd>code 7 + 4.1</kbd>, you'll get an error.  Try it and see.
+  You've already seen the <dfn>+</dfn> operator.  There's also a minus,
+  <dfn>-</dfn> which works the way you'd expect &mdash; it can be used
+  to make a number or variable negative, or to subtract two numbers. 
+  The asterisk <dfn>*</dfn> means multiplication, and the forward-slash,
+  <dfn>/</dfn> represents division.  Remember that you can only add,
+  multiply, subtract or divide integers with integers and floating point
+  numbers (DGD speak for decimal numbers) with other floating point
+  numbers.  If you try to do otherwise, such as by typing <kbd>code 7 +
+  4.1</kbd>, you'll get an error.  Try it and see.
 </p>
 
 <p>
@@ -167,21 +167,20 @@
 </p>
 
 <p>
-  Integers are limited in size.  If you try typing <kbd>code 10000 *
-  10000 * 10000</kbd>, you'll see a strange result &mdash; it's
+  Integers are signed, and limited in size.  If you try typing <kbd>code
+  10000 * 10000 * 10000</kbd>, you'll see a strange result &mdash; it's
   negative!  That's because integers have a maximum value of a little
-  more than four billion.  If your numbers get larger than that,
-  they'll wrap back around.  Unsigned integer variables (we'll talk
-  about them later) will wrap back to zero, while signed integer
-  variables will wrap to negative numbers.  If you're subtracting or
-  multiplying and your integer variable gets smaller than the smallest
-  allowed number (around negative four billion) it will wrap back into
-  being positive.  This wrapping is because DGD's basic numbers are of
-  a fixed size, and there are only so many possible numbers that a
-  single variable can represent.  If you need larger or smaller
-  integers than that, you'll find that DGD's Arbitrary-Precision
-  Signed Numbers (called ASNs) are the way to go.  They're explained
-  in a later chapter.
+  more than two billion.  If your numbers get larger than that, they'll
+  wrap back around.  Integer variables will wrap to negative numbers
+  once they hit about two billion.  If you're subtracting or multiplying
+  and your integer variable gets smaller than the smallest allowed
+  number (around negative two billion) it will wrap back into being
+  positive.  This wrapping is because DGD's basic numbers are of a fixed
+  size, and there are only so many possible numbers that a single
+  variable can represent.  If you need larger or smaller integers than
+  that, you'll find that DGD's Arbitrary-Precision Signed Numbers
+  (called ASNs) are the way to go.  They're explained in a later
+  chapter.
 </p>
 
 <p>
@@ -206,13 +205,9 @@
 
 <p>
   Not every value or variable is an integer, so not every variable is
-  declared using <code>int</code>.  You can also have
-  <dfn>unsigned</dfn> variables, which are integers that can't hold
-  negative values.  You can declare an unsigned variable called
-  <var>bruno</var> by typing <code>unsigned int bruno;</code>, or just
-  <code>unsigned bruno;</code> Try subtracting a larger unsigned
-  number from a smaller one and see what happens!  The wraparound can
-  be surprising if you're not used to it.
+  declared using <code>int</code>.  Also, unlike in C, there is no such
+  thing as an unsigned integer in DGD.  This will give you a big fat
+  syntax error if you try.
 </p>
 
 <p>

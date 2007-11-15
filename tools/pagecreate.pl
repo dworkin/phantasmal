@@ -2,14 +2,14 @@
 
 use strict;
 
-my (@basefiles, $fileout, $headerdata, $footerdata);
+my (@basefiles, $fileout, $templatedata, $indexdata);
 
-open(FILE, "<pageheader.html") or die "Can't open page header: $!";
-$headerdata = join("", <FILE>);
+open(FILE, "<pagetemplate.html") or die "Can't open page template: $!";
+$templatedata = join("", <FILE>);
 close(FILE);
 
-open(FILE, "<pagefooter.html") or die "Can't open page footer: $!";
-$footerdata = join("", <FILE>);
+open(FILE, "<pageindex.html") or die "Can't open page index: $!";
+$indexdata = join("", <FILE>);
 close(FILE);
 
 $fileout = `echo *.base.html`;
@@ -21,17 +21,9 @@ if($fileout eq '*.base.html') {
 
 #print "Basefiles: " . join(", ", @basefiles) . "\n";
 
-my ($mtime_t1, $mtime_t2, $mtime_header);
-($_,$_,$_,$_,$_,$_,$_,$_,$_,$mtime_t1,$_,$_,$_)
-    = stat("pageheader.html");
-($_,$_,$_,$_,$_,$_,$_,$_,$_,$mtime_t2,$_,$_,$_)
-    = stat("pagefooter.html");
-
-if($mtime_t1 > $mtime_t2) {
-    $mtime_header = $mtime_t1;
-} else {
-    $mtime_header = $mtime_t2;
-}
+my ($mtime_template);
+($_,$_,$_,$_,$_,$_,$_,$_,$_,$mtime_template,$_,$_,$_)
+    = stat("pagetemplate.html");
 
 my ($filename, $outfilename, $contents, %filestate);
 FILENAME: foreach $filename (@basefiles) {
@@ -50,7 +42,7 @@ FILENAME: foreach $filename (@basefiles) {
     ($_,$_,$_,$_,$_,$_,$_,$_,$_,$mtime2,$_,$_,$_)
 	= stat($outfilename) if -e $outfilename;
 
-    next FILENAME if($mtime2 > $mtime1 and $mtime2 > $mtime_header);
+    next FILENAME if($mtime2 > $mtime1 and $mtime2 > $mtime_template);
 
     open(FILE, "<$filename") or die "Can't open HTML file $filename: $!";
     $contents = join("", <FILE>);
@@ -59,16 +51,15 @@ FILENAME: foreach $filename (@basefiles) {
     print "Writing file '$outfilename'.\n";
     open(FILE, ">$outfilename") or die "Can't write to $outfilename: $!";
 
-    my ($new_hd, $new_fd, $new_cont);
+    my ($new_td, $new_cont);
     $new_cont = extract_metadata($contents, \%filestate);
-    $new_hd = $headerdata;
-    $new_fd = $footerdata;
-    $new_hd =~ s/\@\@TITLE\@\@/$filestate{TITLE}/g;
-    $new_fd =~ s/\@\@TITLE\@\@/$filestate{TITLE}/g;
+    $new_td = $templatedata;
+    $new_td =~ s/\@\@TITLE\@\@/$filestate{TITLE}/g;
+    $new_td =~ s/\@\@CONTENT\@\@/$new_cont/g;
+    $new_td =~ s/\@\@INDEX\@\@/$indexdata/g;
+    $new_td =~ s/\@\@FILE\@\@/$outfilename/g;
 
-    print FILE $new_hd;
-    print FILE $new_cont;
-    print FILE $new_fd;
+    print FILE $new_td;
     close(FILE);
 
     %filestate = ();

@@ -1,3 +1,3 @@
-PAGEGEN=../pagecreate.pl
+PAGEGEN=../../../tools/pagecreate.pl
 DIRS=
 include ../../Makefile.in

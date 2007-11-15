@@ -1,9 +1,9 @@
-PAGEGEN=./pagecreate.pl
+PAGEGEN=../../tools/pagecreate.pl
 DIRS=html
 
 include ../Makefile.in
 
 api:
-	./apidoc.pl
+	../../tools/apidoc.pl
 cleanapi:
 	rm -f html/*.base.html

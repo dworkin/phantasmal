@@ -1,6 +1,5 @@
 BASE=$(wildcard *.base.html)
 HTML=$(patsubst %.base.html,%.html,$(BASE))
-HF=pagefooter.html pageheader.html
 DIRS_RMAKE=$(patsubst %,%_make,$(DIRS))
 DIRS_RCLEAN=$(patsubst %,%_clean,$(DIRS))
 
@@ -17,10 +16,10 @@ $(DIRS_RMAKE):
 $(DIRS_RCLEAN): 
 	$(MAKE) rclean -C $(patsubst %_clean,%,$@)
 
-.PHONY: html clean $(DIRS_RMAKE) $(DIRS_RCLEAN)
+.PHONY: msubdirs csubdirs rhtml rclean html clean $(DIRS_RMAKE) $(DIRS_RCLEAN)
 
 clean:
 	rm -f $(HTML)
 
-$(HTML): %.html: %.base.html $(HF)
+$(HTML): %.html: %.base.html pagetemplate.html
 	$(PAGEGEN)
