@@ -1,3 +1,3 @@
-PAGEGEN=../../../tools/pagecreate.pl
+ROOT=../../..
 DIRS=
-include ../../Makefile.in
+include $(ROOT)/website/Makefile.in

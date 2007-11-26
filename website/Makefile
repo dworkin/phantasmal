@@ -1,4 +1,4 @@
-PAGEGEN=../tools/pagecreate.pl
+ROOT=..
 DIRS=API Design DGD Innsmouth Operation Setup Tutorial
 
 rhtml:
@@ -7,7 +7,7 @@ pclean: cleanapi cleanbook
 
 dist: prereq rhtml
 dclean: rclean pclean
-include Makefile.in
+include $(ROOT)/website/Makefile.in
 
 .PHONY: api cleanapi book cleanbook prereq pclean dist dclean
 

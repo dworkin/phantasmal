@@ -55,8 +55,8 @@ FILENAME: foreach $filename (@basefiles) {
     $new_cont = extract_metadata($contents, \%filestate);
     $new_td = $templatedata;
     $new_td =~ s/\@\@TITLE\@\@/$filestate{TITLE}/g;
-    $new_td =~ s/\@\@CONTENT\@\@/$new_cont/g;
-    $new_td =~ s/\@\@INDEX\@\@/$indexdata/g;
+    $new_td =~ s/ *\@\@CONTENT\@\@ */\n${new_cont}\n/g;
+    $new_td =~ s/ *\@\@INDEX\@\@ */\n${indexdata}\n/g;
     $new_td =~ s/\@\@FILE\@\@/$outfilename/g;
 
     print FILE $new_td;

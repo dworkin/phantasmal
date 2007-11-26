@@ -1,2 +1,2 @@
-PAGEGEN=../../tools/pagecreate.pl
-include ../Makefile.in
+ROOT=../..
+include $(ROOT)/website/Makefile.in

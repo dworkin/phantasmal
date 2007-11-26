@@ -1,6 +1,6 @@
-PAGEGEN=../../../tools/pagecreate.pl
+ROOT=../../..
 DIRS=html
-include ../../Makefile.in
+include $(ROOT)/website/Makefile.in
 
 cleanbook:
 	cd html && rm -f *.base.html

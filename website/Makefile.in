@@ -1,3 +1,4 @@
+PAGEGEN=$(ROOT)/tools/pagecreate.pl
 BASE=$(wildcard *.base.html)
 HTML=$(patsubst %.base.html,%.html,$(BASE))
 DIRS_RMAKE=$(patsubst %,%_make,$(DIRS))

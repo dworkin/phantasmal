@@ -1,3 +1,3 @@
-PAGEGEN=../../tools/pagecreate.pl
+ROOT=../..
 DIRS=Book Config GameDesign Kernel LibWriting Operation Programming Running Skotos
-include ../Makefile.in
+include $(ROOT)/website/Makefile.in
