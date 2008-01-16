@@ -1,2 +1,12 @@
-* Go through the setup section, make sure that there are simple instructions for Win32, for
-bundled Phantasmal, and for other new/odd stuff.
+* Go through the setup section, make sure that there are simple
+instructions for Win32, for bundled Phantasmal, and for other new/odd
+stuff.
+
+* Relocate messages to a central directory
+
+They are messy, need preprocessing, and some are even corrupted and need
+refetching.
+
+* MLA citations 
+
+* Fix CVS -> SVN transitions
