@@ -1,0 +1,296 @@
+Date: Tue, 27 Jun 2000 20:33:12 +0200 (CEST)
+From: "Felix A. Croes"
+To: DGD Mailing List
+Subject: RE: [DGD]C# vs. LPC
+
+"Christopher Allen" wrote:
+
+> Felix A. Croes wrote:
+> > Is there perhaps a more comprehensive overview available on the web?
+> > The two links available at the bottom of that page do not execute on
+> > my computer, and the page mentioned above does not, in itself, make
+> > sense.  I cannot tell, for instance, if LPC also allows "for typed,
+> > extensible metadata that can be applied to any object."
+>
+> The two files were self-extracting zip files. I will send the two
+> files decompressed to you under a separate email (if anyone else wants
+> the files, let me know).
+
+I've browsed through them...  I think this started with a couple of
+C++ programmers -- Anders Hejlsberg and Scott Wiltamuth -- getting
+frustrated with Java and hacking together a new language, which is
+somewhere in between Java and C++.
+
+Like Java, it has interfaces and single inheritance.  From C++, it
+inherits a number of goodies, among which are the C preprocessor,
+overloading of predefined predefined operators with the &lt;operator&gt;
+keyword, structs, function pointers, and a general sense of
+unfinished-ness: unlike Java, it is not intended to be closed and
+complete.
+
+There is no documentation of a predefined runtime environment, and my
+guess is that none is forthcoming: this is just a language like C or
+C++, no more.  It is strongly bound to Windows, naturally.
+
+To answer your question, I do not think that C# has anything that could
+be of interest for LPC that Java does not also have, the most important
+of which are, in my opinion: object types; constants and interfaces as
+a replacement for the C preprocessor; non-persistent objects that are
+garbage collected (of course, in a MUD persistence is what you want,
+so garbage collected objects are an ambiguous improvement).
+
+LPC is a very simple language.  Java is a simple language with some
+complex rules under the hood.  C# is, at this point, a rather
+sloppily-designed language that is closer to "C++ without pointers"
+than to "Java with improvements."
+
+Regards,
+Dworkin
+
+Date: Tue, 27 Jun 2000 21:08:47 +0200 (CEST)
+From: "Felix A. Croes"
+To: DGD Mailing List
+Subject: RE: [DGD]C# vs. LPC
+
+"Felix A. Croes" wrote:
+
+> P.S. I've found nothing in these documents about the typed, extensible
+>      metadata that I was promised.
+
+Ah, they're called attributes!
+
+They look like the sort of programmer toy that can wreak utter havoc
+with clean language design.  I can now say that LPC does not allow
+for extensible metadata in the C# sense, though the Skotos version
+of DGD actually does have bitflag attributes for data.
+
+Regards,
+Dworkin
+
+
+
+From: "Christopher Allen"
+To: DGD Mailing List
+Subject: [DGD]FW: [MUD-Dev] C# vs. LPC
+Date: Tue, 27 Jun 2000 13:50:10 -0700
+
+
+-----Original Message-----
+From: MUD-Dev Admin, Travis Casey
+Sent: Tuesday, June 27, 2000 11:27 AM
+To: Christopher Allen
+Subject: Re: [MUD-Dev] C# vs. LPC
+
+
+Tuesday, June 27, 2000, 12:18:02 PM, Christopher Allen wrote:
+
+> I was wondering if there were any of you c language experts who could
+> compare and contrast Microsoft's new C# (cee-sharp) language with
+> LPC.
+
+> http://msdn.microsoft.com/vstudio/nextgen/technology/csharpintro.asp
+
+> How different are they? How alike? Any worthy things in LPC that should
+> be in C#, or worthy things in C# that make sense for LCP?
+
+I'll take a quick shot at it.  Note that while I know LPC quite well,
+all I know about C# is what I read on that page and in the two
+documents that are downloadable from that page.
+
+The two languages were created with very different purposes in mind --
+LPC was created specifically to build text muds, while C# is a
+general-purpose language.  One major difference from this that doesn't
+show up in the languages themselves is the sorts of environments they
+run under.
+
+For example, most LPC engines handle the details of setting up an
+initial listening socket and handling incoming telnet connections
+for you; all you need to do is write a simple program for the players
+to log in through and a way to associate them with their bodies,
+shells, or whatever objects represent them in the game.  A C# program
+will not, although there may be pre-written classes available for
+this.  Similarly, most LPC setups already feature the idea of objects
+being containers for one another, implementing it in a way that's
+meant to work well for a mud.  C# doesn't -- you'd either have to
+set up the code for containers yourself or find a pre-written class
+that does it.  Another example is that some LPC setups have built-in
+features for implementing creator security.
+
+Both are object-oriented, but LPC enforces this more strongly than C#
+seems to, from what I can see.  For example, the only way to change a
+variable inside another object in LPC is to call a function in that
+object; in C#, you can set a variable inside another object as you
+could in C++ -- e.g.:
+
+  Class1 r1 = new Class1();
+  r1.myvariable = 123;
+
+C# has many more value types than LPC -- it distinguishes between
+unsigned, short, long, etc., where most LPC versions simply have
+"int".  C# provides an array type, but the documentation doesn't
+indicate whether arrays are dynamically resizable.  LPC arrays are
+automatically resized as needed.  C# does not seem to provide any
+equivalent to LPC's mappings, although, of course, you could create
+one or find one.
+
+Both languages provide automatic garbage collection.  C# has a
+mechanism for circumventing that, so that programmers can create code
+that allocates and frees memory.
+
+C# provides a goto; whether this is a feature or a bug is a matter of
+opinion.  :-)  It also provides a good variety of control statements,
+including for, foreach, do, while, and switch.  Most varieties of LPC
+have all of these except foreach, and some have the foreach as well.
+No variety of LPC that I know of has a goto.
+
+C# provides error handling through both throw and try mechanisms; the
+versions of LPC that I know of have only throw, and have a global
+catch.  The C# info I have doesn't mention whether catches are global
+or local.
+
+C# provides support for event handlers; LPC does not.  However, all
+versions of LPC that I know of provide support for timed callbacks;
+from what I see, it appears that one would have to either do this
+yourself or find a library for it in C#.  Creating an event handler
+for LPC would not be difficult; I don't know how difficult creating a
+timed callback mechanism for C# would be.
+
+Where LPC uses either function pointers or closures, C# has "delegate"
+classes.  Since I've never worked with delegate classes, I can't
+comment on any differences in functionality or ease of use.
+
+C# provides "versioning" support -- which, from what I can see,
+basically means merely that you have to explicitly say that you want
+to override inherited methods, variables, etc.  I don't see this as
+likely to be a problem in a typical mud environment.
+
+It also provides namespaces, which allow programmers to have multiple
+namespaces and specify which they are using.  Again, I don't see this
+as likely to be a problem in a typical mud, especially when using LPC.
+(You can't directly reference variables in other objects, so each
+object already has its own namespace.)
+
+A lock statement in C# provides mutual exclusion.  Since most LPC
+implementations are not threaded, this isn't generally an issue in
+LPC.
+
+Both languages allow multiple inheritance.  C# also has the idea of
+interfaces, as in Java, and allows objects to implement multiple
+interfaces.
+
+Some LPC dialects allow functions to take variable numbers of
+arguments; from what I can see, C# does not.  Whether this is a good
+thing or not I'll again leave up to the reader.
+
+Most LPC implementations have several built-in functions for string
+manipulation, with an emphasis towards breaking up command strings and
+parsing them.  (Indeed, at least one LPC implementation implements the
+basics of a parser for you.)  What sort of string functions C# provides
+is not mentioned in the docs on that web page.
+
+Overall, they both seem to be headed in the same direction -- towards
+a more object-oriented and "user-friendly" version of C.  If you're
+building a mud, you might want the mud-oriented features of an LPC
+implementation -- on the other hand, if you don't like how LPC
+implementations handle those, you may not.
+
+--
+       |\      _,,,---,,_    Travis S. Casey
+ ZZzz  /,`.-'`'    -.  ;-;;,_   No one agrees with me.  Not even me.
+      |,4-  ) )-,_..;\ (  `'-'
+     '---''(_/--'  `-'\_)
+
+
+
+Date: Tue, 27 Jun 2000 23:53:47 +0200 (CEST)
+From: "Felix A. Croes"
+To: DGD Mailing List, MUD-Dev List
+Subject: [DGD]Re: [MUD-Dev] C# vs. LPC
+
+Travis Casey wrote:
+
+> Tuesday, June 27, 2000, 12:18:02 PM, Christopher Allen wrote:
+>
+> > I was wondering if there were any of you c language experts who could 
+> > compare and contrast Microsoft's new C# (cee-sharp) language with
+> > LPC.
+>
+> > http://msdn.microsoft.com/vstudio/nextgen/technology/csharpintro.asp
+>
+> > How different are they? How alike? Any worthy things in LPC that should
+> > be in C#, or worthy things in C# that make sense for LCP?
+>
+> I'll take a quick shot at it.  Note that while I know LPC quite well,
+> all I know about C# is what I read on that page and in the two
+> documents that are downloadable from that page.
+
+>From what followed, I assume that the LPC dialect which you are most
+familiar with is the MudOS one.  (I make this point because I am
+cross-posting my response to the DGD mailing list, where Christopher's
+original posting also went.)
+
+
+>[...]
+> C# provides error handling through both throw and try mechanisms; the
+> versions of LPC that I know of have only throw, and have a global
+> catch.  The C# info I have doesn't mention whether catches are global
+> or local.
+
+C# has exception handling in the Java/C++ style, LPC's support for
+catching errors is rudimentary only.  Whether the more advanced
+style is also an improvement is perhaps a matter of taste.  Personally,
+I &lt;hate&gt; having to hunt through multiple catches to find out where
+the flow of control went.
+
+
+>[...]
+> Where LPC uses either function pointers or closures, C# has "delegate"
+> classes.  Since I've never worked with delegate classes, I can't
+> comment on any differences in functionality or ease of use.
+
+C#'s delegate classes implement ordinary C-style function pointers.
+
+
+> C# provides "versioning" support -- which, from what I can see,
+> basically means merely that you have to explicitly say that you want
+> to override inherited methods, variables, etc.  I don't see this as
+> likely to be a problem in a typical mud environment.
+
+When I first saw this mentioned in the doc, my heart made a little
+leap -- I was hoping for something that would improve on Java's
+failure to deal with the replacement of class code, without a cold
+boot of the entire runtime system.  Alas, I was disappointed.
+
+
+> It also provides namespaces, which allow programmers to have multiple
+> namespaces and specify which they are using.  Again, I don't see this
+> as likely to be a problem in a typical mud, especially when using LPC.
+> (You can't directly reference variables in other objects, so each
+> object already has its own namespace.)
+
+Interestingly, this is one of the things that make LPC such an easy
+language to work with.
+
+
+>[...]
+> Both languages allow multiple inheritance.  C# also has the idea of
+> interfaces, as in Java, and allows objects to implement multiple
+> interfaces.
+
+LPC has multiple inheritance.  C# has only single inheritance.
+
+
+>[...]
+> Overall, they both seem to be headed in the same direction -- towards
+> a more object-oriented and "user-friendly" version of C.  If you're
+> building a mud, you might want the mud-oriented features of an LPC
+> implementation -- on the other hand, if you don't like how LPC
+> implementations handle those, you may not.
+
+DGD's dialect of LPC is definitely not headed towards a user-friendly
+version of C.  I very much doubt whether any other LPC dialect is,
+either.  I rather think C is where LPC started, and from which it is
+moving further and further away.
+
+Regards,
+Felix Croes

@@ -8,275 +8,61 @@
   </p>
 
 <pre>
-From: "Felix A. Croes"
-Subject: Re: [DGD] Port number in driver object..
-Date: Thu Jan  6 17:40:01 2005
-
-> As far as I know the port number on which a client connects to DGD should be
-> passed to the kernel driver object, but somehow it always ends up being "0".
-> Is this a bug or am I missing something? I thought it might be a Win32
-> issue, but compiling DGD on the BSD platform had the same effect.
-
-It's a 0 because it's the first port in the array of ports in the config
-file.  Use status()[ST_TELNETPORTS] or status()[ST_BINARYPORTS] to map it
-to an actual TCP/IP port number.
-
-Regards,
-Dworkin
+@@MESSAGE slush/port_number@@
 </pre>
 
 <hr />
 
 <pre>
-Geir Harald Hansen created a distributed MUD using DGD.  You can find
-his thesis paper here:
-
-    http://www.stud.ifi.uio.no/~geirhans/thesis.pdf
-
-
-Regards,
-Dworkin
+@@MESSAGE slush/distributed_mud@@
 </pre>
 
 <hr />
 
 <pre>
-Date: Tue, 31 Oct 2000 13:00:06 +0100 (CET)
-From: "Felix A. Croes"
-Subject: Re: [DGD]inherit_program() called twise
-
-> I wondering if it is normal for inherit_program() in driver object to be called twise each time an object (that inherits something) is compiled.
-
-Twice, or more often: that is normal.  DGD's compiler is not reentrant,
-so if an inherited object is discovered not to exist, the current
-compilation is aborted and the non-existing object is compiled first.
-After that, the original object is compiled again, and inherit_program()
-is called again.
-
-Regards,
-Dworkin
-
-List config page:  http://list.imaginary.com/mailman/listinfo/dgd
+@@MESSAGE slush/inherit_program_called_twice@@
 </pre>
 
 <hr />
 
 <pre>
-From: dgd at list.imaginary.com (Felix A. Croes)
-Date: Mon May 19 08:41:00 2003
-Subject: [DGD] Mapping size
-
-> When I get an error that says, "Mapping too large to grow", does that mean 
-> that I've run out of dynamic memory entirely?  Or is there a setting 
-> specific to mappings that gives a maximum size, similar to the array_size 
-> setting?
-
-The array_size config parameter controls the maximum size of both
-arrays and mappings.
-
-Regards,
-Dworkin
+@@MESSAGE slush/mapping_size@@
 </pre>
 
 <hr />
 
 <pre>
-From: DGD Mailing List (Thomas Rice)
-Date: Wed Aug 25 07:16:01 2004
-Subject: [DGD] Virtual Rooms
-
-Hi,
-
-I was wondering if anyone knew how I could implement 'virtual rooms'
-in DGD. Specifically the type that would let me generate a large
-two-dimensional terrain where the room description would be set by
-some equation.
-
-Here is how a previous version of a LpMUD derivative I once used
-accomplished this.
-
-When you tried to go to a particular location or load a particular
-object, such as "thomas/room/hallway.c" it would do 3 things, in this
-order:
-
-1. It would check if it's already loaded in memory. If so, it would use that.
-2. If not, it would load up hallway.c and use that.
-3. If hallway.c didn't exist, it would check to see if "thomas/room.c"
-existed, and if so call the GetVirtualObject function within
-"thomas/room.c" with the full string as an argument. If this function
-existed, it would return a room object, and in memory rename it to
-"thomas/room/hallway.c" so that future references to this would refer
-to the loaded room.
-4. If hallway.c didn't exist, or the GetVirtualObject function didn't
-return a room, it would fail.
-
-With this method you could easily create a large wilderness area by
-creating a file like "thomas/wilderness.c" and referring to rooms like
-"thomas/wilderness/1,1,1" and having the GetVirtualObject parse the
-string to work out the coordinates and then set up the room by cloning
-it and returning it.
-
-Does anyone know if it's possible to do something similar in DGD, and
-if so, how? I'm pretty new to DGD, I should point out, but so far it
-looks pretty good! :)
-
-Thanks,
-
-Thomas.
+@MESSAGE virtual_rooms_1@@
 </pre>
 
 <hr />
 
 <pre>
-From: DGD Mailing List (Felix A. Croes)
-Date: Wed Aug 25 08:42:01 2004
-Subject: [DGD] Virtual Rooms
-
-Thomas Rice wrote:
-
-> I was wondering if anyone knew how I could implement 'virtual rooms'
-> in DGD. Specifically the type that would let me generate a large
-> two-dimensional terrain where the room description would be set by
-> some equation.
->[...]
-> With this method you could easily create a large wilderness area by
-> creating a file like "thomas/wilderness.c" and referring to rooms like
-> "thomas/wilderness/1,1,1" and having the GetVirtualObject parse the
-> string to work out the coordinates and then set up the room by cloning
-> it and returning it.
-
-Simple enough.  Either clone rooms in the area and refer to them using
-your own custom naming scheme (e.g. "thomas/wilderness"->room_at(1,1,1))
-or compile the room from a string instead of a file, and then
-configure it as a clone:
-
-    room = compile_object("thomas/wilderness/1,1,1",
-			  read_file("thomas/wilderness.c"));
-    room->set_long(etc);
-
-The latter will require a recent version of DGD.
-
-Regards,
-Dworkin
+@@MESSAGE slush/virtual_rooms_2@@
 </pre>
 
 <hr />
 
 <pre>
-From: dgd at list.imaginary.com (Noah Gibbs)
-Date: Wed Nov 20 01:34:01 2002
-Subject: [DGD] Using MySQL C++ API
-
-  Hi.  First, let me echo Keith Dunwoody's excellent sentiments.  He's
-basically right.  Then let me summarize why quickly.
-
-  DGD is really, really cool.  It does a couple of things that no other
-language (except maybe the Cold server) does.  Unfortunately, those same
-really cool tricks keep it from doing good callout to other, less-cool
-languages.
-
-  DGD allows atomic functions -- if DGD runs out of ticks or an error
-occurs partway through, it just rolls the whole thing back, including
-global variable writes, as though it never happened.  If you've been
-calling out to code that doesn't do that, you can't roll it back because
-you don't know all the half-assed stuff it's not finished doing yet.  If
-you roll back in some obvious way and leave stuff half-done then chances
-are really good that it'll crash when you next play with it.
-  Believe me, I spent a long time trying to get Perl to be interruptible
-in this way without constantly crashing the interpreter.  The only way I
-figured out how to do it is one I'll recommend to you, but it boils down
-to starting (and restarting, probably) a new server in a separate process
-and never using it inside any atomic functions.  Your MySQL stuff isn't
-currently atomic-able, so you can't mix it with DGD.
-
-  DGD has exception handling that can cause similar problems, and most
-speicifically the way it times out when it runs out of cycles -- again,
-it's that interruptability problem.
-
-  DGD's multithreading works the same way that its atomic functions do,
-with speculative execution.  So that's right out as well.
-
-  Essentially DGD is just really unfriendly to calling out to libraries in
-other languages.  You can get around some of this by writing simple things
-as chunks of DGD itself, but that doesn't necessarily mean it's trivial
-(or easy, or reasonable) to do.  It also means that you now have to
-distribute your own modified DGD for other people to run your
-code.  That's a bad thing, especially in a community this small and
-close-knit, who you'll be asking for help with debugging :-)
-
--- 
-See my page of DGD documentation at
-"http://phantasmal.sourceforge.net/DGD/"
-If you post to the DGD list, you may see yourself there!
+@@MESSAGE slush/mysql_cplusplus_api@@
 </pre>
 
 <hr />
 
 <pre>
-From: dgd at list.imaginary.com (Felix A. Croes)
-Date: Thu Mar 28 09:42:01 2002
-Subject: [DGD] parse_string()
-
-Erwin Harte wrote:
-
-> Since the archive is (still?) offline, I'm digging this one up from my
-> own email garbage dump a.k.a archive:
->
->[...]
-
-The only change since the posting of this grammar is the addition of
-nil:
-
-    primary_p1_exp: 'nil'
-
-Regards,
-Dworkin
+@@MESSAGE slush/parse_string_1@@
 </pre>
 
 <hr />
 
 <pre>
-From: dgd at list.imaginary.com (Par Winzell)
-Date: Thu Mar 28 21:29:01 2002
-Subject: [DGD] parse_string()
-
- > parse_string(LPC_grammar, "void x(){if(0)if(1)y();else z();}", 1)
-
-I love that grammar. :-)   I think maybe 'private inherit' is also new, 
-though?  And, of course, somebody needs to write a LPC pre-processor... 
-which is probably a bit of a chore. A day's work or three.
-
-Zell
+@@MESSAGE slush/parse_string_2@@
 </pre>
 
 <hr />
 
 <pre>
-From: Josh Dady
-Subject: [DGD] LPC parse_string grammar
-Date: Sun, 26 Sep 2004 18:59:04 -0400
-
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA1
-
-One of my little side projects is to start generating reference 
-documentation using doxygen.  Since there's not native support for LPC 
-there, it seemed like the simplest way to get there was to use 
-parse_string() and spit out C++ declarations equivalent to the LPC 
-originals and use doxygen on that.
-
-To that end, while trying to parse our player object, I found the 
-following change to the grammar was needed (and Erwin seemed to agree 
-that it was something that happened since the grammar was originally 
-written) -- one of the varargs cases.  It is legal to use varargs in 
-the list of arguments to a function, and the original grammar doesn't 
-permit this.  I added the following production to make it happy:
-
-	formal_declaration: 'varargs' type_specifier data_dcltr
-
-- --
-Joshua P. Dady
-http://www.indecisive.com/
+@@MESSAGE slush/parse_string_grammar@@
 </pre>
 
 <hr />
@@ -450,119 +236,25 @@ DGD 1.3
 <hr />
 
 <pre>
-From: dgd@dworkin.nl (will guaraldi)
-Date: Tue Mar 22 16:36:01 2005
-Subject: [DGD] Question for programmers and builders
-
-On Mon, 21 Mar 2005, Noah Gibbs wrote:
->
-> Phantasmal gets a lot of flak for being gratuitously weird, by which I 
-> mean "not like 2.4.5".  And that's true, it really isn't.  Would people 
-> have an easier time with passing Phrases around if they looked like the 
-> markup strings above instead of looking like opaque LWO structures that 
-> you have to call functions on?
-
-I don't use Phantasmal or DGD, though I've been following development of 
-both for a few years now.  Even so, I don't really understand what you're 
-talking about here.
-
-However, one thing I do want to mention is that I frequently use ispell to 
-spellcheck descriptions and the like and I frequently run it over code 
-files.  So whatever solution you end up with, keep in mind that people may 
-use other non-mud tools to do their work so the most text-centric approach 
-for building objects is definitely the better one.
-
-In regards to storing that internally, you could store a version of the 
-expanded string (i.e. the string with all the markup code expanded into 
-ANSI/HTML/Xterm/...) for each language.  But I would think that gets 
-pretty memory intensive if every phrase consisted of a markup version for 
-each language supported.  (2 languages and 3 markup formats would be 6 
-strings stored for each phrase).  Also, you'd spend a lot of time 
-expanding all those strings to all the variations.
-
-I think the issue here is memory and how long it takes to expand strings. 
-You clearly want to limit the number of times you're expanding the same 
-string, but on the flip side, you don't want to go expand everything and 
-suffer the memory penalties.  Maybe it's better to cache the expanded 
-strings after the first time they've been requested?
-
-The other problem I've had that would be interesting to solve is trying to 
-use marked up strings for comparison.  This goes along with the problem 
-where people may adjust the phrase after the fact.  Is there a way to do 
-string comparisons on "~green(green) apple" without having to worry about 
-the ~green(...) part?  It would be nice if "~green(green) apple" == "green 
-apple".
-
-I'm doing a lot of talking about things I know next to nothing about, so 
-I'm going to cut it short here.
-
-I think it's pretty wild that you could have a mud written in multiple 
-languages.  I'm not sure how that would really work.  Is there a need for 
-such a thing?  How do players of such muds interact with each other?
-
-/will
+@@MESSAGE slush/qpb@@
 </pre>
 
 <hr />
 
 <pre>
-From: dgd@dworkin.nl (Greg Lewis)
-Date: Sat May  7 06:07:01 2005
-Subject: [DGD] Question: Implementing ANSI
-
-On Sat, May 07, 2005 at 04:17:26AM +1000, Trance Junkie wrote:
-> So my question is this: Is anyone aware of a downloadable, relatively 
-> up-to-date version of DGD (1.2 would be ideal) that supports ansi 
-> capabilities AND works out of the box for Win32 OS's, and if not, and of 
-> course if Dworkin is not opposed to the idea, is there anyone willing to 
-> create one for distribution?
-
-A patch against 1.2p4 is available at
-
-ftp://ftp.freebsd.org/pub/FreeBSD/ports/local-distfiles/glewis/dgd/ansi.diff
-
--- 
-Greg Lewis                          Email   : glewis@eyesbeyond.com
-Eyes Beyond                         Web     : http://www.eyesbeyond.com
-Information Technology              FreeBSD : glewis@FreeBSD.org
+@@MESSAGE slush/ansi@@
 </pre>
 
 <hr />
 
 <pre>
-From: dgd@dworkin.nl (Felix A. Croes)
-Date: Tue May 31 20:17:01 2005
-Subject: [DGD] LPC parsing in DGD
-
-"Shaun  deRost  Vantuil" wrote:
-
-> Does DGD compile LPC for use later on, or does it parse the code every time 
-> the LPC is run? I hope Im making sense here. 
-
-LPC is compiled to byte code for the internal VM.  The byte code is
-also saved in state dumps.
-
-Regards,
-Dworkin
+@@MESSAGE slush/lpc_parsing_1@@
 </pre>
 
 <hr />
 
 <pre>
-From: dgd@dworkin.nl (Par Winzell)
-Date: Tue May 31 20:20:01 2005
-Subject: [DGD] LPC parsing in DGD
-
-Shaun deRost Vantuil wrote:
-
-> Does DGD compile LPC for use later on, or does it parse the code every time 
-> the LPC is run? I hope Im making sense here. 
-
-DGD compiles the LPC (once) to bytecode, which it interprets at runtime.
-It's pretty fast. It is also capable of compiling the LPC to C in an
-offline process. The resulting code is even faster.
-
-Zell
+@@MESSAGE slush/lpc_parsing_2@@
 </pre>
 
   <p style="font-size: 150%"> <a href="index.html"> Back to DGD

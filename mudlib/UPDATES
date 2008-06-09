@@ -6,6 +6,9 @@ What files get updated when we do a release?  What should we check for
 accuracy before releasing a new version of Phantasmal on the public at
 large?
 
+First:
+  To prepare a release, do an svn export
+
 Everywhere:
   Remove CVS directories, #files#, .#files and files~
   Remove all .cvsignore files
