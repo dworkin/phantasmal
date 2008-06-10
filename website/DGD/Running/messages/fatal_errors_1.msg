@@ -1,0 +1,29 @@
+From: dgd at list.imaginary.com (Felix A. Croes)
+Date: Fri Oct 24 08:07:01 2003
+Subject: [DGD] dgd crashes on fatal errors
+
+Soja wrote:
+
+> I have discovered that dgd crashes (dumps core) after reporting a fatal 
+> error. For example if you remove the binary_connect() function from a driver
+> object, dgd crashes with following messages: 
+>
+>   Oct 23 19:31:34 ** DGD 1.2.66
+>   Oct 23 19:31:34 ** Initializing...
+>   Oct 23 19:31:36 ** Initialization complete. 
+>
+>   Fatal error: missing function in driver object: binary_connect
+>   Aborted (core dumped) 
+
+A momentous discovery.  This is how things are supposed to be :)
+
+Fatal errors are for when something is &lt;really&gt; wrong, and a coredump
+helps debugging such a case.  So why for missing functions in the
+driver object?  Because this may mean that the function table of the
+driver object was trashed (this has happened with some bugs in the
+past), rather than the programmer forgetting to include a function.
+And in the latter case, hopefully the programmer is pointed out the
+error of his ways with additional emphasis.
+
+Regards,
+Dworkin

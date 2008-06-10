@@ -3,105 +3,13 @@
   <h2> Profiling Your DGD MUD </h2>
 
 <pre>
-From: Par Winzell
-Date: Mon, 25 Jun 2001 08:21:01 -0700
-Subject: Re: [DGD]CPU usage
-
-David,
-
- > Our mud is consistently using 30-60%, and sometimes jumping to 70% of
- > a celeron 733 I think, it has 256 megs of ram also. The number of people
- > playing is usually around 10-17 and most of these are chatting, with 2-3
- > wizards who are coding. Does anybody have any suggestions on bringing
- > down our CPU usage? I have been warned by our host that our usage has 
- > become excessive. Thanks.
-
-DGD just runs LPC code. Clearly your LPC code tries to do more than
-your machine can handle. Some suggestions for problem analysis,
-
- *) First, chart how CPU usage varies with users. If it's at 50% with
-    no users on, then clearly background work is the culprit. If it's
-    at 10% with no users on but 70% in the evening, then code executed
-    as a direct result of player commands would be the place to look.
-
- *) If it's high in CPU, it's probably not limited by I/O or memory,
-    which is a good thing. It suggests the slowness is due to running
-    LPC code rather than, say, too low a swap fragment or worse, the
-    machine swapping at the OS level.
-
- *) Technically less than completely trivial but very wortwhile is to
-    get profiling data. For DGD this is currently done by precompiling
-    the whole library (is there documentation on this process)? If you
-    go this route, I heartily suggest using Dark's/Nino's EPP 2.1.
-
-    The precompiler turns LPC into C code. Then, you compile it all in
-    a profiling compiler (which measures how much time is spent in what
-    functions) and analyse the result. Non-trivial but often useful.
-
-    I've made stabs at an internal DGD profiler, but the version I put
-    together is exceedingly limited. I may revisit this problem though
-    as Skotos' games get larger and (even) more difficult to analyze.
-
- *) Enable and disable suspicious parts of the code. For example, if you
-    have complex code that is run every time somebody moves through a
-    room, try temporarily commenting out that code and see what happens
-    to the load. You can do things like move east and then west 10,000
-    times and see how long it takes on a totally unloaded (test) Mud.
-
- *) DGD has a tick counter. All LPC that is executed uses up ticks and
-    you can limit that amount of ticks any thread had. You could slowly
-    lower this limit until you start seeing 'out of ticks' errors in
-    the driver log and stare carefully at the stack trace to figure out
-    where in the mudlib that tends to occur.
-
-
-Just a few common-sense suggestions.
-
-Zell
+@@MESSAGE cpu@@
 </pre>
 
 <hr />
 
 <pre>
-From: dgd at list.imaginary.com (Felix A. Croes)
-Date: Tue Jun  3 05:31:00 2003
-Subject: [DGD] Damage Weapons and Stuff (Math and Code)
-
-Some notes on the relative speed of various functions.
-
-The random() kfun uses either the BSD Unix C library function random(),
-or the SYSV Unix C library function rand48().  I do not know which is
-faster.  The randomness of either is considered to be inadequate by
-many specialists, who like custom random functions for different
-applications.  I expect that it is possible to implement a fast
-pseudo-random number generator in LPC.  Also note that unless you know
-the order in which users send their input to the server, you'll have
-an extra source of randomness there which affects the order in which
-calls to your pseudo-random number generator are made.
-
-All LPC floating point numbers are currently simulated without using
-floats in C.  This is of course slower than using floats, but not as
-much slower as you would expect.  Also take into account that DGD
-floats do not exactly match IEEE floats or doubles; they have 11
-bits in the exponent and 36 in the mantissa.  A future version of
-DGD is likely to use native floats.
-
-Many of those who worry about the speed of LPC start with adding
-new kfuns to DGD first.  This is doing things backwards.  LPC is
-a decent programming language, so first implement your mudlib in
-LPC, then optimize, then precompile, and <then> rewrite parts of
-your code in C.  Chances are that the code you eventually decide
-to write a kfun for, if any, is completely different from the
-code that you originally had doubts about.
-
-Finally, on how to time the performance of a function in LPC:
-either go by ticks measurement, or let it do a few hundred
-thousand or million iterations so that the time spent can be
-measured in seconds, and then observe the actual time spent on
-an unloaded system.
-
-Regards,
-Dworkin
+@@MESSAGE damage@@
 </pre>
 
   <p style="text-size: 150%"> <a href="../index.html"> Back to top level
