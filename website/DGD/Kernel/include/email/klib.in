@@ -1,0 +1,41 @@
+From: dgd at list.imaginary.com (Shevek)
+Date: Sat Feb 16 22:23:01 2002
+Subject: [DGD] Kernel Mudlib
+
+At 09:08 16/02/02 -0800, you wrote:
+>On Fri, 15 February 2002, Erwin Harte wrote:
+> >
+> > Return MODE_DISCONNECT or whatever it's called as the very first thing
+> > in that special user-object, then the connection will be closed almost
+> > immediately.
+> >
+>
+>OK thanks.  I think I might be doing that as soon as login() is called on 
+>the user object.  I was just wondering if there was some way of disabling 
+>the telnet port without a special user-object.
+
+Set the timeout in telnetd or binaryd (Or whatever you pass via initd.c) to 
+-1, effectively this disconnects as soon as they connect. No need to pass 
+any object back as it's never used.
+It's good to be nice about it and leave query_banner giving some 
+explanation as to why they can't logon on the telnet/binary port.
+
+Eg
+object select(string str) {
+         /* No need to return anything, but you need the function I think */
+}
+
+int query_timeout(object connection){
+         /* Disconnect immediately */
+         return(-1);
+}
+
+string query_banner(object connection) {
+         /* Needed, it gets called before query_timeout */
+         string str;
+         str="\nTelnet connections are not permitted.";
+         str+="\nUse port 6048 \n";
+         return(str);
+}
+
+Shevek

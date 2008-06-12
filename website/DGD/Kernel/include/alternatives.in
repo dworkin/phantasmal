@@ -1,0 +1,103 @@
+From: dgd at list.imaginary.com (Felix A. Croes)
+Date: Wed Jan 28 07:06:01 2004
+Subject: [DGD] Alternatives to the Kernel model of security...
+
+Noah Gibbs wrote:
+
+>   The Kernel Library, while it's a very powerful and
+> useful bit of software, is undeniably hard to use in
+> certain cases.  I don't mean it's technically
+> incapable.  I mean that its security model is
+> unfamiliar to essentially everyone, and that common
+> forms of security are difficult to map onto its
+> interace.
+
+I'll explain a little about how the kernel library's security model
+came to be.
+
+Before I started working on DGD, I spent a lot of time trying to
+circumvent the security of various mudlibs.  When I started, all LPmuds
+used a variety of 2.4.5 mudlib, and eventually I developed a routine
+to go from newbie player to archwizard in about 15 minutes (including
+removing evidence from the logfiles). :)
+
+The basic idea of LPmud 2.4.5's security was simple: wizards can only
+edit files in their own directory, in /open and in directories where
+they have explicitly been granted access, archwizards can edit files
+everywhere except in /room and /obj.  The implementation was full of
+holes.
+
+A new security model was developed for the CD mudlib.  The main change
+was that security became object-based, instead of player-based.  This
+introduced the wiztool problem: when wizard A cloned a wiztool made
+by wizard B, that wiztool could not access files in the directory of
+wizard A.  To solve this, there had to be a way for wizard A to grant
+his cloned wiztool permission to access files in his own directory.
+
+This was managed with the uid (user ID) security system, partially
+implemented in the server and partially in the mudlib.  The uid
+system was a disaster, for various reasons:
+
+ - the design was based on the Unix suid (set user ID) system, which
+   is notoriously bad
+ - the implementation was so complex that problably only Genesis
+   archwizard Commander understood it, but a number of others were
+   nevertheless making changes to it, and the system became less and
+   less secure with each new mudlib release
+ - overall security was affected by a huge number of source files,
+   all of which had to be in tune with eachother
+ - The 3.1.2 LPmud server, with builtin uid support, was used as the
+   basis for the MudOS server, for which new mudlibs were developed
+   which tried to make a different use of the existing uid support
+   in the server, and which all failed miserably.
+
+I have broken uid security so many times that eventually, the
+archwizards of Genesis simply stopped fixing the bugs that I
+reported to them.
+
+Then came what came to be known as the "stack-based" security system,
+which was an enormous improvement.  This is the system that is still
+used for the Lima mudlib today.  Though I managed to break it on one
+occasion, I never found a fundamental flaw in it.  I do have some
+reservations.
+
+Stack-based security does not depend on the current player (as in
+2.4.5), or the permissions of the current object (as in CDlib), but
+on the intersection of the permissions of all objects in the call
+chain.  Each object has the option of "resetting" security before
+performing a sensitive operation, with the effect that this operation
+will be performed with only the permissions of the current object
+taken into account.
+
+The problem of stack-based security is that there are many objects
+which you want to be transparent with regard to security, i.e. you
+want them to be able to appear in the call chain without affecting
+the combined permissions.  Unfortunately, the only way to accomplish
+this is to give the "transparent" object maximum permissions.  In the
+Lima mudlib today, there is a large set of "transparent" objects, all
+of which are innocuous in function, and dangerous in potential.
+Finding a security problem now involves finding a badly-made
+"transparent" object.
+
+For the kernel library, I wanted a security model with the following
+additional properties:
+
+ - the set of objects that require maximum permissions would be very
+   small
+ - a breach of one programmer's security does not affect the security
+   of the remainder of the system, regardless of that programmer's
+   permissions
+
+In the kernel library, only the kernel objects that define the
+security model itself have maximum permissions.  System objects have
+almost maximum permissions; the one thing they cannot do is change the
+security model.  The set of System objects can be small (I have less
+than 20 in my own mudlib).
+
+To meet the second requirement, I separated the permissions granted to
+a programmer, and to that programmer's objects.  After making this
+separation, I decided that stack-based security would now be needlessly
+restrictive.
+
+Regards,
+Dworkin

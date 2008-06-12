@@ -1,0 +1,29 @@
+From: dgd at list.imaginary.com (Felix A. Croes)
+Date: Fri Mar 15 20:33:00 2002
+Subject: [DGD] Kernel question
+
+Jay Shaffstall wrote:
+
+>[...]
+> My first question is that DGD's send_message kfun is supposed to send a 
+> message to the current user.  The kernel mudlib connection object provides 
+> a message () method that wraps send_message, seemingly to provide for 
+> automatic resending of anything that doesn't make it out on the first 
+> send_message.  In what circumstances will an entire string not make it to 
+> the user on the first send_message?
+
+An entire string will always make it on the first call, but possibly
+not on the second one, because DGD's internal buffer is only one
+string large (and strings have a maximum length).
+
+
+> The connection object also seems to assume that a second call to 
+> send_message will always send everything that's still pending (this is done 
+> in message_done).  Is that true?
+
+No.  If you'll think about it, you'll see that the send_message call from
+message_done() is always the <first> call -- the first one in the current
+thread.
+
+Regards,
+Dworkin

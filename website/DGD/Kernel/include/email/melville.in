@@ -1,0 +1,62 @@
+From: dgd at list.imaginary.com (Felix A. Croes)
+Date: Fri Feb  6 07:28:00 2004
+Subject: [DGD] Melville under the Kernel Lib
+
+Michael McKiel wrote:
+
+> In the past archives, Steven has stated if he were to "do it again" he'd
+> prolly choose to go on top of the kernel. Yet in quite a few posting's also
+> has stated a 'distaste'(?) for the directory depth's of such. 
+>
+> Yet there doesn't seem to be any way to accomodate (what we've been calling)
+> the Klib without "breaking" its directory requirements, and making it innured
+> to any future patches from the experimental line of DGD.
+
+If you want to re-do Melville on top of the kernel library, you have to
+move files around.  That is a given.
+
+As much as I like the kernel library, I'd like to see other mudlibs that
+don't depend on it as well.  When everyone uses the kernel library, it
+becomes harder for me to find bugs in DGD that the kernel library just
+doesn't trigger.
+
+Here is what the kernel library does, and what a modern mudlib should do:
+
+ - Provide a layer of abstraction between the driver and the higher-level
+   mudlib, so that the latter does not have to be aware of driver changes
+   (other than changes in LPC itself).
+ - A framework for persistence.  In DGD this is really simple, all you
+   have to do is destroy all connection objects to let them "go linkdead",
+   and to let objects that deal with absolute time know that there has
+   been a reboot interval.  For example, a cron object which wants to
+   run tasks at specific hours should reschedule its callouts after a
+   reboot.
+ - Separation of inheritables and other objects.  This is essential for
+   any mud that wants to be able to entire inheritance trees of objects
+   to the latest source version without destroying object state.  The
+   kernel library does it through pathnames, but other methods are
+   possible.
+ - Separation through pathnames of clones and LWOs.  This is not
+   essential, and the kernel library just does it for the sake of
+   orthogonality.
+ - Resource management and measurement.  This is absolutely essential for
+   a persistent mud with guest programmers (think of LambdaMOO), and
+   useful but not required in other cases.
+ - File security and object security.  A requirement for muds with guest
+   programmers, but hard to do right, and the kernel library's system
+   may be too paranoid.
+ - DGD/MP aware.  This is going to be important in the future.  A number
+   of design issues are involved:
+
+    - There have to be some kind of thread-local variables which are not
+      held in any object, to handle things such as this_player().
+    - It must be possible to start a callout without making a change to
+      data in any object (this is why callouts are no longer a resource
+      in the kernel library, since resources are tracked by a central
+      object).
+    - Large threads that modify many objects should, whenever possible,
+      be broken up into smaller threads modifying fewer objects, using
+      callouts.
+
+Regards,
+Dworkin

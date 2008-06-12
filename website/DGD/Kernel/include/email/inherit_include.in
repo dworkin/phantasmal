@@ -1,0 +1,96 @@
+Date: Sat, 26 May 2001 04:10:44 +0200
+From: Erwin Harte
+Subject: Re: [DGD]Inherit and include
+
+On Sat, May 26, 2001 at 02:48:59AM +0100, mtaylor wrote:
+[...]
+> Dear list ...
+> 
+> Another set of questions from me ;)
+> 
+> We have built our mudlib by looking at melville, 2.4.5 and the kernel with
+> the DGD driver so we are learning as we go. Everything seems to be fine and
+> working well but I am unsure of a few things.
+> 
+> Firstly I am having a problem with the close() function. We have a player.c
+> which holds all the information for the Players Character (name, stats etc)
+> and also the functions that deal with the connection stuff. Is this a bad
+> idea? I've noticed that other mudlibs have a user.c and player.c - one holds
+> the connection functions and one the functions for that player's character
+> in the world. 
+
+Yes.  Reason being that this way it is possible to (a) take over from
+another connection and re-establish your relation to the same player-
+object with a new user-clone, and (b) in a persistent game you don't
+want to have to destroy your player-object when you need to forcibly
+close the connection.
+
+> Now if I have a close function in the player.c I have two big problems. One
+> is that if I call destruct_object(this_object()) then it says Too many
+> arguments for function close.
+
+Most likely you've defined the function as 'void close() { ... }'
+while it should be 'void close(int forced) { ... }'.
+
+> The second is that if I close the Mud Client I have without a quit command
+> (I.e. I close the Mud Client program) then the DGD driver crashes.
+
+I can't imagine that being the way things work, what version of DGD
+are you running, on what platform, and what mud-client are you using?
+
+> If I have no close command then it's fine ... *confused*
+
+I think you mean function, not command.  Calling an undefined function
+in an object will work no matter what parameters you tried to call it
+with, but if the function exists and you're running with type-checking
+mode 2 (I think) then it had better match with the parameters of the
+function.
+
+> Also I have a quit command that gives a goodbye message and then destructs
+> the player object. However the message doesn't get shown ... The user is
+> just disconnected ... What am I doing wrong?
+
+It might help to do the disconnecting/destructing from a call_out() so
+that the network-traffic is given a bit more time to be sent across.
+
+> Lastly and most amusingly I wonder about rlimits. There doesn't seem to be
+> any documentation on what you need in your mudlib to satisfy the DGD Driver
+> and so we are working it out as we go along. Looking at other mudlibs and
+> error messages. So far we haven't put any rlimit stuff anywhere. I don't
+> really understand about stacks and ticks etc. at all.
+
+You want rlimits() restrictions surrounding anything that doesn't have
+a damn good reason for being allowed to finish 'no matter what'.
+
+In general that means you override the standard call_out() so that the
+function gets called with some rlimits() restriction, and similar bits
+for open()/close()/receive_message()/etc functions, in short anything
+that can start a new thread.
+
+> Also security ... So far we don't really have any security checks on
+> anything. What should we do about this?
+
+Panic. ;-)  There are three levels of security as I see it:
+
+1. Internal consistency, to make sure certain auto-object functions
+   are only used by other auto-object code, for instance.
+
+   For that type of situation previous_program() is really useful.
+
+2. Filesystem security.  Do you want anyone or anything to be able to
+   read/write to/from anywhere?
+
+   To fix that you'll want to sit down and think about what the basic
+   rules are, and how flexible you want to be in being able to 'grant'
+   access to others, etc.  Overruling the basic file/directory-
+   related kfuns is the next step once you've figured that out.
+
+3. Cloning/compiling/destructing/inheriting/including.  Be careful who
+   or what is allowed to use what other objects/files for this.
+
+Good luck!
+
+Erwin.
+P.S: Did you just send the same message twice to the list?
+-- 
+Erwin Harte

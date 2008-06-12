@@ -1,0 +1,43 @@
+Date: Fri, 20 Apr 2001 18:27:40 +0200
+From: Erwin Harte
+Subject: Re: [DGD]Initializing problem
+
+On Fri, Apr 20, 2001 at 10:56:23AM -0500, Jason Cone wrote:
+[...]
+> 
+> For each of the 2 locations, /kernel/include/System.h and
+> /usr/System/include/System.h, the statement,
+> 
+> 	#include <System.h>
+> 
+> , is still a valid declaration; I verified this by moving your System.h from
+> /kernel/include to /usr/System/include and changed nothing else.  Because
+> one of the (secondary) include paths in the config file is "~/include", any
+> file that is represented by "/usr/<single directory>/include/<file>" can be
+> included via "#include <file>".
+
+Try including it from, say, ~admin/foobar.c, and you will find that
+the ~/include/ directory is assumed to be ~admin/include/, not
+~System/include/.
+
+[...]
+> 
+> To me, a custom secondary library should be totally and completely
+> encapsulated by the /usr/System -- that way, alternative core libraries
+> could be developed on top of which any library that was configured to run on
+> top of Felix's core library could also run (which may, or may not, contain a
+> '/kernel/include' directory).
+
+The /kernel/include/ directory would only be a problem if
+/kernel/include were part of the search-path, which it isn't, adding
+it is what I would consider an interface-change and all bets are off
+at that point. :-)
+
+I understand your point about the encapsulation, if I were to further
+develop this particular demo-System-lib I might change things a bit.
+
+Regards,
+
+Erwin.
+-- 
+Erwin Harte      : `Don't mind Erwin, he gets crabby. :)'

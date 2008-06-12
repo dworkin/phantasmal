@@ -1,0 +1,24 @@
+Date: Fri, 20 Apr 2001 11:46:03 -0400
+From: Kris Van Hees
+Subject: Re: [DGD]Initializing problem
+
+On Fri, Apr 20, 2001 at 05:38:22PM +0200, Erwin Harte wrote:
+> Not sure.  I would probably also include defines in that file that
+> could be useful for objects in other /usr directories, at which point
+> I'm not sure which is easier/better to work with, this one:
+> 
+>   # include <System.h>
+> 
+> Or this one:
+> 
+>   # include "~System/include/System.h"
+> 
+> I think the /include/System.h file should give general pointers into
+> the /usr/System/ tree, while ~System/include/ would contain include-
+> files for specific objects' interfaces.
+
+An alternative might be to add ~System/include to the includes list in the DGD
+config file?  Potentially before others if you intend on possibly overriding
+anything that gets defined in the kernel lib.
+
+	Kris

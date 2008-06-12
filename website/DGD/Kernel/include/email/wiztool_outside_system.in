@@ -1,0 +1,29 @@
+From: "Felix A. Croes"
+Subject: Re: [DGD] Can't put a wiztool outside the /usr/System directory...
+Date: Sun, 3 Oct 2004 22:22:06 +0200
+
+Noah Gibbs wrote:
+
+>[...]
+>   Along the same lines, I tried putting a wiztool object in
+> /usr/game/obj/wiztool.  I added a small function in the System
+> directory to clone it with the wizard's identity, just like the regular
+> /usr/System/obj/wiztool object works normally.
+>
+>   It *almost* works.  You can run a lot of the regular commands like
+> "people" and "access global" successfully, because those check the
+> owner of the object or the path of the program that's calling them. 
+> But since a lot of the file operations check the creator of the object
+> instead, you can't do things like grant somebody access (which creates
+> a new directory for them) or determine what your own access (which
+> involves enumerating a directory's entries).
+
+When working on the kernel library, for a long time I had the idea
+in mind that the wiztool should be inheritable by everyone.  It didn't
+work out with the kernel library's security system, though.  So the
+wiztool should be in /usr/System.  It's still a good idea to let people
+write their own extensions for it, but those can't be added through
+inheritance.
+
+Regards,
+Dworkin

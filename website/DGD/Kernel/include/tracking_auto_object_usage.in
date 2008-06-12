@@ -1,0 +1,36 @@
+Date: Thu, 23 Mar 2000 13:36:27 +0100 (CET)
+From: "Felix A. Croes"
+To: DGD Mailing List
+Subject: Re: [DGD]Tracking auto_object usage
+
+"Kevin N. Carpenter" wrote:
+
+> Since the driver function inherit_program() isn't called for the inheritance
+> of the auto object, is there an alternative to having the object manager
+> simply keep track of all compiled programs?  Obviously it could be made
+> smart enough to not track other inheritable, since they would only get the
+> auto object as part of the program that was inheriting them.
+
+Sorry, but I don't understand how the part after the first comma
+follows from the part before.
+
+There is a very simple way to make sure the mudlib is properly notified
+about the compilation of the auto object, without a need to have
+inherit_program() called: mask the compile_object() kfun, and whenever
+a non-auto object is compiled with the auto object destructed, perform
+the same task as in inherit_program().
+
+
+> Any opinions on the risk associated with keeping tabs on this via a mapping
+> instead of a linked list?  The number of objects created via compiling
+> rather than cloning is hopefully a small subset of the objects in the mud.
+> Then again, I suppose its unwise to code in any limits around the config
+> file parameter array_size if it can be avoided.
+
+If you register objects in a single mapping, you cannot register more
+objects than the maximum array/mapping size.  The decision is up to you.
+DGD has a (configurable through recompiling) 64K limit on the number
+of objects, and a (hard) limit of 32767 elements in an array or mapping.
+
+Regards,
+Dworkin

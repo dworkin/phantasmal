@@ -1,0 +1,44 @@
+From: dgd at list.imaginary.com (Par Winzell)
+Date: Tue Mar 19 11:06:00 2002
+Subject: [DGD] New to List - Some questions
+
+Jay Shaffstall wrote:
+> What really helped me, though, was sitting down and writing a driver 
+> object from scratch (using the kernel mudlib's and melville's driver 
+> objects as comparisons for different ways of implementing the methods 
+> that are required, and borrowing some kernel code for getting the stack 
+> trace for runtime errors).  The comparison process really helped me to 
+> get a handle on the purpose of each method.
+> 
+> Don't worry too much about the auto object at first.  It's the DGD 
+> equivalent of Java's Object (i.e. the object everything else inherits 
+> from), and can be blank until you come up with functionality that must 
+> be common to all objects.
+> 
+> Also, when you're looking at the kernel mudlib, remember that its 
+> purpose is to provide a secure environment for multiple coders to work 
+> in together.  If that isn't part of your game, then much of what the 
+> kernel does won't be needed for you.
+> 
+> Finally, since I'm a rank newbie at DGD as well, my comments may be 
+> entirely based on my own misunderstandings, and are subject to 
+> correction by the more experienced folks here.
+
+This is all excellent advice. The 'immerse self by doing' approach is 
+easily the best one for DGD. It wouldn't hurt to have a FAQ somewhere 
+explaining some of the things you discover and wonder about in the 
+process of writing your first auto/driver objects, but this list is a 
+pretty good resource for that, too.
+
+The kernel mudlib takes a pretty powerful investment of time to really 
+comprehend. It may not be the ideal start for somebody approaching DGD 
+for the first time. Understanding the kernel library -does- give you an 
+understanding of DGD, of course, but it's rather overkill and one could 
+argue that DGD's main strength is its ability to be so powerful while 
+avoiding directing the developer in any one given direction. The kernel 
+library does direct you somewhat and you may lose some freedom of 
+thought if you immerse yourself in the kernel library immediately.
+
+Writing a driver/auto object first yourself may be a better idea, yes.
+
+Zell

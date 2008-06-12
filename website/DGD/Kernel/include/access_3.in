@@ -1,0 +1,40 @@
+Date: Sun Aug 12 06:45:01 2001
+Subject: [DGD] Access
+
+Stephen Schmidt wrote:
+
+> On Thu, 9 Aug 2001, Mikael Lind wrote:
+> > After some initial problems I had, Dworkin emphasised that
+> > compilation and calling are to be kept separate.
+>
+> Can someone give some intuition as to why this is desirable?
+> I understand it, but don't understand the need for it. I have
+> not done much work with the kernel, but it seems to me that
+> this method requires that, each time an object calls into
+> another object, one must check whether the target object is
+> compiled, and if not, pass control to a manager object which
+> determines whether to compile and proceed, or abort the call,
+> based on the identity of the calling object and whatever else
+> you want to take into account.
+
+It is easy enough to simulate the old 2.4.5 behaviour on top of
+the kernel library, if that is desired.  But I kept it separate
+in the kernel library because compiling and calling are very
+different actions in terms of security.
+
+If I create a source file somewhere in my directory with an aim to
+eventually make it available to others as a callable server object,
+is it not odd that anyone can compile it before I think it is ready?
+If it is broken, and I want to repair it, should I not be able to take
+it offline without others racking up errors in my code?  An object
+compiled from a source file in my directory will be owned by me, and
+counts towards my own object quota.  Should others really be able
+to increase the number of objects I have in the game, just because
+this object is intended to be callable by others once compiled?
+
+This is why compiling an object requires write permission to the
+source file.  If you want to make an object available as a server,
+it is easiest to just make sure that it is compiled in advance.
+
+Regards,
+Dworkin

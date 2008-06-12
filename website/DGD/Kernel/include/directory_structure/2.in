@@ -1,0 +1,61 @@
+From: dgd at list.imaginary.com (Stephen Schmidt)
+Date: Fri Oct 17 11:59:01 2003
+Subject: [DGD] Methodology: Directory structure & Areas
+
+On Fri, 17 Oct 2003 Nihilxaos wrote:
+> 1) An external directory. Make a directory such as /domains and put each domain
+> tree under that. Perhaps even have a different root directory for each domain,
+> though that may get cluttered.
+
+This is wisest if the number of domains will be limited. If it
+won't, then /domains/h/hell may be the best solution.
+
+> 2) In the domain admin's directory. Thus if "bob" is in charge of the "hell"
+> domain we'd have /usr/bob/hell as the root for that domain's stuff.
+
+This is a poor idea, because when Bob resigns, or leaves to start
+his own mud, or is caught handing out cash and power swords to the
+newbie users, or comes out on the short end of an administration
+power struggle, or is gone for whatever reason, the system collapses.
+It also encourages Bob to think the domain is "his" and that will
+lead to more administration power struggles in which Bob might be
+forced out. Avoid this solution strenuously.
+
+It's also worth noting that code ownership can be determined by
+directory structure. A not-uncommon method of determining code
+ownership is that Bob owns any files in /usr/bob and the mud
+admin owns any code anywhere else. If so, then any code the
+mud needs to keep if Bob leaves (like an entire domain ;) needs
+to be outside /usr/bob. Otherwise, if you use the ownership
+method suggested above, Bob can take his domain with him when
+he leaves. This is unwise.
+
+Of course, you can use other methods of arranging code ownership,
+but you must do something to deliniate it, and the method of "your
+directory is yours, everything else is the mud's" is pretty simple
+and intuitive.
+
+> 3) In it's own user directory. Thus you would have /usr/hell to hold the domain
+> files for hell, and bob would have write access on it given the previous
+> example. In this case, though, hell still wouldn't be an interactive user like
+> System.
+
+This is problematic if someone creates a character with the same
+name as a domain, and makes wizard. Probably better is to use
+/usr/hell for the wizard "hell" and /usr/Hell for the domain "hell".
+That might be confusing but at least it's safe.
+
+However, treating domains as if they were users is probably asking
+for trouble in numerous ways. If you want to go down this road
+you are almost surely better off using /domains/hell rather than
+/usr/hell or /usr/Hell.
+
+That said, I have a strong memory that the kernel lib makes
+certain assumptions about objects in /usr (my memory does not
+provide details, alas) and if you are working over the kernel
+lib, then you have to satisfy its assumptions. At least, I
+remember being told that when I asked more or less the same
+question in 1998. Things may have changed since then. Experten,
+can you fill in some details here?
+
+Steve

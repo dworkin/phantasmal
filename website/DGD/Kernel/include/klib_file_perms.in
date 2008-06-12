@@ -1,0 +1,30 @@
+Date: Mon, 7 May 2001 21:02:59 +0200 (CEST)
+From: "Felix A. Croes"
+Subject: Re: [DGD]Kernel lib file permissions
+
+Stephen Schmidt wrote:
+
+> I have a question, and I know that the correct answer is
+> UTSL, and I will do that eventually, but in the meantime
+> I'm hoping someone can give me a general and succinct
+> answer: Under the kernel lib, how are file-reading and
+> file-writing permissions determined? What objects are
+> allowed to read and write files in what directories?
+> I know the implementation is done by overriding the
+> kfuns in the auto object - the question is what the
+> rules are.
+
+It's very simple.  Basically, the file access permissions are much like
+in 2.4.5.  By default, wizards only have write access in their own
+directory, and read access everywhere outside /usr except /kernel/data.
+They may have additional access granted to them.  A wizard's objects
+only have that wizard's default access, irrespective of granted permissions.
+There are some special cases, such as global read access in /usr/anywiz/open,
+but that is the general picture.
+
+File permissions also have an effect on compilation and cloning.  You
+can only compile an object if you have write access to the file.  You
+can only clone (or inherit) an object if you have read access to it.
+
+Regards,
+Dworkin

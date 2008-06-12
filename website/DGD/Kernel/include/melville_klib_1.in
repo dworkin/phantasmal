@@ -1,0 +1,43 @@
+From: dgd at list.imaginary.com (Michael McKiel)
+Date: Thu Feb  5 22:37:01 2004
+Subject: [DGD] Melville under the Kernel Lib
+
+In the past archives, Steven has stated if he were to "do it again" he'd
+prolly choose to go on top of the kernel. Yet in quite a few posting's also
+has stated a 'distaste'(?) for the directory depth's of such. 
+
+Yet there doesn't seem to be any way to accomodate (what we've been calling)
+the Klib without "breaking" its directory requirements, and making it innured
+to any future patches from the experimental line of DGD.
+
+So a question for Mr.moby and others that are either building ontop of the
+Kernel and/or "breaking" the kernel. How doable would changing that spec
+around be to something like:
+/lib/kernel/
+/obj/kernel/
+/sys/kernel/
+
+and if we look at Noah's additional usr's like "common"
+/lib/common/ etc...
+and perhaps putting "/usr/System/" into non-subdirectoried
+/lib/, /obj/, /sys/
+
+For the purposes of "file Security/inheritance/clone/update/et al" I think
+that would work. What I'm not sure about atm, would be the feasibility of
+"resource management" which for coders themselves in a /home/&lt;username&gt;,
+would be easy enough to follow the current Klib design. But not sure about
+resource management of non Coder/wizard's under this route.
+
+Would it be worth the restructuring? Or should one just bite the bullet and
+work under the Nazi Klib file regime ;)
+
+The few posts of Skoto's that referred a filepath would seem to indicate a
+non-KernelLib obeying structure.  So what have others done in this regard?
+And how might you structure Steven? 
+I didn't much care for the Klib design, but least I understand it more now,
+but the other admin is fairly adamantly against it, which is leaving us at a
+bit of an impass I'm not sure how to resolve without possibly too much
+unneccessary work at 'breaking' the klib to bring in features we'd just like
+the "Melville-like" directory structure to support.
+Thanks, 
+Zamadhi

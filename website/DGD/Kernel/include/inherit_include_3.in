@@ -1,0 +1,118 @@
+From: dgd at list.imaginary.com (Felix A. Croes)
+Date: Sat Feb  9 07:49:02 2002
+Subject: [DGD] Inherit/include
+
+Shevek wrote:
+
+> >The only access that counts at that point is the access that the file
+> >has, it doesn't matter that you (the coder) have a bit more access
+> >than that, otherwise you could have the following situation:
+>
+>  From what I see using status in the kernel lib the owner of a file gets 
+> set to wherever it is compiled from it just doesn't seem to change a great 
+> deal of anything. There isn't anything insecure about letting a file take 
+> the access of the user who compiles it, so long as the user doesn't go 
+> around compiling code they haven't checked.
+
+Foo examines a bit of code and finds it to be secure; Foo has gotten
+into the habit of checking every bit of his own code just before he
+compiles it, because there are others who have write access to his code.
+Foo is very security-conscious, and to make extra sure, he checks it
+three more times.  However, just before Foo actually compiles the code,
+Bar replaces it with a version of his own.  Bingo, a security leak.
+
+
+> Things are stranger than it just being the file's access that's odd though.
+>
+> Eg I copied a file called test into ~/System, which contained a single 
+> command to write a file into the ~/System directory. On compilation with 
+> any user that has access to System it quite happily writes a file into the 
+> ~/System directory. Tried this again with a user that has write access to 
+> ~/System but not write access to ~/Private. Upon compilation in ~/System 
+> the test program can merrily write its test file into ~/Private.
+
+Never grant anyone write access to ~System.  Always grant then full access
+to / instead.  You're right, it amounts to the same thing, because any code
+in ~System has full rights anyhow.
+
+
+> To me that sounds exactly like the behaviour you describe below, with the 
+> test program taking System's root access.
+>
+> But it gets more complex. When you give a user (I'll call him Test) write 
+> access to a directory (I'll call it ~/Public). Test can use the editor to 
+> make files in ~/Public, but can't compile code in their home directory that 
+> writes files to ~/Public.
+
+Test however can write and compile files in ~/Public that can read and
+write anything else in your directory, because objects in your directory
+can access anything else in your directory.  Bingo.  This is probably not
+what you intended, but if it's any consolation, Test's access to your files
+does not extend to the files outside of your directory that you, as a
+user, have special access to.  Though you inadvertedly gave away access
+to all of your files, you didn't endanger anyone else by doing so.
+
+There is not much point in giving someone write access to a subdirectory,
+only.
+
+
+> Now say Test is given read access to a directory (I'll call it ~/Private) 
+> they can read anything they like, but any code they write in ~/Test can't 
+> read from the directory (Although it can if ~/Private is global read).
+> Ie the file access problem you pointed out.
+
+Hardly the same problem that Erwin mentioned.
+
+
+> Effectively this makes any code, written in a user directory that isn't 
+> ~/System, trapped in its own directory, only able to read from global read 
+> directories, with any code written in ~/System having full root access 
+
+Exactly!  This is intentional.
+
+
+> (Despite includes/inherits from anything other than the kernel).
+
+But of course, nothing in ~System should ever depend on any code outside
+~System, since such code could introduce a security leak.
+
+
+> I can see why trapping code inside the directories is secure, I just think 
+> that if code can access that which the owner (Ie compiler of the code) can 
+> access then it makes things a whole bunch easier to use. Otherwise anything 
+> that has to read/write from outside its user directory (From anything that 
+> isn't global read) has to go into System, or use a daemon in System to give 
+> it file access outside its user directory.
+
+Generally, don't write code that requires access outside its own directory.
+The only object that has a good reason to do so is the wiztool, which is
+why an object in ~System can inherit /kernel/lib/wiztool (which has already
+masked all the relevant functions so that only user-level access, and not
+System-level access, is possible).
+
+
+>[...]
+> If I have code in System, and get it to be compiled with System as owner 
+> then it has full / access anyway. Just can't inherit/include anything from 
+> anywhere but ~/include or a global read dir which still seems bizarre to 
+> me. So I can have a piece of code which is able to read/write/delete any 
+> file it likes (Tested this), but cannot inherit/include the file. Does that 
+> not sound even a little odd to you?
+
+No object in ~System should depend on code inherited or included from
+elsewhere (other than /kernel), since such code could then do whatever
+it wants.  Bingo.  Any code that is to have System rights should be in
+~System.  If I wanted to remove the oddity, I would forbid the
+dependency altogether, rather than allow it.
+
+
+>[...]
+> Thing is all I want to do is inherit/include from a private directory that 
+> doesn't give any special write access :>
+
+Sorry, but you cannot use kernel lib file access in this manner.  If you
+want to restrict access to certain functionality, you have to do so at
+runtime.
+
+Regards,
+Dworkin

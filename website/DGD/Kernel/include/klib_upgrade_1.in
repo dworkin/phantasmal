@@ -1,0 +1,47 @@
+Date: Mon, 21 Jun 1999 07:59:51 -0700 (PDT)
+From: Par Winzell
+To: DGD Mailing List
+Subject: [DGD]upgrading kernel library
+
+Geir,
+
+You're on the right track, and you're in luck. Thanks to the kernel
+lib enforcing the total separation between inheritable and stateful
+code, it's easier than it might be to write this kidn of automatic
+upgrading system.
+
+So, you want to upgrade /foo/lib/bar, which is inherited by a bunch
+of other programs, possibly including some destructed ones that are
+not yet freed (due to lingering dependencies). You can't recompile
+it because it's inherited, so you have to destruct it.
+
+To completely upgrade /foo/lib/bar, you need to observe the tree of
+all programs that depend on it. All the interior nodes of this tree
+are stateless inheritables, and so can be destructed as well. Next,
+you step through all the leaf node objects -- clones, daemons, etc.
+
+As you recompile them, one by one, you remove dependencies from the
+old issue of /foo/lib/bar until finally the last recompile frees
+the last dependency -- and the issue is freed.
+
+Things to note: Unless you forbid destruction of a program that has
+dependencies, you do have to use the ID's rather than just the path
+names in the database. If such destruction is possible, there will
+be more than one issue of the same program in memory at once (even
+if only one is visible from the LPC layer), and you definitely need
+to keep separate records for these issues!
+
+Also, for a real-sized Mud, you need a datastructure that can hold
+more than ARRAYSIZE dependencies. If you switch to using ID's, that
+is probably solved most easily with an array of mappings, something
+like issue = map[id>>8][id%0xFF].
+
+One complex issue is how to deal with upgrading e.g the auto object
+in a fully-grown Mud, where the swap file can be hugely larger than
+the RAM in the machine. Recompiling the leaf objects in one single
+thread becomes unworkable; DGD must be given the chance to swap out
+now and then. This essentially requires basic support for freezing
+all activity in the lib, explaining the kernel lib's support for
+call_out suspension.
+
+Zell

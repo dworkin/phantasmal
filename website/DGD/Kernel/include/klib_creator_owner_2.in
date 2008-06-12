@@ -1,0 +1,23 @@
+From: dgd at list.imaginary.com (Felix A. Croes)
+Date: Fri Feb 27 05:49:01 2004
+Subject: [DGD] Kernel Lib, creator & owner
+
+Michael McKiel wrote:
+
+> Well I tested some more, logged in as admin.
+> copied, blah.c to /usr/zamadhi/obj/blah.c
+> compiled it, cloned it.
+> The master object winds up with zamadhi as creator & owner.
+> And the clone winds up with "admin" as owner, and zamadhi as query_creator()
+>
+> Does that present any security consequences then? for say the purposes of the
+> Master object being able to destruct the clone, or to update the clone? when
+> "admin" becomes the owner?
+
+The object is owned by 'admin' and can only be destructed by that owner
+or by someone with administrator access.  It also counts towards admin's
+object quota, if any.  File access is still governed by creator.  Other
+resources are all used in admin's name.
+
+Regards,
+Dworkin

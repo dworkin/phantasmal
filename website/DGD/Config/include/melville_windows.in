@@ -1,0 +1,21 @@
+From: dgd at list.imaginary.com (Felix A. Croes)
+Date: Thu Oct 24 12:18:00 2002
+Subject: [DGD] melville with dgd for win binary
+
+"Albert Deinbeck" wrote:
+
+> I have recently installed the compiled binary of dgd v1.2p2 for windows.
+> It runs ok with the minimal mudlib provided.
+> Now I tried to setup melville mudlib and it doesn't work. I tried
+> melville v0.9.1 and v0.8 . My main problem is that the driver dies
+> silently, without giving any notice about what choked him, so I have no
+> chance to change the melville-code as needed.
+
+Try starting the driver directly, without configuration file.  Then
+select a configuration file from the File menu and run it.  Started in
+this manner, DGD will not exit when encountering a fatal error, but will
+continue to display the error until the user selects exit from the File
+menu.
+
+Regards,
+Dworkin

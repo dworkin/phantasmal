@@ -1,0 +1,39 @@
+From: dgd at list.imaginary.com (Felix A. Croes)
+Date: Sun May 25 17:59:00 2003
+Subject: [DGD] Rlimits weirdness...
+
+Noah Gibbs wrote:
+
+> --- "Felix A. Croes" wrote:
+> > What you can't do is set a tick limit and then raise
+> > it.  Non-negative
+> > tick limits can only be set when the current limit
+> > is -1 (infinite).
+>
+>   Hm.  So since call_out sets a non-negative tick
+> limit, that means I can only lower it.  So I guess
+> I'll need to make every upgraded() call its own
+> call_out.  I was trying to avoid that.
+
+You don't have to, as long as you go back to unlimited ticks first:
+
+    rlimits (-1; 0) {
+	rlimits (250000; 0) {
+	    task1();
+	}
+	rlimits (250000; 0) {
+	    task2();
+	}
+	/* ... */
+    }
+
+Or, even better:
+
+    rlimits (-1; 0) {
+	call_limited("task1");
+	call_limited("task2");
+	/* ... */
+    }
+
+Regards,
+Dworkin

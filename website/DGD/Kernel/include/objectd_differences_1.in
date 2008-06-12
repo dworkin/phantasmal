@@ -1,0 +1,53 @@
+From: DGD Mailing List (Noah Gibbs)
+Date: Thu Apr 15 23:34:08 2004
+Subject: [DGD] objectD differences...
+
+--- Mercy wrote:
+> I figure my options are more or less to use Noah Gibbs' or Geir
+> Hansen's objectDs.
+
+  Yeah, basically.  Somebody else did one at one point (John McKenna,
+perhaps?), but it was never seriously tested.
+
+> Noah's would require a bit of effort to get working outside
+> of Phantasmal, from what I can tell, but seems to be more
+> featureful.
+
+  Yes and yes.  Though getting it working outside of Phantasmal won't
+be too bad.  You need to take its tracking classes with it, the LWO
+types for issues.  But that's not really a Phantasmal thing -- they're
+used only by the object manager, they're just not in objectd.c.  The
+only other issue that comes to mind is that it uses the Phantasmal
+LogD.  The amount of that that you'll need is pretty small, but you
+could always tear that out and replace it with your own logging stuff.
+
+> Would I lose much by simply using Geir Hansen's object
+> manager, given 
+> that for the time being, full persistance really isnt a
+> major concern for me?
+
+  The only significant feature you're losing is the "upgrade" and
+"upgraded" functions, which are really only needed for full
+persistence.
+
+> Are there any traps I should watch out for in using someone
+> else's object manager?
+
+  Just that nobody's object manager is fully tested.  Phantasmal's has
+a couple of pretty benign known bugs (I already mentioned them on this
+list).  I don't know of anybody having tested Geir Hansen's as
+seriously, but it presumably works about as well -- Phantasmal's hasn't
+actually had a bug in a long time that wasn't related to new
+functionality.
+
+  The other thing to consider, come to think of it, is that
+Phantasmal's ObjectD has more logging and will detect more weird
+anomalous situations for you, at least if you check your logs.  That's
+only a problem if something goes wrong, though :-)
+
+> I think getting 
+> some code, other than an object manager, written, would help
+> me test any 
+> object manager I write for myself anyway,
+
+  Absolutely.  Good plan.

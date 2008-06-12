@@ -1,0 +1,64 @@
+Date: Thu, 1 Jul 1999 00:22:32 +0200 (CEST)
+From: "Felix A. Croes"
+To: DGD Mailing List
+Subject: Re: [DGD]upgrading kernel library
+
+Two in one.
+
+Geir Harald Hansen wrote:
+
+> > > Dworkin wrote:
+> > Possible variants:
+> > 
+> >  - keep track of different issues of compiled objects, including their
+> >    sources.
+> >  - don't keep track of different issues; instead, ensure that only
+> >    one issue exists of an object at any time by making the upgrade
+> >    operation atomic.  Disallow destructing of lib objects that are
+> >    still inherited other than by the upgrade operation.
+>
+> How can I make the upgrade operation atomic if I need to split it over
+> several callouts to permit DGD to swap out objects during the upgrade?
+> The recompilation of a non-inheritable could fail and leave separate
+> versions of inheritables in existence.
+
+You can't.  You would have to do it all on one thread to make the
+operation atomic.
+
+
+> Another thing, I suspend callouts.. Should I also somehow block all user
+> input and block new logins while upgrading?  How?
+
+You can block new connections by temporarily setting the login
+timeout to -1.  You can block input on connections using
+block_input() in /kernel/lib/connection.c.
+
+
+Stephen Schmidt wrote:
+
+>[...]
+> 1) I gather that by "global upgrade" we mean that, when we
+> update object A, we also want to update all objects B that
+> inherit A, and probably update all clones of A and B also.
+> Since this is not default behavior (by default, A's clones,
+> B, and B's clones would keep the pre-upgrade behavior until
+> they were reloaded) the mudlib has to keep track of everything
+> that inherits A and systematically replace old code with
+> new code. Is that about right, or have I missed a step?
+
+You may not realize that with "upgrading" I mean something other
+than "updating".  Global upgrading is the process of recompiling
+a set of objects without destructing them first, allowing them
+to retain state in the form of variables and callouts.  Of all
+the LPC servers, only DGD has this capability.
+
+However, it can only do so for one object (and all of its clones)
+at a time, and only if the object is not inherited by another.
+The division between inherited objects and other objects, enforced
+by the kernel library, ensures that there always is a way to
+upgrade any single object.  Global upgrading must coordinate
+the process for a set of objects, usually all those that inherit
+some specific object or objects.
+
+Regards,
+Dworkin

@@ -1,0 +1,30 @@
+From: dgd at list.imaginary.com (Noah Lee Gibbs)
+Date: Sat Feb  9 18:10:01 2002
+Subject: [DGD] Inherit/include
+
+On Sat, 9 Feb 2002, Felix A. Croes wrote:
+> Could it have been the other way?  First you created an explicit System
+> user, and then you gave it extra access.  It would be hard to fathom why
+> you wanted to use the wiztool in this situation, unless you had a user
+> already.
+
+  Any call to compile_object in the wiztool goes through the wiztool
+compile_object function, regardless of whether it reflects user
+input.  In this case, it does not.
+
+> I do not think it is a good idea to make a System user who can login.
+
+  There isn't a System user who can log in.  Indeed, that is explicitly
+forbidden.  However, in the create() function of the wiztool it compiles
+the objects it may later wish to clone.  In my case, they are things like
+/usr/common/obj/user_state.c.  When I include a call to compile_object on
+that object in the creator function, the call to access() that occurs in
+/kernel/lib/wiztool.c passes owner (System), path
+(/usr/common/obj/user_state.c) and access (WRITE_ACCESS).  Therefore,
+System winds up needing write access to that file to compile it in its
+create function.
+
+-- 
+See my page of DGD documentation at
+"http://www.angelbob.com/projects/DGD_Page.html"
+If you post to the DGD list, you may see yourself there!

@@ -1,0 +1,27 @@
+From: Greg Lewis
+Subject: Re: [DGD] Would the Net package kill binary connections?
+Date: Wed, 29 Sep 2004 22:35:15 -0600
+
+On Wed, Sep 29, 2004 at 11:35:16PM -0400, John Ruiz wrote:
+> I'm running dgd-1.2p4 + net/ansi/comment on SuSE 9.1.  I'm building on 
+> top of the net-patched kernel lib.
+> 
+> In my .dgd config file, I specify the telnet port as 6047 and the binary 
+> port as 6048.  When I run the mud, 'netstat -na' shows a listening 
+> server on 6047 (tcp), but nowhere can I find anything listening on 6048.
+> 
+> So, I downloaded and installed vanilla DGD.  Upon starting it up, there 
+> is indeed both 6047 and 6048.  Neither ANSI nor Comment patches are 
+> going to kill connection stuff, so it has to be the network patch.
+> 
+> Does anyone have any idea what the network patch is doing to kill binary 
+> connections?  And if so, what can I do about it?
+
+AFAIK, there is no binary port with the networking patches.  Instead, only
+the primary telnet port is opened by default and all other ports must
+be opened with the open_port() kfun that the networking patches add.
+
+-- 
+Greg Lewis                          Email   : 
+Eyes Beyond                         Web     : http://www.eyesbeyond.com
+Information Technology              FreeBSD : 

@@ -1,0 +1,20 @@
+From: DGD Mailing List (Noah Gibbs)
+Date: Fri Apr  9 11:40:01 2004
+Subject: [DGD] yet another object manager question.. or two
+
+  Your object manager stuff sounds good, at least as a quick sketched
+outline.  There are a few issues you haven't mentioned (no surprise,
+there are a lot of random issues).  For instance, you'll need to decide
+how to populate your data structures when the ObjectD comes on-line... 
+Remember that several things, including the ObjectD, had to be compiled
+before the ObjectD could run at all.  I believe Geir Harald Hansen has
+his ObjectD hardcode some reasonable defaults and tells you to bring up
+the ObjectD as quickly as it's possible to do so.  Mine recompiles
+everything in an opening pass, though that still has at least one bug
+in it as well, which I haven't tracked down -- each of those
+inheritables winds up logging a message later when they're recompiled. 
+Not sure why, and it doesn't seem to cause any actual harm.  Anyway.
+
+  And yeah, you're right -- the kernel lib will supply some very useful
+information for you while you're doing this stuff.  It's a good place
+to look for lists of objects.

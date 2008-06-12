@@ -1,0 +1,45 @@
+From: dgd at list.imaginary.com (Stephen Schmidt)
+Date: Mon May 19 23:15:01 2003
+Subject: [DGD] Any advice?
+
+On Tue, 20 May 2003, Ben Chambers wrote:
+> While the challenge is part of my reason for doing this, I also feel that
+> coding it myself will allow me to have more flexibility in how it is
+> implemented and what exactly I want it to do and how it does it.  For
+> example, I'm sure that because Melville was written from scratch, it is more
+> like what you originally intended than if you had changed your ideas in
+> order to allow the mudlib to be built on top of the kernel.
+
+In truth, probably not, for two reasons. First, the kernel mudlib
+is, if you build over it correctly, highly transparent to the
+end goals. In terms of functionality, the kernel strikes me as
+extremely flexible (though I'm not very familiar with it) and
+I doubt it misses any features I would consider important. In
+terms of elegance, that might not be true - the kernel has
+features that I personally don't anticipate that I'd ever use,
+and if I built something for myself from scratch, I could get
+something that did less than the present kernel does, but did
+everything I wanted, in less space (but much more programmer
+time, of course).
+
+Second, Melville was always oriented towards being a real simple
+mudlib that would be familiar to someone who coded on MudOS or
+other post-LP-2.4.5 drivers, but would let you start to get
+into the internals of how DGD worked. In 1994 I think it did
+a decent job of that. Nowadays the driver has moved so far
+beyond Melville that it doesn't anymore. Today it's main
+purpose is to give a familiar mudlib to someone who wants to
+code more or less the same way they did in 1994 (which is
+perhaps a dumb goal - why use DGD if you're not going to take
+advantage of its power? - but the evidence shows that there
+is a small but reliable market for it.) Both of those goals
+could be carried out equally well in a mudlib that ran over
+the kernel, and the "intro to DGD" one could, of course, be
+carried out much better that way. Today I would guess that
+Phantasmal, which does run over the kernel, is the right way
+to go for someone relatively inexperienced in game design who
+is interested in learning how to hack DGD. (Disclaimer: I know
+Phantasmal only from discussion on this group, I may be totally
+wrong about that.)
+
+Steve

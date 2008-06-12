@@ -1,0 +1,58 @@
+From: DGD Mailing List (Stephen Schmidt)
+Date: Thu Aug 26 11:20:01 2004
+Subject: [DGD] GurbaLib
+
+On this subject, one might wonder why it is that DGD doesn't
+have a mudlib that offers more than mudlibs for other drivers,
+since DGD offers so much more than other drivers. A few musings
+on that subject follow.
+
+The biggest thing DGD offers, from a game perspective, is
+persistence. A game world can be altered by players and
+the alterations will remain. This is not the only feature
+in which DGD outstrips other drivers, but I think it's the
+one most visible to players of games running on DGD.
+
+Unfortunately, for the typical fantasy adventure, this is
+a drawback rater than a gain. After the player kills the
+goblin king, the game is over until the game resets and
+the goblin king magically springs back to life. Similarly
+for recovering lost treasures, rescuing princesses, and
+so forth. It is bad for the game, not good, if these
+things are permanent achievements.
+
+One can try to design features into the game to "explain"
+resetting of the game world, but that approach is counter
+to the idea of persistence. What's the use of using a
+persistent driver if all you're going to do is put
+non-persistent behavior back in via the game design?
+Also, the mechanisms needed to explain the resets within
+a consistent story line are complex.
+
+What DGD needs (needs in the public domain, anyway; Skotos
+is outside the scope of my comments here, and I'm not
+terribly familiar with it anyway - if someone who is
+wanted to comment on its relation to this topic, I think
+that'd be great) is a "killer app", a game concept that
+isn't traditional fantasy adventure and that uses persistence
+as a fundamental of the game design. DGD ought not try to
+compete on the tradition grounds of LPMud - its feature
+set inherently pulls it in a different direction.
+
+The reason traditional fantasy adventure works with resets
+is that the players are a small part of the game world
+anyway; they don't have important roles in the society
+in which the game is set. Thus, if their acts are
+impermanent, it doesn't matter much.
+
+The DGD "killer app" game should reverse that. Players
+should be important people in the society of the game
+world, capable of taking acts which alter that society,
+which are then reflected in the game world through the
+persistence of DGD. For example, building a castle
+which would then attract NPCs to form a town around it.
+Or destroying a castle and dispersing the town. Or
+something similar in whatever setting you do like, if
+you don't like fantasy adventure.
+
+Steve

@@ -1,0 +1,13 @@
+From: DGD Mailing List (John West McKenna)
+Date: Fri Apr 16 04:37:01 2004
+Subject: [DGD] objectD differences...
+
+Noah Gibbs writes:
+
+>  Yeah, basically.  Somebody else did one at one point (John McKenna,
+>perhaps?), but it was never seriously tested.
+
+It had a nasty bug that I never tracked down, but more fatally it didn't
+use the kernel library.  Just pretend it doesn't exist.
+
+John

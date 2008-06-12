@@ -1,0 +1,72 @@
+Date: Thu, 6 Jan 2000 04:30:01 +0100 (CET)
+From: "Felix A. Croes"
+To: DGD Mailing List
+Subject: Re: [DGD]Object Upgrading Scenario
+
+Neil McBride wrote:
+
+>[...]
+> > There isn't any way to upgrade all existing objects in your scenario.
+> > It is a special case of the more general problem:
+> > 
+> >     If an object is both inherited and used in any other way (either
+> >     it has had a function called in it, or it has been cloned),
+> >     upgrading both this object and those that inherit it is not
+> >     possible.
+> > 
+> > This is precisely why I prevented using/cloning of inheritable objects
+> > in the kernel library.
+>
+> So, was it intentionaly designed this way in the driver, or is it simply
+> something that couldn't be worked around? (ie - the master keeps track
+> of clones and desting it loses track of them perhaps - I don't know ;) 
+
+I looked long and hard at implementing everything in the server
+back then, but eventually I decided to implement only minimal
+upgrading support (recompiling a single object) because the
+code would have been enormously complex at the server level.
+It is fairly simple in LPC (about 1000 lines if you start with
+the kernel library).  Given that this was completely new
+functionality which nobody had ever asked for and which many
+even failed to see a use for, I felt that it was not unreasonable
+to put some restrictions on mudlibs that wanted to have it.
+
+Another reason is that an LPC implementation -- as usual -- is
+more flexible.  For example, suppose you upgrade the auto object
+and everything that depends on it.  Recompiling every single
+object in the mud in one go would cause an enormous amount of lag,
+as well as consume a large amount of memory.  In LPC, the operation
+can be broken into several pieces, with other tasks + regula
+swapping in between.
+
+
+> The way I see it is that being able to make an instance of an object
+> (ie, clone) _and_ inheriting the original object is something that
+> should be possible.  I don't really understand why it's considered a bad
+> design, except in relation to the way DGD treats inheriting/compiling.
+
+It all depends on whether you like the separation between class
+(inheritable) and object.  If you do, then anything that ignores
+that difference is bad design.
+
+
+> Also, is there some reason as to why the extra functionality the kernel
+> lib provides is not made a standard part of the driver itself
+
+Backward compatibility.  Also, not everyone appreciates the distinction
+between class and object.
+
+
+> - possibly
+> along with the changes to make global upgrading completely automatic
+> (except for the outlined scenario ;) ??
+
+I understand that you'd rather have me implement it in the server
+than do it yourself, but I hope that the above clarifies my reasons
+for not having done so.
+
+Whatever came of the idea, put forward on this list, to implement
+global upgrades in LPC and make the code freely available?
+
+Regards,
+Dworkin

@@ -1,0 +1,116 @@
+From: Noah Gibbs
+Subject: Re: [DGD] Solving a Persistence Problem - Puzzles and Quest Objects
+Date: Mon, 6 Sep 2004 13:03:31 -0700 (PDT)
+
+--- David Jackson wrote:
+> In planning these ports, I realized a few of the
+> biggest 
+> problems in converting what is essentially a single-player
+> game to a multi-player platform.
+
+  Yup.  That's it's own whole can of worms, all right.
+
+> 1)  Puzzles have to be reset.  In a non-persistent mud (MudOS,
+> LPMud), this 
+> is generally not a problem.  Rooms reset themselves, and when they
+> do, the 
+> puzzles reset.  This is not the case with a persistent driver (DGD).
+
+  As you've said below, you *can* add regular resets to DGD.  This
+means the quest can be completed repeatedly.  However, the quest's
+benefit (good item, money, exp) does *not* have to be given repeatedly.
+ For instance, in "Fedex" quests (bringing an item to a person), you
+can have the person say (after the very first time), "sure, I'll take
+it, but why are you bringing this to *me*?"  Then you don't have to
+repeatedly award items or experience to the person.  You *do* have to
+save "quest completed" flags for all the quests for every person, but
+that's a smaller amount of data than you think.
+
+  Another, more persistent, solution is to add "quest gremlins" of some
+kind.  Maybe a lever is spring-loaded, maybe a shifting maze resets
+itself when nobody has been in its area for an hour.  Maybe the birch
+stick you need to wedge open the door will break eventually if left in
+the door, and another birch stick will drop from the tree.  This is
+more difficult, and requires more creativity in your puzzlemaking, but
+it also yields a much more satisfying player experience for us
+explorer-types :-)
+
+  It also requires much more of an answer to "so why is this puzzle
+still there, anyway?"  The answer, in one way or another, is that your
+world maintains the puzzle.  When the puzzle stops being maintained,
+*bam*, no more puzzle.
+
+> 2)  Quest items/treasures have to be replaced.  This usually occurs
+> during 
+> room resets.  Again, there are no room resets in DGD.
+
+  Again, you can just reset.
+
+  Again, you can add Quest Gremlins.  I include not only critters
+(think of the little guys that picked up and moved tiles in the maze in
+"Labyrinth"), but also special effects like the branch dropping from
+the tree.
+
+> My first solution is;  once a quest item is picked up, it is
+> automatically 
+> cloned and placed into the environment in which it was found,
+> but now the 
+> new quest item is invisible to the person who picked it up.
+
+  This would be cute.  An alternative, even grander (and more
+memory-hungry) idea would be to clone the entire puzzle area when a
+person enters.  Then the person does the puzzle, gets a result, and
+winds up with a final 'done' puzzle zone afterward.  This means the
+player is required to do puzzles alone, and that there has to be only
+one (or a very small number) of 'done' states for the puzzle.  An
+example, partially lifted from CthulhuMUD:
+
+  You have a haunted house.  You can enter the house and explore the
+lower floors, read an old diary, see the moldy furniture, et cetera. 
+At that point, if you leave, the puzzle resets and it'll be the same
+next time you come in.  However, once you've entered the upper floors,
+a Presence begins to follow you.  If you then exit, the puzzle will be
+reset, but the Presence will do something mildly nasty to you on the
+way out.
+
+  However, if you've read the diary carefully or get lucky, you can
+tweak a statue on the upper floors to open a secret door, which leads
+to the corpse of the owner.  By taking the medallion he died with and
+wearing it, you can avoid being hurt by the Presence.  However, if you
+do that, then when you leave the house, the Presence will burn the
+place down and you'll barely escape, taking damage on the way.  The
+next time you wander by the house, it's been burned down and you can't
+enter.
+
+  This has the interesting effect that you'll see odd things when other
+people *do* enter from the same street.  The group won't see each other
+inside the house -- it's as though only you, alone, are there.  And it
+means that the people for whom the house is burned down will *still*
+see other people enter.
+
+  You can decide if that's better or worse than having constant resets,
+which are also deeply unrealistic.
+
+> How do I make an object that, when picked up, it clones
+> itself, 
+> and makes itself invisible, and the original remains visible to the
+> person 
+> who picked it up?
+
+  As with the quest flags, above, you have item flags that you save for
+every player.  When the player picks up the item, set the item flag on
+him.  Now he can no longer see it.  You'll do all this somewhere in the
+routines where you describe your rooms and items.
+
+> doesn't 
+> keep the player from repeatedly getting the score for the same 
+> quest/treasure items over and over again.
+
+  This is a constant problem in MUDs, and the cause of the constant
+inflation that plagues almost every MUD everywhere.  Do you make your
+MUD limited, and risk the players getting bored and leaving, or let
+them do the same thing over and over for a reward, and guarantee
+horrendous inflation?
+
+  There's no good answer to that question.  Not yet.  With persistent
+and random puzzle design, eventually there might be.

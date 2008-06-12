@@ -1,0 +1,42 @@
+Date: Sat, 12 May 2001 02:39:49 +0200 (CEST)
+From: "Felix A. Croes"
+Subject: Re: [DGD]Auto object
+
+I wrote:
+
+>[...]
+> You've been putting far too much in /usr/System.  Most of this should
+> probably be in /lib, /sys, /obj, or in some directory I haven't thought
+> of yet.  Since objects not in /kernel or /usr have very restricted
+> file and object permissions, some of it should perhaps be in
+> /usr/Melville.
+>
+> From what you've told us so far, I see a need for 3 objects in
+> /usr/System: initd.c, sys/objectd.c and lib/auto.c.
+
+All right, I was being too minimalist here.  You also need a telnet
+connection manager and a user object in /usr/System.
+
+So, what should be in which directory?  Objects outside of /kernel and
+/usr cannot do file operations or create objects, so I would suggest
+something like the following:
+
+/sys		contains stateless "daemon" objects
+/lib		contains inheritables that are useful to all wizards
+/obj		contains clonables that are useful to all wizards
+/usr/Melville	contains the first few rooms of the mudlib; rooms must
+		be able to create other objects such as monsters, and
+		therefore should be inside /usr.
+
+Alternatively, you could directories such as create /melville/sys,
+/melville/lib, etc.
+
+You may find a need for other objects in /usr/System, but you should
+only put objects in there if such a need exists.  Any object in
+/usr/System can write anywhere except in /kernel, can create objects
+that are owned by any other user, and can destruct any object that
+is not in /kernel.  The more objects you have in /usr/System, the
+more objects you have to check for possible security holes.
+
+Regards,
+Dworkin

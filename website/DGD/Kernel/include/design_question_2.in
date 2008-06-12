@@ -1,0 +1,37 @@
+From: DGD Mailing List (Felix A. Croes)
+Date: Sat Mar 27 05:35:01 2004
+Subject: [DGD] Design question about inheritance code
+
+Steve Wooster wrote:
+
+>[...]
+> 2. This idea is a bit more iffy... perhaps when an object/lib/etc is 
+> compiled, a copy of the source code is saved in memory somewhere. When a 
+> full update occurs (like if auto.c is being recompiled or something), the 
+> object is recompiled from the source code in memory rather than the file. I 
+> figured this might be good, because if you're messing with a currently 
+> loaded file, and unbeknownst to you, somebody updates auto.c or a lib file, 
+> the object will be recompiled with the version of the code loaded up in 
+> memory rather than the new experimental version on disk. On the other hand, 
+> I sort of think it might not really be necessary, and could use up a lot of 
+> extra space (I figure I'd keep the source-file info in lightweight objects, 
+> so I would only have the necessary source codes loaded up in memory for any 
+> given thread).
+
+My mudlib does this.  It has two types of upgrades, one to upgrade from
+the current source file, and one to upgrade using the source code that
+the object was compiled from.  For example, suppose I am working on an
+object B, editing the source code, and someone else upgrades object A
+and everything that inherits from it, which includes object B.  If B
+were to be recompiled from source code it might not even compile at
+all.  In this case, B ought to be recompiled from the same source code
+that it was originally compiled from, without disturbing my own work
+on the current source code.
+
+Another situation: suppose that different issues of B exist, compiled
+from different versions of the source code.  Then I'd like to be able
+to retrieve each of those versions to look at the differences between
+them.
+
+Regards,
+Dworkin

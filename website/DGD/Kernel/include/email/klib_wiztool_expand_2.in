@@ -1,0 +1,31 @@
+From: dgd at list.imaginary.com (Par Winzell)
+Date: Fri Dec 14 20:18:01 2001
+Subject: [DGD] kernel lib wiztool->expand()
+
+Shevek writes:
+
+ > What does expand() return, and am I even using it right?
+
+Maybe someone else can answer this. Since you have the source
+available, though, I figure you can probably guess just about
+as well as anybody else except for Dworkin who pay possible
+recall what it's supposed to do. :-)
+
+ > 1) What is Ecru? I know it's a user, but why?
+
+It collects everything for which there is no explicit user.
+
+ > What I'm actually trying to do is something like this:
+ > filename=SOME_DIR + "/" + (First char of str) + "/" + str + ".pwd";
+ > where str=someone's name for the purposes of seperating files into 
+ > directories based on first letter of name. Ie all the people starting with 
+ > 'A' into ~/System/data/A.
+
+You would benefit greatly from increased use of capitalization.
+
+I think you want
+
+	filename = DIR + "/" + str[0 .. 0] + "/" + str + ".pwd";
+
+
+Zell

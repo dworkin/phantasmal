@@ -1,0 +1,26 @@
+From: dgd at list.imaginary.com (Felix A. Croes)
+Date: Sat Feb 28 08:47:00 2004
+Subject: [DGD] Kernel LIB's Invisible Callouts
+
+Michael McKiel wrote:
+
+> Well I've plowed thru the kernel, got it running under the following
+> directory structure:
+> /home   /include   /k
+>[...]
+> Ok enough preamble I suppose heh. The question being, why can't callouts be
+> seen in kernel objects? ... Since if I want to mix kernel AND 'System' files
+> it would seem to me nonVisible callouts would pose problems.
+
+Who are you asking?  You changed it, it's your own mudlib now :)  If
+you don't want callouts in /k objects to be invisible, make them
+visible.  They are not visible in the kernel library because /kernel
+objects are in a class of themselves, and should definitely <not> mix
+with other objects.
+
+You will have to do some conversion, though, since callouts in
+kernel objects have a different argument format; they don't pass
+through the _F_callout wrapper.
+
+Regards,
+Dworkin

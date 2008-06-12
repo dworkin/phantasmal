@@ -1,0 +1,52 @@
+From: dgd at list.imaginary.com (Noah Gibbs)
+Date: Fri Oct 17 16:11:01 2003
+Subject: [DGD] Methodology: Directory structure & Areas
+
+--- Nihilxaos wrote:
+> Well...to my understanding it's good to have
+> anything that requires any sort of 
+> trusted functionality reside in /usr/System anyway.
+
+  Yup.
+
+> The one thing this does 
+> bring up, though, is that guild objects can either
+> modify a character's save 
+> file or have their own save file for the character
+> (a thing I'm a fan of...more 
+> damage localization in case of error).
+
+  I make sure that all of this resides under
+/usr/System at some level.  For instance, commands can
+modify the user object, which will change the save
+file next time something causes it to save.  As a
+result, many functions that modify saved information
+cause the user object to save as well.
+
+  In concept, this stuff is all carefully protected. 
+In practice, there are still some functions (like
+set_locale()) that I need to protect properly.
+
+  If you wanted guild objects to have their own save
+files, they'd need to either call to something in
+/usr/System (or other /usr/XXXX directory) that could
+do the write for them, or the guild objects would have
+to go into a /usr/XXXX directory.
+
+  If I were going to add guilds to Phantasmal, I'd
+probably add a /usr/common/guild.c object and have a
+list of allowable guilds in an UNQ file somewhere.  If
+an allowed guild object (like, one in the UNQ file)
+registered itself and asked to load or save, then
+/usr/common/guild would cheerfully do that operation. 
+That means you've got access control (the UNQ file)
+and the operations can occur outside /usr/System
+(which is good when possible).  I'm not sure whether
+I'd make a /usr/common/obj/guild object clonable and
+instantiate guild objects for each guild, or whether
+I'd have a /usr/common/sys/guildd that fielded
+requests for the other guild objects.  There are some
+kind of weird path restrictions on inheritance, so
+it'd be tough to have objects outside the /usr
+heirarchy inherit from /usr/common/lib/guild. 
+Possible, but probably not worth the trouble.

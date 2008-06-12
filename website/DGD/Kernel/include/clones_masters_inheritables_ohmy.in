@@ -1,0 +1,73 @@
+From: Mikael Lind
+Date: Thu, 23 Mar 2000 16:31:09 +0100 (MET)
+To: DGD Mailing List
+Subject: Re: [DGD]clones, master objects, inheritable, etc...
+
+These are my corrections to Kevin's sanity check. I hope they're correct!
+
+On Thu, 23 Mar 2000, Kevin N. Carpenter wrote:
+
+> Master objects contain re-entrant, re-usable code and their own variable
+> space.
+>
+> Clones contain a variable space and point to the master object code,
+> saving the mud that code space.  Since the code space is shared, when
+> the master object is changed, all clones see that change.
+
+Correct. (As long as you don't destruct the master object and keep some
+clones of it.)
+
+> Inheritable objects are similar to master objects, except that when it is
+> inherited, a copy of the inheritable object is included into the code space
+> of the master object inheriting it.  Thus, if a master inheritable is
+> changed, all objects previously inheriting it must be recompiled to force
+> the changed code to be included.
+
+Almost correct. However, the code isn't actually included. Instead, each
+master object holds references to the proper versions of its inherited
+programs. (Saving memory.) Old versions are thrown away when they are no
+longer needed.
+
+> Include files are just that, code included.  When changed, all master
+> objects or inheritable that use the include file will need to be recompiled.
+
+Correct.
+
+> The driver code keeps track of some of this for you, calling recompile(obj)
+> if obj is out of date with respect to something it inherits.  This call
+> only occurs when another object that inherits obj is compiled.
+
+Actually, I only think this will happen if there is a version clash
+between several inherited objects. Example:
+
+  A inherits nothing. (Okay, maybe the auto object.)
+  B inherits the current version of A.
+  C inherits an older version of A.
+  D wants to inherit both B and C.
+
+  When D is compiled, recompile(C) will be called in the driver.
+
+> "nomask" functions cannot be overridden by any code inheriting them.
+> 
+> "atomic" functions will revert the state of the mud to its state prior
+> to the function being executed if the function fails.
+>
+> "private" functions are local to an object and cannot be called via
+> call_other(a,b) (or its syntactical equivalent: a->b).
+
+Correct. (Local to a program, even. Private functions and variables can't
+be accessed by inheriting objects.)
+
+> "static" variables retain their last value between function calls to
+> an object.
+
+Not really. What you mean is global variables. The only effect of
+declaring a (global) variable static is that it won't be saved or restored
+by save_object() and restore_object(), respectively.
+
+> Am I missing any other function or variable types (ignoring int, string,
+> etc.)?  Have I goofed any of the object types?
+
+I have no idea. :)
+
+// Mikael Lind (Elemel)

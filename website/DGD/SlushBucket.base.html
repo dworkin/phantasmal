@@ -8,61 +8,61 @@
   </p>
 
 <pre>
-@@MESSAGE slush/port_number@@
+@@INCLUDE slush/port_number@@
 </pre>
 
 <hr />
 
 <pre>
-@@MESSAGE slush/distributed_mud@@
+@@INCLUDE slush/distributed_mud@@
 </pre>
 
 <hr />
 
 <pre>
-@@MESSAGE slush/inherit_program_called_twice@@
+@@INCLUDE slush/inherit_program_called_twice@@
 </pre>
 
 <hr />
 
 <pre>
-@@MESSAGE slush/mapping_size@@
+@@INCLUDE slush/mapping_size@@
 </pre>
 
 <hr />
 
 <pre>
-@@MESSAGE slush/virtual_rooms_1@@
+@@INCLUDE slush/virtual_rooms_1@@
 </pre>
 
 <hr />
 
 <pre>
-@@MESSAGE slush/virtual_rooms_2@@
+@@INCLUDE slush/virtual_rooms_2@@
 </pre>
 
 <hr />
 
 <pre>
-@@MESSAGE slush/mysql_cplusplus_api@@
+@@INCLUDE slush/mysql_cplusplus_api@@
 </pre>
 
 <hr />
 
 <pre>
-@@MESSAGE slush/parse_string_1@@
+@@INCLUDE slush/parse_string_1@@
 </pre>
 
 <hr />
 
 <pre>
-@@MESSAGE slush/parse_string_2@@
+@@INCLUDE slush/parse_string_2@@
 </pre>
 
 <hr />
 
 <pre>
-@@MESSAGE slush/parse_string_grammar@@
+@@INCLUDE slush/parse_string_grammar@@
 </pre>
 
 <hr />
@@ -76,185 +76,31 @@
 </p>
 
 <pre>
- - All of x[y .. z], x[y ..], x[.. y] and x[..] are now possible, with the
-   obvious meanings.
- - Added mapping - array and mapping & array.
-
-
-DGD 1.0.a7
-
- - path_object() (call_other, clone_object, find_object) from the auto
-   object will no longer call the driver object to translate the path.
- - A new kfun is added, dump_state().  swapout() and shutdown() no longer
-   do a state dump through a flag argument; dump_state() should be used
-   instead.  dump_state(1) will create an incremental dump on top of an
-   old one.
-
-
-DGD 1.0.9
-
- - Added array | array (A + (B - A)) and array ^ array ((A - B) + (B - A)).
-
-DGD 1.1
-
- - The type of (expr1 ? void : expr2) and (expr1 ? expr2 : void) is now always
-   void.
- - The evaluation order of array and mapping aggregates is now left to right,
-   because this is more intuitive.  From now on I'll consider the evalution
-   order of aggregates and function arguments to be fixed, rather than
-   undefined.
- - get_dir(foo) will always treat foo as a pattern, even if there is a file
-   with that name.
- - Compile-time checking for too many string constants or function calls.
-   The number of arrays and string values in an object can be larger than
-   65535.  Replaced longs by Uints in swapping functions.  Extended ref
-   counts to Uint for swapped-out data.
- - Process termination is now done through driver->interrupt().  This
-   function must exist and should minimally consist of
-
-    void interrupt() { shutdown(); }
-
- - Binary connections now have output buffering in the user object, instead
-   of a 64K static buffer.  User objects that are buffering will not
-   normally be swapped out.  The input buffer size for a binary connection
-   has been increased to 8K.
- - Precompiled objects now replace existing objects silently, rather than
-   causing an upgrade.  The object replaced must have the same inherit,
-   string, function definition, variable definition and function call tables.
-   NOTE: the dumpfile format was slightly changed, but state dumps that do
-   not contain precompiled objects are unaffected.
- - Added a new status(obj) field, the "index" of the master object (the
-   object itself unless it's a clone).  This is a unique ID, and will help
-   distinguishing different issues of the same object, and linking clones
-   to a particular issue.
- - Added mapping subranges.
- - Perform swapout, state dump and shutdown immediately upon completion of
-   the thread in which they are initiated.
- - Changed the meaning of O_DATASIZE in status(obj): this now returns the
-   number of variables, rather than the assumed amount of space they take.
-
-
- DGD 1.2
-
- - Added swapfile compression.
- - Increased max string length in status() to 65535.
- - Increased max editor output string length to 65535.
- - Added a new kfun, block_input().
- - Callouts with a delay of 0 seconds are now executed as soon as possible.
- - Sort callouts in status(obj) by handle rather than by delay, as no actual
-   calling order for same-delay callouts can be guaranteed.
- - Completed parse_string implementation on all platforms.
- - New kfuns: query_ip_name(), send_datagram() (at present for Unix only).
- - Added the constant `nil'.  If typechecking is 0 or 1 (in the config file),
-   nil has the value 0.  If typechecking has the value 2, nil is distinct from
-   integer zero.
-   String, object, array and mapping variables are initialized to nil.  Using
-   call_other() to call a non-existant function returns nil.  Variables holding
-   an object become nil after the object has been destructed.  Indexing a
-   mapping with a non-existant index results in nil, and nil must be assigned
-   to delete an index:value pair; assigning 0 has the same effect only when
-   0 and nil are the same.
- - allocate() now allocates an array of nil values.  New kfuns allocate_int()
-   and allocate_float() explicitly allocate arrays of those respective values.
- - In a further bit of type matching cleanup, integer 0 and floating point 0.0
-   no longer test as equal.
- - It is now possible to use varargs in a parameter list to specify that only
-   the following parameters are optional:
-
-	void foo(int a, varargs string b, object c)
-	{
-	}
-
-   In typechecking mode 2, this is the only way that varargs can be used.  It
-   is an error to call a function with too many or too few arguments, even when
-   using call_other() (typechecking mode 2 only).
-   Varargs is implied for the last parameter when using ellipsis, and need no
-   longer be specified explicitly.
- - Allow callouts with millisecond delays (floating point delay argument).
- - Check that a switch doesn't contain more than 32767 cases, and a function
-   doesn't need more than 32767 values on the stack.
- - Put automatic object swapping, accidentally left out in the callout rewrite,
-   back in.  NOTE: one out of every swap_fragment objects is now swapped out
-   at the end of each thread, rather than each second.  This means that to get
-   the same memory usage, the swap_fragment parameter should get a
-   considerably larger value.
- - There is no need to use static, nomask or atomic in prototypes anymore.
-   However, if any of these are specified, they must also be present in the
-   actual function declaration.
- - In case of an error in atomic code, call driver->atomic_error() with the
-   full stack trace.  Everything will be undone later, except for all use of
-   send_message() by the driver object.
- - If there is no more input on a connection, make sure there is no pending
-   output before closing it.
- - Temporarily disable compile_object(), clone_object(), destruct_object(),
-   call_out() and remove_call_out() from within atomic code, making atomic safe
-   to use.
- - Connections with pending output that failed in a write would never get
-   closed.
- - Completed object undo (atomic functions).
-   WARNING: before starting to use 1.1.97 with a statedump from a previous
-   version, make sure there are no un-upgraded clones left in the statedump.
-   This can be done by rebooting an additional time with the previous driver
-   version, and immediately shutting down again with a statedump.
- - Made maximum sizes of strings more configurable.
-
------------------------------------------------------------------------
-
-  ONLY GOT THIS FAR IN CULLING
-
------------------------------------------------------------------------
-
-DGD 1.3
-
- - Don't allow "..." as a path component in Windows.
- - Using new_object() on a light-weight object will now return a copy.
- - Lightweight objects can now be upgraded.
- - DGD now has fully automatic garbage collection.  swapout() can still be
-   used to reduce memory usage after a peak, or to track down memory leaks.
- - Added an optional second argument to compile_object(), a string to compile
-   the object from.
- - Whitespace in a grammar is now given precedence based on its position in
-   that grammar.  Previously, it always behaved as if it was the first token
-   rule defined.
- - Grammars may now contain a "nomatch" token rule.
- - Implemented hash_crc32(), hash_sha1(), asn_add(), asn_sub(), asn_mult(),
-   asn_div() and asn_mod().
- - Fixed some bugs, and implemented asn_cmp().
- - Fixed more bugs, and implemented asn_pow().
- - Implemented asn_lshift(), asn_rshift(), asn_and(), asn_or() and asn_xor().
- - Implemented tick accounting for ASN functions.
- - Implemented encrypt() and decrypt().
- - Allow allocation of blocks up to 1G in size.
- - Allow more than array_size callouts per object, for compatibility with
-   DGD/MP.
- - New config file parameter: dump_interval, the expected time between two
-   statedumps.  Rebuilding the swapfile is paced to this interval.
- - New kfun: call_touch().
- - call_touch() now also works on light-weight objects.
+@@INCLUDE slush/changelog@@
 </pre>
 
 <hr />
 
 <pre>
-@@MESSAGE slush/qpb@@
+@@INCLUDE slush/qpb@@
 </pre>
 
 <hr />
 
 <pre>
-@@MESSAGE slush/ansi@@
+@@INCLUDE slush/ansi@@
 </pre>
 
 <hr />
 
 <pre>
-@@MESSAGE slush/lpc_parsing_1@@
+@@INCLUDE slush/lpc_parsing_1@@
 </pre>
 
 <hr />
 
 <pre>
-@@MESSAGE slush/lpc_parsing_2@@
+@@INCLUDE slush/lpc_parsing_2@@
 </pre>
 
   <p style="font-size: 150%"> <a href="index.html"> Back to DGD

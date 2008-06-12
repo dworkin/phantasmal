@@ -1,0 +1,48 @@
+From: dgd at list.imaginary.com (Felix A. Croes)
+Date: Fri Dec  5 07:41:01 2003
+Subject: [DGD] Cross-directory inheritance and read access
+
+Noah Gibbs wrote:
+
+>   In the Kernel Library, you need to have read access
+> to a file in order to inherit it.  Special access
+> (giving a user specific access to a specific
+> directory) doesn't work for files in those users'
+> directories.  So in order to inherit from a library,
+> that library has to be globally readable.
+>
+>   That seems wrong to me.  The only method to prevent
+> somebody inheriting a globally readable library is the
+> forbid_inherit mechanism in the ObjectD.  You could do
+> that, but it's a fair amount of work, and it's
+> circumventing the existing permissions system --
+> you've already made sure that they can read the file,
+> because if they can't then they can't inherit it.  I
+> suppose Phantasmal could demand write-access to a file
+> in order to inherit it, but that would be *really*
+> insecure.
+>
+>   I could just skip the inheritance and do all work by
+> replacing the child object with a hook object, and
+> passing the calls through to it.  That seems like a
+> very awkward interface, though.  Is there some way to
+> reasonably access-control inheritance without making
+> directories like /usr/System/lib globally readable, or
+> moving the libraries to /usr/System/open/lib?
+
+What exactly do you want: have files readable without making them
+inheritable, or have files inheritable without making them readable?
+
+In the first case, you should use forbid_inherit to define your own
+security model.  This doesn't have to be complex.  For example, you
+could prevent inheriting anything that has "/private/" as a pathname
+component unless the inheritor has the same creator.
+
+In the second case, you can separate file access and inheritance by
+making ~/open/lib/foo.c inherit from ~/lib/foo.c.  Note that it is
+a bad idea to do this for a second-level auto object, which is
+inherited by everything, because you'd needlessly pollute the
+inheritance tables that DGD uses internally.
+
+Regards,
+Dworkin

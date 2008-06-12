@@ -1,0 +1,17 @@
+From: DGD Mailing List (Felix A. Croes)
+Date: Mon Jan 14 23:05:01 2002
+Subject: [DGD] New object issues
+
+Noah Lee Gibbs wrote:
+
+>   This is an objectd question, as you'll likely guess :-)
+>
+>   I'm working based on the Kernel MUDLib.  Am I guaranteed that when an
+> object is recompiled, it will be recompiled with the same issue number
+> (the number returned by status(obj)[O_INDEX]) as the previous version?
+
+Yes -- both the object index and any object references (which use the
+index in DGD internally) remain valid.
+
+Regards,
+Dworkin

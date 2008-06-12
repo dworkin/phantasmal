@@ -1,0 +1,91 @@
+From: dgd at list.imaginary.com (Noah Gibbs)
+Date: Thu Feb  5 22:59:01 2004
+Subject: [DGD] Melville under the Kernel Lib
+
+--- Michael McKiel wrote:
+> Yet in quite a few posting's also
+> has stated a 'distaste'(?) for the directory depth's of such. 
+
+  Yeah.  That's my big problem with the Kernel Lib as well.
+
+> How doable would changing that spec
+> around be to something like:
+
+  If you're going to break the current Kernel Lib, you might as well go
+all the way and give it per-file or per-directory permissions, even for
+non-user directories.  And in that case you can scrap a lot more of the
+structure.  Basically all of it, in fact.
+
+> What I'm not sure about atm, would be the
+> feasibility of
+> "resource management" which for coders themselves in a
+> /home/<username>,
+> would be easy enough to follow the current Klib design. But
+> not sure about
+> resource management of non Coder/wizard's under this route.
+
+  The Kernel Library requires you to register all resource owners.  You
+can alter the user object so that it doesn't give a wiztool to every
+resource owner easily enough, though that's what it does now.
+
+  I think registering all resource owners is a good idea.  I'd
+recommend sticking with it.
+
+> Would it be worth the restructuring?
+
+  Not if you do it that way, no.  You're not getting much of an
+improvement over the existing system.  There are *still* too many
+directories.  The big problem that most people seem to have (I know I
+do) is that you need to put cloneables, LWOs, daemons and inheritables
+in separate directories from each other, and further segregate based on
+privilege.  That's a lot of directories.  Being able to set the
+permissions of LPC code per-directory would help a bit, but probably
+not enough.  Being able to set the permissions per-file would reduce
+the number of directories, though you still need extra obj and lib
+subdirectories under the user dir.
+
+  It would be better if you could distinguish libraries from cloneables
+from LWOs in some other way, perhaps not based on filename.  But then
+you'd have to worry about what happens if one becomes another, or else
+make some mechanism to keep that from happening.
+
+> The few posts of Skoto's that referred a filepath would seem to
+> indicate a
+> non-KernelLib obeying structure.
+
+  Actually, they run on top of the Kernel.  However, they also have a
+full non-file heirarchy that lives separately in their lib, and that
+one doesn't use file paths, so it doesn't obey the Kernel Lib structure
+for file paths.
+
+> I didn't much care for the Klib design, but least I
+> understand it more now,
+
+  Yeah, it takes some figuring out.
+
+> but the other admin is fairly adamantly against it, which
+> is leaving us at a
+> bit of an impass
+
+  As him how exactly he intends to do recompiling in place.  If he
+asks, "what does that have to do with it?", ask how he plans to
+separate inheritables from cloneables.  When he says, "huh?", say he
+should figure out what the Kernel Library does before he gets rid of
+it.  At that point he'll refuse and get huffy and you'll need to find a
+new partner.
+
+  That's not the most elegant way to solve your problem, but it'll
+trade it for a new and different problem :-)
+
+> I'm not sure how to resolve without possibly too
+> much
+> unneccessary work at 'breaking' the klib to bring in features we'd
+> just like
+> the "Melville-like" directory structure to support.
+
+  Yeah.  If you're willing to ditch recompile-in-place, you can do a
+lot better.  Most of the Kernel Library's structural weirdness comes
+(indirectly) from that.
+
+  Of course, that's also one of the biggest, coolest features that DGD
+gives you.

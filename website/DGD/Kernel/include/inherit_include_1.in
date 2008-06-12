@@ -1,0 +1,42 @@
+From: dgd at list.imaginary.com (Erwin Harte)
+Date: Fri Feb  8 16:09:00 2002
+Subject: [DGD] Inherit/include
+
+On Fri, Feb 08, 2002 at 09:26:38PM +0000, Shevek wrote:
+> I'm noticing some odd behaviour from this the kernel lib (DGD 1.2p1).
+> Basically you can't inherit/include from any directory that doesn't have 
+> global read access.
+> 
+> Personally I'd think that if the compiling user has read access to the 
+> directory then surely they should be able to inherit/include from it. 
+> Doesn't seem to work like that though.
+> 
+> Is it like this for reasons I'm just not understanding? Because it puts a 
+> real crimp on passing code between non global read directories.
+
+The only access that counts at that point is the access that the file
+has, it doesn't matter that you (the coder) have a bit more access
+than that, otherwise you could have the following situation:
+
+- You (bar) grant <foo> write-access in your home-directory to work on
+  something.
+- You, one of the main game-admins, also have full access to /.
+- <foo> now writes a bit of code in your home-directory and, using
+  that, has full access to /.
+
+Sweet, isn't it?
+
+Use your ~/open/ directory if you want to share some feature/interface
+information, I'd suggest creating ~/open/lib/ and ~/open/include/ for
+this purpose and for any code you want to share you can put an almost
+empty inheriting bit in ~/open/lib/fnurt.c which can be used by
+others.
+
+Consider it the 'black box' approach. :-)  If you want to share all of
+the code then put all of it in your ~/open/ directory.
+
+Hope that helps,
+
+Erwin.
+-- 
+Erwin Harte

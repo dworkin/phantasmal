@@ -1,0 +1,47 @@
+From DGD Mailing List  Thu Apr  8 21:37:30 2004
+From: DGD Mailing List (Mercy)
+Date: Thu Apr  8 21:37:30 2004
+Subject: [DGD] yet another object manager question.. or two
+
+Hey guys,
+I've spent the last three or four days thinking about object managers, 
+and inheritance.
+Basically I'm planning on writing a new object manager to support a 
+persistant mudlib.
+I've been reading over the archives and have a pretty good idea of what 
+I need to do, and have been checking out Noah's objectd.c to see how he 
+implements things.  So far so good, and I think I'm almost ready to 
+start, but before I jump in the deep end, so to speak, I just want to 
+see if I've missed anything obvious.
+
+
+The object manager should know which inheritables a clonable inherits.
+The object manager should know which inheritables are inherited by which 
+inheritables.
+
+Recompiling an inheritable should cause the object manager to:
+destruct and compile the inheritable
+recompile any cloneables (and LWO master objects) that use the inheritable
+and..
+repeat the process for each inheritable that inherits the newly 
+recompiled inheritable.
+
+Compiling and recompiling clonables and LWO master objects requires no 
+special attention as clones and LWOs will automagically get updated.
+
+The object manager should probably also keep track of clones and issues 
+(... and LWOs? I dont think so..) depending on how I implement the 
+above, right?
+
+
+Are there any really obvious things I've missed out, or gaps in my 
+logic?  Any hints would be greatly appreciated.  This is obviously just 
+planning, I've yet to nail down a specific way of implementing 
+everything.  I'm liking Noah's objectd as an example of using API_OBJREG 
+for tracking things in a linked list.. I was starting to wonder about 
+how I was going to implement that stuff.. and I see that alot of stuff 
+is already handled in the kernal lib.  Excellent.
+
+Since my name is Felix too, I'm just gonna use my nick to avoid confusion.
+Thanks in advance,
+Mercy

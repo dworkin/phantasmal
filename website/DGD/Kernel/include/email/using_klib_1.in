@@ -1,0 +1,20 @@
+Date: Tue, 3 Apr 2001 23:00:37 +0200 (CEST)
+From: "Felix A. Croes"
+Subject: Re: [DGD]Using the kernel lib
+
+Stephen Schmidt wrote:
+
+> Question on the kernel lib: What is the division of code between
+> /kernel/lib/user.c and /kernel/obj/user.c? I'm hoping that everything
+> "important" is in /kernel/lib/user.c, and that one can remove and
+> replace /kernel/obj/user.c without causing any problems. Is that,
+> indeed, the case? Or are there things in /kernel/obj/user.c which
+> must be there for the kernel lib to function?
+
+The kernel lib's user object is <meant> to be replaced, but the
+replacement must have certain functions -- create(), login(), logout(),
+receive_message(), and optionally receive_datagram() -- to function
+properly.  It also must inherit /kernel/lib/user.
+
+Regards,
+Dworkin

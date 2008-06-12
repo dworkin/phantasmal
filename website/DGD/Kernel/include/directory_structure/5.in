@@ -1,0 +1,74 @@
+From: dgd at list.imaginary.com (Noah Gibbs)
+Date: Fri Oct 17 16:05:01 2003
+Subject: [DGD] Methodology: Directory structure & Areas
+
+--- Stephen Schmidt wrote:
+> The former seems to me to impose a large and
+> unreasonable burden
+> on file organization. There are many different types
+> of files which,
+> for one reason or another, need to write a file
+> occasionally, and
+> it seems forced to require that they all be in
+> /usr/System, when
+> they might well be logically grouped elsewhere.
+
+  True.  Your file-access daemon is almost exactly the
+approach I mean.  I don't temporarily grant access to
+anything.  Rather, I have the ability to call a
+function like save_user_file(), which will check who
+calls it (with previous_program() usually) and either
+do the appropriate thing or cause an error.  That
+imposes an ugly burden on /usr/System since it needs
+to know who will call what function, so I have an
+additional layer called /usr/common which translates
+fairly game-specific requests into more system-level
+requests.  So:  /kernel defines the core OS-type
+operations, /usr/System defines my limits on saving
+and loading files, /usr/common defines the overall
+rules of the game, and anything outside of that is
+game-specific and has no actual privileges.  You could
+add another level easily enough:  /usr/common could
+define the kind of game and /usr/Innsmouth or
+/usr/EyeOfTheDragon or /usr/BoboMUD or whatever could
+define things specific to the game itself.
+
+  The main problem with this organization, regardless
+of how many or how few levels you use, is that you
+have to know what function names will call you.  Which
+means that each layer needs to know something specific
+to the layer above it.  That doesn't make me happy,
+but I don't currently have any more general
+access-control method that I like.  I could make every
+resource type be a user in the Kernel Library /usr
+heirarchy, but that gets pretty ugly pretty quickly.
+
+> Or, from what Noah wrote:
+> 
+> Noah Gibbs wrote:
+> > > I get around it by
+> > > having access-controlled functions in
+> /usr/System that
+> > > do stuff that requires more privilege.  Since
+> code
+> > > outside of /usr/ has no user directly associated
+> with
+> > > it, you need to either have it use only things
+> with no
+> > > permission controls, or have functions somewhere
+> under
+> > > /usr/ that recognize that code specifically.
+> 
+> I gather one can write an access manager that would
+> temporarily
+> grant permission to /cmds/wizard/delete.c to do the
+> file access?
+
+  In concept.  In actuality, you'd have a line in
+FILEDAEMON:delete_file(), right at the beginning, that
+checked previous_program() and determined whether to
+allow the deletion.  It might recognize specific
+files, or specific path prefixes.  This is essentially
+the same way that the Kernel Library does it, but
+without the abstraction of users and home directories,
+and without some of the automation.

@@ -1,0 +1,25 @@
+From: DGD Mailing List (Felix A. Croes)
+Date: Sat Feb 21 04:41:01 2004
+Subject: [DGD] Resolve Path & Array Efficiency
+
+"Steve Foley" wrote:
+
+>[...]
+> When I think of the normalize_path function, I think the major inefficiency that
+> could crop up is memory allocation (caused by new arrays).  Felix's
+> normalize_path basically minimizes the number of new arrays, and I honestly
+> couldn't write a more efficient algorithm (but that isn't saying a whole lot).
+> But you're right, it's not real easy to follow.
+
+The kernel library imposes some overhead.  I've done by best to make
+this overhead as small as possible, while still cramming in all the
+functionality that I want.  Most of the code is written for speed.
+
+DGD's memory allocation is very efficient (with profiling using a
+2.4.5-based mudlib, memory management measures about 2% of total
+execution time), but creating the smallest amount of intermediate
+values that require memory allocations -- strings, arrays, mappings
+and objects -- is still a good stragegy.
+
+Regards,
+Dworkin

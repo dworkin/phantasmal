@@ -1,0 +1,60 @@
+Date: Thu, 6 Jan 2000 03:21:13 +0100 (CET)
+From: "Felix A. Croes"
+To: DGD Mailing List
+Subject: Re: [DGD]Object Upgrading Scenario
+
+> From: "Jason Cone" wrote:
+
+>[...]
+> Anyway, let assume the following object relationships:
+>
+>     A -i-> B -i-> C -c-> D
+>     A -i-> B -i-> C -i-> E -c-> F
+>
+> This notation should read, "Object D is a clone of object C which inherits
+> B, which inherits A.  Object F is a clone of object E which inherits object
+> C."
+>
+> Bad design issues aside, what is a possible implementation that could take
+> object E into account?  If E (and, consequently, F) didn't exist, an
+> overloaded compile_object() function would do the following:
+>
+>     destruct_object(A)
+>     destruct_object(B)
+>     ::compile_object(C)
+>
+> This would then allow for the single/multiple D object(s) to take advantage
+> of the new functionality that was added to A.  That approach, however, would
+> really mess things up if it used the same approach when trying to upgrade E
+> (F) -- ::compile_object() could not be called on object C as E inherits C
+> (would yield a run-time error).
+>
+> Thoughts?
+
+There isn't any way to upgrade all existing objects in your scenario.
+It is a special case of the more general problem:
+
+    If an object is both inherited and used in any other way (either
+    it has had a function called in it, or it has been cloned),
+    upgrading both this object and those that inherit it is not
+    possible.
+
+This is precisely why I prevented using/cloning of inheritable objects
+in the kernel library.
+
+
+> I know this subject has been beaten to death, but since we're running across
+> this issue during the implementation stage, my hope is that we can share a
+> successful implementation with everyone and not just discuss it on a
+> hypothetical issue.  I would like this scenario resolved, though, if
+> possible. :)
+
+With the existing primitive operations (compiling an object, recompiling
+an object, destructing an object), upgrading of all objects is not
+possible in your scenario.
+
+By the way, the subject is far from beaten to death.  I rather think
+it died prematurely. :)
+
+Regards,
+Dworkin

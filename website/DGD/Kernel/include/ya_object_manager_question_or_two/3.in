@@ -1,0 +1,26 @@
+From: DGD Mailing List (Noah Gibbs)
+Date: Fri Apr  9 13:46:00 2004
+Subject: [DGD] yet another object manager question.. or two
+
+--- Michael McKiel wrote:
+> I believe hardcoded defaults, like hardcoding kernel dependencies et
+> al was
+> mentioned in the archives, is there any reasonable reason not to do
+> this?
+> these are things that should likely never change.
+
+  There are two reasons.  One is that the kernel library might change
+in some way, which would change the correctness of the defaults.  The
+other is that the code might change (for instance, another object might
+be required by the ObjectD or wanted first and compiled before it), and
+if somebody knowledgeable about the ObjectD doesn't change that, you'll
+get some weird unexplained bugs.
+
+  I don't like non-local effects (where you change something and
+something apparently-unrelated elsewhere changes).  The problem with
+hardcoded defaults is that you get non-local bugs if they're not
+perfect.
+
+  My way *does* require compiling about seven files twice.  However,
+Phantasmal is so big at this point that the amount of double-compiled
+code isn't a significant part of the whole.

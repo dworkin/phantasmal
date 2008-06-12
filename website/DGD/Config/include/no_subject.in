@@ -1,0 +1,21 @@
+From: dgd at list.imaginary.com (Felix A. Croes)
+Date: Wed Dec 12 07:48:01 2001
+Subject: [DGD] (no subject)
+
+Shevek wrote:
+
+> Please ignore that last msg as I finally figured out what I was doing wrong.
+> When you cd into /usr/System you have to be sure to use System, not system.
+> The capitilisation is all important.
+
+This is an annoying problem on Windows and MacOS.  I've looked into
+verifying that pathnames have proper capitalization, but that would be
+costly and still would prevent the simultaneous (distinct) existance
+of /usr/System and /usr/system, which is perfectly allowable under unix.
+Right now, I do not have a good solution.
+
+I will change the errormessage so that there will be more of a hint as to
+what is wrong.
+
+Regards,
+Dworkin

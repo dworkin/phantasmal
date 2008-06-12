@@ -1,0 +1,26 @@
+From: dgd at list.imaginary.com (Joshua P. Dady)
+Date: Tue May 20 09:04:01 2003
+Subject: [DGD] Any advice?
+
+On Tuesday, May 20, 2003, at 07:19  AM, Felix A. Croes wrote:
+> Having said that, some things in DGD are just mind-bogglingly complex.
+> Take the string parser for instance -- it wasn't created to make
+> parsing easy, it was created to make parsing really efficient.  The
+> documentation for it I consider to be of good quality, but nevertheless
+> making a good parser with it is as hard, or perhaps harder, than doing
+> so in LPC.
+
+At least in this case, I would expect that there are more than enough 
+of us who understand that even writing good grammars to feed a generic 
+parser are hard to write, and that there are good, dedicated texts on 
+the matter, that it wouldn't be hard to explain it to anyone who didn't 
+just understand.
+
+As for the rest, I've often found situations where I would have to read 
+the documentation _and_ the kernel mudlib's implementation of that 
+section in order to really understand either.  This tends to be a 
+two-edged sword, as it gives deeper insight as to why things are the 
+way they are, but there are times when I just want to implement a 
+feature without having a history lesson first.  8)
+
+   -Josh

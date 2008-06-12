@@ -1,0 +1,48 @@
+Date: Thu, 23 Mar 2000 12:03:30 +0100 (CET)
+From: "E. Harte"
+To: DGD Mailing List
+Subject: Re: [DGD]Inherit_Program called twice?
+
+On Wed, 22 Mar 2000, Kevin N. Carpenter wrote:
+
+> I have a stripped down mudlib I'm using to develop my object manager and
+> have just spent the last hour trying to figure something out.  It appears
+> that the driver function "inherit_program" is being called twice during an
+> object compilation.  I highly suspect this is something in my code, because
+> that doesn't make any sense, but I sure can't find it.  Only 4 objects are
+> involved: The driver, inheritable auto, object user, and inheritable by user
+> userbase object.
+> 
+> The driver object forces a compile of the auto object.
+> The driver object forces a compile of the user object.
+> The user object inherits a file called userbase which forces a call to the
+> driver function inherit_program().
+> The inherit_program() forces a compile of the userbase object.
+> That compile finished, along with some book keeping.
+> ** Then, to my surprise, it appears that inherit_program() is called in the
+> driver a second time for the same file, user, for the same program,
+> userbase. **
+> Since userbase is already compiled, this finishes quickly, but it still
+> seems odd.
+> I scanned all my code, it definitely DOES NOT call inherit_program directly.
+> 
+> Any ideas?  This is running under Redhat Linux 6.1 on an Dual Processor
+> server.
+
+Yes, it's the normal way of things to happen in DGD, nothing to do with
+your OS or hardware. :-)
+
+DGD only fully compiles one object at a time.
+
+If you compile object A which inherits object B which has to be compiled
+first, it'll finish compiling object B and then start the compilation of
+object A from the start.
+
+If you add debug statements in the path_include() driver-function you'll
+find it calls those functions again as well.
+
+Hope this helps,
+
+Erwin.
+-- 
+Erwin Harte  -  Forever September, 2396 and counting  -  harte@xs4all.nl

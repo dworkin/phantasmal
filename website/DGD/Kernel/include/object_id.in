@@ -1,0 +1,70 @@
+Date: Wed, 22 Mar 2000 16:04:16 -0800 (PST)
+From: Par Winzell
+To: DGD Mailing List
+Subject: Re: [DGD]Ojbect ID
+
+Kevin N. Carpenter writes:
+
+ > Back last June, Zell commented on using IDs to track objects using a two
+ > dimensional model.  I presume he was referring to using a
+ > ::status(obj)[O_INDEX] to retrieve the ID of the master object.  If I
+ > understand the "master object" concept correctly, that would give me the
+ > unique id of the master object something was cloned from.  Neat way to get
+ > back to that object instead of manually striping the #xx off the cloned
+ > objects name.
+
+You're correct, but you miss the most important point. Upgrading works
+by destructing the target program and recompiling all the leaf objects
+that depend on it. Between the time that the program is destructed and
+the last leaf is recompiled, there are two programs in memory, sharing
+the same object name, one destructed and one not. The old program is
+not destructed until no more clones/programs depend on it. If all the
+leaf objects don't compile, both programs will hang around in memory
+until you fix whatever errors are hindering the compilation. Quite in
+general, you can have almost any number of old unfreed programs, each
+haunting the system due to some lingering dependency.
+
+The only way that old program is going to get freed is if you know
+precisely what the dependency is, so you can clear it up. This in turn
+requires a database of programs. Since clearly object name cannot be
+used to index the program (all the unfreed issues have the same name)
+the index becomes absolutely vital. It is much more than a clever
+trick to get at the master object. :)
+
+ > Unfortunately, I'm looking for a way to track clones when a
+ > master object is upgraded.  The only way that was occurred to me is to build
+ > a (doublely) linked list.  That's not a big deal, but if there is a cleaner
+ > way that isn't limited by the config file array_size parameter, I'd like to
+ > hear about it.
+
+I treat clones as a completely separate matter. I do keep just such a
+double linked list of clones, anchored in the clonable master object,
+and I think others do as well. The kernel library maintains a link of
+objects anchored in the owner, I believe. I don't see anything less
+than neat about it...
+
+ > Hmmm, one VERY crude method would be to search for all possible clones,
+ > looping from #1 to ST_NOBJECTS doing find_object() to see if it exist.
+ > Linked list would be a lot cleaner <grin>.  If I anchored the link list in
+ > the master clone or master inheritable, that would make them need to be
+ > recompiled rather than simply destructed, but I don't see that as a big deal
+ > - is it?
+
+Only programs are recompiled. If you have a thousand clones of foo.c
+and you recompile foo.c, all the clones 'get' the new program. Apart
+from debug/emergency purposes (which are good enough reasons in of
+themselves), there are two occasions I can think of where you would be
+happy to have such a linked list:
+
+  A) you probably want to forbid the destruction of a clonable program
+as long as there are existing clones of it -- otherwise you lose the
+ability to recompile that program -- and that's testable as a pleasant
+side-effect of maintaining that linked list
+
+  B) when you need to change not just the program of a clonable but
+also the data structure -- typically you write a patch() function in
+the clonable that performs the data manipulation; upgrade the program
+and then step through the list of all clones and call patch() in each
+and every one.
+
+Zell

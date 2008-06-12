@@ -1,0 +1,65 @@
+From: Thomas Edward Mieczkowski
+Subject: Re: [DGD] sizeof(static string *buffer)
+Date: Sat, 11 Sep 2004 01:00:32 -0400
+
+i'm a relative DGD newbie (fairly expert at LPC however), but it
+appears as though buffer is not initialized for some reason, which
+would cause legacy LPC sizeof() to error based on the fact it is 0
+(LPC's way of noting null).  I believe in DGD it works the same way. 
+So, you may want to replace
+
+if(sizeof(buffer))
+
+with
+
+if(buffer && sizeof(buffer))
+
+or determine why buffer is not being initialized.
+
+Hope that helps.
+
+Tom
+
+On Sat, 11 Sep 2004 00:13:49 -0400, John Ruiz wrote:
+> Hi All,
+> 
+> I'm trying to get the network patch going on DGD 1.2p4 on SuSE 9.1.
+> 
+> The daemon compiles just fine, but I get a runtime error (that you can
+> see below) for the kfun sizeof(),  Now, I thought that a static string
+> array counted as an array just as much as mixed* did.  This is
+> apparently wrong.  Can someone confirm this?  And if so, how can I get
+> the size of a static string*?
+> 
+> Please see pertinent things below, and thanks for any help or advice you
+> could offer.
+> 
+> John Ruiz
+> 
+> -----=[ DGD Error ]=-----
+> Sep 10 23:51:58 ** DGD 1.2p4
+> Sep 10 23:51:58 ** Initializing...
+> Sep 10 23:51:58 ** IMUD3 Daemon started.
+> Sep 10 23:51:58 ** IMUD3 port opened (198.144.203.194), registering with
+> server.
+> Sep 10 23:51:58 ** Initialization complete.
+> 
+> Sep 10 23:51:58 ** Bad argument 1 for kfun sizeof
+>  336 message_done      /usr/System/sys/imud3d
+> 
+> ... other known things ...
+> 
+> Sep 10 23:52:58 ** System halted.
+> 
+> -----=[ 336 message_done /usr/System/sys/imud3d ]=-----
+> 334: void message_done()
+> 335: {
+> 336:     if(sizeof(buffer))
+> 337:     {
+> 338:         sendPacket(buffer[0]);
+> 339:         buffer -= ({ buffer[0] });
+> 340:     }
+> 341: }
+> 
+> -----=[ buffer's declaration at top of file ]=-----
+> static string *buffer;         // packets to be sent

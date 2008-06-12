@@ -1,0 +1,58 @@
+From: David Jackson
+Subject: [DGD] Solving a Persistence Problem - Puzzles and Quest Objects
+Date: Mon, 06 Sep 2004 14:15:00 -0500
+
+
+In working with the Gurba lib, I've made a secondary goal to port over some 
+of the classic adventure games, specifically the MIT Zork (Dungeon) and 
+Colossal Cave.  In planning these ports, I realized a few of the biggest 
+problems in converting what is essentially a single-player game to a 
+multi-player platform.
+
+Let me preface this by saying that this is -not- an argument against DGD or 
+persistency; merely, I have run into some technical issues, and I bring 
+these issues here because I am certain that some of you have come up with 
+some elegant solutions.
+
+1)  Puzzles have to be reset.  In a non-persistent mud (MudOS, LPMud), this 
+is generally not a problem.  Rooms reset themselves, and when they do, the 
+puzzles reset.  This is not the case with a persistent driver (DGD).
+
+2)  Quest items/treasures have to be replaced.  This usually occurs during 
+room resets.  Again, there are no room resets in DGD.
+
+My first solution is;  once a quest item is picked up, it is automatically 
+cloned and placed into the environment in which it was found, but now the 
+new quest item is invisible to the person who picked it up.  I don't really 
+like this solution, and it certainly doesn't address the problem of 
+puzzles.  How do I make an object that, when picked up, it clones itself, 
+and makes itself invisible, and the original remains visible to the person 
+who picked it up?
+
+My second solution was to invent a room reset feature for rooms that may 
+contain puzzles or quest items.  These resets would reset the puzzle, or 
+replace the taken quest/treasure item.  This seems like the most reasonable 
+solution, but I am hopeful that there is a better one, because it doesn't 
+keep the player from repeatedly getting the score for the same 
+quest/treasure items over and over again.
+
+My over-all goal is to provide a mechanism so that every person who plays 
+through a particular area, can play through that area once, but if he 
+should return, then that area will not yield useful quest/treasure 
+items.  Which brings up a very important issue, in fact, a catch-22;
+
+Unless there is an enormous amount of content to be had, certain quests 
+have to be designed so that they can be repeated, over and over again.
+
+The average playing time for the MIT Zork (Dungeon) area is 1 to 3 months 
+(2 to 4 if not played obsessively).
+
+The average playing time for the Adventure / Colossal Cave area is 1 to 3 
+months (2 to 4 if not played obsessively).
+
+That's a total of 2-6 months playing time - which doesn't seem like a lot 
+to me - before new content would have to be introduced.
+
+Any thoughts, ideas, solutions, etc., would be greatly appreciated...
+
+David Jackson

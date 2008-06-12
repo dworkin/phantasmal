@@ -1,0 +1,16 @@
+From: dgd at list.imaginary.com (Felix A. Croes)
+Date: Sat Feb 15 14:15:01 2003
+Subject: [DGD] Problems with PC/MAC
+
+"Rickard Nilsson" wrote:
+
+> I have a DGD-server on my PC machine which works fine, but when my
+> friend tries to connect to my MUD it doesn't work. It has nothing to
+> do with the firewall, cause if I put up another server on the same
+> port it works fine, but however, he can't connect to my MUD.
+
+Nevertheless, given that you can connect to the MUD yourself, this is
+some firewall or routing problem.
+
+Regards,
+Dworkin

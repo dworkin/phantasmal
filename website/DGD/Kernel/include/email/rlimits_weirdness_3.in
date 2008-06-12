@@ -1,0 +1,36 @@
+From: dgd at list.imaginary.com (Felix A. Croes)
+Date: Sun May 25 18:23:00 2003
+Subject: [DGD] Rlimits weirdness...
+
+Noah Gibbs wrote:
+
+>   I wanted to use call_limited, but it's static.  And
+> rather than making every upgraded() call in every
+> object use it manually (definite security hole, and
+> inconvenient), I'd have to do the same thing from
+> ObjectD, which can't get at some of the information it
+> would need to do that.
+
+Static functions can be called with call_limited().  Beyond that,
+it is not clear to me exactly what you are trying to do, so it is
+hard to offer advice.
+
+
+>   So for the moment I just have two rlimits calls
+> surrounding the call_other.  It looks silly, but it
+> works.
+>
+>   I still find it very odd that the Kernel Library
+> allows that, but disallows it with only one call.
+
+It disallows raising the ticks limit, unless you are in "supervisor"
+mode, i.e. running with no ticks limit.  Note that you cannot deal
+with running out of ticks unless you do the dealing in code that has
+no ticks limit (unless you make the whole operation atomic).
+
+System objects are subject to the same restrictions on raising ticks
+as other objects, to avoid accidents where the ticks limit is raised
+forever in an infinite loop.
+
+Regards,
+Dworkin

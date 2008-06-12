@@ -1,0 +1,18 @@
+Date: Thu Aug  9 07:53:01 2001
+Subject: [DGD] access
+
+Ok, after more trying of it i can only say again its useless...
+Sorry people but this is big disappointment for me, since it makes 
+admin only admin of wiztool, not admin of whole system. If i would 
+have such root on my linux i would throw it away long time ago. Its 
+more restrictive then windows nt security, and even that is already 
+big crap. I read that kernel library should be good for anything with 
+no need for modifications, but this makes it not usable at all i think. 
+If I cant grant rights for user objects in runtime then i cant get users 
+to cooperate since they cant work with others code in runtime. And 
+when i count that any bigger coding simply must be done on local 
+copy of mud (who should use mud editor for coding?!) and file 
+upload is done by extrenal ftp then the security as it is is simply 
+not needed at all.
+That means doing rewrite of kernel code, exactly what i did not 
+want to do :(

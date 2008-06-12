@@ -1,0 +1,35 @@
+From: Par Winzell
+Date: Fri, 20 Apr 2001 10:27:13 -0700
+Subject: RE: [DGD]Core library and initd.c
+
+ > Doh!  I failed to add 2 + 2 correctly.  In this case, perhaps it does make
+ > sense for there to be a /kernel/include/System.h-like include file that can,
+ > if present, inform the driver (/kernel/sys/driver.c) of the locations of all
+ > secondary library-specific files (though, at present, the initd.c file is
+ > the only that comes to mind).
+
+In my opinion Dworkin's great strength is he masters the full spectrum,
+from tinkering in near-optimal assembly code to intuiting architectural
+designs, and through this mastery is the slave of neither extreme. This
+results in code and design that is a very unusual mix of flexible and
+generic on one hand, and finalized and settled on the other.
+
+I think ~System is one of these cases. For the kernel library to fully
+stand alone, it is appropriate for it to perform one well-defined call,
+placing the onus of integration entirely in the hands of the integrator.
+
+Modifying an include file in /kernel has a very different feel; it has
+the effect of 'pointing' the kernel library at your code. Sometimes, for
+some designs, that is a useful thing: e.g. DGD itself works that way.
+
+But for the kernel library it it inappropriate. The self-containedness
+of the kernel library is the main reason it is interesting to me. When
+every piece of code I ever wrote has crashed, I can still log into the
+emergency admin port and fix the problem using code that I know has not
+been touched through my frenzied development. It's a great boundary to
+have -- to be able to rely on: no files go in /kernel. period.
+
+If you really wanted to change System to something else, the place for
+it would probably be in /include/config.h, but I advice against that.
+
+Zell

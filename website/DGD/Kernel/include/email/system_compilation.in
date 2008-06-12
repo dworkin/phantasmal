@@ -1,0 +1,18 @@
+From: dgd at list.imaginary.com (Par Winzell)
+Date: Tue Dec 11 19:01:00 2001
+Subject: [DGD] Compilation in System...
+
+ > >I'd suggest putting it in /usr/World, if anywhere.  Be sure to create
+ > >a pseudo-user for that, with 'grant World access'.
+ > 
+ > Didn't understand about pseudo-users, but now I have at least some grasp I 
+ > see this is an excellent suggestion and I'll be using it.
+
+The urge to make ~System as small as possible hit me later than I
+would have wished, and I spent a lot of extra time moving things
+out of ~System and into other directories. ~System should do almost
+nothing but export the priviliges given to it by the kernel library
+to the rest of the library, along with whatever restrictions you
+want to add to the kernel library's.
+
+Zell

@@ -1,0 +1,83 @@
+|The DGD "killer app" game should reverse that. Players
+|should be important people in the society of the game
+|world, capable of taking acts which alter that society,
+|which are then reflected in the game world through the
+|persistence of DGD. For example, building a castle
+|which would then attract NPCs to form a town around it.
+|Or destroying a castle and dispersing the town. Or
+|something similar in whatever setting you do like, if
+|you don't like fantasy adventure.
+|
+|Steve
+
+Very nicely written!
+
+I'd like to add my two cents to this thread by saying that you don't
+have to have things as black or white.  The traditional mud is based
+around resets and a facet/drain economy -- one where players "harvest"
+mobs for gold, which is then drained away again by equipment,
+training, and other in-game perks.  The ultimate result of this kind
+of structure is the "level grind", where players are forced to kill
+hundreds or thousands of the same kind of creature until they are
+powerful enough to move on to the next area, and repeat the process
+until they reach the plateau where no further content is available to
+them.
+
+A fully persistent world with NO resets and a fully closed economy
+would, as Steve points out, require a constant staff of admins to
+create new content on the fly, else the players would exhaust what
+exists in the world and discover a virtual "heat-death" of the game.
+
+To find a middle-ground, we need to try something new.  One idea I had
+ages ago (and I'm sure many others have through of this too) is to
+allow mobs to spawn and evolve in reaction to each other as well as
+player activities.  That is, when you start the clock, the orcs in the
+mountains will gradually start wandering, as will the goblins in the
+forest.  At some point, they may encounter one another.  If they do,
+they can either fight one another over resources, or ally themselves
+for some other (coded) goal.  Maybe they both worship the same deity
+and team up to further those ends.
+
+In any case, when players start running into mobs, and killing them
+for loot, the mobs shouldn't just die and reappear... but neither
+should they be forever destroyed until a game master creates new
+ones.  Allow for the idea that the event was witnessed.  If a band of
+orcs gets killed near a city, perhaps a straggler watched and reported
+back to camp.  Maybe the orcs will mass and attack the town if it
+happens often enough, or maybe they will pick up and move further
+away... allowing the city to expand, or a new enemy to move in.
+
+Thus, persistence is maintained in the sense that if there was a
+goblin camp near the city, that camp remains until it is destroyed or
+packs up and moves away... and that it doesn't just reappear if
+something happens.  But at the same time, nothing prevents new mobs
+from moving into the area, either by the hand of a game master, or by
+some code that decides a new tribe or orcs might be needed (as the orc
+population is now too low, and the human population hasn't filled the
+void).
+
+I also totally agree that the players need to be more than cogs in the
+wheel.  If the best you can hope for is to kill stuff to get more
+equipment, to kill more stuff... you're in level-grind land, and may
+as well toss out persistence.  In that respect, I think players need
+to grow and shape the world alongside the game masters.  They should
+be able to spend their wealth to build housing, and expand the city
+borders.  Work to establish a new village somewhere, and set up trade
+routes that need to be patrolled so the merchants (both NPC and
+player) don't get ambushed by bandits (both NPC and player!).  Perhaps
+players can engage in competition for nation-building as they (and
+their guilds or other organizations) become really powerful (I'm
+thinking along the lines of the old text game conquer, or empire).
+
+So, the big question then is... how can we build a mudlib that allows
+and encourages that kind of thing?  A persistent world that can still
+evolve and populate itself without constant GM handholding, but which
+can be micro-managed by a staff who wants a tight storyline to
+develop?  I'm too much of a n00b at LPC to have any answers here, but
+I 'd love to hear what other people think.
+
+PS:  Sorry if this gets double-posted.  I didn't realize I had subscribed
+under my old email address and tried to post it from my new one.  Since it
+hadn't shown up yet, I figured I'd just repost as it's not THAT long. :)
+
+-- From: Dread Quixadahl (sp?)

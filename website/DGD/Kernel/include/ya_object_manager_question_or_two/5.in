@@ -1,0 +1,31 @@
+From: DGD Mailing List (Stephen Schmidt)
+Date: Fri Apr  9 14:02:01 2004
+Subject: [DGD] yet another object manager question.. or two
+
+On Fri, 9 Apr 2004, Michael McKiel wrote:
+> I believe hardcoded defaults, like hardcoding kernel dependencies et al was
+> mentioned in the archives, is there any reasonable reason not to do this?
+> these are things that should likely never change.
+
+If you're planning to distribute your code to others, then it's
+very hard to know what some idiot who downloads your lib might
+change :)
+
+Hardcoding things makes them brittle. Brittle is not necessarily
+bad, as long as you can be certain changes will never be made
+that break the brittleness. As long as you are the only user
+of your code, you can be reasonably sure about that. Or at worst,
+you can hope that you'll remember to change the hard coding,
+perhaps only after the first crash.
+
+However, if you are going to let someone else use your code,
+either because you're distributing it, or because someday your
+interests are going to change and someone else is going to take
+over as head wizard at the mud - then making things robust can
+make life easier for the person who comes after you. Or, it can
+make life easier on you if, like me, you tend to forget what
+you hardcoded in the past. That's the main reason to not hardcode
+things. It also makes it easier for you to go back and do changes
+at fundamental levels without having to rewrite all your hardcodes.
+
+Steve

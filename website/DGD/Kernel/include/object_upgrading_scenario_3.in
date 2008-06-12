@@ -1,0 +1,42 @@
+From: Neil McBride
+To: DGD Mailing List
+Subject: Re: [DGD]Object Upgrading Scenario
+
+> I understand that you'd rather have me implement it in the server
+> than do it yourself, but I hope that the above clarifies my reasons
+> for not having done so.
+> 
+> Whatever came of the idea, put forward on this list, to implement
+> global upgrades in LPC and make the code freely available?
+
+Back to the original problem then.  The proposed scenario is
+
+     A -i-> B -i-> C -c-> D
+     A -i-> B -i-> C -i-> E -c-> F
+
+The problem here is when D clones C.  The solution is an adaptation of a
+solution I 'thought' I'd worked out a few days ago, until I realised my
+memory of how it all worked was a little backwards ;)  Anyway, for ease
+of explanation, we'll call C the primary master, a new object, CX,
+called the secondary master and D will be the clone
+
+Now, when a call is made to clone an object, the clone_object can create
+the secondary master by creating a file that inherits the primary
+master, and nothing else.  The name of this can be determined by some
+algorithm so they can all be hidden from the user, thus making it all
+transparent.  The clone D, can then be made of the secondary master,
+leaving the primary master free to be inherited.
+
+This will also fit right into Jason's original ideas on how to deal with
+upgrading inherited objects.  Obviously, you would not hide these files
+from the internal processes dealing with it all ;)
+
+However, I'm not sure how to deal with the calling of functions in a
+master.  I imagine we could overload call_other as I think the
+{ob|file}->fn call uses call_other.  Correct me if I'm wrong.  I think
+someone with some more knowledge of how the function calling works needs
+to finish this off ;)
+
+Cheers,
+
+Neil.

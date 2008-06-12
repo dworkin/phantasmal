@@ -1,0 +1,40 @@
+From: Par Winzell
+Date: Wed, 23 May 2001 06:38:13 -0700
+Subject: Re: [DGD]Kernel mudlib question: What's TLS?
+
+ > TLS = Thread-local-storage.
+ > 
+ > The idea is to have a storage-place that is unique for each thread but
+ > without the use of one global object.  The reason for that is that
+ > such a global object would cause multiple threads to 'abort' eachother
+ > when they both want to modify data in the same object, while the
+ > individual TLS can be modified by the relevant threads without causing
+ > such conflicts.
+
+Some examples:
+
+ *) The kfun this_user() returns nil in a callout. At times, one would
+    want this value preserved across callouts, since it's usually well-
+    defined at the time the callout is started. The Skotos library now
+    does this, and it uses a TLS slot to store the preserved value for
+    the duration of the thread.
+
+ *) If DGD did not count ticks itself, we could provide a rudimentary
+    execution-time limiter by updating a TLS slot whenever we did some
+    big operation (or the cheesy version: store time() at the start of
+    the thread and occasionally compare it to time() so that threads
+    on average freeze the process for no more than 0.5 seconds).
+
+ *) You could designate a TLS slot as 'debug data', perhaps putting a
+    mapping value there or maybe an array of mappings or whatnot; and
+    as the thread weaves its way through the code of your library,
+    debug functions could place interesting data there which gets
+    stored or logged or somesuch at the end of the thread, perhaps
+    under certain conditions...
+
+Of course, DGD does not yet have multi-processing, but this is one of
+the many preliminary architectural features that Dworkin has put there
+in preparation. Also, it's just tidy to keep stuff that is relevant in
+the context of a thread private to that thread.
+
+Zell

@@ -1,0 +1,90 @@
+From: dgd at list.imaginary.com (Stephen Schmidt)
+Date: Thu Feb  5 23:04:01 2004
+Subject: [DGD] Melville under the Kernel Lib
+
+On Thu, 5 Feb 2004, Michael McKiel wrote:
+> In the past archives, Steven has stated if he were to "do it again" he'd
+> prolly choose to go on top of the kernel. Yet in quite a few posting's also
+> has stated a 'distaste'(?) for the directory depth's of such.
+
+Among other distastes, but we can start with that one. (I'm not
+knocking the kernel lib, which is a great lib. But everyone has
+their own tastes for power of code vs. simplicity of code. The
+kernel lib places relatively high value on power; I place
+relatively high value on simplicity.)
+
+> Yet there doesn't seem to be any way to accomodate (what we've been calling)
+> the Klib without "breaking" its directory requirements, and making it innured
+> to any future patches from the experimental line of DGD.
+
+I concur.
+
+> So a question for Mr.moby and others that are either building ontop of the
+> Kernel and/or "breaking" the kernel. How doable would changing that spec
+> around be to something like:
+> /lib/kernel/
+> /obj/kernel/
+> /sys/kernel/
+
+Wouldn't make a lot of difference to me personally. I think there
+is some advantage to having -all- kernel code in /kernel. Then you
+can have a simple "Do Not Enter" rule for that directory and be OK.
+
+> and perhaps putting "/usr/System/" into non-subdirectoried
+> /lib/, /obj/, /sys/
+
+It's been a long time since I looked at the kernel (close on
+five years) but I remember /usr/System confusing the living
+daylights out of me. This is probably because I do not know
+much about UNIX systems, and anything that is built around
+a resemblence to UNIX is opaque to me (as it is to 98% of
+the population, even those who can program). I suspect if
+I was a semi-serious UNIX hacker I'd find the kernel lib
+much more approachable. But I'm not. Most people aren't.
+(I said the same thing about MudOS and it did me no good
+then.)
+
+Melville was written to look familiar to anyone who had used
+a MudOS mudlib or other things that we basically variants on
+LP 3, but reducing the UNIXisms. In 1994 that was a good
+strategy. Today it might not be.
+
+> Would it be worth the restructuring?
+
+No.
+
+> The few posts of Skoto's that referred a filepath would seem to indicate a
+> non-KernelLib obeying structure.  So what have others done in this regard?
+> And how might you structure Steven?
+
+I don't really have an opinion on that subject, other than that
+the kernel lib should control what is in its own space (mostly
+/kernel) and let the high-level mudlib control the rest. I didn't
+like the way the kernel lib imposed a lot of structure on the
+contents of /usr, particularly.
+
+However, it's my vague understanding that a lot of that imposed
+structure is necessary to support persistance, and that's an area
+I do not grok, although I have some awareness of the issues. So
+I don't feel knowledgeable enough to seriously comment, and
+certainly not enough to propose changes.
+
+In 1999 I started a project to produce a mudlib that would run
+over the kernel but be similar in feel to Melville. After a month
+I realized a) the kernel was much harder to deal with than I had
+anticipated, b) the kernel imposed more requirements on the high
+level lib than I had realized, and c) understanding how persistance
+really worked was going to take more time than I had. I did not
+begin to realize until a couple years ago just what a fundamental
+difference that makes. Anyone who doesn't understand it should
+probably be slow to make changes to the kernel. Anyone who does
+not require persistence might be well advised not to use the
+kernel if a satisfactory alternative is available (my 0.02
+cents only and I'm sure many people disagree ;)
+
+There is a chance that someday I'll go back to the kernel and
+building a Melville-style lib that runs on top of it. But for
+the last year and a half I've been programming Napoleonic Wars
+simulation games and that's taken all the time I have. :)
+
+Steve/Moby

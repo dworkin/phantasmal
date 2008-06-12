@@ -1,0 +1,58 @@
+From: dgd at list.imaginary.com (dgd@list.imaginary.com)
+Date: Fri Oct 17 11:45:01 2003
+Subject: [DGD] Methodology: Directory structure & Areas
+
+>From what I've been able to gather thus far the /kernel directory is not to be 
+modified unless you really know what you're about to do since it can very well 
+take the entire MUD with it and possibly damage your security. This makes sense.
+
+The /usr directory holds most of your code. The System directory holds trusted 
+code and should only be modified by those who know what they're doing and can 
+keep the code tight and secure. This also makes sense.
+
+For some things, though, you want directories outside of the initial structure. 
+For instance I have a /log directory for all of my log files, and a /save 
+directory to keep player data (in a set of directories...one directory per 
+player, and each file therein for each character they have).
+
+What I'm debating with myself right now is where to put my domain directories. 
+Older MUDs that I've seen just lets each builder keep their objects under their 
+own directory trees. This is all well and good, but it encourages tinkering and 
+can lead to errors. This is especially bad in terms of guild objects or 
+commonly used items and areas. This is especially bad if your characters' 
+equipment is persistent at all. That sword they carry may change from day to 
+day.
+
+Because of this you can come up with a domain structure. Thus each major area 
+is run by a domain admin, and he/she moderates what code becomes real in the 
+domain. When a builder wants to change stuff they do it and test in in their 
+own directories, and then the changed objects are implimented by the domain 
+admin (or maybe the head admin depending on how you setup your overall 
+hierarchy).
+
+My main question is where is the best place to put these? I can think of three 
+general methods:
+
+1) An external directory. Make a directory such as /domains and put each domain 
+tree under that. Perhaps even have a different root directory for each domain, 
+though that may get cluttered.
+
+2) In the domain admin's directory. Thus if "bob" is in charge of the "hell" 
+domain we'd have /usr/bob/hell as the root for that domain's stuff.
+
+3) In it's own user directory. Thus you would have /usr/hell to hold the domain 
+files for hell, and bob would have write access on it given the previous 
+example. In this case, though, hell still wouldn't be an interactive user like 
+System.
+
+Which system do you guys think works best for this? My biggest question on #1 
+is whether or not the kernel mudlib has any problems executing code that 
+doesn't reside in /kernel or /usr, and if so is there an easy way to work 
+around that?
+
+BTW...this list rocks!
+
+Well...back to making sure I have DGD's inheritence system down before I code 
+much more. :)
+
+Patrick

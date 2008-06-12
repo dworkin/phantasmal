@@ -1,0 +1,378 @@
+From DGD Mailing List  Thu Aug 19 09:10:01 2004
+From: DGD Mailing List (Stephen Schmidt)
+Date: Thu Aug 19 09:10:01 2004
+Subject: [DGD] Object house-keeping and persistance
+
+On Thu, 19 Aug 2004 Birgit Schulte wrote:
+> I am wondering about ways to make sure the number of unused / discarded
+> objects in a persistant mud doesn't go through the roof.
+
+This is a comment more from the perspective of game design than
+of mudlib design, but hopefully the latter follows from the former.
+
+In a persistant MUD, why would there be a discarded object?
+Maybe no player is carrying it, but it's got to be lying
+around in the game world somewhere. Unless it's actually
+been destroyed, but in that case it should be removed from
+memory too. Or if it's been destroyed by turning it into
+some other kind of object (the monster body turns into a
+monster corpse, the Ring of Power turns into a puddle of
+slag) then the old object gets deleted from memory and
+replaced by the new one.
+
+I think the way to deal with this is by controlling the
+creation of new objects very carefully. In a really, really
+persistent world, new objects would -never- be created, at
+least not without being transformed from old objects. For
+example, to forge the sword, you have to have the lump of
+iron, and when the sword is created, the lump of iron is
+destroyed, leaving total objects in memory unchanged.
+
+Of course, if players are in the habit of leaving swords
+lying around the lib, and you can't create new ones, then
+the stores may run short. There will need to be some way
+to find abandoned objects and return them to circulation
+somehow. The old clean_up() type mechanism could be put
+to this use in a persistant framework. In any event, I'd
+want there to be a system within the game concept of how
+items get recycled in this fashion. What that system would
+be would depend on your game concept.
+
+Or are we, perhaps, talking not about objects within the
+game, but about objects like daemons that are not visible
+to the players, but come in and out of existance to handle
+certain tasks behind the scenes? In that case, delete the
+suckers from memory when their task is complete.
+
+Steve
+
+
+
+From DGD Mailing List  Thu Aug 19 10:07:01 2004
+From: DGD Mailing List (Stephen Schmidt)
+Date: Thu Aug 19 10:07:01 2004
+Subject: [DGD] Object house-keeping and persistance
+
+On Thu, 19 Aug 2004 Birgit Schulte wrote:
+> [ quoting out of sequence ]
+> Also, I am still getting used to the idea of real persistance,
+> meaning I am not yet used to code with that firmly embedded in my mind.
+
+I've been thinking about persistance, on and off, for six years
+and it still isn't firmly embedded in my mind :)  It is amazing
+to me how fundamental a difference it makes.
+
+> Guess when I'm saying unused I somehow think more of objects
+> cloned / created by coders when working on some part of the world,
+> as opposed to working in their own working-dir.
+
+Fair enough. But in a truly persistant mud, you may not even
+have coders anymore. It'll be very awkward to have new areas
+opening up in a persistant world. Where do the objects that
+fill those new areas come from? I think persistence tends to
+work better if the game world is already there, at least in
+outline form, and development happens within the context of
+the game - quite possibly being done by the players rather
+than by the development staff. That is, the job of the
+developer is to build an enormous set of rooms saying "You
+are in a forest", "You are in open plains", etc. If someone
+wants to build a town there, let the players build it
+themselves (and give them commands to do it, within
+resource limits that are defined within the game system).
+
+That said, that's an long-run vision; in the short run you
+are probably still going to have coders. The fix here,
+probably, is to mark each room that is not part of the
+game world with a flag. Any object left in such a room
+gets removed via a traditional clean_up mechanism. You
+need not start the clean-up mechanism in any object which
+is created in the game world - that would waste a lot of
+CPU. Activate it when the object enters a non-game-world
+room. You probably also want some way to prevent an object
+created outside the game world from entering the game
+world, too.
+
+Steve
+
+
+
+From DGD Mailing List  Thu Aug 19 11:35:01 2004
+From: DGD Mailing List (Jas)
+Date: Thu Aug 19 11:35:01 2004
+Subject: [DGD] Object house-keeping and persistance
+
+Stephen Schmidt wrote:
+
+>Fair enough. But in a truly persistant mud, you may not even
+>have coders anymore. It'll be very awkward to have new areas
+>opening up in a persistant world. Where do the objects that
+>fill those new areas come from? I think persistence tends to
+>work better if the game world is already there, at least in
+>outline form, and development happens within the context of
+>the game - quite possibly being done by the players rather
+>than by the development staff. That is, the job of the
+>developer is to build an enormous set of rooms saying "You
+>are in a forest", "You are in open plains", etc. If someone
+>wants to build a town there, let the players build it
+>themselves (and give them commands to do it, within
+>resource limits that are defined within the game system).
+>
+>  
+>
+
+Personally, I would see the job of the developer(s) of player-alterable 
+persistent worlds mostly the way you describe it, with one slight 
+modification:  all of the physical resources (versus objects) that will 
+EVER exist in the game should exist in the game from the beginning of 
+time, in the form of natural resources to be harvested, refined or 
+processed, or utilized in the creation of player-manufactured 
+objects.... OR, and here's where things get fairly complicated, consumed 
+as fuel to create energy.
+
+"Matter and energy is neither created nor destroyed."
+
+Keep chanting that mantra, and everything in the game should have a 
+matter or energy value.  The formula for the combined matter and energy 
+values should remain a constant throughout the duration of the game.
+
+So, a player mines coal, harvesting a specific matter value.  The coal 
+is used as fuel source in an engine which converts the specific matter 
+value to a specific energy value during the buring process, but ALSO 
+requires a specific energy value to combust the matter in the first 
+place.  The burning coal then drives an engine that uses that energy to 
+refine another raw material for player use.  No engine runs at 100% 
+efficiency, so some energy is converted to heat loss from the engine, 
+which enters the atmosphere and returns to the cycle eventually.
+
+So, matter gets converted to energy, which is then used to convert 
+matter.  All the while, the value of the formula of all existing matter 
+and energy in the universe has not changed.
+
+Yes, this gets painfully complicated in a hurry, but it can be done.  It 
+helps if you understand physics and quantum mechanics, but this is where 
+I see possibilities for (mostly) "hands off" management of a persistent 
+world.
+
+>You probably also want some way to prevent an object
+>created outside the game world from entering the game
+>world, too.
+>
+>  
+>
+
+This no longer becomes a problem, once you make sure that matter and 
+energy is neither created nor destroyed.  As long as the value of the 
+formula for all of the existing matter and energy in the universe 
+remains constant, no matter and/or energy spent = nothing produced.
+
+Of course, all of this looks great on paper, but engineering the game 
+library to do this no trivial matter.
+
+If you CAN do it right, basically if you can get the formula for all of 
+the combined matter and energy in existence tuned well, you should never 
+have to worry about managing the game's creation process again.
+
+And, if you happen to not like a structure a player has built using the 
+matter and energy they had in their possession, use some of your own 
+matter and energy (bulldozer = matter, diesel fuel = converts to energy) 
+to change the landscape to your liking.
+
+There's nothing written anywhere I can find that says a game 
+administrator can't stockpile some of the universe's matter and/or 
+energy for their own purposes (to use to maintain the peace or rule with 
+an iron fist, your choice of course ).  World leaders have been doing 
+that for thousands of years, and it seems to work quite well!
+
+>Steve
+>
+>  
+>
+
+Cheers,
+Jason D. Bourgoin
+aka Katmandu
+
+
+From DGD Mailing List  Thu Aug 19 11:50:01 2004
+From: DGD Mailing List (Stephen Schmidt)
+Date: Thu Aug 19 11:50:01 2004
+Subject: [DGD] Object house-keeping and persistance
+
+On Thu, 19 Aug 2004, Jas wrote:
+> [A]ll of the physical resources (versus objects) that will
+> EVER exist in the game should exist in the game from the beginning of
+> time, in the form of natural resources to be harvested, refined or
+> processed, or utilized in the creation of player-manufactured
+> objects.... OR, and here's where things get fairly complicated, consumed
+> as fuel to create energy.
+> "Matter and energy is neither created nor destroyed."
+
+Hm. But the second law of thermodynamics? Should one allow
+for entropy, that is, the quantity of -usable- energy in
+the game universe to decrease?
+
+Of course, that could be problematic from a player standpoint.
+"Welcome to Heat-Death MUD! See if you can make level 20 before
+the universe achieves a uniform distribution of energy!"
+
+:)
+
+> There's nothing written anywhere I can find that says a game
+> administrator can't stockpile some of the universe's matter and/or
+> energy for their own purposes (to use to maintain the peace or rule with
+> an iron fist, your choice of course ).  World leaders have been doing
+> that for thousands of years, and it seems to work quite well!
+
+True, although for testing purposes (which is what I think
+the original question was about) you might need to have a
+separate stash. Otherwise you would have to do warning
+messages like:
+
+** All Players: The Wizard Oppenheimer is about to test his new
+** object, "Nuclear Pile". He is requisitioning 74% of the world's
+** available energy to test this object. Please lie down and don't
+** move until the test is complete.
+
+That is, things which are happening outside the game world
+(ie, in the wizard's workroom) should not use the game world's
+matter and energy; either they should bypass the matter/energy
+rules or they should have an independent source (which can
+be increased as needed).
+
+Also, one probably needs to have some ability to increase the
+world's supply of matter/energy as the player database grows;
+that violates the persistance idea to some extent too, but
+if one doesn't allow new players to join, what's the point?
+Eventually the player base would probably reach a steady
+state, solving the problem, but in the growth phase prior
+to that steady state, adjustments would be needed.
+
+Steve
+
+
+
+
+From: DGD Mailing List (Jas)
+Date: Thu Aug 19 12:27:00 2004
+Subject: [DGD] Object house-keeping and persistance
+
+Stephen Schmidt wrote:
+
+>Hm. But the second law of thermodynamics? Should one allow
+>for entropy, that is, the quantity of -usable- energy in
+>the game universe to decrease?
+>
+
+My take on entropy is that the word "usable" should be replaced with the 
+phrases "we're not entirely sure how we can tap into it, at this point 
+in time and with our existing technology and with our current 
+understanding of the universe, so it's currently not usable to us."
+
+Nature finds a way of recycling.  I believe that if human beings manage 
+to survive as a species for a few zillion more years, we might just 
+witness some of that "unusable" energy trickling back into circulation.
+
+But that's a bit off topic, so we'll leave that to debates between grad 
+students.
+
+For the sake of *relative* simplicity while talking about game 
+mechanics, let's temporarily assume that all matter and energy is available.
+
+>Of course, that could be problematic from a player standpoint.
+>"Welcome to Heat-Death MUD! See if you can make level 20 before
+>the universe achieves a uniform distribution of energy!"
+>
+
+And that is a bad thing... how exactly?  Oh, you WANT people to survive 
+in your universe.  Uh, okay.  Never mind, heh.
+
+Semi-seriously, as it can be argued that all human beings are world 
+citizens each responsible for doing our part to save our shared 
+ecosystems, so it could be argued that every player in your mock 
+universe has a role to play in reversing whatever impending cataclysm 
+you have in store for them (or that are a natural consequence of poor 
+resource utilization and/or environmental management).
+
+Something like that could easily be worked into the game much like a 
+quest, but on a grander scale.  Make finding a prevention or cure for 
+whatever current environmental disaster is ravaging (or planning to 
+ravage) the universe be the final task to complete before giving the 
+player additional powers and/or responsibilities upon reaching levels 
+traditionally reserved for wizhood and coding access.
+
+If they get nothing else from completing the quest, they'll gain a 
+better understanding of how the matter and energy in your simulated 
+universe is tied together in a delicate balance.  That might not be a 
+bad lesson for your up-and-coming developer/management staff to comprehend.
+
+Of course, I still don't know if I'd let people code; just because they 
+can macro the crap out of your mobile programs, doesn't mean they can't 
+also bring your game to its knees once you give them an editor and the 
+ability to load objects.  This is all in the context of a 
+player-alterable persistent universe where we'll assume that matter and 
+energy can neither be created nor destroyed, of course.  And that 
+entropy is (temporarily) ignored or overlooked, for relative simplicity.
+
+>True, although for testing purposes (which is what I think
+>the original question was about) you might need to have a
+>separate stash. Otherwise you would have to do warning
+>messages like:
+>
+>** All Players: The Wizard Oppenheimer is about to test his new
+>** object, "Nuclear Pile". He is requisitioning 74% of the world's
+>** available energy to test this object. Please lie down and don't
+>** move until the test is complete.
+>
+
+The solution to that "problem" is easy:  make your game universe large 
+enough at the get-go to provide enough matter and energy for players AND 
+developers for the entire anticipated lifetime of the game.
+
+>That is, things which are happening outside the game world
+>(ie, in the wizard's workroom) should not use the game world's
+>matter and energy; either they should bypass the matter/energy
+>rules or they should have an independent source (which can
+>be increased as needed).
+>
+
+Instead of giving your developers a traditional 
+workroom/castle/whatever, give them a planet or a star or some other 
+cosmic object (physically separate from the players) to maintain their 
+source of matter and energy.  Let them be so many trillion years more 
+technologically advanced than the players in your universe, so they've 
+developed ways of tapping into the previously-unusable energy from entropy.
+
+Human beings are always talking about how life from other planets or 
+solar systems is likely so much more advanced than we are, 
+technologically, so it wouldn't be that much of a leap of faith for your 
+game management staff to fall into one of those categories.
+
+>Also, one probably needs to have some ability to increase the
+>world's supply of matter/energy as the player database grows;
+>that violates the persistance idea to some extent too, but
+>if one doesn't allow new players to join, what's the point?
+>Eventually the player base would probably reach a steady
+>state, solving the problem, but in the growth phase prior
+>to that steady state, adjustments would be needed.
+>
+
+And the solution for that would be.... ?  Don't start your universe with 
+a tiny source of matter and energy to begin with.  Make planets and 
+stars and entire galaxies available to provide matter and energy.
+
+Granted, you don't want your players to necessarily have immediate 
+access to ALL of those resources, so make them difficult to reach beyond 
+the planet they're currently on.  Much the same as we can't seem to keep 
+a Mars rover from tipping over or losing communications with our 
+scientists and engineers here on Earth, players in your simulated 
+universe might encounter problems of their own while attempting to 
+explore or colonize planets or systems beyond their own.  Terraforming 
+should not be made easy, if you want your game to have any decent shelf 
+life.
+
+>Steve
+>
+
+Cheers,
+Jason D. Bourgoin
+aka Katmandu

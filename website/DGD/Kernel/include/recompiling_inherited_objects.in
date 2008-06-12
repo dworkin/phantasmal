@@ -1,0 +1,85 @@
+From: DGD Mailing List (Par Winzell)
+Date: Tue Oct 14 08:06:00 2003
+Subject: [DGD] Recompiling inherited objects
+
+> My initial plan for solving the problem was this: For each object that is
+> inherited I keep a list of the program-names (masters only) that inherit
+> that object. I do this through the inherit_program() function in the
+> driver object. When I compile an existing program that according to my
+> data-mapping is inherited by other objects, I go ahead and outright
+> destruct every master object with the names stored in my mapping. When
+> done and compiled, I can compile all the objects I had to destruct in
+> order to allow the desired recompilation.
+
+The kernel library divides master objects into pure programs (those that 
+are stored in lib subdirectories) and ones with potential dataspaces. 
+One of the benefits of this separation is that pure programs can always 
+be destructed without consequences because there is no data to lose.
+
+Master objects with namespaces -- e.g. daemon objects -- you obviously 
+don't want to have to destruct every time you upgrade a basic library 
+object. These objects are, instead, recompiled in place, which also 
+frees the reference to the old inheritable, replacing it with the new.
+
+> This executes without errors, however, it does not have the desired
+> effect. Do I understand it right if I think that the problem is that all
+> the clones of the masters that inherit the code in question have their
+> link to the original source code severed when their master is destructed?
+> When I compile the source again, the clones of the old masters are not
+> updated.
+
+Yes, destructing a clonable while there are still clones left is a very 
+bad idea. You should almost certainly forbid it. Again, the link from 
+the master clonable to the inheritable you're upgrading can be freed by 
+recompiling the clonable in-place.
+
+> What I wonder then is: Is the solution now to also keep a list of all clones
+> that inherit a certain  program, and when the new master has been
+> compiled also recompile everyone of the old clones!? This seems a bit
+> heavy to me and I am not sure it would work.
+
+You can't recompile a clone and you don't need to. When you recompile 
+the clonable, you immediately and automatically replace the master 
+clonable for all those clones. You can have a mudlib with one clonable 
+and a million clones of that; upgrading all clones is instantenous (at 
+least from your point of view; technically they will be upgraded when 
+they are swapped in).
+
+A brief example:
+
+   T: /lib/toolkit
+inherited by
+   D: /sys/daemon
+and
+   L: /base/lib/physical_object
+which in turn is inherited by
+   O: /base/obj/physical_object
+
+So T's inheritance tree has three nodes: D, L and O. L is an internal 
+node, and D and O are leaf nodes.
+
+To recompile T, destruct all pure programs that descend inclusively from 
+T, i.e. T and L. Then walk through the list of all remaining objects -- 
+non-pure master objects and/or clonables -- and recompile them with a 
+straight compile_object().
+
+When you recompile the last object, the last reference to the old T 
+disappears, the program is freed.
+
+Tip: Put in debug messages in the callback functions that inform you 
+that a program has been freed, so you make absolutely sure that the old 
+version really is free. You might even want to enforce this in your code.
+
+Tip: I assume you are already doing this, but remember that you can't 
+index things just by program name. You can have 10 versions of 
+/lib/toolkit in memory, all destructed, but 9 of them still unfreed 
+because some object has yet to be recompiled. It is absolutely vital 
+that you can get a list of unfreed-yet-destructed programs at any time.
+
+The object index is available through status(obj)[ST_O_INDEX] or 
+something similar to that.
+
+
+There, that should keep you amused, and I am going to miss my bus, shit.
+
+Zell

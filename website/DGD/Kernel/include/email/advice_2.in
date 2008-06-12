@@ -1,0 +1,19 @@
+From: dgd at list.imaginary.com (Ben Chambers)
+Date: Mon May 19 23:23:01 2003
+Subject: [DGD] Any advice?
+
+----- Original Message -----
+From: "Stephen Schmidt"
+Sent: Tuesday, May 20, 2003 12:14 AM
+Subject: Re: [DGD] Any advice?
+
+
+> In truth, probably not, for two reasons. First, the kernel mudlib
+> is, if you build over it correctly, highly transparent to the[...]
+
+Learning to 'hack' DGD is most definitely not my only goal.  The one biggest
+issue that I have with the kernel library is lack of documentation.  At
+first glance I thought you would simply hack it to expand it.  Then when I
+read stuff at Phantasmal's site (which is wonderful, I might add) it turns
+out it looks in some directory in the user directory for extensions of these
+objects that you can apparently drop in place yourself...

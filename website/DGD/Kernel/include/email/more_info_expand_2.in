@@ -1,0 +1,41 @@
+From: dgd at list.imaginary.com (Felix A. Croes)
+Date: Mon Dec 17 19:32:01 2001
+Subject: [DGD] More info on expand()
+
+Wes Connell wrote:
+
+> I'm not sure if Shevek solved his expand() problems, but I am having one of
+> my own. Inside expand() the variable 'dir' is initially set by get_dir(). 
+> The kfun docs on get_dir() say that it returns an array in the following
+> configuration:
+>
+> ({ ({ file names }), ({ file sizes }), ({ file mod times }) })
+>
+> However, near the end of expand() the following code is executed:
+>
+>         all[0] += dir[0];
+>         all[1] += dir[1];
+>         all[2] += dir[2];
+>         all[3] += dir[3];
+>         all[4] += sizeof(dir[0]);
+>
+> This is expecting a 4th value inside 'dir'. Some parts of the expand() code
+> do set this 4th value but only in the case of error.
+
+No, the 4th value is copied straight from dir[3].  It's the 5th value that
+is set in case of an error, and also by the last line of the code you
+quote.
+
+
+> I know this 4th value is used to determine whether or not the filename is
+> currently compiled into an object. The only place I've found this used is 
+> in the ls command to insert the asterisk before the filename.
+>
+> So my quesiton is, how is this 4th value set? I have exported the code to
+> my own wiztool but I dont think that should matter much since it is calling
+> get_dir() as a kfun.
+
+It's calling get_dir() as a function in the auto object, not as a kfun.
+
+Regards,
+Dworkin

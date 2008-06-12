@@ -1,0 +1,76 @@
+From: dgd at list.imaginary.com (Felix A. Croes)
+Date: Mon Nov 17 17:55:01 2003
+Subject: [DGD] Kernel Lib security and APIs
+
+Noah Gibbs wrote:
+
+>[...]
+>   I like this in concept.  It's working for me. 
+> However, I have a couple of questions about how to
+> make it work properly with Kernel Library security.
+>
+>   I'd like to keep (for instance) room files somewhere
+> under /usr/game, and then pass the filename to a
+> routine in /usr/common.  The routine in /usr/common
+> would open and parse the file and put the rooms in
+> their appropriate places.  It would read script names
+> out of the file and call those scripts.  The scripts
+> exist in one or more other files in /usr/game.
+>
+>   There's a problem with this -- there's no way that I
+> can see to get an object under /usr/common to read a
+> file under /usr/game without using a globally-readable
+> directory.  I tried giving the "common" user full read
+> access to /usr/game, but it made no difference.
+
+Directories under /usr serve three different purposes.
+
+First, security: user directories are created there.  Each user
+normally only has access to his own files.  Global read access can
+be added for a directory, which allows all users and their objects
+read access to files in that directory.
+
+User-specific access applies <only> to the user, not to his objects.
+If you really want objects to access files in a different directory
+under /usr, make a server object in that directory which hands out
+files on request.  For your example above, /usr/game objects should
+really pass the file contents to /usr/common objects, not the file
+names.
+
+File security was designed with proper restrictions for untrusted guest
+programmers (wizards) in mind, and it may get in the way sometimes
+in muds which are organized differently.
+
+Second, resource control and measurement: this one is very important.
+Each "user" under /usr (whether representing an actual user or not)
+has his own resource limits.  With guest programmers, you probably
+want these to be actual limits so nobody can clone arbitrary amounts
+of objects, create callout explosions, hand out huge amounts of money
+to players, and so on.  Without them, you'll probably still want to
+use them for measurement, to see how many objects/callouts/ticks/etc
+are used in a specific section of your mudlib.  It is recommended to
+structure your mudlib into different directories under /usr with this
+in mind.
+
+Note that file access is based on the object creator (based directly
+on the file name), whereas resource management is based on the object's
+owner.  For master objects, the object owner is always the same as the
+object creator.  For clones, the owner is the same as the owner of the
+object that cloned it.  So if an object in /usr/foo clones an object
+from /usr/bar, the owner of that object is foo.
+
+Third and last, concurrency: the kernel library keeps track of a lot
+of things for you.  Unfortunately this can have an adverse effect in
+DGD/MP; with a single server object keeping track of things, two LPC
+threads using those things cannot run concurrently, because they
+effectively cause modifications in that same server object.
+
+The kernel library works around this in two different ways.  Decaying
+resources (such as tick measurement) are not affected.  Non-decaying
+resources (such as the number of objects) can be modified concurrently
+if and only if this is done from objects with different owners.  So
+here lies another reason to have different subsystems in different
+directories under /usr.
+
+Regards,
+Dworkin

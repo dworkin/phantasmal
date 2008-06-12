@@ -1,0 +1,21 @@
+Date: Thu, 19 Apr 2001 22:37:08 +0200 (CEST)
+From: "Felix A. Croes"
+Subject: Re: [DGD]Initializing problem
+
+Stephen Schmidt wrote:
+
+> On Thu, 19 Apr 2001, Felix A. Croes wrote:
+>[...]
+> > First off, making modifications to the kernel library is a bad idea.
+>
+> But a couple weeks ago I was told:
+>
+> >>> The kernel lib's user object is <meant> to be replaced
+
+Replacing is not modifying :)  The kernel library allows you to replace
+the user object, by creating a telnet connection manager or binary
+connection manager.  I have detailed how to do this in a recent posting,
+in response to a question of your own I believe.
+
+Regards,
+Dworkin

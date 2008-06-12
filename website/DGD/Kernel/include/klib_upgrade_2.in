@@ -1,0 +1,33 @@
+Date: Tue, 22 Jun 1999 17:31:02 +0200 (CEST)
+From: "Felix A. Croes"
+To: DGD Mailing List
+Subject: Re: [DGD]upgrading kernel library
+
+Rasmus H Hansen wrote:
+
+> This upgrading of base objects seems to be a candidate for a kernel library
+> add-on. Immediately I don't see any need for great variation on how this is
+> implemented - but then again I haven't coded this, I merely thought it
+> over. Would anybody care to share such an implementation or maybe Dworkin
+> can be persuaded to include automatic rebuild (or whatever this feature
+> should be dubbed) in a future version of the kernel library.
+
+I know of three existing implementations of global upgrading, and
+they're all substantially different.  Only two of them use the
+kernel library.  I see room for more variants.
+
+The kernel library doesn't include this because it is supposed to be
+minimal.  It does provide all the hooks to make it possible, though --
+see the object manager documentation in dgd/mud/doc/kernel/hook. I
+estimate that it can be implemented in about a thousand lines of
+code.
+
+
+> (Fear the rollback of an atomic rebuild.)
+
+Compared to the time it took to do the global upgrade, a rollback
+due to an error in atomically executed code will be almost
+unnoticable.
+
+Regards,
+Dworkin

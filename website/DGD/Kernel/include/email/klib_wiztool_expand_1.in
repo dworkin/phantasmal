@@ -1,0 +1,21 @@
+From: dgd at list.imaginary.com (Felix A. Croes)
+Date: Sat Dec 15 17:47:01 2001
+Subject: [DGD] kernel lib wiztool->expand()
+
+Shevek wrote:
+
+> Ok, now the problem.
+> What does expand() return, and am I even using it right? I know for a fact 
+> it expands a filename into a full path, but I see that it can also do some 
+> access checking.
+
+mixed *expand(string files, int exist, int full)
+
+files:		examples: "/foo/bar", "/foo/*", "/foo/bar /foo/gnu *.c"
+exist:	-1:	files need not exist
+	 0:	all files have to exist, except for the last one
+	 1:	all files have to exist
+full:		TRUE for full pathnames in the result
+
+Regards,
+Dworkin

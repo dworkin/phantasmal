@@ -1,0 +1,21 @@
+From: dgd at list.imaginary.com (Par Winzell)
+Date: Fri Oct 17 13:26:01 2003
+Subject: [DGD] Methodology: Directory structure & Areas
+
+> 1) An external directory. Make a directory such as /domains and put each domain 
+> tree under that. Perhaps even have a different root directory for each domain, 
+> though that may get cluttered.
+
+Keep in mind that if you use the kernel library, objects that are not in
+/usr/* have very limited abilities. Somebody else should expand on this,
+but over time it has become my strong impression that code that wants to
+take an active part in the game should reside in a /usr directory.
+
+> 3) In it's own user directory. Thus you would have /usr/hell to hold the domain 
+> files for hell, and bob would have write access on it given the previous 
+> example. In this case, though, hell still wouldn't be an interactive user like 
+> System.
+
+This would definitely be my suggestion.
+
+Zell

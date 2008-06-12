@@ -1,0 +1,30 @@
+Date: Tue, 6 Jul 1999 21:38:56 +0200 (CEST)
+From: "Felix A. Croes"
+To: DGD Mailing List
+Subject: Re: [DGD]upgrading old clones
+
+Geir Harald Hansen wrote:
+
+> I just had an idea, and it is not well thought through yet, but I thought
+> I'd throw it in here and we'll find out whether it is good or not. ;)
+>
+> I think sometimes a kfun to upgrade clones of an old issue may be useful.
+> It need only work when there is a newer issue whose master object is
+> not destructed.  The older issue may not have any inheriting dependents,
+> but has at least one cloned dependent, of course, or it would not exist.
+>
+>    object upgrade_clones(int issue_id)
+>
+> This function would upgrade all clones with that issue ID to the newest
+> issue, adding to its number of clones.  It returns the new master object
+> issue of the clones, which already exists before this function call, or nil
+> if it fails somehow.  When this call succeeds, the old issue is removed.
+> Hmm, maybe it would be better to return the number of clones upgraded.
+
+It is arguably wrong for a cloneable object ever to have different
+issues; after all, shouldn't all clones have the same behaviour?
+Therefore I prefer simply to make destructing an object with clones
+impossible.
+
+Regards,
+Dworkin

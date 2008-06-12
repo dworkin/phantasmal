@@ -1,0 +1,59 @@
+From: David Jackson <atari_x@bellsouth.net>
+Subject: [DGD] Algorithm for Parsing Commands
+Date: Sat, 04 Sep 2004 02:33:31 -0500
+
+
+I have been working on the Gurba lib, and I wanted to make the command 
+parser a little more robust, but I need some input.
+
+First, a question; for a long time, the paradigm has been to have a basic 
+command parser determine which verb to use, and then call that verb 
+function, which would parse the command further.  What is the reasoning 
+behind this?
+
+My basic algorith for parsing commands is as such;
+
+Our example command is; "Put the green rock into the yellow sack".
+Assumption:  Most commands will follow the form "verb adjective noun 
+preposition adjective noun"
+     or, more likely, the form "verb adjective noun"
+     acceptable input can be "verb noun" or "verb noun preposition noun"
+Assumption:  Articles are treated as whitespace
+
+1)  Receive input, and split input into an array of seperate words
+      a) If there is a "then" or "comma" or "and" in the sentence, then 
+split the sentence into two arrays.
+      b) operate on the first array now
+2)  Determine which words are verbs, by comparing them to a list of 
+suitable verbs (this takes into account synonyms for verbs)
+      a) If there is no suitable verb, produce error output
+3)  Determine which words are nouns, by checking for the existence of the 
+object in the player's environment (or inventory)
+      a) If no such noun exists, produce error output
+4)  Determine which words are adjectives, by checking it's companion noun 
+(query_adjective()) in the player's environment
+      a) If no adjective, and more than one noun exists with that name, 
+produce error output
+	1)  Error output should ask, "which noun, the adjective noun1 or the 
+adjective noun2?" (etc.)
+5)  Check for legal prepositions
+     a) If not legal, produce error output
+5)  If we have gotten this far, get object pointers for adjective-noun 
+pairs, parsing sentence into verb/adj.noun1/preposition
+6)  Pass parsed sentence to verb function as a function call parameter.
+7)  Return to 2 with second sentence, if there was a then.
+
+I know that this, so far, is still relatively simple; it can handle "verb 
+adjective noun preposition adjective noun" sentences all day long.  I would 
+like to make it more robust, to handle sentences such as;
+
+"cast gnusto at spellbook" - gnusto is a noun, but would forever be missed 
+because it doesn't exist in the player's environment
+"wear red cloak from burlap sack" - Would only work if there was 
+preposition/adjective/noun checking in "wear".
+"read newspaper by candlelight" - another sentence that would just fail.
+"check settings on dial" - and another sentence that would just fail.
+
+Any thoughts?
+
+David Jackson

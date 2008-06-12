@@ -1,0 +1,36 @@
+From: dgd at list.imaginary.com (Michael McKiel)
+Date: Sat Feb 28 09:36:01 2004
+Subject: [DGD] Kernel LIB's Invisible Callouts
+
+ --- "Felix A. Croes"
+> 
+> Who are you asking?  You changed it, it's your own mudlib now :)  If
+
+*grin* well Yeah...but I couldn't proceed til I knew why all the Kernel's
+call_out's were 'invisible' to status() ;)
+
+> you don't want callouts in /k objects to be invisible, make them
+> visible.  They are not visible in the kernel library because /kernel
+> objects are in a class of themselves, and should definitely <not> mix
+> with other objects.
+> 
+> You will have to do some conversion, though, since callouts in
+> kernel objects have a different argument format; they don't pass
+> through the _F_callout wrapper.
+
+
+At first I didn't think that helped, but did some grep'ing and found that the
+only kernel objects that do call_out's are rsrc.c and rsrcd.c, and they're
+the only objects prevented from using the _F_callout wrapper:
+due to (in auto.c's call_out) :
+    if ( DIR_RSRC(oname) ) {
+    /* direct callouts for resource management objects */
+    return ::call_out(function, delay, args...);
+    }
+
+where, #define DIR_RSRC(f) sscanf(f, "/k/%*s/rsrc") != 0
+
+So I don't have to prevent status() from displaying call_out's in all objects
+that are/could be/ considered "Kernel" just 'DIR_RSRC' ones.
+
+So...security here I come :), Thank ye.

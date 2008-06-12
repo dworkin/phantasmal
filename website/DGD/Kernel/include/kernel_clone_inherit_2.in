@@ -1,0 +1,50 @@
+Date: Thu, 15 Feb 2001 18:47:04 +0100 (CET)
+From: "Felix A. Croes"
+Subject: Re: [DGD]kernel cloning and inheriting
+
+Stephen Schmidt wrote:
+
+>[...]
+> > If Ac did not exist, and A was a pure inheritable object, you could
+> > have upgraded A and B with the following sequence:
+> > 
+> >     destruct A
+> >     recompile B (will automatically compile A also)
+>
+> If Ac did not exist, and you recompiled B without first
+> destructing A, then A would not be recompiled? I'm pretty
+> sure that's right.
+
+Normally, it wouldn't be.  However, A may be out of date as well, in
+the sense that it inherits yet another object -- let's call it C --
+which has been destructed.  In that case, the recompilation of B
+could in itself trigger the destruction of A from the recompile()
+function in the driver object; the immediately following recompilation
+of B would then also trigger the recompilation of A.
+
+
+>[...]
+> Just out of pure curiosity, why is it not possible to
+> have changes in A reflected in both Ac and B? Is it
+> because A doesn't keep track of a list of all objects
+> that inherit it, so it doesn't know that when it updates
+> its own code, it has to update B also? Or is it that when
+> A is recompiled, you want B to keep the old behavior? Or
+> is there something deeper going on?
+
+Suppose that A is inherited by a further N objects.  If we want
+to recompile A, and the changes must be automatically reflected
+in those other, inheriting objects, than all of those objects
+will have to be automatically upgraded.  I could have made it
+that way, and in fact I originally intended to do so.  However,
+if N becomes large, recompiling A is going to take a <very> long
+time -- minutes in some existing DGD mudlibs.  I wanted to be
+able to upgrade A without such a huge delay, so I decided to
+divide the upgrade process into many smaller steps, each of which
+could be done from LPC, perhaps with a series of callouts.  Since
+this was completely new functionality and there was no backward
+compatibility to take into account, I decided on the current
+limitations.
+
+Regards,
+Dworkin

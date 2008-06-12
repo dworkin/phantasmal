@@ -1,0 +1,37 @@
+From: Stephen Schmidt
+Subject: Re: [DGD] Solving a Persistence Problem - Puzzles and Quest Objects
+Date: Mon, 6 Sep 2004 21:56:44 -0400 (EDT)
+
+On Mon, 6 Sep 2004, David Jackson wrote:
+> How do I make an object that, when picked up, it clones itself,
+> and makes itself invisible, and the original remains visible to the person
+> who picked it up?
+
+How about cloning it, and not moving it to the right place for,
+say, 10 minutes or so? Effectively this delays the reset of the
+question until the player is gone. It does make for a problem
+if someone else shows up in the interim, or if the first player
+doesn't leave, but it seems elegant otherwise.
+
+> My over-all goal is to provide a mechanism so that every person who plays
+> through a particular area, can play through that area once, but if he
+> should return, then that area will not yield useful quest/treasure
+> items.
+
+You'll have to keep track of who has done what quest. Store that
+data on the player, not on the room or in separate data file.
+Otherwise you're asking for trouble with database maintenance.
+
+This does mean you'll have to be able to add a new variable
+to the player object whenever you bring a new quest up.
+
+> Any thoughts, ideas, solutions, etc., would be greatly appreciated...
+
+How about including some moderately random component to the quest,
+so that the solution isn't the same all the time? For example, the
+key item could be in any one of five different places. That means
+the player who does it again has to solve a new variant (80% of
+the time anyway) and it also cracks down on player 1 telling
+player 2 how to solve the quest.
+
+Steve

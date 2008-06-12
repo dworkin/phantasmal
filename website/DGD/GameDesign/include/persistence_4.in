@@ -1,0 +1,50 @@
+From: David Jackson
+Subject: Re: [DGD] Solving a Persistence Problem - Puzzles and Quest
+  Objects
+Date: Sat, 11 Sep 2004 02:20:41 -0500
+
+At 04:03 AM 9/7/2004, you wrote:
+
+>  --- David Jackson wrote:
+> >
+>
+>Flag the puzzle or the player, so that each player can only do said
+>quest/puzzle once.
+>Give the puzzle a reset-time so that multiple people can't be doing the
+>puzzle at the same time.
+>Thus allowing anyone to do the puzzle but no 2 people at the same time, and
+>no one person twice.
+>Perhaps?
+>
+
+Following Stephen Schmidt and Noah Gibbs (and your) excellent suggestions, 
+I compiled this result;
+
+A "gremlin" (or, in my case, the Dungeon Master) has a fixed set of rooms 
+which he will move to, one at a time, based on a fixed delay.  The rooms he 
+moves to are rooms containing puzzles (or items required for puzzles), or 
+quest items.
+He resets the rooms to an untouched state.
+
+The player can complete puzzles any number of times - but he will not 
+receive a score for any completion past the first one.
+
+Additionally, he can gather quest/treasure items, and return them to the 
+"Trophy Case".  When he does, that quest/treasure item is recorded in a 
+list, so that he can no longer gain points from that treasure (this 
+mechanism is the same for solving puzzles).
+
+If he encounters those items after he has scored points for them, he can 
+see them, but he can no longer pick them up (an error message of, "you have 
+already gathered this treasure, and find no interest in gathering it again").
+
+However, he may still pick up items required to solve puzzles (this ability 
+is still a subject for debate), and may still complete puzzles.  This is 
+under the assumption that certain puzzles will unlock other areas of the 
+game, which he may need access to.
+
+The basic paradigm is for a "puzzle solving, treasure gathering" MUD, where 
+the emphasis is on exploration and overcoming obstacles, rather than the 
+"fight monsters/gather loot/fight bigger monsters" treadmill.
+
+David Jackson

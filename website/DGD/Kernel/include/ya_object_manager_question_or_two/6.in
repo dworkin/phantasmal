@@ -1,0 +1,84 @@
+From: DGD Mailing List (Erwin Harte)
+Date: Fri Apr  9 17:34:01 2004
+Subject: [DGD] Re: yet another object manager question.. or two
+
+On Fri, Apr 09, 2004 at 05:56:10PM -0400, Michael McKiel wrote:
+[...]
+> I think it would be fairly easy to 'hardcode' the defaults safely, if such
+> was needed, but there are no dependancies, the files compiled pre-objectd
+> are:
+> FILE     Dependancy/Inherits
+> auto     none
+> driver   none
+> objregd  none
+> rsrcd    none
+> initd    none
+> objectd  none
+
+You seem to be overlooking the indirect dependencies.  This is the
+list I use for my object-db:
+
+    DRIVER, AUTO,
+
+    OBJREGD, RSRCD, RSRCOBJ, ACCESSD, USERD, SYS_INITD, LIB_USER,
+    API_ACCESS, API_USER, API_RSRC, API_OBJREG, SYS_OBJECT, LIB_CONN,
+
+    LIB_WIZTOOL,
+
+    DEFAULT_WIZTOOL,
+
+    TELNET_CONN, BINARY_CONN,
+
+    DEFAULT_USER,
+
+    SYS_OBJECTD
+
+All #defines taken from the relevant /include/kernel/*.h files.
+
+And this is the inherit information I'd use if I ever have to
+cold-start again:
+
+    private string *
+    preloaded_inherits(string str)
+    {
+	switch (str) {
+	case DRIVER:
+	case AUTO:
+	    return ({ });
+	case OBJREGD:
+	case RSRCD:
+	case RSRCOBJ:
+	case ACCESSD:
+	case USERD:
+	case SYS_INITD:
+	case LIB_USER:
+	case API_ACCESS:
+	case API_USER:
+	case API_RSRC:
+	case API_OBJREG:
+	case SYS_OBJECT:
+	case LIB_CONN:
+	    return ({ AUTO });
+	case LIB_WIZTOOL:
+	    return ({ API_ACCESS, API_USER, API_RSRC });
+	case DEFAULT_WIZTOOL:
+	    return ({ LIB_WIZTOOL });
+	case TELNET_CONN:
+	case BINARY_CONN:
+	    return ({ LIB_CONN });
+	case DEFAULT_USER:
+	    return ({ API_ACCESS, API_USER, LIB_USER });
+	case SYS_OBJECTD:
+	    return ({ API_RSRC, API_OBJREG });
+	default:
+	    error("Internal error, missing preloaded_inherits() entry");
+	}
+    }
+
+It's not difficult, but you don't want to miss any files, no. :-)
+
+Cheers,
+
+Erwin.
+-- 
+Erwin Harte

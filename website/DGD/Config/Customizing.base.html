@@ -68,7 +68,7 @@
 	CVS client instead of the Win32 native client. </li>
 
       <li>In addition, for TortoiseCVS, there's a <a
-	  href="http://sourceforge.net/docman/display_doc.php?docid=25888&group_id=1">
+	  href="http://sourceforge.net/docman/display_doc.php?docid=25888&amp;group_id=1">
 	  SourceForge tutorial on how to set it up for SourceForge
 	  projects.</a> </li>
     </ul>
@@ -77,48 +77,7 @@
 <hr />
 
 <pre>
-(About Tools, from a message by Par Winzell:)
-
-As you seem to have already figured out, there's two substantially 
-different ways to compile DGD for Windows; one's native to Windows, uses 
-the Windows API, and requires Visual C++... and one compiles DGD as a 
-Unix application, on top of Cygwin. Presuming you can't find somebody to 
-compile DGD+ANSI for you using Visual C++ (I loathe the Microsoft IDE's 
-and try hard to keep them away from my computer), by far your best bet 
-is to use Cygwin. So...
-
-... first of all, DGD compiles cleanly under Cygwin and runs without 
-trouble. It does need to use the 'SYSV' Makefile in dgd/src/host rather 
-than the 'BSD' one. I understand you were frustated with Cygwin by the 
-time you quit, but I suggest you persist. If things continue to go 
-wrong, please let us know what 'missing files' actually means. 
-Meanwhile, these commands should fully compile DGD under Cygwin, if you 
-have a sufficient installation:
-
-   *  wget --passive-ftp ftp://ftp.dworkin.nl/pub/dgd/dgd-1.2p4.tar.gz
-   *  tar -xzvf dgd-1.2p4.tar.gz
-   *  cd dgd/src
-   *  cp -p host/Makefile.sysv host/Makefile
-   *  make install
-
-If all goes well, you will have a binary in dgd/bin/driver. The Cygwin 
-version, not being a native Windows application, is also not a GUI one; 
-you'd do
-
-   * cd ..
-   * bin/driver mud.dgd
-
-after modifying mud.dgd with the correct absolute path(s).
-
-Finally, please don't worry overly much about installing Cygwin on your 
-machine. It's not going to do any harm and I don't think it gets into 
-the guts of your installation. You don't even really need to uninstall 
-it if you get tired of it; delete i.e. C:\Cygwin and remove the links 
-from the start menu, and I believe it's pretty much gone. You might even 
-find that you get used to having it around. As tools go for making 
-Windows sane, it's unparallelled in competence.
-
-And please dump Wordpad!! :)
+@@INCLUDE tools@@
 </pre>
 
     <hr />
@@ -142,15 +101,9 @@ And please dump Wordpad!! :)
       the ones below.  When you type them you should be in the
       same directory where you first untarred or unzipped the DGD
       source: </p>
-    <pre>
-patch -p 0 < 1.2-1.2.1
-patch -p 0 < 1.2.1-1.2.2
-patch -p 0 < 1.2.2-1.2.3
-patch -p 0 < 1.2.3-1.2.4
-patch -p 0 < 1.2.4-1.2.5
-      [...]
-patch -p 0 < 1.2.21-1.2.22
-    </pre>
+<pre>
+@@INCLUDE patching@@
+</pre>
     <p>
     You'll need all those files on the right, the ones with
     names like &quot;1.2.1-1.2.2&quot;.  Be sure to unzip or
@@ -167,7 +120,7 @@ patch -p 0 < 1.2.21-1.2.22
     <p>Note that you'll need to do all of this patching
       <i>before</i> you build DGD to be sure everything works.  On
       the bright side, under Unix you may be able to avoid typing
-      all those lines -- try just typing &quot;patch -p 0 < 1.2.*&quot;
+      all those lines -- try just typing &quot;patch -p 0 &lt; 1.2.*&quot;
       in a directory containing the unzipped patchfiles.  If you try
       it and it starts giving you rejected patches then something's
       wrong.  If that happens, you should go back to trying it the
@@ -191,81 +144,8 @@ patch -p 0 < 1.2.21-1.2.22
     <p>This is Will Shattuck's set of instructions for compiling
       DGD version 1.2.47 under Cygwin.  It should be pretty adaptable
       for other DGD versions. </p>
-    <pre>
-download dgd-1.2.tar.gz
-untar dgd-1.2.tar.gz
-download the experimental patches from ftp.dworkin.nl and save them into a
-dir called patches in the same root as the untar'd dgd*.gz file
-      eg: ~/dgd and ~/patches in your home directory
-use patchit script to patch dgd
-cd dgd/src
-cp host/pc/local.c host/lrand48.c
-cp host/Makefile.sysv host/Makefile
-vim host/Makefile
-      change the host to LINUX
-vim src/Makefile
-      change the host to LINUX
-make
-make install
-
-============================
-
-The patchit script was just a file that I created from doing "ls -l
-patches > patches.txt" and then editing it within Excel and a text editor
-with a Find and Replace feature
-
-== Begin patchit script ==
-
-patch -p 0 < patches/1.2-1.2.1
-patch -p 0 < patches/1.2.1-1.2.2
-patch -p 0 < patches/1.2.2-1.2.3
-patch -p 0 < patches/1.2.3-1.2.4
-patch -p 0 < patches/1.2.4-1.2.5
-patch -p 0 < patches/1.2.5-1.2.6
-patch -p 0 < patches/1.2.6-1.2.7
-patch -p 0 < patches/1.2.7-1.2.8
-patch -p 0 < patches/1.2.8-1.2.9
-patch -p 0 < patches/1.2.9-1.2.10
-patch -p 0 < patches/1.2.10-1.2.11
-patch -p 0 < patches/1.2.11-1.2.12
-patch -p 0 < patches/1.2.12-1.2.13
-patch -p 0 < patches/1.2.13-1.2.14
-patch -p 0 < patches/1.2.14-1.2.15
-patch -p 0 < patches/1.2.15-1.2.16
-patch -p 0 < patches/1.2.16-1.2.17
-patch -p 0 < patches/1.2.17-1.2.18
-patch -p 0 < patches/1.2.18-1.2.19
-patch -p 0 < patches/1.2.19-1.2.20
-patch -p 0 < patches/1.2.20-1.2.21
-patch -p 0 < patches/1.2.21-1.2.22
-patch -p 0 < patches/1.2.22-1.2.23
-patch -p 0 < patches/1.2.23-1.2.24
-patch -p 0 < patches/1.2.24-1.2.25
-patch -p 0 < patches/1.2.25-1.2.26
-patch -p 0 < patches/1.2.26-1.2.27
-patch -p 0 < patches/1.2.27-1.2.28
-patch -p 0 < patches/1.2.28-1.2.29
-patch -p 0 < patches/1.2.29-1.2.30
-patch -p 0 < patches/1.2.30-1.2.31
-patch -p 0 < patches/1.2.31-1.2.32
-patch -p 0 < patches/1.2.32-1.2.33
-patch -p 0 < patches/1.2.33-1.2.34
-patch -p 0 < patches/1.2.34-1.2.35
-patch -p 0 < patches/1.2.35-1.2.36
-patch -p 0 < patches/1.2.36-1.2.37
-patch -p 0 < patches/1.2.37-1.2.38
-patch -p 0 < patches/1.2.38-1.2.39
-patch -p 0 < patches/1.2.39-1.2.40
-patch -p 0 < patches/1.2.40-1.2.41
-patch -p 0 < patches/1.2.41-1.2.42
-patch -p 0 < patches/1.2.42-1.2.43
-patch -p 0 < patches/1.2.43-1.2.44
-patch -p 0 < patches/1.2.44-1.2.45
-patch -p 0 < patches/1.2.45-1.2.46
-echo This is the last patch
-patch -p 0 < patches/1.2.46-1.2.47
-
-== End patchit script ==
+<pre>
+@@INCLUDE will_shattuck@@
 </pre>
 
     <hr />
@@ -290,7 +170,7 @@ patch -p 0 < patches/1.2.46-1.2.47
       hand-patch it.  To hand-patch, you'll need to look for lines like
       this: </p>
     <pre>
-         } else if ((*p & 0x7f) < ' ' && *p != HT && *p != BEL && *p != BS) {
+         } else if ((*p &amp; 0x7f) &lt; ' ' &amp;&amp; *p != HT &amp;&amp; *p != BEL &amp;&amp; *p != BS) {
     </pre>
     <p>
       There'll be one or more in .../src/comm.c, so start looking

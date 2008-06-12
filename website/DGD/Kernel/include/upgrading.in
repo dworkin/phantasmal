@@ -1,0 +1,235 @@
+From: John "West" McKenna
+Subject: [DGD]upgrading
+To: DGD Mailing List
+Date: Mon, 10 Jan 2000 22:45:31 +0800 (WST)
+
+There's been a bit of talk about upgrading objects, and there's always
+been people wanting code for it.  So...  This is how I'm doing upgrading
+of objects.  Like Dworkin's kernel lib, I distinguish between classes
+and objects.  Actually, I make a three-way distinction:
+
+  1) libs: Anything with /lib/ in its path can be inherited.  It cannot
+     be cloned.  No other objects can be inherited.  create() is not
+     called, and the blueprint should not be used.
+  2) clones: Anything with /obj/ in its path can be cloned.  No other
+     objects can be cloned.  create() is called on the clones, but not
+     the blueprint.  The blueprint should not be used.
+  3) singles: All other objects have create() called on the blueprint.
+
+2 and 3 together are called 'objects'.
+
+If you're foolish enough to have *both* /lib/ and /obj/ in your path,
+you're treated as a lib.
+
+There is also mention of 'physical' objects.  These are clones that have
+some 'real' existence in the MUD universe (including players).  Any
+clone that wants a real existence inherits /kernel/lib/physical, which
+defines (among many other things) the function is_physical() to simply
+return 1.
+
+The code below is NOT the best way of doing things.  In particular, I'm
+not at all happy with the way that I'm including the auto object in the
+inheritence table.  There's a bug in there somewhere too - it fails in
+interesting ways if there was a compilation error.  
+
+Hopefully having some code will provoke a little discussion, and maybe
+even a little code...
+
+/*  The auto object */
+
+int is_clone() {
+  return (sscanf(object_name(this_object()), "%*s#"));
+}
+
+void _create() {
+  /* create() gets called for clones of objects in a .../obj/... directory, and
+     for blueprints of objects that are not in a .../obj/... or .../lib/...
+     directory, but not for anything else.  In particular, inherited objects
+     and the blueprints of clones don't get create() called. */
+  string name;
+
+  name=object_name(this_object());
+  /* It can only be a clone if it was in a .../obj/... directory, so no need
+     to explicitly check for that */
+  if (sscanf(name, "%*s#")) {
+    this_object()->create();
+  } else {
+    if (!sscanf(name, "%*s/lib/") && !sscanf(name, "%*s/obj/")) {
+      this_object()->create();
+    }
+  }
+}
+
+object compile_object(string name) {
+  object o;
+
+  o=::compile_object(name);
+  /* Make sure create() gets called */
+  call_other(o, "???");
+  return o;
+}
+
+object clone_object(object obj) {
+  if (sscanf(object_name(obj), "%*s/lib/")) {
+    DRIVER->message("Illegal clone: "+mixed_to_string(this_object())+
+      " attempting to clone "+mixed_to_string(obj));
+    return nil;
+  }
+  if (!sscanf(object_name(obj), "%*s/obj/")) {
+    DRIVER->message("Illegal clone: "+mixed_to_string(this_object())+
+      " attempting to clone "+mixed_to_string(obj));
+    return nil;
+  }
+  return ::clone_object(obj);
+}
+
+/* The driver object */
+
+mapping inheritence;
+mapping upgrading;
+mapping last_upgraded;
+int reboot_time;
+string *upgraded_clones;
+
+void initialize() {
+  /* ... */
+  reboot_time=time();
+}
+
+object inherit_program(string from, string path, int priv) {
+  if (!sscanf(path, "%*s/lib/")) {
+    message("Illegal inherit: "+from+" attempting to inherit "+path);
+    return nil;
+  } else {
+    if (!inheritence) {
+      inheritence=([ ]);
+    }
+    if (!inheritence[path]) {
+      inheritence[path]=({ });
+    }
+    if (!inheritence[AUTO]) {
+      inheritence[AUTO]=({ });
+    }
+    /* !!! This is really ugly.  There must be a better way of doing this.
+       But we're not told when someone inherits AUTO.  So we just add it
+       whenever any object gets mentioned (because if the object exists,
+       it inherits AUTO). */
+    inheritence[AUTO]=(inheritence[AUTO]-({ from }))+({ from });
+    inheritence[AUTO]=(inheritence[AUTO]-({ path }))+({ path });
+    inheritence[path]=(inheritence[path]-({ from }))+({ from });
+    return load(path);
+  }
+}
+
+static string *_upgrade(string path) {
+  string *inherited_by;
+  object obj;
+  string *done;
+  int i;
+
+  done=({ });
+  if (inheritence) {
+    obj=find_object(path);
+    inherited_by=inheritence[path];
+    if (!upgrading[path]) {
+      upgrading[path]=1;
+      if (inherited_by) {
+        /* It's a lib - destruct it and upgrade everything that inherits it */
+        last_upgraded[path]=time();
+        destruct_object(obj);
+        done+=({path});
+        for (i=0;i<sizeof(inherited_by);i++) {
+          done+=_upgrade(inherited_by[i]);
+        }
+      } else {
+        /* It's an object - if a blueprint exists, recompile it.  If there is
+           no blueprint, there's no point - it'll get compiled next time it
+           is used. */
+        if (obj) {
+          last_upgraded[path]=time();
+          compile_object(path);
+          upgraded_clones+=({path});
+          done+=({path});
+        }
+      }
+    }
+  }
+  return done;
+}
+
+static string *auto_upgrade(string path) {
+  string *inherited_by;
+  mixed *dir_info;
+  int last_upgrade, modified_time;
+  int i;
+  string *done;
+
+  done=({ });
+  if (last_upgraded[path]) {
+    last_upgrade=last_upgraded[path];
+  } else {
+    last_upgrade=reboot_time;
+  }
+  dir_info=get_dir(path+".c");
+  if (sizeof(dir_info[2])) {
+    modified_time=dir_info[2][0];
+    if (modified_time>last_upgrade) {
+      done+=_upgrade(path);
+    }
+  }
+  inherited_by=inheritence[path];
+  if (inherited_by) {
+    for (i=0;i<sizeof(inherited_by);i++) {
+      done+=auto_upgrade(inherited_by[i]);
+    }
+  }
+  return done;
+}
+
+string *upgrade(string path) {
+  /* If given a path, upgrade that object and everything that depends
+     on it.  If not given a path, do an automatic upgrade of every file
+     that has been modified since it was last recompiled.
+     Returns an array of the paths of all objects that were recompiled. */
+  string *done;
+
+  upgraded_clones=({ });
+  upgrading=([ ]);
+  if (!last_upgraded) {
+    last_upgraded=([ ]);
+  }
+  if (path) {
+    /* Just upgrade that file (and anything that depends on it) */
+    done=_upgrade(path);
+  } else {
+    /* Auto upgrade everything that has changed */
+    done=auto_upgrade(DRIVER);
+    done+=auto_upgrade(AUTO);
+  }
+  /* This has to be done as a call_out, unfortunately.  The 'compile' kfun
+     doesn't replace the objects with the new version until after the current
+     thread has finished.  But we want to call upgraded() on the new version. */
+  call_out("call_upgraded", 0, upgraded_clones+({ }));
+  upgraded_clones=({ });
+  return done;
+}
+
+void call_upgraded(string *paths) {
+  /* Tell each object it has been upgraded.  Also move them to the void and back
+     so uninit() and init() get called */
+  int i;
+  object obj;
+  object old_location;
+
+  for (i=0;i<sizeof(paths);i++) {
+    obj=load(paths[i]);
+    if (obj->is_clone() && obj->is_physical()) {
+      old_location=obj->query_property(UNIV_PROP_PARENT);
+      obj->move(nil);
+    }
+    obj->upgraded();
+    if (obj->is_clone() && obj->is_physical()) {
+      obj->move(old_location);
+    }
+  }
+}

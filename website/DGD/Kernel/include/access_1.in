@@ -1,0 +1,28 @@
+Date: Thu Aug  9 06:38:00 2001
+Subject: [DGD] Access
+
+Pete wrote:
+
+> On 9 Aug 2001, at 13:12, Felix A. Croes wrote:
+>[...]
+> > That's default object access -- you can only grant access to users.
+> > User-level access is handled in /kernel/lib/wiztool.c.
+>
+> That is what i am speaking about, how should it work? I can grant 
+> access for <user> to <dir> but objects from /usr/<user> does not 
+> have rights to <dir>, so what is it good for? I have put debug 
+> outputs to auto object functions, and it calls access with 
+> arguments like:
+> user = /usr/World/sys/commandd
+> dir = /usr/System/cmd/go.c
+> and it does not work even though user World has write access to 
+> /usr/System
+
+In the kernel library, objects don't have access outside their own
+/usr/Foo directory, even though user Foo may have that access.  This
+is intended to prevent security leaks such as the above; if objects
+in /usr/World have write access in /usr/System, then effectively
+objects in /usr/World can do anything at all.
+
+Regards,
+Dworkin

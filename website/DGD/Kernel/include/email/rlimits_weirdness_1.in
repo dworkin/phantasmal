@@ -1,0 +1,29 @@
+From: dgd at list.imaginary.com (Felix A. Croes)
+Date: Sun May 25 17:06:01 2003
+Subject: [DGD] Rlimits weirdness...
+
+Noah Gibbs wrote:
+
+>   I'm seeing some odd behavior, and the Kernel Library
+> definition of runtime_rlimits() in the Driver seems to
+> be the cause.
+>
+>   An object in /usr/System is permitted to set
+> maxticks to -1, which will remove all limits on ticks.
+>  On the other hand, the same object isn't allowed to
+> (for instance) set the limit to 250,000 repeatedly so
+> that it can run many consecutive time-limited
+> operations in the same thread.  Is this for security
+> reasons and I'm just not getting it?
+
+What you can't do is set a tick limit and then raise it.  Non-negative
+tick limits can only be set when the current limit is -1 (infinite).
+Once a limit is set, you are committed.  You can voluntarily lower it,
+though.
+
+>From your description, I think you should be setting the limit to
+250,000 from where the current limit is infinite.  That'll allow you
+to run the consecutive time-limited operations, as you describe.
+
+Regards,
+Dworkin

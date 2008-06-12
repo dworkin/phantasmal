@@ -1,0 +1,22 @@
+Date: Tue, 3 Apr 2001 23:34:39 +0200 (CEST)
+From: "Felix A. Croes"
+Subject: Re: [DGD]Using the kernel lib
+
+Stephen Schmidt wrote:
+
+> On Tue, 3 Apr 2001, Felix A. Croes wrote:
+> > The kernel lib's user object is <meant> to be replaced, but the
+> > replacement must have certain functions -- create(), login(), logout(),
+> > receive_message(), and optionally receive_datagram() -- to function
+> > properly.  It also must inherit /kernel/lib/user.
+>  
+> OK. I presume the same is true of /kernel/obj/telnet.c; you
+> replace it with something else that inherits connection.c
+> in the lib directory. What functions have to be defined
+> in that file?
+
+No, /kernel/obj/telnet is not intended to be replaced, and neither is
+/kernel/obj/binary.
+
+Regards,
+Dworkin

@@ -1,0 +1,24 @@
+From felix Sun Aug  2 16:44:04 1998
+To: dgd@list.imaginary.com
+Subject: Re: [DGD] Re: DGD LPC (?)
+
+Mikael Lind wrote:
+
+>[...]
+> The problem with your solution is that get_dir()'s wildcard matching is
+> ignored...
+>
+> get_dir("/a/*") returns the files "b", "c" and "*" but your
+> file_size("/a/*") returns -1. (Should return the size of "/a/*".) Probably
+> not a problem if your files have names clean from wildcards.
+>
+> get_dir("/a/*") returns the file "b" and your file_size("/a/*") returns the
+> size of "/a/b". (Should return -1.) Might be a problem.
+
+The continuing confusion about get_dir() is probably an argument in
+favour of of putting a file_info() function in the kernel lib's auto
+object, returning get_dir() info for a single file, with wildcards
+properly avoided.
+
+
+Dworkin

@@ -1,0 +1,30 @@
+From: dgd at list.imaginary.com (Felix A. Croes)
+Date: Wed Mar 24 05:25:01 2004
+Subject: [DGD] Question about thread local storage
+
+Steve Wooster wrote:
+
+>      I've been looking through the kernel lib to see how it implemented 
+> TLS... I know it has to do with modifying the array of arguments for the 
+> second call that call_trace() returns, and that the kernel lib always 
+> ensures the second call has extra arguments sent to it, but I'm a bit 
+> confused with how it does that. When it comes to functions in the driver 
+> object such as Initialize() or Restore(), I see it passing the necessary 
+> array, but at first glance, I'm having trouble figuring out how it 
+> allocates the memory in threads started by call_outs. Anybody know? Thanks. 
+> My apologies if this could have been easily found with more searching.
+
+All callouts are redirected to _F_callout() in the auto object.  This
+calls _F_call_limited(), and that function then <replaces> the argument
+array with the TLS array.  I could have handled this through another
+function (say __F_callout) as it is done elsewhere, but _F_call_limited
+is heavily involved in TLS manipulation anyhow.
+
+By the way, the kernel library uses the _F_/_Q_ convention for functions
+that have to be present in objects, but should not pollute the object
+namespace.  If "_F_destruct" had been "destruct", then mudlibs based
+on the kernel library could not have defined a destruct function
+themselves (these _F_/_Q_ functions are not intended to be masked).
+
+Regards,
+Dworkin

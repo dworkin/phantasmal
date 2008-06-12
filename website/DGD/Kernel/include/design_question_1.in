@@ -1,0 +1,32 @@
+From: DGD Mailing List (Steve Wooster)
+Date: Fri Mar 26 19:17:01 2004
+Subject: [DGD] Design question about inheritance code
+
+     I'm trying to think about how I want to code a daemon to keep tack of 
+inheritance trees, and there are a couple of ideas I came up with, for 
+which I'm trying to think of good/bad things about them...
+
+1. I'm thinking of making it so that a file can't be removed while an 
+object is loaded from it. If an object is loaded from it, you need to 
+destruct the object before you can remove the file. I figured this might be 
+good for persistent muds, because it makes it impossible for a forgotten 
+object, "/path/dir/xyz.c" to be floating around, using up memory if it 
+doesn't exist in the file-system (I assume my mudlib is the only thing with 
+access to the mud's directory).
+
+2. This idea is a bit more iffy... perhaps when an object/lib/etc is 
+compiled, a copy of the source code is saved in memory somewhere. When a 
+full update occurs (like if auto.c is being recompiled or something), the 
+object is recompiled from the source code in memory rather than the file. I 
+figured this might be good, because if you're messing with a currently 
+loaded file, and unbeknownst to you, somebody updates auto.c or a lib file, 
+the object will be recompiled with the version of the code loaded up in 
+memory rather than the new experimental version on disk. On the other hand, 
+I sort of think it might not really be necessary, and could use up a lot of 
+extra space (I figure I'd keep the source-file info in lightweight objects, 
+so I would only have the necessary source codes loaded up in memory for any 
+given thread).
+
+Any comments or other ideas? Thanks.
+
+-Steve Wooster 

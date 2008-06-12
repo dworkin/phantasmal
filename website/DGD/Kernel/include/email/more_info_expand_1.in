@@ -1,0 +1,52 @@
+From: dgd at list.imaginary.com (Shevek)
+Date: Tue Dec 18 13:32:00 2001
+Subject: [DGD] More info on expand()
+
+Had another look at expand() and managed to clean my code up quite 
+considerably.
+This may come in handy for someone, somewhere, so I thought I'd leave it 
+here in case anyone else has a similar problem.
+
+In:
+Path to filename from current directory, or just filename if it's in 
+current directory.
+Eg System/initd.c if in ~/. initd.c if in ~/System.
+
+Out:
+Nil if a directory/file doesn't exist/access denied/wildcards used.
+Full path to file if not a directory/exists/access allowed/single filename.
+
+/*
+  * NAME:	single_file_path()
+  * DATE:	18/12/01, Shevek.
+  * DESCRIPTION:	Returns the full path to an existing file, nil if there is 
+an error
+  */
+static string single_file_path(string str){
+	    mixed *info;
+		info = expand(str, 1, TRUE);
+		if (info[4] == 1) {
+			if (sizeof(info[0]) != 1) {
+				return nil;
+			}
+			if (info[1][0]==-2){
+				message(str + ": Is a directory.\n");
+				return nil;
+			}
+     	}	
+		else {
+			message("Error: Use single filenames only.\n");
+			return nil;
+     	}
+		str = info[0][0];
+	return str;
+}
+
+Requires:
+message() : return message to user.
+expand() from /kernel/lib/wiztool plus whatever expand needs.
+
+Hope that helps someone out.
+
+Cheers,
+	Shevek

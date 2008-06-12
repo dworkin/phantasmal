@@ -1,0 +1,19 @@
+From: DGD Mailing List (Noah Gibbs)
+Date: Fri Apr  9 13:49:00 2004
+Subject: [DGD] yet another object manager question.. or two
+
+--- Michael McKiel wrote:
+> [...] there was a
+> fairly recent discussion of mapped arrays and using 
+>     ([ clone_num / 1024 : ({ objects }) )]; 
+> Linked list vs array/array mapped/array seems to be more of a
+> personal preference of which you prefer to deal with.
+> Mapped Arrays to me is the cleanest/easiest approach to many
+> things requiring data storage.
+
+  My approach to this was to make a DGD object which I called a 'heavy
+array' that does something similar.  So rather than having a hardcoded
+array of LWOs for tracking data, I have a collection object I add the
+LWOs to.  Never did anything really useful with it (never needed to,
+didn't have that many objects), but it would be very easy to make it
+implement mapped arrays, as you have here.

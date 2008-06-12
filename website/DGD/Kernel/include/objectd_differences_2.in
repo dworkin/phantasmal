@@ -1,0 +1,74 @@
+From: DGD Mailing List (Mercy)
+Date: Thu Apr 15 23:48:01 2004
+Subject: [DGD] objectD differences...
+
+Noah Gibbs wrote:
+
+>--- wrote:
+>  
+>
+>>I figure my options are more or less to use Noah Gibbs' or Geir
+>>Hansen's objectDs.
+>>    
+>>
+>
+>  Yeah, basically.  Somebody else did one at one point (John McKenna,
+>perhaps?), but it was never seriously tested.
+>  
+>
+Pete-someone, I believe, and I just downloaded his code from your site, 
+along with BBLib and some other stuff I'd been overlooking all the while.
+
+>>Noah's would require a bit of effort to get working outside
+>>of Phantasmal, from what I can tell, but seems to be more
+>>featureful.
+>>    
+>>
+>
+>  Yes and yes.  Though getting it working outside of Phantasmal won't
+>be too bad.  You need to take its tracking classes with it, the LWO
+>types for issues.  But that's not really a Phantasmal thing -- they're
+>used only by the object manager, they're just not in objectd.c.  The
+>only other issue that comes to mind is that it uses the Phantasmal
+>LogD.  The amount of that that you'll need is pretty small, but you
+>could always tear that out and replace it with your own logging stuff.
+>  
+>
+That would probably be a good learning process, I mean, obviously 
+changing some calls to the logger isnt going to be very taxing, but its 
+a start, and as you point out further down, your manager's logging would 
+come in handy at some point, more than likely.
+
+>>Are there any traps I should watch out for in using someone
+>>else's object manager?
+>>    
+>>
+>
+>  Just that nobody's object manager is fully tested.  Phantasmal's has
+>a couple of pretty benign known bugs (I already mentioned them on this
+>list).  I don't know of anybody having tested Geir Hansen's as
+>seriously, but it presumably works about as well -- Phantasmal's hasn't
+>actually had a bug in a long time that wasn't related to new
+>functionality.
+>
+>  The other thing to consider, come to think of it, is that
+>Phantasmal's ObjectD has more logging and will detect more weird
+>anomalous situations for you, at least if you check your logs.  That's
+>only a problem if something goes wrong, though :-)
+>  
+>
+If, or when? ;)
+
+Thanks for the speedy reply, it occured to me that I was/am kind of 
+jumping the gun on the ObjectD thing... I dont really need one while I'm 
+constantly starting and stopping the driver and have very little code 
+written.. the Kernel lib would probably handle most of what I need at 
+this very early stage.  That said, it wouldnt hurt to have a working 
+object manager plugged in, for when things get more complex, I'm sure.
+
+Really I'm still trying to work out how I'm going to structure the lib, 
+within the restrictions of the Kernel Lib, and I'll probably end up 
+starting over once I get a proper feel for how everything works.  It's 
+all too abstract until I start throwing code together.  :)
+
+Mercy

@@ -1,0 +1,310 @@
+From: DGD Mailing List (Risto Karjalainen)
+Date: Fri Dec 21 17:34:00 2001
+Subject: [DGD] Dynamic inheritance
+
+I've been thinking of possible solutions for dynamic objects. By dynamic
+objects I mean objects whose type can be altered arbitrarily on the fly, for
+example changing a sword into a door, or even making it be both. One
+possible solution would be to have an object inherit all the possible type
+objects and have flags determine the type(s) of the object, then simply
+cloning everything from it. But I think storing data that might never be
+used is an outrageous waste of resources.
+
+I also thought of another possible solution, which I call dynamic
+inheritance. It would allow the adding and removing of programs that the
+original object inherits without destructing or recompiling it, having
+effect only on the desired clone, not all the clones. This way I could alter
+the object very easily and almost limitlessly. Althought there might be
+drawbacks and inconsistences that haven't occured to me. Are there?
+
+I could (and probably will) simulate this kind of behaviour by having
+objects have a list of relevant "inheritables." So if I want to change a
+sword into a door, I simply clone a new door object and associate it with
+the original object. By overriding call_other to loop through the object's
+list on a call to a function in the object, I could make them behave as if
+they were merely a single object. I mention this just to show that dynamic
+inheritance is not necessary for gaining the same result.
+
+Any ideas?
+
+Regards,
+Risto Karjalainen
+
+
+
+From: DGD Mailing List (S. Foley)
+Date: Sun Dec 23 11:16:00 2001
+Subject: [DGD] Dynamic inheritance
+
+"Risto Karjalainen" wrote:
+
+>I've been thinking of possible solutions for dynamic objects. By dynamic
+>objects I mean objects whose type can be altered arbitrarily on the fly, 
+>for
+>example changing a sword into a door, or even making it be both. One
+>possible solution would be to have an object inherit all the possible type
+>objects and have flags determine the type(s) of the object, then simply
+>cloning everything from it. But I think storing data that might never be
+>used is an outrageous waste of resources.
+
+I had similar reservations about using a single "superclass" object for 
+these same reasons, but Mr. Winzell was kind enough to quote some skotos 
+memory usage statistics that have convinced me that this isn't nearly the 
+resource problem I thought it was going to be.  Perhaps he'd also be kind 
+enough to post those statistics to this list.
+
+If you still aren't convinced, I've been kicking around an idea for 
+minimizing the memory 'waste' of such an inheritance scheme.  Consider a 
+system where you have one blueprint object '/obj/thing.c' (THING) that 
+inherits all the various modules (inheritables) that will handle all the 
+various methods and data you'll be needing.  Instead of having these 
+inheritables contain the data/code directly, you could have each inheritable 
+have a single item of data, a lightweight object pointer. The various 
+functions in the inheritable would pass off responsibility to the 
+lightweight object for handling the calls when necessary and when the object 
+pointer != nil, or do some default processing when it is nil. So, instead of 
+having 300 variables not doing anything in 60 modules for each object, you 
+have 60 object pointers not doing anything.  When you wanted to change the 
+sword into a door, you'd just call some method on the sword to set the 
+weapon inheritable's (or whatever inheritable handles an object's 
+sword-ness) object pointer to nil (which I'm hoping the driver cleans up 
+promptly).  Then you'd call some method on the sword to clone up the 
+lightweight object associated with door-ness and call the various methods on 
+the 'sword' to set the data of the door lightweight object.
+
+First off, I'm not sure the gain (if this gets you any gain) from such a 
+system would justify the extra overhead (extra call_others, at minimum).  
+And beyond that, I'm not even sure this would actually end up saving you 
+resources in the long run.  And I haven't considered whether such a system 
+is even desireable from a design standpoint, given the limitations of 
+lightweight objects.
+
+I think you might be better off just burning the extra memory and saving 
+yourself some unnecessary complexity.
+
+--Steve F.
+
+_________________________________________________________________
+MSN Photos is the easiest way to share and print your photos: 
+http://photos.msn.com/support/worldwide.aspx
+
+
+
+
+From: DGD Mailing List (Wes Connell)
+Date: Sun Dec 23 20:39:01 2001
+Subject: [DGD] Dynamic inheritance
+
+.oOo. Risto Karjalainen wrote:
+
+> Due to the design of my lib, we're talking thousands of objects. Intuitively
+> I get a shiver through my spine by the mere thought of having all of them
+> inherit everything. But in this new light, I am not so sure anymore. I'd
+> really like to see these statistics.
+
+Thousands of objects shouldn't be too much. IIRC we had tens of thousands of
+objects floating around in some of our drivers at Skotos. I think we even
+had to increase the max number of objects a couple times on the Castle 
+Marrach driver. 
+
+Par, hook us up with some memory statistics! :)
+
+-- 
+Wes!
+wes@brutality.org
+
+From: DGD Mailing List (Christopher Allen)
+Date: Mon Dec 24 07:45:02 2001
+Subject: [DGD] Dynamic inheritance
+
+Risto Karjalainen wrote:
+> Due to the design of my lib, we're talking thousands of 
+> objects. Intuitively I get a shiver through my spine by the 
+> mere thought of having all of them inherit everything. But in 
+> this new light, I am not so sure anymore. I'd really like to 
+> see these statistics.
+
+In the Skotos lib, all the in-game objects are a single class that
+inherit every in-game object method. For instance, you can attack with a
+salami or eat a sword, if you try hard enough ;-)
+
+Par or Erwin can speak to the specifics of how we do what we do, but
+there is a layman's article on the subject at
+http://www.skotos.net/articles/TTnT_20.html
+
+Our biggest game at this point has close to 200,000 game objects. So I
+certain wouldn't worry about thousands.
+
+-- Christopher Allen
+
+------------------------------------------------------------------------
+.. Christopher Allen                                 Skotos Tech Inc. ..
+..                           1512 Walnut St., Berkeley, CA 94709-1513 ..
+.. <http://www.Skotos.net>               o510/647-2760  f510/647-2761 ..
+
+
+From: DGD Mailing List (Shevek)
+Date: Mon Dec 24 11:38:00 2001
+Subject: [DGD] Dynamic inheritance
+
+Had another thought on this subject, although if the big object stats are 
+good it's likely to be unnecessary.
+
+The idea works something like this.
+
+Instead of inheriting code you use only a single master copy of the 
+functions that 'inheritable' object has. When your clone object wishes to 
+inherit those functions it makes a call to, for example, register() which 
+returns a mapping containing a list of functions, and a list of variable 
+names and types. Within the clone object you maintain a mapping of object 
+arrays, string arrays, int arrays, objects, strings, ints etc. Then once 
+the clone calls register() it stores all the information that the 
+'inherited' object needs. Then have some processing to a) If present call 
+the function in the clone or b) Search the list of functions to find which 
+master object to call the function in.
+It also means a lot more call_other() commands, which may not be a 
+particularily good thing. However it does make it possible to change the 
+'inherited' functions and data for a particular clone on the fly.
+
+Once again I read through and see I haven't really explained that very well :>
+I'll try to clarify.
+
+Clone object:
+contains:
+an array inherited->list of inherited objects by filename
+a mapping functions->[name of inherited object][function]
+a mapping variables->[name of inherited object][variables] ->Seems this 
+should be mixed.
+a function add_inherit->calls register in the inherited object and sets 
+everything up.
+a function remove_inherit->reverse of add_inherit.
+a function process->checks if function is present in clone or performs the 
+correct call_other.
+
+Inherited object:
+function register->Returns a list of all functions and variables used in 
+the inherited object.
+Object contains only functions, not global variables.
+
+No global variables because the inherited code can be used by multiple 
+clones so any globals would  cannot be guaranteed to relate to the calling 
+clone.
+The call_other in the clone passes the required variables in by reference, 
+ie as pointers, so that the inherited code works on the actual values not 
+copies of them. So when calling a function in the inherited object you pass 
+over a reference to all the variables it registered in the clone object 
+(using that variables mapping).
+
+I don't know how clearly I've managed to explain that, hopefully enough 
+that you can fill in the blanks. As I said at the top if the stats on 
+having one big object are good then this is probably just unnecessary 
+complexity.
+
+Cheers,
+	Shevek 
+
+
+From: DGD Mailing List (Par Winzell)
+Date: Tue Dec 25 20:42:01 2001
+Subject: [DGD] Dynamic inheritance
+
+S. Foley writes:
+ > "Risto Karjalainen" wrote:
+ > 
+ > >I've been thinking of possible solutions for dynamic objects. By dynamic
+ > >objects I mean objects whose type can be altered arbitrarily on the fly, 
+ > >for
+ > >example changing a sword into a door, or even making it be both. One
+ > >possible solution would be to have an object inherit all the possible type
+ > >objects and have flags determine the type(s) of the object, then simply
+ > >cloning everything from it. But I think storing data that might never be
+ > >used is an outrageous waste of resources.
+ > 
+ > I had similar reservations about using a single "superclass" object for 
+ > these same reasons, but Mr. Winzell was kind enough to quote some skotos 
+ > memory usage statistics that have convinced me that this isn't nearly the 
+ > resource problem I thought it was going to be.  Perhaps he'd also be kind 
+ > enough to post those statistics to this list.
+
+Well, I think 'statistics' is rather too glorious a term for what
+I wrote you... I mostly dismissed the consideration as rather less
+than urgent, considering the power of modern machines. Marrach has
+upwards of 200K objects, and the statedump is about 800 MB. That's
+trivially within the reach of the cheapest of disks. Dumping state
+to disk does eat up just about as much disk I/O as it's possible to
+throw at it, but ATA/100 is a fast, dirt-cheap technology, and IDE
+disks are very fast for this sort of thing these days.
+
+On the other hand, probably 95% of that statedump consists of data
+associated with 'THING' clones (that's not statistics, by the way,
+just a guess). And, if you examine all those 200K clones a little
+more closely, you will find that the vast, vast majority of them
+are almost completely empty -- unconfigured. This is because we've
+implemented data inheritance; if I buy a short sword at the shop,
+I get an empty THING clone with a pointer to an 'ur-short-sword',
+and any data lookups doing on my sword pass right through it and
+become lookups instead on the ur-sword.
+
+So... assuming the vast majority of our objects are THINGs -- and
+the vast majority of those are empty -- then obviously the number
+of actual global variables in each THING -- as opposed to actual
+data contents -- is the most important factor in determining how
+much memory the objects use.
+
+
+ > Instead of having these inheritables contain the data/code
+ > directly, you could have each inheritable have a single item of
+ > data, a lightweight object pointer. The various functions in the
+ > inheritable would pass off responsibility to the lightweight object
+ > for handling the calls when necessary and when the object pointer
+ > != nil, or do some default processing when it is nil. So, instead
+ > of having 300 variables not doing anything in 60 modules for each
+ > object, you have 60 object pointers not doing anything.
+
+Yes, precisely. This is my favourite approach to dealing with this
+problem as the amount of functionality in each THING increases and
+the number of objects approach several million. The traditional
+way to solve the problem is to give each THING a single 'property'
+mapping and store everything as properties -- but the LWO solution
+is much better for most purposes, I think.
+
+The most complex possibility we've been kicking around in Skotos
+is a combination of data inheritance and a version of your LWO
+idea: a THING has a number of object pointers; one for each major
+branch of functionality -- a 'combat configuration' object, one
+for shape/race, perhaps, one for clothing, ... and then let each
+of these objects also participate in ur-object data inheritance
+chains, so that it's very easy to configure an object with basic
+building blocks -- you inherit the cow shape/race configuration,
+the bovine combat brain, ...
+
+Wesley should find these ideas familiar. :-)
+
+
+ > First off, I'm not sure the gain (if this gets you any gain) from such a 
+ > system would justify the extra overhead (extra call_others, at minimum).  
+ > And beyond that, I'm not even sure this would actually end up saving you 
+ > resources in the long run.  And I haven't considered whether such a system 
+ > is even desireable from a design standpoint, given the limitations of 
+ > lightweight objects.
+
+In our cases, it would be a vast gain. I suspect we may well end
+up cutting the size of our statedump in half at least if we did
+it right now. However, I don't really care about the size of our
+statedump at the moment. :-)
+
+A trivial computation: with 250K objects and 32-byte data structs,
+each new global variable added to THING will cost you at least 1M
+of statedump. Our THING has well over a hundred variables, and a
+fair amount of those are also initialized to ({ }) or ([ ]). So
+we probably waste upwards of 200 MB. OK, so that's just a quarter.
+
+Anyway... :-)
+
+
+ > I think you might be better off just burning the extra memory and saving 
+ > yourself some unnecessary complexity.
+
+Yes. For now.
+
+Zell

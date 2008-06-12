@@ -1,0 +1,17 @@
+From: dgd at list.imaginary.com (Felix A. Croes)
+Date: Fri Apr 12 08:20:02 2002
+Subject: [DGD] Bug or feature?
+
+Keith Dunwoody wrote:
+
+> Suppose I have a file called ".c" in a directory
+> /usr/blah, which I want to compile.  I tried using
+> compile_object("/usr/blah/"), but instead of trying to
+> compile "/usr/blah/.c" it tries to compile
+> "/usr/blah.c".  Is this a bug or a feature?
+
+It's a bug, but it's not going to be fixed, so some might call it a
+feature :)
+
+Regards,
+Dworkin
