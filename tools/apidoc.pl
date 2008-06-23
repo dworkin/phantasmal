@@ -314,7 +314,7 @@ sub html_for_file {
 
     open(FILE, $tmpname) or die "Can't open file $tmpname: $!";
 
-    print FILE <<"EOF";
+    print FILE <<EOF
 <titledef text="$fileref->{func_name}" />
 
 <h3 style="text-align: center"> API Function: $fileref->{func_name} </h3>
@@ -375,7 +375,7 @@ sub html_for_obj {
     open(FILE, $tmpname)
 	or die "Can't open obj index file $tmpname: $!";
 
-    print FILE <<"EOF";
+    print FILE <<EOF
 <titledef text="$obj_name" />
 
 <h3 style="text-align: center"> APIs in $obj_name </h3>
@@ -407,7 +407,7 @@ sub html_for_index {
     open(FILE, ">$output_path/index.base.html")
 	or die "Can't open index.base.html: $!";
 
-    print FILE <<"EOF";
+    print FILE <<EOF
     <titledef text="Top" />
 
     <h3 style="text-align: center"> Phantasmal API Objects </h3>

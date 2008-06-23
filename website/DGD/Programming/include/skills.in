@@ -1,0 +1,21 @@
+From: dgd at list.imaginary.com (Erwin Harte)
+Date: Sat Mar 15 19:30:02 2003
+Subject: [DGD] Skills
+
+On Sat, Mar 15, 2003 at 08:25:44PM -0500, Ben Chambers wrote:
+> If you put a call_out with a time of 0, will it be executed during this loop
+> of execution or during the next loop of execution?
+
+As soon as possible after the current thread ends.  Having it execute
+_during_ this loop of execution (thread) would make it a call_other()
+effectively, which wouldn't be very useful.
+
+The only thing that could cause the 0-call_out not to be execute
+right after the current thread is if there are other 0-callouts
+waiting to be executed.
+
+Hope that helps,
+
+Erwin.
+-- 
+Erwin Harte

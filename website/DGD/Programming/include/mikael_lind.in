@@ -1,0 +1,28 @@
+Mikael Lind wrote:
+
+>[...]
+> Light-weight objects under DGD sound very intriguing. I do not think
+> that I have seen them mentioned before. Is it possible to get some
+> kind of explanation of what they will be like? My initial thought was
+> along the lines of objects that one can use for abstract data types
+> and similar things; basically, objects that are garbage-collected by
+> the driver.
+
+That is indeed what they are.  Like clones, they are created from a
+master object, which is a normal, persistent object.  Light-weight
+objects do have some restrictions:
+
+ - they cannot be explicitly destructed
+ - they cannot be used as an editor, user or parser object
+ - they cannot have callouts
+ - destructing a master object will also instantly destruct all
+   light-weight objects made therefrom (!)
+
+Furthermore, like arrays, they are local to the dataspace of some
+particular (persistent) object.  This means that if a light-weight
+object is exported to some other object's dataspace, it will become
+a <copy> there at the end of the LPC thread, just as currently
+happens with arrays and mappings.
+
+Regards,
+Dworkin

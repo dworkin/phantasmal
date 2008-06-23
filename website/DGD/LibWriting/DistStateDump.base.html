@@ -1,56 +1,43 @@
-  <titledef text="Distribute a State Dump?" />
+<titledef text="Distribute a State Dump?" />
 
-  <h2> Can I Distribute my MUD Library as a State Dump? </h2>
+<h2>Can I Distribute my MUD Library as a State Dump?</h2>
 
-  <p>
-    In DGD, you can restore from a State Dump, so a MUD Library author
-    could conceivably get his MUD running, then dump state, and
-    distribute the state dump rather than packaging up his source
-    files.  (Note: this is mostly a thought exercise, though you may
-    be able to find a use for it).
-  </p>
+<p>In DGD, you can restore from a State Dump, so a MUD Library author
+could conceivably get his MUD running, then dump state, and distribute
+the state dump rather than packaging up his source files. (Note: this is
+mostly a thought exercise, though you may be able to find a use for
+it).</p>
 
-  <p>
-    Obviously, such a distribution would require very good
-    documentation (and&frasl;or a copy of the source files) so that
-    the consumers of the library would know how to use it.
-  </p>
+<p>Obviously, such a distribution would require very good documentation
+(and&frasl;or a copy of the source files) so that the consumers of the
+library would know how to use it.</p>
 
-  <p>
-    There are obvious issues &mdash; without source, it would be
-    difficult for consumers of the MUD Library to upgrade objects,
-    since they would have to replace them entirely.  Only a very
-    stable library could reasonably do this.  Further, the library
-    would have to allow essentially any functionality to be possible
-    so that it didn't prevent later development.  Thus, a design
-    similar to the Kernel Library would be useful in making this
-    possible.
-  </p>
+<p>There are obvious issues &mdash; without source, it would be
+difficult for consumers of the MUD Library to upgrade objects, since
+they would have to replace them entirely. Only a very stable library
+could reasonably do this. Further, the library would have to allow
+essentially any functionality to be possible so that it didn't prevent
+later development. Thus, a design similar to the Kernel Library would be
+useful in making this possible.</p>
 
-  <p>
-    Since destructing the MUD Library's objects could potentially be
-    disastrous (remember, no source means that you can't upgrade a
-    library when an object that inherits it wants to be upgraded),
-    you'd want to strongly restrict such activities.
-  </p>
+<p>Since destructing the MUD Library's objects could potentially be
+disastrous (remember, no source means that you can't upgrade a library
+when an object that inherits it wants to be upgraded), you'd want to
+strongly restrict such activities.</p>
 
-  <p>
-    Since the consumer of the MUD Library has only the running copy of
-    his data, presumably he would need to do a state dump as well
-    rather than saving in any form.  By definition, a MUD Library that
-    is distributed by statedump would need to be <a
-    href="Persistence.html">persistent</a>.
-  </p>
+<p>Since the consumer of the MUD Library has only the running copy of
+his data, presumably he would need to do a state dump as well rather
+than saving in any form. By definition, a MUD Library that is
+distributed by statedump would need to be <a href=
+"Persistence.html">persistent</a>.</p>
 
-  <p>
-    An alternative to the no-source method would be to distribute a
-    MUD Library which has the source embedded in an in-game database
-    of source code.  This would allow files to exist on disk only long
-    enough to edit them, and potentially not even that long since DGD
-    can compile an object from string data.  MOO and Cold have similar
-    functionality, but this way, being fully text-based, would save
-    the details of indentation and whatnot that those servers don't.
-  </p>
+<p>An alternative to the no-source method would be to distribute a MUD
+Library which has the source embedded in an in-game database of source
+code. This would allow files to exist on disk only long enough to edit
+them, and potentially not even that long since DGD can compile an object
+from string data. MOO and Cold have similar functionality, but this way,
+being fully text-based, would save the details of indentation and
+whatnot that those servers don't.</p>
 
-  <p style="text-size: 150%"> <a href="../index.html"> Back to top level
-    </a> </p>
+<p style="text-size: 150%"><a href="../index.html">Back to top
+level</a></p>

@@ -1,0 +1,32 @@
+From: dgd at list.imaginary.com (Erwin Harte)
+Date: Tue Dec  4 22:05:01 2001
+Subject: [DGD] sscanf
+
+On Tue, Dec 04, 2001 at 07:36:22PM -0800, Chooser Fireman wrote:
+> Question on sscanf ... how can I do:
+> 
+> if (sscanf(sInput, "%s %s", sParam1, sParam2)
+> 
+> and allow for sParam2 to be more than 1 word and even a sentence?
+
+That's the default behaviour of DGD, as opposed to the C *scanf()
+behaviour:
+
+    void
+    process_input(string line)
+    {
+        string verb, rest;
+
+        if (sscanf(line, "%s %s", verb, rest) < 2) {
+            verb = line;
+            rest = nil;
+        }
+        /* ... */
+    }
+
+This will split up a line like 'put foo in bar' into 'put' and
+'foo and bar' or a line like 'smile' into 'smile' and nil.
+
+Erwin.
+-- 
+Erwin Harte

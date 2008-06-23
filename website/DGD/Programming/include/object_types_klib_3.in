@@ -1,0 +1,35 @@
+From: dgd at list.imaginary.com (Greg Lewis)
+Date: Mon Jul 12 15:26:01 2004
+Subject: [DGD] object types: examples from the kernel lib
+
+On Mon, Jul 12, 2004 at 11:55:24AM +0200, Par Winzell wrote:
+> In e.g. Java, an object that tries to call a function on an object will 
+> simply not compile unless the object is of a type undeniably known to 
+> implement F. It's not merely impossible to call a non-existent function, 
+> it is impossible for the code to even try.
+
+This isn't strictly true.  There are a number of ways to get around this
+(i.e. to produce compilable code that will cause an exception at runtime).
+
+Off the top of my head:
+
+1. Pass the object to a function which takes a parameter of type Object
+   (or any other common base class) and casts it to a specific type before
+   calling the method.  This will produce a ClassCastException at runtime
+   if you pass an object not of the correct type.
+
+2. Use the reflection framework to get a Method object from one class and
+   simply use its invoke() method with an instance of a class of a 
+   different type.  This will produce an IllegalArgumentException at
+   runtime.
+
+Admittedly both of these require that there is _some_ class which
+implements F.  This is, however, weaker than the assertion that the
+object's class itself must implement F for the code to be compilable.
+
+But back to our regularly scheduled DGD programming :).
+
+-- 
+Greg Lewis                          Email   :
+Eyes Beyond                         Web     : http://www.eyesbeyond.com
+Information Technology              FreeBSD :

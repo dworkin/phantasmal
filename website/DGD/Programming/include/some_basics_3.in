@@ -1,0 +1,36 @@
+From: dgd at list.imaginary.com (Erwin Harte)
+Date: Mon Oct 20 14:27:01 2003
+Subject: [DGD] Re: Some basics
+
+On Mon, Oct 20, 2003 at 12:17:33PM -0700, Noah Gibbs wrote:
+> --- Nihilxaos wrote:
+> > 1) When an object is compiled it's create is
+> > called.
+> 
+>   Nope, but close.  The first time a function is
+> called on the object, create() is called first.  So if
+> you've just made an object called "bob" and want to
+> initialize it, you can say "bob->NoSuchFunction()",
+> which will return nil, and will do nothing but call
+> create(), at least if the function doesn't exist.
+
+I'd go for this instead:
+
+    call_other(bob, "")
+
+Less chance of NoSuchFunction() accidentally (or intentionally, if
+someone is trying to break things) existing.
+
+[...]
+> > Basically this is going on the assumption
+> > that inheriting brings the 
+> > inherited data types into the object, but keeps any
+> > non-overridden code in a 
+> > separate object so it can be called from any of its
+> > children.
+
+If with 'data types' you mean 'non-private variables', then yes.
+
+Erwin.
+-- 
+Erwin Harte

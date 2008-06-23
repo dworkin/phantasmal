@@ -1,0 +1,27 @@
+From: DGD Mailing List (Par Winzell)
+Date: Thu Apr  1 22:29:01 2004
+Subject: [DGD] players, inheritance, cloning, a better solution?
+
+Robert,
+
+> My solution has been to make another file, _primary_object.c for lack of 
+> a better name, all that does is inherit primary_object.c. So 
+> primary_object.c becomes a library and _primary_object.c the clonable.
+> 
+> I'm just wondering if anyone can spot a more attractive solution than 
+> the one I've just described, as it seems rather 'hackish', if you know 
+> what I mean.
+
+Your choice of names bewilders me slightly, but the idea itself is not 
+hackish. Skotos, for example, has
+
+   /base/lib/thing.c
+
+which is the base of all physical objects, and contains all the code, 
+and we have
+
+   /base/obj/thing.c
+
+which consists of little but an inherit-statement.
+
+Zell

@@ -1,0 +1,28 @@
+From: dgd at list.imaginary.com (Felix A. Croes)
+Date: Wed Jan 28 12:27:01 2004
+Subject: [DGD] Alternatives to the Kernel model of security...
+
+Noah Gibbs wrote:
+
+>[...]
+>   WebDAV, which others have recommended, has the
+> advantage of allowing a similar interface, and the
+> disadvantages of being hard to use, not very portable
+> and being completely unfamiliar to most potential
+> users.  NFS has the same problems, but appeals to a
+> different subset of users (i.e. Linux rather than Mac
+> or Windows).
+
+There's a Linux kernel module called davfs2 which allows you to
+mount WebDAV filesystems:
+
+    http://sourceforge.net/projects/dav/
+
+so it's portable enough to run on your developers' three most
+likely choices of operating system.  There also seems to be a
+command-line client called cadaver which can up/download files.
+Mounting a WebDAV filesystem is easy on a Mac, presumably also
+in Windows, don't know about Linux.
+
+Regards,
+Dworkin

@@ -1,83 +1,60 @@
-    <titledef text="Height, Weight and Volume" />
+<titledef text="Height, Weight and Volume" />
 
-    <h2 class="center"> Height, Weight and Volume </h2>
+<h2 class="center">Height, Weight and Volume</h2>
 
-    <p>
-      Height, Weight and Volume are the new black jeans -- everybody's
-      wearing them casually.  Or maybe they're the new black.  Or the
-      new HTTP.  Nah, never mind, I'm just lost with all these trends.
-      They're certainly the <i>old</i> height, weight and volume,
-      whatever else they may be.
-    </p>
+<p>Height, Weight and Volume are the new black jeans -- everybody's
+wearing them casually. Or maybe they're the new black. Or the new HTTP.
+Nah, never mind, I'm just lost with all these trends. They're certainly
+the <i>old</i> height, weight and volume, whatever else they may be.</p>
 
-    <p>
-      Weight and volume are pretty easy, and their capacities make
-      sense.  If a bag (or even a room) has a certain weight capacity,
-      you can only put that much weight in.  Beyond that, Phantasmal
-      will tell you that there's too much an no more will go in.
-      The same applies to volume -- a given container will only hold
-      so much, and no more.
-    </p>
+<p>Weight and volume are pretty easy, and their capacities make sense.
+If a bag (or even a room) has a certain weight capacity, you can only
+put that much weight in. Beyond that, Phantasmal will tell you that
+there's too much an no more will go in. The same applies to volume -- a
+given container will only hold so much, and no more.</p>
 
-    <p>
-      Height is a little funky.  Height doesn't add up in the same
-      way, so if a quiver is marked as having a height capacity of
-      1 meter and you put in an arrow that's half a meter, you can
-      put in two -- and then as many more as you have weight or
-      volume for.  So if the quiver holds fifteen pounds and each
-      arrow weighs a half-pound, you can put in thirty arrows, even
-      though the quiver only has a height capacity of a single meter
-      and each arrow is a half-meter.  However, the quiver won't
-      hold even one single 1.5-meter javelin.  The javelin is over
-      the height limit, so it won't fit, arrows or no.
-    </p>
+<p>Height is a little funky. Height doesn't add up in the same way, so
+if a quiver is marked as having a height capacity of 1 meter and you put
+in an arrow that's half a meter, you can put in two -- and then as many
+more as you have weight or volume for. So if the quiver holds fifteen
+pounds and each arrow weighs a half-pound, you can put in thirty arrows,
+even though the quiver only has a height capacity of a single meter and
+each arrow is a half-meter. However, the quiver won't hold even one
+single 1.5-meter javelin. The javelin is over the height limit, so it
+won't fit, arrows or no.</p>
 
-    <p>
-      You may have noticed me combining American and metric units in
-      that last paragraph.  The OLC system tries to accept all kinds
-      of units, but everything gets converted internally to
-      centimeters (for length), liters (for volume) and kilograms (for
-      weight).  Yes, we know that kilograms are actually a unit of
-      mass, and we simply pretend that all mass is converted to weight
-      as it would be at sea level on earth.  That means gravity,
-      <i>for these conversions</i>, is 1 G, or 9.8 meters per second
-      per second, just like on Earth at sea level.  Yes, even if the
-      local gravity may be different in some specific area of the MUD.
-      Are you happy, all you physics buffs out in the audience?
-    </p>
+<p>You may have noticed me combining American and metric units in that
+last paragraph. The OLC system tries to accept all kinds of units, but
+everything gets converted internally to centimeters (for length), liters
+(for volume) and kilograms (for weight). Yes, we know that kilograms are
+actually a unit of mass, and we simply pretend that all mass is
+converted to weight as it would be at sea level on earth. That means
+gravity, <i>for these conversions</i>, is 1 G, or 9.8 meters per second
+per second, just like on Earth at sea level. Yes, even if the local
+gravity may be different in some specific area of the MUD. Are you
+happy, all you physics buffs out in the audience?</p>
 
-    <p>
-      You've been making objects for awhile here, at least if you're
-      reading and doing the tutorials in order.  So you've seen
-      where height, weight and volume get set when you're making
-      an object, and where their capacities get set if you're making
-      a container.  Feel free to make some containers with specific
-      heights and weights and play with putting stuff into them
-      and taking it out.  I expect that'll keep you entertained for
-      at least a couple of minutes :-)
-    </p>
+<p>You've been making objects for awhile here, at least if you're
+reading and doing the tutorials in order. So you've seen where height,
+weight and volume get set when you're making an object, and where their
+capacities get set if you're making a container. Feel free to make some
+containers with specific heights and weights and play with putting stuff
+into them and taking it out. I expect that'll keep you entertained for
+at least a couple of minutes :-)</p>
 
-    <p>
-      Height, weight and volume can also be inherited.  So if you
-      make an object and you assign it a parent, you'll have the
-      option in creating it of just defaulting its height, weight
-      and volume to that of the parent.  This may or may not be
-      of any use to you.
-    </p>
+<p>Height, weight and volume can also be inherited. So if you make an
+object and you assign it a parent, you'll have the option in creating it
+of just defaulting its height, weight and volume to that of the parent.
+This may or may not be of any use to you.</p>
 
-    <p>
-      So how do you check this stuff?  The <b>stat</b> command will
-      tell you an object's height, weight and volume, and will show
-      you the capacities for same if the object is a container.
-    </p>
+<p>So how do you check this stuff? The <b>stat</b> command will tell you
+an object's height, weight and volume, and will show you the capacities
+for same if the object is a container.</p>
 
-    <p>
-      The other thing you may want to do is edit the values.  There's
-      a small family of commands for exactly that purpose that you'll
-      want to become acquainted with.  They have names like
-      <b>@set_obj_height</b>, <b>@set_obj_length</b>, and for
-      capacities, things like <b>@set_obj_weight_cap</b> and
-      <b>@set_obj_height_capacity</b>.  They work pretty much exactly
-      as you'd expect, but you can check the online help if you need
-      more instruction in their use.
-    </p>
+<p>The other thing you may want to do is edit the values. There's a
+small family of commands for exactly that purpose that you'll want to
+become acquainted with. They have names like <b>@set_obj_height</b>,
+<b>@set_obj_length</b>, and for capacities, things like
+<b>@set_obj_weight_cap</b> and <b>@set_obj_height_capacity</b>. They
+work pretty much exactly as you'd expect, but you can check the online
+help if you need more instruction in their use.</p>

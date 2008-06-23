@@ -1,0 +1,28 @@
+From: dgd at list.imaginary.com (Mikael Lind)
+Date: Sun Feb  3 10:59:00 2002
+Subject: Round (was Re: [DGD] RE: DGD digest, Vol 1 #118 - 6 msgs)
+
+Quoting Noah Lee Gibbs from 21:17, 2002-02-02:
+
+>   DGD has kind of funny automatic rounding behavior.  Unlike C, a typecast
+> to int does what John Ruiz wrote -- rounds to the nearest integer.  So a
+> nearest-integer round would just be a typecast to int!
+>   To to round down (what C's cast does) you'd want to invert what he did
+> and say (int)(myfloat - 0.5).  To round up, I guess you'd want to do the
+> equivalent of C's (int)(myfloat + (1.0 - 1.0e9)), which I (further) guess
+> in DGD would be (int)(myfloat + (0.5 - 1.0e9)), or basically (int)(myfloat
+> + 0.499999).  It looks kinda funny, but I think it'll do a "round up".
+>   All of these assume that you want to round numbers toward positive
+> infinity or negative infinity.  For instance, if you "round up" the number
+> -2.4, you'll get -2 instead of -3 since -2 is "up" toward positive
+> infinity.  You can change that to round toward larger absolute value, but
+> it'll involve a little more thinking and possibly some "if(myfloat <
+> 0)" checks.
+
+Also see dgd/doc/kfun/ceil and dgd/doc/kfun/floor.
+
+// Mikael / Elemel
+
+--
+I wished for 4 uncursed scrolls of gold detection
+and all I got was this lousy .signature

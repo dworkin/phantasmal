@@ -1,0 +1,16 @@
+From: Par Winzell
+Subject: Re: [DGD] Strings
+Date: Thu, 30 Sep 2004 09:08:27 -0500
+
+Rick wrote:
+> This is probably a dumb question, but are DGD strings binary safe? IIRC
+> LPmud has a 'buffer' type as a binary safe string, I checked out the
+> LPC.html manual that came with DGD but it didn't mention anything as such.
+
+And no, it's not a dumb question at all. In fact I could find no mention 
+whatsoever of the fact that DGD strings consist of full bytes, even in 
+the initial part of src/Changelog, which shows differences from LPMud.
+
+One of these years, Dworkin will no doubt finish LPC.html :-)
+
+Zell

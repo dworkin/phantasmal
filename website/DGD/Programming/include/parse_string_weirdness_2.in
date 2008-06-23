@@ -1,0 +1,26 @@
+From DGD Mailing List  Thu Mar 20 22:50:02 2003
+From: DGD Mailing List (Jay Shaffstall)
+Date: Thu Mar 20 22:50:02 2003
+Subject: [DGD] parse_string() wierdness???
+
+Keith,
+
+>I'm trying to develop a parse_string() grammar.  I'm
+>expecting the grammar to be very large, so I'm putting
+>it into another file, which I load at runtime.  At the
+>top of my file, I defined whitespace as:
+>
+>whitespace = /[ \r\n\b\t]+/
+
+Here's my take on this, from doing something similar in Phantasmal's UNQ 
+format.  When you include the whitespace token in LPC, the \n is converted 
+to a newline as part of interpreting LPC, not by 
+parse_string.  parse_string gets a string that already has newlines in it.
+
+When you have the \n in a file, and read it in using read_file, what you 
+get are two characters, '\' and 'n'.  If you want that converted to a 
+newline, you'll have to make a pass through yourself to detect the common 
+escape sequences and insert the correct single character into the string, 
+before calling parse_string.
+
+Jay

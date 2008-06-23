@@ -1,0 +1,28 @@
+From: Noah Gibbs
+Subject: Re: [DGD] Stupid config question...
+Date: Sat, 4 Sep 2004 11:56:06 -0700 (PDT)
+
+  It appears that DGD dislikes something about the way Fedora does
+IPv6, and it looks like there's no IPv6->IPv4 failover in
+dgd/src/host/unix/connect.c - if IPv6 is present but fails, DGD simply
+doesn't start up.
+
+  I've undefined INET6 and AF_INET6 at the top of the file as a
+temporary hack to get it working.  Note to Dworkin:  minor typo in the
+comment line where you do the AF_INET6 defines at the top of
+dgd/src/host/unix/connect.c -- you wrote AT_INET6 where you meant
+AF_INET6 once.
+
+  Looks like my hack works, so I'll go back to ignoring the existence
+of IPv6 for a bit :-)
+
+--- Noah Gibbs wrote:
+
+>   I'm sure this has been answered before.
+> 
+>   I'm trying to get DGD running on a new machine.  I tried grabbing
+> both 1.2.90 and 1.2.93 with the same results.  I've compiled with the
+> host set to LINUX and to DARWIN.  The machine is actually running
+> Fedora Core 1, which is based strongly on RedHat Linux, and
+> distributed
+> by RedHat.

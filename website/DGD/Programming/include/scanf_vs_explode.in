@@ -1,0 +1,189 @@
+From: DGD Mailing List (Neil McBride)
+Date: Wed May 19 11:06:09 2004
+Subject: [DGD] Scanf vs explode
+
+> I fashioned my creator() function in driver.c after the way the sscanf's
+> were
+> originally done, due to the way the directories have changed, it requires
+> quite a few of them depending on which one is true, I was wondering if it
+> would be more efficient to do a single explode, and a switch() instead.
+
+So, uh, I couldn't sleep.  I was wondering about some code efficiency too
+but never really looked into how to find a good way to test coding styles
+for efficiency, until I couldn't sleep .....
+
+In my insomniac driven boredom, I put the following little file together. 
+Somewhat imaginatively, I called it test.c:
+
+void t1() {
+  int i, j;
+
+  for(i = 0; i < 10; i++) {
+
+    j = status()[23];
+    if(i == 0) {
+      this_user()->message(i + "\n");
+    } else if(i == 1) {
+      this_user()->message(i + "\n");
+    } else if(i == 2) {
+      this_user()->message(i + "\n");
+    } else if(i == 3) {
+      this_user()->message(i + "\n");
+    } else if(i == 4) {
+      this_user()->message(i + "\n");
+    } else if(i == 5) {
+      this_user()->message(i + "\n");
+    } else if(i == 6) {
+      this_user()->message(i + "\n");
+    } else if(i == 7) {
+      this_user()->message(i + "\n");
+    } else if(i == 8) {
+      this_user()->message(i + "\n");
+    } else if(i == 9) {
+      this_user()->message(i + "\n");
+    }
+    j -= status()[23];
+    this_user()->message("Ticks used: " + j +"\n");
+  }
+}
+
+void t2() {
+  int i, j;
+
+  for(i = 0; i < 10; i++) {
+
+    j = status()[23];
+    switch(i) {
+      case 0:
+        this_user()->message(i + "\n");
+      break;
+      case 1:
+        this_user()->message(i + "\n");
+      break;
+      case 2:
+        this_user()->message(i + "\n");
+        this_user()->message(i + "\n");
+      break;
+      case 3:
+        this_user()->message(i + "\n");
+      break;
+      case 4:
+        this_user()->message(i + "\n");
+      break;
+      case 5:
+        this_user()->message(i + "\n");
+      break;
+      case 6:
+        this_user()->message(i + "\n");
+      break;
+      case 7:
+        this_user()->message(i + "\n");
+      break;
+      case 8:
+        this_user()->message(i + "\n");
+      break;
+      case 9:
+        this_user()->message(i + "\n");
+      break;
+    }
+    j -= status()[23];
+    this_user()->message("Ticks used: " + j +"\n");
+  }
+}
+
+void t3() {
+  int i, j;
+
+  for(i = 0; i < 10; i++) {
+
+    j = status()[23];
+    this_user()->message(((i == 0) ? i : (i == 1) ? i : (i == 2) ? i : (i
+== 3) ? i : (i == 4) ? i : (i == 5) ? i : (i == 6) ? i : (
+i == 7) ? i : (i == 8) ? i : (i == 9) ? i : i) + "\n");
+    j -= status()[23];
+    this_user()->message("Ticks used: " + j +"\n");
+  }
+}
+
+Oh yeah, element 23 status() results is ST_TICKS or the remaining ticks. 
+Was the only way I could think of at 2am to get a good indication.  Any
+other way? :)  Another thing, it's obvious the if/then and switch
+statements can be removed in the given example and just send the user his
+message, but that's not the point now is it?
+
+Then, the moment of compiling .....
+
+> compile test.c
+$33 = </usr/sarak/sys/test>
+> code $33->t1();
+0
+Ticks used: 303
+1
+Ticks used: 307
+2
+Ticks used: 311
+3
+Ticks used: 315
+4
+Ticks used: 319
+5
+Ticks used: 323
+6
+Ticks used: 327
+7
+Ticks used: 331
+8
+Ticks used: 335
+9
+Ticks used: 338
+$34 = nil
+> code $33->t2();
+0
+Ticks used: 303
+1
+Ticks used: 303
+2
+Ticks used: 303
+3
+Ticks used: 303
+4
+Ticks used: 303
+5
+Ticks used: 303
+6
+Ticks used: 303
+7
+Ticks used: 303
+8
+Ticks used: 303
+9
+Ticks used: 303
+$35 = nil
+> code $33->t3();
+0
+Ticks used: 303
+1
+Ticks used: 307
+2
+Ticks used: 311
+3
+Ticks used: 315
+4
+Ticks used: 319
+5
+Ticks used: 323
+6
+Ticks used: 327
+7
+Ticks used: 331
+8
+Ticks used: 335
+9
+Ticks used: 339
+
+The verdict: Switch wins hands down, even after the first iteration :)
+
+I hope you've all enjoyed this little adventure into what goes on when I
+can't sleep :)
+
+*bow*

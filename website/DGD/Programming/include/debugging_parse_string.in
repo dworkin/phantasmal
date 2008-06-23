@@ -1,0 +1,18 @@
+From DGD Mailing List  Mon Dec  2 08:47:01 2002
+From: DGD Mailing List (Jay Shaffstall)
+Date: Mon Dec  2 08:47:01 2002
+Subject: [DGD] Debugging a parse_string() grammar.
+
+Keith,
+
+>I was wondering what a good way was to debug a grammar
+>for use with parse_string().  I'm trying to write a
+>grammar, but it never seems to parse the way I want it
+>to, and was wondering if there was a way of figuring
+>out why it parses the way it does.
+
+One technique I've found helpful is to use an LPC function in the grammar 
+to print out the tokens that match that rule.  That often gives me a clue 
+as to why it isn't parsing the way I think it should be parsing.
+
+Jay

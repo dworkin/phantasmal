@@ -1,0 +1,22 @@
+From: dgd at list.imaginary.com (Par Winzell)
+Date: Thu Jan  8 09:54:01 2004
+Subject: [DGD] Re: another question about clones
+
+On Thu, 2004-01-08 at 09:04, Bart van Leeuwen wrote:
+> The choice of mapping or array is not very relevant for this unless you
+> are going to use the mapping for other things then tracking clones (one
+> could think of using it for keeping track of how a clone was created for
+> example). Somehow I assumed an array to be cheaper if all I want is a
+> collection of clones (or alternatively a collection of collections of
+> clones if it no longer fits in a single array)
+
+If you mean that you use array addition and subtraction whenever you
+create a new clone or destruct an old one, then that's not really an
+option. Both cloning and destructing N objects then becomes pretty much
+a O(N^2) operation. You really want to stay away from those.
+
+Alternately, perhaps you have an array of arrays that you index by the
+'clone number' of the clone? That'd solve the time complexity problem,
+but use a hell of a lot of space.
+
+Zell

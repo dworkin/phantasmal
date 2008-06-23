@@ -1,0 +1,22 @@
+From: dgd at list.imaginary.com (Erwin Harte)
+Date: Thu Jan  8 07:35:01 2004
+Subject: [DGD] Re: another question about clones
+
+On Thu, Jan 08, 2004 at 12:29:54PM +0100, Bart van Leeuwen wrote:
+> On Wed, 7 Jan 2004, Par Winzell wrote:
+[...]
+> > My suggestion is that you let the master copy of the object keep track
+> > of all its clones, possibly using a mapping of mappings.
+> 
+> This is workable and is what I use right now.
+> Actually, each 'master' only has to have an array of all its clones, you
+> can track all the masters with some kind of daemon still, the same daemon
+> can be used to track inheritance of course.
+
+Beware of what will happen when you have more clones of one particular
+master object than fits in status()[OST_ARRAYSIZE], which is why Par
+mentioned the mapping of mappings. :)
+
+Erwin.
+-- 
+Erwin Harte

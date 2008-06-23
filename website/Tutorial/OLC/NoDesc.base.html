@@ -1,24 +1,22 @@
-      <titledef text="NoDesc objects" />
+<titledef text="NoDesc objects" />
 
-      <h2 class="center"> Non-Described (&quot;nodesc&quot;) Objects </h2>
+<h2 class="center">Non-Described ("nodesc") Objects</h2>
 
-      <p> You've written some room descriptions and mentioned the far-off
-	clouds, or the distant buildings, or the pebbles on the path.
-	It'd be nice to have the player able to look at them since you'd
-	like to hide important game clues in a few of them and more
-	beautifully-written description than you can shake a stick at
-	in all of them.  What's a body to do? </p>
+<p>You've written some room descriptions and mentioned the far-off
+clouds, or the distant buildings, or the pebbles on the path. It'd be
+nice to have the player able to look at them since you'd like to hide
+important game clues in a few of them and more beautifully-written
+description than you can shake a stick at in all of them. What's a body
+to do?</p>
 
-      <p> If that body is using Phantasmal version 0.009 through
-      0.012, the answer is &quot;learn about descless portables&quot;.
-      They work a lot like <a href="Containers.html">containers</a>,
-      and can also <i>be</i> containers.  (Note: NoDesc portables are
-      likely to be phased out as soon as we have real object details,
-      so don't get too attached to them!) </p>
+<p>If that body is using Phantasmal version 0.009 through 0.012, the
+answer is "learn about descless portables". They work a lot like
+<a href="Containers.html">containers</a>, and can also <i>be</i>
+containers. (Note: NoDesc portables are likely to be phased out as soon
+as we have real object details, so don't get too attached to them!)</p>
 
-      <p> Let's say you've already created a setting with a need for
-	nodesc objects.  For instance, here's a rather lavish one. </p>
-
+<p>Let's say you've already created a setting with a need for nodesc
+objects. For instance, here's a rather lavish one.</p>
 <pre>
 tomb
 Against the wall of the room, a stuffed wombat's mouth gapes eternally.
@@ -33,40 +31,33 @@ Rumor has it that he's Messy-In-A-Hideous-Way.
 - a ceremonial dagger
 
 Exits: 
->
+&gt;
 </pre>
 
-      <p> Notice that your wombat (we'll call it dear little #206) is
-	already described in the room, yet
-	there it is in the object list.  Boring.  Repetitive.  No
-	good at all.  So go ahead and type &quot;set_obj_flag #206 nodesc
-	yes&quot;.  Have another look around the room.  See a lack of
-	wombat?  Good. </p>
+<p>Notice that your wombat (we'll call it dear little #206) is already
+described in the room, yet there it is in the object list. Boring.
+Repetitive. No good at all. So go ahead and type "set_obj_flag #206
+nodesc yes". Have another look around the room. See a lack of wombat?
+Good.</p>
 
-      <p> There are some other side effects.  If you try to take the
-	wombat (try it!) you'll get the message &quot;You can't carry
-	that!&quot;.  Why?  For starters because it's there in the room
-	decription. so people had better be able to keep referring to it.
-	You can't pick it up and carry it off or the next
-	fellow will type &quot;examine wombat&quot; and won't see one
-	here.  He'll feel confused.  He'll feel betrayed.  He'll follow
-	it up by deciding you're a guy with a MUD that sucks.  Don't
-	be that guy. </p>
+<p>There are some other side effects. If you try to take the wombat (try
+it!) you'll get the message "You can't carry that!". Why? For starters
+because it's there in the room decription. so people had better be able
+to keep referring to it. You can't pick it up and carry it off or the
+next fellow will type "examine wombat" and won't see one here. He'll
+feel confused. He'll feel betrayed. He'll follow it up by deciding
+you're a guy with a MUD that sucks. Don't be that guy.</p>
 
-      <p> You <i>can</i>, however, put things into and take them out
-	of the nodesc object (such as a wombat) if it's also an
-	open container.  If you haven't already, you can type
-	&quot;set_obj_flag #206 cont yes&quot; and
-	&quot;set_obj_flag #206 open 1&quot; to make the wombat
-	also be a perfectly usable open container.  Yay!
-	Now use that trick to make the statue and sarcophagus have
-	descriptions and make sure you can put things into the
-	sarcophagus but not into the statue. </p>
+<p>You <i>can</i>, however, put things into and take them out of the
+nodesc object (such as a wombat) if it's also an open container. If you
+haven't already, you can type "set_obj_flag #206 cont yes" and
+"set_obj_flag #206 open 1" to make the wombat also be a perfectly usable
+open container. Yay! Now use that trick to make the statue and
+sarcophagus have descriptions and make sure you can put things into the
+sarcophagus but not into the statue.</p>
 
-      <p> What's next?  You should read old
-	<a href="../index.html">tutorials</a> for fun.  It's what I do.
-	Far better than having a social life.  Has your MUDLib
-	taken over the world yet?  Is it based on Phantasmal?  Is
-	it also public domain?  No adulation from eighteen year old
-	boy-band fans for you until it is, young man.
-      </p>
+<p>What's next? You should read old <a href=
+"../index.html">tutorials</a> for fun. It's what I do. Far better than
+having a social life. Has your MUDLib taken over the world yet? Is it
+based on Phantasmal? Is it also public domain? No adulation from
+eighteen year old boy-band fans for you until it is, young man.</p>

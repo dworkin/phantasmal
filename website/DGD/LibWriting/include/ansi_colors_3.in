@@ -1,0 +1,39 @@
+From: dgd at list.imaginary.com (Michael McKiel)
+Date: Tue Mar 30 17:39:07 2004
+Subject: [DGD] ansi colours
+
+These might be of some use to you, when using the escape \033 sequence in
+files the editors or mor'ing interprets the colours and not the codes so
+You can't see the codes used like that in a file, these are visible as
+colours in the mud as well as being editable:
+
+"\x1B[0m"
+"\x1B[1m"
+"\x1B[31m"
+"\x1B[32m"
+"\x1B[33m"
+"\x1B[34m"
+"\x1B[35m"
+"\x1B[36m"
+"\x1B[37m"
+"\x1B[41m"
+"\x1B[42m"
+"\x1B[43m"
+"\x1B[44m"
+"\x1B[45m"
+"\x1B[46m"
+"\x1B[47m"
+
+Also of note, if you enable ansi in DGD, you should consider stripping escape
+sequences in a user's issued command. Else they can change colour on other's
+screen by just sending a 'realescape'<colorcode>. I imagine other strange
+things are possible if you don't strip escape sequences. 
+
+Did this in my old modified melville:
+	result = strlen(str);
+	for (i=0; i < result; i++)
+	{
+		if (str[i] < 32) { str[i] = ' '; }
+	}
+
+Happy Colouring! 

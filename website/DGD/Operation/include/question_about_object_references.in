@@ -1,0 +1,20 @@
+From: dgd@dworkin.nl (Felix A. Croes)
+Date: Tue Apr  5 01:29:01 2005
+Subject: [DGD] Question about object references
+
+Steve Wooster wrote:
+
+>      I just remembered another question I had... an object isn't loaded 
+> from the swap-file unless a function is called in it, right? For example, 
+> if I had a list of, say, 10000 objects, and I wanted to process it (maybe 
+> calling call_outs or something each with a different object as an argument) 
+> without calling functions in the object or looking at their status or 
+> anything like that, I could iterate through the whole array without using 
+> much more memory than what the array takes, right? Thanks.
+
+As long as you don't access the objects themselves, you can safely
+manipulate an array of them (including testing whether objects have
+been destructed) without loading any into memory.
+
+Regards,
+Dworkin

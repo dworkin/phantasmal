@@ -1,0 +1,21 @@
+Date: Thu Sep 27 11:59:00 2001
+Subject: [DGD] 1.2.31
+
+Mikael Lind wrote:
+
+> Quoting Felix A. Croes from 20:39, 2001-09-26:
+>
+> > A word of caution about the nomatch token rule: this is a fallback rule
+> > for the case when nothing else matches.  A possible match of all other
+> > tokens will have been attempted at every position in a nomatch string,
+> > so this can get very inefficient.  [...]
+>
+> Still, would not the nomatch token rule be a good way to implement
+> regexplode(), recently discussed on this list?
+
+It would be.  To put things in perspective, the standard implementation
+for searching a regular expression in a string is even less efficient
+than a DGD version using nomatch tokens.
+
+Regards,
+Dworkin

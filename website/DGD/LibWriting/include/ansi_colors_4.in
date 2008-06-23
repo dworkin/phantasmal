@@ -1,0 +1,24 @@
+From: dgd at list.imaginary.com (Josh Dady)
+Date: Wed Mar 31 09:43:10 2004
+Subject: [DGD] ansi colours
+
+On Mar 30, 2004, at 6:38 PM, Michael McKiel wrote:
+
+> Also of note, if you enable ansi in DGD, you should consider stripping 
+> escape
+> sequences in a user's issued command. Else they can change colour on 
+> other's
+> screen by just sending a 'realescape'<colorcode>. I imagine other 
+> strange
+> things are possible if you don't strip escape sequences.
+
+In college, I had a friend who would shout the following when he found 
+a MUD that didn't strip incoming commands:
+   - [clear screen]
+   - [cursor movement] [big/bold/blink] <banner text> [repeat]
+   - [reset scroll region]
+   - [move cursor into new, smaller scroll region]
+
+--
+Joshua P. Dady
+http://www.indecisive.com/

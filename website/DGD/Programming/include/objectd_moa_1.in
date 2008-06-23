@@ -1,0 +1,25 @@
+From: dgd at list.imaginary.com (Michael McKiel)
+Date: Thu Feb 12 14:08:01 2004
+Subject: [DGD] Objectd.c mappings of arrays
+
+I believe Par Winzell metioned mappings of arrays in January during a
+discussion of object managers, and another mentioned arrays of arrays. There
+was some debate about the operational efficiency of both: O(N) O(N^2) or
+such. And mention of Marrach having some 200k+ clones of 'thing.c'
+
+So would it be something like this?
+    mapping object_list;
+    object *arr1;
+    object *arr2;
+    object *arr3;
+
+    object_list[0] == ({ arr1 });
+    object_list[1] == ({ arr2 });
+    object_list[2] == ({ arr3 });
+
+If so, wouldn't you have to have some idea how many of a given object you
+will have so you can make sure your arrays/mappings don't grow beyond
+MAX_ARR_SIZE? Like in my example above, if my MAX_ARR_SIZE was 2000. Then if
+the number of clones of a given item became 6000, the object manager would
+fail. So I would have to have a bunch of empty arrays initialized just in
+case? Or am I missing something...

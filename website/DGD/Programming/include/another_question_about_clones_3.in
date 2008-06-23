@@ -1,0 +1,64 @@
+From: dgd at list.imaginary.com (Bart van Leeuwen)
+Date: Thu Jan  8 10:46:01 2004
+Subject: [DGD] Re: another question about clones
+
+On Thu, 8 Jan 2004, Par Winzell wrote:
+
+> On Thu, 2004-01-08 at 09:04, Bart van Leeuwen wrote:
+> > The choice of mapping or array is not very relevant for this unless you
+> > are going to use the mapping for other things then tracking clones (one
+> > could think of using it for keeping track of how a clone was created for
+> > example). Somehow I assumed an array to be cheaper if all I want is a
+> > collection of clones (or alternatively a collection of collections of
+> > clones if it no longer fits in a single array)
+>
+> If you mean that you use array addition and subtraction whenever you
+> create a new clone or destruct an old one, then that's not really an
+> option. Both cloning and destructing N objects then becomes pretty much
+> a O(N^2) operation. You really want to stay away from those.
+
+Not really. When an object is destroyed, its value in the array becomes 0,
+subtracting 0 from an array before use is still far from O(N^2) and isn't
+done at destruction time at all. As a result, the code actually has an
+O(1) behavior on destructing objects (for as far as the lpc code is
+concerned... cost of the different opperations on driver level is a
+different matter)
+
+The only problem is with adding clones, which you can solve in a few ways,
+but will come down to finding an array with < MAX elements. You can assume
+this to be the array with the highest number and if you start there and
+look back before creating a new array, you will get a result that is in
+most cases no more then setting an index to a value, and as such hardly
+more expensive then when you'd be using a mapping. (note that you do not
+have to find the holes in an array, there are none)
+
+If you'd want, you can delay locating such arrays untill they are
+completely empty, and just remove 0 size arrays only, but that may not
+work out very well in some specific situations (you may end up with a lot
+of arrays with 1-2 elements each for example so some sort of merging is
+needed to make this one work, also it makes things more expensive
+elsewhere)
+
+In my experience, in the end the most important performance issue is
+however the time it takes to create a list of all clones and the
+complexity of that is way lower with an array of arrays. All other things
+can be spread out between when you register/remove a clone and when you
+use the data, and in the end it is nice to save a few cycles, but nicer to
+spend a few more, but never need too many of them at once.
+
+With mappings you make a few different choices obviously, and I assume
+that you wouldn't go for the most expensive approach there either, the
+'shortcuts' are just different.
+
+>
+> Alternately, perhaps you have an array of arrays that you index by the
+> 'clone number' of the clone? That'd solve the time complexity problem,
+> but use a hell of a lot of space.
+>
+
+You'd be better off implementing that with mappings, and seeing how clone
+numbers can rise above the size of an array, it means first doing a bit of
+math to derive the indeces
+
+Anyway, regardless of if its more or less efficient, it has been used for
+many years and seems to do its job very well.

@@ -1,0 +1,23 @@
+Date: Sat, 01 Aug 1998 09:56:03 -0700
+From: Par Winzell
+Subject: [DGD] Re: DGD LPC (?)
+
+Howdy,
+
+> I believe there was a post at some point stating that ({ }) could never
+> equal ({ }) - this is because of references are used rather than the
+> values themselves. Same applies to mappings.
+
+Yes, a new array is created whenever the interpreter encounters ({ })
+and reference comparison between two separate instances obviously fails. 
+
+However -- to be quite picky -- since assignment also uses references,
+you -can- have ({ }) equal ({ }), sort of, since
+
+	a = b = ({ }), a == b
+
+is true... this is a pretty common LPC mistake too, that I see a lot of
+wizards make on Muds, and understandably so, too... since LPC does hide
+most yukky reference stuff well.
+
+Pär

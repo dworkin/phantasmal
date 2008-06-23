@@ -1,0 +1,27 @@
+From: dgd at list.imaginary.com (Erwin Harte)
+Date: Wed Feb  6 09:06:01 2002
+Subject: [DGD] [Melville] non-static mappings
+
+On Wed, Feb 06, 2002 at 08:40:30AM -0600, Erwin Harte wrote:
+> On Wed, Feb 06, 2002 at 12:15:05PM +0000, Shevek wrote:
+> > 
+> > >I do not get your point. In DGD, setting map[key] = nil will remove
+> > >the key-value pair from the mapping. This is just as safe as map -=
+> > >({ key }).
+> > >
+> > >// Mikael / Elemel
+> > 
+> > Are you sure about that?
+> 
+> I am, my code would fall apart if DGD didn't behave like that.
+> 
+[...blah...]
+
+Ok, that was totally unrelated to what you asked, but let me assure
+you that 'map[key] = nil' has the same effect of 'map -= ({ key })'.
+
+Please, don't let me post before having had my coffee, next time?
+
+Erwin. ;-)
+-- 
+Erwin Harte

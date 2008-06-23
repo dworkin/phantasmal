@@ -1,0 +1,43 @@
+From: DGD Mailing List (Michael McKiel)
+Date: Sat Apr  3 03:54:03 2004
+Subject: [DGD] Clones and very large arrays
+
+ --- Robert Forshaw wrote: 
+> >From: "Steve Foley"
+> > > If this kind of use of arrays is deprecated, how should I keep a record
+> > > of clones?
+> >
+> >I'm using a linked list.  This distributes the data across more objects
+> >(to mitigate swapping concerns) and avoids any issues with respect to max
+> >array size.  Though obviously getting the actual list of all clones isn't 
+> >anywhere near as fast as it would be by your method.  I don't find a need
+> >to get that information too often, though.
+> 
+> I'm not too taken with the idea, but I'll ask anyway because I'm curious; 
+> how does a link list work in respect to clones? Since a clone is always 
+> derived from a master object, I can't see how the clones would be 'linked' 
+> together.
+
+You *make* a linked list. it has nothing to do with clones being linked. A
+linked list can be made on Any data content.
+
+linked_list()
+{
+    object *obj;
+    object *prev;
+    object *next;
+}
+
+And you obviously need to code the functions to handle linked_lists, like
+clear_list, pop_list, add_to_list, del_from_list, etc.
+
+Not exactly sure, but I imagine a LWO would be the way to go about something
+like that. 
+
+Though I always considered when I got to tracking objects et al I'd use an
+object manager objectd. and store in a mapping of arrays along what I believe
+Par Winzell mentioned as the way to avoid max_array issues:
+   ([ (clone_num % 1024) : ({ array_of_clones }) ])
+Though that might not be exact, something along those lines.
+
+Laterz.

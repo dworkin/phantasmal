@@ -1,77 +1,35 @@
-  <titledef text="DGD Driver Details" />
-  
-  <h2> Miscellaneous DGD Driver Details </h2>
+<titledef text="DGD Driver Details" />
 
-  <p>
-    There are always a few mixed bits in any bag that don't fit
-    anywhere very exactly.  These are random details about how the DGD
-    Driver does what it does that don't seem particularly relevant
-    anywhere else.
-  </p>
+<h2>Miscellaneous DGD Driver Details</h2>
 
-  <p>
-    In the original DGD, the interpreter had only 32 instructions.
-    Kfuns were not part of the interpreter proper.  I don't know if
-    that's still true.
-  </p>
+<p>There are always a few mixed bits in any bag that don't fit anywhere
+very exactly. These are random details about how the DGD Driver does
+what it does that don't seem particularly relevant anywhere else.</p>
 
-  <p>
-    Mappings are partially hashed.  If a mapping grows by assigning to
-    an index that doesn't exist yet, the index-value pair is
-    stored in a hash table.  Mappings are converted to sorted arrays
-    of index-value pairs when swapped out.
-  </p>
+<p>In the original DGD, the interpreter had only 32 instructions. Kfuns
+were not part of the interpreter proper. I don't know if that's still
+true.</p>
 
-  <p>
-    The compiler is two-pass.  In the first pass, the function is
-    typechecked and a parse tree is constructed.  Constant folding and
-    removal of dead code is done.  In the second pass, code for a
-    virtual stackmachine is generated.  Jumps to jumps are optimized.
-    Optionally, the second pass may generate C code.
-  </p>
+<p>Mappings are partially hashed. If a mapping grows by assigning to an
+index that doesn't exist yet, the index-value pair is stored in a hash
+table. Mappings are converted to sorted arrays of index-value pairs when
+swapped out.</p>
 
-  <p>
-    String hash table sizes are powers of two.  They used to be primes,
-    which is fairly pointless in this implementation.
-  </p>
+<p>The compiler is two-pass. In the first pass, the function is
+typechecked and a parse tree is constructed. Constant folding and
+removal of dead code is done. In the second pass, code for a virtual
+stackmachine is generated. Jumps to jumps are optimized. Optionally, the
+second pass may generate C code.</p>
 
-  <p>
-    Divided allocated memory into 'static' and 'dynamic' memory.
-    Static memory is used for things which need to be kept when
-    everything is swapped out, and dynamic memory is used for the
-    rest.
-  </p>
+<p>String hash table sizes are powers of two. They used to be primes,
+which is fairly pointless in this implementation.</p>
 
+<p>Divided allocated memory into 'static' and 'dynamic' memory. Static
+memory is used for things which need to be kept when everything is
+swapped out, and dynamic memory is used for the rest.</p>
 <pre>
-From: DGD Mailing List (Par Winzell)
-Date: Sun Apr  4 11:47:01 2004
-Subject: [DGD] another brief question, about clone instance numbering
-
-Robert Forshaw wrote:
-> Let's say I have "/obj/some_object" and 24 clones, "/obj/some_object#1" 
-> to "/obj/some_object#24".
-> 
-> Now, if I destruct say, "/obj/some_object#3", that will leave a gap in 
-> the instance number sequence, it will go from #2 to #4.
-> 
-> If I then clone "/obj/some_object" again, will the new clone definitely 
-> have an instance number of 3, an instance number of 25, or something else?
-> 
-> If it takes the instance number 3, that's fine. If it takes 25, that 
-> means that as objects are continuously destructed and cloned, the 
-> instance numbers grow higher and higher. And if we are to have any 
-> operations that use these numbers (such as in the bigmap example in 
-> "Clones and very large arrays" thread), it would not do to have 
-> "/obj/some_object#10423425564646", which would inevitably happen in the 
-> second behaviour on a persistant MUD. I'm hoping (and it probably is 
-> likely) that the first behaviour is the correct one.
-
-I don't think DGD promises to fill in the first available slot, but it 
-certainly won't do the latter. The clone number will never be higher 
-than status()[ST_OTABSIZE] or whatever it's called.
-
-Zell
+@@INCLUDE another_brief_question@@
 </pre>
 
-  <p style="text-size: 150%"> <a href="index.html"> Back to DGD &amp; LPC
-      Page </a> </p>
+<p style="text-size: 150%"><a href="index.html">Back to DGD &amp; LPC
+Page</a></p>

@@ -1,0 +1,43 @@
+From: DGD Mailing List (Felix A. Croes)
+Date: Mon Mar 29 05:13:01 2004
+Subject: [DGD] rlimits
+
+Steve Wooster wrote:
+
+>      I'm a little confused about exactly how rlimits works... I understand 
+> that you put it around code to limit how many tick/etc that code can take 
+> up, but I'm confused as to how rlimits within rlimits works...
+>
+> For example: (I've forgotten whether ticks or recursion depth comes first, 
+> so I'll say "ticks" or "depth" after the numbers)
+>
+> void func()
+> {
+>      rlimits (10 depth, 100 ticks)
+>      {
+>          code that uses 50 ticks;
+>          rlimits (10 depth, -1 ticks)
+>          {
+>              code that uses 25 ticks;
+>          }
+>          // Are there 50 ticks remaining or only 25?
+>      }
+> }
+
+50 ticks remaining.
+
+
+> Now that I've typed this out, I think I know what I want to ask... When you 
+> use an rlimits construct inside another one, does code inside the inner 
+> rlimits it count towards the ticks for the outer rlimits? It seems like the 
+> most logical answer would be "no", but I'd feel better if somebody 
+> confirmed this.
+
+The inner ticks don't count for the outer rlimits.  However, the mudlib
+has some say in this, since each use of rlimits() is checked at compile
+time and possibly also at runtime.  The kernel library doesn't allow
+increasing the resource limits beyond what they currently are, <unless>
+the current object is a System object.
+
+Regards,
+Dworkin

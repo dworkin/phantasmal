@@ -1,0 +1,26 @@
+From: DGD Mailing List (Noah Gibbs)
+Date: Sat May 10 16:16:02 2003
+Subject: [DGD] Multi Threading
+
+  Those things are quite handleable now.  But if you
+mean, "will any thread appear to always be running and
+never exit?", the answer is "no".  Threads will still
+spawn often and terminate quickly, it's just that more
+than one may be running at the same time.
+  Remember that DGD does a certain amount of heavy
+lifting when threads terminate (swapping objects to
+disk, recompiling objects, etc), and that still has to
+happen, and happen often.
+
+--- Ben Chambers wrote:
+> When the multi-threaded version is released, how
+> exactly will it deal with
+> multithreading?  Will it be possible to create a
+> message queue and set a
+> thread to iterate over that and do some processing? 
+> What about setting a
+> thread to listen for connections to a webserver and
+> run a webserver
+> independently of the the main thread.  Will these
+> types of things be
+> handleable?

@@ -1,0 +1,26 @@
+From: Bart van Leeuwen
+Subject: [DGD] DGD http daemon?
+Date: Tue Feb  8 20:58:01 2005
+
+Hey,
+
+Last week I rewrote a small http serving object from my mud into a
+relatively complete http server.
+
+You can see it in action by pointing your browser at http://mud.wotf.org/
+
+Currently the code is somewhat specific to my kernel (and modified driver)
+but if people are interested in this and someone is willing to help test
+it for a generic DGD kernel then I can make the code available
+(for non commercial use only however)
+
+A somewhat preliminary README can be found at
+http://mud.wotf.org/httpd.html, which provides some info on what it
+supports and how it works.
+
+Bart.
+
+ps. in the next 1 1/2 weeks I'll be rather busy and away from home, I will
+read my mail, but I won't be able to finish the cleaning up of the code. I do want to get an
+idea on if I should put in the efford to remove dependencies on my own
+kernel however.

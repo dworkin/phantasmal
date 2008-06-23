@@ -1,0 +1,79 @@
+Date: Wed, 25 Aug 1999 14:23:32 +0200 (CEST)
+From: "E. Harte"
+Subject: Re: [DGD]A complicated mapping.
+
+On Tue, 24 Aug 1999, Seer Asmodean wrote:
+
+[...]
+> mapping table_s ;
+> 
+> table_s = ([ "Title1": ([ "Subtitle1": ({ 1,
+>                                           "Short bit of text.\n",
+>                                           "A much longer bit of text.\n" }),
+>                           "Subtitle2": ({ 2,
+>                                           "Short bit of text.\n",
+>                                           "A much longer bit of text.\n" })
+>                           ]),
+>              "Title2": ([ "Subtitle1": ({ 1,
+>                                           "Short bit of text.\n",
+>                                           "A much longer bit of text.\n" })
+>                           ])
+>              ]);
+> 
+> (That IS a mapping mapped to another mapping mapped to an array.)
+[...]
+> I'm having several problems with this:
+> 1) Where do I declare it, and where do I assign up the values? It's
+>    intended to be a constant.
+
+If you want to have one unique mapping like this in the whole 'mud',
+you'll want to put it in an object of its own, and query the data from
+that one object.  If you put it in a .h file and and #include that .h file
+in various objects, you'll be creating different instances of the same
+data, there will be no sharing.
+
+> I've tried putting it in a separate .h file as above (but on one long
+> line for  the compiler) and including it into player.c. This generates a
+> 'Syntax Error' when I run the mud.
+
+Probably because you made a typo in the data, I've corrected two or three
+in the quoted text above, one '([' was deleted and a '.' replaced with a
+',', compare and see. :)
+
+> I've tried turning it into a #define, the mud will run but any line of code 
+> added to the lib to access it will cause the same unhelpful error message.
+
+Same reason, probably. :)
+
+> 2) Assuming I'm not making an impossible request and it can be made to work, 
+>    how do I access the various elements?
+>    My current asumption would be something like
+>    table_s["Title1"]["Subtitle2"](0) to return 2, or
+>    table_s["Title1"]["Subtitle2"](1) for "Short bit of text.\n".
+
+You'll want to use table_s["Title1"]["Subtitle2"][0] and [1],
+respectively.
+
+> 3) Is it possible to lay such code out like above, i.e split across several 
+> lines in a nice coder-readable table? When coding it I put the whole thing on 
+> one line,  not knowing how to tell the compiler that it was all one line.
+
+Sure, if you're using a #define then you can use backslashes to continue
+on the next line, like this:
+
+ table_s = ([ "Title1": ([ "Subtitle1": ({ 1, \
+                                           "Short bit of text.\n", \
+                                           "A much longer bit of text.\n" }), \
+                           "Subtitle2": ({ 2, \
+                                           "Short bit of text.\n", \
+                                           "A much longer bit of text.\n" }) \
+                           ]), \
+              "Title2": ([ "Subtitle1": ({ 1, \
+                                           "Short bit of text.\n", \
+                                           "A much longer bit of text.\n" }) \
+                           ]) \
+              ]); \
+
+Hope that helps. :)
+
+Erwin.

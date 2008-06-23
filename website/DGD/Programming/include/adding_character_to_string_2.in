@@ -1,0 +1,59 @@
+Date: Fri, 30 Mar 2001 02:59:04 +0200
+From: Erwin Harte
+Subject: Re: [DGD]Adding character to string
+
+On Fri, Mar 30, 2001 at 01:57:32AM +0200, Erwin Harte wrote:
+> On Fri, Mar 30, 2001 at 01:30:43AM +0200, Frantisek Fuka wrote:
+[...]
+> 
+> I'd do it this way:
+> 
+>     int    i, len;
+>     string out;
+> 
+>     out = implode(explode("\n" + msg + "\n", "\n"), "\r\n");
+>     for (i = 0, len = strlen(out); i < len; i++) {
+>         out[i] &= 0x7f;
+>     }
+
+Silly me, there I went and ignored the charset_output(..) function
+you're using.  Replace the 'out[i] &= 0x7f' with:
+
+          if (out[i] & 0x80) {
+              out[i] = charset_output(out[i] - 0x80);
+          }
+
+An alternative approach (which, I should say, was suggested by Dworkin
+and not one I came up with) would be to use parse_string() with a
+grammar like this:
+
+    lo = /[\x00-\x7f]+/
+    hi = /[\x00-\x7f]+/
+
+    text = chunks chunk
+    text = chunk
+
+    chunk = lo
+    chunk = hi ? convert_output
+
+Where convert_output would be a function like this:
+
+    string
+    convert_output(mixed *tree)
+    {
+        int i, len;
+        string str;
+
+        str = tree[0];
+        for (i = 0, len = strlen(str); i < len; i++) {
+            str[i] = charset_output(str[i] - 0x80);
+        }
+        return ({ str });
+    }
+
+The two functions required for the text grammar-rules are left as an
+exercise to the reader. ;-)
+
+Erwin.
+-- 
+Erwin Harte      : `Don't mind Erwin, he gets crabby. :)'

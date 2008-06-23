@@ -1,0 +1,61 @@
+From: DGD Mailing List (Felix A. Croes)
+Date: Sat Jan 24 08:08:01 2004
+Subject: [DGD] 1.2.72
+
+diff -c dgd/src/Changelog:1.309 dgd/src/Changelog:1.310
+*** dgd/src/Changelog:1.309     Tue Jan 13 22:37:30 2004
+--- dgd/src/Changelog   Sat Jan 24 14:19:32 2004
+***************
+*** 1557,1559 ****
+--- 1557,1564 ----
+   - Light-weight objects restored from the state dump were not converted
+     properly, causing spurious driver::touch() calls.
+   - Fixed a bug in object upgrading, introduced with call_touch().
++  - New kfun: datagram_challenge(), which replaces the return-TRUE-from-open()
++    way of enabling datagram channels.  Multiple datagrams are now buffered per
++    channel.
++  - Config file change.  ({ 6047, 6048 }) for ports changed to a mapping in
++    which the address must also be specified: ([ "*":6047, "localhost":6048 ])
+
+DGD allows for a UDP "channel" to be attached to a binary connection.
+Previously, the UDP port of this channel on the client side was assumed
+to be identical to the TCP port.  A further restriction was that at
+least one datagram had to be received from that port before the driver 
+was willing to send any (to avoid spamming a host with UDP datagrams
+which doesn't expect any).
+
+This didn't work well with clients behind firewalls, which typically
+remap the source port in their own port space.  So now there is a new
+way of handling UDP channels:
+
+The server sets a UDP challenge for a connection with datagram_challenge().
+The first datagram which is not received through an established UDP
+channel, and which matches this challenge, establishes a new channel
+for the connection with the port used by the client.  open_datagram() will
+be called in the connection object, which thereafter is able to send and
+receive datagrams.  Note that the challenge response datagram is not
+itself received by the connection object.
+
+All outstanding UDP challenges must be unique.  Establishing a UDP
+channel typically happens like this:
+
+ - a TCP connection is established on the binary port
+ - the server establishes a challenge for the UDP channel.  A good
+   unique challenge would be the object ID of the connection object:
+
+    sscanf(object_name(connection_obj), "%*s#%d", object_id);
+
+ - the server sends this (possibly encrypted) challenge to the client,
+   using the TCP connection.
+ - the client responds with the challenge as a UDP datagram.
+ - The server receives the challenge response and establishes the UDP
+   channel.
+
+DGD now handles reception of UDP datagrams more efficiently.  Each
+connection object has its own input buffer in which multiple datagrams
+can be stored.  All datagrams for a binary port will be received on
+that port, and the server keeps track internally of which datagrams
+must be forwarded to which connection object.
+
+Regards,
+Dworkin

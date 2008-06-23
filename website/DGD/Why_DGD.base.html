@@ -1,129 +1,107 @@
-  <titledef text="Why Use DGD?" />
+<titledef text="Why Use DGD?" />
 
-  <h1>Why Use DGD?</h1>
+<h1>Why Use DGD?</h1>
 
-  <p>
-    DGD is a networked server and a language environment.  It uses an
-    object-oriented variant of C called LPC and provides powerful
-    special-purpose extensions to that language.  True to its roots,
-    DGD is best known as a server for multiplayer networked games
-    called MUDs.  That's where the original LPC language came from,
-    and it's still a common use of even industrial-strength servers
-    like DGD.
-  </p>
+<p>DGD is a networked server and a language environment. It uses an
+object-oriented variant of C called LPC and provides powerful
+special-purpose extensions to that language. True to its roots, DGD is
+best known as a server for multiplayer networked games called MUDs.
+That's where the original LPC language came from, and it's still a
+common use of even industrial-strength servers like DGD.</p>
 
-  <p>
-    There are many good reasons to use DGD if you're building a MUD,
-    and a surprising number even if you're building some other kind of
-    networked server.  Yahoo Chat, for instance, is built on top of
-    DGD.  First, a few bullet points about DGD...
-  </p>
+<p>There are many good reasons to use DGD if you're building a MUD, and
+a surprising number even if you're building some other kind of networked
+server. Yahoo Chat, for instance, is built on top of DGD. First, a few
+bullet points about DGD...</p>
 
-  <h2>DGD is an amazing server:</h2>
+<h2>DGD is an amazing server:</h2>
 
-  <ul>
-    <li>
-      Because it's <a
-      href="LibWriting/Persistence.html">persistent</a>.  That doesn't
-      just mean that the game world persists or that you can save and
-      restore.  For DGD, that means that the LPC objects can be dumped
-      to a state file on shutdown and reloaded at startup without
-      writing specific object-saving or object-reloading code.
-      Pointers and object state are maintained transparently.
-    </li>
+<ul>
+  <li>Because it's <a href="LibWriting/Persistence.html">persistent</a>.
+  That doesn't just mean that the game world persists or that you can
+  save and restore. For DGD, that means that the LPC objects can be
+  dumped to a state file on shutdown and reloaded at startup without
+  writing specific object-saving or object-reloading code. Pointers and
+  object state are maintained transparently.</li>
 
-    <li>
-      Because it does what's necessary to be persistent, such as
-      allowing you to recompile every LPC object in place without
-      rebooting, disconnecting users or losing data.  You can even do
-      it incrementally without stopping what you're doing.  New object
-      data shows up and old data disappears quietly and transparently.
-    </li>
+  <li>Because it does what's necessary to be persistent, such as
+  allowing you to recompile every LPC object in place without rebooting,
+  disconnecting users or losing data. You can even do it incrementally
+  without stopping what you're doing. New object data shows up and old
+  data disappears quietly and transparently.</li>
 
-    <li>
-      Because it's clean and well-designed.  Dworkin works hard to
-      make DGD the cleanest, most secure LPMUD out there.  DGD's LPC
-      dialect really shows it.  DGD resembles an Operating System or a
-      language environment (which it is) much more than a MUD server.
-    </li>
+  <li>Because it's clean and well-designed. Dworkin works hard to make
+  DGD the cleanest, most secure LPMUD out there. DGD's LPC dialect
+  really shows it. DGD resembles an Operating System or a language
+  environment (which it is) much more than a MUD server.</li>
 
-    <li>
-      Because Dworkin works hard.  New features and bug fixes are
-      added all the time to the experimental (but usually very stable)
-      versions of DGD.  You see stuff that other MUD servers don't
-      have and won't have any time soon like atomic functions with
-      full rollback.
-    </li>
-  </ul>
+  <li>Because Dworkin works hard. New features and bug fixes are added
+  all the time to the experimental (but usually very stable) versions of
+  DGD. You see stuff that other MUD servers don't have and won't have
+  any time soon like atomic functions with full rollback.</li>
+</ul>
 
-  <h2>What Does DGD Do That Other Drivers and Servers Don't?</h2>
+<h2>What Does DGD Do That Other Drivers and Servers Don't?</h2>
 
-  <ul>
-    <li>
-      The rlimits() structure can be used to limit how much stack
-      space and processor time a given function can take.  If
-      the time or space runs out, the function is interrupted
-      cleanly and smoothly without restarting the interpreter.
-    </li>
-    <li>
-      DGD is disk-based, so it can store massive datasets without
-      massive amounts of RAM.  Its swapping is efficient, well
-      tested and highly configurable.
-    </li>
-    <li>
-      DGD is highly secure and strongly tested in commercial
-      products like the Skotos servers and Yahoo Chat (formerly
-      iChat).
-    </li>
-    <li>
-      Most LPC environments absolutely forbid commercial use.  DGD,
-      however, can be used commercially if you purchase a license
-      from Dworkin or from <a href="Skotos/index.html">Skotos</a>.
-    </li>
-    <li>
-      DGD allows precompiled code and server extensions -- for thost
-      times when it really has to run at full native speed.
-    </li>
-    <li>
-      DGD allows you to recompile absolutely any LPC object on the
-      fly and change anything or everything about it.  It also has the
-      management code and hooks to let you usefully do this.  Since
-      DGD does far more in LPC than most drivers, this lets you
-      reconfigure anything about your game nearly instantly, and run
-      your development servers on the same LPC data without an
-      interruption for days, months or years.
-    </li>
-    <li>
-      DGD allows you to dump all game state in one lump, and reload
-      that statedump with a new DGD version.  To upgrade DGD, just
-      dump state, upgrade the DGD server code and restart.  All your
-      objects, files and players are exactly where they were.  Only
-      your current network connections are lost, and absolutely
-      everything about DGD can be upgraded this way.  You can upgrade
-      your library without even that much disruption.
-    </li>
-    <li>
-      DGD's dialect of LPC includes a lot of new extensions for better
-      typechecking and error checking than most LPC servers.  It
-      removes several redundant and insecure features (like shadowing
-      and hardcoded snooping) that can prevent a library from being
-      securable.
-    </li>
-  </ul>
+<ul>
+  <li>The rlimits() structure can be used to limit how much stack space
+  and processor time a given function can take. If the time or space
+  runs out, the function is interrupted cleanly and smoothly without
+  restarting the interpreter.</li>
 
-  <h2>And here's more information:</h2>
-  <ul>
-    <li> <a href="external/Skotos_Summary.txt">
-	Skotos Tech's (somewhat outdated) Summary of what DGD is all about
-      </a> </li>
-    <li> <a href="DGD_Terms.html">
-	A Glossary of DGD Terms and Concepts
-      </a> </li>
+  <li>DGD is disk-based, so it can store massive datasets without
+  massive amounts of RAM. Its swapping is efficient, well tested and
+  highly configurable.</li>
 
-    <li> <a href="MudOS_vs_DGD.html">How is MudOS Different from DGD?</a> </li>
-    <li> <a href="CSharp_vs_DGD.html">How is C# Different from DGD?</a> </li>
-    <li> <a href="Java_vs_DGD.html">How is Java Different from DGD?</a> </li>
-  </ul>
+  <li>DGD is highly secure and strongly tested in commercial products
+  like the Skotos servers and Yahoo Chat (formerly iChat).</li>
 
-  <p style="font-size: 150%"> <a href="index.html"> Back to top level
-    </a> </p>
+  <li>Most LPC environments absolutely forbid commercial use. DGD,
+  however, can be used commercially if you purchase a license from
+  Dworkin or from <a href="Skotos/index.html">Skotos</a>.</li>
+
+  <li>DGD allows precompiled code and server extensions -- for thost
+  times when it really has to run at full native speed.</li>
+
+  <li>DGD allows you to recompile absolutely any LPC object on the fly
+  and change anything or everything about it. It also has the management
+  code and hooks to let you usefully do this. Since DGD does far more in
+  LPC than most drivers, this lets you reconfigure anything about your
+  game nearly instantly, and run your development servers on the same
+  LPC data without an interruption for days, months or years.</li>
+
+  <li>DGD allows you to dump all game state in one lump, and reload that
+  statedump with a new DGD version. To upgrade DGD, just dump state,
+  upgrade the DGD server code and restart. All your objects, files and
+  players are exactly where they were. Only your current network
+  connections are lost, and absolutely everything about DGD can be
+  upgraded this way. You can upgrade your library without even that much
+  disruption.</li>
+
+  <li>DGD's dialect of LPC includes a lot of new extensions for better
+  typechecking and error checking than most LPC servers. It removes
+  several redundant and insecure features (like shadowing and hardcoded
+  snooping) that can prevent a library from being securable.</li>
+</ul>
+
+<h2>And here's more information:</h2>
+
+<ul>
+  <li><a href="external/Skotos_Summary.txt">Skotos Tech's (somewhat
+  outdated) Summary of what DGD is all about</a></li>
+
+  <li><a href="DGD_Terms.html">A Glossary of DGD Terms and
+  Concepts</a></li>
+
+  <li><a href="MudOS_vs_DGD.html">How is MudOS Different from
+  DGD?</a></li>
+
+  <li><a href="CSharp_vs_DGD.html">How is C# Different from
+  DGD?</a></li>
+
+  <li><a href="Java_vs_DGD.html">How is Java Different from
+  DGD?</a></li>
+</ul>
+
+<p style="font-size: 150%"><a href="index.html">Back to top
+level</a></p>

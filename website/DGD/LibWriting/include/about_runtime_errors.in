@@ -1,0 +1,33 @@
+From: DGD Mailing List (Robert Forshaw)
+Date: Tue Jan  6 15:27:00 2004
+Subject: [DGD] About runtime errors
+
+I examined Kernel's method of dealing with runtime errors, left feeling more 
+confused than before and decided to write my own function by trial and 
+error. This is what I've ended up with:
+
+void runtime_error(string error, int caught, int ticks)
+{
+	mixed ** trace;
+	mixed * err, err2;
+	trace = call_trace();
+	err = trace[sizeof(trace) - 2];
+	err2 = trace[sizeof(trace) - 3];
+
+	message("\nRuntime error in function " + err[2] +
+		"()\nIn Program \"" + err[1] + "\" on line " + err[3] +
+		",\nWhich was called by \"" + err2[1] + "\" via " +
+		(err[4] ? "call_other()" : "inheritance") +
+		"\nwithin function " +
+		err2[2]  + "() on line " + err2[3] + ".\n");
+
+}
+
+This seems to produce the correct output. It always assumes that the last 
+element of trace describes the current calling process, that would be 
+runtime_error(), and before that the erronous function call, and before that 
+the program and function which called the erronous function call. Is there 
+any situation where this might not be the case? In other words, is this 
+function fallable, or even downright incorrect...?
+
+Could someone explain to me what a 'full stack trace' is exactly?  :)

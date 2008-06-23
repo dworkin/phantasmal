@@ -1,0 +1,12 @@
+From: dgd@dworkin.nl (Steve Wooster)
+Date: Mon Apr  4 22:09:02 2005
+Subject: [DGD] DGD MP and a TLS idea
+
+     It occurred to me that what I meant by my description of call_outs 
+being "effectively single-threaded" might not have been clear... From what 
+I can tell, only one call_out can occur at a time. You can't have two 
+different call_outs running on two different processors, since they'll 
+always conflict with each other when checking if they've been suspended. 
+(or is this not true, since they don't necessarily write to variables?)
+
+-Steve Wooster

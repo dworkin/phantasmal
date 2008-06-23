@@ -1,316 +1,248 @@
-    <titledef text="Procedural Change" />
+<titledef text="Procedural Change" />
 
-    <h3 style="text-align: center"> Procedural Generation and Change of Towns,
-      Cities, Dungeons, Populations and Other Dynamic and
-      Alterable Systems </h3>
+<h3 style="text-align: center">Procedural Generation and Change of
+Towns, Cities, Dungeons, Populations and Other Dynamic and Alterable
+Systems</h3>
 
-    <p>
-      Long title, that.
-    </p>
+<p>Long title, that.</p>
 
-    <p>
-      There's an old Holy Grail of MUD development that I think I have
-      a new take on:  procedural content generation.  It's easy to
-      geometrically generate landscapes, and even things like inns,
-      towns, cities and so on.  Using an algorithmically simple generator
-      and enough domain-specific work you could build an entire city
-      even now, with modern techniques, and it's be okay.  Not great,
-      but okay.  So let's talk about some problems that currently occur
-      and some known and possible solutions.
-    </p>
+<p>There's an old Holy Grail of MUD development that I think I have a
+new take on: procedural content generation. It's easy to geometrically
+generate landscapes, and even things like inns, towns, cities and so on.
+Using an algorithmically simple generator and enough domain-specific
+work you could build an entire city even now, with modern techniques,
+and it's be okay. Not great, but okay. So let's talk about some problems
+that currently occur and some known and possible solutions.</p>
 
-    <p>
-      Incidentally, a lot of this steals other people's ideas pretty
-      liberally.  That's life.  A list of some of my more prominent
-      sources for some of this can be found <a href="ProcWorld.html">here</a>.
-      I'll note in passing that J.C. Lawrence rocks, both for his
-      ideas and for running MUD-Dev so well and so long.
-    </p>
+<p>Incidentally, a lot of this steals other people's ideas pretty
+liberally. That's life. A list of some of my more prominent sources for
+some of this can be found <a href="ProcWorld.html">here</a>. I'll note
+in passing that J.C. Lawrence rocks, both for his ideas and for running
+MUD-Dev so well and so long.</p>
 
-    <h3> I'm BORED! </h3>
+<h3>I'm BORED!</h3>
 
-    <p>
-      The first and simplest problem is that most modern procedural
-      content generators are boring.  You put in a simple randomizer
-      to put down a house, a bakery, a guardhouse or whatever.
-      But there are only a small number of primitives that it puts
-      down, and so the systems get boring quickly.  The problem here
-      is that (at least currently) procedural content generators (PCGs)
-      don't actually save you labor for a given amount of interest
-      and storyline.  You can (indeed, you almost <i>have</i> to)
-      combine PCGs with automated quest generation of one kind or
-      another, but overall it comes out to just as much work, and often
-      more, as if you'd simply designed it all statically.
-    </p>
+<p>The first and simplest problem is that most modern procedural content
+generators are boring. You put in a simple randomizer to put down a
+house, a bakery, a guardhouse or whatever. But there are only a small
+number of primitives that it puts down, and so the systems get boring
+quickly. The problem here is that (at least currently) procedural
+content generators (PCGs) don't actually save you labor for a given
+amount of interest and storyline. You can (indeed, you almost
+<i>have</i> to) combine PCGs with automated quest generation of one kind
+or another, but overall it comes out to just as much work, and often
+more, as if you'd simply designed it all statically.</p>
 
-    <p>
-      So why use them, if they're just as much work, or will be boring?
-      Two reasons.  One is the reason that people believe they will
-      eventually save work:  emergent behavior.  This means that you
-      put some simple elements together (a smithy, a bakery, four houses,
-      three fields and a small laundry, say) and the system's behavior
-      seamlessly stitches the whole thing together into a coherent whole
-      (the neighbors chat on slow days, the mothers take clothes to the
-      laundry, the kids bring home day-old bread from the baker and get
-      their ears boxed for it).  This is possible, but it's the equivalent
-      of what you'd get if you built a lot of settings like that and
-      then merged all the common code -- in other words, it's as much work
-      as doing it all statically, in the end.  Still, it's a holy grail,
-      it's not supposed to be trivial. 
-    </p>
+<p>So why use them, if they're just as much work, or will be boring? Two
+reasons. One is the reason that people believe they will eventually save
+work: emergent behavior. This means that you put some simple elements
+together (a smithy, a bakery, four houses, three fields and a small
+laundry, say) and the system's behavior seamlessly stitches the whole
+thing together into a coherent whole (the neighbors chat on slow days,
+the mothers take clothes to the laundry, the kids bring home day-old
+bread from the baker and get their ears boxed for it). This is possible,
+but it's the equivalent of what you'd get if you built a lot of settings
+like that and then merged all the common code -- in other words, it's as
+much work as doing it all statically, in the end. Still, it's a holy
+grail, it's not supposed to be trivial.</p>
 
-    <p>
-      The other reason to use dynamic content is that you may need a lot
-      of space, or for some other reason it may be beneficial to move your
-      content around unpredictably.  A randomly-generated world with
-      only three different quests is just as boring as a static world with
-      only three different quests, but you may be able to get more people
-      doing your three boring quests at once if you have multiple
-      instances of each.  That may not get you more interesting content
-      for less labor, but it <i>does</i> get the players to stop stepping
-      on each other's feet as they all race to give the dwarf his
-      randomized item.
-    </p>
+<p>The other reason to use dynamic content is that you may need a lot of
+space, or for some other reason it may be beneficial to move your
+content around unpredictably. A randomly-generated world with only three
+different quests is just as boring as a static world with only three
+different quests, but you may be able to get more people doing your
+three boring quests at once if you have multiple instances of each. That
+may not get you more interesting content for less labor, but it
+<i>does</i> get the players to stop stepping on each other's feet as
+they all race to give the dwarf his randomized item.</p>
 
-    <p>
-      This isn't really a solvable problem -- you only get as much content
-      as you generate, and while you can generate some of that content
-      as code (emergent behavior), you'll have to put at least as much
-      effort into the code as you would into more static content.  Also,
-      remember that a lot of this stuff is domain-specific, meaning you
-      have to do it differently for different settings.  So you probably
-      can't even hope that some genius will solve this problem and post
-      the results publicly -- there's a decent chance you couldn't use them
-      and you'd <i>still</i> have to do it yourself.  In the end, don't
-      expect dynamic content generation to save you any effort, though it
-      might still make for a better result.
-    </p>
+<p>This isn't really a solvable problem -- you only get as much content
+as you generate, and while you can generate some of that content as code
+(emergent behavior), you'll have to put at least as much effort into the
+code as you would into more static content. Also, remember that a lot of
+this stuff is domain-specific, meaning you have to do it differently for
+different settings. So you probably can't even hope that some genius
+will solve this problem and post the results publicly -- there's a
+decent chance you couldn't use them and you'd <i>still</i> have to do it
+yourself. In the end, don't expect dynamic content generation to save
+you any effort, though it might still make for a better result.</p>
 
-    <h3> This is STUPID! </h3>
+<h3>This is STUPID!</h3>
 
-    <p>
-      The next problem with modern PCGs is that they're pretty random.
-      If you just randomly place houses and fields, you may not wind up
-      with the right number of each.  You'd prefer each farmer get a
-      field.  If you randomize neighborhoods and buildings, you may have
-      a village with no farmers or a wealthy neighborhood with no guard
-      house, just randomly.  This is another example of the axiom
-      &quot;Procedural Content Generation will not save you any effort&quot;.
-      In the same way that you need to think of all this stuff and put
-      effort into it in your static maps, you also need to think of it
-      and put effort into it for your dynamic content generation.  So
-      intelligent dynamic content generation is just as hard (and often
-      harder) as intelligent static content generation.  Sorry, that's
-      just the way it is.
-    </p>
+<p>The next problem with modern PCGs is that they're pretty random. If
+you just randomly place houses and fields, you may not wind up with the
+right number of each. You'd prefer each farmer get a field. If you
+randomize neighborhoods and buildings, you may have a village with no
+farmers or a wealthy neighborhood with no guard house, just randomly.
+This is another example of the axiom "Procedural Content Generation will
+not save you any effort". In the same way that you need to think of all
+this stuff and put effort into it in your static maps, you also need to
+think of it and put effort into it for your dynamic content generation.
+So intelligent dynamic content generation is just as hard (and often
+harder) as intelligent static content generation. Sorry, that's just the
+way it is.</p>
 
-    <p>
-      Similarly, players will recognize a lot of patterns that the
-      PCG will not, such as an arrangement of three houses in the
-      same shape, or the fact that three nearby villages each have
-      a laundry and a smithy but no bakery.  This is essentially
-      the same as the above -- intelligent PCGs require a lot of
-      effort to write.  Making sure that there's a bakery within
-      easy walking range of any populated area is a good idea, and
-      you should do it if you can, but it complicates the PCG.
-      Making people notice and remark on the architectural similarities
-      between towns (even if they're randomly-generated and entirely
-      a coincidence) takes a <i>lot</i> of work.  There's a lot of
-      stuff that's just harder to do with a PCG, so to some extent
-      random content will seem somewhat &quot;stupider&quot; because
-      there will always be patterns in the data that the players
-      recognize and the MUD world does not.  That's usually a pretty
-      minor problem, though, and you can fix it easily enough if
-      you allow changes to the PCG's output -- just manually fix up
-      things like that to make NPCs remark on it, or to scoot the
-      houses around a bit.
-    </p>
+<p>Similarly, players will recognize a lot of patterns that the PCG will
+not, such as an arrangement of three houses in the same shape, or the
+fact that three nearby villages each have a laundry and a smithy but no
+bakery. This is essentially the same as the above -- intelligent PCGs
+require a lot of effort to write. Making sure that there's a bakery
+within easy walking range of any populated area is a good idea, and you
+should do it if you can, but it complicates the PCG. Making people
+notice and remark on the architectural similarities between towns (even
+if they're randomly-generated and entirely a coincidence) takes a
+<i>lot</i> of work. There's a lot of stuff that's just harder to do with
+a PCG, so to some extent random content will seem somewhat "stupider"
+because there will always be patterns in the data that the players
+recognize and the MUD world does not. That's usually a pretty minor
+problem, though, and you can fix it easily enough if you allow changes
+to the PCG's output -- just manually fix up things like that to make
+NPCs remark on it, or to scoot the houses around a bit.</p>
 
-    <h3> Nothing I Change Ever STAYS! </h3>
+<h3>Nothing I Change Ever STAYS!</h3>
 
-    <p>
-      And speaking of changing the PCG's output...  One problem with
-      PCGs that operate on demand is that if a player makes a big
-      change, like killing an NPC or burning down a building, that
-      change goes away next time you run the PCG.  To be fair, this
-      criticism applies to even static content in most modern MUDs,
-      since few of them allow you to change anything in the long term.
-    </p>
+<p>And speaking of changing the PCG's output... One problem with PCGs
+that operate on demand is that if a player makes a big change, like
+killing an NPC or burning down a building, that change goes away next
+time you run the PCG. To be fair, this criticism applies to even static
+content in most modern MUDs, since few of them allow you to change
+anything in the long term.</p>
 
-    <p>
-      Many people have suggested a PCG/diff system where you can add
-      a few small differences to &quot;patch&quot; the PCG-generated
-      system.  Thus, the amount of data you'd have to store about
-      world would be equal to what the PCG requires (pretty small, aside
-      from the code and data for the generator) plus all the data for
-      all the alterations that players make to the world.  There are
-      two problems with this -- simulation time and data creep.
-    </p>
+<p>Many people have suggested a PCG/diff system where you can add a few
+small differences to "patch" the PCG-generated system. Thus, the amount
+of data you'd have to store about world would be equal to what the PCG
+requires (pretty small, aside from the code and data for the generator)
+plus all the data for all the alterations that players make to the
+world. There are two problems with this -- simulation time and data
+creep.</p>
 
-    <p>
-      Players expect their changes to &quot;ripple&quot; in the world
-      -- if they set up a bucket of water in a doorway as a practical
-      joke, they'd like to see the miller get soaked when he opens the
-      door.  If they put poison in the well or blight the crops of
-      the village, they'd like to see the results of those actions.
-      The problem with that is that you have to spend time simulating
-      not just everywhere that players <i>are</i>, but everywhere
-      that they <i>have been</i>, since you'd want to see the results
-      of those actions, and keep note of the new deltas from the
-      PCG stuff.  You'll note that in the case above, the results of
-      poison or blight could easily make the deltas keep getting
-      larger (villagers die off, the survivors band together and
-      scratch out a living).  Sadly, that's usually the case -- the
-      sort of changes that players like to make will echo, causing
-      ever-larger deltas.  So you can't just simulate them for a
-      short time and stop, you have to do it forever.  That makes
-      your very large world a liability as much as an asset...
-    </p>
+<p>Players expect their changes to "ripple" in the world -- if they set
+up a bucket of water in a doorway as a practical joke, they'd like to
+see the miller get soaked when he opens the door. If they put poison in
+the well or blight the crops of the village, they'd like to see the
+results of those actions. The problem with that is that you have to
+spend time simulating not just everywhere that players <i>are</i>, but
+everywhere that they <i>have been</i>, since you'd want to see the
+results of those actions, and keep note of the new deltas from the PCG
+stuff. You'll note that in the case above, the results of poison or
+blight could easily make the deltas keep getting larger (villagers die
+off, the survivors band together and scratch out a living). Sadly,
+that's usually the case -- the sort of changes that players like to make
+will echo, causing ever-larger deltas. So you can't just simulate them
+for a short time and stop, you have to do it forever. That makes your
+very large world a liability as much as an asset...</p>
 
-    <p>
-      Data creep is the problem above -- small changes tend to
-      produce more changes, which get bigger, and then bigger yet...
-      In a realistic system (one to which chaos theory applies,
-      to be specific), these small changes will snowball into larger
-      changes like a bad &quot;B&quot; time-travel movie.
-    </p>
+<p>Data creep is the problem above -- small changes tend to produce more
+changes, which get bigger, and then bigger yet... In a realistic system
+(one to which chaos theory applies, to be specific), these small changes
+will snowball into larger changes like a bad "B" time-travel movie.</p>
 
-    <p>
-      Both of these problems, simulation time and data creep, are
-      often present in the PCG-based system <i>even before the players
-      arrive</i>.  Imagine you use your spiffy new PCG to lay out
-      a whole bunch of world.  You walk around it.  You notice that
-      the local hooligan is being careless with matches.  Unless you
-      simulate this neighborhood all the time, even when no players
-      are watching, the hooligan can only burn down the neighborhood
-      when a player is standing nearby.  That's not realistic.
-      Similarly, bread won't bake, houses won't be built, etc unless
-      you allow for that happening without players nearby.  That's
-      the simulation-time problem again.  And when the players <i>are</i>
-      standing nearby, stuff will happen that is different from the
-      PCG-generated bits (again, think of the hooligan burning down
-      the neighborhood) and you wind up with exactly the data creep
-      problem above.  Not good.
-    </p>
+<p>Both of these problems, simulation time and data creep, are often
+present in the PCG-based system <i>even before the players arrive</i>.
+Imagine you use your spiffy new PCG to lay out a whole bunch of world.
+You walk around it. You notice that the local hooligan is being careless
+with matches. Unless you simulate this neighborhood all the time, even
+when no players are watching, the hooligan can only burn down the
+neighborhood when a player is standing nearby. That's not realistic.
+Similarly, bread won't bake, houses won't be built, etc unless you allow
+for that happening without players nearby. That's the simulation-time
+problem again. And when the players <i>are</i> standing nearby, stuff
+will happen that is different from the PCG-generated bits (again, think
+of the hooligan burning down the neighborhood) and you wind up with
+exactly the data creep problem above. Not good.</p>
 
-    <h3>Some Solutions</h3>
+<h3>Some Solutions</h3>
 
-    <p>
-      Bear in mind that most people running a MUD don't care if it's
-      an accurate simulation -- they just want it to be a good game.
-      So let's see if we can change some of our unstated assumptions
-      and get a result that works better than the above, and that
-      solves some of those problems.  First, let's state those assumptions
-      so we can change them.
-    </p>
+<p>Bear in mind that most people running a MUD don't care if it's an
+accurate simulation -- they just want it to be a good game. So let's see
+if we can change some of our unstated assumptions and get a result that
+works better than the above, and that solves some of those problems.
+First, let's state those assumptions so we can change them.</p>
 
-    <p>
-      We're assuming above that the PCG-made world is either created
-      once and stays the same (bleah!) or we make it and then it's
-      supposed to carry on simulating itself, figuring out what it
-      should do at later times based on what it was before.  In other
-      words, we're making it act like a simulation.  As other people
-      have pointed out in many, many other places, there's a tradeoff
-      between simulation accuracy and gameplay.  Since we don't actually
-      give a hoot about simulation accuracy in most games, let's trade
-      some accuracy for better gameplay.
-    </p>
+<p>We're assuming above that the PCG-made world is either created once
+and stays the same (bleah!) or we make it and then it's supposed to
+carry on simulating itself, figuring out what it should do at later
+times based on what it was before. In other words, we're making it act
+like a simulation. As other people have pointed out in many, many other
+places, there's a tradeoff between simulation accuracy and gameplay.
+Since we don't actually give a hoot about simulation accuracy in most
+games, let's trade some accuracy for better gameplay.</p>
 
-    <p>
-      Here's a simple variant:  we can make our PCG take a time input
-      so that it makes the towns and cities evolve slowly.  Maybe you
-      can tell from your PCG that the bakery is going to get bigger,
-      several farms are going to go broke and go away, and there's
-      going to be a smithy built nearby.  That gives your characters
-      attitudes, and things to talk about.  Bear in mind that you don't 
-      have to derive those things from how business is doing -- maybe
-      the baker is doing well because he gets an inheritance, maybe
-      the farmers are going broke from gambling debts (even though the
-      farms are doing just fine).  You don't have to derive those things
-      from previous conditions, you just need to come up with a reason
-      for them -- you're sacrificing the accuracy of the simulation
-      to get better performance, better gameplay and (often) a better
-      story.
-    </p>
+<p>Here's a simple variant: we can make our PCG take a time input so
+that it makes the towns and cities evolve slowly. Maybe you can tell
+from your PCG that the bakery is going to get bigger, several farms are
+going to go broke and go away, and there's going to be a smithy built
+nearby. That gives your characters attitudes, and things to talk about.
+Bear in mind that you don't have to derive those things from how
+business is doing -- maybe the baker is doing well because he gets an
+inheritance, maybe the farmers are going broke from gambling debts (even
+though the farms are doing just fine). You don't have to derive those
+things from previous conditions, you just need to come up with a reason
+for them -- you're sacrificing the accuracy of the simulation to get
+better performance, better gameplay and (often) a better story.</p>
 
-    <p>
-      Once you know where these things are going, you can work
-      to make differences get <i>smaller</i> instead of bigger -- you're
-      going to have to fudge why shops are built and destroyed anyway,
-      just take some of that into account.  For very large changes
-      (like the neighborhood burning down) you can try changing the
-      type of the overall area, seeing if you can get a random seed
-      that's more like a burned-down neighborhood, or just accept that
-      there'll be a very large delta for awhile.  Since you know the
-      trends in most neighborhoods, you don't have to do much simulation
-      on them -- none if there are no deltas, and remember that your
-      deltas will keep getting smaller as neighborhood residents pick up
-      stray items, rebuild damaged bits of buildings and so on.
-    </p>
+<p>Once you know where these things are going, you can work to make
+differences get <i>smaller</i> instead of bigger -- you're going to have
+to fudge why shops are built and destroyed anyway, just take some of
+that into account. For very large changes (like the neighborhood burning
+down) you can try changing the type of the overall area, seeing if you
+can get a random seed that's more like a burned-down neighborhood, or
+just accept that there'll be a very large delta for awhile. Since you
+know the trends in most neighborhoods, you don't have to do much
+simulation on them -- none if there are no deltas, and remember that
+your deltas will keep getting smaller as neighborhood residents pick up
+stray items, rebuild damaged bits of buildings and so on.</p>
 
-    <p>
-      It's not obvious how a PCG would manage this propagation forward in
-      time, so I'll suggest two major possibilities.  I'm sure there are
-      others at least as good.
-    </p>
+<p>It's not obvious how a PCG would manage this propagation forward in
+time, so I'll suggest two major possibilities. I'm sure there are others
+at least as good.</p>
 
-    <h3> Generate and Interpolate </h3>
+<h3>Generate and Interpolate</h3>
 
-    <p>
-      Imagine you have a good static PCG -- one that will generate you a
-      whole world, but not simulate it forward in time.  If you can do that,
-      you could also have it generate (for each area) a condition at one
-      time, a condition at a later time, and then interpolate between them.
-      While this is a lot more work (you have to figure out how and why
-      businesses change, people move away, etc), you can do it, and it'll
-      give you a nice continuous world.  And with work, you'll have good
-      activities going on all the time -- people coming and going,
-      businesses changing, etc.
-    </p>
+<p>Imagine you have a good static PCG -- one that will generate you a
+whole world, but not simulate it forward in time. If you can do that,
+you could also have it generate (for each area) a condition at one time,
+a condition at a later time, and then interpolate between them. While
+this is a lot more work (you have to figure out how and why businesses
+change, people move away, etc), you can do it, and it'll give you a nice
+continuous world. And with work, you'll have good activities going on
+all the time -- people coming and going, businesses changing, etc.</p>
 
-    <h3> Feedback and Detail Adjustment </h3>
+<h3>Feedback and Detail Adjustment</h3>
 
-    <p>
-      This is a significantly different approach from the above, and is
-      likely to sit better with people who like simulations.  Since
-      all of this is an alternative to static, hand-built content
-      I'm not worried about that :-)
-    </p>
+<p>This is a significantly different approach from the above, and is
+likely to sit better with people who like simulations. Since all of this
+is an alternative to static, hand-built content I'm not worried about
+that :-)</p>
 
-    <p>
-      Imagine that you keep track of a bunch of variables like the
-      population of a village, how well each business is doing and
-      other numerical data about families.  When players are present
-      in the village, you can run the simulation at the level of
-      individual people (you have to anyway, so you might as well use
-      the data) to update these variables.  However, when no players
-      are present you can use a simpler update formula.  This is a
-      simple problem in differential equations, and well-known and
-      well-tested methods like Runge-Kutta will do most of your work
-      for you if you design your functions carefully.
-    </p>
+<p>Imagine that you keep track of a bunch of variables like the
+population of a village, how well each business is doing and other
+numerical data about families. When players are present in the village,
+you can run the simulation at the level of individual people (you have
+to anyway, so you might as well use the data) to update these variables.
+However, when no players are present you can use a simpler update
+formula. This is a simple problem in differential equations, and
+well-known and well-tested methods like Runge-Kutta will do most of your
+work for you if you design your functions carefully.</p>
 
-    <p>
-      Based on whether players are nearby, and how much of a delta you
-      have from the feedback model (again, remember that players can
-      make changes that you didn't account for) you pick a level of
-      detail to simulate.  Perhaps you run the full model, just as if
-      a player was there.  Or perhaps you run a differential equations
-      model with most of the same variables (it'll still be faster than
-      having to update all your data structures) and just figure out where
-      everybody is, from those variables, when a player shows up to
-      look around.  And as time goes by and you're sure that players don't
-      care about the place much (they haven't been anywhere around for
-      awhile) you can drop detail -- a model with a variable for every
-      citizen becomes one with a variable for every social group, say, so
-      that you can simulate a village with about three variables, a city
-      with six or seven, and a metropolis with no more than twenty or
-      thirty.  Eventually you can get rid of even that and let it be
-      randomly generated again if anybody ever shows up, just like you do
-      with all the areas of your (infinite?) map that have never been
-      visited before.  Then, when you need more detail (again, when a player
-      shows up), you can regenerate those variables and the city, which
-      has changed a lot -- but it <i>should</i> have, no player has been
-      near it in a long time.  They've been busy building and tearing down,
-      and people have immigrated, emigrated or died...
-    </p>
+<p>Based on whether players are nearby, and how much of a delta you have
+from the feedback model (again, remember that players can make changes
+that you didn't account for) you pick a level of detail to simulate.
+Perhaps you run the full model, just as if a player was there. Or
+perhaps you run a differential equations model with most of the same
+variables (it'll still be faster than having to update all your data
+structures) and just figure out where everybody is, from those
+variables, when a player shows up to look around. And as time goes by
+and you're sure that players don't care about the place much (they
+haven't been anywhere around for awhile) you can drop detail -- a model
+with a variable for every citizen becomes one with a variable for every
+social group, say, so that you can simulate a village with about three
+variables, a city with six or seven, and a metropolis with no more than
+twenty or thirty. Eventually you can get rid of even that and let it be
+randomly generated again if anybody ever shows up, just like you do with
+all the areas of your (infinite?) map that have never been visited
+before. Then, when you need more detail (again, when a player shows up),
+you can regenerate those variables and the city, which has changed a lot
+-- but it <i>should</i> have, no player has been near it in a long time.
+They've been busy building and tearing down, and people have immigrated,
+emigrated or died...</p>

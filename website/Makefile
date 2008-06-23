@@ -5,12 +5,17 @@ rhtml:
 prereq: api book
 pclean: cleanapi cleanbook
 
-dist: prereq rhtml
-dclean: rclean pclean
+dist: prereq rhtml cleancheck
+dclean: rclean pclean cleancheck
 include $(ROOT)/website/Makefile.in
 
-.PHONY: api cleanapi book cleanbook prereq pclean dist dclean
+.PHONY: api cleanapi book cleanbook prereq pclean dist dclean cleancheck
 
+cleancheck:
+	rm -f include/*.check include/*/*.check
+	rm -f */include/*.check */include/*/*.check
+	rm -f */*/include/*.check */*/include/*/*.check
+	rm -f */*/*/include/*.check */*/*/include/*/*.check
 api:
 	make api -C API
 cleanapi:

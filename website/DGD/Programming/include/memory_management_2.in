@@ -1,0 +1,42 @@
+From: dgd at list.imaginary.com (Erwin Harte)
+Date: Tue Mar 19 16:55:01 2002
+Subject: [DGD] Memory management
+
+On Tue, Mar 19, 2002 at 05:07:45PM -0500, Jay Shaffstall wrote:
+> 
+> >To expand on this: for persistent objects (which is all you'll see in the 
+> >kernel library) the references to the object are of no consequence; when 
+> >the object is destructed, any existing reference to the object will 
+> >evaluate to 'nil'.
+> 
+> Does this include references in mappings and arrays?  The kernel userd 
+> object uses a logout method to specifically remove a user from the array 
+> and mapping it maintains.  Seems as if this wouldn't be needed, since the 
+> user object itself is destructed soon after.
+
+In arrays they turn to nil as well.  Mappings are special, in the
+sense that if an entry in the mapping (index or value or both) refer
+to a destructed object, the entry is cleaned out before you see it in
+LPC space (i.e: before DGD returns the result of one of the map_*
+kfuns or an index into a mapping.
+
+So if you had:
+
+  mapping m;
+
+  m = ([ <someobject>: 1 ]);
+
+And destruct <someobject>, then m will be ([ ]) the next time you look
+at it.
+
+Same for this:
+
+  mapping m;
+
+  m = ([ 100: <someobject> ]);
+
+Hope that helps,
+
+Erwin.
+-- 
+Erwin Harte

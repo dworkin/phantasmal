@@ -1,0 +1,32 @@
+Date: Thu Sep 27 12:50:01 2001
+Subject: [DGD] string parsing..
+
+On Thu, Sep 27, 2001 at 07:26:15PM +0200, Nico Lammers wrote:
+[...]
+> 
+> But now I still don't know how to use parse_string() ;-)
+> 
+> It seemed to me that the examples I gave would be easy to do.. but maybe
+> I'm wrong?
+
+Hmm... using Elemel's code (untested):
+
+    static string
+    regsub(string str, string regexp, string subst)
+    {
+	string *bits;
+
+	bits = parse_string("whitespace = /" + regexp + "/\n"
+			  + "text = nomatch\n"
+			  + "TEXT: text TEXT\n"
+			  + "TEXT:", str);
+	return implode(bits, subst);
+    }
+
+You could probably do this without the implode if you used a different
+token than whitespace for the regexp and an extra function to replace
+the token with the substitute text.
+
+Erwin.
+-- 
+Erwin Harte

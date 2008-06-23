@@ -1,0 +1,28 @@
+Date: Tue, 29 May 2001 03:53:37 +0200
+From: Erwin Harte
+Subject: Re: [DGD]IP to alphanumeric
+
+On Mon, May 28, 2001 at 07:56:54PM -0500, Lord Lerkista wrote:
+> 
+> On Monday, May 28, 2001, at 07:33 PM, Erwin Harte wrote:
+> 
+> > You might want to have a look at the query_ip_number() kfun.
+> 
+> I try with query_ip_number() and query_ip_name() and both returns the 
+> numeric ip!!
+> =/
+
+Three options:
+
+1. Your machine doesn't have name-resolving configured properly.
+2. The query_ip_name() kfun is redefined by something that doesn't work.
+3. Perhaps the ipnumber doesn't resolve correctly.
+
+The example ipnumber you gave resolves just fine though, so 1 & 2 are
+the only reason I would put any money on right now.
+
+Good luck figuring it out. :-)
+
+Erwin.
+-- 
+Erwin Harte

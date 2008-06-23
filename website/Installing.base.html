@@ -1,212 +1,161 @@
 <titledef text="Installing Baseline Phantasmal" />
 
-<h2> Getting Phantasmal Up and Running </h2>
+<h2>Getting Phantasmal Up and Running</h2>
 
-<p>
-  The (very) short answer is &quot;check the INSTALL file that came
-  with your copy of Phantasmal&quot;.  You'll find it in the top-level
-  directory, next to stuff like README and either phantasmal.dgd or
-  testgame.dgd.
-</p>
+<p>The (very) short answer is "check the INSTALL file that came with
+your copy of Phantasmal". You'll find it in the top-level directory,
+next to stuff like README and either phantasmal.dgd or testgame.dgd.</p>
 
-<p>
-  However, if you're installing non-bundled Phantasmal, there are some
-  steps in the README that might require a bit more figuring out.
-  Note that bundled Phantasmal works differently, and you don't need
-  to do most of the steps listed in this file.
-</p>
+<p>However, if you're installing non-bundled Phantasmal, there are some
+steps in the README that might require a bit more figuring out. Note
+that bundled Phantasmal works differently, and you don't need to do most
+of the steps listed in this file.</p>
 
-<h3> Getting DGD Up and Running </h3>
+<h3>Getting DGD Up and Running</h3>
 
-<p>
-  Before you can do anything else, you'll need DGD up and running.
-  Before you can do that, you'll need to know which version you need.
-  Your copy of Phantasmal probably came with a file called
-  TESTED_VERSIONS in its root directory.  That's a text file, which
-  will say something like &quot;DGD 1.2.90-1.2.93&quot;.  That means
-  you'll need a recent experimental DGD, something between 1.2.90 and
-  1.2.93.  So pick your version of DGD with this in mind.  You may
-  also be running other things that require a specific DGD version.
-</p>
+<p>Before you can do anything else, you'll need DGD up and running.
+Before you can do that, you'll need to know which version you need. Your
+copy of Phantasmal probably came with a file called TESTED_VERSIONS in
+its root directory. That's a text file, which will say something like
+"DGD 1.2.90-1.2.93". That means you'll need a recent experimental DGD,
+something between 1.2.90 and 1.2.93. So pick your version of DGD with
+this in mind. You may also be running other things that require a
+specific DGD version.</p>
 
-<p>
-  Usually you'll unpack DGD and patch it (see <a
-  href="DGD/DGD_Config.html">instructions elsewhere</a> on how to
-  create an experimental copy of DGD).  If you're running something
-  other than Linux or OS X, you'll need to modify src/Makefile.
-  Specifically, you'll need to change the HOST variable to something
-  reasonable.  For instance, old copies of Linux will use the 'LINUX'
-  value.  Check the DGD documentation for details if the default
-  doesn't work for you.  Then go into the 'src' directory and type
-  'make install'.  You'll get an error message on installation, and a
-  message saying that the error is being ignored.  That's normal if
-  you haven't built DGD before in the same directory, or if you
-  deleted the old copy of bin/driver last time.  It's not a problem,
-  which is why the error is ignored.
-</p>
+<p>Usually you'll unpack DGD and patch it (see <a href=
+"DGD/Config/index.html">instructions elsewhere</a> on how to create an
+experimental copy of DGD). If you're running something other than Linux
+or OS X, you'll need to modify src/Makefile. Specifically, you'll need
+to change the HOST variable to something reasonable. For instance, old
+copies of Linux will use the 'LINUX' value. Check the DGD documentation
+for details if the default doesn't work for you. Then go into the 'src'
+directory and type 'make install'. You'll get an error message on
+installation, and a message saying that the error is being ignored.
+That's normal if you haven't built DGD before in the same directory, or
+if you deleted the old copy of bin/driver last time. It's not a problem,
+which is why the error is ignored.</p>
 
-<p>
-  Then, you'll need to test the Kernel Library and make sure it works.
-  You'll need to modify 'mud.dgd'.  Specifically, find the
-  &quot;directory = &lt;blah&gt;&quot; line, and replace the old
-  &quot;blah&quot; value with the right thing for wherever you've put
-  DGD.  You'll need to use an absolute path, not a relative path, so
-  start with a slash or a drive letter, not a dot or a directory name.
-</p>
+<p>Then, you'll need to test the Kernel Library and make sure it works.
+You'll need to modify 'mud.dgd'. Specifically, find the "directory =
+&lt;blah&gt;" line, and replace the old "blah" value with the right
+thing for wherever you've put DGD. You'll need to use an absolute path,
+not a relative path, so start with a slash or a drive letter, not a dot
+or a directory name.</p>
 
-<p>
-  Type &quot;./bin/driver mud.dgd&quot; if you're on Unix, or
-  &quot;bin\driver mud.dgd&quot; on Windows.  DGD should tell you what
-  version you're using, along with a message telling you that it
-  initialized.  Then it'll hang there.  That's expected -- that's what
-  your MUD server usually looks like when it's running.
-</p>
+<p>Type "./bin/driver mud.dgd" if you're on Unix, or "bin\driver
+mud.dgd" on Windows. DGD should tell you what version you're using,
+along with a message telling you that it initialized. Then it'll hang
+there. That's expected -- that's what your MUD server usually looks like
+when it's running.</p>
 
-<p>
-  Telnet to your local machine, port 6047.  You should get a login
-  prompt.  Log in as &quot;admin&quot; (set the new password to
-  whatever you like, it won't matter soon), and type 'who'.  You
-  should see that you're logged in.  Typing 'people' will tell you a
-  bit more.  You can find out <a href="DGD/Kernel/Commands.html">more
-  about the Kernel MUDLib user commands</a> if you check the web or
-  ask around a little.  For now, don't bother &mdash; you'll be using
-  Phantasmal soon anyway.
-</p>
+<p>Telnet to your local machine, port 6047. You should get a login
+prompt. Log in as "admin" (set the new password to whatever you like, it
+won't matter soon), and type 'who'. You should see that you're logged
+in. Typing 'people' will tell you a bit more. You can find out <a href=
+"DGD/Kernel/Commands.html">more about the Kernel MUDLib user
+commands</a> if you check the web or ask around a little. For now, don't
+bother &mdash; you'll be using Phantasmal soon anyway.</p>
 
-<h3> Getting Phantasmal Up and Running </h3>
+<h3>Getting Phantasmal Up and Running</h3>
 
-<p>
-  Different versions of Phantasmal may have different steps.  When in
-  doubt, check the INSTALL file in the root directory of your
-  Phantasmal directory.  However, the steps below are typical for
-  current non-bundled Phantasmal installation.
-</p>
+<p>Different versions of Phantasmal may have different steps. When in
+doubt, check the INSTALL file in the root directory of your Phantasmal
+directory. However, the steps below are typical for current non-bundled
+Phantasmal installation.</p>
 
-<p>
-  To install Phantasmal, you'll need to put the Kernel Library headers
-  into place.  The easiest way to do that is to copy all the headers
-  from mud/include/kernel in the Kernel Library into the
-  include/kernel directory of Phantasmal.  It's possible to
-  symbolically link them, but I wouldn't bother if I were you.  When
-  you upgrade the Kernel Library, just copy the new headers into
-  place.  Note that you'll need to upgrade the Kernel Library when you
-  upgrade DGD, at least if the new DGD version has a different version
-  of the Kernel Library.
-</p>
+<p>To install Phantasmal, you'll need to put the Kernel Library headers
+into place. The easiest way to do that is to copy all the headers from
+mud/include/kernel in the Kernel Library into the include/kernel
+directory of Phantasmal. It's possible to symbolically link them, but I
+wouldn't bother if I were you. When you upgrade the Kernel Library, just
+copy the new headers into place. Note that you'll need to upgrade the
+Kernel Library when you upgrade DGD, at least if the new DGD version has
+a different version of the Kernel Library.</p>
 
-<p>
-  You'll also need to put the rest of the necessary Kernel Library
-  code into place.  If you're on a Unix box, this can be a good
-  opportunity to use symbolic links.  If you're in Phantasmal's kernel
-  subdirectory (usually called something like mudlib/kernel or
-  phantasmal-0.016/kernel), and your DGD installation is at a location
-  called /usr/local/dgd, you'd type <tt>ln -s
-  /usr/local/dgd/mud/kernel/data .</tt> to symbolically link DGD's
-  kernel/data directory to act as Phantasmal's kernel/data directory.
-  You'll need to do this with all four subdirectories of kernel
-  &mdash; sys, lib, obj and data.
-</p>
+<p>You'll also need to put the rest of the necessary Kernel Library code
+into place. If you're on a Unix box, this can be a good opportunity to
+use symbolic links. If you're in Phantasmal's kernel subdirectory
+(usually called something like mudlib/kernel or
+phantasmal-0.016/kernel), and your DGD installation is at a location
+called /usr/local/dgd, you'd type <tt>ln -s
+/usr/local/dgd/mud/kernel/data .</tt> to symbolically link DGD's
+kernel/data directory to act as Phantasmal's kernel/data directory.
+You'll need to do this with all four subdirectories of kernel &mdash;
+sys, lib, obj and data.</p>
 
-<p>
-  If you're not on a Unix box or don't want to use symbolic links, you
-  can instead copy the directories into their new locations.  Note
-  that upgrading DGD can be error-prone in either case, and that you
-  may need to do it slightly differently if you copy than if you
-  symbolically link.  See the PROBLEMS file in the root of your DGD
-  installation for further details.
-</p>
+<p>If you're not on a Unix box or don't want to use symbolic links, you
+can instead copy the directories into their new locations. Note that
+upgrading DGD can be error-prone in either case, and that you may need
+to do it slightly differently if you copy than if you symbolically link.
+See the PROBLEMS file in the root of your DGD installation for further
+details.</p>
 
-<p>
-  Speaking of the PROBLEMS file, make sure to check it if you're
-  having problems installing.  That's what it's there for.
-</p>
+<p>Speaking of the PROBLEMS file, make sure to check it if you're having
+problems installing. That's what it's there for.</p>
 
-<p>
-  You're also going to need to edit phantasmal.dgd so that it works
-  right.  Specifically, you're going to need to edit the 'directory'
-  entry, the one that says to replace it with your absolute path.
-  You'll need to replace it with the absolute path to your copy of
-  Phantasmal.
-</p>
+<p>You're also going to need to edit phantasmal.dgd so that it works
+right. Specifically, you're going to need to edit the 'directory' entry,
+the one that says to replace it with your absolute path. You'll need to
+replace it with the absolute path to your copy of Phantasmal.</p>
 
-<p>
-  It needs an absolute path, not a relative one.  You should *not* use
-  the tilde (~) variable on Unix in the path, just use a straight-up
-  path like &quot;/usr/bob/code/phantasmal&quot;.
-</p>
+<p>It needs an absolute path, not a relative one. You should *not* use
+the tilde (~) variable on Unix in the path, just use a straight-up path
+like "/usr/bob/code/phantasmal".</p>
 
-<p>
-  I like to make a couple of extra convenience files as well.
-  Specifically, I'll usually link to the dgd/bin directory in my
-  Phantasmal directory, so instead of running the MUD by typing
-  &quot;/home/angelbob/code/dgd/bin/driver ./phantasmal.dgd&quot;, I
-  can just type &quot;./bin/driver phantasmal.dgd&quot;.  It's up to
-  you whether you want to do something similar, put DGD's driver in
-  your path, write a script to run DGD for you or what.
-</p>
+<p>I like to make a couple of extra convenience files as well.
+Specifically, I'll usually link to the dgd/bin directory in my
+Phantasmal directory, so instead of running the MUD by typing
+"/home/angelbob/code/dgd/bin/driver ./phantasmal.dgd", I can just type
+"./bin/driver phantasmal.dgd". It's up to you whether you want to do
+something similar, put DGD's driver in your path, write a script to run
+DGD for you or what.</p>
 
-<p>
-  I also copy the DGD API documentation into my doc directory.
-  Specifically, I copy DGD's &quot;doc/kernel&quot; and
-  &quot;doc/kfun&quot; stuff into the same places under Phantasmal for
-  easy use.  Again, you may or may not want to.
-</p>
+<p>I also copy the DGD API documentation into my doc directory.
+Specifically, I copy DGD's "doc/kernel" and "doc/kfun" stuff into the
+same places under Phantasmal for easy use. Again, you may or may not
+want to.</p>
 
-<h3> Once You Can Run Phantasmal </h3>
+<h3>Once You Can Run Phantasmal</h3>
 
-<p>
-  If you've followed the instructions above faithfully, you should
-  have a running copy of Phantasmal, which you can access by
-  telnetting to port 8888 of your local machine.  If you then login as
-  admin and type &quot;help&quot; you'll find yourself face to face
-  with a pretty daunting amount of online help.  We consider this a
-  Good Thing (tm).
-</p>
+<p>If you've followed the instructions above faithfully, you should have
+a running copy of Phantasmal, which you can access by telnetting to port
+8888 of your local machine. If you then login as admin and type "help"
+you'll find yourself face to face with a pretty daunting amount of
+online help. We consider this a Good Thing (tm).</p>
 
-<p>
-  However, before doing all of that, make yourself a non-admin
-  account.  It's good to have accounts for admins other than just the
-  single lone &quot;admin&quot; account, because you'd like to have
-  separate space to work in, different privilege levels for different
-  accounts, and the ability to have more than one admin log in at
-  once.  Good things all.
-</p>
+<p>However, before doing all of that, make yourself a non-admin account.
+It's good to have accounts for admins other than just the single lone
+"admin" account, because you'd like to have separate space to work in,
+different privilege levels for different accounts, and the ability to
+have more than one admin log in at once. Good things all.</p>
 
-<p>
-  First, log in and create your new account.  Just give the name of
-  the new account when it asks for the login name, and then pick a new
-  password when it asks you to.  Then, from the admin account (not the
-  new one, the old one), type <tt>grant &lt;name&gt; access</tt>, but
-  replace &lt;name&gt; with the actual account name you just made for
-  the new admin.  Don't put it in the greater-than and less-than
-  signs, that's just to show you what to replace.  The line above
-  makes the account an admin account.  That is, it makes it possible
-  for it to have admin privileges, though it doesn't actually give
-  them any.
-</p>
+<p>First, log in and create your new account. Just give the name of the
+new account when it asks for the login name, and then pick a new
+password when it asks you to. Then, from the admin account (not the new
+one, the old one), type <tt>grant &lt;name&gt; access</tt>, but replace
+&lt;name&gt; with the actual account name you just made for the new
+admin. Don't put it in the greater-than and less-than signs, that's just
+to show you what to replace. The line above makes the account an admin
+account. That is, it makes it possible for it to have admin privileges,
+though it doesn't actually give them any.</p>
 
-<p>
-  Then (no, we're not done yet), still from the old admin account,
-  type <tt>grant &lt;name&gt; / full</tt>.  Replace &lt;name&gt; again
-  with the same thing.  This grants the new admin account full
-  read-write-admin access (that's what &quot;full&quot; means in the
-  command line above) to the root directory of your MUD (that's why
-  it's a slash, above &mdash; that means the very top-level
-  directory).  So the new admin gets full-power access to every file
-  in your MUD.  <b>Don't</b> give admin access to somebody you don't
-  trust.  Also, back up your MUD regularly, especially if you're
-  giving admin access to people that may not be the sharpest knives in
-  the drawer...  They can mess up your MUD by incompetence just as
-  easily as malice.  Easier, usually.
-</p>
+<p>Then (no, we're not done yet), still from the old admin account, type
+<tt>grant &lt;name&gt; / full</tt>. Replace &lt;name&gt; again with the
+same thing. This grants the new admin account full read-write-admin
+access (that's what "full" means in the command line above) to the root
+directory of your MUD (that's why it's a slash, above &mdash; that means
+the very top-level directory). So the new admin gets full-power access
+to every file in your MUD. <b>Don't</b> give admin access to somebody
+you don't trust. Also, back up your MUD regularly, especially if you're
+giving admin access to people that may not be the sharpest knives in the
+drawer... They can mess up your MUD by incompetence just as easily as
+malice. Easier, usually.</p>
 
-<h3> What Now? </h3>
+<h3>What Now?</h3>
 
-<p>
-  Well, you have the online help mentioned above (please note that the
-  help for admin and non-admin accounts is different &mdash; don't be
-  surprised when you notice).  Phantasmal's web site, the one you're
-  looking at, also includes a wide range of <a
-  href="Tutorial">Tutorials</a> and similar documentation, which are
-  highly recommended.  This stuff has all been written &mdash; use it.
-</p>
+<p>Well, you have the online help mentioned above (please note that the
+help for admin and non-admin accounts is different &mdash; don't be
+surprised when you notice). Phantasmal's web site, the one you're
+looking at, also includes a wide range of <a href=
+"Tutorial">Tutorials</a> and similar documentation, which are highly
+recommended. This stuff has all been written &mdash; use it.</p>

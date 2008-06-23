@@ -1,0 +1,23 @@
+From: dgd at list.imaginary.com (Par Winzell)
+Date: Tue Mar 19 16:44:01 2002
+Subject: [DGD] Memory management
+
+>> To expand on this: for persistent objects (which is all you'll see in 
+>> the kernel library) the references to the object are of no 
+>> consequence; when the object is destructed, any existing reference to 
+>> the object will evaluate to 'nil'.
+> 
+> 
+> Does this include references in mappings and arrays?  The kernel userd 
+> object uses a logout method to specifically remove a user from the array 
+> and mapping it maintains.  Seems as if this wouldn't be needed, since 
+> the user object itself is destructed soon after.
+
+It is not required for the mapping -- destruct objects in a mapping are 
+removed from it -- but if you did not remove the user object from the 
+array, the array would contain an explicit nil. That's tolerable from 
+time to time, of course; any access to this array could just make sure 
+to wipe 'nil' values from it. However, in this case, the logout is the 
+more well-structured approach, eh?
+
+Zell

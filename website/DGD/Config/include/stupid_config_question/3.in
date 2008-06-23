@@ -1,0 +1,24 @@
+From: "Felix A. Croes"
+Subject: Re: [DGD] Stupid config question...
+Date: Sat, 4 Sep 2004 23:05:21 +0200
+
+Noah Gibbs wrote:
+
+>   I'm sure this has been answered before.
+>
+>   I'm trying to get DGD running on a new machine.  I tried grabbing
+> both 1.2.90 and 1.2.93 with the same results.  I've compiled with the
+> host set to LINUX and to DARWIN.  The machine is actually running
+> Fedora Core 1, which is based strongly on RedHat Linux, and distributed
+> by RedHat.
+>
+>   Every time I run DGD (at least if the config file is right, *grin*),
+> I get the error message:  "socket IPv6: Address family not supported by
+> protocol".
+
+It looks like the include files define AF_INET6, but the kernel doesn't
+support it.  In the main Makefile, add INET6=0 to the options, make clean
+and rebuild.
+
+Regards,
+Dworkin

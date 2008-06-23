@@ -1,0 +1,22 @@
+Date: Mon Sep 17 12:51:00 2001
+Subject: [DGD] Could it work...
+
+Matt,
+
+> To be honest we looked at the kernel lib and had no idea what was going on
+> ;) So with a lot of work and head banging we built our own system from the
+> ground up. The great thing about that is that I know what every little bit
+> of code does. I was unsure about working with something I couldn't
+> understand. Maybe now we can look back and say ... 'oops' but I think it's
+> okay...
+
+
+The kernel library is not particularly friendly, true, and I completely 
+agree that it is good to learn why you need something before you start 
+using it. To limit the amount of "oops" that happens, seriously consider 
+my suggestion not to start off with a persistent Mud. Then over time as 
+you run the Mud, take note of how often you need to cold-start it and 
+consider what would happen if you couldn't do that, ever. That'll give 
+you a first appreciation of what need the kernel library attempts to fill.
+
+Zell

@@ -1,0 +1,20 @@
+From: dgd at list.imaginary.com (Erwin Harte)
+Date: Fri Feb 20 19:35:01 2004
+Subject: [DGD] Re: map_indices guaranteed to be alphabetical?
+
+On Fri, Feb 20, 2004 at 05:11:51PM -0800, Noah Gibbs wrote:
+>   I've hit a point of contention with another programmer.  I thought
+> that map_indices() wasn't guaranteed to return the indices in ASCII
+> order.  The other programmer claims it is.  I know it usually does, but
+> will it always?
+
+I've built many a program on the assumption that it does.  Rest
+assured that a hitman will be hired if Dworkin ever changes that
+behaviour. ;-)
+
+Yes, the indices as returned by map_indices() will always be sorted
+appropriately within each type.
+
+Erwin.
+-- 
+Erwin Harte

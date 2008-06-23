@@ -1,0 +1,17 @@
+From: DGD Mailing List (Michael McKiel)
+Date: Sun Apr 25 02:04:01 2004
+Subject: [DGD] RE:time() and suspending call_outs
+
+ --- Steven Brooker(Immortius) wrote: 
+> What's wrong with saving them to file somewhere?  My
+> objectd copies the code into ./current after compiles.
+>    You just need to make sure people can't compile the
+> contents of these backup folders.
+> 
+I believe Erwin was referring to what Dworkin does in his mudlib, he keeps
+the source code for compiled objects, and can access/dump the source to a
+file, and compare differences between various versions of compiled objects. 
+Sounds like yer talking about a non-automated process, and done by hand.
+Which if you want to keep source like that then likely not much issue, aside
+from the fact that you have to recompile all objects using that source,
+instead of having some that are based off of different source.

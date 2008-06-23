@@ -1,0 +1,37 @@
+From: dgd@dworkin.nl (Felix A. Croes)
+Date: Tue Apr  5 01:21:01 2005
+Subject: [DGD] 3 golden rules for MP
+
+Par Winzell wrote:
+
+> > 1) Try to modify as few objects as possible in a single execution round,
+> >    other than the object you start in.
+> > 2) Try to avoid modifying the object you add a callout for.  If possible,
+> >    delay modification until when the callout actually executes.
+> > 3) Avoid starting all execution rounds from the same small set of objects.
+>
+> To my mind, 1) and 3) are fairly intuitive, and I think I know
+> reasonably well how to go about structuring a mudlib to avoid lots of
+> clashes. But 2) seems problematic to me, especially if 3) prohibits us
+> from offloading hearbeat-style issues on central objects.
+
+The second rule follows from the first.  If you have an occasion where
+a lot of objects are modified together -- for example, a message broadcast
+to all players -- you can lessen the impact by breaking it up with callouts.
+The broadcaster does not directly force each player to process a message,
+but instead starts a zero-delay callout in each player object to do so.
+
+This introduces a whole new reason for having zero-delay callouts, and
+I expect that the amount of them will probably exceed the "normal"
+callouts by at least one order of magnitude.  The second rule must be
+seen in that context.  It applies to all of such "followup" callouts,
+and therefore to the vast majority of callouts.  Of course, there are
+still a number of "ordinary" callouts for which it makes no sense.
+
+None of the rules are absolute, and all of them can be broken when
+there is sufficient reason for doing so.  Rule 2 is very important
+when you mask call_out() in the auto object, it would be a disaster
+if there is some variable modified along with <every> added callout.
+
+Regards,
+Dworkin

@@ -1,87 +1,62 @@
-  <titledef text="DGD Crashes" />
+<titledef text="DGD Crashes" />
 
-  <h2> When Might DGD Legitimately Crash? </h2>
+<h2>When Might DGD Legitimately Crash?</h2>
 
-  <p>
-    There are actually several times that DGD might crash, hang, or
-    otherwise get into an unusable state.
-  </p>
+<p>There are actually several times that DGD might crash, hang, or
+otherwise get into an unusable state.</p>
 
-  <p>
-    The simplest times are when you tell it to - if you set the tick
-    limit to -1 and then get into an infinite loop, for instance,
-    that'll do it.  Similarly, if you block input and then never turn
-    it back on, your MUD will be pretty thoroughly unusable.
-  </p>
+<p>The simplest times are when you tell it to - if you set the tick
+limit to -1 and then get into an infinite loop, for instance, that'll do
+it. Similarly, if you block input and then never turn it back on, your
+MUD will be pretty thoroughly unusable.</p>
 
-  <p>
-    DGD is a lot more prone to crash if you have serious problems when
-    you're starting up - if your code doesn't compile originally, for
-    instance, or if you have an uncaught fatal error when initializing
-    your very first object.  'Crash' is perhaps too strong a word, but
-    it will cease running.  You can also get a crash in certain
-    circumstances if you do something funny enough with your error
-    handling.  If your handler for runtime_error gets a runtime error
-    immediately, for instance, you're pretty screwed and DGD will tend
-    to give up and die.
-  </p>
+<p>DGD is a lot more prone to crash if you have serious problems when
+you're starting up - if your code doesn't compile originally, for
+instance, or if you have an uncaught fatal error when initializing your
+very first object. 'Crash' is perhaps too strong a word, but it will
+cease running. You can also get a crash in certain circumstances if you
+do something funny enough with your error handling. If your handler for
+runtime_error gets a runtime error immediately, for instance, you're
+pretty screwed and DGD will tend to give up and die.</p>
 
-  <p>
-    DGD can also crash if a guest programmer allocates all free
-    memory.  There isn't really a good way around this.  If you're
-    allowing guest programmers full LPC access, they can allocate all
-    your RAM and bring your MUD to its knees.  Some libs, like LPMOO,
-    get around this by allowing guest programming in a language
-    *other* than LPC so there are some restrictions on this.
-  </p>
-
+<p>DGD can also crash if a guest programmer allocates all free memory.
+There isn't really a good way around this. If you're allowing guest
+programmers full LPC access, they can allocate all your RAM and bring
+your MUD to its knees. Some libs, like LPMOO, get around this by
+allowing guest programming in a language *other* than LPC so there are
+some restrictions on this.</p>
 <hr />
-
 <pre>
 @@INCLUDE printing_out_nil_1@@
 </pre>
-
 <hr />
-
 <pre>
 @@INCLUDE printing_out_nil_2@@
 </pre>
-
 <hr />
-
 <pre>
 @@INCLUDE printing_out_nil_3@@
 </pre>
-
 <hr />
-
 <pre>
 @@INCLUDE fatal_errors_1@@
 </pre>
-
 <hr />
-
 <pre>
 @@INCLUDE fatal_errors_2@@
 </pre>
-
 <hr />
-
 <pre>
 @@INCLUDE cygwin@@
 </pre>
-
 <hr />
-
 <pre>
 @@INCLUDE segfault@@
 </pre>
-
 <hr />
-
 <pre>
 @@INCLUDE healthy@@
 </pre>
 
-  <p style="text-size: 150%"> <a href="../index.html"> Back to top level
-    </a> </p>
+<p style="text-size: 150%"><a href="../index.html">Back to top
+level</a></p>

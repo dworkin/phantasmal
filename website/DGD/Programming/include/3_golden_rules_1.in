@@ -1,0 +1,17 @@
+From: dgd@dworkin.nl (Felix A. Croes)
+Date: Mon Apr  4 23:22:01 2005
+Subject: [DGD] 3 golden rules for MP
+
+1) Try to modify as few objects as possible in a single execution round,
+   other than the object you start in.
+2) Try to avoid modifying the object you add a callout for.  If possible,
+   delay modification until when the callout actually executes.
+3) Avoid starting all execution rounds from the same small set of objects.
+
+About terminology: I decided to call the time slice during which an LPC
+event program is running an "execution round".  It's not really a thread,
+and talking about them as "threads" confuses the issue when you also have
+to deal with actual threads.
+
+Regards,
+Dworkin

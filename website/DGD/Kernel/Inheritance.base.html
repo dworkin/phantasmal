@@ -1,205 +1,177 @@
-    <titledef text="Inheritance in the Kernel" />
+<titledef text="Inheritance in the Kernel" />
 
-    <h3> Inheritance in the Kernel MUDLib </h3>
+<h3>Inheritance in the Kernel MUDLib</h3>
 
-    <p> The main limitation the Kernel MUDLib imposes on inheritance
-      is the division of objects into inheritables, clonables, and
-      objects from which LWOs can be created </p>
+<p>The main limitation the Kernel MUDLib imposes on inheritance is the
+division of objects into inheritables, clonables, and objects from which
+LWOs can be created</p>
 
-    <p> They're primarily distinguished from each other by what
-      directory the files are in -- if the path contains a
-      &quot;/lib/&quot; then the program is an inheritable.
-      Inheritables may not be cloned, but may be inherited from other
-      programs.  They can't store any data, you can't find them with
-      find_object(), and no functions (including create()) are ever
-      called on them.  The Kernel Library specifically prevents you
-      from touching the 'real' object for reasons that will be
-      explained later. </p>
+<p>They're primarily distinguished from each other by what directory the
+files are in -- if the path contains a "/lib/" then the program is an
+inheritable. Inheritables may not be cloned, but may be inherited from
+other programs. They can't store any data, you can't find them with
+find_object(), and no functions (including create()) are ever called on
+them. The Kernel Library specifically prevents you from touching the
+'real' object for reasons that will be explained later.</p>
 
-    <p> If a path contains a &quot;/data/&quot; then the object is a
-      master for LightWeight Objects (LWOs) and can be instantiated
-      with new_object(), but may not be cloned or inherited from.
-      Note that a file with &quot;/data/&quot; in the path may inherit
-      from inheritables just like everybody else.  It also has data,
-      and you can call functions on it.  You can also call functions
-      on LWOs that you make from it, and (of course) they can have
-      their own copies of any data. </p>
+<p>If a path contains a "/data/" then the object is a master for
+LightWeight Objects (LWOs) and can be instantiated with new_object(),
+but may not be cloned or inherited from. Note that a file with "/data/"
+in the path may inherit from inheritables just like everybody else. It
+also has data, and you can call functions on it. You can also call
+functions on LWOs that you make from it, and (of course) they can have
+their own copies of any data.</p>
 
-    <p> An object whose path contains &quot;/obj/&quot; is a
-      cloneable.  You can use clone_object() to make clones of it, but
-      other programs can't inherit from it and you can't call
-      new_object() on it to make an LWO from it.  You can call
-      functions on it (the master object <i>and</i> any of the
-      clones), and it has usable data. </p>
+<p>An object whose path contains "/obj/" is a cloneable. You can use
+clone_object() to make clones of it, but other programs can't inherit
+from it and you can't call new_object() on it to make an LWO from it.
+You can call functions on it (the master object <i>and</i> any of the
+clones), and it has usable data.</p>
 
-    <p> Any other path (one without either &quot;/data/&quot; or
-      &quot;/lib/&quot; in the path) is assumed to be nothing special.
-      You can't clone it, you can't make an LWO from it, you can't
-      inherit from it.  You can find it (remember, there's only the
-      one master object) with find_object(), you can call functions on
-      it and it can have data.  Most daemons are this way in
-      Kernel-derived MUDLibs.  Usually authors will put
-      &quot;/sys/&quot; in the path instead of &quot;/obj/&quot; or
-      &quot;/lib/&quot; as documentation... But it's not
-      required. </p>
+<p>Any other path (one without either "/data/" or "/lib/" in the path)
+is assumed to be nothing special. You can't clone it, you can't make an
+LWO from it, you can't inherit from it. You can find it (remember,
+there's only the one master object) with find_object(), you can call
+functions on it and it can have data. Most daemons are this way in
+Kernel-derived MUDLibs. Usually authors will put "/sys/" in the path
+instead of "/obj/" or "/lib/" as documentation... But it's not
+required.</p>
 
-    <p> Okay, so why can't inheritables have data, or be cloned?
-      Seems like a pretty serious limitation if you think about it a
-      bit.  It means that every parent class is an abstract parent
-      class rather than being instantiable (to use some fancy Object
-      Oriented terminology).  The answer has everything to do with the
-      way DGD allows you to recompile everything on the fly. </p>
+<p>Okay, so why can't inheritables have data, or be cloned? Seems like a
+pretty serious limitation if you think about it a bit. It means that
+every parent class is an abstract parent class rather than being
+instantiable (to use some fancy Object Oriented terminology). The answer
+has everything to do with the way DGD allows you to recompile everything
+on the fly.</p>
 
-    <p> You can recompile an object with clones and at the end of that
-      thread, all the clones get upgraded.  It works for LWOs, too.
-      That's pretty cool.  You can recompile a library, and from then
-      on any new objects that inherit it get the new version.  Also
-      cool.  Unfortunately, old objects can't just switch which
-      version of the parent class's code they use, so they're stuck
-      with the old version of the library until you recompile them
-      (after destructing and recompiling the library).
-    </p>
+<p>You can recompile an object with clones and at the end of that
+thread, all the clones get upgraded. It works for LWOs, too. That's
+pretty cool. You can recompile a library, and from then on any new
+objects that inherit it get the new version. Also cool. Unfortunately,
+old objects can't just switch which version of the parent class's code
+they use, so they're stuck with the old version of the library until you
+recompile them (after destructing and recompiling the library).</p>
 
-    <p>
-      In the Kernel MUDLib you can deal with that -- just destruct the
-      old version and recompile the clonable (see Issues, below, for
-      an example).  That'll upgrade all the clones, give you the
-      library, and everything stays copacetic.  Since a library has no
-      clones and no data, when you destruct it and recompile, you lose
-      nothing.  Since the clonable has nothing inherit from it, you
-      don't need to destruct it and recompile for the benefit of
-      <i>its</i> child classes (since it has none).
-    </p>
+<p>In the Kernel MUDLib you can deal with that -- just destruct the old
+version and recompile the clonable (see Issues, below, for an example).
+That'll upgrade all the clones, give you the library, and everything
+stays copacetic. Since a library has no clones and no data, when you
+destruct it and recompile, you lose nothing. Since the clonable has
+nothing inherit from it, you don't need to destruct it and recompile for
+the benefit of <i>its</i> child classes (since it has none).</p>
 
-    <p> So what if you <i>don't</i> do that?  Melville and 2.4.5
-      both get away without doing any of this.  The answer is that
-      you can't upgrade some objects when the MUD is running, so
-      you can kiss full-on persistence goodbye.  To understand
-      why, think about what an object which is both inheritable
-      <i>and</i> clonable would be like to upgrade.  In OO-speak,
-      that's a concrete (non-abstract) parent class. </p>
+<p>So what if you <i>don't</i> do that? Melville and 2.4.5 both get away
+without doing any of this. The answer is that you can't upgrade some
+objects when the MUD is running, so you can kiss full-on persistence
+goodbye. To understand why, think about what an object which is both
+inheritable <i>and</i> clonable would be like to upgrade. In OO-speak,
+that's a concrete (non-abstract) parent class.</p>
 
-    <p> If the object were both inheritable and clonable then it
-      could have some objects that inherited from it, plus a bunch
-      of clones.  If you wanted to upgrade it, you'd need to be
-      able to destruct it and compile a new one so that the classes
-      that inherit from it could get a new version.  But that's a
-      problem...  You'd have to lose all the data in all the clones
-      when you destructed it!  So it can be both upgradable and
-      clonable, but you couldn't upgrade its functions in its child
-      classes without getting rid of all the clones...  You can see
-      why the Kernel Library just separates inheritables and clonables.
-    </p>
+<p>If the object were both inheritable and clonable then it could have
+some objects that inherited from it, plus a bunch of clones. If you
+wanted to upgrade it, you'd need to be able to destruct it and compile a
+new one so that the classes that inherit from it could get a new
+version. But that's a problem... You'd have to lose all the data in all
+the clones when you destructed it! So it can be both upgradable and
+clonable, but you couldn't upgrade its functions in its child classes
+without getting rid of all the clones... You can see why the Kernel
+Library just separates inheritables and clonables.</p>
 
-    <p> Could you make a different tradeoff to avoid having both
-      child objects and clones?  Probably.  For instance, you could
-      make an object be both inheritable and clonable, but make it
-      destroy all its clones to upgrade.  That'd be a massive pain,
-      but you could do it.  There are a lot of compromises like
-      that, but the Kernel MUDLib's is simple, reliable and
-      it works.  If you want a different one, you can write a
-      different MUDLib (or modify the Kernel MUDLib) to show us
-      all how much better the world would be with your version...
-    </p>
+<p>Could you make a different tradeoff to avoid having both child
+objects and clones? Probably. For instance, you could make an object be
+both inheritable and clonable, but make it destroy all its clones to
+upgrade. That'd be a massive pain, but you could do it. There are a lot
+of compromises like that, but the Kernel MUDLib's is simple, reliable
+and it works. If you want a different one, you can write a different
+MUDLib (or modify the Kernel MUDLib) to show us all how much better the
+world would be with your version...</p>
 
-    <p> With great power comes great responsibility, to quote an old
-      comic book character you've all heard of.  So the Kernel MUDLib
-      makes a tradeoff -- you can recompile everything in the MUD
-      if you want
-      to, but in return you have this set of restrictions. </p>
+<p>With great power comes great responsibility, to quote an old comic
+book character you've all heard of. So the Kernel MUDLib makes a
+tradeoff -- you can recompile everything in the MUD if you want to, but
+in return you have this set of restrictions.</p>
+<hr />
 
-    <hr />
+<h3>Recompilation and Object Issues</h3>
 
-    <h3> Recompilation and Object Issues </h3>
+<p>Each time an object is destructed and then compiled again from
+scratch, a new copy of it shows up. The old copy will silently go away
+when nobody's using it any more. This means that old versions of objects
+can float around for a very, very long time (remember that "Persistent
+MUD" idea?) in some cases.</p>
 
-    <p> Each time an object is destructed and then compiled again from
-      scratch, a new copy of it shows up.  The old copy will silently
-      go away when nobody's using it any more.  This means that old
-      versions of
-      objects can float around for a very, very long time (remember
-      that &quot;Persistent MUD&quot; idea?) in some cases. </p>
+<p>How can you tell how it works? Well, when no existing object uses an
+old issue, it goes away. This uses Reference Counting, so when the
+reference count drops to zero, DGD knows that nobody's using it. So it
+has to have no clones (if clonable) and nobody can inherit from it (if
+inheritable). In either case, it must also have been destructed before
+it can go away from lack of references.</p>
 
-    <p> How can you tell how it works?  Well, when no existing object
-      uses an old issue, it goes away.  This uses Reference Counting,
-      so when the reference count drops to zero, DGD knows that nobody's
-      using it.  So it has to have no clones (if clonable) and nobody
-      can inherit from it (if inheritable).  In either case, it must
-      also have been destructed before it can go away from lack of
-      references. </p>
+<p>Here's an example:</p>
 
-    <p>Here's an example: </p>
-    <p>Say A inherits from B, and B inherits from C... </p>
-
-      <pre>
+<p>Say A inherits from B, and B inherits from C...</p>
+<pre>
   C &lt;- B &lt;- A
       </pre>
 
-    <p>
-      If I destruct C and recompile it, then B is out of date with C.
-      It's using a previous issue of C.  C now has two issues, the old
-      and the new.  If I destruct B and recompile it then the old B
-      still inherits the old C.  But the new B inherits the new C.  So:
-      </p>
-
+<p>If I destruct C and recompile it, then B is out of date with C. It's
+using a previous issue of C. C now has two issues, the old and the new.
+If I destruct B and recompile it then the old B still inherits the old
+C. But the new B inherits the new C. So:</p>
 <pre>
   oldC &lt;- OldB &lt;- A
 
   newC &lt;- newB
 </pre>
 
-    <p>
-      If I then recompile A, that means nobody uses the old B or old C
-      any more.  Since I destructed them <i>and</i> nobody's using
-      them, they'll finally go away.  I would then only have one issue
-      of B and one issue of C. </p>
+<p>If I then recompile A, that means nobody uses the old B or old C any
+more. Since I destructed them <i>and</i> nobody's using them, they'll
+finally go away. I would then only have one issue of B and one issue of
+C.</p>
 
-    <p>To spell that out further, let's arbitrarily assign some
-      instance numbers to the issues. </p>
+<p>To spell that out further, let's arbitrarily assign some instance
+numbers to the issues.</p>
 
-    <p> Say the old A is issue #1, old B is #2, old C is #3.  So, </p>
-      <pre>
+<p>Say the old A is issue #1, old B is #2, old C is #3. So,</p>
+<pre>
   C(#3) &lt;- B(#2) &lt;- A(#1)
       </pre>
-<p>Now you recompile C (#3).  So we have </p>
-      <pre>
+
+<p>Now you recompile C (#3). So we have</p>
+<pre>
   C(#3) &lt;- B(#2) &lt;- A(#1)
 
   C(#4)
       </pre>
 
-    <p>That extra issue of C is just sitting off by itself.  Nobody
-      inherits from it.  Then you destruct and recompile B: </p>
-
-      <pre>
+<p>That extra issue of C is just sitting off by itself. Nobody inherits
+from it. Then you destruct and recompile B:</p>
+<pre>
   C(#3) &lt;- B(#2) &lt;- A(#1)
 
   C(#4) &lt;- B(#5)
       </pre>
 
-    <p>When B is recompiled, it looks up C to inherit from it.  Issue
-      #4 is the current non-destroyed one, so it finds that instead of
-      #3.  Then, if you recompile A in-place (for instance, if A is
-      clonable so you don't *want* to destroy it): </p>
-
-      <pre>
+<p>When B is recompiled, it looks up C to inherit from it. Issue #4 is
+the current non-destroyed one, so it finds that instead of #3. Then, if
+you recompile A in-place (for instance, if A is clonable so you don't
+*want* to destroy it):</p>
+<pre>
   C(#4) &lt;- B(#5) &lt;- A(#1)
       </pre>
 
-    <p>
-      This assumes there's no other objects that reference the old B
-      or C.  If there aren't, then recompiling A (so it looks up B
-      again) gets rid of the last reference to the old B(#2), which is
-      destroyed.  That removes the last ref to old C(#3), which is
-      also destroyed.  A is now linked to the new ones.  If there
-      <i>are</i> other objects that reference the old B(#2) or C(#3),
-      then A will still be recompiled as above, but the old B and C
-      will stick around longer, destructed but active. </p>
+<p>This assumes there's no other objects that reference the old B or C.
+If there aren't, then recompiling A (so it looks up B again) gets rid of
+the last reference to the old B(#2), which is destroyed. That removes
+the last ref to old C(#3), which is also destroyed. A is now linked to
+the new ones. If there <i>are</i> other objects that reference the old
+B(#2) or C(#3), then A will still be recompiled as above, but the old B
+and C will stick around longer, destructed but active.</p>
 
-    <p>Note that since A is recompiled in-place (instead of destructed
-      and compiled), its issue number stays the same.  You can find
-      out the issue number in the Kernel MUDLib using either: </p>
-
-      <pre>
+<p>Note that since A is recompiled in-place (instead of destructed and
+compiled), its issue number stays the same. You can find out the issue
+number in the Kernel MUDLib using either:</p>
+<pre>
   status(obj)[O_INDEX];
 
 or
@@ -207,62 +179,49 @@ or
   status(path)[O_INDEX];
       </pre>
 
-    <p>In the first version, status() takes an object pointer which is
-    for a clonable.  The Kernel MUDLib will never give you an object
-    pointer to an inheritable, so the second version takes the path
-    string for the inheritable.  I don't think the second version can
-    look up destructed objects, only current non-destructed ones.  If
-    you write an object manager, you have to take that into account
-    and keep track.</p>
+<p>In the first version, status() takes an object pointer which is for a
+clonable. The Kernel MUDLib will never give you an object pointer to an
+inheritable, so the second version takes the path string for the
+inheritable. I don't think the second version can look up destructed
+objects, only current non-destructed ones. If you write an object
+manager, you have to take that into account and keep track.</p>
 
-    <h3> The Recompile Function </h3>
+<h3>The Recompile Function</h3>
 
-    <p>
-      One thing that may confuse you is the recompile() function in
-      the driver.  Here's an explanation by Erwin Harte of when it
-      would be called:
-    </p>
+<p>One thing that may confuse you is the recompile() function in the
+driver. Here's an explanation by Erwin Harte of when it would be
+called:</p>
 
-    <div style="font-size: 110%">
+<div style="font-size: 110%">
+  <ul>
+    <li>object A inherits objects B and C.</li>
 
-<ul>
- <li> object A inherits objects B and C. </li>
- <li> both B and C inherit D. </li>
-</ul>
+    <li>both B and C inherit D.</li>
+  </ul>
 
-<p>
-Now destruct object D and B, and compile both of them again.  Now you
-have two different versions of D, one used by B, the other used by C.
-</p>
+  <p>Now destruct object D and B, and compile both of them again. Now
+  you have two different versions of D, one used by B, the other used by
+  C.</p>
 
-<p>
-It is my understanding that if you would now either 'destruct + compile'
-or 'recompile' A, recompile_object() will be called with object C,
-because that one is still inheriting an already destructed object (the
-original version of D).
-</p>
+  <p>It is my understanding that if you would now either 'destruct +
+  compile' or 'recompile' A, recompile_object() will be called with
+  object C, because that one is still inheriting an already destructed
+  object (the original version of D).</p>
 
-<p>
-If you do not destruct it, you'll run into an error about inheriting
-different versions of the same object.  If you -do- destruct it, the
-inherit_program() will be called in the driver object for C that can
-then use the newer version of D, after which A can again inherit it.
-</p>
+  <p>If you do not destruct it, you'll run into an error about
+  inheriting different versions of the same object. If you -do- destruct
+  it, the inherit_program() will be called in the driver object for C
+  that can then use the newer version of D, after which A can again
+  inherit it.</p>
 
-<p>
-So the bottomline seems to be that recompile_object() is called when
-you're trying to inherit an object that in turn depends on an already
-destructed object.
-</p>
-
+  <p>So the bottomline seems to be that recompile_object() is called
+  when you're trying to inherit an object that in turn depends on an
+  already destructed object.</p>
 </div>
-
 <pre>
 @@INCLUDE kernel_clone_inherit_1@@
 </pre>
-
 <hr />
-
 <pre>
 @@INCLUDE kernel_clone_inherit_2@@
 </pre>

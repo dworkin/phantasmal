@@ -1,0 +1,36 @@
+From: Noah Gibbs
+Subject: Re: [DGD] GurbaLib
+Date: Thu, 26 Aug 2004 11:39:47 -0700 (PDT)
+
+--- Jas wrote:
+> If putting together something like that isn't on Dworkin's "to do"
+> list, 
+> maybe "the rest of us" should take up the initiative.
+> [...]
+> So, the $64,000 question is two-fold:  is there enough of an interest
+> in 
+> such a project, and are there other people who would be willing to 
+> commit either their time, technical expertise, or something else to
+> the project?
+
+  Historically speaking, the answer is "no" and "no".  Many offers will
+be made.  Encouraging emails will occur.  Little work will happen and
+less progress will be made.  So far, DGD code is advanced by
+individuals and by small groups.  List-based 'net collaborations simply
+do not work.
+
+  You need a strong central project lead, who will find he also needs
+to do the vast majority of the work.
+
+  You can best serve DGD by appointing yourself to such a role, and
+releasing your code from the very beginning.  Yes, even when it's
+basically unusable.  Starting from an existing lib would be fine,
+whatever floats your boat.  Just make sure you understand any
+appropriate license issues.
+
+  If that's more work than you wish to commit to, help out somebody on
+an existing project of that type.
+
+  Under other circumstances I'd nominate me, but Phantasmal's been
+pretty stagnant for awhile.  It sounds like shortly, Par Winzell will
+be the guy to help.

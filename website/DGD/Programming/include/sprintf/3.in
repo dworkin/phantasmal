@@ -1,0 +1,36 @@
+From: dgd at list.imaginary.com (Erwin Harte)
+Date: Thu Apr  1 15:28:00 2004
+Subject: [DGD] Re: sprintf
+
+On Thu, Apr 01, 2004 at 04:14:16PM -0500, Michael McKiel wrote:
+[...]
+> I think (though I may be in the minority) that one of DGD's few downfalls is
+> the lack of understanding in how to go about doing a driver extension. In
+> other LPC sources it wouldn't seem to be as much of an undertaking. It would
+> seem that if there was a greater comprehension there, you'd find more binary
+> option/"addons" than just lpc-code thats frequently LIB dependant.
+
+While the downside of linking in a sprintf() from an outside source is
+that you may get different behaviour depending on what platform you're
+compiling your driver on with as effect that the mudlib may work on
+your main server but may misbehave on a test-copy elsewhere.
+
+Additionally you get all the potential buffer overflows and such for
+free while ignoring DGD's sturdy built-in string type.
+
+I'll agree that aside from some samples I haven't seen many people use
+DGD's extension interface.  You are aware of its existence, I assume?
+
+>     Beyond that, just that a few of its great features, like LWO's and
+> parse_string dont get utilized in the KernelLib so one has to start from
+> scratch at getting an understanding of those.
+
+True.  On the other hand you're welcome to ask questions and over time
+I've seen several examples float by, including a (now slightly
+outdated) grammar for LPC itself, from Dworkin. :)
+
+Cheers,
+
+Erwin.
+-- 
+Erwin Harte

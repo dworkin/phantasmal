@@ -1,0 +1,11 @@
+    private void move(object obj, object from, object dest)
+    {
+	int light;
+
+	light = query_light(obj);
+	if (from != 0) {
+	    from->_F_rm_inv(obj, light);
+	}
+	obj->_F_move(dest);
+	dest->_F_add_inv(obj, light);
+    }

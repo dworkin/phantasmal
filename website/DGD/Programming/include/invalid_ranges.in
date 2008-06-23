@@ -1,0 +1,33 @@
+From: dgd at list.imaginary.com (Felix A. Croes)
+Date: Mon Oct 22 10:32:01 2001
+Subject: [DGD] Invalid ranges...
+
+Troels Therkelsen wrote:
+
+>[...]
+> Ok, I personally think that is a bit far-fetched and contrived.  Out of
+> bounds is out of bounds, period.  IMHO, anyway.  And if
+>
+>   ({1, 2, 3})[3..] == ({ })  <=>   ({1, 2, 3})[3..2] == ({ })
+>
+> why doesn't it work for range underflow:
+>
+>   ({1, 2, 3})[-1..0] == error
+
+Oh, but it does:
+
+    ({ 1, 2, 3 })[0 .. -1] == ({ })
+
+So the two special cases are [0 .. 0-1] and [size .. size-1], and the
+general case is [x .. x-1] == ({ }), for 0 <= x <= size.  To be
+consistent with normal ranges, xxx[-1 .. 0] would have to be an array
+of <two> elements, if it worked at all.
+
+I'm sorry that you think this is kludgy.  Personally, I think that
+returning ({ }) for any invalid range is dangerous, <unless> ({ }) and
+([ ]) were somehow equivalent with nil -- which is something that many
+have requested for the sake of convenience, but actually, LPC is a more
+expressive language with that distinction.
+
+Regards,
+Dworkin

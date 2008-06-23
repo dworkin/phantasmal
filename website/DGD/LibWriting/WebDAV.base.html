@@ -1,63 +1,13 @@
-  <titledef text="WebDAV" />
+<titledef text="WebDAV" />
 
-  <h2> Implementing WebDAV </h2>
-
+<h2>Implementing WebDAV</h2>
 <pre>
-From: dgd at list.imaginary.com (Josh Dady)
-Date: Fri Jan 16 09:28:01 2004
-Subject: [DGD] DGD Newbie
-
-On Jan 15, 2004, at 10:29 AM, Noah Gibbs wrote:
-
-> It's actually possible to write an FTP server without
-> this, but it requires implementing only passive mode.
-
-I would humbly suggest that, if you're going to build a file-serving 
-protocol in LPC, that you at least consider WebDAV. Windows and OSX 
-speak it natively, there are lots of separate clients available for 
-just about every platform, and the HTTP server that you would have to 
-build first (WebDAV is an extension of HTTP) would just be generally 
-useful anyway. What's more, just about every development environment 
-has some understanding of HTTP (and many do WebDAV), so anything you 
-develop in the future probably would need no separate protocol to 
-interact with the MUD.
-
---
-Joshua P. Dady
+@@INCLUDE dgd_newbie@@
 </pre>
-
 <hr />
-
 <pre>
-From: dgd at list.imaginary.com (Felix A. Croes)
-Date: Wed Jan 28 12:27:01 2004
-Subject: [DGD] Alternatives to the Kernel model of security...
-
-Noah Gibbs wrote:
-
->[...]
->   WebDAV, which others have recommended, has the
-> advantage of allowing a similar interface, and the
-> disadvantages of being hard to use, not very portable
-> and being completely unfamiliar to most potential
-> users.  NFS has the same problems, but appeals to a
-> different subset of users (i.e. Linux rather than Mac
-> or Windows).
-
-There's a Linux kernel module called davfs2 which allows you to
-mount WebDAV filesystems:
-
-    http://sourceforge.net/projects/dav/
-
-so it's portable enough to run on your developers' three most
-likely choices of operating system.  There also seems to be a
-command-line client called cadaver which can up/download files.
-Mounting a WebDAV filesystem is easy on a Mac, presumably also
-in Windows, don't know about Linux.
-
-Regards,
-Dworkin
+@@INCLUDE klib_security_alternatives_2@@
 </pre>
 
-  <p style="text-size: 150%"> <a href="../index.html"> Back to top level
-    </a> </p>
+<p style="text-size: 150%"><a href="../index.html">Back to top
+level</a></p>

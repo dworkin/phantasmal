@@ -1,0 +1,81 @@
+From: dgd at list.imaginary.com (Noah Gibbs)
+Date: Mon Oct 20 14:18:02 2003
+Subject: [DGD] Some basics
+
+--- Nihilxaos wrote:
+> 1) When an object is compiled it's create is
+> called.
+
+  Nope, but close.  The first time a function is
+called on the object, create() is called first.  So if
+you've just made an object called "bob" and want to
+initialize it, you can say "bob->NoSuchFunction()",
+which will return nil, and will do nothing but call
+create(), at least if the function doesn't exist.
+
+  I think create() also gets called if you clone from
+it, but I'm not 100% sure.  This is all written down
+somewhere :-)
+
+> Thus if I write a log 
+> daemon logd.c (aliased by LOGD) and pull the usual
+> if (!find_object(LOGD)) 
+> {compile_object(LOGD);} it sees if the logd object
+> has been loaded into memory, 
+> and if not it compiles it and then runs create since
+> you obviously want to 
+> create it. This right?
+
+  Almost.  Create isn't called yet.
+
+> It seems a little off to me,
+> but that seems to be how 
+> things are working. Or is it more correct to say
+> that create is called once the 
+> first call is made to one of the object's functions?
+
+  Yup.
+
+> Basically this is going on the assumption
+> that inheriting brings the 
+> inherited data types into the object, but keeps any
+> non-overridden code in a 
+> separate object so it can be called from any of its
+> children.
+
+  I'm not sure what you mean here.  Inheriting from an
+object doesn't change that object, so yes, the code
+that you override in a child still exists in the
+parent.  Is that what you're getting at?  And
+functions that you don't override are callable from
+the child, but on the child's copy of the data.  In
+the Kernel MUDLib it goes one step further -- a
+library NEVER has its create() function called.  That
+means its data never gets instantiated, which is a
+*good* thing -- it's the key to being able to upgrade
+in place.
+
+> Thus when you 
+> destruct an object it in turn destructs its
+> ancestors,
+
+  You can make it do that.  It doesn't happen
+automatically, at least not in that way.  But the
+ObjectD could do that for you if you wanted.
+
+> not to ultimately wipe 
+> out the ancestor such that it can't be called by
+> other like objects, but so it 
+> removes the links between it and its ancestors.
+> (that make sense?)
+
+  I think you mean the right thing.  Yes, it destructs
+its ancestors...  But even if they're destructed, they
+don't *really* go away until nobody references them
+(inherits from them) any more.  That's why the ObjectD
+keeps a big list of destructed objects around.  Those
+are libraries that somebody inherits from but that
+have been destructed already.  When the last child of
+that library is recompiled (pointing at the new,
+non-destructed copy), the old destructed version goes
+away because nobody references it any more.

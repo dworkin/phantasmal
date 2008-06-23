@@ -1,0 +1,35 @@
+From: dgd at list.imaginary.com (Erwin Harte)
+Date: Wed Jan 30 11:52:00 2002
+Subject: [DGD] driver / config file
+
+On Wed, Jan 30, 2002 at 06:07:58PM +0100, Johann N. Schmidt wrote:
+> Hello,
+> 
+> some suggestions regarding driver.c/config file:
+>  
+> would it be impossible/have disadvantages to transport the tags
+>  
+> 1. include_file
+> 2. include_dirs
+> 3. auto_object
+> 4. create
+>  
+> from the dgd config file to the driver, thus having functions
+>  
+[...]
+
+The driver-object itself also needs to be compiled and for that DGD
+needs to know what the standard include file, the include-directories
+and the create function are (quite often you don't use it, but it _is_
+possible to do something useful in there).
+
+If you have a look at the driver-functions that DGD already supports
+you'll see that you can do just about all of the above in LPC already
+by adding some extra code in the driver object and the alternate
+create function could be done by some special code in the auto object.
+
+Hope that helps,
+
+Erwin.
+-- 
+Erwin Harte

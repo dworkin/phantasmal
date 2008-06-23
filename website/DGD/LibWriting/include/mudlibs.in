@@ -1,0 +1,29 @@
+From: dgd at list.imaginary.com (Erwin Harte)
+Date: Wed Mar 20 23:03:00 2002
+Subject: [DGD] Mudlibs?
+
+On Thu, Mar 21, 2002 at 02:56:11AM +0100, Vladimir I. Lazarenko wrote:
+> Hello Erwin,
+> 
+> Hmm. and if i inherit it into auto.c object?
+> Will i be able to use it whereever?
+
+You don't _inherit_ things into the auto object, you'll have to
+#include them into it.  But yes, if you do that, you will be able to
+use it whenever.
+
+Now, personally I'd consider that really bad form and would prefer to
+have something like /lib/sprintf.c available for the objects that
+actually _need_ it.  But maybe that's just me, I like to keep the
+auto-object(s) lean and mean, makes it less likely that security or
+consistency bugs creep in.
+
+Oh, and your reminder of the day:
+
+> EH> Aside: Responding after that which is relevant would be appreciated.
+
+Thanks in advance,
+
+Erwin.
+-- 
+Erwin Harte

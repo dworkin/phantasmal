@@ -1,27 +1,25 @@
-    <titledef text="Querying ObjectD" />
+<titledef text="Querying ObjectD" />
 
-    <h2 style="text-align: center"> Querying ObjectD </h2>
+<h2 style="text-align: center">Querying ObjectD</h2>
 
-    <p> I take it you're running low on tutorials.  Why else would you
-      be figuring out how to play with Phantasmal's ObjectD?  Apparently
-      you're bored or intrigued enough to find out how to play with
-      extremely low-level gritty details.  Fair enough, I just
-      document this stuff. </p>
+<p>I take it you're running low on tutorials. Why else would you be
+figuring out how to play with Phantasmal's ObjectD? Apparently you're
+bored or intrigued enough to find out how to play with extremely
+low-level gritty details. Fair enough, I just document this stuff.</p>
 
-    <p> You'll need a good working grasp of how inheritance and upgrades
-      work in the <a href="http://phantasmal.sourceforge.net/DGD/Kernel/">
-	Kernel Library</a> -- Phantasmal is based on it, and uses
-      the same semantics for inheritance.  You'll also need to know
-      roughly what an object manager is and how it works.  You'll find
-      more than you ever wanted to know in the mailing list archives.
-      Let's jump right in, shall we? </p>
+<p>You'll need a good working grasp of how inheritance and upgrades work
+in the <a href="http://phantasmal.sourceforge.net/DGD/Kernel/">Kernel
+Library</a> -- Phantasmal is based on it, and uses the same semantics
+for inheritance. You'll also need to know roughly what an object manager
+is and how it works. You'll find more than you ever wanted to know in
+the mailing list archives. Let's jump right in, shall we?</p>
 
-    <p> You'll need to find an object with the <b>%od_report</b> command.
-      One way to do that is to come up with an object you know exists.
-      These are entirely different from the kind of object you make
-      with <b>@make_portable</b> or <b>@new_room</b>.  Instead, they're
-      LPC programs.  So you could start by saying &quot;%od_report
-      /usr/System/initd&quot;.  That'd work.  You might see:</p>
+<p>You'll need to find an object with the <b>%od_report</b> command. One
+way to do that is to come up with an object you know exists. These are
+entirely different from the kind of object you make with
+<b>@make_portable</b> or <b>@new_room</b>. Instead, they're LPC
+programs. So you could start by saying "%od_report /usr/System/initd".
+That'd work. You might see:</p>
 <pre>
 Clonable
   0 clones exist
@@ -35,27 +33,26 @@ Also depends on: /include/kernel/kernel.h /include/config.h
 /include/type.h /include/config.h /include/log.h
 </pre>
 
-    <p> Confusing.  That top line says that it's Clonable instead of
-      Inheritable, so an object and not a library.  It has no current
-      clones, though.  The Name is the object name, which you already
-      knew because you typed it.  The &quot;index&quot; is also referred
-      to as the Issue, and tells what compiled version you're looking at.
-      The same object could exist in many different ways on the same
-      running MUD just as long as somebody inherited from them once and
-      is thus still pointing to them, which keeps them around. </p>
+<p>Confusing. That top line says that it's Clonable instead of
+Inheritable, so an object and not a library. It has no current clones,
+though. The Name is the object name, which you already knew because you
+typed it. The "index" is also referred to as the Issue, and tells what
+compiled version you're looking at. The same object could exist in many
+different ways on the same running MUD just as long as somebody
+inherited from them once and is thus still pointing to them, which keeps
+them around.</p>
 
-    <p> The Comp_time is just when it was compiled.  No black magic there.
-      &quot;No previous issue&quot; is what it says if your ObjectD isn't
-      tracking more than one version of this object.  It might otherwise
-      mention a previous issue by number, which you could then examine
-      with <b>%od_report</b>.  It <i>does</i> mention that it inherits
-      from some objects, #50 and #52.  We'll look at one of them in a
-      minute.  And then it &quot;also depends on&quot; files like
-      /include/kernel/kernel.h.  Usually this means that it includes
-      them from its source file. </p>
+<p>The Comp_time is just when it was compiled. No black magic there. "No
+previous issue" is what it says if your ObjectD isn't tracking more than
+one version of this object. It might otherwise mention a previous issue
+by number, which you could then examine with <b>%od_report</b>. It
+<i>does</i> mention that it inherits from some objects, #50 and #52.
+We'll look at one of them in a minute. And then it "also depends on"
+files like /include/kernel/kernel.h. Usually this means that it includes
+them from its source file.</p>
 
-    <p> So if we want to find out what object #50 is, we'll type
-      &quot;%od_report #50&quot;.  Go ahead.  I get: </p>
+<p>So if we want to find out what object #50 is, we'll type "%od_report
+#50". Go ahead. I get:</p>
 <pre>
 Inheritable
 Name: /kernel/lib/api/access
@@ -66,21 +63,22 @@ Inherits from:
 Its children are: #56 #19 #15 #67 #68 #69
 Also depends on: /include/kernel/kernel.h /include/config.h /include/kernel/access.h
 </pre>
-    <p> Note that this one is inheritable.  The previous object inherited
-      from it, so it better be.  It's /kernel/lib/api/access, which seems
-      a pretty reasonable parent for /usr/System/initd.  It also has
-      no previous issue.  It inherits from nobody, but it has lots of
-      children, including #19.  That's good, because #19 is /usr/System/initd,
-      so it'd better list that as a child. </p>
 
-    <p> There's only one other command that directly queries the ObjectD,
-      and that's <b>%list_dest</b>.  Just type it by itself.  If you get
-      output like this: </p>
-    <pre>
+<p>Note that this one is inheritable. The previous object inherited from
+it, so it better be. It's /kernel/lib/api/access, which seems a pretty
+reasonable parent for /usr/System/initd. It also has no previous issue.
+It inherits from nobody, but it has lots of children, including #19.
+That's good, because #19 is /usr/System/initd, so it'd better list that
+as a child.</p>
+
+<p>There's only one other command that directly queries the ObjectD, and
+that's <b>%list_dest</b>. Just type it by itself. If you get output like
+this:</p>
+<pre>
 Objects:
     </pre>
-    <p> Then nothing is on the list.  If you see names afterward then
-      it means there's some object whose most recent issue is destructed.
-      The <b>%od_report</b> command works just fine on destructed objects
-      and issue numbers, so you can find out all about it.
-    </p>
+
+<p>Then nothing is on the list. If you see names afterward then it means
+there's some object whose most recent issue is destructed. The
+<b>%od_report</b> command works just fine on destructed objects and
+issue numbers, so you can find out all about it.</p>

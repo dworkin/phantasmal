@@ -1,0 +1,32 @@
+From: dgd at list.imaginary.com (Erwin Harte)
+Date: Wed Mar 20 23:21:01 2002
+Subject: [DGD] Inherits.
+
+On Wed, Mar 20, 2002 at 10:44:45PM -0600, Erwin Harte wrote:
+> On Thu, Mar 21, 2002 at 04:19:09AM +0100, Vladimir I. Lazarenko wrote:
+> > Hello DGD,
+> > 
+> >   Hmm. I'm a bit puzzled here. Let's say I'm making changes to a
+> >   files, that is inherited to some kind of other file. If i try to
+> >   update inherit itself, it says that i can't update inherited file.
+> 
+> Right.
+> 
+> >   If i dest the object that inherits that file, update the inherit and
+> >   clone object back, my changes do not work.
+
+Forgot to finish a sentence here:
+
+> If you destructed and compiled both objetcts (in the right order) it
+> should now be effective for new clones, at least.  However
+                                                             if you
+  never destructed the inherited object and only destructed and compiled
+  the inheriting object, that won't do you any good and actually means
+  that any clones already made of the object now use code that you can't
+  replace anymore.
+
+Cheers,
+
+Erwin.
+-- 
+Erwin Harte

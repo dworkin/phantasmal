@@ -1,0 +1,27 @@
+From: DGD Mailing List (Par Winzell)
+Date: Sun Jan  4 11:31:00 2004
+Subject: [DGD] Delay statements in scripting
+
+Merry is Skotos' LPC-based scripting system. It's pretty much straight 
+LPC with 'additions' -- e.g. delays, which are implemented with the 
+switch solution given by Dworkin above.
+
+Merry is parsed using parse_string() and a rathed mutated version of 
+Felix's old LPC-grammar-for-parse_string() grammar. It's broken down 
+into a binary format and stored in LWO's. The LWO can reconstruct the 
+Merry source or underlying LPC source on demand (the former for editing 
+the script, the latter for compiling it to a real LPC object).
+
+The systems keeps a cache of a few hundred compiled Merry scripts 
+around, but they can be destructed and recompiled on demand.
+
+One tip for anybody implementing this: remember that the compiled 
+objects can't keep any real state. For delays, for example, the callouts 
+themselves can't be kept in the generated object. You -must- be able to 
+destruct such objects at will.
+
+If I execute an action that requires a delay, it's my body that should 
+keep the callout, and then relayeto the appropriate script handler when 
+the callout expires.
+
+Zell

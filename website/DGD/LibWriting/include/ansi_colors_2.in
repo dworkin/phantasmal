@@ -1,0 +1,21 @@
+From: dgd at list.imaginary.com (Erwin Harte)
+Date: Tue Mar 30 13:45:01 2004
+Subject: [DGD] Re: ansi colours
+
+Have you considered the possibility that the \e is not an escape
+supported by LPC and it really _is_ an 'e' that you send to the
+client?
+
+    > @code "\e"[0]
+    $28 = 101
+
+This is what you want, however:
+
+    > @code "\033"[0]
+    $29 = 27
+
+Hope that helps,
+
+\033[36mErwin\033[0m.
+-- 
+Erwin Harte

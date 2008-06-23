@@ -1,0 +1,50 @@
+From: dgd at list.imaginary.com (Par Winzell)
+Date: Thu Feb 12 15:19:01 2004
+Subject: [DGD] Objectd.c mappings of arrays
+
+Michael,
+
+> So would it be something like this?
+>     mapping object_list;
+>     object *arr1;
+>     object *arr2;
+>     object *arr3;
+> 
+>     object_list[0] == ({ arr1 });
+>     object_list[1] == ({ arr2 });
+>     object_list[2] == ({ arr3 });
+> 
+> If so, wouldn't you have to have some idea how many of a given object you
+> will have so you can make sure your arrays/mappings don't grow beyond
+> MAX_ARR_SIZE? Like in my example above, if my MAX_ARR_SIZE was 2000. Then if
+> the number of clones of a given item became 6000, the object manager would
+> fail. So I would have to have a bunch of empty arrays initialized just in
+> case? Or am I missing something...
+
+You can do it lots of ways. I believe we use an array of mappings at 
+some point in the Skotos library. Having a few empty initialized arrays 
+in an object that already stores several megabytes of meta-information 
+is so irrelevant it should not even be considered sloppy.
+
+If the objects really are sparse, you could just do a mapping of 
+mappings instead -- e.g.
+
+mapping bigmap;
+
+void store_object(ob) {
+    int ix;
+
+    ix = status(ob)[O_INDEX];
+
+    if (!bigmap[ix/1024]) {
+       bigmap[ix/1024] = ([ ]);
+    }
+
+    bigmap[ix/1024][ob] = ob;
+}
+
+
+which would suffice for a good while, and still have excellent 
+computational complexity.
+
+Zell

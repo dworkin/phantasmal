@@ -1,0 +1,31 @@
+From: dgd at list.imaginary.com (Felix A. Croes)
+Date: Thu Jan  1 11:14:01 2004
+Subject: [DGD] call_touch
+
+The new kfun call_touch() is primarily intended to simplify maintenance
+for persistent muds.  When upgrading the program of an object, often the
+dataspace of the object has to be changed as well.  Patching the object
+and all of its clones can be a time-consuming and memory-intensive
+operation.  Using call_touch(), upgrading the object's dataspace can be
+postponed until just before a function is actually called in the object.
+
+call_touch() works by having a function in the driver object called just
+before the object is "touched" by a normal function call, similar to
+how the creator function is called to initialize the object.  It is
+possible to entirely prevent function calls to the object by causing an
+error there:
+
+    int touch(object obj, string function)
+    {
+	call_touch(obj);	/* re-mark the object */
+	error("Forbidden");
+    }
+
+call_touch() is potentially as dangerous as shadows are in LPmud, because
+it can interrupt or inject code into call_other() chains that ought not to
+be meddled with.  Unlike shadows, however, what happens can be controlled
+for each call individually, and in DGD it is easier to determine which
+call chains should not be disturbed.
+
+Regards,
+Dworkin

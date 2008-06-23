@@ -1,0 +1,13 @@
+From: dgd at list.imaginary.com (Felix A. Croes)
+Date: Sat Dec 22 10:13:01 2001
+Subject: [DGD] parse_string question
+
+Noah Lee Gibbs wrote:
+
+>   When you're doing full type-checking, should the empty string be
+> true?  It seems to be, and I had thought it shouldn't be.
+
+"", ({ }) and ([ ]) test as true in any typechecking mode.
+
+Regards,
+Dworkin

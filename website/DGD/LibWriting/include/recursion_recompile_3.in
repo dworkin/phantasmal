@@ -1,0 +1,25 @@
+From: dgd at list.imaginary.com (Felix A. Croes)
+Date: Mon Jan 12 14:26:01 2004
+Subject: [DGD] Re: Recursion in recompile(), is this correct?
+
+Noah Gibbs wrote:
+
+> --- Bart van Leeuwen wrote:
+> > Hmm. has anyone ever tried a setup where
+> > upgrades of 'children' of a
+> > recompiled library are delayed untill the
+> > next time the child is
+> > referenced?
+>
+>   I guess you could use the (very new) call_touch for
+> this...  Prior to call_touch there was no real way to
+> tell when the object was referenced so you couldn't do
+> it that way.
+
+Don't forget that a recompiled program is not replaced until the end
+of the current LPC thread.  You can use call_touch() in the upgrade
+of object dataspaces, though.  For example, to initialize a new
+variable that has been added.
+
+Regards,
+Dworkin

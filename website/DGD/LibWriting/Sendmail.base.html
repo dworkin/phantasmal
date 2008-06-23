@@ -1,28 +1,20 @@
-  <titledef text="Outgoing Email" />
+<titledef text="Outgoing Email" />
 
-  <h2> Sending Email From a DGD Server </h2>
+<h2>Sending Email From a DGD Server</h2>
 
-  <p>
-    See also <a href="../external/flibs_sendmail.txt">messages about a
-    DGD kfun</a> to do this.
-  </p>
+<p>See also <a href="../external/flibs_sendmail.txt">messages about a
+DGD kfun</a> to do this.</p>
 
-  <p>
-    To do this, you'll either need to modify DGD to make an outgoing
-    network connection or get another server to connect to your
-    passive DGD server.
-  </p>
+<p>To do this, you'll either need to modify DGD to make an outgoing
+network connection or get another server to connect to your passive DGD
+server.</p>
 
-  <p>
-    If you choose to modify DGD, you can either provide a
-    sendmail-type kernel function for DGD, coded in C, or apply the
-    network patch to DGD and write LPC code to make your server
-    connect externally and send email.  You'll need to obey the RFCs
-    for SMTP servers, but that's pretty easy.  Par Winzell recommends
-    the following RFCs:
-  </p>
-
-  <pre>
+<p>If you choose to modify DGD, you can either provide a sendmail-type
+kernel function for DGD, coded in C, or apply the network patch to DGD
+and write LPC code to make your server connect externally and send
+email. You'll need to obey the RFCs for SMTP servers, but that's pretty
+easy. Par Winzell recommends the following RFCs:</p>
+<pre>
 0876 Survey of SMTP implementations. D. Smallberg. Sep-01-1983.
 1047 Duplicate messages and SMTP. C. Partridge. Feb-01-1988. (Format:
 1090 SMTP on X.25. R. Ullmann. Feb-01-1989. (Format: TXT=6141 bytes)
@@ -36,24 +28,19 @@
 1830 SMTP Service Extensions for Transmission of Large and Binary MIME
   </pre>
 
-  <p>
-    No matter how you implement this functionality, be sure to
-    restrict mail sending to highly trusted users and processes, and
-    to add extra limits on outgoing mail.  Be even more careful
-    accepting <i>any</i> kind of incoming mail.  It's easy for a
-    mail-enabled server to be used as a relay for spam, or to be used
-    to spam some poor user with many, many unwarranted random messages
-    in his inbox.
-  </p>
+<p>No matter how you implement this functionality, be sure to restrict
+mail sending to highly trusted users and processes, and to add extra
+limits on outgoing mail. Be even more careful accepting <i>any</i> kind
+of incoming mail. It's easy for a mail-enabled server to be used as a
+relay for spam, or to be used to spam some poor user with many, many
+unwarranted random messages in his inbox.</p>
 
-  <p>
-    If you implement a DGD kfun for this (ew!), be sure to check it
-    carefully for security and functionality.  It's easy to get into a
-    long wait (freezing your MUD up) or get an error (crashing DGD) or
-    an errant system call (doing almost anything to the host system).
-    The Kernel Function linked at the top of this page has essentially
-    all of those problems.  Don't use it.
-  </p>
+<p>If you implement a DGD kfun for this (ew!), be sure to check it
+carefully for security and functionality. It's easy to get into a long
+wait (freezing your MUD up) or get an error (crashing DGD) or an errant
+system call (doing almost anything to the host system). The Kernel
+Function linked at the top of this page has essentially all of those
+problems. Don't use it.</p>
 
-  <p style="text-size: 150%"> <a href="../index.html"> Back to top level
-    </a> </p>
+<p style="text-size: 150%"><a href="../index.html">Back to top
+level</a></p>

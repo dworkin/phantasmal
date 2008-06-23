@@ -1,0 +1,32 @@
+From: DGD Mailing List (Erwin Harte)
+Date: Wed Jan  7 11:15:02 2004
+Subject: [DGD] Re: masking kfuns
+
+On Wed, Jan 07, 2004 at 04:53:45PM +0000, Robert Forshaw wrote:
+> How do I mask a kfun, and how do I refer to the original function? Is it 
+> anything like driver::kfun() ?
+
+Yes.  In your auto-object, you can do something like this:
+
+    static object find_object(string path)
+    {
+        /* Do some of your own sanitizing of input, etc. */
+
+        /* ... */
+        
+        return ::find_object(path);
+    }
+
+> Once the function is masked is it possible for someone to do driver::kfun() 
+> to bymass the masked version? If so how can I prevent it?
+
+If you redefine the function in the auto-object, then only code in the
+auto-object can use ::function() to access the original.  And of
+course the driver-object can, assuming you don't do bizarre things
+like inheriting the auto-object, there.
+
+Cheers,
+
+Erwin.
+-- 
+Erwin Harte

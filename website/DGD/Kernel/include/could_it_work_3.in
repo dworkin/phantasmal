@@ -1,0 +1,47 @@
+Date: Tue Sep 18 19:25:01 2001
+Subject: [DGD] Could it work...
+
+On Wed, Sep 19, 2001 at 12:22:35AM +0100, mtaylor wrote:
+> Me again I'm afraid,
+> 
+> My coding partner thinks that we can use what we need of the kernel lib to
+> develop our own system. The good thing for us about doing that is that we
+> will then understand what is going on.
+> 
+> Does anyone have the time (and/or patience) to list what it is the kernel
+> lib does and very briefly how and why it does it.
+
+Disclaimer: I doubt this list is complete.
+
+The kernel-lib...
+
+- provides the basic ability to add users, grant users access, grant
+  users limited quota of objects, stack/ticks/callout-usage, to avoid
+  someone going ahead and creating 60000 clones of some object and
+  thereby taking the game down.
+
+- provides the ability for external objects to 'hook' themselves into
+  the /kernel/sys/driver.c object (and one or two other /kernel
+  objects) so that you will be notified if an object is compiled,
+  cloned, destructed, freed, inherited, a file #include'd, etc.
+
+  This is where you would hook up an 'Object DB' that keeps track of
+  the inheritance information so that you can write your own 'upgrade'
+  command that recompiles whatever is necessary.  This is one of the
+  things that is _not_ provided by the kernel-lib. :)
+
+- provides a basic wiztool (with a very nice 'store results for reuse'
+  approach).
+
+- enforces that inheritables, clonables and 'other' code are in
+  separate directories, 'lib/' subdirs for inherities, 'obj/' subdirs
+  for clonables and, more recently, 'data/' subdirs for LWOs.
+
+I'm sure there are other useful things but these are just some that
+come to mind right now.
+
+Hope this helps,
+
+Erwin.
+-- 
+Erwin Harte

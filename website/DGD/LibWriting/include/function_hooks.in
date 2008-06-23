@@ -1,0 +1,21 @@
+From: dgd at list.imaginary.com (Erwin Harte)
+Date: Mon May 19 22:42:01 2003
+Subject: [DGD] Function Hooks
+
+On Mon, May 19, 2003 at 11:36:05PM -0400, Ben Chambers wrote:
+> Does the DGD REQUIRE all those functions to be implemented prior to running
+> the mudlib, or can I just start with something that does literally nothing
+> and work from there?
+
+Are you talking about the functions that DGD expects in the driver
+object, or about the hooks that the kernel-lib provides?
+
+The driver object is expected to provide certain functions, even if
+those functions do (almost) nothing and are just placeholders.
+
+The kernel-lib can be started without any modifications and you can
+take it from there.
+
+Erwin.
+-- 
+Erwin Harte

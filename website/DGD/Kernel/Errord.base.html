@@ -1,46 +1,40 @@
-    <titledef text="Errord" />
+<titledef text="Errord" />
 
-    <h1> Adding an Error Daemon </h1>
+<h1>Adding an Error Daemon</h1>
 
-    <p> One of the things you'll want to do is have your MUD respond well
-      to errors.  I know, I know, it's not as if
-      <i>you</i> would ever make an error.  But you've got builders and
-      co-coders who may not share your tremendous level of perfection.
-      For their benefit you'll need to handle errors from time to time.
-    </p>
+<p>One of the things you'll want to do is have your MUD respond well to
+errors. I know, I know, it's not as if <i>you</i> would ever make an
+error. But you've got builders and co-coders who may not share your
+tremendous level of perfection. For their benefit you'll need to handle
+errors from time to time.</p>
 
-    <p> So how do you do it?  Well, with the Kernel MUDLib there's a
-      specific way to do it.  You just register an errord
-      with the Kernel MUDLib to catch your errors for you.  Your errord
-      can do whatever your little heart desires -- inform the current
-      user, inform an administrator, log it to a file, analyze the error
-      and provide blow-by-blow commentary, do a stack crawl...  Any or
-      all of the above.  No sweat. </p>
+<p>So how do you do it? Well, with the Kernel MUDLib there's a specific
+way to do it. You just register an errord with the Kernel MUDLib to
+catch your errors for you. Your errord can do whatever your little heart
+desires -- inform the current user, inform an administrator, log it to a
+file, analyze the error and provide blow-by-blow commentary, do a stack
+crawl... Any or all of the above. No sweat.</p>
 
-    <p> Of course, <i>debugging</i> an errord is a mess, because by the
-      time you do anything with it you're already handling an error.
-      To make this easier, I like first adding a command called something
-      like &quot;runtime_error&quot; for admins to use -- it'll do something
-      obviously boneheaded, cause an error, and get your errord to kick
-      in.  If you've got a
-      command that's not especially well-debugged then that'll do just fine
-      too as long as you know what the problem is and can cause it on
-      demand. </p>
+<p>Of course, <i>debugging</i> an errord is a mess, because by the time
+you do anything with it you're already handling an error. To make this
+easier, I like first adding a command called something like
+"runtime_error" for admins to use -- it'll do something obviously
+boneheaded, cause an error, and get your errord to kick in. If you've
+got a command that's not especially well-debugged then that'll do just
+fine too as long as you know what the problem is and can cause it on
+demand.</p>
 
-    <p> If you're going to register an errord, first you'll need to
-      <i>have</i> an errord.  I put mine in /usr/System/sys/errord.c
-      and this article assumes you do the same.  It doesn't much
-      matter as long as it's a clonable.  That's kind of funny, because
-      you'll never, ever
-      clone it.  It may not make much sense at first blush, but remember that
-      you never inherit from clonables
-      and you never make lightweight objects from them.  If there was
-      a kind of object that you couldn't do any of that with <i>and</i>
-      you couldn't clone, then errord would be that. </p>
+<p>If you're going to register an errord, first you'll need to
+<i>have</i> an errord. I put mine in /usr/System/sys/errord.c and this
+article assumes you do the same. It doesn't much matter as long as it's
+a clonable. That's kind of funny, because you'll never, ever clone it.
+It may not make much sense at first blush, but remember that you never
+inherit from clonables and you never make lightweight objects from them.
+If there was a kind of object that you couldn't do any of that with
+<i>and</i> you couldn't clone, then errord would be that.</p>
 
-    <p> So what's in an errord?  The Kernel MUDLibs doc
-      in &quot;.../mud/doc/hooks&quot; says: </p>
-
+<p>So what's in an errord? The Kernel MUDLibs doc in ".../mud/doc/hooks"
+says:</p>
 <pre>
 void set_error_manager(object errord)   [System only]
 
@@ -60,16 +54,14 @@ void set_error_manager(object errord)   [System only]
         A compile-time error has occurred.
 </pre>
 
-    <p>
-      So there are three functions (runtime_error, atomic_error and
-      compile_error) that you'll need to worry about. </p>
+<p>So there are three functions (runtime_error, atomic_error and
+compile_error) that you'll need to worry about.</p>
 
-    <p> We're not really going to worry about atomic_error in this
-      document -- you only get those when you're in an atomic operation
-      and something goes wrong.  Maybe later we'll have an &quot;Atomic
-      Operations&quot; article in the Adding Stuff series, but until
-      then the following stub will work well enough: </p>
-
+<p>We're not really going to worry about atomic_error in this document
+-- you only get those when you're in an atomic operation and something
+goes wrong. Maybe later we'll have an "Atomic Operations" article in the
+Adding Stuff series, but until then the following stub will work well
+enough:</p>
 <pre>
 void atomic_error(string error, int atom, mixed** trace)
 {
@@ -77,17 +69,13 @@ void atomic_error(string error, int atom, mixed** trace)
 }
 </pre>
 
-    <p>
-      That's far from perfect.  It won't catch problems during startup
-      or other times that there's no particular user doing anything
-      such as login.  It also won't tell you any details, like the
-      stack trace. </p>
+<p>That's far from perfect. It won't catch problems during startup or
+other times that there's no particular user doing anything such as
+login. It also won't tell you any details, like the stack trace.</p>
 
-    <p> If you have a system log I recommend logging any errors there,
-      <i>not</i> just informing the user who caused the error.  I
-      mention this because all the same things are going to apply to
-      compile_error: </p>
-
+<p>If you have a system log I recommend logging any errors there,
+<i>not</i> just informing the user who caused the error. I mention this
+because all the same things are going to apply to compile_error:</p>
 <pre>
 void compile_error(string file, int line, string error)
 {
@@ -98,29 +86,24 @@ void compile_error(string file, int line, string error)
 }
 </pre>
 
-    <p>
-      So if you were more sensible, you'd also want to log this to the
-      system log -- much as the write_file at the end
-      does.  Compile errors are less likely (though not impossible)
-      on login, but they're also *more* likely on startup.  They
-      tend to come accompanied by runtime errors, and runtime
-      errors come with stack traces. </p>
+<p>So if you were more sensible, you'd also want to log this to the
+system log -- much as the write_file at the end does. Compile errors are
+less likely (though not impossible) on login, but they're also *more*
+likely on startup. They tend to come accompanied by runtime errors, and
+runtime errors come with stack traces.</p>
 
-    <p> If you're experienced at all in debugging, you're well aware of
-      just how useful a stack trace can be.  Knowing not just where the
-      error is, but who initiated the action that went wrong will let
-      you know which recently-modified components are likely to be
-      involved in the problem.  Runtime errors come with stack traces,
-      so we should print one out.  Of course, that's a nontrivial bit
-      of code, so if you're lazy like me, you'll prefer not to write it
-      yourself. </p>
+<p>If you're experienced at all in debugging, you're well aware of just
+how useful a stack trace can be. Knowing not just where the error is,
+but who initiated the action that went wrong will let you know which
+recently-modified components are likely to be involved in the problem.
+Runtime errors come with stack traces, so we should print one out. Of
+course, that's a nontrivial bit of code, so if you're lazy like me,
+you'll prefer not to write it yourself.</p>
 
-    <p> One place you can get it is from the Kernel MUDLib's
-      runtime_error function in &quot;/kernel/sys/driver.c&quot;.
-      If you were to shamelessly steal it and tack another write_file to
-      &quot;/error.log&quot; on the end you might get a resulting
-      function something like this: </p>
-
+<p>One place you can get it is from the Kernel MUDLib's runtime_error
+function in "/kernel/sys/driver.c". If you were to shamelessly steal it
+and tack another write_file to "/error.log" on the end you might get a
+resulting function something like this:</p>
 <pre>
 void runtime_error(string error, int caught, mixed** trace)
 {
@@ -148,7 +131,7 @@ void runtime_error(string error, int caught, mixed** trace)
 
     function = trace[i][TRACE_FUNCTION];
     len = strlen(function);
-    if(progname == AUTO &amp;&amp; i != size - 1 &amp;&amp; len > 3) {
+    if(progname == AUTO &amp;&amp; i != size - 1 &amp;&amp; len &gt; 3) {
       switch(function[..2]) {
       case "bad":
       case "_F_":
@@ -175,61 +158,55 @@ void runtime_error(string error, int caught, mixed** trace)
   }
 
   send_message("Runtime error: " + str);
-  if(caught == 0 &amp;&amp; this_user() &amp;&amp; (obj=this_user()->query_user())) {
-    obj->message(str);
+  if(caught == 0 &amp;&amp; this_user() &amp;&amp; (obj=this_user()-&gt;query_user())) {
+    obj-&gt;message(str);
   }
   write_file("/error.log", str);
 }
 </pre>
 
-    <p> Of course all of these errors have the caveat mentioned above
-      &mdash; they can get lost since nobody may be receiving messages
-      when they trigger.  For that reason, I <i>strongly</i> recommend
-      checking your system log -- &quot;/error.log&quot; for the above
-      code.  Basically, any time something fails silently see if new
-      stuff got tacked onto that file. </p>
+<p>Of course all of these errors have the caveat mentioned above &mdash;
+they can get lost since nobody may be receiving messages when they
+trigger. For that reason, I <i>strongly</i> recommend checking your
+system log -- "/error.log" for the above code. Basically, any time
+something fails silently see if new stuff got tacked onto that file.</p>
 
-    <p> You'll also need to add your errord to your initd.c.  So over in
-      &quot;/usr/System/initd.c&quot; go ahead and add some lines: </p>
-
+<p>You'll also need to add your errord to your initd.c. So over in
+"/usr/System/initd.c" go ahead and add some lines:</p>
 <pre>
   if(!find_object("/usr/System/sys/errord")) {
     compile_object("/usr/System/sys/errord");
   }
-  driver->set_error_manager(find_object("/usr/System/sys/errord"));
+  driver-&gt;set_error_manager(find_object("/usr/System/sys/errord"));
 </pre>
 
-    <p>
-      (&quot;driver&quot; should point to your driver object or you
-      should replace it with the path to the driver.) </p>
+<p>("driver" should point to your driver object or you should replace it
+with the path to the driver.)</p>
 
-    <p>
-      I do this after registering the telnet manager but
-      do things in an order that works for you.  Remember the earlier in
-      the sequence you start up the errord the more things you can
-      have it help you debug. </p>
+<p>I do this after registering the telnet manager but do things in an
+order that works for you. Remember the earlier in the sequence you start
+up the errord the more things you can have it help you debug.</p>
 
-    <p> So that's it?  Not quite.  Some itty-bitty other stuff: </p>
+<p>So that's it? Not quite. Some itty-bitty other stuff:</p>
 
-      <ul>
-	<li> Make sure to include &lt;kernel/kernel.h&gt; and
-	  &lt;trace.h&gt; from your file -- some of the symbols that
-	  the stolen code above uses will require them.  Usually
-	  you'll need trace.h any time you play with call traces. </li>
-	<li> Be aware that if your error handler causes errors
-	  you'll probably have problems. </li>
-	<li> With compile errors you'll tend to get a string of them
-	  followed by a runtime error.  Expect this.  It's your friend. </li>
-      </ul>
+<ul>
+  <li>Make sure to include &lt;kernel/kernel.h&gt; and &lt;trace.h&gt;
+  from your file -- some of the symbols that the stolen code above uses
+  will require them. Usually you'll need trace.h any time you play with
+  call traces.</li>
 
-    <p> So go ahead and put this together and after a little debugging
-      and other poking it should run.  If you haven't seen it do its
-      thing yet, you can type something like
-      &quot;code ({ &quot;bob&quot; }) [7] &quot; which will cause a
-      nice little &quot;Array index out of range&quot; error with stack
-      trace.  Have a look in /error.log, and you should see something
-      like this: </p>
+  <li>Be aware that if your error handler causes errors you'll probably
+  have problems.</li>
 
+  <li>With compile errors you'll tend to get a string of them followed
+  by a runtime error. Expect this. It's your friend.</li>
+</ul>
+
+<p>So go ahead and put this together and after a little debugging and
+other poking it should run. If you haven't seen it do its thing yet, you
+can type something like "code ({ "bob" }) [7] " which will cause a nice
+little "Array index out of range" error with stack trace. Have a look in
+/error.log, and you should see something like this:</p>
 <pre>
 Array index out of range [caught]
   46 receive_message   /kernel/obj/telnet (#25)
@@ -241,23 +218,22 @@ Array index out of range [caught]
  849 cmd_code          /kernel/lib/wiztool (/usr/System/obj/wiztool#27)
   10 exec              /usr/admin/_code
 </pre>
+<hr />
 
-    <hr />
+<h3>Specific Projects</h3>
 
-    <h3> Specific Projects </h3>
+<p>So what can you do from here? Lots of things. We've mentioned some
+possibilities in the article itself, but quick projects include:</p>
 
-    <p> So what can you do from here?  Lots of things.  We've mentioned
-      some possibilities in the article itself, but quick projects include:
-      </p>
+<ul>
+  <li>Fix up the formatting of the errors and make them more
+  readable</li>
 
-      <ul>
-	<li> Fix up the formatting of the errors and make them more readable
-	  </li>
-	<li> Tell all admins logged in that an error has occurred and if
-	  possible who caused it.  You may want to let them later query
-	  the error and get the stack. </li>
-	<li> Make this work with atomic functions.  Remember that you
-	  can't write to a file inside an atomic function so if somebody
-	  is catching an error in an atomic function you can't write
-	  to the error log! </li>
-      </ul>
+  <li>Tell all admins logged in that an error has occurred and if
+  possible who caused it. You may want to let them later query the error
+  and get the stack.</li>
+
+  <li>Make this work with atomic functions. Remember that you can't
+  write to a file inside an atomic function so if somebody is catching
+  an error in an atomic function you can't write to the error log!</li>
+</ul>

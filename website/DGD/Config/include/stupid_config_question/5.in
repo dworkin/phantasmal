@@ -1,0 +1,26 @@
+From: Lord Lerkista
+Subject: Re: [DGD] Stupid config question...
+Date: Sat, 04 Sep 2004 17:57:55 -0500
+
+Noah Gibbs wrote:
+
+>  I'm sure this has been answered before.
+>
+>  I'm trying to get DGD running on a new machine.  I tried grabbing
+>both 1.2.90 and 1.2.93 with the same results.  I've compiled with the
+>host set to LINUX and to DARWIN.  The machine is actually running
+>Fedora Core 1, which is based strongly on RedHat Linux, and distributed
+>by RedHat.
+>
+>  Every time I run DGD (at least if the config file is right, *grin*),
+>I get the error message:  "socket IPv6: Address family not supported by
+>protocol".
+>
+>  I haven't figured out where this message is coming from yet, so I'm
+>not sure where in the code to play with.  Any hints?
+>
+>  Note that I'm not running Phantasmal, just the Kernel Library.
+>
+You only need to load the ipv6 module, modprobe ipv6 and that's all =)
+I have the same problem with Slackware 10, and i fixed loading that
+module =)

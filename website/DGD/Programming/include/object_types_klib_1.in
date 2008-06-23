@@ -1,0 +1,130 @@
+From: dgd at list.imaginary.com (Felix A. Croes)
+Date: Sun Jul 11 17:05:01 2004
+Subject: [DGD] object types: examples from the kernel lib
+
+Have you ever used function_object() as a way to make sure that an
+object can perform the role you want it to perform?  Then object types
+can simplify your work.  The kernel library presently uses object types
+in a few cases, which I will describe below by way of example.
+
+
+The kernel library has several objects intended to be inherited by other
+objects that want to perform a certain function.  Two such objects are
+/kernel/lib/connection and /kernel/lib/user; they perform the connection
+and user roles.
+
+The kernel library uses a connection object as a way to communicate with
+a remote user.  The connection object also communicates with a
+representation of the user in the mud, the user object:
+
+    Internet  <->  connection object  <->  user object
+
+The kernel library creates a connection object as soon as a new
+connection from the network is accepted.  A user object is created
+(or found, since it may already exist) later.  To make sure that
+the communication between these two objects works properly, each
+of them inherits the proper role object from /kernel/lib.
+
+An object can perform both roles.  For example,
+
+    Internet  <->  connection object  <->  ssh object  <->  user object
+
+Here the ssh object, which decrypts input from the remote user and
+encrypts output from the mud, sits in between the connection object
+and the user object.  To the connection object, it performs the user
+role.  To the user object, it performs the connection role.  It does
+this by inheriting both /kernel/lib/connection and /kernel/lib/user.
+There may in fact be several objects in between the outermost connection
+and user objects, performing some sort of translation.
+
+This is how the user object used to look:
+
+    static void connection(object conn)
+    {
+        if (function_object("query_user", conn) == "/kernel/lib/connection") {
+            disconnect();
+            connection = conn;
+        }
+    }
+
+That is, the user object has a function called 'connection', which can
+be used to set the connection object communicating with that user object.
+To make sure that the prospective connection object is really capable of
+the role it is supposed to perform, function_object() is used to see if
+a function in the object is inherited from /kernel/lib/connection.
+
+Here is how the same function looks at present:
+
+    static void connection(object "/kernel/lib/connection" conn)
+    {
+        if (conn) {
+            disconnect();
+            connection = conn;
+        }
+    }
+
+Unless the connection object is able to do the job, it will not be
+accepted as an argument.  The object type in the parameter declaration
+ensures that when the function is called, a check is performed to see
+that the object actually inherits the proper "role" object.  Note that
+nil is still an acceptable value even for a typed object, so the
+function should check for that (previously, a nil argument would
+result in an error when calling function_object()).
+
+All object types are checked at runtime only.  There is no compile-time
+check; in fact there is not even a check that the object type specified
+is an existing object.  Each object type path is automatically
+translated at compile time by calling the function object_type() in the
+driver object.  In the kernel library, this will take care of relative
+paths and paths that start with ~.
+
+Here is a one-line example, from /kernel/sys/userd (slightly modified):
+
+    user = (object "/kernel/lib/user") port_manager->select(str);
+
+The user daemon asks the port manager for an appropriate user object,
+given a first line of input (which can be a user name, a ssh ident
+string, a HTTP GET command, and so on).  To ensure that the port
+manager does not accidentally return an improper object, the result
+is cast to object "/kernel/lib/user".  If this is not inherited by
+the object, a runtime error will result.
+
+Note that in all cases, the object type must be a string constant.
+You cannot use a variable which will hold a string value at runtime;
+it must be a constant.  However, the constant may be composed of
+several concatenated strings. (Yes, even for a function parameter!)
+
+Last example, from the auto object:
+
+    static object this_user()
+    {
+        object user;
+
+        user = ::this_user();
+        while (user && user <- "/kernel/lib/connection") {
+            user = user->query_user();
+        }
+        return user;
+    }
+
+The auto object masks this_user(), which by default would return the
+connection object.  Instead, it finds the object which performs the
+user role (and not, like a ssh object sitting in between, also the
+connection role).  To accomplish this it uses the <- operator, which
+works like a cast, but which never results in an error.  Instead, it
+evaluates to 1 if the role object is inherited, and 0 otherwise.
+
+The <- operator has the same priority as the -> operator, so
+
+    obj <- "/foo" + "/bar"
+
+evaluates to
+
+    (obj <- "/foo") + "/bar"
+
+Use explicit parenthesis for string concatenation, as below:
+
+    obj <- ("/foo" + "/bar")
+
+Regards,
+Dworkin

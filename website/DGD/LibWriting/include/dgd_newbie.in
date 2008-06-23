@@ -1,0 +1,21 @@
+From: dgd at list.imaginary.com (Josh Dady)
+Date: Fri Jan 16 09:28:01 2004
+Subject: [DGD] DGD Newbie
+
+On Jan 15, 2004, at 10:29 AM, Noah Gibbs wrote:
+
+> It's actually possible to write an FTP server without
+> this, but it requires implementing only passive mode.
+
+I would humbly suggest that, if you're going to build a file-serving 
+protocol in LPC, that you at least consider WebDAV. Windows and OSX 
+speak it natively, there are lots of separate clients available for 
+just about every platform, and the HTTP server that you would have to 
+build first (WebDAV is an extension of HTTP) would just be generally 
+useful anyway. What's more, just about every development environment 
+has some understanding of HTTP (and many do WebDAV), so anything you 
+develop in the future probably would need no separate protocol to 
+interact with the MUD.
+
+--
+Joshua P. Dady

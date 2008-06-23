@@ -1,0 +1,34 @@
+Date: Thu, 1 Feb 2001 11:14:58 +0100 (MET)
+From: Mikael Lind
+Subject: Re: [DGD]Limiting access to functions
+
+Quoting Neil McBride from 19:20, 2001-02-01:
+
+> Firstly, you can determine the previous function name using
+> call_trace.  In this case, X.  However, call_trace doesn't list
+> any inherited objects (Is there anything that does?).  Once
+> you've found the function name, you can then use function_object
+> to determine what object the function was inherited from.  The
+> only restriction is that X must be callable by call_other.  If
+> the object is object A, then you've found your match.  Also, the
+> fact that function X is nomask means it can't be changed - always
+> useful when you're trying to ensure data integrity ;)
+
+Using call_trace(), you get function name, object name and program
+name (object name of the object defining the function), among other
+things. So if you use call_trace() anyway, there's no need to use
+function_object() to get the name of the defining program.
+
+In fact, previous_program(), this_object() and previous_object()
+could all be implemented in LPC from call_trace(). I assume that they
+are provided as kfuns for efficiency reasons. What disturbs me here
+is that previous_program() and previous_object() differ in
+functionality in a way that at least I didn't expect by looking at
+the names - previous_object() only cares about function calls done
+with call_other(). I find that a bit inconsistent.
+
+// Elemel / Mikael
+
+--
+Give up yourself unto the moment / The time is now / Give up yourself
+unto the moment / Let's make this moment last // Moloko

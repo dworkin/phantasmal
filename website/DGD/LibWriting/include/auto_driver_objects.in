@@ -1,0 +1,16 @@
+From: dgd at list.imaginary.com (Felix A. Croes)
+Date: Thu May 22 07:24:01 2003
+Subject: [DGD] Auto and Driver objects
+
+"Ben Chambers" wrote:
+
+> Thanks!  That clarifies a good many things... I was sitting there staring at
+> the driver and auto objects, and saying, how can the driver object, use the
+> auto object to load the auto object that hasn't been loaded yet...
+
+But note that in some mudlibs, it may be useful for the driver object
+to inherit the auto object after all.  So the driver object can do that;
+it just doesn't do it automatically.
+
+Regards,
+Dworkin

@@ -1,0 +1,20 @@
+From: Noah Gibbs
+Subject: Re: [DGD] Stupid config question...
+Date: Sat, 4 Sep 2004 15:51:57 -0700 (PDT)
+
+  Did this.  It seems to work fine.  I added "-DINET6=0" to the DEFINES
+variable, which I assume is what you meant below.
+
+--- "Felix A. Croes" wrote:
+> 
+> It looks like the include files define AF_INET6, but the kernel
+> doesn't
+> support it.  In the main Makefile, add INET6=0 to the options, make
+> clean
+> and rebuild.
+> 
+> Regards,
+> Dworkin
+> _________________________________________________________________
+> List config page:  http://list.imaginary.com/mailman/listinfo/dgd
+> 

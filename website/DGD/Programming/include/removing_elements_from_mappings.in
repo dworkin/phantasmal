@@ -1,0 +1,56 @@
+Date: Fri, 15 Dec 2000 00:15:51 +0100
+From: Erwin Harte
+Subject: Re: [DGD]removing elements from mappings
+
+On Thu, Dec 14, 2000 at 11:35:25PM +0100, Boris J wrote:
+> Hello !
+> 
+> I wondering what is the proper way of removing elements (indices/values)
+> from a mapping in DGD ?
+
+Several ways.
+
+> Shouldn't this work:
+> 
+>     foo_mapping -= bar_indices;
+> 
+> which would remove 'bar_indices' indice and it's value from the
+> 'foo_mapping' mapping ?
+
+Yes:
+
+  mapping m;
+
+  m = ([ 1: 2 ]);
+  m = m - ({ 1 });
+
+  m is now ([ ])
+
+This does the same thing:
+
+  m -= ({ 1 });
+
+> I discovered also that setting value of an indice to 'nil', e.g.
+> 
+>     foo_mapping[bar_indices] = nil;
+> 
+> makes the 'bar_indices' entry to disappear from the mapping. Does this mean 
+> that it's impossible to store nil values in DGD mappings, or is it a 
+> configurable option ? ( Like changing 'typechecking' in driver config file
+> or something... )
+
+Assigning a nil value to an index is another way of removing an
+index:value pair from a mapping.  Correct.  If you want to use nil
+anyway, you could for instance use 1-sized arrays instead of the
+actual values.
+
+The only effect the typechecking option has is that for values 0 and 1
+you can accomplish the same thing using 0 instead of nil (more to the
+point, nil _is_ 0 in those situations).
+
+Hope that helps,
+
+Erwin.
+-- 
+Erwin Harte         :    `Don't mind Erwin, he gets crabby. :)'
+                    :       -- Par Winzell

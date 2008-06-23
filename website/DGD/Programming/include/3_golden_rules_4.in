@@ -1,0 +1,22 @@
+From: dgd@dworkin.nl (Felix A. Croes)
+Date: Tue Apr  5 01:26:01 2005
+Subject: [DGD] 3 golden rules for MP
+
+Steve Wooster wrote:
+
+>[...]
+> For 3, what about a heartbeat-ish daemon for objects in combat to ensure 
+> that objects which take more CPU don't end up with less rounds of combat, 
+> or healing more slowly/etc? Would that just be a necessary evil to ensure 
+> that certain types of actions occur at the same speed? More importantly, is 
+> there a better way to do that than to have it notify each object using a 
+> different time-slice (using call_out with a delay of 0), then do a call_out 
+> for the next round?
+
+That's fine, as long as it doesn't break rule 1 (i.e. it shouldn't, in
+a single execution round, modify the internal state of all players/monsters
+in combat in the mud).  It only violates rule 3 when there are a lot of
+competing callouts trying to simultaneously run in that heartbeat daemon.
+
+Regards,
+Dworkin

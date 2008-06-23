@@ -1,0 +1,54 @@
+From: DGD Mailing List (Michael McKiel)
+Date: Sun Feb  8 10:36:00 2004
+Subject: [DGD] Fixed get_log_time()
+
+Thanks to Zell for pointing out sscanf...had my mind wrapped around explode
+and wasn't seeing the forest for the trees or something :)
+Here's the Code, perhaps an example for a newb who knows.
+It returns a string that looks like:  "(11:28) 02/08/04"
+We use it as a timeStamp in logs. so we know when errors happen, 
+and its not as Wordy as ctime().
+
+
+#include <config.h>
+#include <options.h>
+
+string *months;
+
+void create()
+{
+    months = ({ "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", 
+                "Sep", "Oct", "Nov", "Dec" });
+}
+
+string get_log_time()
+{
+    int i;
+    string str;
+    mixed *date;
+
+    date = allocate(5);
+
+    sscanf(ctime(time()), "%*s %s %d %d:%d:%*d %d",
+        date[0], date[1], date[2], date[3], date[4]);
+
+    /*
+       i = pos. of the month date[0] in the months array +1
+       getting the number of the calendar month
+     */
+    i = member_array((string)date[0], months) + 1;
+
+    /* If the month is < 10 we want to add a 0 before it */
+    str = (i < 10) ? "0"+i : ""+i;
+
+    /* If the DAY of the month is < 10, again add a 0 before it */
+    str += ((int)date[1] < 10) ? "/0"+date[1] : "/"+date[1];
+
+    /* Take the modulus 100 of the year, again < 10 add a 0 */
+    str += (( i = (int)date[4] % 100) < 10 ) ? "/0"+i : "/"+i;
+
+    /* Add in the HR:MN and were done :) */
+    str = "("+date[2]+":"+date[3]+") "+str;
+
+    return str;
+}

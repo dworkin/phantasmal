@@ -2,18 +2,13 @@
 
 <h2>Quick Summary of the Skotos SAM System</h2>
 
-<p>
-  SAM (Skotos Active Markup) allows text in descriptions (see Quick
-  Summary: Description System) to be dynamic.
-</p>
+<p>SAM (Skotos Active Markup) allows text in descriptions (see Quick
+Summary: Description System) to be dynamic.</p>
 
 <h3>OneOf</h3>
 
-<p>
-  The simplest SAM is the OneOf -- basically using a OneOf in your
-  text allows you to randomize the output.
-</p>
-
+<p>The simplest SAM is the OneOf -- basically using a OneOf in your text
+allows you to randomize the output.</p>
 <pre>
    Look: [
       You are inside {a large|an oversize|a} tent.
@@ -30,10 +25,7 @@
 
 <h3>Output a Property</h3>
 
-<p>
-  You can also output the value of a property very easily.
-</p>
-
+<p>You can also output the value of a property very easily.</p>
 <pre>
    Look: [
       The gem is $(this.gemcolor).
@@ -41,125 +33,100 @@
    Output(s):
       &gt; look at gem
       The gem is blue.
-      &gt; +setp gem &quot;gemcolor green
-      Setting 'gemcolor' in &lt;[Examples:complete:sam:gem]#4544&gt; to &quot;green&quot;.
+      &gt; +setp gem "gemcolor green
+      Setting 'gemcolor' in &lt;[Examples:complete:sam:gem]#4544&gt; to "green".
       &gt; look at gem
       The gem is green.
       &gt;
 </pre>
 
-<p>
-  In the above example, $(this) refers to the object itself, the gem
-  itself.  $(this.gemcolor) refers to the value of the property
-  &quot;gemcolor&quot; inside the gem.
-</p>
+<p>In the above example, $(this) refers to the object itself, the gem
+itself. $(this.gemcolor) refers to the value of the property "gemcolor"
+inside the gem.</p>
 
 <h3>Arguments</h3>
 
-<p>
-  $(this) is only one of many 'arguments' that SAM knows about that is
-  different depending on the circumstance that the SAM is executed.
-</p>
+<p>$(this) is only one of many 'arguments' that SAM knows about that is
+different depending on the circumstance that the SAM is executed.</p>
 
-<p>
-  In almost every situation, the following arguments are available:
-</p>
+<p>In almost every situation, the following arguments are available:</p>
 
 <ul>
-  <li>
-    $(actor) &ndash; The object executing the action, e.g. whomever is
-    taking the sword
-  </li>
+  <li>$(actor) &ndash; The object executing the action, e.g. whomever is
+  taking the sword</li>
 
-  <li>
-    $(action) &ndash; The name of the action currently executing,
-    e.g. take
-  </li>
+  <li>$(action) &ndash; The name of the action currently executing, e.g.
+  take</li>
 
-  <li>
-    $(this) &ndash; The object containing the SAM itself, e.g. the
-    sword
-  </li>
+  <li>$(this) &ndash; The object containing the SAM itself, e.g. the
+  sword</li>
 
-  <li>
-    $(target) &ndash; The detail of the object that is the target of
-    the action.
-  </li>
+  <li>$(target) &ndash; The detail of the object that is the target of
+  the action.</li>
 </ul>
 
-<p>
-  In addition, in many situations, the following additional arguments
-  are available:
-</p>
+<p>In addition, in many situations, the following additional arguments
+are available:</p>
 
 <ul>
-  <li>
-    $(verb) &ndash; The verb used in the action, e.g. 'polish' in
-    &quot;polish the sword with my cloth&quot;
-  </li>
+  <li>$(verb) &ndash; The verb used in the action, e.g. 'polish' in
+  "polish the sword with my cloth"</li>
 
-  <li>
-    $(dob) &ndash; The object that is the direct object of the action,
-    e.g. the sword
-  </li>
+  <li>$(dob) &ndash; The object that is the direct object of the action,
+  e.g. the sword</li>
 
-  <li>
-    $(using) &ndash; the object that is the indirect object of the
-    action, e.g. the cloth
-  </li>
+  <li>$(using) &ndash; the object that is the indirect object of the
+  action, e.g. the cloth</li>
 </ul>
 
 <h3>References</h3>
 
-<p>
-  In addition to arguments, you can also reference specific objects.
-</p>
+<p>In addition to arguments, you can also reference specific
+objects.</p>
 
 <ul>
-  <li>
-    $(Full:Woe:Name) &ndash; the object with the woe name
-    &quot;Full:Woe:Name&quot;
-  </li>
+  <li>$(Full:Woe:Name) &ndash; the object with the woe name
+  "Full:Woe:Name"</li>
 
-  <li>
-    $[${Full:Woe:Name}] &ndash; the object that is currently named
-    &quot;Full:Woe:Name&quot;, and if the object is renamed, the
-    reference will change with it.
-  </li>
+  <li>$[${Full:Woe:Name}] &ndash; the object that is currently named
+  "Full:Woe:Name", and if the object is renamed, the reference will
+  change with it.</li>
 </ul>
 
 <h3>Property References</h3>
 
-<p>
-  Once you have object defined, either by argument $this or by
-  reference $(Full:Woe:Name) or $[${Full:Woe:Name}], you can directly
-  output the value of properties that are in these objects into your
-  descriptions, just by adding a period followed by the property name:
-</p>
+<p>Once you have object defined, either by argument $this or by
+reference $(Full:Woe:Name) or $[${Full:Woe:Name}], you can directly
+output the value of properties that are in these objects into your
+descriptions, just by adding a period followed by the property name:</p>
 
 <ul>
   <li>$(this.trait:variant)</li>
-    <li>$(actor.trait:variant)</li>
-    <li>$(Full:Woe:Name.trait:variant)</li>
-    <li>$[${Full:Woe:Name.trait:variant}]</li>
+
+  <li>$(actor.trait:variant)</li>
+
+  <li>$(Full:Woe:Name.trait:variant)</li>
+
+  <li>$[${Full:Woe:Name.trait:variant}]</li>
 </ul>
 
 <p>Some commonly used properties that output text:</p>
 
 <ul>
-    <li>$(this.base:possessive) &ndash; possessive pronoun e.g. 'his'</li>
-    <li>$(this.base:objective) &ndash; objective pronoun e.g. 'him'</li>
-    <li>$(this.base:pronoun) &ndash; basic pronoun e.g. 'he'</li>
+  <li>$(this.base:possessive) &ndash; possessive pronoun e.g. 'his'</li>
 
-    <li>$(this.base:light-category) &ndash; object's luminosity,
-      e.g. &quot;dark&quot;, &quot;dim&quot;, or &quot;bright&quot;</li>
+  <li>$(this.base:objective) &ndash; objective pronoun e.g. 'him'</li>
 
-    <li>$(this.details:default:description:brief) &ndash; object's
-      default brief description</li>
+  <li>$(this.base:pronoun) &ndash; basic pronoun e.g. 'he'</li>
+
+  <li>$(this.base:light-category) &ndash; object's luminosity, e.g.
+  "dark", "dim", or "bright"</li>
+
+  <li>$(this.details:default:description:brief) &ndash; object's default
+  brief description</li>
 </ul>
 
 <p>Examples of use:</p>
-
 <pre>
    Look: [
       $(this.base:pronoun) looks very fierce. A scar runs from
@@ -181,153 +148,136 @@ doesn't seem to bother her.
       &gt;
 </pre>
 
-<p>
-  Some property references don't output text, but instead refer to
-  other objects:
-</p>
+<p>Some property references don't output text, but instead refer to
+other objects:</p>
 
 <ul>
-    <li>$(this.base:environment) &ndash; object's environment</li>
-    <li>$(this.base:worn-by) &ndash; object's wearer (same as wielded-by)</li>
-    <li>$(this.base:wielded-by &ndash; object's wielder (same as
-      worn-by)</li>
+  <li>$(this.base:environment) &ndash; object's environment</li>
+
+  <li>$(this.base:worn-by) &ndash; object's wearer (same as
+  wielded-by)</li>
+
+  <li>$(this.base:wielded-by &ndash; object's wielder (same as
+  worn-by)</li>
 </ul>
 
-<p>
-  These are not that useful to use directly, but in turn you can then
-  use properties with these:
-</p>
+<p>These are not that useful to use directly, but in turn you can then
+use properties with these:</p>
 
 <ul>
   <li>$(this.base:environment.base:possessive) &ndash; object's
-    environment possessive pronoun</li>
+  environment possessive pronoun</li>
 
-  <li>$(this.base:worn-by.base:pronoun) &ndash; object's wearer's
-    basic pronoun</li>
+  <li>$(this.base:worn-by.base:pronoun) &ndash; object's wearer's basic
+  pronoun</li>
 </ul>
 
 <p>Details of objects can be output:</p>
 
 <ul>
-  <li>
-    $(&quot;this.details:default:descriptions:look&quot;) &ndash; the
-    prime detail's look description
-  </li>
+  <li>$("this.details:default:descriptions:look") &ndash; the prime
+  detail's look description</li>
 
-  <li>
-    $(&quot;this.details:lamp:descriptions:brief&quot;) &ndash; the
-    lamp detail's brief description
-  </li>
+  <li>$("this.details:lamp:descriptions:brief") &ndash; the lamp
+  detail's brief description</li>
 </ul>
 
-<p>
-  Some detail IDs have spaces in them. The way to refer to a SAM
-  reference with a space in it is to put it in quotes &ndash; e.g.
-</p>
+<p>Some detail IDs have spaces in them. The way to refer to a SAM
+reference with a space in it is to put it in quotes &ndash; e.g.</p>
 
 <ul>
-  <li> $(&quot;this.details:exit west:descriptions:look&quot;) &ndash;
-    the look description of exit west </li>
+  <li>$("this.details:exit west:descriptions:look") &ndash; the look
+  description of exit west</li>
 </ul>
 
 <p>rather than</p>
 
 <ul>
-  <li>$(room.details:exit west:descriptions:look) &ndash; won't work</li>
+  <li>$(room.details:exit west:descriptions:look) &ndash; won't
+  work</li>
 </ul>
 
 <h3>XHTML Tags</h3>
 
-<p>
-  There are some XHTML formatting tags that can be useful are are
-  available in SAM
-</p>
+<p>There are some XHTML formatting tags that can be useful are are
+available in SAM</p>
 
 <ul>
   <li>&lt;br/&gt; &ndash; a line break, a single newline</li>
-  <li>&lt;sbr&gt; &ndash; single break, inserts &lt;br/&gt; when used
-    in a webpage, or a newline when used elsewhere. </li>
+
+  <li>&lt;sbr&gt; &ndash; single break, inserts &lt;br/&gt; when used in
+  a webpage, or a newline when used elsewhere.</li>
+
   <li>&lt;p/&gt; &ndash; a paragraph break, two newlines</li>
+
   <li>&lt;pre&gt;text&lt;/pre&gt; &ndash; will output the text in a
-    monospace font, without formatting</li>
+  monospace font, without formatting</li>
 </ul>
 
 <h3>Common Sam Tags</h3>
 
-<p>
-  There are various times when you need specific output that is not
-  easily available in a property, or the property is in the wrong
-  form. These SAM tags can be useful in these cases:
-</p>
+<p>There are various times when you need specific output that is not
+easily available in a property, or the property is in the wrong form.
+These SAM tags can be useful in these cases:</p>
 
 <p>These are Sam Tags for describing things:</p>
 
 <ul>
-  <li>&lt;describe what=&quot;$(this)&quot;/&gt; &ndash; This will
-    output the brief of $(this) object, e.g. &quot;a sword&quot;</li>
+  <li>&lt;describe what="$(this)"/&gt; &ndash; This will output the
+  brief of $(this) object, e.g. "a sword"</li>
 
-  <li>&lt;describemany what=&quot;$(this.base:inventory)&quot;/&gt;
-    &ndash; Describe many will output multiple briefs, as if in an
-    inventory, of the objects in $(this.base:inventory).</li>
+  <li>&lt;describemany what="$(this.base:inventory)"/&gt; &ndash;
+  Describe many will output multiple briefs, as if in an inventory, of
+  the objects in $(this.base:inventory).</li>
 
-  <li>&lt;describe-holder what=&quot;$(this)&quot;/&gt; &ndash;
-    Equivalent to &lt;describe
-    what=&quot;$(foo.base:holder)&quot;/&gt;'s except when the person's
-    name ends in 's' or 'x' in which case it does the right thing and
-    just adds the apostrophe without a trailing s.</li>
+  <li>&lt;describe-holder what="$(this)"/&gt; &ndash; Equivalent to
+  &lt;describe what="$(foo.base:holder)"/&gt;'s except when the person's
+  name ends in 's' or 'x' in which case it does the right thing and just
+  adds the apostrophe without a trailing s.</li>
 
-  <li>&lt;describe-poss what=&quot;$(this)&quot;&gt; &ndash; Describes
-    $(this) in the possessive form, e.g. &quot;his sword&quot;</li>
+  <li>&lt;describe-poss what="$(this)"&gt; &ndash; Describes $(this) in
+  the possessive form, e.g. "his sword"</li>
 
-  <li>&lt;describe-prop this=&quot;$(this)&quot;
-    what=&quot;property:name&quot;/&gt; &ndash; Adds &quot;a&quot;
-    &quot;the&quot; &quot;an&quot; to the text of the property
-    appropriately.</li>
+  <li>&lt;describe-prop this="$(this)" what="property:name"/&gt; &ndash;
+  Adds "a" "the" "an" to the text of the property appropriately.</li>
 
-  <li>*&lt;describe-view view=&quot;$(this)&quot; cap/&gt; &ndash;
-    Will give the full description of the object, including any visible
-    inventory. e.g. &quot;A tall orc, weilding his sword.&quot;</li>
+  <li>*&lt;describe-view view="$(this)" cap/&gt; &ndash; Will give the
+  full description of the object, including any visible inventory. e.g.
+  "A tall orc, weilding his sword."</li>
 
-  <li>&lt;capitalize what=&quot;lower&quot;&gt; &ndash; will initial
-    capitalize the text &quot;lower&quot; into &quot;Lower&quot;</li>
+  <li>&lt;capitalize what="lower"&gt; &ndash; will initial capitalize
+  the text "lower" into "Lower"</li>
 
-  <li>&lt;eaten what=&quot;$(this)&quot;/&gt; &ndash; will output how
-    much of the item has been consumed.</li>
+  <li>&lt;eaten what="$(this)"/&gt; &ndash; will output how much of the
+  item has been consumed.</li>
 </ul>
 
-<p>
-  Most of these description Sam Tags have a variety of options, see
-  SamSystem for details, but one of the most useful ones is the 'cap'
-  option, which will capitalize the output. For instance:
-</p>
+<p>Most of these description Sam Tags have a variety of options, see
+SamSystem for details, but one of the most useful ones is the 'cap'
+option, which will capitalize the output. For instance:</p>
 
 <ul>
-  <li>&lt;describe what=&quot;$(this)&quot;/&gt; &ndash; This will
-    output the brief of $(this) object, e.g. &quot;A sword&quot;</li>
+  <li>&lt;describe what="$(this)"/&gt; &ndash; This will output the
+  brief of $(this) object, e.g. "A sword"</li>
 </ul>
 
 <h3>Client Sam</h3>
 
-<p>
-  The following SAM tags are useful for special features in the Alice and
-  Zealous clients:
-</p>
+<p>The following SAM tags are useful for special features in the Alice
+and Zealous clients:</p>
 
 <ul>
-  <li>&lt;atag tag=&quot;command&quot;&gt; text that you want themed
-    with the color in the 'command' theme &lt;/atag&gt;</li>
+  <li>&lt;atag tag="command"&gt; text that you want themed with the
+  color in the 'command' theme &lt;/atag&gt;</li>
 
-  <li>&lt;acmd tag=&quot;command&quot; cmd=&quot;open west
-    door&quot;&gt;click here to open the west door.&lt;/acmd&gt;</li>
+  <li>&lt;acmd tag="command" cmd="open west door"&gt;click here to open
+  the west door.&lt;/acmd&gt;</li>
 </ul>
 
 <h3>Simple If Comparison</h3>
 
-<p>
-  A simple if statement allows you to output one text if something is
-  true, a different text if false.
-</p>
-
+<p>A simple if statement allows you to output one text if something is
+true, a different text if false.</p>
 <pre>
    Look: [
       A statue of a man. The statue's face {? this.trait:expression |appears
@@ -336,27 +286,21 @@ to be $(this.trait:expression) at you. |is expressionless. }
    Result(s):
       &gt; look at statue
       A statue of a man. The statue's face is expressionless.
-      &gt; +setp statue &quot;trait:expression smiling
+      &gt; +setp statue "trait:expression smiling
       Setting 'trait:expression' in &lt;[Examples:complete:sam:statue]#4586&gt; to
-&quot;smiling&quot;.
+"smiling".
       &gt; look at statue
       A statue of a man. The statue's face appears to be smiling at you.
       &gt;
 </pre>
 
-<p>
-  In this example, if the property trait:expression doesn't exist
-  (i.e.  false), then &quot;is expressionless&quot; is output. If it
-  does exist (true) then it is &quot;appears to be smiling at
-  you&quot; will be output.
-</p>
+<p>In this example, if the property trait:expression doesn't exist (i.e.
+false), then "is expressionless" is output. If it does exist (true) then
+it is "appears to be smiling at you" will be output.</p>
 
 <h3>Other Comparisons</h3>
 
-<p>
-  There are quite a few kinds of comparisons you can do in SAM:
-</p>
-
+<p>There are quite a few kinds of comparisons you can do in SAM:</p>
 <pre>
 BOOLEAN
 
@@ -396,7 +340,7 @@ BOOLEAN
         false text output }
     
     Comment: range is exclusive, i.e. 
-         {? range | 1 | 3 | 6 | true | false }&quot;
+         {? range | 1 | 3 | 6 | true | false }"
             1   false
             2   false
             3   false
@@ -420,7 +364,6 @@ BOOLEAN
 <h3>Inline Merry</h3>
 
 <p>You can put Merry scripts inside of of SAM as follows:</p>
-
 <pre>
    Look: [
       You are on a road. There are $[this.stars_in_sky + this.moons_in_sky]
@@ -428,60 +371,64 @@ celestial bodies above you.
    ]
 </pre>
 
-<p>
-  If the piece of Merry does not end in a semi-colon or a right-brace,
-  it is assumed to be a 'statement' rather than an 'expression'. This
-  means the code needs to explicitly return a value. For example,
-</p>
-
+<p>If the piece of Merry does not end in a semi-colon or a right-brace,
+it is assumed to be a 'statement' rather than an 'expression'. This
+means the code needs to explicitly return a value. For example,</p>
 <pre>
    You are on a road. There are
      $[
          if (this.stars_in_sky &gt; 5) {
-             return &quot;lots of&quot;;
+             return "lots of";
          }
          if (this.stars_in_sky &gt; 0) {
-             return &quot;a few&quot;;
+             return "a few";
          }
-         return &quot;no&quot;;
+         return "no";
       ]
    stars in the sky.
 </pre>
 
 <h3>Inline Merry and Text</h3>
 
-<p>
-  It can often be useful in SAM to manipulate text, so there are some
-  very simple inline Merry functions that can perform this for you.
-</p>
+<p>It can often be useful in SAM to manipulate text, so there are some
+very simple inline Merry functions that can perform this for you.</p>
 
 <p>Text related:</p>
 
 <ul>
-  <li>$[capitalize(&quot;this is a test&quot;)] &ndash; result: &quot;This is a test&quot;</li>
-  <li>$[proper(&quot;This is a test&quot;)] &ndash; result: &quot;This Is A Test&quot;</li>
-  <li>$[decapitalize(&quot;This Is A Test&quot;)] &ndash; result: &quot;this Is A Test&quot;</li>
-  <li>$[upper_case(&quot;This Is A Test&quot;)] &ndash; result: &quot;THIS IS A TEST&quot;</li>
-  <li>$[lower_case(&quot;this Is A Test&quot;)] &ndash; result: &quot;this is a test&quot;</li>
+  <li>$[capitalize("this is a test")] &ndash; result: "This is a
+  test"</li>
+
+  <li>$[proper("This is a test")] &ndash; result: "This Is A Test"</li>
+
+  <li>$[decapitalize("This Is A Test")] &ndash; result: "this Is A
+  Test"</li>
+
+  <li>$[upper_case("This Is A Test")] &ndash; result: "THIS IS A
+  TEST"</li>
+
+  <li>$[lower_case("this Is A Test")] &ndash; result: "this is a
+  test"</li>
 </ul>
 
 <p>Number related:</p>
 
 <ul>
-  <li>$[desc_cardinal(128)] &ndash; result: &quot;one hundred twenty-eight&quot;</li>
-  <li>$[desc_ordinal(128)] &ndash; result: &quot;one hundred twenty-eighth&quot;</li>
-  <li>$[comma(1024)] &ndash; result: &quot;1,024&quot;</li>
+  <li>$[desc_cardinal(128)] &ndash; result: "one hundred
+  twenty-eight"</li>
+
+  <li>$[desc_ordinal(128)] &ndash; result: "one hundred
+  twenty-eighth"</li>
+
+  <li>$[comma(1024)] &ndash; result: "1,024"</li>
 </ul>
 
 <h3>Inline Merry and Comparisons</h3>
 
-<p>
-  You can combine arbitrary Merry expressions for tests to use in
-  comparisons, to make very sophisticated output. For example:
-</p>
-
+<p>You can combine arbitrary Merry expressions for tests to use in
+comparisons, to make very sophisticated output. For example:</p>
 <pre>
-    {? | $[this.foo == &quot;bar&quot;] |
+    {? | $[this.foo == "bar"] |
         true text output |
         false text output }
 
@@ -496,12 +443,11 @@ celestial bodies above you.
     {? range | $[random(100)] | 25 | 75 |
         You rolled in the middle of the range. |
         You rolled outside the range. }
-</pre>        
+</pre>
 
 <p>These can be quite sophisticated, for instance:</p>
-
 <pre>
-    {? | $[sizeof(Match($actor, &quot;cigarette&quot;))] |
+    {? | $[sizeof(Match($actor, "cigarette"))] |
     Actor has a cigarette. | Actor doesn't have cigarette. }
        Actor has a cigarette.
        Actor doesn't have a cigarette
@@ -509,31 +455,27 @@ celestial bodies above you.
 
 <h3>Common Inline Merry Uses</h3>
 
-<p>
-  There are many things you can do in SAM by using inline Merry, but
-  these are some of the most common:
-</p>
+<p>There are many things you can do in SAM by using inline Merry, but
+these are some of the most common:</p>
 
 <ul>
-  <li>$[Set($this, &quot;my:property:name&quot;, 1);] &ndash; Sets the
-    property my:property:name in object $this to 1.</li>
+  <li>$[Set($this, "my:property:name", 1);] &ndash; Sets the property
+  my:property:name in object $this to 1.</li>
 
-  <li>$[Set($this, &quot;my:property:name&quot;, Get($this,
-    &quot;my:property:name) + 1); ] &ndash; Adds 1 to property
-    my:property:name on object $this </li>
+  <li>$[Set($this, "my:property:name", Get($this, "my:property:name) +
+  1); ] &ndash; Adds 1 to property my:property:name on object $this</li>
 </ul>
-
 <pre>
 You look at &lt;describe what=$(this)&gt; and your surroundings change!
-   $[      EmitIn(Get($actor, &quot;base:environment&quot;), Describe($actor) + &quot;
-looks at &quot; + Describe($dbob) + &quot; and disappears!\n&quot;, $actor);
-         $actor.&quot;base:environment&quot; =
+   $[      EmitIn(Get($actor, "base:environment"), Describe($actor) + "
+looks at " + Describe($dbob) + " and disappears!\n", $actor);
+         $actor."base:environment" =
 ${Examples:complete:desc:room-go-nowhere};
-         $actor.&quot;base:proximity&quot; =
-NewNRef(${Examples:complete:desc:room-go-nowhere}, &quot;floor&quot;);
-         $actor.&quot;base:stancestring&quot; = &quot;lying&quot;;
-         $actor.&quot;base:prepositionstring&quot; = &quot;on&quot;;
-         EmitIn(Get($actor, &quot;base:environment&quot;), Describe($actor) + &quot;
-appears out of nowhere lying on the floor!\n&quot;, $actor);
+         $actor."base:proximity" =
+NewNRef(${Examples:complete:desc:room-go-nowhere}, "floor");
+         $actor."base:stancestring" = "lying";
+         $actor."base:prepositionstring" = "on";
+         EmitIn(Get($actor, "base:environment"), Describe($actor) + "
+appears out of nowhere lying on the floor!\n", $actor);
    ]
 </pre>

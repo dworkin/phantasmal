@@ -1,0 +1,12 @@
+Date: Tue Mar 30 12:30:03 2004
+Subject: [DGD] ansi colours
+
+Assuming you're just talking about ANSI escape sequences in general and 
+not a DGD-specific thing, I have a list of the ansi escape sequences on 
+my web-site.  It's not wildly accurate (in terms of which sequences came 
+from which specific standards), but it's what I used for the muds I've 
+worked on and my mud client.
+
+http://bluesock.org/~willg/dev/ansi.html
+
+/will

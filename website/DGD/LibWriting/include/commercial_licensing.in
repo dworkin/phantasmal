@@ -1,0 +1,58 @@
+From: "Ludvig Lejon"
+Subject: Re: [DGD] DGD Commercial Licensing?
+Date: Wed, 22 Sep 2004 12:05:39 +0200
+
+
+----- Original Message -----
+From: "Stephen Schmidt"
+To: DGD List at imaginary.com
+Sent: Wednesday, September 22, 2004 4:38 AM
+Subject: Re: [DGD] DGD Commercial Licensing?
+
+
+> On Tue, 21 Sep 2004, Jas wrote:
+> > Why not pre-install most of the image files on the player's PC, much the
+> > same as Everquest and other games like that are doing?
+>
+> The problem is wizards writing new areas. This works under two
+> circumstances:
+>
+> 1) You can pre-install a wide enough range of images that wizards
+>    can code new areas using only the existing image files.
+> 2) You abandon the traditional wizard-codes-area scheme.
+>
+> I'm pretty skeptical about #1; I think if you go this road you
+> are looking at #2, limiting the extensibility of the game world
+> in some way (or requiring all users to upgrade their image
+> libraries periodically and having new areas be inaccessible
+> to players with outdated versions).
+>
+> That said, I have no experience with anything like this, and
+> obviously other people do, so there may be incremental
+> solutions (rapid and reasonably transparent updating of the
+> image lib, maybe) which would work around the problem.
+>
+> There is also the problem of having the wizards create new
+> images, and having the admins check them for appropriate
+> content, and so forth, but those problems are no different
+> in nature from what we face with wizards writing new text.
+>
+> Steve
+>
+
+Well, I think this problem could be solved quite nicely.
+Let's say you build a world and place all images required in the players
+client.
+When a new built area is access by a player, the server asks the client if
+that area's images is availible on the players local hard drive.
+If not, they are downloaded to the client while the player sees a
+"Loading"-screen.
+The same goes for weapons, new monsters around the world too. The server can
+easily just ask the
+client if the required images are already downloaded, if not a download
+procedur is started.
+
+I think my solution will be much more appreciated amongst players than the
+solution where they have to manually update their clients.
+
+Lejon

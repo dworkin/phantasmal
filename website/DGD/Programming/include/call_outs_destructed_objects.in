@@ -1,0 +1,18 @@
+From: dgd at list.imaginary.com (Erwin Harte)
+Date: Tue Nov  6 10:59:01 2001
+Subject: [DGD] call_outs to destructed objects
+
+On Tue, Nov 06, 2001 at 04:07:31PM +0000, Soja wrote:
+> 
+> Hi !
+> I wonder if it is a good thing to remove all call_outs you know are 
+> directed to a specific object, before you destruct the object?
+> Or is it taken care of by the dest function?  Or is it just not necessary,
+> as the call_out will die by itself when it has nothing to call?
+
+All call_out()s started in object A are removed from the system
+automatically when object A is destroyed.
+
+Erwin.
+-- 
+Erwin Harte

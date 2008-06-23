@@ -1,0 +1,50 @@
+From: dgd at list.imaginary.com (Michael McKiel)
+Date: Thu Apr  1 14:37:01 2004
+Subject: [DGD] sprintf
+
+ --- Robert Forshaw wrote: > Hi,
+> 
+> has anyone here written an sprintf or similar function for DGD (since it 
+> doesn't have one built in) ? If so, would they care to share it?
+> 
+
+I believe theres one here:
+http://www.ucc.gu.uwa.edu.au/~john/dgd/
+
+As well phantasmal's DGD/external has the same sprintf.tar.gz file.
+
+If I recall all I removed from it to make it work was the:
+    inherit "/kernel/lib/strings";
+
+But we soon after removed sprintf since I found almost all I was using it for
+could be accomplished with the following code, and didn't see a point in
+inheriting 600 lines of sprintf into every single object for almost nothing.
+
+The define is 80 spaces in quotes.
+
+#define SPACE80 "                                                            
+                   "
+
+/* Name: align()
+ * Desc: similiar to Dworkin's ralign() in the wiztool.
+ *       A negative width causes left justify up to -79.    */
+nomask string align (mixed num, int width)
+{
+    string str;
+
+    if ( width > 80 || width < -79 ) return "ILLEGAL Width";
+
+    if ( width >= 0 )
+    {
+        str = SPACE80 + (string) num;
+        return str[strlen(str) - width ..];
+    }
+    else
+    {
+        str = (string) num + SPACE80;
+        return str[0 .. ( 0 - width -1) ];
+    }
+}
+
+
+Zam.

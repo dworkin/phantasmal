@@ -1,0 +1,34 @@
+From: dgd at list.imaginary.com (Par Winzell)
+Date: Mon Oct 21 22:31:01 2002
+Subject: [DGD] Atomics
+
+> I am trying to use atomic_error() to log the portion
+> of the stack trace which occur within an atomic
+> function.  Unfortunately, atomic_error() also seems to
+> be called from within an atomic function, which means
+> I can't write to a log file from within this function,
+> I can't set any variables to indicate to a future
+> function what I want logged (the variables get rolled
+> back when the atomic exits), and I can't callout to
+> write to the log file within the atomic (because the
+> callout will be removed when the atomic exits).
+
+Right. I believe the idea is that atomic really does roll back all 
+state, and if you want to trick it you have to go slightly out of your 
+way to do it.
+
+> Is there any way I can write data from atomic_error()
+> to a log, or do I have to use DRIVER->message() to
+> write it to stderr?
+
+We make use of the fact that the string sent to error() actually does 
+survive the atomic rollback. We catch runtime errors, package up the 
+data we want to survive the rollback as ASCII, and stuff it into the 
+string. Then we rethrow this string with error(). The atomic rollback 
+occurs, but runtime_error() recognizes the specially formated error 
+string, unpacks the data, and happily exports it to functions that want 
+to dig into it.
+
+It can really give you a headache, though.
+
+Zell

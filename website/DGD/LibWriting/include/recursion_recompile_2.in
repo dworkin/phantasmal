@@ -1,0 +1,44 @@
+From: dgd at list.imaginary.com (Noah Gibbs)
+Date: Mon Jan 12 08:42:01 2004
+Subject: [DGD] Re: Recursion in recompile(), is this correct?
+
+--- Bart van Leeuwen wrote:
+> > You do have to block callouts as well
+> > as input from users, in order to
+> > prevent interruptions.  These are both
+> > dangerous operations, since an
+> > error can effectively halt the mud without
+> > a way to restart it.  But it
+> > can be done.
+
+  Yeah.  It's not actually so bad...  It's just a
+matter of making sure you've got strategically-placed
+catch() statements so that an error can be recovered
+from.  At least, that's been my experience.
+
+> Yep, call_outs, input of any kind... sounds like
+> lots of fun to me..
+
+  Yup.  There's an easy way to block call_outs, it
+turns out, in the Kernel Library resource manager. 
+Ditto for input.  I don't think the input-blocking
+thing works for connections, so I actually have a
+separate "suspended" message that you get when you try
+to connect to the MUD while it's upgrading.  It tells
+you to try back in about ten seconds.  It doesn't take
+nearly a full ten seconds to rebuild, but I figure a
+conservative estimate is better :-)
+
+  But yeah, as Felix notes, make sure you have catch
+blocks in the right locations so that an error will
+cancel everything (or at least, cancel the operation
+that just had the error and not reschedule it) and
+restore call_outs and input and new connections.
+
+  I actually do this when doing my %datadump operation
+too...  Since I'm saving all the objects in the MUD, I
+have to keep people and critters from moving around
+and giving me an inconsistent state.  That would be
+yet *another* disadvantage of data files compared to
+state dumps, alas.  So for periodic backups, I
+recommend statedumps :-)

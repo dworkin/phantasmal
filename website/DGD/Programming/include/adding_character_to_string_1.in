@@ -1,0 +1,76 @@
+Date: Fri, 30 Mar 2001 01:57:32 +0200
+From: Erwin Harte
+Subject: Re: [DGD]Adding character to string
+
+On Fri, Mar 30, 2001 at 01:30:43AM +0200, Frantisek Fuka wrote:
+> I have this problem with DGD 1.2. The solution is probably very simple 
+> but I couldn't come up with anything elegant and it drives me mad.
+> 
+> I need to be able to get the character according to its ASCII number. 
+> For example, if I have string str = "foo" and integer num = 65, i need 
+> to somehow do (str + (char)num) and get "fooA", but I keep getting 
+> "foo65" and I can find no function to convert 65 to "A". I know it can 
+> be done by doing
+> str = "foo?"; str [3] = num; /* replaces '?' with 'A' */
+
+Right, so what about:
+
+    string
+    chr(int c)
+    {
+	string s;
+
+	s = " ";
+	s[0] = c;
+	return s;
+    }
+
+I agree, a bit of overhead, but once you've got that, it's very
+elegant to be doing
+
+    str += chr(65);
+
+and have it work as intended.
+
+> but that seems cumbersome to me. Specifically, I need to use the 
+> following function for translating all output from one character coding 
+> to other so it has to be quick and elegant (it also adds '\x0D' before 
+> each "\n" because i use binary port for output):
+> 
+> string out;
+> out = "";
+> for (i=0; i<strlen(msg); i++) {
+> if (msg[i] == '\n') out += '\x0D';
+> out += (msg[i] >= 128) ? charset_output[msg[i]-128] : msg[i];
+> }
+> 
+> Unfortunately, instead of character (for example 'A'), the string "65" 
+> is being added to 'out' variable.
+
+The reason for this is that the 'x' constants are really int values,
+so what the compiler thinks you're doing is:
+
+    <string> = <string> + <int>;
+
+Which means you get:
+
+    <string> = <string> + (string)<int>
+
+So the compiler is doing what you're telling it to, not what you want
+it to. ;-)
+
+I'd do it this way:
+
+    int    i, len;
+    string out;
+
+    out = implode(explode("\n" + msg + "\n", "\n"), "\r\n");
+    for (i = 0, len = strlen(out); i < len; i++) {
+        out[i] &= 0x7f;
+    }
+
+Hope that helps,
+
+Erwin.
+-- 
+Erwin Harte      : `Don't mind Erwin, he gets crabby. :)'

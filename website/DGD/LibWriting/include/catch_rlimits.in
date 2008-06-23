@@ -1,0 +1,67 @@
+From: DGD Mailing List (Felix A. Croes)
+Date: Sat Apr  5 14:20:01 2003
+Subject: [DGD] Interaction of catch{} and rlimits{}
+
+Noah Lee Gibbs wrote:
+
+>   Say you're within an rlimits{} construct, perhaps as a result of being 
+> called by the Kernel Library's call_limited() function.  You have limited 
+> ticks available.
+>   Say you're within a catch{} statement within that rlimits{}, and the 
+> catch{} has one of those "do on error" sections.  Now say in the body of 
+> the catch{}, you run out of ticks.
+>   You'd like to do the "do on error" stuff but you're out of ticks.  
+> Should we always use an extra rlimits{..;-1} around any catch{} statement 
+> where we *really* want the "on error" block to execute?
+
+When error recovery is essential, there are two things you can do.
+
+1. You can make sure that something happens using rlimits:
+
+    rlimits (0; -1) {
+	catch {
+	    call_limited("foo");
+	} : {
+	    /*
+	     * this MUST complete to fully recover from an error
+	     */
+	    bar();
+	}
+    }
+
+   There are several problems with this approach.  First, when using
+   the kernel library, only System objects can use rlimits (...; -1).
+   Second, an infinite loop in bar() will hang your mud forever.
+   Third, even though foo() is called with limits appropriate for the
+   current object, those limits are reset for the call, thanks to the
+   enclosing rlimits (..; -1).  Fourth, the ticks spent in bar() will
+   not be accounted for using the kernel library's resource management
+   system.
+
+2. You can make sure that nothing happened, using atomic functions:
+
+    atomic void foo()
+    {
+	/*
+	 * an error inside this function will undo all the actions
+	 * performed inside this function
+	 */
+    }
+
+   Atomic functions can be used by anyone.  They have two drawbacks:
+   first, you cannot do file-changing actions inside them.  Second,
+   they take twice the amount of ticks that would ordinarily be
+   spent in that function.  Therefore, it makes sense to keep the
+   actions performed in these functions to a minimum.
+
+   However, since the actual time spent inside atomic functions is
+   usually far less than twice that of an equivalent non-atomic
+   function, an alternative would be to take that overhead for granted,
+   double all tick quotas, and use atomic functions all through your
+   mudlib.  The latter approach was taken by Skotos.  Practically
+   everything in a Skotos mud is performed atomically.
+
+Pick whichever solution suits you best.  
+
+Regards,
+Dworkin

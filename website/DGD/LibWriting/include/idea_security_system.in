@@ -1,0 +1,63 @@
+From: DGD Mailing List (Stephen Schmidt)
+Date: Tue Mar 23 08:39:00 2004
+Subject: [DGD] Idea for security system
+
+On Tue, 23 Mar 2004, Steve Wooster wrote:
+>      In TMI for MudOS (maybe only an old version, I don't know), a possible
+> security loophole is that if you have write access to a file, you can gain
+> full access to anything that's granted to the UID of that file.
+
+That's a feature :)
+
+> For
+> example, if an admin named Bob unwittingly gave you write access to
+> /usr/Bob/open/ or something, any code you write in that directory has the
+> user ID of "Bob".
+
+That's correct. The real flaw is that the MudOS UID system does
+not distinguish between Bob, the user object, and any files in
+Bob's directory. Bob, as a user, has to have write access to
+sensitive places, but there's no reason why every object in his
+directory has to have it also.
+
+The solution, which Melville adopts, is to give Bob's user
+object one UID, and the objects in his directory another.
+Objects in wizard directories come pretty much without
+permissions. Objects can get permissions only if they are
+located in special directories (/cmds, most prominently)
+to which only Bob has write access.
+
+Of course, the system collapses if Bob gives away write access
+to /cmds to you, but hopefully Bob will realize that doing
+that is folly.
+
+This leads to a broader point, which is that inexperienced
+or clueless admins doing things they don't understand are
+a much bigger threat to security than crackers are. Given
+that MUDs are almost invariably run by amateurs, if you
+want to make a MUD security system safe, keeping it simple
+to operate and robust to novice errors is very important.
+
+> Instead of granting file access to users, you grant
+> it to directories (and in most mudlibs, each user would have a directory
+> associated with themself). A directory has full RW access to all of its
+> files and subdirs, but not to its parent directory. Any code has the same
+> access as the directory it resides in.
+
+This will place some restrictions on directory structure.
+Think about where you will store player save files (assuming
+your mudlib is not so persistent that you have abandoned
+player save files). If you have an in-mud mail system, think
+about where you will put the mail spools. Objects like the
+mail reader, which have unique permissions (the mail reader
+can read /data/mail but not /data/anything_else) will need
+to be in directories by themselves. I think problems of this
+form are all solvable as long as you're willing to accept
+the limits on directory structure they imply.
+
+But in general, I think the important thing for anyone looking
+to improve on UID based security is to make a sharp distinction
+between a user and his files, which MudOS (or TMI, depending
+on how you want to apportion the blame ;) didn't make.
+
+Steve Schmidt

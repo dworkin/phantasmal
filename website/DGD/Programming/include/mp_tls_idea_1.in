@@ -1,0 +1,42 @@
+From: dgd@dworkin.nl (Felix A. Croes)
+Date: Mon Apr  4 21:57:01 2005
+Subject: [DGD] DGD MP and a TLS idea
+
+Steve Wooster wrote:
+
+>      The current version of the kernel isn't MP optimized, right? At least 
+> for version 1.2.86 (I think that's the version I have) it looks like 
+> call_outs are registered in a central daemon... Since I'm fiddling around 
+> with creating a mudlib from scratch (I'm only doing it for fun, not because 
+> I expect to actually get far on it), I was wondering if there's a good way 
+> to handle things like being able to pause call_outs that isn't effectively 
+> single-threaded.
+
+I'm not sure what you mean by this.  But the MP version will simulate
+a single-threaded succession of LPC execution rounds, so it's not going
+to be any different for the mudlib programmer in that respect.
+
+
+>      Also, for thread local storage, it occurred to me that the argument 
+> passed could be a mapping instead of an array... then you could have things 
+> like: (I forgot the exact code, so this probably won't work... but it 
+> should give you the general idea)
+> Inside the auto object:
+>
+> static void set_tls( mixed setting, mixed value )
+> {
+>      if (trace()[1][FIRST_ARG][this_object()] == nil)
+>          trace()[1][FIRST_ARG][this_object()] = ([]);
+>      trace()[1][FIRST_ARG] [this_object()][setting] = value;
+> }
+>
+> static mixed query_tls( mixed setting )
+> {
+>      return( trace()[1][FIRST_ARG] [this_object()][setting] );
+> }
+
+The point of having TLS is that it's shared between all objects.  If each
+object has its own TLS variables, they might as well be in the object. :)
+
+Regards,
+Dworkin

@@ -1,0 +1,118 @@
+From: dgd at list.imaginary.com (Noah Gibbs)
+Date: Sun Jan 25 03:13:01 2004
+Subject: [DGD] copy() or lack thereof in Melville
+
+--- Michael McKiel wrote:
+> there is a function called copy: [...]
+> which is used, according to the header, as a
+> non-recursive copy function for mappings, arrays
+> and other variables represented by pointers.
+
+  Yup.  A fine and useful function.  That is, in fact,
+just what it does.
+
+> It also
+> states, that if the variable itself contains
+> pointers,
+> that they are _not_ copied. 
+
+  Yes.  So it's a shallow copy, or one-level copy, as
+opposed to a full recursive copy.
+
+> Now in various files we will see this function
+> finding its way into the code, like users_d
+>.c whenever a
+> map_indices() or map_values() is returned.
+
+  I'll restate what Steve Schmidt said, but in a
+slightly different way.
+
+  In DGD, when you return a mapping, an array or a
+lightweight object (LWO), that object is passed by
+reference, not by value.  So if you modify elements of
+the array or mapping, or call functions on the LWO,
+you can modify the original copy.
+
+  However, you can't share data that way for long,
+because at the end of the DGD thread of execution the
+mapping, array or LWO will be copied over into the
+object that has a reference to it.
+
+  An object with security needs should be careful
+returning its arrays, mappings or LWOs, because an
+unscrupulous caller might change them.  So if you
+store a room's exits as an array, don't just return
+the array -- if the caller reassigns an element of the
+array, he can change what the set of exits is!
+
+  However, it seems odd to me that he tends to call
+copy when he returns a map_values or map_indices,
+because I think that returns a copy anyway.  So if you
+modify it, it won't do anything to the original array
+or mapping.
+
+> Places we dont see it:
+> ----------------------
+> in /system/users_d.c:
+> object find_user(string name) {
+>     if (!users) users = ([ ]) ;
+>     if (member_array(name,map_indices(users))==-1)
+>         return 0 ;
+>     return users[name] ;
+> }
+
+  Yeah.  In this case, returning a single user won't
+do anything to the users array.  However, if
+users[array] were an array or mapping that could be
+modified, we'd want to copy it.  I don't remember
+Melville well enough to know whether that's the case.
+
+  If it's an object, we still might want to worry
+about security since functions could be called on it,
+but we'd handle that kind of security in a different
+place, and in a different way.
+
+> in /inherit/object.c:
+> string *query_id() { return id ; }
+> which returns an array of id names.
+
+  Yeah, copy() should probably be called here to avoid
+the caller being able to modify 'id'.
+
+> So my question is, is the copy() function
+> needed?
+
+  That functionality is needed, yeah.  Phantasmal, for
+instance, would return "id[..]" rather than "id",
+which does the same thing that copy() would.  It's a
+matter of how you prefer to write it, but it does the
+same thing either way.
+
+> is it redundant now in dgd 1.2.7# ? since
+> melville was released back in dgd 1.0.# days?
+
+  Nope.  That particular situation hasn't changed any,
+except that there are now LWOs, which are more
+interesting to copy.  Melville doesn't use them, so
+that's not an issue.
+
+> And if it's not
+> redundant, then shouldn't everything that
+> returns a mapping/array need it?
+
+  Only if the called object retains a reference to
+that mapping or array.  For instance, Phantasmal will
+sometimes build a new array in response to a function
+call.  It hands it back to the caller.  That's fine,
+because Phantasmal no longer has a reference to it, so
+it no longer cares what happens to it.
+
+> Sorry for this long ramble, not sure how to
+> be more concise and still explain.
+
+  No, it's a good question.  Say, have you found my
+documentation web site?  It's at
+"http://phantasmal.sf.net/DGD".  The answer to this
+question is there, though you'd have to read pretty
+carefully to find it.  I'll have to add a better
+answer to this question while doing the overhaul.

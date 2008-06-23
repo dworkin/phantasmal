@@ -1,0 +1,27 @@
+From: DGD Mailing List (Par Winzell)
+Date: Fri Jan 11 12:38:01 2002
+Subject: [DGD] Large dumpfile?
+
+ > At the moment, I'm using DGD as a customized httpd and that's all.  Yet
+ > the dump file is currently 40 megs and constantly growing.  I'm having a
+ > hard time figuring out where it's all coming from.  Is there some way to
+ > find out which objects all that memory is going to?  Perhaps a command to
+ > call on an object that will tell you how much memory it's taking up?  It
+ > would be very useful in diagnosing my situation.
+
+
+Yes, sort of --
+
+	for each object ob in runtime,
+		examine status(ob)[O_NSECTORS]
+
+which returns the number of sectors taken up by the object's data
+and, if it's a master copy, its program.
+
+Unfortunately I think this only works for swapped-out data, so the
+time to do it might be in a 0.001-second callout after calling the
+swapout() kfun? If you want to get a mudlib-wide total, that is.
+
+Dworkin?
+
+Zell

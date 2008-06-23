@@ -1,0 +1,94 @@
+From: Joakim Romland
+Subject: Re: [DGD] DGD http daemon?
+Date: Wed Feb  9 00:30:01 2005
+
+On Tue, 8 Feb 2005 15:26:53 -0500 (EST), Stephen Schmidt wrote:
+> There are all kinds of design-related problems with using
+> a primarily http interface for playing the game; those
+> don't interest me so much. The question is really whether
+> this daemon could be the basis for code support for such
+> a design. If it is, then having a version for a general
+> DGD kernel (or even a specific kernel that could be
+> released as a package with the daemon) would be extremely
+> useful.
+>
+I tinkered (and still touch it when I get some inspiration) with a
+httpd that is built on top of the Kernel Library. It's somewhat more
+bloated and should really be divided into several sub-projects. I
+wrote it mostly to create a WebDAV daemon -- but I needed a httpd for
+that (see SVN repository at
+http://developer.berlios.de/projects/dgd-httpd/)
+
+Either way, you can do some trickery with the xmlHttp object that is
+available in most browsers these days. But as always with HTTP, you
+need to do polling to get new state. Although, if you have support for
+keep-alive sessions in your httpd you poll through the same connection
+all the time (if you poll more often than the timeout is set to that
+is).
+
+I tested this using xmlHttp some time back using the above httpd to
+write a web-chat... And sure, you get a delay of a couple of seconds
+(depending on how often you poll), but to the user (browser) it is
+completely invisible; eg. new information just pops up. You can poll
+quite a few times per second if you want to too, but HTTP headers give
+you a quite a bit of overhead. :-)
+
+It is limited in its usefulness, but I can imagine the creative person
+can come up with some nifty stuff.
+
+If you have no idea what I am talking about, then I have relevant
+snippet of the client code here (if you want the backend as well, just
+drop me a mail -- it's not much code):
+
+[ snip ]
+    function createXmlHttp() {
+        /* Only support for Mozilla atm. */
+        return new XMLHttpRequest();
+    }
+
+    function result() {
+        if(xmlHttp.readyState == 4 && xmlHttp.responseText) {
+            currentBuff.innerHTML = xmlHttp.responseText;
+        }
+    }
+
+    function fetch() {
+        if(xmlHttp && xmlHttp.readyState != 0) {
+            xmlHttp.abort();
+        }
+
+        if(xmlHttp = createXmlHttp()) {
+            xmlHttp.open("GET", urlServer + urlGetPath + "?since=1", true);
+            xmlHttp.onreadystatechange = result;
+        } else {
+            DEBUG("Failed to create xmlHttp");
+        }
+
+        xmlHttp.send(null);
+    }
+
+    function send(msg) {
+        if(xmlHttp && xmlHttp.readyState != 0) {
+            xmlHttp.abort();
+        }
+
+        if(xmlHttp = createXmlHttp()) {
+            xmlHttp.open("GET", urlServer + urlSendPath + "?since=1&message=" +
+msg, true);
+            xmlHttp.onreadystatechange = result;
+        } else {
+            DEBUG("Failed to create xmlHttp");
+        }
+
+        xmlHttp.send(null);
+    }
+
+    function main() {
+        fetch();
+        setTimeout("main()", refreshRate);
+    }
+
+[ /snip ]
+
+
+// Joakim

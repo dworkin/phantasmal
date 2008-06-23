@@ -1,0 +1,31 @@
+From felix Mon Oct 26 14:40:02 1998
+Subject: private inheritance
+
+Private inheritance means that the functions and variables in the
+inherited object will be known only in the object that does the
+inheriting.  If the latter object itself is inherited, the functions
+and variables will be hidden.  Effectively, the functions and
+variables behave as if they are private in the object that inherits
+them.
+
+If an object is both privately and non-privately inherited, the
+non-private instance will replace the private one.
+
+A collision between two non-privately inherited functions cannot
+be masked by a function that is privately inherited.  For example,
+if A and B define the function foo, and C inherits A and B and
+redefines foo, then object D which inherits A and B normally and
+C privately will not compile unless it also redefines foo to mask
+the collision from A and B, even though C does the same thing.
+
+It is not possible to inherit an object with a nomask function
+privately.  However, if A has a nomask function and B inherits A,
+C can inherit B privately if it first inherits A normally.
+
+Implementing private inheritance involved comprehensive changes
+to DGD's inheritance implementation, one of the most complex
+parts of the server.  Consider version 1.1.47 experimental and
+subject to change.
+
+Regards,
+Dworkin

@@ -1,0 +1,14 @@
+From: dgd at list.imaginary.com (Felix A. Croes)
+Date: Tue Jan 13 16:08:01 2004
+Subject: [DGD] 1.2.71
+
+What I forgot to mention: the 1.2.71 patch includes a change to the
+driver object in the kernel library.  To upgrade this object to the
+new version in a persistent mud, you have to recompile it and then
+immediately reboot the mud.
+
+The upgrade to the auto object is safe and can be performed at any
+time.
+
+Regards,
+Dworkin

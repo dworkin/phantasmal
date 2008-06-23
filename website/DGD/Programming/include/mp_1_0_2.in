@@ -1,0 +1,53 @@
+From: dgd@dworkin.nl (Felix A. Croes)
+Date: Tue Apr 19 14:07:01 2005
+Subject: [DGD] DGD/MP 1.0
+
+"Christopher Allen" wrote:
+
+> I was trying to find a description of the approach that you've taken with
+> DGD/MP to give someone else. My less then CompSci interpretation of what
+> makes it unique is that programatically you program largely as if you are
+> single-threaded, but that DGD/MP will handle the issues of multiprocessor
+> message passing bottlenecks and throttling through both intelligent design
+> and through rollback of functions marked atomic. Obviously some care has to
+> be taken with "single-thread" style code, but that largely it is much easier
+> to program.
+>
+> However, my non-CompSci description of the merits of your approach is not
+> suitable to passing on to others. Can you write up something brief about
+> your unique approach and why it is superior to some of the other methods of
+> programming for MP?
+
+The compsci version:
+
+    Maurice Herlihy: "A methodology for implementing highly concurrent
+    data objects," ACM Transactions on Programming Languages and Systems,
+    15(5):745-770, 1993.
+
+The intermediate version:
+
+    The server concurrently runs threads of finite duration on a copy
+    of the data.  Once a thread completes, the changes it made in the
+    copy will be committed to the original data if no other thread has
+    modified that part of the original data in the meanwhile; otherwise
+    the thread will be rescheduled.
+
+Atomic functions are not involved in this, though they are conceptually
+similar.
+
+I actually started using the term "execution round" instead of "thread"
+because it makes more sense, but that may be considered incomprehensible
+jargon, you be the judge.  It may require explaining the LPC execution
+model. :)
+
+The non-compsci version:
+
+    A single-threaded server is simulated using a MP server, and there
+    is nothing to worry about.
+
+
+In all cases, the advantage of this approach is that the great complexity
+of MP design is hidden from the LPC programmer.
+
+Regards,
+Dworkin

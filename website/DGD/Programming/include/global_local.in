@@ -1,0 +1,26 @@
+Date: Thu, 22 Jul 1999 16:05:28 +0200 (CEST)
+From: "Felix A. Croes"
+Subject: Re: [DGD]Global/Local Variables
+
+On Thu, 22 Jul 1999, Neil McBride wrote:
+
+>[...]
+> Now, my problem is that this variable with the same name is behaving as a global
+> variable under certain situations.  Ie, I enter function 1 and the variable x is a
+> mapping with two keys.  I run function 2, passing the x as the argument and modify
+> the data in function 2. Function 2 then finishes and function 1 continues on.
+> However, the value's within the mapping have now changed according to anything that
+> was done to function 2's x variable.
+>
+> Now, as I understand how it's supposed to work, this should _not_ happen unless I'm
+> passing pointers around, which I'm clearly not (can you even do that under DGD??)
+> Is this the expected behaviour or is there something amiss here?
+
+Not so.  Both mappings and arrays are shared when passed as function
+arguments.  If you want to pass a copy, and the mapping is just one
+level deep, the following will work:
+
+    foo( map[..] );
+
+Regards,
+Dworkin

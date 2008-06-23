@@ -1,141 +1,66 @@
-  <titledef text="Using Melville" />
+<titledef text="Using Melville" />
 
-  <h2> Should You Start From the Melville MUD Library? </h2>
+<h2>Should You Start From the Melville MUD Library?</h2>
 
-  <p>
-    There are several pieces of code that you can start from when
-    writing your own MUD Library.  One choice is Melville, written by
-    MobyDick (aka Stephen Schmidt).  You should compare and contrast
-    with other choices, like the <a href="../Kernel">Kernel
-    Library</a>, <a href="http://phantasmal.sf.net">Phantasmal</a>,
-    and perhaps others like <a href="http://mudos.org">Lima</a>,
-    LDMUD, <a href="http://web.cold.org">ColdCore</a>, or even
-    Diku-based MUDs like ROM, Merc or <a
-    href="http://www.circlemud.org">CircleMUD</a>.
-  </p>
+<p>There are several pieces of code that you can start from when writing
+your own MUD Library. One choice is Melville, written by MobyDick (aka
+Stephen Schmidt). You should compare and contrast with other choices,
+like the <a href="../Kernel">Kernel Library</a>, <a href=
+"http://phantasmal.sf.net">Phantasmal</a>, and perhaps others like
+<a href="http://mudos.org">Lima</a>, LDMUD, <a href=
+"http://web.cold.org">ColdCore</a>, or even Diku-based MUDs like ROM,
+Merc or <a href="http://www.circlemud.org">CircleMUD</a>.</p>
 
-  <h3> Why You'd Use It </h3>
+<h3>Why You'd Use It</h3>
 
-  <p>
-    Many of these reasons are taken from a piece of email written by David
-    Jackson some time ago.  While the email is getting older, the
-    reasons are still basically correct.
-  </p>
+<p>Many of these reasons are taken from a piece of email written by
+David Jackson some time ago. While the email is getting older, the
+reasons are still basically correct.</p>
 
-  <p>
-    Melville may be a very minimal framework from which to operate,
-    but the structure for something very functional and very powerful
-    is there.  This is a good thing.  The code is very well commented,
-    and it's very, very easy to extend.  For instance, David Jackson
-    says: &quot;I added functional, working, and debugged code for
-    doors in less than an hour.&quot;
-  </p>
+<p>Melville may be a very minimal framework from which to operate, but
+the structure for something very functional and very powerful is there.
+This is a good thing. The code is very well commented, and it's very,
+very easy to extend. For instance, David Jackson says: "I added
+functional, working, and debugged code for doors in less than an
+hour."</p>
 
-  <p>
-    Most standard features are documented somewhere within the code,
-    or within the DGD documentation itself.  Mobydick's coding may not
-    be the most elegant, but it is certainly very, very readable and
-    easy to follow.  This is a good thing.  Melville is getting older,
-    and DGD is advancing rapidly, so some newer features like LWOs,
-    statedumps and atomic functions aren't included, but that also
-    helps to simplify the code.
-  </p>
+<p>Most standard features are documented somewhere within the code, or
+within the DGD documentation itself. Mobydick's coding may not be the
+most elegant, but it is certainly very, very readable and easy to
+follow. This is a good thing. Melville is getting older, and DGD is
+advancing rapidly, so some newer features like LWOs, statedumps and
+atomic functions aren't included, but that also helps to simplify the
+code.</p>
 
-  <p>
-    It's very easy to spot areas that you may want to extend it.  This
-    is a good thing.  Mobydick was wise enough to point out exactly
-    where the code might need to be extended, or where he simply did
-    not feel compelled to add functionality.  This makes it very easy
-    to gain a higher grasp of what is going on in the lib.  This is a
-    very good thing.
-  </p>
+<p>It's very easy to spot areas that you may want to extend it. This is
+a good thing. Mobydick was wise enough to point out exactly where the
+code might need to be extended, or where he simply did not feel
+compelled to add functionality. This makes it very easy to gain a higher
+grasp of what is going on in the lib. This is a very good thing.</p>
 
-  <h3> Why You Wouldn't Use It </h3>
+<h3>Why You Wouldn't Use It</h3>
 
-  <p>
-    Melville's author actually suggests that it's now the wrong place
-    to start.  He believes that the Kernel Library, or (better yet)
-    something based on it makes more sense.  Melville was a good,
-    powerful state-of-the-art beginning when it was written, but its
-    organization and features are better for building a 1994-era MUD
-    than a modern one.  Melville's structure is very familiar, but can
-    be significantly limiting if you don't want to build Yet Another
-    LPMUD.
-  </p>
+<p>Melville's author actually suggests that it's now the wrong place to
+start. He believes that the Kernel Library, or (better yet) something
+based on it makes more sense. Melville was a good, powerful
+state-of-the-art beginning when it was written, but its organization and
+features are better for building a 1994-era MUD than a modern one.
+Melville's structure is very familiar, but can be significantly limiting
+if you don't want to build Yet Another LPMUD.</p>
 
-  <p>
-    Melville also fails to take advantage of a number of powerful DGD
-    functions like additional AUTO objects and all the functionality
-    mentioned above as too new for Melville.  Much of it would be more
-    difficult to retrofit into Melville's structure than it would be
-    to write new structure from scratch.
-  </p>
+<p>Melville also fails to take advantage of a number of powerful DGD
+functions like additional AUTO objects and all the functionality
+mentioned above as too new for Melville. Much of it would be more
+difficult to retrofit into Melville's structure than it would be to
+write new structure from scratch.</p>
 
-  <p>
-    Similarly, Melville fails to have a lot of the structure that
-    makes the Kernel Library so powerful, and it would be very
-    difficult to hack that functionality into Melville.
-  </p>
-
+<p>Similarly, Melville fails to have a lot of the structure that makes
+the Kernel Library so powerful, and it would be very difficult to hack
+that functionality into Melville.</p>
 <hr />
-
 <pre>
-From dgd at list.imaginary.com  Wed Apr 30 16:42:00 2003
-From: dgd at list.imaginary.com (Matt S.)
-Date: Wed Apr 30 16:42:00 2003
-Subject: [DGD] Cancelling input_to()
-
---Apple-Mail-2-417127595
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain;
-	charset=US-ASCII;
-	format=flowed
-
-In user.c of the Melville lib there should be a variable for the input 
-object and input function (even if you don't use the lib, it should be 
-the basic idea) :
-
-object input_obj;	/* object for input_to */
-static string input_func; /* function for input_to */
-
-If you can place a function in the user object that clears the object, 
-you can safely get out of the input_to (Look at receive_message() ).
-Then just call the function in whatever object you want. You might want 
-to place security restrictions on this function since it can adversely 
-effect things if you rely heavily on input_to's.  And yes, it seems 
-possible to do it with a time_out function, but I've never tried it, 
-nor the answer given above.
-However, I haven't tested this, so I can't be sure.
-
-Matt S.
-
-On Wednesday, April 30, 2003, at 10:32  AM, Mordengaard wrote:
-
-> From: "Lord Lerkista"
->> I put an opening animation for my mud, and i set an input_to()
->> to cancel the animation and don't wait until it finished to enter the
->> mud if i write "q" the animation stops, but if i wait to the animation
-> end,
->> it stills waits that "q", finishing the animation i have a menu, so i
-> can't
->> use the menu until i write "q", is there a way to cancel the 
->> input_to()
->> of the animation??
->
-> Just noticed this question in the archive while I was looking for the
-> exact same thing, so I'll just reiterate the question since it didn't 
-> get
-> a response before - -is- it possible to cancel the input_to state, for
-> example with a time_out type of function?
->
-> Mordengaard
->
->
-> ---
-> Outgoing mail is certified Virus Free.
-> Checked by AVG anti-virus system (http://www.grisoft.com).
-> Version: 6.0.476 / Virus Database: 273 - Release Date: 26/04/2003
+@@INCLUDE cancel_input_to@@
 </pre>
 
-  <p style="text-size: 150%"> <a href="../index.html"> Back to top level
-    </a> </p>
+<p style="text-size: 150%"><a href="../index.html">Back to top
+level</a></p>

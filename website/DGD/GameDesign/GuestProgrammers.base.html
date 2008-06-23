@@ -1,157 +1,103 @@
-  <titledef text="Guest Programmers" />
+<titledef text="Guest Programmers" />
 
-  <h2> Programming By Guests, Players and Builders </h2>
+<h2>Programming By Guests, Players and Builders</h2>
 
-  <p>
-    In some MUDs, everybody can write little programs and run them
-    somehow.  Look at MUSHes, for instance, and how their object
-    creation works.  In other MUDs, only trusted 'craftsman' players can
-    program, and only in highly restricted ways.  Think of clan halls,
-    for instance.  In other MUDs, only builders and administrators can
-    program at all.  And in some, not even builders can - look at
-    simple DikuMUDs or CircleMUDs, for instance.
-  </p>
+<p>In some MUDs, everybody can write little programs and run them
+somehow. Look at MUSHes, for instance, and how their object creation
+works. In other MUDs, only trusted 'craftsman' players can program, and
+only in highly restricted ways. Think of clan halls, for instance. In
+other MUDs, only builders and administrators can program at all. And in
+some, not even builders can - look at simple DikuMUDs or CircleMUDs, for
+instance.</p>
 
-  <p>
-    You'll need to decide how much programming your MUD allows people
-    to do.  Remember that restricting player programming only helps
-    security so much...  Players can still make macros or bots to do
-    repetitive operations for them.  You may not allow macros or bots,
-    but they're hard to prevent 100% of the time.
-  </p>
+<p>You'll need to decide how much programming your MUD allows people to
+do. Remember that restricting player programming only helps security so
+much... Players can still make macros or bots to do repetitive
+operations for them. You may not allow macros or bots, but they're hard
+to prevent 100% of the time.</p>
 
-  <p>
-    One of the large problems with letting players write or run code
-    on your MUD is that it can cause DGD to
-    <a href="../Running/DGDCrash.html">crash in certain situations</a>.
-    You'll need to figure out how to keep that from happening.  For
-    instance, if only builders can write code for your MUD, you're
-    fairly safe - especially if you can find out who crashed the MUD
-    after the fact.  But if anonymous guests can crash your MUD, you
-    have a problem.
-  </p>
+<p>One of the large problems with letting players write or run code on
+your MUD is that it can cause DGD to <a href=
+"../Running/DGDCrash.html">crash in certain situations</a>. You'll need
+to figure out how to keep that from happening. For instance, if only
+builders can write code for your MUD, you're fairly safe - especially if
+you can find out who crashed the MUD after the fact. But if anonymous
+guests can crash your MUD, you have a problem.</p>
 
-  <h3> Limiting Processor Time and Stack Space</h3>
+<h3>Limiting Processor Time and Stack Space</h3>
 
-  <p>
-    One of the ways DGD allows you to limit programs is with the
-    <a href="../LibWriting/Rlimits.html">rlimits()</a> statement.
-    You'll need to decide how long you can afford to let your MUD
-    hang if bad code happens.  For code written by a random anonymous
-    guest, you probably want to give no longer than a small fraction
-    of a second.  For builders, you may choose to be more lenient.
-    Still, remember that these things add up - if a builder makes
-    an object that can stall your whole MUD for half a second, you
-    don't want to let players get sixty of the objects and stall your
-    MUD completely for half a minute.
-  </p>
+<p>One of the ways DGD allows you to limit programs is with the <a href=
+"../LibWriting/Rlimits.html">rlimits()</a> statement. You'll need to
+decide how long you can afford to let your MUD hang if bad code happens.
+For code written by a random anonymous guest, you probably want to give
+no longer than a small fraction of a second. For builders, you may
+choose to be more lenient. Still, remember that these things add up - if
+a builder makes an object that can stall your whole MUD for half a
+second, you don't want to let players get sixty of the objects and stall
+your MUD completely for half a minute.</p>
 
-  <p>
-    The Kernel library has resource limits on ticks.  If you manage
-    your scripts correctly, the Kernel will make sure that no builder's
-    scripts take up too much time.  Understand these limits and how
-    they work.  If you use the Kernel Library, use them appropriately.
-    If you don't use the Kernel Library, build some similar facility
-    into your own library.
-  </p>
+<p>The Kernel library has resource limits on ticks. If you manage your
+scripts correctly, the Kernel will make sure that no builder's scripts
+take up too much time. Understand these limits and how they work. If you
+use the Kernel Library, use them appropriately. If you don't use the
+Kernel Library, build some similar facility into your own library.</p>
 
-  <h3> Limiting Memory Space </h3>
+<h3>Limiting Memory Space</h3>
 
-  <p>
-    Unfortunately, malicious players can still crash DGD by using up
-    all your free memory in an LPC program.  You can't stop them while\
-    letting them run unrestricted LPC.  However, there are some limits
-    built into DGD so that innocent players won't accidentally cause
-    the same problem in most cases.
-  </p>
+<p>Unfortunately, malicious players can still crash DGD by using up all
+your free memory in an LPC program. You can't stop them while\ letting
+them run unrestricted LPC. However, there are some limits built into DGD
+so that innocent players won't accidentally cause the same problem in
+most cases.</p>
 
-  <p>
-    The Kernel Library keeps track of how large objects and files are,
-    and its resource limits can be set to keep an administrator from
-    making DGD objects that are too large.  This allows DGD to determine
-    when too much memory is being used and free it, if necessary.  Have
-    a look at how the Kernel Library does this, and either use the Kernel
-    or build some similar facility into your own library.
-  </p>
+<p>The Kernel Library keeps track of how large objects and files are,
+and its resource limits can be set to keep an administrator from making
+DGD objects that are too large. This allows DGD to determine when too
+much memory is being used and free it, if necessary. Have a look at how
+the Kernel Library does this, and either use the Kernel or build some
+similar facility into your own library.</p>
 
-  <p>
-    Similarly, you should periodically
-    <a href="../LibWriting/Cleanup.html">clean up abandoned objects in
-    memory</a>, especially from guest programmers.
-  </p>
+<p>Similarly, you should periodically <a href=
+"../LibWriting/Cleanup.html">clean up abandoned objects in memory</a>,
+especially from guest programmers.</p>
 
-  <p>
-    DGD has a maximum size for arrays and mappings.  You can always have
-    more items in a collection than this - use an array of arrays or a
-    mapping of arrays, for instance.  However, this keeps a simple loop
-    from making an infinitely large array accidentally.  Similarly, DGD
-    strings have a maximum size.  Neither will normally cause any
-    performance penalty, and both make it harder for innocent guest
-    programmers to crash DGD due to lack of memory.
-  </p>
+<p>DGD has a maximum size for arrays and mappings. You can always have
+more items in a collection than this - use an array of arrays or a
+mapping of arrays, for instance. However, this keeps a simple loop from
+making an infinitely large array accidentally. Similarly, DGD strings
+have a maximum size. Neither will normally cause any performance
+penalty, and both make it harder for innocent guest programmers to crash
+DGD due to lack of memory.</p>
 
-  <h3> Limiting Operations </h3>
+<h3>Limiting Operations</h3>
 
-  <p>
-    None of this does any good if players can easily overwrite all your
-    files, or destroy all your data in memory.  Luckily, DGD allows you to
-    <a href="../LibWriting/LargeAuto.html">write an AUTO object</a>, which
-    will let you change the behavior of all DGD's functions.  You can
-    use this to prevent operations that the guest code should be allowed
-    to perform.  If you're using the Kernel Library, you can easily
-    <a href="../Kernel/SecondAuto.html">change the AUTO object for only
-    certain code</a>, which can make security even easier.
-  </p>
+<p>None of this does any good if players can easily overwrite all your
+files, or destroy all your data in memory. Luckily, DGD allows you to
+<a href="../LibWriting/LargeAuto.html">write an AUTO object</a>, which
+will let you change the behavior of all DGD's functions. You can use
+this to prevent operations that the guest code should be allowed to
+perform. If you're using the Kernel Library, you can easily <a href=
+"../Kernel/SecondAuto.html">change the AUTO object for only certain
+code</a>, which can make security even easier.</p>
 
-  <p>
-    Since <a href="../Programming/CallOut.html">the call_out() function</a> is
-    one of the ones you can change in the AUTO object, you can easily alter
-    what functions guest code can call.  You can also alter what objects
-    can be returned to guest code by <b>find_object()</b>, which can prevent
-    guest code from calling functions on privileged objects.
-  </p>
+<p>Since <a href="../Programming/CallOut.html">the call_out()
+function</a> is one of the ones you can change in the AUTO object, you
+can easily alter what functions guest code can call. You can also alter
+what objects can be returned to guest code by <b>find_object()</b>,
+which can prevent guest code from calling functions on privileged
+objects.</p>
 
-  <h3> Extreme Solutions </h3>
+<h3>Extreme Solutions</h3>
 
-  <p>
-    Certain libraries like LPMOO take guest code and translate it into rather
-    different LPC code.  There are similar solutions for compiling LPC in
-    nonstandard ways.  This allows you to address all problems above, because
-    you can define how your own language deals with running out of processor
-    time or memory space.
-  </p>
-
+<p>Certain libraries like LPMOO take guest code and translate it into
+rather different LPC code. There are similar solutions for compiling LPC
+in nonstandard ways. This allows you to address all problems above,
+because you can define how your own language deals with running out of
+processor time or memory space.</p>
 <hr />
-
 <pre>
-From: DGD Mailing List (Par Winzell)
-Date: Fri Jan 11 12:38:01 2002
-Subject: [DGD] Large dumpfile?
-
- > At the moment, I'm using DGD as a customized httpd and that's all.  Yet
- > the dump file is currently 40 megs and constantly growing.  I'm having a
- > hard time figuring out where it's all coming from.  Is there some way to
- > find out which objects all that memory is going to?  Perhaps a command to
- > call on an object that will tell you how much memory it's taking up?  It
- > would be very useful in diagnosing my situation.
-
-
-Yes, sort of --
-
-	for each object ob in runtime,
-		examine status(ob)[O_NSECTORS]
-
-which returns the number of sectors taken up by the object's data
-and, if it's a master copy, its program.
-
-Unfortunately I think this only works for swapped-out data, so the
-time to do it might be in a 0.001-second callout after calling the
-swapout() kfun? If you want to get a mudlib-wide total, that is.
-
-Dworkin?
-
-Zell
+@@INCLUDE large_dumpfile@@
 </pre>
 
-  <p style="text-size: 150%"> <a href="../index.html"> Back to top level
-    </a> </p>
+<p style="text-size: 150%"><a href="../index.html">Back to top
+level</a></p>

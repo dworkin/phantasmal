@@ -1,0 +1,114 @@
+From: Par Winzell
+Date: Tue, 24 Apr 2001 09:53:37 -0700
+To: DGD Mailing List
+Subject: Re: [DGD]parse_string
+
+ > I wanna do some simple string replacements using regexp, but can't see an
+ > easy way of doing it.  It looks like the parse_string() kfun will be able
+ > to do it, if I could only work out what the hell the parse_string function
+ > actually does.
+
+Yes, parse_string()'s functionality easily encompasses (and exceeds)
+regexp parsing. You feed it a grammar and the string to be parsed and
+it tries to deconstruct the latter using the rules of the former.
+
+It is a very generic mechanism that takes some getting used to, and
+the reason it is presented in the documentation without examples and
+such is probably that any decent computer science graduate will have
+taken at least one course where he is forced to soak his mind in the
+details of context-free parsing.
+
+Here is a very simple grammar:
+
+	whitespace = /[ ]+/
+	colour = /blue/
+	colour = /red/
+	noun = /[a-zA-Z]+/
+
+	Nonsense: colour noun
+	Nonsense: Nonsense 'and' colour noun
+
+
+The parsing does two things: first it chops the string into 'tokens',
+and you instruct it precisely how to do that using the first bunch of
+lines (in regexp format); spaces become whitespace, 'blue' and 'red'
+are immediately dubbed 'colour', and any other string of letters is
+a noun.
+
+Tokenization is fundamentally a simple process (though parse_string()
+does it in tricky ways) -- it eats input character by character in a
+straight-forward manner and sorts the input into well-defined buckets.
+
+If we send in the string 'blue yellow dog cat' it is categorized as
+
+	blue:	colour
+	<space>	whitespace
+	yellow:	colour
+	<space>	whitespace
+	dog:	noun
+	<space>	whitespace
+	cat:	noun
+	<space>	whitespace
+
+The true glory of parse_string() is in the second process, guided by
+the latter lines in the grammar. These lines specify what constitutes
+a valid input string and what doesn't. If we just had one line,
+
+	Nonsense: colour noun
+
+then the only valid input strings would be
+
+	blue dog
+	blue cat
+	yellow wombat
+
+etc, etc. But, the second rule as you see is self-referential, which
+is the source of the complexity. A valid input string is also defined
+as any valid input string followed by 'and', colour, noun.
+
+So if
+
+	blue dog
+
+is valid,
+
+	blue dog and yellow cat
+
+is also valid. Thus
+
+	blue dog and yellow cat and green rocket
+
+is also. To prove that it actually works,
+
+> code parse_string("whitespace = /[ \n\r]+/\ncolour = /red/\ncolour = /blue/\n noun = /[a-zA-Z]+/\nFoo: Foo 'and' colour noun\nFoo: colour noun\n", "blue frog and red dog")
+$53 = ({ "blue", "frog", "and", "red", "dog" })
+
+> code parse_string("whitespace = /[ \n\r]+/\ncolour = /red/\ncolour = /blue/\n noun = /[a-zA-Z]+/\nFoo: Foo 'and' colour noun\nFoo: colour noun\n", "blue frog red dog")
+$54 = nil
+
+
+So you see, parse_string() returns nil when the input string doesn't
+match the parsing rules. 'blue frog red dog' is not valid because two
+parts must be conjoined with an 'and' inbetween.
+
+
+If you want to dig further into the construction of these grammars,
+there is a wealth of writings on the matter out there. The defining
+text on compilers and parsing when I went to school was the dragon
+book, and I'd imagine it still does the trick:
+
+
+If there are problems with parse_string(), I'd say one of the major
+ones is that you really have to be fairly well-versed in constructing
+grammars to avoid a whole slew of pitfalls, as soon as you try to do
+anything complex. We need a whole library of LPC wrappers around the
+core functionality (IMHO) to make it really useful. The grammar texts
+ought to be machine-generated from simpler specifications, with lots
+of checks being made (e.g. for ambiguity).
+
+
+A regexp package using parse_string() would be just such a wrapper,
+and it should not be terribly difficult, since the token definitions
+themselves are regexps.
+
+Zell

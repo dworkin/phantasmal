@@ -1,0 +1,50 @@
+From: dgd at list.imaginary.com (Felix A. Croes)
+Date: Mon Jan 12 07:24:01 2004
+Subject: [DGD] Re: Recursion in recompile(), is this correct?
+
+Bart van Leeuwen wrote:
+
+> On Sat, 10 Jan 2004, Noah Gibbs wrote:
+>
+> > --- Erwin Harte wrote:
+> > > Which is where the 'block_input' kfun might come in
+> > > handy. ;)
+> >
+> >   Yeah.  I do it during the recompile, I just don't do
+> > it 'til all of the upgraded() call_out statements are
+> > done.  I need to.
+>
+> I was thinking a bit about this and am wondering how safe this is.
+> Of course if you rely on everything on your mud being upgraded, you will
+> need some mechanism for upgrading everything before anything else happens
+> on the mud.
+>
+> Will it work to do this in call_outs and just block input untill you are
+> done?
+> I can imagine that this will still allow for other call_outs to run in
+> between your upgrade call_outs, and as a result, other threads can run
+> while you are doing your upgrade still.
+>
+> My take would be that you really need to do this all at once, and just
+> ensure you do not run out of ticks by properly using rlimits
+>
+> Also, I do not see what you get from splitting it up over multiple
+> call_outs, you are going to block the entire mud anyway, and imho it would
+> be more efficient to finish the task at hand as quickly as possible.
+>
+> What I am suggesting is to use unlimited ticks for a 'main loop' that goes
+> through all the objects that need to be upgraded, and use a limit only for
+> each individual upgrade.
+
+This works fine as long as all of your objects with programs can be held
+in memory together.  In some muds, that is not feasible.  In such a case,
+you have to break up the upgrading process in order to let DGD swap out
+objects between LPC threads.
+
+You do have to block callouts as well as input from users, in order to
+prevent interruptions.  These are both dangerous operations, since an
+error can effectively halt the mud without a way to restart it.  But it
+can be done.
+
+Regards,
+Dworkin

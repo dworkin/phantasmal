@@ -1,63 +1,56 @@
-    <titledef text="Evaluating Arbitrary Code" />
+<titledef text="Evaluating Arbitrary Code" />
 
-    <h2 style="text-align: center"> Evaluating Arbitrary Code </h2>
+<h2 style="text-align: center">Evaluating Arbitrary Code</h2>
 
-    <p> When you were <a href="Compiling.html">compiling</a> code
-      earlier, you may have thought it was a little odd to see a
-      result like &quot;$0 = &lt;/usr/System/initd&gt;&quot;.  This
-      tutorial will tell you what that means. </p>
+<p>When you were <a href="Compiling.html">compiling</a> code earlier,
+you may have thought it was a little odd to see a result like "$0 =
+&lt;/usr/System/initd&gt;". This tutorial will tell you what that
+means.</p>
 
-    <p> The <b>%history</b> command will show you values like $0 above
-      if you type it by itself from the command line.  You should see
-      all the results that you got from the <b>%compile</b>, <b>%clone</b>
-      and <b>%code</b> commands. </p>
+<p>The <b>%history</b> command will show you values like $0 above if you
+type it by itself from the command line. You should see all the results
+that you got from the <b>%compile</b>, <b>%clone</b> and <b>%code</b>
+commands.</p>
 
-    <p> Clone?  Code?  Those are new ones.  Let's hit <b>%clone</b> first.
-      You'll need to pick a clonable object, one that could be useful to
-      clone, or at least not going to cause an error.  So daemons like
-      InitD are right out.  Instead, try typing &quot;%clone
-      /usr/common/obj/simple_portable&quot;.  It should return something
-      like &quot;$2 = &lt;/usr/common/obj/simple_portable&gt;&quot;.
-      But you don't want something like that hanging around without
-      supervision, so go ahead and get rid of it.  Type
-      &quot;%destruct $2&quot; -- but use whatever number you got back
-      from <b>%clone</b>, don't just destruct history object number 2.
-    </p>
+<p>Clone? Code? Those are new ones. Let's hit <b>%clone</b> first.
+You'll need to pick a clonable object, one that could be useful to
+clone, or at least not going to cause an error. So daemons like InitD
+are right out. Instead, try typing "%clone
+/usr/common/obj/simple_portable". It should return something like "$2 =
+&lt;/usr/common/obj/simple_portable&gt;". But you don't want something
+like that hanging around without supervision, so go ahead and get rid of
+it. Type "%destruct $2" -- but use whatever number you got back from
+<b>%clone</b>, don't just destruct history object number 2.</p>
 
-    <p> Note that if instead we had typed &quot;%destruct
-      /usr/common/obj/simple_portable&quot;, it would <i>not</i> have
-      done the same thing -- there are specific, individual clones of
-      each cloneable object, and they take some tracking down.  You
-      can see how many a given object has by typing
-      &quot;%od_report &lt;object&gt;&quot;, though there are some
-      subtleties there -- it may not report the full number if you have
-      multiple issues of an object that aren't properly upgraded.  If
-      this is all greek to you, don't worry about it.  Just take my
-      word for it that specific individual clones are tough to track
-      down, so make sure to destruct the ones you create.
-    </p>
+<p>Note that if instead we had typed "%destruct
+/usr/common/obj/simple_portable", it would <i>not</i> have done the same
+thing -- there are specific, individual clones of each cloneable object,
+and they take some tracking down. You can see how many a given object
+has by typing "%od_report &lt;object&gt;", though there are some
+subtleties there -- it may not report the full number if you have
+multiple issues of an object that aren't properly upgraded. If this is
+all greek to you, don't worry about it. Just take my word for it that
+specific individual clones are tough to track down, so make sure to
+destruct the ones you create.</p>
 
-    <p> Now that you've carefully cleaned up after yourself, go ahead
-      and type &quot;%clear&quot;.  It'll clear out your entire history
-      list so far and you'll lose any references to things that you
-      were keeping around.  That's why you cleaned up first. </p>
+<p>Now that you've carefully cleaned up after yourself, go ahead and
+type "%clear". It'll clear out your entire history list so far and
+you'll lose any references to things that you were keeping around.
+That's why you cleaned up first.</p>
 
-    <p> And that leaves only the <b>%code</b> command to introduce.
-      Go ahead and type &quot;%code 4&quot;.  You'll get a result like
-      &quot;$17 = 4&quot;.  Exciting, huh?  But you can use the same
-      thing to evaluate arbitrary LPC code, and that's much more
-      interesting.  For instance, you could type &quot;%code ({ 1, 7,
-      9 }) [1]&quot;, which should return the value 7.  Or you can
-      cause side-effects by calling objects in Phantasmal.  A pretty
-      harmless example is &quot;%code
-      find_object("/usr/common/sys/mapd")->get_room_by_num(7)&quot;
-      which should find the MAPD and return you a reference to object
-      #7, or nil.  Naturally you can also reduce it to &quot;%code
-      find_object(&quot;/usr/common/sys/mapd&quot;)&quot; and then use
-      the number it returns -- for instance, if it came back with
-      &quot;$34 = &lt;/usr/common/sys/mapd&gt;&quot;, you could then
-      say &quot;%code $34->get_room_by_num(347)&quot;.
-    </p>
+<p>And that leaves only the <b>%code</b> command to introduce. Go ahead
+and type "%code 4". You'll get a result like "$17 = 4". Exciting, huh?
+But you can use the same thing to evaluate arbitrary LPC code, and
+that's much more interesting. For instance, you could type "%code ({ 1,
+7, 9 }) [1]", which should return the value 7. Or you can cause
+side-effects by calling objects in Phantasmal. A pretty harmless example
+is "%code find_object("/usr/common/sys/mapd")-&gt;get_room_by_num(7)"
+which should find the MAPD and return you a reference to object #7, or
+nil. Naturally you can also reduce it to "%code
+find_object("/usr/common/sys/mapd")" and then use the number it returns
+-- for instance, if it came back with "$34 =
+&lt;/usr/common/sys/mapd&gt;", you could then say "%code
+$34-&gt;get_room_by_num(347)".</p>
 
-    <p> So there are your fun toys of the day.  Knock yourself out.
-      And keep reading <a href="../index.html">tutorials</a>! </p>
+<p>So there are your fun toys of the day. Knock yourself out. And keep
+reading <a href="../index.html">tutorials</a>!</p>

@@ -1,0 +1,9 @@
+From: John "West" McKenna
+Subject: Re: [DGD]compile_object() kfun
+Date: Wed, 14 Mar 2001 17:15:30 +0800 (WST)
+
+The auto-upgrader builds a dependancy tree from inherits, includes,
+and calls from the object to a depends() function.  The object can
+declare its dependance on any files or directories.  Directory
+dependence allows the object to be re-initialised when, for example, a
+new soul command file is added.

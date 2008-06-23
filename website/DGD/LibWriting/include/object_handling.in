@@ -1,0 +1,29 @@
+From: dgd at list.imaginary.com (Felix A. Croes)
+Date: Wed Aug  4 17:51:02 2004
+Subject: [DGD] Object handling
+
+Steve Wooster wrote:
+>      I'm trying to plan writing an object handler, but I've come across an 
+> issue (pardon the pun) where I'm not sure what would be better... I'm 
+> trying to decide whether or not updating the auto object and doing a full 
+> recompile should be unnoticeable, or whether it should affect inheritance 
+> "trees" (is hierarchy a better word?).
+>
+>      Let's say you have ObjectA which inherits ObjectB, and they both 
+> inherit Auto. You make a change to ObjectB, so now there's ObjectB_Issue2 
+> which inherits Auto, but ObjectA is still inheriting the old version of 
+> ObjectB. Now, let's say you make a new version of the auto object and do a 
+> full recompile... Should ObjectA still inherit the old issue of ObjectB 
+> (but with both now inheriting the new auto object), or should it inherit 
+> ObjectB_Issue2? It'd be much simpler to do the latter, but I worry about if 
+> that could make updating the auto object less transparent, as it would 
+> bring inheritance "trees" up-to-date as a side effect (and possibly an 
+> undesirable one). Any opinions? Thanks!
+
+If bringing all objects involved up to date can cause problems, then not
+doing so can cause problems as well.  For example, suppose that the
+change in ObjectB anticipated a change in the auto object.  In that case,
+reverting back to the older ObjectB issue would be an error.
+
+Regards,
+Dworkin

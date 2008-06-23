@@ -1,0 +1,24 @@
+From DGD Mailing List  Mon Dec 10 14:36:00 2001
+From: DGD Mailing List (Felix A. Croes)
+Date: Mon Dec 10 14:36:00 2001
+Subject: [DGD] Re: Parse String and Virtual Objects
+
+Par Winzell wrote:
+
+>[...]
+> The if if else ambiguity isn't so bad, but there are examples
+> that get very bad very fast...
+>
+> ... and now after writing all this, I don't remember if DGD does
+> or does not suffer a slow-down from an ambiguius grammar if it
+> is called without its third argument (which specifies how many
+> ambigously valid parse trees to return at each branch point).
+
+parse_string() will always attempt all possible ambiguous parsings,
+even if you do not instruct it to return more than one parse tree.
+This is unlikely ever to be a problem with parsing player commands,
+but it can be terrible when you try to parse a much longer string
+with a grammar that contains a few innocent mistakes.
+
+Regards,
+Dworkin

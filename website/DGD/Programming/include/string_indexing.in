@@ -1,0 +1,37 @@
+From: dgd at list.imaginary.com (Kris Van Hees)
+Date: Wed Nov 26 15:40:04 2003
+Subject: [DGD] string indexing..
+
+I believe this is intentional behaviour, to be sonsistent in how string ranges
+can work.  The str[i .. i + 1] construct returns a string that is 2 characters
+long (assuming strlen(str) > i  + 1 of course), str[i .. i] returns a string
+that is 1 character long, and this str[i .. i - 1] returns a string that is 0
+characters long.  It does make sense if you look at it that way.
+
+	Kris
+
+On Wed, Nov 26, 2003 at 10:36:05PM +0000, Bart van Leeuwen wrote:
+> Hmm.. it seems to me that doing something like "blah"[0..-1] should result
+> in an invalid string range error, but it does not, it results in an empty
+> string (checked on dgd 1.1, 1.2p3).
+> 
+> Looking through str.c in various versions points at str_ckrange and
+> str_range.
+> The particular issue is checking on l1 > l2 + 1, which should either be
+> l1 > l2 or l1 >= l2 + 1 (why would you write it like that anyway?)
+> 
+> Was wondering for a sec if it was a feature, but theres cleaner ways to
+> get an empty string I figured so I guess it is a bug :)
+> 
+> Btw, I ended up there because I wanted to get indexing from the end of a
+> string working (ie, str[0..-3] is short for str[0..strlen(str)-3] (oh, and
+> a bit faster also of course), and besides, I like the driver just
+> returning an empty string instead of throwing a runtime error when trying
+> to index past the end of the string ;) (and I ended up there due to
+> wanting a much closer emulation of lpmud, but more about that later maybe)
+> 
+> Anyway, if people are interested I will cleanup the code for it a bit and
+> make a patch available. It seems to work with all I threw at it, but
+> wasn't tested very extensively yet.
+> 
+> Bart.

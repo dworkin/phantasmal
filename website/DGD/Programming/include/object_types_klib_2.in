@@ -1,0 +1,63 @@
+From: dgd at list.imaginary.com (Par Winzell)
+Date: Mon Jul 12 04:56:01 2004
+Subject: [DGD] object types: examples from the kernel lib
+
+> Have you ever used function_object() as a way to make sure that an
+> object can perform the role you want it to perform?  Then object types
+> can simplify your work.  The kernel library presently uses object types
+> in a few cases, which I will describe below by way of example.
+
+An alternate perspective: for people who have not had much experience 
+with more strongly typed languages (or who, like me, are merely subject 
+to a lazy bent), using function_object() to check the precise type of a 
+function's object parameters is too cumbersome to feel worthwhile.
+
+In e.g. Java, an object that tries to call a function on an object will 
+simply not compile unless the object is of a type undeniably known to 
+implement F. It's not merely impossible to call a non-existent function, 
+it is impossible for the code to even try.
+
+LPC is much laxer. There is no compile-time check on call_other, of 
+course, but there's also the LPC tradition that call_other() silently 
+calls non-existent functions on another object without error. Thus we 
+simply do not get any immediate visceral punishment when we screw up and 
+call a function (or otherwise supply) an object of the wrong type.
+
+We do, of course, get punished, because our code doesn't work. The whole 
+point of type-checking is to catch errors at an earlier stage than mere 
+faltering logic.
+
+These new object types provide just that; better type checking. But they 
+also provide incentive to arrange your code with much more structure. 
+Where you're used to sending around blobs of code and data that are all 
+just 'object' to the recipient parameters, start thinking of them as 
+precisely defined data types.
+
+Thus if a function accepts a parameter of type 'object "/lib/iterator"' 
+this new DGD functionality allows you to rest more assured than ever 
+that it will behave like (your idea of) a standard iterator. More than 
+that, however, it will also compel you to go through your legacy code, 
+finding all the iterators you've written over the years, and making them 
+all inherit "/lib/iterator".
+
+Next, in a passionate flurry of standardisation, you will find yourself 
+going through all your data structures to give them the ability to 
+return just such a standard iterator. And while doing that, you'll 
+realize that if they are all iterator providers, they should inherit, 
+say, "/lib/iterator_provider" or perhaps, Java-style, "/lib/collection", 
+and suddenly you can write functions that accept "/lib/collection" 
+objects which do not care a iota what the underlying implementation is 
+and simply expect to be able to retrieve an iterator from whatever it is 
+that was sent in.
+
+Yes, of course, this is just basic object-oriented design, and we all do 
+it more or less automatically. Some of you are undoubtedly even 
+disciplined enough to do it without support from the language. Those of 
+you who are more like me, however, and need good habits encouraged and 
+bad discouraged, will find these object types simply thrilling. Aim them 
+at your old monolithic monstrosities and see them dissolve into elegant 
+type interactions.
+
+Now, if /lib/collection could just be made abstract... :)
+
+Zell

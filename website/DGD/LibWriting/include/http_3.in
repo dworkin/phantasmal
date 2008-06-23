@@ -1,0 +1,31 @@
+From: Bart van Leeuwen
+Subject: Re: [DGD] DGD http daemon?
+Date: Wed Feb  9 00:43:01 2005
+
+On Tue, 8 Feb 2005, [ISO-8859-1] Petter Nyström wrote:
+
+> If you are releasing the code, I'd be interested in using it. I am not
+> running Dworkin's kernel lib though, so I can't really help you getting a
+> generic version of the code. I am just a fellow lib coder who have often
+> thought it'd be nice to have an internal web server for the simpler
+> purposes that have been mentioned, but I have never given the project
+> priority. With your code, I can't believe there would be that much work to
+> integrate it into my mudlib.
+
+If you know how your kernel's user/connection handling is working then
+you should have little trouble getting this to work on your kernel.
+
+>
+> If you put the code in public domain, let us know!
+
+It will be available for non-commercial use once I cleaned it up a bit and
+have a little bit more documentation for interfacing with it (which should
+take some 2 weeks due to me being away from home for a while)
+
+As a sidenote, there is also a project at
+http://developer.berlios.de/projects/dgd-httpd/ which provides a (for what
+I can tell more heavyweight) http server for DGD. If you need things like
+XML parsing or webdav, take a look at that as well. What I have written is
+extremely minimalistic in comparison.
+
+Bart.

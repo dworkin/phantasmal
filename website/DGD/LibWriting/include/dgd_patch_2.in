@@ -1,0 +1,25 @@
+From: dgd at list.imaginary.com (Felix A. Croes)
+Date: Sat Feb 14 10:46:01 2004
+Subject: [DGD] 1.2.77
+
+diff -c dgd/src/Changelog:1.314 dgd/src/Changelog:1.315
+*** dgd/src/Changelog:1.314     Thu Feb  5 15:01:00 2004
+--- dgd/src/Changelog   Sat Feb 14 17:32:13 2004
+***************
+*** 1573,1575 ****
+--- 1573,1577 ----
+   - Make sure that a callout handle is not truncated to 16 bits before an
+     attempt is made to remove it.
+   - Include system files before DGD files on Windows.
++  - Rather than causing an error, let the callout and precompiled object lists
++    returned by status() be nil if they would not fit in an array.
+
+ftp://ftp.dworkin.nl/pub/dgd/experimental/patches/1.2.76-1.2.77.gz
+
+This patch includes the promised changes to the kernel library.  It
+also simplifies upgrading a persistent mud from kernel library version
+1.2.21 (included with DGD 1.2.71); rebooting immediately after the
+driver object is recompiled is no longer necessary.
+
+Regards,
+Dworkin

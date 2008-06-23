@@ -1,0 +1,32 @@
+From DGD Mailing List  Thu Sep 27 13:06:01 2001
+From: DGD Mailing List (Erwin Harte)
+Date: Thu Sep 27 13:06:01 2001
+Subject: [DGD] parse_string() example
+
+
+This one I wrote in May '98, to parse config-files of something:
+
+    parse_string("whitespace  = / +/\n" +
+		 "string      = /\"[^\"]+\"/\n" +
+		 "junk        = /./\n" +
+
+		 "pattern     : sequence\n" +
+
+		 "sequence    : options              ? pp_a\n" +
+		 "sequence    : sequence options ? pp_b\n" +
+
+		 "options     : element              ? pp_c\n" +
+		 "options     : options '|' element  ? pp_d\n" +
+
+		 "element     : string               ? pp_e\n" +
+		 "element     : '(' pattern ')'      ? pp_f\n", line);
+
+It would make an attempt at parsing lines containing stuff like this:
+
+    "word0" (("word1" "word2") | "word3")
+
+What the pp_[a-f] functions did I leave up to your own imagination.
+
+Erwin.
+-- 
+Erwin Harte

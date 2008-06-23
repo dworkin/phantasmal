@@ -1,0 +1,27 @@
+To make sure a function started by a call_out() is wrapped inside such
+an rlimits construct, you would have to redefine call_out() in your
+auto-object, like this:
+
+    static int
+    call_out(string func, int delay, mixed args...)
+    {
+        return ::call_out("_F_call_out", delay, func, args);
+    }
+
+    nomask void
+    _F_call_out(string func, mixed *args)
+    {
+        if (previous_program()) {
+	    rlimits (MAX_STACK; MAX_TICKS) {
+		call_other(this_object(), func, args...);
+	    }
+        }
+    }
+
+The 'if (previous_program()) {' condition is to make sure the function
+cannot be abused by calling it directly, this way it will only call
+the given function with the parameters if it's the start of a thread.
+
+If you're thinking of making _F_call_out() a static function, think
+again, because that would make it an 'efun' since it's in the auto-
+object, and then you cannot call it from a call_out(). :-)

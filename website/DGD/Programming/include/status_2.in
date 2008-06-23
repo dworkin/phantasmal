@@ -1,0 +1,37 @@
+From: dgd at list.imaginary.com (Erwin Harte)
+Date: Wed Jan  7 12:14:00 2004
+Subject: [DGD] Re: status
+
+On Wed, Jan 07, 2004 at 05:50:52PM +0000, Robert Forshaw wrote:
+[...]
+> Where seek_and_return_string(string haystack, string needle) looks for 
+> 'needle' in 'haystack' and returns the string up to where 'needle' was 
+> found.
+
+I think you want to look into sscanf() to replace
+seek_and_return_string().
+
+> I get that funny feeling though where I think I might be doing something 
+> awkwardly or I'm missing an obviously more efficient way of achieving a 
+> solution. I had a look at status.h and saw this:
+> 
+> # define O_INDEX	5	/* unique ID for master object */
+> 
+> This clearly isn't the same as kernel libs version, which claims to return 
+> the issue number of an object 
+> (http://phantasmal.sourceforge.net/DGD/Kernel/Inheritance.html <- bottom of 
+> that page). The problem is I have no idea what 'unique ID for master 
+> object' means. Does O_INDEX contain an object pointer? A string? An issue 
+> number? Does a master object even have an issue number? I thought it 
+> didn't. :)
+
+The 'issue' and 'unique id for master object' refer to the same
+thing.  I would describe O_INDEX as a unique identifier for the _code_
+that an object runs with, which for clones would be the code of the
+master object from which the clone was made.
+
+Hope that helps,
+
+Erwin.
+-- 
+Erwin Harte

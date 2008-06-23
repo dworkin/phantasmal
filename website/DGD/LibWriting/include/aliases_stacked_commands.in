@@ -1,0 +1,42 @@
+From: DGD Mailing List (Par Winzell)
+Date: Wed Mar 24 09:18:01 2004
+Subject: [DGD] Aliases & Stacked commands
+
+Bart van Leeuwen wrote:
+
+> I think you really want something like this_player() because 'users' are
+> not the only livigns that can use 'commands' on your average mud, which
+> means to me that commands should never ever depend on this_user() since
+> they will fail when used by a living thats not linked to any user.
+> Of course there can be exceptions for security reasons, but those are
+> cases where runnign such a command from an alias would not be a good idea
+> either I believe.
+
+I certainly agree that a living object should not depend on having a 
+connected user for any of its in-world actions. In Skotos we separated 
+commands and actions entirely -- commands belong to the text interface 
+layer, actions are in the virtual world. Commands cause actions. NPC 
+brains cause actions.
+
+We deliberately rejected this_player(), though. As I recall, half of the 
+  code in the old LPC driver is concerned with making sure this_player() 
+has the right value at all times. It needs to be switched in and out 
+constantly, depending on which function is being called where.
+
+Instead, we simply pass along an explicit 'actor' variable.
+
+As concerns this_user(), I ended up implementing a query_originator(), 
+which is a version of this_user() that is persisted across call_outs. 
+Originally this change was motivated by the fact that LPC is single 
+threaded, and thus anything that touches the network has to use a 
+callback approach to waiting for responses. Obviously, DGD's idea of 
+this_user() does not survive that kind of 'wait', and so we wrote a 
+bunch of infrastructure to bridge the gap. The main purpose was for 
+runtime error reporting to continue arriving at the originating 
+connection even after the callback.
+
+Later, we've had to spread more and more processes out into 
+callout-driven background processes. It's nice to have runtime error 
+reporting continue to function there, too.
+
+Zell

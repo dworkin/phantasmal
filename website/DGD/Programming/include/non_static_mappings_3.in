@@ -1,0 +1,26 @@
+From: dgd at list.imaginary.com (Erwin Harte)
+Date: Wed Feb  6 17:38:01 2002
+Subject: [DGD] [Melville] non-static mappings
+
+On Thu, Feb 07, 2002 at 12:07:43AM +0100, Mikael Lind wrote:
+[...]
+> >   map = ([ ob1: 1,
+> >            2:   ob2 ]);
+> >
+> > Now, if either ob1 or ob2 gets destroyed, the relevant index:value
+> > pair in the mapping will disappear.
+> 
+> Is this really true for ob1, though? I would have thought that when
+> ob1 is destructed, it would be replaced by nil, which is a valid
+> mapping index. So, with both ob1 and ob2 destructed, map would be
+> ([ nil: 1 ]).
+
+It's true for ob1 as well.  You could use this feature to easily keep
+track of the online players by having a map from <connection-object>
+to '1' and only update it when someone (re)enters the game.  If
+someone logs out or loses his/her/its link the mapping will
+automatically be cleaned out, so less effort there.
+
+Erwin.
+-- 
+Erwin Harte

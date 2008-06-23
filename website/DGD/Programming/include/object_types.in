@@ -1,0 +1,31 @@
+From: dgd at list.imaginary.com (Felix A. Croes)
+Date: Fri Jul  9 16:36:01 2004
+Subject: [DGD] object types
+
+Within the next few days, I hope to release an important new feature:
+object types.  It is going to be possible to add typechecking to objects:
+
+    /* normal object */
+    object obj;
+
+    /* objects that inherit /kernel/lib/user */
+    object "/kernel/lib/user" user1, user2;
+
+Object types can be used anywhere where you can normally use 'object':
+for variables, function types, function parameters, and in casts.
+
+    obj = user1;	/* always works because obj has no specific type */
+    user1 = user2;	/* always works because user2 is of the same type */
+    user2 = obj;	/* only works if obj is nil or inherits ... */
+			/* ... /kernel/lib/user */
+
+In the example above, the variable 'user1' can only hold an object which
+inherits /kernel/lib/user.  To attempt to use a different type of object
+results in a runtime error.  There is no compile-time checking for
+object types.
+
+This change will affect a great deal of code, so consider 1.2.89 to be
+the last stable version for a while.
+
+Regards,
+Dworkin

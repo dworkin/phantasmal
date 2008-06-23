@@ -1,0 +1,65 @@
+From: DGD Mailing List (Erwin Harte)
+Date: Tue Jan  6 12:37:00 2004
+Subject: [DGD] Re: A simple lib
+
+On Tue, Jan 06, 2004 at 06:27:29PM +0000, Robert Forshaw wrote:
+> >From: "Felix A. Croes"
+[...]
+> >driver::telnet_connect() recompiles /sys/user every time, that's probably
+> >not what you want.
+> 
+> I understand that it isn't what I want. The only reason I have it like this 
+> is due to 'tweaking', i.e. I'm making sure it isn't the clone() function 
+> I've defined that is the problem. My clone() function is OK, right?
+
+No.  You want something like this:
+
+    object clone(mixed file)
+    {
+	    object master, clone;
+
+	    if(typeof(file) == T_STRING)
+	    {
+		    message("Type is string.\n");
+		    if(!(master = find_object(file)))
+		    {
+			    master = compile_object(file);
+			    message("Compile object successful.\n");
+		    }
+		    clone = clone_object(master);
+		    message("Clone object successful.\n");
+		    return clone;
+	    }
+	    return clone_object(file);
+    }
+
+The reason is that compile_object(file) on an already compiled object
+will quite happily compile it again (only failing if the object has
+been inherited) and you can't do that more than once in a single
+thread, which is exactly what your current clone() function in
+sys/driver.c attempts to do.
+
+    object clone(mixed file)
+    {
+	    object o;
+	    if(typeof(file) == T_STRING)
+	    {
+		    message("Type is string.\n");
+>>>>		    if(o = compile_object(file))
+		    {
+			    message("Compile object successful.\n");
+>>>>			    if(o = clone_object(compile_object(file)))
+			    {
+				    message("Clone object successful.\n");
+				    return o;
+			    }
+		    }
+	    }
+	    return clone_object(file);
+    }
+
+Hope that helps,
+
+Erwin.
+-- 
+Erwin Harte

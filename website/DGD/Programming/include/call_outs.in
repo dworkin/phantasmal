@@ -1,0 +1,22 @@
+From: dgd@dworkin.nl (Felix A. Croes)
+Date: Tue Apr  5 19:12:02 2005
+Subject: [DGD] call_outs
+
+Steve Wooster wrote:
+
+>      Yet another question occurred to me... I've heard that if you do a 
+> call_out for 3 seconds, and one for 5, the 3 second call_out is guaranteed 
+> to execute before the 5 second one... What about if you do a 5 second 
+> call_out, and a bunch of chained 0-second call_outs... Is there any 
+> guarantee that the 5 second call_out will be executed after the last 0 
+> second one? (or is it only guaranteed to execute after the first 0 second 
+> call_out?) Thanks!
+
+The 5 second callout might execute after the first zero second callout
+and before the second one.
+
+If you want to be certain that the chain of zero second callouts comes
+first, start the 5 second callout from the last one.
+
+Regards,
+Dworkin

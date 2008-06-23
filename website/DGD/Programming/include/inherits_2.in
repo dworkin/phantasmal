@@ -1,0 +1,37 @@
+From: dgd at list.imaginary.com (Erwin Harte)
+Date: Wed Mar 20 23:54:01 2002
+Subject: [DGD] Inherits.
+
+On Thu, Mar 21, 2002 at 12:17:05AM -0500, Stephen Schmidt wrote:
+> On Thu, 21 Mar 2002, Vladimir I. Lazarenko wrote:
+> > hmm. let's take my situation as an example.
+> > I have a thingie called channel_d (Melville mudlib).
+> > If i make changes to channel_d and then issue 'update channel_d.c'
+> > my changes are not there.
+> > Am I doing anything wrong?
+> 
+> Sorta. When an existing object is updated in DGD, create() is
+> not called in the object. Because, in the channel_d, the data
+> is loaded in create, when you update it, the data is not there.
+
+I'm not sure you and I are talking about the same DGD here, then.
+
+DGD's compile_object() never calls any functions in the object that it
+returns, the create() (or _F_create() or whatever the creator function
+is that you use for Melville) function is called just before someone
+or something calls a function in the object for the first time.
+
+If you're _recompiling_ an object, all you're doing is replace the
+code, you don't want to go and call create() functions in there, you
+could very likely damage important data in there when all you did was
+fix an if-statement condition or something like that.  Perhaps you
+could add something to your command so that if you're recompiling an
+object instead of compiling one that didn't exist before, you call a
+different function like upgraded(), from a 0-call_out (because the
+new code won't be effective until after the thread finishes).
+
+Hope that helps,
+
+Erwin.
+-- 
+Erwin Harte

@@ -1,0 +1,35 @@
+From: dgd at list.imaginary.com (Par Winzell)
+Date: Thu Jan  8 11:02:01 2004
+Subject: [DGD] Re: another question about clones
+
+Bart,
+
+>>If you mean that you use array addition and subtraction whenever you
+>>create a new clone or destruct an old one, then that's not really an
+>>option. Both cloning and destructing N objects then becomes pretty much
+>>a O(N^2) operation. You really want to stay away from those.
+> 
+> Not really. When an object is destroyed, its value in the array becomes 0,
+> subtracting 0 from an array before use is still far from O(N^2) and isn't
+> done at destruction time at all. As a result, the code actually has an
+> O(1) behavior on destructing objects (for as far as the lpc code is
+> concerned... cost of the different opperations on driver level is a
+> different matter)
+
+I guess this works if you can rely on destruction to remove the object 
+(or, rather, to nil it). Skotos uses this kind of indexing system for 
+other lists where a clone may need to leave one chain and enter another 
+without the convenience of destruction. In that case, you do need to 
+search through O(N) elements to remove an object, and while this cost is 
+at the driver level, yes, complexity considerations remain similar.
+
+
+> Anyway, regardless of if its more or less efficient, it has been used for
+> many years and seems to do its job very well.
+
+If your solution works, great. Marrach has something like 200k clones of 
+/base/obj/thing and I suspect the array solution could result in a 
+pretty significant performance problem for us. Whatever. :)  It wasn't 
+meant as an attack.
+
+Zell

@@ -1,0 +1,53 @@
+From: DGD Mailing List (Felix A. Croes)
+Date: Sat Mar  6 10:21:01 2004
+Subject: [DGD] Bitwise on Arrays & Efficiency
+
+Michael McKiel wrote:
+
+> I've recently come across bitwise operations on arrays, though I seen them
+> before in passing never really grasped what they were doing, nor really how
+> bitwise could be done on an array.
+> What I was wondering is, are there any other operators that can be used on
+> arrays, besides '&' '|' ?
+
+A & B: A - (A - B)
+A | B: A + (B - A)
+A ^ B: (A - B) + (B - A)
+
+
+> Previously I had been using the member_array() that is found in Melville, but
+> realized that loops thru the array piece by piece til it finds the element.
+> Regarding efficiency, I'd assume bitwise AND(&) to be better than that,
+> but...
+> Wouldn't it in effect have to do the same type of looping - just at the
+> driver level? ie: 
+>     sizeof(someArr & ({ element })) != 0
+
+The driver doesn't do anything extraordinary.  It is only faster because
+it works at a level below LPC.
+
+
+>[...]
+> And for array concatenation we have:
+> 1/    someArr += ({ element });
+> 2/    someArr = someArr | ({ element });
+>
+> I take it version one creates a new array in memory to perform its task, and
+> version 2 doesn't?
+
+A | B is not array concatenation, see above.  By the way, you can
+use &=, |= and ^= on arrays, too.
+
+
+> And the only way I can find to remove nil's from arrays would be:
+> 1/    someArr -= ({ nil });
+> 2/    someArr = someArr - ({nil});
+>
+> Again I assume those both make another array, is there some way to do so
+> without making another array? :)
+
+No, the only operation on an array that modifies it without creating
+a new array is arr[i] = val.
+
+Regards,
+Dworkin

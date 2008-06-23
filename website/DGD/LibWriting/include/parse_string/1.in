@@ -1,0 +1,69 @@
+Date: Sun, 4 Apr 1999 03:04:53 +0200 (CEST)
+From: "Felix A. Croes"
+To: DGD Mailing List
+Subject: Re: [DGD]parse_string
+
+"Erlend M. Simonsen" wrote:
+
+> I've been spending some time this easter trying to get my MudOS-like
+> parser using parse_string() up and running. And I'm ALMOST happy with
+> it. I've run into two problems, which I thought I'd see if any of you
+> had an answer to.
+>
+> 1. 
+> When trying to get an object from a container I have the problem that
+> when my find_object() function is called, I have no idea which
+> environment to look for the object in. And I can't just scan all
+> containers in the environment looking for the object, since I might
+> end up with the wrong object if several instances of it is present.
+
+This same problem must have existed in the MudOS parser.  I assume
+that it was solved in one of the following ways:
+
+1) process all possible environments in a standard order.
+2) if the grammar rule for an object should check an environment
+   that depends on the greater context in which the rule is used,
+   split it up into several rules where the grammar part is
+   identical, but the LPC function called to find the object
+   differs depending on the context.
+3) postpone finding the object at the object rule level.  Instead,
+   find it at the sentence level, where the environment is known.
+
+The most useful and versatile solution is probably 2).  It can be
+done by adding several intermediate object finding rules:
+
+    object_in_carried_container: object ?	find_in_container
+    object_in_room: object ?			find_in_room
+    object_in_living: object ?			find_in_living
+
+
+> I've been able to work around this due to a 'fortunate' parsing order
+> in parse_string(). It seems like parse_string() goes right to left,
+> which means it finds the correct container first, which I can remember 
+> until I go looking for the object. It sounds a bit 'hackish' to me,
+> and I would like to do this the proper way.
+
+More precisely: parsing happens left to right, but LPC functions are
+called in bottom-up right-to-left order.  It is not clear to me why
+this always picks the proper container.  Are you sure that this is
+actually the case?
+
+
+> 2.  I want to call can_get_obj_from_obj() and the like. The problem I
+> am having here is that I know nothing about the rule that is matched,
+> so I build the function name by checking the type of each element in
+> the result from parse_string(). Which basically breaks all STR
+> (string) parts of the rules. 
+>
+> What I tried doing when building the function to call, is to treat all
+> strings as 'str', but that gives me function names like
+> can_buy_str_str_liv(), and that doesn't look too nice. I would rather
+> have it look like is can_buy_str_from_liv(). Anyone have solved this
+> problem and would like to share with me how they did it?
+
+I don't fully understand the problem as you described it, but my
+guess is that the solution I gave above will work here too: add
+intermediate rules that differ only in the LPC function called.
+
+Regards,
+Dworkin

@@ -1,0 +1,33 @@
+From: dgd at list.imaginary.com (Stephen Schmidt)
+Date: Wed Mar 20 23:46:01 2002
+Subject: Re[2]: [DGD] Inherits.
+
+On Thu, 21 Mar 2002, Vladimir I. Lazarenko wrote:
+> hmm. let's take my situation as an example.
+> I have a thingie called channel_d (Melville mudlib).
+> If i make changes to channel_d and then issue 'update channel_d.c'
+> my changes are not there.
+> Am I doing anything wrong?
+
+Sorta. When an existing object is updated in DGD, create() is
+not called in the object. Because, in the channel_d, the data
+is loaded in create, when you update it, the data is not there.
+
+There are several fixes:
+
+1) Change your update command to invoke create() if the object
+existed before, or at least, have a flag so the user can invoke
+that behavior;
+
+2) Change the channel daemon so that, when any call is made into
+it, it will check to see if its data is loaded, and load it if not;
+
+3) Create a new command, like the update command, that invokes
+create() when you want to.
+
+All of these have drawbacks.
+
+The soul daemon has the same problem (in fact, that's usually
+the one people notice first).
+
+Steve

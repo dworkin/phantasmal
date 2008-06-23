@@ -1,0 +1,48 @@
+From: dgd at list.imaginary.com (Par Winzell)
+Date: Wed Feb 27 14:09:00 2002
+Subject: [DGD] Question...
+
+Noah,
+
+>   I store rooms, portables and helpfiles in large files with large numbers
+> of entries -- I used to store one help entry per file, and it starts to
+> suck pretty quickly.  The problem with storing one room, portable or
+> (gag) exit per file is the sheer number of files that build up.
+
+We've tinkered with this consideration too; large files of associated 
+objects (which CVS handles well, but absolutely requires O(N) style 
+algorithms) or individual small files, which can get really hairy.
+
+>   But then, I don't use save_object() -- I use an XML-like structured
+> storage language called UNQ with XML-like DTDs.  And it means that certain
+> kinds of bugs *are* just tough to track down.  I may start having to use
+> explode() to cut the file up into sections before doing my current
+> parse_string parsing -- otherwise when a file isn't parsed as valid UNQ
+> parse_string will just return nil and I have no idea where the error is.
+
+Indeed. I wrote two versions of our XML parser; one using parse_string() 
+and one not. We ended up using the non- version. This makes me unhappy, 
+because it is clearly inefficient -- not the recursive descent bit but 
+the tragic low-level fiddling with individual bytes -- that really cries 
+out for native execution. That said, Felix has added some stuff to the 
+parse_string() grammar to allow better error handling. Did you look at 
+that? It does slow down parsing in some way that I have not understood 
+entirely -- and I have not had time to play with it at all really -- but 
+it does let you add 'nomatch' tokens which you can then use in error 
+productions, which should be able to pinpoint your errors much better.
+
+I'd love to hear from somebody who's tried this out in practice.
+
+>   But for bugs after parsing has occurred, I just have a lot of error
+> checking code so if there's a bug I know what entry it's in -- I make sure
+> my error message tells me.  And when doing the DTD structured parsing
+> after the parse_string pass I actually keep a separate parser_error stack
+> of error messages so I can find out exactly what the problem is, and in
+> what entry.  It's a lot of error check code, but I wrote it once and now I
+> use it almost everywhere.
+
+
+I don't really understand this paragraph at all, I'm afraid. :)
+
+
+Zell

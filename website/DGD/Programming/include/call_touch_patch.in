@@ -1,0 +1,19 @@
+From: dgd at list.imaginary.com (Felix A. Croes)
+Date: Fri Jan  2 18:23:01 2004
+Subject: [DGD] 1.2.69
+
+diff -c dgd/src/Changelog:1.306 dgd/src/Changelog:1.307
+*** dgd/src/Changelog:1.306     Wed Dec 31 03:58:59 2003
+--- dgd/src/Changelog   Sat Jan  3 01:12:28 2004
+***************
+*** 1553,1555 ****
+--- 1553,1556 ----
+   - New config file parameter: dump_interval, the expected time between two
+     statedumps.  Rebuilding the swapfile is paced to this interval.
+   - New kfun: call_touch().
++  - call_touch() now also works on light-weight objects.
+
+ftp://ftp.dworkin.nl/pub/dgd/experimental/patches/1.2.68-1.2.69.gz
+
+Regards,
+Dworkin

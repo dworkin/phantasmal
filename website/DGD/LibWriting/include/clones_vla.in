@@ -1,0 +1,79 @@
+From: DGD Mailing List (Par Winzell)
+Date: Sun Apr  4 11:45:02 2004
+Subject: [DGD] Re: Clones and very large arrays
+
+>> ... and one kind of iterator that makes no such promise. Obviously the 
+>> former kind has to either use more memory, or special tricks. If you 
+>> don't mind the iterator using a fair bit of memory (temporarily) you 
+>> can  simply let the iterator LWO make a private copy of the bigmap, 
+>> keep two index counters (one to index the mapping of mappings, one to 
+>> index the current inner mapping), and step through the whole thing 
+>> step by step as next() is called.
+> 
+> I would have thought this method to be quicker than the find_object 
+> method you described.
+
+Depends on the number of objects. In a Skotos game, clones of 
+/base/obj/thing constitute > 90% of the objects in the game, and it's 
+pretty pointless to keep an explicit data structure around enumerating 
+180,000 objects when you can just loop 200,000 times and get them all 
+anyway.
+
+> But you still use bigmaps to store the actual clones, right?
+
+Nope. There's no point... for this particular problem, and for clonables 
+whose clones constitute a significant portion of the objects in the 
+game, find_object() happens to be all you need.
+
+> So as I understand it, the iterator is just a way of retrieving the 
+> contents of the datastructure?
+
+Yes, although the emphasis should be on it being THE way; i.e. once you 
+start using them, you quickly start taking it for granted that wherever 
+there is a data structure, you can fetch its iterator. I can communicate 
+these facts but I can't communicate fully the experience. These OO 
+concepts seem to solve nothing new, but they change everything.
+
+
+> And Bart mentioned that it is a useful method of getting rid of 'stray 
+> clones'. Unfortunately I don't see how. If you have a 'stray clone' 
+> lying around, how are you going to spot it from within a gigantic 
+> datastructure?
+
+Again this is one of those things you don't fully understand until you 
+have had to administer a persistent game. Once you boot DGD into a game 
+that uses state dumps, you will never ever again cold start it. That 
+means every persistent resource (i.e. rooted in a persistent object) you 
+create will still be with you in the year 2350 unless you have, on th 
+very first day of your uptime, administrative code in place that keeps 
+track of these objects.
+
+If you have a guest programmer who just executes,
+
+   clone_object("/foo");
+
+without doing something with the return value, and you don't have code 
+at a low level that registers this clone somewhere, this clone is more 
+or less gone forever. It is never garbage collected (it is not a LWO) 
+and nobody has a pointer to it. The only way it can be found is by using 
+find_object(), and for that you have to know the path name.
+
+Once you realize what a potentially huge and dark haystack an eternal 
+uptime is, and how little of a safetynet there is unless you write one 
+yourself, you will see the reason why people here rail against the idea 
+of rewriting the kernel library from scratch. There should be a layer of 
+code in place on top of DGD and below your mudlib that has been tested 
+by dozens of people before you, with all the bugs ironed out, that you 
+can rely on with absolute certainty. From the perspective of the mudlib 
+writer, such administrative code should be considered more or less part 
+of the driver. This discipline is essential.
+
+> Also, as people left me with the impression that they don't often recall 
+> the entire list of clones (those who use linked lists), what kind of 
+> useful information are they deriving from it?
+
+It's there for the same reason you keep 10 gallons of water in your 
+basement for when the earthquake hits, yet you don't amble down there to 
+refill your glass during dinner.
+
+Zell

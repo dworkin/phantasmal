@@ -1,0 +1,31 @@
+From: dgd@dworkin.nl (Felix A. Croes)
+Date: Fri Apr 15 02:50:01 2005
+Subject: [DGD] DGD/MP 1.0
+
+I've just put together a version of DGD/MP which I'll call 1.0.  It has
+working MP support :-)  Though I still have a lot of debugging to do and
+disabled subsystems to complete.  The mostly-bugfree version will be 1.1,
+and 1.2 will run on platforms other than a Mac.  1.2 will be the first
+version I am going to release, which should be in a few months.  After
+that, I intend that both DGD and DGD/MP advance to version 1.3
+simultaneously.
+
+I've been planning to create a MP capable version of DGD for a long
+time; since 1997, in fact.  Many other features came first (parse_string,
+private inheritance, nil, atomic functions, light-weight objects,
+arbitrary size numbers with crypto, call_touch, IPv6 support...)  At this
+point, DGD finally has everything I wanted it to have 10 years ago.
+
+Implementing multi-processor support has taken me a lot more time and
+effort than I thought it would.  I've found that doing MP properly is
+hard.  Very, very hard.  It's so easy to overlook something and make it
+merely multi-threaded, with all threads depending on some bottleneck,
+and without properly utilizing all processors.
+
+It's going to take still more time to tune things properly for an actual
+mudlib designed for MP.  Most of that will happen after version 1.3.
+
+Anyway, the first milestone has been reached.
+
+Regards,
+Dworkin

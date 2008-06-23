@@ -1,0 +1,27 @@
+From: dgd at list.imaginary.com (Erwin Harte)
+Date: Tue Apr 20 22:29:01 2004
+Subject: [DGD] Re: blocking the telnet port
+
+On Wed, Apr 21, 2004 at 12:55:02PM +1000, Mercy wrote:
+[...]
+> Annyway, I was just wondering if there's a way to block the telnet port, 
+> under the Kernel Lib without making direct changes to the kernel itself.
+> You might wonder why I'd want to, so briefly, I intend to write a telnet 
+> handler to run on the binary port, and rather than just ignoring the 
+> existance of the open telnet port, I'd like to close it altogether.
+
+In recent versions of DGD the 'telnet_port' entry in the configuration
+file can be an integer or a mapping and as far as I remember you
+should be able to make that an empty mapping, causing no telnet ports
+to be opened at all.
+
+>From the 1.2.72 Changelog diff:
+
++  - Config file change.  ({ 6047, 6048 }) for ports changed to a mapping in
++    which the address must also be specified: ([ "*":6047, "localhost":6048 ])
+
+Hope that helps,
+
+Erwin.
+-- 
+Erwin Harte

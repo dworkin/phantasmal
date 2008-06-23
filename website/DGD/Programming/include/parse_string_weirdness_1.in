@@ -1,0 +1,35 @@
+From: DGD Mailing List (Erwin Harte)
+Date: Thu Mar 20 22:47:01 2003
+Subject: [DGD] parse_string() wierdness???
+
+On Thu, Mar 20, 2003 at 08:36:52PM -0800, Keith Dunwoody wrote:
+[...]
+> I'm trying to develop a parse_string() grammar.  I'm
+> expecting the grammar to be very large, so I'm putting
+> it into another file, which I load at runtime.  At the
+> top of my file, I defined whitespace as:
+> 
+> whitespace = /[ \r\n\b\t]+/
+> 
+[...]
+>   grammar = "whitespace = /[ \r\n\t\b]+/\n" + grammar;
+> 
+> it works!  It seems that the parse_string() doesn't
+> convert '\n' etc into newlines.  Is this the correct
+> behaviour?
+
+Remember that for strings in LPC code, normal conversion code applies,
+so occurances of \r, \n, \t, \b are converted to the relevant ASCII.
+
+When you read the same looking text from a file you get what would be
+equivalent to \\r, \\n, \\t, \\b if you put them in LPC strings.
+
+So, yes, this is what you should expect, if you want to read your
+grammar from a file you'll want to do some conversions that under
+normal circumstances the LPC parser would do for you.
+
+Hope that helps,
+
+Erwin.
+-- 
+Erwin Harte

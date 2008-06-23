@@ -1,0 +1,15 @@
+From: DGD Mailing List (Par Winzell)
+Date: Tue Jan  6 17:23:00 2004
+Subject: [DGD] A short question about nil, comparisons and strings.
+
+> Ithe logical not operator is proceeded with 'nil', does it return true or 
+> false? I am assuming !0 is true and !nil is true in my code so far.
+
+0, 0.0 and nil are all false, so !0 == !0.0 == !nil == 1 (true)
+
+"" is true
+
+> What about strings? What is a string initiated as, "", 0, or nil? Are all 
+> those constants different?
+
+they're all different. strings are initialized to nil.

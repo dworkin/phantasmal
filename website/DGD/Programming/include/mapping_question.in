@@ -1,0 +1,26 @@
+From: dgd at list.imaginary.com (Erwin Harte)
+Date: Wed Oct 10 10:03:01 2001
+Subject: [DGD] mapping question
+
+On Wed, Oct 10, 2001 at 04:44:39PM +0200, Pete wrote:
+> Is there a way how to access mapping elements by sequential 
+> index? Something other, faster, then using map_indices() and then 
+> iterating them and use them as index for mapping.
+
+Doesn't get any faster than this:
+
+  int i, sz;
+  mixed *ind, *val;
+
+  sz = map_sizeof(map);
+  ind = map_indices(map);
+  val = map_values(map);
+  for (i = 0; i < sz; i++) {
+      /* Do whatever you want with the ind[i] and val[i] pair. */
+  }
+
+Hope that helps,
+
+Erwin.
+-- 
+Erwin Harte

@@ -1,0 +1,33 @@
+From: DGD Mailing List (Stephen Schmidt)
+Date: Thu Aug 26 21:16:01 2004
+Subject: [DGD] GurbaLib
+
+On Thu, 26 Aug 2004, Jas wrote:
+> If putting together something like that isn't on Dworkin's "to do" list,
+> maybe "the rest of us" should take up the initiative.
+
+I concur, and I think that this would be a worthwhile project
+(albeit for someone with fewer kids than me ;) even with SkotOS
+coming out for public access.
+
+> So, the $64,000 question is two-fold:  is there enough of an interest in
+> such a project, and are there other people who would be willing to
+> commit either their time, technical expertise, or something else to the
+> project?
+
+As someone who's been directly involved in coding two mudlibs
+that have been publicly released, and tangentially involved in
+a couple more that have and several more than haven't: No project
+of this sort succeeds if more than three people are involved.
+Either two or three is ideal; you need someone else around to
+keep you moving forward. Two is more streamlined and harder for
+one person to slack off, but two people can have tie votes and
+three can't.
+
+It helps if people are clearly divided by tasks going into
+the project. For something like this, one person for low-level
+coding, one for game world coding, one for "artsy-fartsy" might
+be the right division. Given the needs of DGD, the artsy-fartsy
+contribution would probably actually be the most important.
+
+Steve

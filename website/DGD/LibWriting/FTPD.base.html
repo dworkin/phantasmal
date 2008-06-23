@@ -1,29 +1,23 @@
-  <titledef text="FTPD" />
+<titledef text="FTPD" />
 
-  <h2> Writing an FTPD in DGD </h2>
+<h2>Writing an FTPD in DGD</h2>
 
-  <p>
-    An FTPD can be an excellent alternative to providing your MUD
-    coders with telnet access to your server (which can be insecure).
-    You can either run an external FTPD which is restricted (via
-    chroot()) to a particular subset of your filesystem and has its
-    own restricted user list, or you can build an FTPD into your MUD
-    and handle the security problems there.
-  </p>
+<p>An FTPD can be an excellent alternative to providing your MUD coders
+with telnet access to your server (which can be insecure). You can
+either run an external FTPD which is restricted (via chroot()) to a
+particular subset of your filesystem and has its own restricted user
+list, or you can build an FTPD into your MUD and handle the security
+problems there.</p>
 
-  <p>
-    Since standard DGD doesn't allow outgoing network connections, and
-    standard FTP protocol requires them, you can't write an active FTP
-    server in unpatched DGD.  You choices are to apply the network
-    patch to DGD or to write a passive-mode-only FTPD.
-  </p>
+<p>Since standard DGD doesn't allow outgoing network connections, and
+standard FTP protocol requires them, you can't write an active FTP
+server in unpatched DGD. You choices are to apply the network patch to
+DGD or to write a passive-mode-only FTPD.</p>
 
-  <p>
-    There are existing FTPD implementations in LPC, but none
-    specifically for DGD.  Still, you can adapt the FTPD from, say,
-    TMI-2 to run under DGD, either with the network patch or by
-    removing all code that would require outgoing connections.
-  </p>
+<p>There are existing FTPD implementations in LPC, but none specifically
+for DGD. Still, you can adapt the FTPD from, say, TMI-2 to run under
+DGD, either with the network patch or by removing all code that would
+require outgoing connections.</p>
 
-  <p style="text-size: 150%"> <a href="../index.html"> Back to top level
-    </a> </p>
+<p style="text-size: 150%"><a href="../index.html">Back to top
+level</a></p>

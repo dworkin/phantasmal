@@ -1,0 +1,36 @@
+From: dgd at list.imaginary.com (Felix A. Croes)
+Date: Fri Feb 21 21:47:01 2003
+Subject: [DGD] call_out delay
+
+Jay Shaffstall wrote:
+
+> I'm using call_out with a delay to trigger events in my mud that need to 
+> happen at specific intervals.  The call_out docs say, "If the delay is an 
+> integer, the function will be called after approximately the specified 
+> number of seconds".
+
+DGD handles timing for integer-delay callouts using the POSIX time.
+That means that a one-second callout started at time T will be executed
+(the rest of the MUD allowing) when the time turns into T+1, measured
+in POSIX seconds since 1970.  So the actual delay can be between 0 and 1
+seconds, and that's ignoring delays due to other callouts trying to
+run at that same moment.
+
+For callouts with a floating point delay, more care is taken that they
+run precisely at the intended moment.  A 1.0 delay callout started at
+T + 0.23 will be executed at T + 1.23.
+
+
+> How approximate is approximate?  On my Windows PC, things seem to work as 
+> I'd expect.  One of my builders is using a Linux laptop, and has seen the 
+> delays decrease until events are being fired continually (the actual value 
+> being passed in for the delay hasn't changed).  However on his Linux PC, it 
+> seems to work fine.
+
+This may legitimately (appear to) happen if each one second callout takes
+.95 seconds to process.  Perhaps the laptop is fairly old, and a lot
+slower than the desktop machine?  Otherwise, this may be a bug in DGD
+which I would like to learn more about.
+
+Regards,
+Dworkin

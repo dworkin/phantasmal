@@ -1,0 +1,31 @@
+From: dgd at list.imaginary.com (Stephen Schmidt)
+Date: Fri Oct 24 09:33:00 2003
+Subject: [DGD] dgd crashes on fatal errors
+
+Soja wrote:
+> > I have discovered that dgd crashes (dumps core) after reporting a fatal
+> > error. For example if you remove the binary_connect() function from a driver
+> > object, dgd crashes....
+
+So Don't Do That.  :)
+
+There's no reason to omit this function from the driver. If you don't
+want a binary connection object, then
+
+object binary_connect() {
+    return 0;
+}
+
+ought to work just fine for you. As Dworkin pointed out in his
+post, there are good reasons for the driver to abort in this
+case and no reason not to insist that certain critical functions
+be defined, if only minimally, in the driver object.
+
+Question: Is it possible to turn off listening on a binary
+port, either by not specifying a binary port at all in the
+config file, or perhaps by specifying -1? I can see where
+someone might want to not even be listening for a connection,
+rather than listening but refusing to provide an object if
+a connection request comes in.
+
+Steve

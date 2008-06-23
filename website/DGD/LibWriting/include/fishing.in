@@ -1,0 +1,51 @@
+From: DGD Mailing List (Felix A. Croes)
+Date: Sun Apr  4 17:47:01 2004
+Subject: [DGD] DGD-Fishing
+
+Ragnar Lonn wrote:
+
+>[...]
+> Speaking of that I'd like to thank Felix for the pointer to the extensions
+> document. I'm not sure extensions is useful for what I would like to do
+> (I'm interested in e.g. replicating objects between two DGD instances) but
+> I realize I have some reading to do.
+
+Replication of objects can be managed without DGD hacks.  Here is an
+outline of how I would do it:
+
+To completely replicate an object you must have its source code, a list
+of objects it inherits from, a list of the variables it declares, and a
+way to query and set those variables.
+
+At compile time, parse the source code with parse_string() using a LPC
+grammar to learn the objects it inherits from and the variables it
+declares.  Temporarily append functions to the source code which
+query and set those variables, actually compile the object, and
+restore the original source code.
+
+One difficulty is the preprocessor.  Somehow you have to deal with
+macros.  This can be done by writing your own preprocessor (again
+using parse_string()), but since the preprocessor is no doubt the
+ugliest part of the LPC language, and since you are pre-parsing the
+source code anyway, I would suggest forbidding the use of any
+preprocessor commands except for #include, and adding constants to
+the pre-parsed language:
+
+    const int foo = 1;
+
+Your parser accepts these and replaces them with #defines.  Constants
+are the only essential feature provided by the preprocessor, everything
+else can be replaced by normal code (and this will probably make the
+LPC code more readable as well).
+
+Replicating objects in this way would work for different DGD versions.
+Of course you would have to fix the grammar if the language changes,
+but the LPC language changes very slowly compared to the rate at which
+DGD's internals change.
+
+Of course, it is possible that you want to do more than replicating
+objects, and that some of those other things cannot be managed through
+LPC. :)
+
+Regards,
+Dworkin

@@ -1,0 +1,29 @@
+From: dgd at list.imaginary.com (Felix A. Croes)
+Date: Sun Jul 11 17:31:01 2004
+Subject: [DGD] object types from a Java perspective
+
+In Java, almost all typechecking is done at compile time.  In LPC, object
+types are checked at runtime only.  In fact, the object type does not even
+have to exist as an object, though in that case the check will of course
+always fail.
+
+Knowledge of object (class) types in Java also involves a lot of other 
+knowledge, such as the functions callable in that object, and so on.
+In LPC such knowledge only exists if the object is inherited.  This is
+both a bane and a boon, for in a persistent environment the ability to
+arbitrarily change interfaces and functionality can be quite useful.  I
+am currently considering implementing abstract objects for LPC
+(declaration or inheritance of code-less prototypes in an object not
+marked as "abstract" results in a compile-time error), but I am not yet        
+sure if abstract functions & objects would "fit" in LPC.
+
+In Java the object must be explicitly named.  In LPC it is named by a
+string constant, which may be a concatenation of other string constants.
+
+Since object type checks are performed at runtime, they take ticks at 
+runtime.  However the implementation is quite efficient, and results
+are cached.
+
+Regards,
+Dworkin
+ 

@@ -1,0 +1,40 @@
+From DGD Mailing List  Tue Mar 25 23:24:00 2003
+From: DGD Mailing List (Erwin Harte)
+Date: Tue Mar 25 23:24:00 2003
+Subject: [DGD] comments in parse_string() grammars?
+
+On Tue, Mar 25, 2003 at 09:10:19PM -0800, Keith Dunwoody wrote:
+> Is there any way of putting a comment in a
+> parse_string() grammar?
+
+No, this is a typical case of DGD's bare bones approach, you are
+encouraged to write a wrapper that strips out the comments (whichever
+commenting style you prefer) and present the stripped grammar to the
+actual parse_string() kfun.
+
+This also gives you the opportunity to do other conversions if you so
+desire, like embedding LPC code into the grammar that you detect and
+deal with appropriately.
+
+This could be as simple as this (warning: uncompiled/untested code):
+
+    mixed *
+    parse_string(string grammar, string str, varargs int alternatives)
+    {
+        int i, sz;
+        string *lines;
+
+        lines = explode(grammar, "\n");
+        for (i = 0, sz = sizeof(lines); i < sz; i++) {
+            if (lines[i] && strlen(lines[i]) && lines[i][0] == '#') {
+                lines[i] = nil;
+            }
+        }
+        return ::parse_string(implode(lines, "\n"), str, alternatives);
+    }
+
+Hope that helps,
+
+Erwin.
+-- 
+Erwin Harte

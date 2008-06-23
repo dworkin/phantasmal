@@ -1,0 +1,54 @@
+From: dgd at list.imaginary.com (Erwin Harte)
+Date: Wed Feb  6 11:41:00 2002
+Subject: [DGD] [Melville] non-static mappings
+
+On Wed, Feb 06, 2002 at 04:57:59PM +0000, Shevek wrote:
+[...]
+> 
+> testmap=([ ]);
+> testarr=({"test1","test2","test3","test4","test5","test6","test7","test8","test9",});
+> testkey=({"key1","key2","key3"});
+> 
+> /* Populate mapping */
+> for(i=0;i<sizeof(testkey);i++){
+>         testmap[testkey[i]]=testarr[i*3..i*3+2];
+> }
+> 
+[...]
+> 
+> /* testmap-=({testkey[1]});*/
+> testmap[testkey[1]]=nil;
+> 
+[...]
+> 
+> And from the save file:
+> testmap ([2|"key1":({3|"test1","test2","test3",}),"key3":({3|"test7","test8","test9",}),])
+> 
+> Both methods produce exactly the same results.
+> Ie Both remove all values associated under the key and the key from the 
+> mapping. Neither produced anything unexpected in the save file.
+
+:-)
+
+> Now if I could just figure out why I thought differently :>
+
+Dunno, but I think you would benefit greatly from writing some sort of
+'string dump_value(mixed m)' type function, would save you a few dozen
+lines in this test alone.
+
+Also, you do know you can easily populate that mapping by just doing:
+
+  testmap = ([
+	"key1": ({ "test1", "test2", "test3" }),
+	"key2": ({ "test4", "test5", "test6" }),
+	"key3": ({ "test7", "test8", "test9" })
+  ]);
+
+Right?  That at least would make the program easier to understand,
+for me.
+
+Your mileage, etc.
+
+Erwin.
+-- 
+Erwin Harte

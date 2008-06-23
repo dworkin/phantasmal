@@ -1,0 +1,26 @@
+From: dgd at list.imaginary.com (dgd@list.imaginary.com)
+Date: Tue Mar 30 18:05:08 2004
+Subject: [DGD] ANSI Patch for DGD 1.2.87
+
+I decided to update the ansi patch, no reason why other than I was fiddling 
+with various stuff which broke dgd badly and got tired of hand editing files 
+after the fifth time I had to repatch from .85 up. 
+
+The patch is now 1 file long and should patch in exactly like the 
+experimental patches do (patch -p 0 < patchname) so long as you put it in 
+the same directory.  It explains that in the top of the patch and all of the 
+old files that were included in the older ansi patch are now included in 
+this one and created in the dgd/doc/ansi directory. 
+
+You can download it at: 
+
+http://psychoticdelusions.net/dgd-patch/ansi-0.99.5-dgd-1.2.87.gz 
+
+It's no better than the old patch it just applies cleanly with the patch 
+command instead of requiring hand editing.  So if you've already patched 
+THIS DOES NOTHING DIFFERENT LEAVE IT BE! :)  I've not tested it with the net 
+patch or epp or any other patches, just vanilla 1.2.87. 
+
+Anywho, 
+
+Shadus

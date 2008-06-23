@@ -1,88 +1,85 @@
-    <titledef text="Debugging with the Kernel" />
+<titledef text="Debugging with the Kernel" />
 
-    <h1> Debugging and the Kernel MUDLib </h1>
+<h1>Debugging and the Kernel MUDLib</h1>
 
-    <h2> Tracking Down Weird Issues </h2>
+<h2>Tracking Down Weird Issues</h2>
 
-    <p> Absolutely the first thing you'll find yourself doing once
-      you start hacking together your MUDLib is seeing errors and
-      wondering where they're coming from.  This little guide will
-      help you on your first faltering steps at tracking these things
-      down.  It's far from complete or comprehensive, but every
-      little bit helps.  There's a saying about documentation
-      being like sex which I'll omit for the moral betterment of the
-      under-14 crowd. </p>
+<p>Absolutely the first thing you'll find yourself doing once you start
+hacking together your MUDLib is seeing errors and wondering where
+they're coming from. This little guide will help you on your first
+faltering steps at tracking these things down. It's far from complete or
+comprehensive, but every little bit helps. There's a saying about
+documentation being like sex which I'll omit for the moral betterment of
+the under-14 crowd.</p>
 
-    <p> You'll want a stack crawl before you get anything else.  Often
-      that'll be enough.  Once you've got the stack crawl and found
-      the line it's on, the line may be simple or complex, but there
-      are the usual problems and the usual attempts to fix them. </p>
+<p>You'll want a stack crawl before you get anything else. Often that'll
+be enough. Once you've got the stack crawl and found the line it's on,
+the line may be simple or complex, but there are the usual problems and
+the usual attempts to fix them.</p>
 
-      <ul>
-	<li> Divide the line up into more operations </li>
-	<li> Do some of the things on the line on a prior line to see
-	  if they break </li>
-	<li> Add a harmless line before the line to see if it's actually
-	  a previous bug, not on the line you see the complaint for </li>
-	<li> Try some alternate ways to do the same operation </li>
-	<li> Pray </li>
-      </ul>
+<ul>
+  <li>Divide the line up into more operations</li>
 
-    <p>
-      You know the drill.
-    </p>
+  <li>Do some of the things on the line on a prior line to see if they
+  break</li>
 
-    <p> So what if your stack crawl does work so well?  You may have
-      the problem down to a single operation &mdash; say a
-      compile_object &mdash; and it's failing.  Why?  There are a
-      number of resources you can try.  If it's a driver or auto
-      operation, you can look it up <a href="Auto_API.html">here</a>
-      for possible helpful hints.  If not, you can grep through the
-      Kernel MUDLib sources or even the DGD sources for hints.  You
-      can also ask the mailing list, naturally, though we recommend
-      you try all other likely choices first. </p>
+  <li>Add a harmless line before the line to see if it's actually a
+  previous bug, not on the line you see the complaint for</li>
 
-    <p> What if you get a stack crawl but it leads to an ugly dead
-      end?  One common one is that you get to a DGD built-in operation
-      like ::compile_object() in the driver or AUTO object.  In that
-      case, grep through .../dgd/src/comp/*.c for the error message.
-      It works for me quite often.  It's not always quite clear what
-      the problem is though... </p>
+  <li>Try some alternate ways to do the same operation</li>
 
-    <p> Or what if you hit a try/catch statement?  There are several
-      in the AUTO and driver objects.  I recommend editing them
-      to remove the try/catch, at least for debugging purposes.  This
-      works especially well if you have a source control system
-      like <a href="http://www.bitkeeper.com">BitKeeper</a> in place.
-      You can edit the AUTO or driver object, play with it, debug
-      some more, and revert the changes when you feel like it.
-      The BitKeeper plug is just gratuitous &mdash; I really like their
-      software, but I don't work for them.  Anyway. </p>
+  <li>Pray</li>
+</ul>
 
-    <p> To conclude, I'm going to give a list of some especially
-      irritating or cryptic messages I've encountered and what they
-      actually mean.  As time progresses, I expect that more and
-      more pretty innocuous ones will sneak in along with the
-      irritating ones, slowly growing more comprehensive.  Feel
-      free to submit your own, to the mailing list or to me
-      personally! </p>
+<p>You know the drill.</p>
 
-    <hr />
+<p>So what if your stack crawl does work so well? You may have the
+problem down to a single operation &mdash; say a compile_object &mdash;
+and it's failing. Why? There are a number of resources you can try. If
+it's a driver or auto operation, you can look it up <a href=
+"Auto_API.html">here</a> for possible helpful hints. If not, you can
+grep through the Kernel MUDLib sources or even the DGD sources for
+hints. You can also ask the mailing list, naturally, though we recommend
+you try all other likely choices first.</p>
 
-    <h2> Error Messages I Have Known And Loved (ERMIHKAL) </h2>
+<p>What if you get a stack crawl but it leads to an ugly dead end? One
+common one is that you get to a DGD built-in operation like
+::compile_object() in the driver or AUTO object. In that case, grep
+through .../dgd/src/comp/*.c for the error message. It works for me
+quite often. It's not always quite clear what the problem is
+though...</p>
 
-    <dl>
-      <dt>Cannot inherit XXX</dt>
-      <dd>This could conceivably mean an error in the DGD driver, but
-	usually it means that the driver inherit_program function
-	has returned the dreaded nil.  Why might it do that?  Common
-	reasons include inheriting something without /lib/ in the
-	name, inheriting a /kernel object without being under
-	/usr/System, not having read access to the object you're
-	trying to inherit, or your objectd's forbid_inherit
-	returning true on the offending file. </dd>
+<p>Or what if you hit a try/catch statement? There are several in the
+AUTO and driver objects. I recommend editing them to remove the
+try/catch, at least for debugging purposes. This works especially well
+if you have a source control system like <a href=
+"http://www.bitkeeper.com">BitKeeper</a> in place. You can edit the AUTO
+or driver object, play with it, debug some more, and revert the changes
+when you feel like it. The BitKeeper plug is just gratuitous &mdash; I
+really like their software, but I don't work for them. Anyway.</p>
 
-      <dt>Cannot clone XXX</dt>
-      <dd> See <a href="Auto_API.html">this</a> under clone_object. </dd>
+<p>To conclude, I'm going to give a list of some especially irritating
+or cryptic messages I've encountered and what they actually mean. As
+time progresses, I expect that more and more pretty innocuous ones will
+sneak in along with the irritating ones, slowly growing more
+comprehensive. Feel free to submit your own, to the mailing list or to
+me personally!</p>
+<hr />
 
-    </dl>
+<h2>Error Messages I Have Known And Loved (ERMIHKAL)</h2>
+
+<dl>
+  <dt>Cannot inherit XXX</dt>
+
+  <dd>This could conceivably mean an error in the DGD driver, but
+  usually it means that the driver inherit_program function has returned
+  the dreaded nil. Why might it do that? Common reasons include
+  inheriting something without /lib/ in the name, inheriting a /kernel
+  object without being under /usr/System, not having read access to the
+  object you're trying to inherit, or your objectd's forbid_inherit
+  returning true on the offending file.</dd>
+
+  <dt>Cannot clone XXX</dt>
+
+  <dd>See <a href="Auto_API.html">this</a> under clone_object.</dd>
+</dl>

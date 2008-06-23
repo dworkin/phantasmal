@@ -1,236 +1,321 @@
-  <h1 style="text-align: center"> Using Phrases in Phantasmal </h1>
+<h1 style="text-align: center">Using Phrases in Phantasmal</h1>
 
-  <p>
-    Phantasmal uses structures called 'Phrases' to handle most output to
-    the user.  Phrases are a bit like strings in other MUDs, but
-    they do a number of other things for you as well.  However, they
-    can require careful handling.
-  </p>
+<p>Phantasmal uses structures called 'Phrases' to handle most output to
+the user. Phrases are a bit like strings in other MUDs, but they do a
+number of other things for you as well. However, they can require
+careful handling.</p>
 
-  <p>
-    The first and simplest thing to remember about a Phrase is that it
-    is not really a string.  You may use it in the same places you'd
-    expect to use a string, but it's not the same thing.  That's
-    because Phantasmal holds itself to a higher standard on some things,
-    and that means it winds up holding <i>you</i> to a higher standard
-    on some of them.  There are ways that your MUD isn't going to be
-    allowed to suck, whether you're willing to let it or not :-)
-  </p>
+<p>The first and simplest thing to remember about a Phrase is that it is
+not really a string. You may use it in the same places you'd expect to
+use a string, but it's not the same thing. That's because Phantasmal
+holds itself to a higher standard on some things, and that means it
+winds up holding <i>you</i> to a higher standard on some of them. There
+are ways that your MUD isn't going to be allowed to suck, whether you're
+willing to let it or not :-)</p>
 
-  <p>
-    A Phrase can be thought of as being a string in a MUD markup
-    language.  A markup language like HTML contains text, but it
-    also contains tags that mean various things about the text.  You
-    can have simple markup tags for what color something is
-    supposed to be or whether it's supposed to be in italics.  You
-    can have more interesting <i>semantic</i> markup &mdash; that is,
-    markup about the <i>meaning</i> of the text, not how it gets
-    drawn &mdash; to mark a particular piece of text as being an
-    attack, or an exit, or in Spanish or Dwarvish.
-  </p>
+<p>A Phrase can be thought of as being a string in a MUD markup
+language. A markup language like HTML contains text, but it also
+contains tags that mean various things about the text. You can have
+simple markup tags for what color something is supposed to be or whether
+it's supposed to be in italics. You can have more interesting
+<i>semantic</i> markup &mdash; that is, markup about the <i>meaning</i>
+of the text, not how it gets drawn &mdash; to mark a particular piece of
+text as being an attack, or an exit, or in Spanish or Dwarvish.</p>
 
-  <p>
-    Phantasmal can use any of several different markup languages.  One
-    markup language is similar to HTML or XML, in the same way that
-    some web sites use simplified HTML for comments. However, the
-    Phrase converts this markup into a binary internal format for
-    speed.  So to edit a Phrase as markup, you'll need to export it as
-    ASCII using a function like to_xml().  You can then edit it as
-    markup and set the Phrase to a new value with from_xml().  Be sure
-    to preserve tags, and to tag your text appropriately!
-  </p>
+<p>Phantasmal can use any of several different markup languages. One
+markup language is similar to HTML or XML, in the same way that some web
+sites use simplified HTML for comments. However, the Phrase converts
+this markup into a binary internal format for speed. So to edit a Phrase
+as markup, you'll need to export it as ASCII using a function like
+to_xml(). You can then edit it as markup and set the Phrase to a new
+value with from_xml(). Be sure to preserve tags, and to tag your text
+appropriately!</p>
 
-  <p>
-    One unusual thing about Phantasmal markup is the language tags.
-    Sometimes, the outermost tags of a Phrase will be
-    &quot;enUS&quot;, &quot;esES&quot; or similar location tags.  Note
-    that this format for language names refers to the language and
-    then the country, so &quot;enUS&quot; refers to the English
-    language as spoken in the United States of America, while
-    &quot;enUK&quot; would be English in the United Kingdom.  (Note:
-    how will a set of alternative language versions of the same piece
-    of text work?  If we mark those, we can have less-favorite
-    languages easily)
-  </p>
+<p>One unusual thing about Phantasmal markup is the language tags.
+Sometimes, the outermost tags of a Phrase will be "enUS", "esES" or
+similar location tags. Note that this format for language names refers
+to the language and then the country, so "enUS" refers to the English
+language as spoken in the United States of America, while "enUK" would
+be English in the United Kingdom. (Note: how will a set of alternative
+language versions of the same piece of text work? If we mark those, we
+can have less-favorite languages easily)</p>
 
-  <p>
-    For instance, a fine piece of XML markup might be
-    &quot;&lt;enUS&gt;The goblin leaves &lt;green&gt;west&lt;/green&gt;.&lt;/enUS&gt;
-    &lt;esUS&gt;El goblin sale &lt;verde&gt;oeste&lt;/verde&gt;.&lt;/esUS&gt;&quot;
-    Note the two different
-    language choices as the outermost tags, at the same level
-    as each other.
-  </p>
+<p>For instance, a fine piece of XML markup might be "&lt;enUS&gt;The
+goblin leaves &lt;green&gt;west&lt;/green&gt;.&lt;/enUS&gt;
+&lt;esUS&gt;El goblin sale
+&lt;verde&gt;oeste&lt;/verde&gt;.&lt;/esUS&gt;" Note the two different
+language choices as the outermost tags, at the same level as each
+other.</p>
 
-  <p>
-    HTML has certain tags that don't have matching end-tags.
-    For instance, the &lt;hr&gt; tag.  When doing fully-balanced
-    HTML such as strict xHTML, this is written &lt;hr /&gt; to
-    indicate to the parser that no matching end-tag is expected.
-    This form is strongly preferred in Phantasmal as well, though
-    we'll try to put up with whatever we can.
-  </p>
+<p>HTML has certain tags that don't have matching end-tags. For
+instance, the &lt;hr&gt; tag. When doing fully-balanced HTML such as
+strict xHTML, this is written &lt;hr /&gt; to indicate to the parser
+that no matching end-tag is expected. This form is strongly preferred in
+Phantasmal as well, though we'll try to put up with whatever we can.</p>
+<hr />
 
-  <hr />
+<h3>Markup Formats</h3>
 
-  <h3> Markup Formats </h3>
+<p>In addition to the XML markup format above, there is an UNQ markup
+format. The UNQ format uses tags with the same names, but the start and
+end markers are changed to a single label and then curly braces
+surrounding the appropriate text. An UNQ tag which stands alone just has
+an empty pair of curly braces after it.</p>
 
-  <p>
-    In addition to the XML markup format above, there is an UNQ markup
-    format.  The UNQ format uses tags with the same names, but the
-    start and end markers are changed to a single label and then curly
-    braces surrounding the appropriate text.  An UNQ tag which stands
-    alone just has an empty pair of curly braces after it.
-  </p>
+<p>So, for instance the equivalent of the above would be "~enUS{The
+goblin leaves ~green{west}} ~esUS{El goblin sale ~verde{oeste}}".</p>
 
-  <p>
-    So, for instance the equivalent of the above would be
-    &quot;~enUS{The goblin leaves ~green{west}}
-          ~esUS{El goblin sale ~verde{oeste}}&quot;.
-  </p>
+<p>Phrases may also be able to return UNQ data markup, which is the
+equivalent of running the above UNQ through the UNQ parser. However, it
+will usually be possible to generate UNQ data more quickly by doing it
+directly than by generating the UNQ string and then parsing.</p>
 
-  <p>
-    Phrases may also be able to return UNQ data markup, which is the
-    equivalent of running the above UNQ through the UNQ parser.
-    However, it will usually be possible to generate UNQ data more
-    quickly by doing it directly than by generating the UNQ string and
-    then parsing.
-  </p>
+<p>There is also a format called 'taglist' format, used by programs,
+that doesn't have a direct text representation. A taglist is an array of
+even length which alternates between tag, text, tag, text, et cetera. If
+there's no tag around the opening text, the first element of the list is
+an empty string. Instead of having nested tagged text like the UNQ
+markup, the taglist is a single flat list. Tag names start with an
+opening or closing curly brace to indicate whether they're opening or
+closing a tag's scope, or an asterisk to indicate that the tag is
+freestanding and doesn't enclose any other list items.</p>
 
-  <p>
-    There is also a format called 'taglist' format, used by programs,
-    that doesn't have a direct text representation.  A taglist is an
-    array of even length which alternates between tag, text, tag,
-    text, et cetera.  If there's no tag around the opening text, the
-    first element of the list is an empty string.  Instead of having
-    nested tagged
-    text like the UNQ markup, the taglist is a single flat list.  Tag
-    names start with an opening or closing curly brace to indicate
-    whether they're opening or closing a tag's scope, or an asterisk
-    to indicate that the tag is freestanding and doesn't enclose any
-    other list items.
-  </p>
+<p>The taglist equivalent of the UNQ markup "~enUS{~monster{~green{The
+goblin}} hits the ~target{}!}" would be the DGD array ({ "{enUS", "",
+"{monster", "", "{green", "The goblin", "}green", "", "}monster", "hits
+the", "*target", "!", "}enUS", "" }).</p>
 
-  <p>
-    The taglist equivalent of the UNQ markup
-    &quot;~enUS{~monster{~green{The goblin}} hits the ~target{}!}&quot;
-    would be the DGD array
-    ({ &quot;{enUS&quot;, &quot;&quot;, &quot;{monster&quot;, &quot;&quot;,
-       &quot;{green&quot;, &quot;The goblin&quot;, &quot;}green&quot;,
-       &quot;&quot;, &quot;}monster&quot;, &quot;hits the&quot;,
-       &quot;*target&quot;, "!", &quot;}enUS&quot;, &quot;&quot; }).
-  </p>
+<p>Tags in a taglist should always be perfectly nested. So it would be
+illegal to have a taglist like ({ "{green", "bob", "{red", "sam",
+"}green", "", "}red", "" }). It is also illegal to have an opening tag
+without a corresponding closing tag.</p>
+<hr />
 
-  <p>
-    Tags in a taglist should always be perfectly nested.  So it would
-    be illegal to have a taglist like ({ &quot;{green&quot;,
-    &quot;bob&quot;, &quot;{red&quot;, &quot;sam&quot;,
-    &quot;}green&quot;, &quot;&quot;, &quot;}red&quot;, &quot;&quot;
-    }).  It is also illegal to have an opening tag without a
-    corresponding closing tag.
-  </p>
+<h2>Markup Tags</h2>
 
-  <hr />
+<p>These are currently tentative &mdash; we may well change them.
+They're designed to work with the appropriate various we-hope-to-support
+terminal types. That would include MXP, MSP, MCP, IMP (FireClient),
+Pueblo, XMLTerm, VT100. They don't span the full capabilities of all
+those terminals, but are meant to translate tolerably into all of
+them.</p>
 
-  <h2> Markup Tags </h2>
+<p>The tags may be translated differently into different languages, like
+the "verde" tag in the example markup above, eventually. I'll need
+somebody to care more about that than I currently do... HTML doesn't
+seem to do that, which is one reason I'm not yet bothering.</p>
 
-  <p>
-    These are currently tentative &mdash; we may well change them.
-    They're designed to work with the appropriate various
-    we-hope-to-support terminal types.  That would include MXP, MSP,
-    MCP, IMP (FireClient), Pueblo, XMLTerm, VT100.  They don't span
-    the full capabilities of all those terminals, but are meant to
-    translate tolerably into all of them.
-  </p>
+<h3>Display Markup</h3>
 
-  <p>
-    The tags may be translated differently into different languages,
-    like the &quot;verde&quot; tag in the example markup above,
-    eventually.  I'll need somebody to care more about that than
-    I currently do...  HTML doesn't seem to do that, which is one
-    reason I'm not yet bothering.
-  </p>
+<p>If the current terminal is incapable of the specified piece of
+display markup, it will be ignored.</p>
 
-  <h3> Display Markup </h3>
+<dl>
+  <dt>&lt;b&gt;</dt>
 
-  <p>
-    If the current terminal is incapable of the specified piece of
-    display markup, it will be ignored.
-  </p>
+  <dd>Boldface</dd>
 
-  <dl>
-    <dt>&lt;b&gt;</dt> <dd>Boldface</dd>
-    <dt>&lt;i&gt;</dt> <dd>Italics</dd>
-    <dt>&lt;u&gt;</dt> <dd>Underline</dd>
-    <dt>&lt;strikethru&gt;</dt> <dd>Strike-through text</dd>
-    <dt>&lt;superscript&gt;</dt> <dd>Display text as superscript.  If there is a number inside the
-                                tag, that's the amount to superscript by.</dd>
-    <dt>&lt;subscript&gt;</dt> <dd>Display text as superscript.  If there is a number inside the
-                              tag, that's the amount to subscript by.</dd>
-    <dt>&lt;font [color=&lt;color&gt;] [face=&lt;font name&gt;]&gt;</dt>
-               <dd>Attempt to display the text in the given font.  It's not clear how
-                   we'll do this even vaguely portably.</dd>
-    <dt>&lt;pre&gt;</dt> <dd> HTML-style preformatting tag </dd>
-    <dt>&lt;blockquote&gt;</dt> <dd> HTML-style block quoting tag </dd>
-    <dt>&lt;br /&gt;</dt> <dd>Line break</dd>
-    <dt>&lt;hr /&gt;</dt> <dd>Horizontal rule</dd>
-    <dt>&lt;ol&gt;</dt> <dd>HTML-style ordered list</dd>
-    <dt>&lt;ul&gt;</dt> <dd>HTML-style unordered list</dd>
-    <dt>&lt;li&gt;</dt> <dd>HTML-style list item</dd>
-    <dt>&lt;alert-beep /&gt;</dt> <dd>An alert beep to get the user's attention</dd>
-    <dt>&lt;center&gt;</dt> <dd>Attempt to center text.  May interact oddly with linebreaks.</dd>
-    <dt>&lt;clear-screen&gt;</dt> <dd>Clear the text window.</dd>
-    <dt>&lt;background #&lt;number&gt;&gt;</dt> <dd>Display background in the specified color,
-                                               interpreted as hexadecimal RGB</dd>
-    <dt>&lt;black&gt;</dt> <dd>ANSI color, approximately</dd>
-    <dt>&lt;blue&gt;</dt> <dd>ANSI color, approximately</dd>
-    <dt>&lt;green&gt;</dt> <dd>ANSI color, approximately</dd>
-    <dt>&lt;cyan&gt;</dt> <dd>ANSI color, approximately</dd>
-    <dt>&lt;red&gt;</dt> <dd>ANSI color, approximately</dd>
-    <dt>&lt;purple&gt;</dt> <dd>ANSI color, approximately</dd>
-    <dt>&lt;brown&gt;</dt> <dd>ANSI color, approximately</dd>
-    <dt>&lt;gray&gt; <i>(also &lt;grey&gt;)</i></dt> <dd>ANSI color, approximately</dd>
-    <dt>&lt;dkgray&gt; <i>(also &lt;dkgrey&gt;)</i></dt> <dd>ANSI color, approximately</dd>
-    <dt>&lt;ltblue&gt;</dt> <dd>ANSI color, approximately</dd>
-    <dt>&lt;ltgreen&gt;</dt> <dd>ANSI color, approximately</dd>
-    <dt>&lt;ltcyan&gt;</dt> <dd>ANSI color, approximately</dd>
-    <dt>&lt;ltred&gt;</dt> <dd>ANSI color, approximately</dd>
-    <dt>&lt;ltpurple&gt;</dt> <dd>ANSI color, approximately</dd>
-    <dt>&lt;yellow&gt;</dt> <dd>ANSI color, approximately</dd>
-    <dt>&lt;white&gt;</dt> <dd>ANSI color, approximately</dd>
-  </dl>
+  <dt>&lt;i&gt;</dt>
 
-  <h3> Links, Anchors and References </h3>
+  <dd>Italics</dd>
 
-  <p>
-    Unless noted otherwise, these are simply ignored if the client isn't able to
-    use them properly.
-  </p>
+  <dt>&lt;u&gt;</dt>
 
-  <dl>
-    <dt>&lt;command&gt;</dt> <dd> MUD command - sent back to MUD if clicked </dd>
-    <dt>&lt;url&gt;</dt> <dd> Link to (external, outside the MUD) URL </dd>
-    <dt>&lt;url-in-window /&gt;</dt> <dd> Open the URL in a new window, or keep one window
-                                          for all url-in-window requests.  This doesn't
-                                          need to be clicked on. </dd>
-    <dt>&lt;play-audio-url&gt;</dt> <dd>Play the audio file at the specified URL</dd>
-    <dt>&lt;stop-audio /&gt;</dt> <dd>Stop any currently-playing audio</dd>
-    <dt>&lt;image-url alt=&quot;&quot; height=# width=#&gt;</dt>
-           <dd>Show the specified image, or the 'alt' tag if it is specified and the image
-               cannot be displayed</dd>
-    <dt>&lt;prefetch&gt;</dt> <dd>Prefetch the specified content with the expectation that
-                                  it will be the subject of an img, play-audio-url, url
-                                  or url-in-window tag soon</dd>
-  </dl>
+  <dd>Underline</dd>
 
-  <h3> Protocol </h3>
+  <dt>&lt;strikethru&gt;</dt>
 
-  <dl>
-    <dt>&lt;client-startup /&gt; </dt> <dd> Show the terminal type and possibly
-                                                    similar information like &lt;IMPDEMO&gt; </dd>
-    <dt>&lt;ip-address /&gt; </dt> <dd> Display the client's IP address </dd>
-    <dt>&lt;connect /&gt;</dt> <dd> Connect to current location </dd>
-    <dt>&lt;disconnect /&gt;</dt> <dd> Disconnect from current location </dd>
-    <dt>&lt;reconnect /&gt;</dt> <dd> Reconnect to current location </dd>
-    <dt>&lt;new-connect host=host port=port /&gt;</dt> <dd>Connect to new location</dd>
-  </dl>
+  <dd>Strike-through text</dd>
+
+  <dt>&lt;superscript&gt;</dt>
+
+  <dd>Display text as superscript. If there is a number inside the tag,
+  that's the amount to superscript by.</dd>
+
+  <dt>&lt;subscript&gt;</dt>
+
+  <dd>Display text as superscript. If there is a number inside the tag,
+  that's the amount to subscript by.</dd>
+
+  <dt>&lt;font [color=&lt;color&gt;] [face=&lt;font name&gt;]&gt;</dt>
+
+  <dd>Attempt to display the text in the given font. It's not clear how
+  we'll do this even vaguely portably.</dd>
+
+  <dt>&lt;pre&gt;</dt>
+
+  <dd>HTML-style preformatting tag</dd>
+
+  <dt>&lt;blockquote&gt;</dt>
+
+  <dd>HTML-style block quoting tag</dd>
+
+  <dt>&lt;br /&gt;</dt>
+
+  <dd>Line break</dd>
+
+  <dt>&lt;hr /&gt;</dt>
+
+  <dd>Horizontal rule</dd>
+
+  <dt>&lt;ol&gt;</dt>
+
+  <dd>HTML-style ordered list</dd>
+
+  <dt>&lt;ul&gt;</dt>
+
+  <dd>HTML-style unordered list</dd>
+
+  <dt>&lt;li&gt;</dt>
+
+  <dd>HTML-style list item</dd>
+
+  <dt>&lt;alert-beep /&gt;</dt>
+
+  <dd>An alert beep to get the user's attention</dd>
+
+  <dt>&lt;center&gt;</dt>
+
+  <dd>Attempt to center text. May interact oddly with linebreaks.</dd>
+
+  <dt>&lt;clear-screen&gt;</dt>
+
+  <dd>Clear the text window.</dd>
+
+  <dt>&lt;background #&lt;number&gt;&gt;</dt>
+
+  <dd>Display background in the specified color, interpreted as
+  hexadecimal RGB</dd>
+
+  <dt>&lt;black&gt;</dt>
+
+  <dd>ANSI color, approximately</dd>
+
+  <dt>&lt;blue&gt;</dt>
+
+  <dd>ANSI color, approximately</dd>
+
+  <dt>&lt;green&gt;</dt>
+
+  <dd>ANSI color, approximately</dd>
+
+  <dt>&lt;cyan&gt;</dt>
+
+  <dd>ANSI color, approximately</dd>
+
+  <dt>&lt;red&gt;</dt>
+
+  <dd>ANSI color, approximately</dd>
+
+  <dt>&lt;purple&gt;</dt>
+
+  <dd>ANSI color, approximately</dd>
+
+  <dt>&lt;brown&gt;</dt>
+
+  <dd>ANSI color, approximately</dd>
+
+  <dt>&lt;gray&gt; <i>(also &lt;grey&gt;)</i></dt>
+
+  <dd>ANSI color, approximately</dd>
+
+  <dt>&lt;dkgray&gt; <i>(also &lt;dkgrey&gt;)</i></dt>
+
+  <dd>ANSI color, approximately</dd>
+
+  <dt>&lt;ltblue&gt;</dt>
+
+  <dd>ANSI color, approximately</dd>
+
+  <dt>&lt;ltgreen&gt;</dt>
+
+  <dd>ANSI color, approximately</dd>
+
+  <dt>&lt;ltcyan&gt;</dt>
+
+  <dd>ANSI color, approximately</dd>
+
+  <dt>&lt;ltred&gt;</dt>
+
+  <dd>ANSI color, approximately</dd>
+
+  <dt>&lt;ltpurple&gt;</dt>
+
+  <dd>ANSI color, approximately</dd>
+
+  <dt>&lt;yellow&gt;</dt>
+
+  <dd>ANSI color, approximately</dd>
+
+  <dt>&lt;white&gt;</dt>
+
+  <dd>ANSI color, approximately</dd>
+</dl>
+
+<h3>Links, Anchors and References</h3>
+
+<p>Unless noted otherwise, these are simply ignored if the client isn't
+able to use them properly.</p>
+
+<dl>
+  <dt>&lt;command&gt;</dt>
+
+  <dd>MUD command - sent back to MUD if clicked</dd>
+
+  <dt>&lt;url&gt;</dt>
+
+  <dd>Link to (external, outside the MUD) URL</dd>
+
+  <dt>&lt;url-in-window /&gt;</dt>
+
+  <dd>Open the URL in a new window, or keep one window for all
+  url-in-window requests. This doesn't need to be clicked on.</dd>
+
+  <dt>&lt;play-audio-url&gt;</dt>
+
+  <dd>Play the audio file at the specified URL</dd>
+
+  <dt>&lt;stop-audio /&gt;</dt>
+
+  <dd>Stop any currently-playing audio</dd>
+
+  <dt>&lt;image-url alt="" height=# width=#&gt;</dt>
+
+  <dd>Show the specified image, or the 'alt' tag if it is specified and
+  the image cannot be displayed</dd>
+
+  <dt>&lt;prefetch&gt;</dt>
+
+  <dd>Prefetch the specified content with the expectation that it will
+  be the subject of an img, play-audio-url, url or url-in-window tag
+  soon</dd>
+</dl>
+
+<h3>Protocol</h3>
+
+<dl>
+  <dt>&lt;client-startup /&gt;</dt>
+
+  <dd>Show the terminal type and possibly similar information like
+  &lt;IMPDEMO&gt;</dd>
+
+  <dt>&lt;ip-address /&gt;</dt>
+
+  <dd>Display the client's IP address</dd>
+
+  <dt>&lt;connect /&gt;</dt>
+
+  <dd>Connect to current location</dd>
+
+  <dt>&lt;disconnect /&gt;</dt>
+
+  <dd>Disconnect from current location</dd>
+
+  <dt>&lt;reconnect /&gt;</dt>
+
+  <dd>Reconnect to current location</dd>
+
+  <dt>&lt;new-connect host=host port=port /&gt;</dt>
+
+  <dd>Connect to new location</dd>
+</dl>

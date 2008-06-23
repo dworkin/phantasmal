@@ -23,4 +23,4 @@ clean:
 	rm -f $(HTML)
 
 $(HTML): %.html: %.base.html pagetemplate.html
-	$(PAGEGEN)
+	$(PAGEGEN) $<

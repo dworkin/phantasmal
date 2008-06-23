@@ -1,0 +1,36 @@
+From: dgd at list.imaginary.com (Robert Forshaw)
+Date: Wed Jan  7 11:51:01 2004
+Subject: [DGD] status
+
+I am trying to figure out the best way to find the master object of a clone 
+object. Right now my code is:
+
+static nomask find_object(mixed obj, int master)
+{
+	if(master)
+	{
+		if(typeof(obj) == T_STRING) return 
+::find_object(seek_and_return_string(obj, "#"));
+		return ::find_object(seek_and_return_string(object_name(obj), "#"));
+	}
+
+	if(typeof(obj) == T_STRING) return ::find_object(obj);
+	return obj;
+}
+
+Where seek_and_return_string(string haystack, string needle) looks for 
+'needle' in 'haystack' and returns the string up to where 'needle' was 
+found.
+
+I get that funny feeling though where I think I might be doing something 
+awkwardly or I'm missing an obviously more efficient way of achieving a 
+solution. I had a look at status.h and saw this:
+
+# define O_INDEX	5	/* unique ID for master object */
+
+This clearly isn't the same as kernel libs version, which claims to return 
+the issue number of an object 
+(http://phantasmal.sourceforge.net/DGD/Kernel/Inheritance.html <- bottom of 
+that page). The problem is I have no idea what 'unique ID for master object' 
+means. Does O_INDEX contain an object pointer? A string? An issue number? 
+Does a master object even have an issue number? I thought it didn't. :)

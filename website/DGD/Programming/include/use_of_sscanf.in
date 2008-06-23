@@ -1,0 +1,26 @@
+From: dgd at list.imaginary.com (Jay Shaffstall)
+Date: Wed May  7 10:32:00 2003
+Subject: [DGD] Use of sscanf
+
+I'm using sscanf to try to distinguish between ints and floats, and I'm not 
+sure if the results I'm seeing are a bug in sscanf, or simply an 
+undocumented feature.  Here's the code I use:
+
+if (sscanf (temp, "%d", value) != 1)
+	if (sscanf (temp, "%f", value) != 1)
+		error ("variable does not hold an integer or float value.  Contents are: 
+" + temp);
+
+Where temp is a string variable containing a number the user typed in and 
+value is a mixed variable.  What I'm seeing is that the use of %d in sscanf 
+will truncate a float number and return me the integer portion of it.  So:
+
+	sscanf ("77.30","%d",value)
+
+gives me an integer 77 in value.
+
+Is this what is supposed to happen?  I had expected that if the string did 
+not contain an integer, then %d would not match anything, and my code would 
+continue on to try to match a float.
+
+Jay

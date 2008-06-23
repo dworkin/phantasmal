@@ -1,0 +1,103 @@
+From: dgd at list.imaginary.com (Stephen Schmidt)
+Date: Mon Oct 20 14:23:00 2003
+Subject: [DGD] Some basics
+
+On Mon, 20 Oct 2003 Nihilxaos wrote:
+> 1) When an object is compiled it's create is called.
+
+This is not quite correct, as you've already deduced. Two things
+are true. First, as you wrote:
+
+> Or is it more correct to say that create is called once the
+> first call is made to one of the object's functions?
+
+Yes, create isn't run until it has to run, that is, when
+some other object wants to call into this one. Until then,
+this object is just sitting in The Void by itself doing
+no harm to anyone, so no need to run create() in it.
+
+The second caveat is that if you are recompiling the code of
+an existing object, create() will not be called in that case,
+even when a function is called, because presumably the object
+(which was not destructed) has some internal state that should
+be preserved. The object hasn't been recreated, just had its
+code recompiled. Whatever its variable values were, those
+should not change. Normally calling create() sets variable
+values to some default initial values, and you wouldn't want
+to do that if all you were doing was changing the code.
+
+In Melville, the update command has a flag (I don't remember
+exactly what, I think -c) to force calling the create function.
+So "update foo.c" updates the code but doesn't call create,
+while "update -c foo.c" does both. (I may have set it up so
+that there's also a flag that triggers destruction of the
+original object. You would want to call create() explicitly
+in that case too, probably.)
+
+This is, of course, a change in behavior from LPMud, and I
+think it's fair to say that I have gotten more bug reports
+from Melville caused by this issue (people not understanding
+why create() wasn't being called when they updated an object)
+than any other single source.
+
+> 2) When I inherit something, if it doesn't already exist I have to call it's
+> create function.
+
+I think not. create() should get called by the time you use the
+object for anything else. The only time you'd need to invoke
+create() yourself is when you have a logging line or something
+that you want invoked right when the object is created, instead
+of waiting until the object is first used. Of course, I'm guessing
+that is exactly the case here :)
+
+> Thus you'll see something like:
+> inherit foon FOON;
+> [...]
+> foon::create();
+> Is that because we want to make sure that FOON has been loaded into
+> memory, or do I have to call create() to make sure that the inherited
+> object is properly configured for this object and not for something
+> that may have inherited it before?
+
+I'm not sure I understand this correctly, but if I do, then this
+is for configuration. You probably want to do this in the form:
+
+inherit foon FOON;
+
+void create()
+  foon::create();
+}
+
+so that foon's create runs when this object's create does. Anything
+else could result in bizzare behavior. For example, say foon is
+container.c, and it tracks where the container is open or closed,
+and create() in foon initializes all newly-created containers to
+be closed. If you invoked foon::create() from anywhere other
+than the inheriting object (say, treasure_chest.c)'s create()
+function, then the chest would snap shut when create() in foon
+was called. Be a pity if the key was inside, wouldn't it?  :)
+
+> Basically this is going on the assumption that inheriting brings the
+> inherited data types into the object, but keeps any non-overridden code in a
+> separate object so it can be called from any of its children.
+
+That, I think, is correct, and actually the overridden code is
+there too. But I'm not totally sure of this.
+
+> Thus when you
+> destruct an object it in turn destructs its ancestors, not to ultimately wipe
+> out the ancestor such that it can't be called by other like objects, but so it
+> removes the links between it and its ancestors. (that make sense?)
+
+This is where garbage collection comes in. When 10 objects inherit
+foon.c, and of those 10 objects, 1 has 20 clones, then you can't
+destruct foon.c until all 20 clones and the 10 objects are gone.
+And when you recompile foon.c so you can change behavior in one of
+those 10 objects, do you keep the old behavior in the other 9 objects,
+or not?
+
+This is an area where I understand the problems but not the exact
+solutions, so I'm going to turn discussion over to the driver gurus
+at this point.
+
+Steve

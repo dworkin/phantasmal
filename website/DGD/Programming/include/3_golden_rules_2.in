@@ -1,0 +1,50 @@
+From dgd@dworkin.nl  Tue Apr  5 01:14:01 2005
+From: dgd@dworkin.nl (Par Winzell)
+Date: Tue Apr  5 00:14:01 2005
+Subject: [DGD] 3 golden rules for MP
+
+> 1) Try to modify as few objects as possible in a single execution round,
+>    other than the object you start in.
+> 2) Try to avoid modifying the object you add a callout for.  If possible,
+>    delay modification until when the callout actually executes.
+> 3) Avoid starting all execution rounds from the same small set of objects.
+
+To my mind, 1) and 3) are fairly intuitive, and I think I know
+reasonably well how to go about structuring a mudlib to avoid lots of
+clashes. But 2) seems problematic to me, especially if 3) prohibits us
+from offloading hearbeat-style issues on central objects.
+
+At least in terms of virtual worlds, almost everything of interest needs
+timed events, almost certainly involving objects with continuously
+fluctuating state -- players, NPCs, items, rooms, ...
+
+Some of these timed events can be deferred, perhaps using call_touch()
+somehow. For a traditional example, if we know the health of a monster
+increases linearly with time, query_health() can just figure out how
+much healing has taken place since the last time health was queried.
+Generally, we might have a way to update any deferrable state changes
+whenever they're requested.
+
+But that's only some kinds of state. In games, we generally rely on
+state changes to push out to players... in a text game, descriptive
+statements are transmitted; in a 3D world, little packets are sent out
+telling the clients to update their view of the world. In effect, this
+is sensory state and for practical purposes we have to treat it as if it
+is continuously queried, and no deferred updates are really possible.
+
+What's an architecture that does the right thing with threads here? If
+we have a text game where a player tosses an egg into the air, we need a
+3-second timed event for when the egg lands. It's pretty likely that
+after three seconds, the state has changed in the room, the player doing
+the tossing, and many of the lookers-on. Even if nobody touches their
+keyboards, three seconds later, we need an asynchronous message telling
+us about the egg smacking into the floor.
+
+Should every 'important' object have a little time-keeper object whose
+only purpose in life is to maintain callouts? If its only duty is to
+start message-sending threads in other players, does that count as
+damagable state?
+
+And just how careful does one have to be about all this?
+
+Zell

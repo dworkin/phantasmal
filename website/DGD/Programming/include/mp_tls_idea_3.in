@@ -1,0 +1,32 @@
+From: dgd@dworkin.nl (Felix A. Croes)
+Date: Mon Apr  4 23:09:01 2005
+Subject: [DGD] DGD MP and a TLS idea
+
+Steve Wooster wrote:
+
+>      It occurred to me that what I meant by my description of call_outs 
+> being "effectively single-threaded" might not have been clear... From what 
+> I can tell, only one call_out can occur at a time. You can't have two 
+> different call_outs running on two different processors, since they'll 
+> always conflict with each other when checking if they've been suspended. 
+> (or is this not true, since they don't necessarily write to variables?)
+
+It's all right to have two threads simultaneously access the same object,
+as long as neither modifies it.  But suspension of all callouts in a mud
+should be a sufficiently rare event that there isn't much point in
+optimizing for it.
+
+
+>[...]
+> I figured it might be useful for cases where you want data stored 
+> per-object, but don't want two threads with the same object to conflict. 
+> ...maybe I don't know enough about what will or won't cause two threads to 
+> conflict with each other.
+
+I am deliberately going to keep this vague since implementation details
+which might well change should not influence mudlib design to that extend.
+But you should assume that it's fine for a thread to modify the object it
+starts in.  Beyond that, the fewer objects modified the better.
+
+Regards,
+Dworkin

@@ -13,7 +13,7 @@ top-level docs in "/doc", and the "mud.dgd" file is "./mud.dgd". Also,
 the paths given tend to only be valid in the source distribution. If
 you're hacking a MUDLib, you <i>did</i> get the source distribution
 rather than binary, right?</p>
-<hr>
+<hr />
 
 <h3>Getting Started with the Kernel MUDLib</h3>
 
@@ -58,7 +58,7 @@ MUDLib in the first place and without my help (you <i>have</i> read
 Dworkin's docs already, <i>right</i>?) then you probably shouldn't be
 here. At least, not yet. Do that first, then come back here and grin
 about how easy it's all become.</p>
-<hr>
+<hr />
 
 <h3>The Kernel MUDLib and File Layout</h3>
 
@@ -104,7 +104,7 @@ providing support for what those files do, and what you ask for. This is
 the directory you don't want to change stuff under. Just to drive the
 point home, the Kernel MUDLib makes it much harder for your MUD to
 change stuff under here. I'll explain how when I explain security.</p>
-<hr>
+<hr />
 
 <h3>Getting your MUDLib Set Up</h3>
 
@@ -274,7 +274,7 @@ add a line like</p>
 <p>to /include/config.h. Then you'll need to change DEFAULT_WIZTOOL to
 SYSTEM_WIZTOOL in two places in /usr/System/user.c. You'll also need to
 find the create() function and either inside or outside the if (doesn't
-matter) put the line</p>
+matter) put the line:</p>
 <pre>
 if(!find_object(SYSTEM_WIZTOOL)) compile_object(SYSTEM_WIZTOOL);
 </pre>

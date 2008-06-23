@@ -1,63 +1,49 @@
-    <titledef text="Object Grouping" />
+<titledef text="Object Grouping" />
 
-    <h3 style="text-align: center">
-      Object Grouping for Phantasmal, Speculations </h3>
+<h3 style="text-align: center">Object Grouping for Phantasmal,
+Speculations</h3>
 
-    <p>
-      We'd like to have objects group up when they're all in the same
-      area.  For instance, if you drop seventeen mixed swords in a pile
-      in the middle of the floor, we'd like to see a "pile of swords"
-      rather than each one having its own entry.  As we add opportunity
-      for object customization (wear and tear, difference in manufacture,
-      varying styles), this will get even more important.
-    </p>
+<p>We'd like to have objects group up when they're all in the same area.
+For instance, if you drop seventeen mixed swords in a pile in the middle
+of the floor, we'd like to see a "pile of swords" rather than each one
+having its own entry. As we add opportunity for object customization
+(wear and tear, difference in manufacture, varying styles), this will
+get even more important.</p>
 
-    <p>
-      A first, simple cut at the problem would simply use a single
-      inheritance heirarchy, and each node could be marked with whether
-      it could be used as a player-visible grouping -- "sword" would be
-      a good one, but "iron object" would need to be marked as not
-      player-visible, or perhaps simply given a fudge factor such that it
-      wouldn't often be used.
-    </p>
+<p>A first, simple cut at the problem would simply use a single
+inheritance heirarchy, and each node could be marked with whether it
+could be used as a player-visible grouping -- "sword" would be a good
+one, but "iron object" would need to be marked as not player-visible, or
+perhaps simply given a fudge factor such that it wouldn't often be
+used.</p>
 
-    <p>
-      However, we'd like to have multiple inheritance, not just single
-      inheritance.  A group of a shovel, ten hoes, a wheelbarrow, a
-      thresher, and a pickaxe might be characterized by either
-      &quot;some farm equipment, a wheelbarrow and a pickaxe&quot; or
-      &quot;some tools, a wheelbarrow and a thresher&quot;.  Conceivably
-      it could also be &quot;some metal objects&quot;, but that's not
-      very descriptive, so again, the &quot;metal objects&quot; group
-      would be non-player-visible, or tagged such that it was very
-      rarely chosen.
-    </p>
+<p>However, we'd like to have multiple inheritance, not just single
+inheritance. A group of a shovel, ten hoes, a wheelbarrow, a thresher,
+and a pickaxe might be characterized by either "some farm equipment, a
+wheelbarrow and a pickaxe" or "some tools, a wheelbarrow and a
+thresher". Conceivably it could also be "some metal objects", but that's
+not very descriptive, so again, the "metal objects" group would be
+non-player-visible, or tagged such that it was very rarely chosen.</p>
 
-    <p>
-      The problem with multiple inheritance is choosing how to
-      characterize a group of objects, and doing so quite quickly.
-      Bear in mind that two different characters (with different fields
-      of view from their two locations) might see these objects
-      differently.  For instance, one might not see the thresher from
-      his point of view in the hayloft, while the other might not see
-      the pickaxe from outside the door.  This group of objects (sometimes
-      including the pickaxe and thresher) will
-      have to <i>simultaneously</i> be &quot;some farm equipment and
-      a wheelbarrow&quot; and &quot;some tools and a wheelbarrow&quot;.
-      That suggests that we need some kind of caching scheme in which
-      we can quickly run over the structures for multiple groups of
-      objects and determine a description.
-    </p>
+<p>The problem with multiple inheritance is choosing how to characterize
+a group of objects, and doing so quite quickly. Bear in mind that two
+different characters (with different fields of view from their two
+locations) might see these objects differently. For instance, one might
+not see the thresher from his point of view in the hayloft, while the
+other might not see the pickaxe from outside the door. This group of
+objects (sometimes including the pickaxe and thresher) will have to
+<i>simultaneously</i> be "some farm equipment and a wheelbarrow" and
+"some tools and a wheelbarrow". That suggests that we need some kind of
+caching scheme in which we can quickly run over the structures for
+multiple groups of objects and determine a description.</p>
 
-    <p>
-      One example scheme:  for every group of four or more objects in
-      a single location, make a group accounting object.  This doesn't 
-      have to be an object in the MUD sense, but the location containing
-      the objects must be able to easily find and use it.  This group
-      accounting object (GAO) will lazily categorize the objects into the
-      group heirarchy when requested to.  It must be very quick to
-      merge two or more of these GAOs into a new combined GAO -- for
-      instance, the GAOs for the hayloft, the main floor of the barn
-      and the area just outside the barn door will frequently be merged
-      because they will frequently be visible from the same locations.
-    </p>
+<p>One example scheme: for every group of four or more objects in a
+single location, make a group accounting object. This doesn't have to be
+an object in the MUD sense, but the location containing the objects must
+be able to easily find and use it. This group accounting object (GAO)
+will lazily categorize the objects into the group heirarchy when
+requested to. It must be very quick to merge two or more of these GAOs
+into a new combined GAO -- for instance, the GAOs for the hayloft, the
+main floor of the barn and the area just outside the barn door will
+frequently be merged because they will frequently be visible from the
+same locations.</p>

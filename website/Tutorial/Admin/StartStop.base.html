@@ -1,348 +1,310 @@
-    <titledef text="Starting and Stopping" />
+<titledef text="Starting and Stopping" />
 
-    <h2 style="text-align: center"> Starting and Stopping Your MUD </h2>
+<h2 style="text-align: center">Starting and Stopping Your MUD</h2>
 
-    <p> Starting your MUD is something you should already have done.
-      You saw how to make the &quot;phantasmal.dgd&quot; configuration
-      file, and you've probably read enough DGD documentation to know
-      how to start with that from a statedump file (<i>haven't</i> you?).
-      So let's see about stopping the MUD cleanly, and about making
-      those statedump files. </p>
+<p>Starting your MUD is something you should already have done. You saw
+how to make the "phantasmal.dgd" configuration file, and you've probably
+read enough DGD documentation to know how to start with that from a
+statedump file (<i>haven't</i> you?). So let's see about stopping the
+MUD cleanly, and about making those statedump files.</p>
 
-    <p> Phantasmal stores its data in two primary ways between restarts.
-      Those ways are statedump files and UNQ files.  Let's start with
-      statedumps because they're easier. </p>
+<p>Phantasmal stores its data in two primary ways between restarts.
+Those ways are statedump files and UNQ files. Let's start with
+statedumps because they're easier.</p>
 
-    <p> You can use the <b>%swapout</b> command to swap out all
-      objects.  This
-      makes sure your statedump file is up-to-date, though you're
-      still better off typing &quot;%statedump&quot; instead.  In
-      fact, by and large, we don't recommend the <b>%swapout</b>
-      command for anything but debugging. </p>
+<p>You can use the <b>%swapout</b> command to swap out all objects. This
+makes sure your statedump file is up-to-date, though you're still better
+off typing "%statedump" instead. In fact, by and large, we don't
+recommend the <b>%swapout</b> command for anything but debugging.</p>
 
-    <p> If you want to swap out to the swapfile and make sure you
-      get the very latest of everything, you probably want to
-      use <b>%reboot</b>, which will swap everything to the
-      swapfile and then shut your MUD down.  This is the best way
-      to be sure of preserving everything since the swapfile is
-      all-inclusive.  All hail DGD! </p>
+<p>If you want to swap out to the swapfile and make sure you get the
+very latest of everything, you probably want to use <b>%reboot</b>,
+which will swap everything to the swapfile and then shut your MUD down.
+This is the best way to be sure of preserving everything since the
+swapfile is all-inclusive. All hail DGD!</p>
 
-    <p> In addition to the swapfile you have the UNQ data files.
-      The ones for most in-game objects live under the
-      &quot;/data/object/&quot; directory.  You'll want to use
-      them to hand-edit files, to do certain kinds of upgrades,
-      to view files directly in your text editor, and perhaps
-      for more reasons as well.  These are much more like
-      traditional MUD area and object files. </p>
+<p>In addition to the swapfile you have the UNQ data files. The ones for
+most in-game objects live under the "/data/object/" directory. You'll
+want to use them to hand-edit files, to do certain kinds of upgrades, to
+view files directly in your text editor, and perhaps for more reasons as
+well. These are much more like traditional MUD area and object
+files.</p>
 
-    <p> You can write them out with <b>%datadump</b>, also
-      simply called <b>%save</b>.  You can write to a backup
-      set of filenames with <b>%safesave</b> -- your MUD
-      won't automatically overwrite these files on shutdown,
-      and they won't be removed or destroyed normally.  Basically,
-      it's one more way to make a backup. </p>
+<p>You can write them out with <b>%datadump</b>, also simply called
+<b>%save</b>. You can write to a backup set of filenames with
+<b>%safesave</b> -- your MUD won't automatically overwrite these files
+on shutdown, and they won't be removed or destroyed normally. Basically,
+it's one more way to make a backup.</p>
 
-    <p> You can write to those files and shut the MUD down by
-      typing &quot;%shutdown&quot;.  That updates your UNQ files
-      but not your statedump.  It's the most conservative way
-      to shut the MUD down, and the least amenable to long
-      uptimes.  It also gives you the best chance of recovery
-      if anything goes wrong, and will fix things like leaked
-      memory or resources -- which can be a serious problem on
-      a persistent MUD. </p>
+<p>You can write to those files and shut the MUD down by typing
+"%shutdown". That updates your UNQ files but not your statedump. It's
+the most conservative way to shut the MUD down, and the least amenable
+to long uptimes. It also gives you the best chance of recovery if
+anything goes wrong, and will fix things like leaked memory or resources
+-- which can be a serious problem on a persistent MUD.</p>
 
-    <p> What now?  You could read more <a
-      href="../index.html">tutorials</a>.  It's not like there's any
-      shortage.  Or you could read the extended remix of how
-      statedumps are different from UNQfiles, which is mostly
-      reproduced below.  This is originally taken from the SourceForge
-      Developer Forum in November of 2002, and is a discussion mainly
-      between me (Angelbob, or Noah Gibbs), Keith Dunwoody and sarak
-      (Neil McBride).
-    </p>
+<p>What now? You could read more <a href="../index.html">tutorials</a>.
+It's not like there's any shortage. Or you could read the extended remix
+of how statedumps are different from UNQfiles, which is mostly
+reproduced below. This is originally taken from the SourceForge
+Developer Forum in November of 2002, and is a discussion mainly between
+me (Angelbob, or Noah Gibbs), Keith Dunwoody and sarak (Neil
+McBride).</p>
+<hr />
 
-    <hr />
+<p style="color: green">Neil wrote (among other things):</p>
 
-    <p style="color: green">Neil wrote (among other things):</p>
+<p>It started me asking the question that if it's a persistant mud using
+the DGD driver, why do we need to convert the data in the objects into
+UNQ to save onto disk? The UNQ format is good for archtypes so we can
+make copies or inherit from one (if that's possible in that format) but
+it seems we're doing something we don't need to if we're writing the
+data from objects down in UNQ format.</p>
 
-    <p>It started me asking the question that if it's a persistant mud
-      using the DGD driver, why do we need to convert the data in the
-      objects into UNQ to save onto disk? The UNQ format is good for
-      archtypes so we can make copies or inherit from one (if that's
-      possible in that format) but it seems we're doing something we don't
-      need to if we're writing the data from objects down in UNQ format.
-    </p>
+<p>DGD saves the state and everybody's happy :) Perhaps a UNQ save could
+be done for a version change of DGD where the old dump file becomes
+unusable?</p>
 
-    <p> DGD saves the state and everybody's happy :) Perhaps a UNQ
-      save could be done for a version change of DGD where the old dump
-      file becomes unusable?</p>
+<p>Along the same lines I thought that development could happen in much
+the same way, yet I still need to think more on that to get the idea
+clear in my head.</p>
 
-    <p> Along the same lines I thought that development could happen
-      in much the same way, yet I still need to think more on that to
-      get the idea clear in my head. </p>
+<p>Sorry for the vagueness, but this is just popping into my head now so
+I thought I'd write it down somewhere before I forgot it all again
+:p</p>
 
-    <p> Sorry for the vagueness, but this is just popping into my
-      head now so I thought I'd write it down somewhere before I
-      forgot it all again :p </p>
+<p>Anyway, there's my idea. We use UNQ for archtypes and DGD's dump
+feature for the ongoing world. Other than the 'difficult for people
+unfamiliar with it', what other problems would this have?</p>
+<hr />
 
-    <p> Anyway, there's my idea. We use UNQ for archtypes and DGD's
-      dump feature for the ongoing world. Other than the 'difficult for
-      people unfamiliar with it', what other problems would this have? </p>
+<p style="color: green">Noah replied:</p>
 
-    <hr />
+<p>In theory, no problem at all. This is roughly what Skotos does with
+their stuff (using XML, not UNQ, and pretty much only for ur-object
+import/export). It can definitely be done.</p>
 
-    <p style="color: green">Noah replied:</p>
+<p>What it costs Phantasmal specifically is the way I currently do
+upgrades and stuff. In a system that dynamic, you have to be ready to
+write on-the-fly translators between all the in-memory data formats as
+they change. For instance, at one point I changed the helpfile
+structures to use a different set of fields. In the current system I
+just made the new fields optional in the UNQ loader (it filled in
+default values), shutdown and started back up. Hey, presto, everything
+was done with the bright shiny new fields.</p>
 
-    <p> In theory, no problem at all. This is roughly what Skotos does
-      with their stuff (using XML, not UNQ, and pretty much only for
-      ur-object import/export). It can definitely be done. </p>
+<p>You could do that in a running system -- for instance, the HELPD will
+currently reload all entries every time the upgrade() command is called.
+Unfortunately you have to do it a little more carefully because
+upgrade() runs with the old code, not the new code. This will be fixed
+eventually, probably by adding *another* upgrade-type function that is
+compiled and then run later as part of another thread. You have to do it
+as another thread because the actual recompile takes place after the
+current thread has entirely completed. It's all a little
+touch-and-go.</p>
 
-    <p>What it costs Phantasmal specifically is the way I currently do
-      upgrades and stuff. In a system that dynamic, you have to be ready
-      to write on-the-fly translators between all the in-memory data
-      formats as they change. For instance, at one point I changed the
-      helpfile structures to use a different set of fields. In the
-      current system I just made the new fields optional in the UNQ
-      loader (it filled in default values), shutdown and started back
-      up. Hey, presto, everything was done with the bright shiny new
-      fields. </p>
+<p>Now you could, for every system, just have an easy way to reload from
+UNQ just for that system like the HELPD above if you do it carefully or
+if upgraded() worked right. But then you quickly get to the same point,
+or you do far more work, or both.</p>
 
-    <p> You could do that in a running system -- for instance, the
-      HELPD will currently reload all entries every time the upgrade()
-      command is called. Unfortunately you have to do it a little more
-      carefully because upgrade() runs with the old code, not the new
-      code. This will be fixed eventually, probably by adding *another*
-      upgrade-type function that is compiled and then run later as part
-      of another thread. You have to do it as another thread because the
-      actual recompile takes place after the current thread has entirely
-      completed. It's all a little touch-and-go. </p>
+<p>For instance, say you add new fields to objects. You need to write
+code to go through all existing objects and give them good default
+values. Or, you could reload all your archetypes from UNQ. This would
+leave all your instances in place, but require more code to make sure
+you updated all your instances and all your archetypes and never got any
+errors while it was halfway done.</p>
 
-    <p> Now you could, for every system, just have an easy way to
-      reload from UNQ just for that system like the HELPD above if you
-      do it carefully or if upgraded() worked right. But then you
-      quickly get to the same point, or you do far more work, or both.
-    </p>
+<p>There's another question: how do you deal with loss of data? What if
+some admin writes a bad command and you lose location data for a random
+1% of all objects in the game, and you need to restore from old backup
+files? UNQ is a pretty simple format to play with (in Perl, for
+instance). DGD dumpfiles are not. You can extract specific little chunks
+of an UNQ file easily, or just only use the ones you care about (just
+roomfile.unq, and only certain rooms). That's much harder when you've
+got a full memory dump from a running program.</p>
 
-    <p> For instance, say you add new fields to objects. You need to
-      write code to go through all existing objects and give them good
-      default values. Or, you could reload all your archetypes from
-      UNQ. This would leave all your instances in place, but require
-      more code to make sure you updated all your instances and all your
-      archetypes and never got any errors while it was halfway done. </p>
+<p>Skotos handles this with very regular backups of old dumpfiles, and
+if something goes catastrophically wrong they can pick through the
+in-memory stuff with their debugging tools, or through the dumpfile
+similarly, and it's *very* labor-intensive. I happen to like the idea of
+having easily-modifiable and easily-parsable backups.</p>
 
-    <p> There's another question: how do you deal with loss of data?
-      What if some admin writes a bad command and you lose location data
-      for a random 1% of all objects in the game, and you need to
-      restore from old backup files? UNQ is a pretty simple format to
-      play with (in Perl, for instance). DGD dumpfiles are not. You can
-      extract specific little chunks of an UNQ file easily, or just only
-      use the ones you care about (just roomfile.unq, and only certain
-      rooms). That's much harder when you've got a full memory dump from
-      a running program. </p>
+<p>The other thing is: since your modifiable objects, your instances,
+have to have basically everything that your archetypes do, and you need
+to be able to read and write your archetypes as UNQ, you've already done
+99% of the work to save your instances. If you want to have a way to
+load or save just the archetypes, go through, do an object save and only
+save objects with the archetype flag set. Not a big deal. If you look at
+the %save_objects command, it's already able to do a "picky save", it's
+just that you supply the object numbers instead of it going through and
+picking out archetypes for itself. An "%archetype_save" command or
+"%save_objects archetypes" or something would be pretty easy to do.</p>
 
-    <p> Skotos handles this with very regular backups of old
-      dumpfiles, and if something goes catastrophically wrong they can
-      pick through the in-memory stuff with their debugging tools, or
-      through the dumpfile similarly, and it's *very* labor-intensive. I
-      happen to like the idea of having easily-modifiable and
-      easily-parsable backups. </p>
+<p>So why does Skotos do it that way? Because some of their development
+servers have been running off the same statefiles, without a reboot,
+since something like 1997, or had when they made that old post to the
+DGD mailing list :-) They're a real commercial outfit and they *really*
+care about uptime. I'm a callous bastard who reboots when he feels like
+it, and as long as it's possible for people with the drive of Skotos to
+do what they do based on Phantasmal, I feel no compulsion to do the same
+thing for myself. I'm quite happy announcing that people should stop
+doing stuff they care about, dumping all the data to UNQ, then rebooting
+and reloading from UNQ. It means I can dump all the old memory leaks and
+inconsistencies easily, and it means I can upgrade Phantasmal without
+having to convert all the old in-memory data. As far as I'm concerned,
+yay for reboots :-P</p>
 
-    <p> The other thing is: since your modifiable objects, your
-      instances, have to have basically everything that your archetypes
-      do, and you need to be able to read and write your archetypes as
-      UNQ, you've already done 99% of the work to save your
-      instances. If you want to have a way to load or save just the
-      archetypes, go through, do an object save and only save objects
-      with the archetype flag set. Not a big deal. If you look at the
-      %save_objects command, it's already able to do a &quot;picky
-      save&quot;, it's just that you supply the object numbers instead
-      of it going through and picking out archetypes for itself. An
-      &quot;%archetype_save&quot; command or &quot;%save_objects
-      archetypes&quot; or something would be pretty easy to do. </p>
+<p>I'm exaggerating, but you see my point. Doing it "right", the way you
+suggest, winds up being far more labor-intensive in the long run.
+There's nothing deeply wrong with that, but it means that you're trading
+ease of development for uptime. That's great in a mature, running system
+but it sucks for something that isn't really even beta-test level yet,
+like Phantasmal.</p>
 
-    <p> So why does Skotos do it that way? Because some of their
-      development servers have been running off the same statefiles,
-      without a reboot, since something like 1997, or had when they made
-      that old post to the DGD mailing list :-) They're a real
-      commercial outfit and they *really* care about uptime. I'm a
-      callous bastard who reboots when he feels like it, and as long as
-      it's possible for people with the drive of Skotos to do what they
-      do based on Phantasmal, I feel no compulsion to do the same thing
-      for myself. I'm quite happy announcing that people should stop
-      doing stuff they care about, dumping all the data to UNQ, then
-      rebooting and reloading from UNQ. It means I can dump all the old
-      memory leaks and inconsistencies easily, and it means I can
-      upgrade Phantasmal without having to convert all the old in-memory
-      data. As far as I'm concerned, yay for reboots :-P </p>
+<p>And think about it, do we really want to accompany every significant
+CVS checkin with a full set of code to do any necessary upgrades on a
+running server? Do you know what a bitch that can be to test properly?
+And you'll also need to include instructions on how to use it since some
+things would be basically: do a %full_rebuild. Load this specific new
+CVS file. Rebuild again. Load the latest CVS. Rebuild again.</p>
 
-    <p> I'm exaggerating, but you see my point. Doing it
-      &quot;right&quot;, the way you suggest, winds up being far more
-      labor-intensive in the long run. There's nothing deeply wrong with
-      that, but it means that you're trading ease of development for
-      uptime. That's great in a mature, running system but it sucks for
-      something that isn't really even beta-test level yet, like
-      Phantasmal. </p>
+<p>Seriously. Try it some time. Incremental updates are harder than they
+appear, and only part of the problem is really fixable. Also, you can't
+upgrade to the current version from any past version unless you know
+which one, so taking a running MUD from a really old Phantasmal version
+to the current one would probably require them to do 30 or more updates,
+each one where they upgrade their running MUD off old CVS checkins in
+specific ways... Or else every upgrade code, forever, will have to be
+able to figure out what older version it's upgrading from and do it
+right. And that is called quadratic increase in testing effort -- every
+version you release makes every new version harder to test by a constant
+amount. Your total testing time is O(V^2) in the number of versions. Not
+good.</p>
+<hr />
 
-    <p> And think about it, do we really want to accompany every
-      significant CVS checkin with a full set of code to do any
-      necessary upgrades on a running server? Do you know what a bitch
-      that can be to test properly? And you'll also need to include
-      instructions on how to use it since some things would be
-      basically: do a %full_rebuild. Load this specific new CVS
-      file. Rebuild again. Load the latest CVS. Rebuild again. </p>
+<p style="color: green">Keith wrote:</p>
 
-    <p> Seriously. Try it some time. Incremental updates are harder
-      than they appear, and only part of the problem is really
-      fixable. Also, you can't upgrade to the current version from any
-      past version unless you know which one, so taking a running MUD
-      from a really old Phantasmal version to the current one would
-      probably require them to do 30 or more updates, each one where
-      they upgrade their running MUD off old CVS checkins in specific
-      ways... Or else every upgrade code, forever, will have to be able
-      to figure out what older version it's upgrading from and do it
-      right. And that is called quadratic increase in testing effort --
-      every version you release makes every new version harder to test
-      by a constant amount. Your total testing time is O(V^2) in the
-      number of versions. Not good. </p>
+<p>I'm not arguing either for or against statedumps (yet anyways), but
+here are a few observations:</p>
 
-    <hr />
+<p>1) As you may already know, if an object is replaced from a
+statedump, and the new object contains a field the old one didn't, that
+field will be initialized to nil or zero (depending on the type). Well,
+if we make nil the value to look up the field in the archtype, then
+upgrading an object with an archtype would require no work unless the
+object had to do something with the new type, making special upgrade
+code the exception, rather than the rule. (PS inplace upgrading while
+online follows the same semantics).</p>
 
-    <p style="color: green">Keith wrote: </p>
+<p>2) You may have to worry if an integer is initialized to zero -- this
+may not be what you want (you may want it to look up the archtype value,
+for instance). On the other hand, if you also have a flag saying whether
+this value is present, that will also be initialized to 0 or false,
+which will once again indicate to look up the value in the archtype.</p>
 
-    <p> I'm not arguing either for or against statedumps (yet
-      anyways), but here are a few observations: </p>
+<p>3) I would much rather spend the extra effort now to look up memory
+leaks as they occur, because they'll be a lot harder to find when
+phantasmal is tens of thousands of lines, instead of just thousands of
+lines.</p>
 
-    <p> 1) As you may already know, if an object is replaced from a
-      statedump, and the new object contains a field the old one didn't,
-      that field will be initialized to nil or zero (depending on the
-      type). Well, if we make nil the value to look up the field in the
-      archtype, then upgrading an object with an archtype would require
-      no work unless the object had to do something with the new type,
-      making special upgrade code the exception, rather than the
-      rule. (PS inplace upgrading while online follows the same
-      semantics). </p>
+<p>4) At the moment phantasmal is set up to use UNQ, converting it to
+use statedumps would be extra effort.</p>
+<hr />
 
-    <p> 2) You may have to worry if an integer is initialized to zero
-      -- this may not be what you want (you may want it to look up the
-      archtype value, for instance). On the other hand, if you also have
-      a flag saying whether this value is present, that will also be
-      initialized to 0 or false, which will once again indicate to look
-      up the value in the archtype. </p>
+<p style="color: green">Noah wrote:</p>
 
-    <p> 3) I would much rather spend the extra effort now to look up
-      memory leaks as they occur, because they'll be a lot harder to
-      find when phantasmal is tens of thousands of lines, instead of
-      just thousands of lines. </p>
+<p>1) This is true -- and is (usually) fine when adding a new field,
+especially since I usually use the upgrade() function to initialize
+values rather than create() anyway, as you may have noticed.</p>
 
-    <p> 4) At the moment phantasmal is set up to use UNQ, converting
-      it to use statedumps would be extra effort. </p>
+<p>2) Or if you have an array, which must be initialized to ({ }) rather
+than nil, etc. There *are* values that *must* be initialized, or else
+all your code needs to check for the value that means "just upgraded"
+(blech). The flag is the same problem -- every time you use the value
+you must first check the flag, which is *definitely* upgrade-specific
+code. Remember that any MUD instance started after you first add that
+flag &amp; field will never have the flag set to false, so all of that
+coding and testing is wasted after the initial upgrade. I much prefer
+putting a bunch of upgrade-specific code into a single upgrade()
+function than peppering it all through the other code, since it's hard
+to make sure you removed all of it afterward.</p>
 
-    <hr />
+<p>Or you could never remove it, but then your code will be full of
+many, many little flags and things specifically for people currently
+upgrading from an old version. Phantasmal *has* a way to upgrade from an
+old version, and UNQ also has a number of other uses. It's much, much
+less gross than having all Phantasmal code everywhere have to check a
+flag before accessing each field and then decide to use that field or
+some default value.</p>
 
-    <p style="color: green">Noah wrote: </p>
+<p>You could just use an upgraded() func that recognizes every previous
+data layout as well, but if you ever remove fields from the object (and
+you will), that gets very hairy. But then, you could use a lot of
+catch() statements to see whether that variable exists. Your upgraded()
+function is *still* going to be really ugly, but at least it's just that
+one function. By the way, you know this will never work if you never
+test it, so you're going to have to keep a copy of every old version of
+the MUD that you care about running (or at least statedumped) so that
+you can restore from it. You knew that, right? That's what I mean by
+linear testing effort every version, so quadratic testing effort over
+time -- for 0.010 you test 0.009, 0.008, 0.007, 0.006, 0.005, etc, and
+then for version 0.011 you test all the same things, plus 0.010. And
+that's assuming that you only support the major releases, not the CVS
+development versions we've been encouraging people to use.</p>
 
-    <p> 1) This is true -- and is (usually) fine when adding a new
-      field, especially since I usually use the upgrade() function to
-      initialize values rather than create() anyway, as you may have
-      noticed. </p>
+<p>Ew.</p>
 
-    <p> 2) Or if you have an array, which must be initialized to ({ })
-      rather than nil, etc. There *are* values that *must* be
-      initialized, or else all your code needs to check for the value
-      that means &quot;just upgraded&quot; (blech). The flag is the same
-      problem -- every time you use the value you must first check the
-      flag, which is *definitely* upgrade-specific code. Remember that
-      any MUD instance started after you first add that flag &amp; field
-      will never have the flag set to false, so all of that coding and
-      testing is wasted after the initial upgrade. I much prefer putting
-      a bunch of upgrade-specific code into a single upgrade() function
-      than peppering it all through the other code, since it's hard to
-      make sure you removed all of it afterward. </p>
+<p>3) The memory leaks thing is a good point, and that's a decent
+rationale for always using the same statedump. The thing is that
+*finding* the memory leaks isn't so hard. *Fixing* the memory leaks is
+much harder because you've gotta paw through all the old stuff and get
+rid of what shouldn't be there. With UNQ, you fix the code so that it no
+longer leaks, you shutdown and you reload. Bye-bye memory leak, and
+bye-bye leaked memory. With a statedump, you've spewed all over your
+memory space and now you have to clean it up without disturbing the
+parts you want to keep. Not easy.</p>
 
-    <p> Or you could never remove it, but then your code will be full
-      of many, many little flags and things specifically for people
-      currently upgrading from an old version. Phantasmal *has* a way to
-      upgrade from an old version, and UNQ also has a number of other
-      uses. It's much, much less gross than having all Phantasmal code
-      everywhere have to check a flag before accessing each field and
-      then decide to use that field or some default value. </p>
+<p>4) Actually, supporting statedumps is trivial. Phantasmal should
+already work just fine with them. Check the help commands for things
+like %reboot. It's just that UNQ and %shutdown are what I personally
+happen to use, so that's what gets tested.</p>
+<hr />
 
-    <p> You could just use an upgraded() func that recognizes every
-      previous data layout as well, but if you ever remove fields from
-      the object (and you will), that gets very hairy. But then, you
-      could use a lot of catch() statements to see whether that variable
-      exists. Your upgraded() function is *still* going to be really
-      ugly, but at least it's just that one function. By the way, you
-      know this will never work if you never test it, so you're going to
-      have to keep a copy of every old version of the MUD that you care
-      about running (or at least statedumped) so that you can restore
-      from it. You knew that, right? That's what I mean by linear
-      testing effort every version, so quadratic testing effort over
-      time -- for 0.010 you test 0.009, 0.008, 0.007, 0.006, 0.005, etc,
-      and then for version 0.011 you test all the same things, plus
-      0.010. And that's assuming that you only support the major
-      releases, not the CVS development versions we've been encouraging
-      people to use. </p>
+<p style="color: green">And slightly later, Noah submat an example:</p>
 
-    <p> Ew. </p>
+<p>Speaking of memory leaks...</p>
 
-    <p> 3) The memory leaks thing is a good point, and that's a decent
-      rationale for always using the same statedump. The thing is that
-      *finding* the memory leaks isn't so hard. *Fixing* the memory
-      leaks is much harder because you've gotta paw through all the old
-      stuff and get rid of what shouldn't be there. With UNQ, you fix
-      the code so that it no longer leaks, you shutdown and you
-      reload. Bye-bye memory leak, and bye-bye leaked memory. With a
-      statedump, you've spewed all over your memory space and now you
-      have to clean it up without disturbing the parts you want to
-      keep. Not easy. </p>
+<p>There's a bug in one of Keith's patches that illustrates a problem
+and how Phantasmal gets around it. Don't think I'm picking on you,
+Keith, it's just that you've submitted actual code :-) By and large it's
+good stuff, but (not shockingly) there are some bits of Phantasmal and
+the Kernel MUDLib you're not 100% familiar with.</p>
 
-    <p> 4) Actually, supporting statedumps is trivial. Phantasmal
-      should already work just fine with them. Check the help commands
-      for things like %reboot. It's just that UNQ and %shutdown are what
-      I personally happen to use, so that's what gets tested. </p>
+<p>So... DGD is garbage-collected, so you should be able to clone
+something, get it out of your globals and let it go away silently
+afterward. So far, so good. Unfortunately, the Kernel MUDLib tracks all
+objects and all clones, so a cloned object that isn't explicitly
+destructed won't ever be garbage-collected. That's less good.</p>
 
-    <hr />
+<p>Very specifically, in MAPD::init(), you now instantiate a DTD for the
+room binder. There are a couple of things you should do differently in
+order to make this all work as "normal" phantasmal code. The first and
+simplest is that you should either keep track of the DTD, or you should
+destruct it at the end of init.</p>
 
-    <p style="color: green"> And slightly later, Noah submat an
-      example:</p>
+<p>Why keep track of it? Because you'll want to be able to add entries
+to the roomfile. The way Phantasmal does this with a lot of things, like
+the HELPD, is to reread the configuration files as part of upgraded(),
+so they'll be read again when that file is compiled explicitly, and also
+on %full_rebuild.</p>
 
-    <p> Speaking of memory leaks... </p>
+<p>This is an example of the whole statedump/UNQ thing, by the way -- I
+can just fix the code on my system, then %shutdown and restore. A
+statedump zealot, if they were going to fix this, would need to add some
+way to find all the various clones of UNQ_DTD, figure out which one was
+the leaked room binder UNQ_DTD, and destruct it. Not rocket science, but
+much harder than my solution to the same problem.</p>
 
-    <p> There's a bug in one of Keith's patches that illustrates a
-      problem and how Phantasmal gets around it. Don't think I'm picking
-      on you, Keith, it's just that you've submitted actual code :-) By
-      and large it's good stuff, but (not shockingly) there are some
-      bits of Phantasmal and the Kernel MUDLib you're not 100% familiar
-      with. </p>
-
-    <p> So... DGD is garbage-collected, so you should be able to clone
-      something, get it out of your globals and let it go away silently
-      afterward. So far, so good. Unfortunately, the Kernel MUDLib
-      tracks all objects and all clones, so a cloned object that isn't
-      explicitly destructed won't ever be garbage-collected. That's less
-      good. </p>
-
-    <p> Very specifically, in MAPD::init(), you now instantiate a DTD
-      for the room binder. There are a couple of things you should do
-      differently in order to make this all work as &quot;normal&quot;
-      phantasmal code. The first and simplest is that you should either
-      keep track of the DTD, or you should destruct it at the end of
-      init. </p>
-
-    <p> Why keep track of it? Because you'll want to be able to add
-      entries to the roomfile. The way Phantasmal does this with a lot
-      of things, like the HELPD, is to reread the configuration files as
-      part of upgraded(), so they'll be read again when that file is
-      compiled explicitly, and also on %full_rebuild. </p>
-
-    <p> This is an example of the whole statedump/UNQ thing, by the
-      way -- I can just fix the code on my system, then %shutdown and
-      restore. A statedump zealot, if they were going to fix this, would
-      need to add some way to find all the various clones of UNQ_DTD,
-      figure out which one was the leaked room binder UNQ_DTD, and
-      destruct it. Not rocket science, but much harder than my solution
-      to the same problem. </p>
-
-    <p> On the other hand, my solution causes actual downtime. The
-      other one doesn't, at least if it's done right. </p>
+<p>On the other hand, my solution causes actual downtime. The other one
+doesn't, at least if it's done right.</p>

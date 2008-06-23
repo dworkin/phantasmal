@@ -1,78 +1,57 @@
-    <titledef text="Persistence in MUDs" />
+<titledef text="Persistence in MUDs" />
 
-    <h3 style="text-align: center"> Persistence in MUDs </h3>
+<h3 style="text-align: center">Persistence in MUDs</h3>
 
-    <p>
-      These are poorly-organized thoughts about persistence in MUDs,
-      and various issues related to it.
-    </p>
-    
-    <p>
-      You can find further information about
-      <a href="http://phantasmal.sf.net/DGD/GameDesign/GamePersistence.html">
-      persistent game design</a> on the DGD pages.  You can also find
-      more information about
-      <a href="http://phantasmal.sf.net/DGD/LibWriting/Persistence.html">
-      DGD's approach to persistence</a> if you want more implementation
-      details.
-    </p>
+<p>These are poorly-organized thoughts about persistence in MUDs, and
+various issues related to it.</p>
 
-    <h3> Time in MUDs, and Continuity </h3>
+<p>You can find further information about <a href=
+"http://phantasmal.sf.net/DGD/GameDesign/GamePersistence.html">persistent
+game design</a> on the DGD pages. You can also find more information
+about <a href=
+"http://phantasmal.sf.net/DGD/LibWriting/Persistence.html">DGD's
+approach to persistence</a> if you want more implementation details.</p>
 
-    <p>
-      In-MUD time has a conversion factor associated with it -- that
-      is, it's a multiple of real-world wall-clock time.  How long a
-      real-world day is in the MUD (and vice-versa) depends on that
-      conversion.  This leads to a whole host of realism problems
-      related to things like travel time and reaction time, but we're
-      going to ignore all those for now as not being related to
-      persistence.
-    </p>
+<h3>Time in MUDs, and Continuity</h3>
 
-    <p>
-      There's a problem that <i>does</i> have to do with
-      persistence...  When the MUD goes down for awhile there'll be a
-      jump in real-world time.  This includes scheduled maintenance,
-      not just crashes.  The question is how the MUD should address
-      that.
-    </p>
+<p>In-MUD time has a conversion factor associated with it -- that is,
+it's a multiple of real-world wall-clock time. How long a real-world day
+is in the MUD (and vice-versa) depends on that conversion. This leads to
+a whole host of realism problems related to things like travel time and
+reaction time, but we're going to ignore all those for now as not being
+related to persistence.</p>
 
-    <p>
-      Some ways we could deal with the programmatic interface:
-    </p>
+<p>There's a problem that <i>does</i> have to do with persistence...
+When the MUD goes down for awhile there'll be a jump in real-world time.
+This includes scheduled maintenance, not just crashes. The question is
+how the MUD should address that.</p>
 
-    <ul>
-        <li>
-	  Keep going forward, running all the scripts and triggers,
-	  until we catch up.  That could be *really* slow on startup,
-	  and there are questions of safety and things if players are
-	  logged in at the time, or if their bodies or possessions are
-	  vulnerable.  A lot of time can go by all at once...
-	</li>
-	<li>
-	  Cancel all the call_outs, but make some way to subscribe
-          for a notification when the time skips to reschedule
-          them.  That requires a lot of code on the part of
-          anybody that reschedules.  But for events that should just
-	  happen every so often, but we don't care about their
-	  cumulative effects, it works great.
-	</li>
-	<li>
-	  Keep going like nothing happened -- this would require
-          any events that really cared about real-world time to
-          check the time for themselves.
-	</li>
-	<li>
-	  Have some notifications that run at specific times relative
-          to the real world, and others that just run
-          &quot;periodically&quot; -- the period ones would keep
-          ticking away across statedumps, skipping all the ones from
-          the MUD's lost time.  The real-world ones would be delivered
-          at the right times, but any that would have happened when
-          the MUD was down would all happen at once right after it
-          came back up, probably passing a &quot;late&quot; flag to
-          say that they hadn't happened at the correct real-world
-          time.  This is a hybrid between the first approach and the
-          second one.
-	</li>
-      </ul>
+<p>Some ways we could deal with the programmatic interface:</p>
+
+<ul>
+  <li>Keep going forward, running all the scripts and triggers, until we
+  catch up. That could be *really* slow on startup, and there are
+  questions of safety and things if players are logged in at the time,
+  or if their bodies or possessions are vulnerable. A lot of time can go
+  by all at once...</li>
+
+  <li>Cancel all the call_outs, but make some way to subscribe for a
+  notification when the time skips to reschedule them. That requires a
+  lot of code on the part of anybody that reschedules. But for events
+  that should just happen every so often, but we don't care about their
+  cumulative effects, it works great.</li>
+
+  <li>Keep going like nothing happened -- this would require any events
+  that really cared about real-world time to check the time for
+  themselves.</li>
+
+  <li>Have some notifications that run at specific times relative to the
+  real world, and others that just run "periodically" -- the period ones
+  would keep ticking away across statedumps, skipping all the ones from
+  the MUD's lost time. The real-world ones would be delivered at the
+  right times, but any that would have happened when the MUD was down
+  would all happen at once right after it came back up, probably passing
+  a "late" flag to say that they hadn't happened at the correct
+  real-world time. This is a hybrid between the first approach and the
+  second one.</li>
+</ul>

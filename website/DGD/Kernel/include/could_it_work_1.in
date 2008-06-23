@@ -1,0 +1,46 @@
+From: dgd at list.imaginary.com (Par Winzell)
+Date: Mon Sep 17 12:39:01 2001
+Subject: [DGD] Could it work...
+
+>>I'm sure I've missed loads but I wasn't entirely sure why the kernel lib was
+>>so important to use. The above does seem tricky but doesn't sound
+>>impossible. With looking at the kernel I'm sure we can work it out seeing as
+>>that's how we've coded the connection stuff etc. so far.
+>>Or am I being dim?
+>>
+> I think the point people are trying to make is that very careful thought
+> has gone into making the kernel lib, and by using the kernel lib, you are
+> saved from doing a lot of trial-and-error attempts at your own 'kernel
+> lib'.  Especially if one is not terribly interested in the knitty-gritty
+> details, that's where I'd assume the kernel lib helps; at least that's the
+> point I think Par was 
+
+
+That's pretty much it. You have to ask yourself, how much of what the 
+kernel library gives me do I need? And if that amount is large enough, 
+then you need to question if it is realistic to believe you can -save- 
+effort by -not- using it.
+
+If you are going for a truly persistent Mud, i.e. you plan on rebooting 
+only from state dumps once your Mud is up and running, then you -have- 
+to either use the kernel library, or reimplement much of what it does. 
+That is a non-trivial undertaking, to say the least.
+
+Going persistent is a big deal. When you're persistent, you realize, you 
+will never again cold-start your game. You never again get to feel like 
+you're cleaning away all the old cobwebs. If you clone an object and you 
+lose track of the clone, it's going to stay with you for eternity. If 
+you compile a program and forget where it is, it'll stay compiled and 
+forgotten forever. Crap builds up. If you make a terrible error a year 
+into your Mud's uptime, an error that causes you not to be able to log 
+in, you're screwed -- you have to go back to a saved statedump from a 
+few days earlier, or if you didn't save any, lose all your state.
+
+If Matt wants to avoid all this complexity, he should not try for the 
+persistence right now. It cannot be overstated what a difference this 
+makes. Save inventories and vital player data to file, perhaps using the 
+trusy old save_object() and restore_object(). Worry about persistence in 
+a few years. You really don't want to go for persistence as your first 
+project.
+
+Zell

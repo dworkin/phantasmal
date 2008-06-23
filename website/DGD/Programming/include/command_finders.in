@@ -1,0 +1,15 @@
+From: dgd@dworkin.nl (Par Winzell)
+Date: Tue May 10 16:59:01 2005
+Subject: [DGD] Command Finders
+
+Noah Gibbs wrote:
+>   The way you'll want to do this_player() is to have a variable somewhere that
+> gets set appropriately and queried with a function (maybe called "this_player")
+> in your AUTO object.
+
+I'd say allocate a TLS (Thread Local Storage) slot, and stuff it with a
+LWO of your own making at the beginning of every thread. This LWO could
+keep track of things like the current this_player() per thread, rather
+than globally.
+
+Zell

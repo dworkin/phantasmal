@@ -1,0 +1,23 @@
+From: DGD Mailing List (Par Winzell)
+Date: Tue Mar 23 11:50:02 2004
+Subject: [DGD] Re: casting nil (another idea...)
+
+> I'd go for something like this:
+> 
+>     int nil_to_int(mixed v)
+>     {
+> 	return v == nil ? 0 : v;
+>     }
+> 
+>     ...
+> 
+>     luck -= nil_to_int(query_property("luck_reduction"));
+> 
+> If you put the nil_to_int() in an inheritable it doesn't look so bad?
+
+For every library that I've worked with in the past many years, I define 
+  Int(), Str(), Arr(), etc, something like nil_to_int() above. Also 
+useful is a Empty() macro/function that returns true for nil, empty 
+strings, empty arrays, empty mappings, integer zero, ...
+
+Zell

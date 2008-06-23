@@ -1,0 +1,47 @@
+From: DGD Mailing List (Par Winzell)
+Date: Tue Apr  6 08:08:01 2004
+Subject: [DGD] Remove Multiple Instances from Array
+
+Michael,
+
+> /* Remove multiple instances of the same word, preserving order. 
+> ** Note: >= 1; we don't check the first element since previous
+> ** matching elements in the arrary were already removed.
+> */
+> for (i=sz=sizeof(keys); --i >= 1; )
+> {
+>     if (keys[i] == "" || sizeof(({ keys[i] }) | keys) != sz)
+>         keys[i] = nil;
+> }
+> keys -= ({ nil });
+
+Pretty smooth, but unfortunately this takes quadratic time. For a 
+one-thousand word string, you'd end up looping over hundreds of 
+thousands of array elements (you loop N times in LPC and the union 
+operator has to loop over an array of size N => N^2).
+
+Perhaps something like:
+
+{
+   mapping set;
+   string *words;
+   int i;
+
+   set = ([ ]);
+   keys = explode(str, " ");
+
+   for (i = 0; i < sizeof(keys); i ++) {
+     if (keys[i] == "" || !set[keys[i]]) {
+       set[keys[i]] = TRUE;
+       keys[i] = nil;
+   }
+   return keys - ({ nil });
+}
+
+(note: not tested)
+
+> Oh yeah I stole Par's comment style ;)
+
+*beam* :)
+
+Zell
