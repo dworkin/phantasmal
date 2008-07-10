@@ -116,8 +116,10 @@ abstraction. It decides that libraries aren't regular objects like
 "real" library object, only its path. That means you can't keep storage
 space in one since you can never create a clone or LWO of one, nor call
 it with <b>call_other</b>. All you can really do with a library is to
-inherit it from your other code, and in practice that's usually
-plenty.</p>
+inherit it from your other code, and in practice that's usually plenty. 
+For situations where it is not, it's pretty straightforward to simply
+create a dummy clonable that does nothing but inherit the library.</p>
+
 <hr />
 
 <h3>Specific Operations</h3>
@@ -147,6 +149,7 @@ DGD or the Driver itself may call them.</p>
 <pre>
 @@INCLUDE access_2@@
 </pre>
+<hr />
 <pre>
 @@INCLUDE access_3@@
 </pre>
