@@ -3,13 +3,13 @@
 use strict;
 
 sub xml_escape {
-   my $input = shift;
+	my $input = shift;
    
-   $input =~ s/&/&amp;/g;
-   $input =~ s/</&lt;/g;
-   $input =~ s/>/&gt;/g;
+	$input =~ s/&/&amp;/g;
+	$input =~ s/</&lt;/g;
+	$input =~ s/>/&gt;/g;
    
-   return $input;
+	return $input;
 }
 
 my ($templatedata, $indexdata);
@@ -24,16 +24,16 @@ close(FILE);
 
 chomp $indexdata;
 
-my ($mtime_template);
-($_,$_,$_,$_,$_,$_,$_,$_,$_,$mtime_template,$_,$_,$_)
-    = stat("pagetemplate.html");
-
 my $filename;
 my $outfilename;
+my $rootdir;
+
 my $contents;
+my $logos;
 my %filestate;
 
 $filename = $ARGV[0];
+$rootdir = $ARGV[1];
 
 die("Can't parse filename $filename as base HTML!")
 	unless ($filename =~ /^(.*)\.base\.html$/i);
@@ -42,27 +42,33 @@ $outfilename = $1 . ".html";
 
 print "pagecreate.pl: Processing $1\n";
 
-{
-    open(FILE, "<$filename") or die "Can't open HTML file $filename: $!";
-    $contents = join("", <FILE>);
-    close(FILE);
+open(FILE, "<$rootdir/template/logos.html")
+	 or die "Can't open logo file: $!";
+$logos = join("", <FILE>);
+close(FILE);
 
-    print "Writing file '$outfilename'.\n";
-    open(FILE, ">$outfilename") or die "Can't write to $outfilename: $!";
+open(FILE, "<$filename") or die "Can't open HTML file $filename: $!";
+$contents = join("", <FILE>);
+close(FILE);
 
-    my ($new_td, $new_cont, $message_cont);
-    $new_cont = extract_metadata($contents, \%filestate);
-    chomp $new_cont;
-    $new_td = $templatedata;
-    $new_td =~ s/\t* *\@\@TITLE\@\@ */$filestate{TITLE}/g;
-    $new_td =~ s/\t* *\@\@CONTENT\@\@ */$new_cont/g;
-    $new_td =~ s/\t* *\@\@INDEX\@\@ */$indexdata/g;
-    $new_td =~ s/\t* *\@\@FILE\@\@ */$outfilename/g;
-    
-    while($new_td =~ /(\@\@INCLUDE ([^@]*)\@\@)/) {
-        my $include;
-        print "Include found: " . $2 . "\n";
+print "Writing file '$outfilename'.\n";
+open(FILE, ">$outfilename") or die "Can't write to $outfilename: $!";
 
+my ($new_td, $new_cont, $message_cont);
+$new_cont = extract_metadata($contents, \%filestate);
+chomp $new_cont;
+$new_td = $templatedata;
+$new_td =~ s/\t* *\@\@TITLE\@\@ */$filestate{TITLE}/g;
+$new_td =~ s/\t* *\@\@CONTENT\@\@ */$new_cont/g;
+$new_td =~ s/\t* *\@\@LOGOS\@\@ */$logos/g;
+$new_td =~ s/\t* *\@\@INDEX\@\@ */$indexdata/g;
+$new_td =~ s/\t* *\@\@FILE\@\@ */$outfilename/g;
+
+while($new_td =~ /(\@\@INCLUDE ([^@]*)\@\@)/) {
+	my $include;
+	print "Include found: " . $2 . "\n";
+
+	# sanity checks to make sure that an include file isn't used twice
 	open(CHECKFILE,"<include/$2.check") and die "Duplicate inclusion of $2 while processing $filename: $!";
 	close(CHECKFILE);
 	open(CHECKFILE,">include/$2.check") or die "Can't create include check file $2.check: $!";
@@ -78,44 +84,39 @@ print "pagecreate.pl: Processing $1\n";
 	
 	chomp $include;
 	$new_td =~ s/(\@\@INCLUDE ([^@]*)\@\@)/$include/;
-    }
-    
-out:
-
-    print FILE $new_td;
-    close(FILE);
-
-    %filestate = ();
 }
 
+print FILE $new_td;
+close(FILE);
+
 sub extract_metadata {
-    my $block = shift;
-    my $stateref = shift;
-    
-    $stateref->{TITLE} = "(untitled)";
+	my $block = shift;
+	my $stateref = shift;
 
-    if($block =~ /<titledef/) {
+	$stateref->{TITLE} = "(untitled)";
 
-	if($block =~ /^(.*)<titledef (.*?)>(.*)$/s) {
-	    my $attribs = $2;
+	if($block =~ /<titledef/) {
+		if($block =~ /^(.*)<titledef (.*?)>(.*)$/s) {
+			my $attribs = $2;
 
-	    $block = $1 . $3;
+			$block = $1 . $3;
 
-	    if($attribs =~ /text="(.*?)"/) {
-		$stateref->{TITLE} = $1;
-	    } else {
-		die "Couldn't parse attribs of titledef block!\n"
-		    . "Attribs: '$attribs'";
-	    }
-	} else {
-	    die "Parse error getting title definition from block of content!\n"
-		. "Content: '$contents'";
+			if($attribs =~ /text="(.*?)"/) {
+				$stateref->{TITLE} = $1;
+			} else {
+				die "Couldn't parse attribs of titledef block!\n"
+					. "Attribs: '$attribs'";
+			}
+		} else {
+			die "Parse error getting title definition from block of content!\n"
+				. "Content: '$contents'";
+		}
+
+		print "Title is '$stateref->{TITLE}'\n";
+	
+		print "Warning: untitled document "
+			if ($stateref->{TITLE} eq "(untitled)");
 	}
 
-	print "Title is '$stateref->{TITLE}'\n";
-	
-	print "Warning: untitled document " if ($stateref->{TITLE} eq "(untitled)");
-    }
-
-    return $block;
+	return $block;
 }

@@ -1,5 +1,5 @@
 ROOT=..
-DIRS=API Design DGD Innsmouth Operation Setup Tutorial
+DIRS=API Design DGD Innsmouth Operation Setup Tutorial Test
 
 rhtml:
 prereq: api book
