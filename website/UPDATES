@@ -6,6 +6,9 @@ What files get updated when we do a release?  What should we check for
 accuracy before releasing a new version of Phantasmal on the public at
 large?
 
+Website:
+  $ make dclean
+
 Everywhere:
   Remove CVS directories, #files#, .#files and files~
   Remove .base.html files?
