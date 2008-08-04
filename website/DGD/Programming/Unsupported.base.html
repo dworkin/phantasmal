@@ -215,6 +215,9 @@ have for DGD. Barring some really good reason, Dworkin's not planning to
 add any types. Between these two things, Booleans have never made it in,
 and aren't going to any time soon.</p>
 
+<p>Besides, there is nothing that can be done with a boolean that cannot
+also be done with an int.  If you need booleans, consider bit fiddling.</p>
+
 <h3>More Powerful Editor</h3>
 
 <p>The DGD built-in editor is based strongly on 'ex'. It's a line
@@ -225,6 +228,13 @@ has. That's because an editor, like other pieces of software, should
 really be written for the end-user. Having a more powerful built-in
 editor is one of those things like a built-in HTTPD that should instead
 be written in LPC.</p>
+
+<p>For editing LPC source (or, in fact, anything else in the mud
+directory), it's probably better to fire up an editor on the server and
+edit it from there.  Barring that, ftp should work nicely.  DGD's
+internal editor should likely be considered a least common denominator,
+at least minimally useful and almost always available as a last
+resort.</p>
 
 <h3>Error When Calling Non-Existent Function</h3>
 
