@@ -21,7 +21,7 @@ my $end = "";
 
 my $linebegin = "<table summary=\"index entry\"><tr>";
 my $lineend = "</tr></table>";
-my $pretab = "<td><img src=\"\@\@WEBDIR\@\@images/index_arrow.png\" />";
+my $pretab = "<td><img src=\"\@\@WEBDIR\@\@images/index_arrow.png\" /></td>";
 my $posttab = "";
 my $start = "<td>";
 my $stop = "</td>";
