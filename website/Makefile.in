@@ -1,13 +1,17 @@
-PAGEGEN=$(ROOT)/tools/pagecreate.pl
+PAGEGEN=$(ROOT)/bin/makepage.pl
 BASE=$(wildcard *.base.html)
 HTML=$(patsubst %.base.html,%.html,$(BASE))
 DIRS_RMAKE=$(patsubst %,%_make,$(DIRS))
 DIRS_RCLEAN=$(patsubst %,%_clean,$(DIRS))
 
+export DIRS
+
 rhtml: html msubdirs
 rclean: clean csubdirs
+cleancheck:
+	rm -f include/*.check include/*/*.check
 
-html: $(HTML)
+html: $(HTML) cleancheck
 
 msubdirs: $(DIRS_RMAKE)
 csubdirs: $(DIRS_RCLEAN)
@@ -17,10 +21,10 @@ $(DIRS_RMAKE):
 $(DIRS_RCLEAN): 
 	$(MAKE) rclean -C $(patsubst %_clean,%,$@)
 
-.PHONY: msubdirs csubdirs rhtml rclean html clean $(DIRS_RMAKE) $(DIRS_RCLEAN)
+.PHONY: cleancheck msubdirs csubdirs rhtml rclean html clean $(DIRS_RMAKE) $(DIRS_RCLEAN)
 
-clean:
+clean: cleancheck
 	rm -f $(HTML)
 
-$(HTML): %.html: %.base.html pagetemplate.html
-	$(PAGEGEN) $< $(ROOT)
+$(HTML): %.html: %.base.html $(ROOT)/template/*.html
+	$(PAGEGEN) $< $(DEPTH)

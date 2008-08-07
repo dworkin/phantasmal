@@ -1,26 +1,22 @@
-ROOT=..
+ROOT=.
+DEPTH=0
 DIRS=API Design DGD Innsmouth Operation Setup Tutorial Test
 
 rhtml:
 prereq: api book
 pclean: cleanapi cleanbook
 
-dist: prereq rhtml cleancheck
-dclean: rclean pclean cleancheck
-include $(ROOT)/website/Makefile.in
+dist: prereq rhtml
+dclean: rclean pclean
+include $(ROOT)/Makefile.in
 
 .PHONY: api cleanapi book cleanbook prereq pclean dist dclean cleancheck
 
-cleancheck:
-	rm -f include/*.check include/*/*.check
-	rm -f */include/*.check */include/*/*.check
-	rm -f */*/include/*.check */*/include/*/*.check
-	rm -f */*/*/include/*.check */*/*/include/*/*.check
 api:
-	make api -C API
+	cd API && ../bin/apidoc.pl
 cleanapi:
-	make cleanapi -C API
+	rm -f API/html/*.base.html
 book:
-	make book -C DGD/Book
+	cd DGD/Book/src && ../../../bin/bookbinder.pl
 cleanbook:
-	make cleanbook -C DGD/Book
+	rm -f DGD/Book/*.base.html

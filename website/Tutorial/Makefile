@@ -1,3 +1,4 @@
-ROOT=../..
+ROOT=..
+DEPTH=1
 DIRS=Admin OLC
-include $(ROOT)/website/Makefile.in
+include $(ROOT)/Makefile.in

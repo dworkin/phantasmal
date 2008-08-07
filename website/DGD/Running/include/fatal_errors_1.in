@@ -17,7 +17,7 @@ Soja wrote:
 
 A momentous discovery.  This is how things are supposed to be :)
 
-Fatal errors are for when something is &lt;really&gt; wrong, and a coredump
+Fatal errors are for when something is <really> wrong, and a coredump
 helps debugging such a case.  So why for missing functions in the
 driver object?  Because this may mean that the function table of the
 driver object was trashed (this has happened with some bugs in the

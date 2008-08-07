@@ -1,9 +1,4 @@
-ROOT=../..
+ROOT=..
+DEPTH=1
 DIRS=html
-
-include $(ROOT)/website/Makefile.in
-
-api:
-	../../tools/apidoc.pl
-cleanapi:
-	rm -f html/*.base.html
+include $(ROOT)/Makefile.in

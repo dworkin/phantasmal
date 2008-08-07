@@ -1,0 +1,45 @@
+Plans for new, supercool sidebar index.
+
+
+
+index.base.html defines the group and title.
+
+Each .base.html file specifies its title
+
+Any index.base.html files additionally have directives to list the
+directories, and optionally, a section.
+
+
+Layout (once learned, use CSS instead of tables to put stuff in proper
+places):
+
+-----------------------------
+- Header                    -
+-----------------------------
+
+----------- -----------------
+- Banners - -               -
+----------- - Page contents -
+            -               -
+----------- -               -
+- Sidebar - -               -
+-         - -               -
+/\/\/\/\/\/ -               -
+|         | -               -
+/\/\/\/\/\/ -               -
+-         - -               -
+----------- -----------------
+
+-----------------------------
+- Footer                    -
+-----------------------------
+
+Header: title information, path information
+Banners: Sourceforge.net logo, W3C validations
+Sidebar: broadish nested list of directories
+Contents: The contents of the page
+Footer: administrative contact information, copyright information
+
+The sidebar will look roughly as if it were one of those "tree control"
+thingies on the side of a file manager.  Everything is clickable unless
+you are already there.

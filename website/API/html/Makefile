@@ -1,3 +1,4 @@
-ROOT=../../..
+ROOT=../..
+DEPTH=2
 DIRS=
-include $(ROOT)/website/Makefile.in
+include $(ROOT)/Makefile.in

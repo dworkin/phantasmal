@@ -1,2 +1,4 @@
-ROOT=../..
-include $(ROOT)/website/Makefile.in
+ROOT=..
+DEPTH=1
+DIRS=
+include $(ROOT)/Makefile.in
