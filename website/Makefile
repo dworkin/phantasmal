@@ -1,6 +1,4 @@
-ROOT=.
-DEPTH=0
-DIRS=API Design DGD Innsmouth Operation Setup Tutorial Test
+PREFIX=
 
 rhtml:
 prereq: api book
@@ -8,7 +6,7 @@ pclean: cleanapi cleanbook
 
 dist: prereq rhtml
 dclean: rclean pclean
-include $(ROOT)/Makefile.in
+include $(PREFIX)Makefile.in
 
 .PHONY: api cleanapi book cleanbook prereq pclean dist dclean cleancheck
 

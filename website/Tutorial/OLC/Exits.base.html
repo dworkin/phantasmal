@@ -1,6 +1,6 @@
 @@TITLE Exits@@
 
-<h2 class="center">Basic Portables</h2>
+<h2>Basic Portables</h2>
 
 <p>You've done a fair bit with rooms, portables and maybe even a
 creature or two, but still you need to hook it all up with more
@@ -9,7 +9,7 @@ interesting exits. Let's talk about how you can do that.</p>
 <p>There are several interesting things about exits, so we'll hit them
 in no particular order.</p>
 
-<h3 class="center">Deferred Exits</h3>
+<h3>Deferred Exits</h3>
 
 <p>Sometimes when you load a zone or other area, not every exit can
 resolve. For instance, there's a command called @load_rooms which will
@@ -27,14 +27,14 @@ that the rooms at <i>both</i> ends of the exit must exist for
 <b>@add_deferred</b> to work. If you can't resolve and add all your
 deferred exits, <b>@add_deferred_exits</b> will tell you so.</p>
 
-<h3 class="center">Old-style and New-style Exits</h3>
+<h3>Old-style and New-style Exits</h3>
 
 <p>If you have some exits added the <a href="Rooms.html">old</a> way,
 with @new_exit, you'll want to convert them over to the new style.
 Simply type <b>@fix_exits</b> and all old-style exits should be
 painlessly and immediately converted.</p>
 
-<h3 class="center">Removing Exits</h3>
+<h3>Removing Exits</h3>
 
 <p>Sometimes you'd like to get rid of an exit you've already created.
 The command <b>@clear_exits</b> will delete every exit coming from this
@@ -42,7 +42,7 @@ room. If you'd like to be more specific, you can type "@remove_exit
 &lt;dir&gt;" where dir is a direction like "northwest" or "sw" or "d".
 An exit in that direction will be removed.</p>
 
-<h3 class="center">One-way and Two-way Exits</h3>
+<h3>One-way and Two-way Exits</h3>
 
 <p>You can use the <b>@new_oneway_exit</b> and <b>@new_twoway_exit</b>
 commands to make new-style one- or two-way exits. The syntax is like

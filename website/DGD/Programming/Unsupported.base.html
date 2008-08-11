@@ -96,28 +96,32 @@ archives.</a></p>
 <p>Here is one representative argument of Dworkin's against the
 networking package:</p>
 
-<p style="font-size: 90%">What I consider unsafe about the net package
-is the fact that it allows outbound connections. It means that someone
-who breaks the security of the mud can use it to assault another host.
-As long as the server remains a program that can only respond, the worst
-thing it can do to your machine is use 100% CPU time, use up a lot of
-memory, and crash to leave a large core dump -- it cannot alter or even
-read files outside the mudlib directory. If you make a separate file
-system partition for the mud, it cannot even use up space intended for
-other files.</p>
+<blockquote>
 
-<p style="font-size: 90%">Take vanilla DGD; install it on a disk
-partition of its own in such a way that the entire mudlib tree is on
-this partition, and the driver binary, swap file, state dump file and
-config file are outside the mudlib tree; run the driver with appropriate
-limitations on memory usage. Now you can be absolutely sure that
-whatever is being done with DGD, it will not affect your machine other
-than by taking a certain amount of disk space, memory, CPU time and
-network bandwidth. Your mud might be taken over and the auto object
-could be rewritten to evade the restrictions it imposes; and still the
-mud cannot exceed these known limitations, no matter how hard the admin
-tries to hang himself inside the mud. Nor can it be used to breach the
-security of your system, or that of any other.</p>
+<p>What I consider unsafe about the net package is the fact that it
+allows outbound connections. It means that someone who breaks the
+security of the mud can use it to assault another host. As long as the
+server remains a program that can only respond, the worst thing it can
+do to your machine is use 100% CPU time, use up a lot of memory, and
+crash to leave a large core dump -- it cannot alter or even read files
+outside the mudlib directory. If you make a separate file system
+partition for the mud, it cannot even use up space intended for other
+files.</p>
+
+<p>Take vanilla DGD; install it on a disk partition of its own in such a
+way that the entire mudlib tree is on this partition, and the driver
+binary, swap file, state dump file and config file are outside the
+mudlib tree; run the driver with appropriate limitations on memory
+usage. Now you can be absolutely sure that whatever is being done with
+DGD, it will not affect your machine other than by taking a certain
+amount of disk space, memory, CPU time and network bandwidth. Your mud
+might be taken over and the auto object could be rewritten to evade the
+restrictions it imposes; and still the mud cannot exceed these known
+limitations, no matter how hard the admin tries to hang himself inside
+the mud. Nor can it be used to breach the security of your system, or
+that of any other.</p>
+
+</blockquote>
 
 <p>So why no outbound network connections? Basically, because it's a
 security risk. If you miscode your library <i>at all</i> (and please
@@ -133,6 +137,13 @@ Ever.</p>
 <p>We're aware that there are protocols like active FTP and InterMUD3
 that require outgoing network connections. The net package is waiting
 for you.</p>
+
+<p><i>updates:</i></p>
+
+<p>The net package isn't maintained by Dworkin, and the current version
+is hopelessly out of date.  Please try (insert link to bart's package
+here).  However, if you have serious plans to use the upcoming DGD MP,
+you should take a look at LPCSSH.</p>
 
 <h3>Built-in HTTP, FTP, complex telnet, IRC, etc</h3>
 
@@ -248,6 +259,3 @@ implicitly).</p>
 <p>In the Kernel Library, you can do this with the extra AUTO object
 feature, but objects in your System directory will have to explicitly
 inherit the extra AUTO object. Phantasmal does this.</p>
-
-<p style="text-size: 150%"><a href="index.html">Back to LPC &amp; DGD
-Page</a></p>

@@ -3,59 +3,58 @@
 use strict;
 
 my $filename = $ARGV[0];
-my $depth = $ARGV[1];
+my $outfilename = $filename;
+$outfilename =~ s/.base.html/.html/;
 
-my $prefix = "../" x $depth;
+my $prefix = $ENV{"PREFIX"};
+@_ = split("/", $prefix);
+my $depth = @_ + 1;
 
-my $template;
-my $banner;
-my $header;
-my $footer;
-my $content;
-my $index;
-my $output;
-my $title;
+my $buffer;	# general file buffer
+
+my @sections;
 
 open(FILE, "<" . $prefix . "template/page.html")
 	or die "Can't open page template: $!";
-$template = join("", <FILE>);
+my $template = join("", <FILE>);
 close FILE;
 
 open(FILE, "<" . $prefix . "template/banner.html")
 	or die "Can't open banner template: $!";
-$banner = join("", <FILE>);
+my $banner = join("", <FILE>);
 close FILE;
 
 open(FILE, "<" . $prefix . "template/header.html")
 	or die "Can't open header template: $!";
-$header = join("", <FILE>);
+my $header = join("", <FILE>);
 close FILE;
 
 open(FILE, "<" . $prefix . "template/footer.html")
 	or die "Can't open footer template: $!";
-$footer = join("", <FILE>);
+my $footer = join("", <FILE>);
 close FILE;
-
-$index = `${prefix}bin/makeindex.pl $filename $depth`;
 
 open(FILE, "<" . $filename)
 	or die "Can't open base file: $!";
-$content = join("", <FILE>);
+my $content = join("", <FILE>);
 close FILE;
 
-$content =~ s/\@\@TITLE ([^@]*)\@\@//;
-$title = $1;
-$content =~ s/\@\@SECTION ([^@]*)\@\@//;
-$content =~ s/\@\@DIRS ([^@]*)\@\@//;
+my $title;
 
+if ($content =~ s/\@\@TITLE ([^@]*)\@\@//) {
+	$title = $1;
+} else {
+	$title = "(untitled)";
+	print STDERR "Warning: $filename doesn't have a title\n";
+}
+
+$content =~ s/\@\@SECTION ([^@]*)\@\@//;
+
+my $index = `${prefix}bin/makeindex.pl $outfilename $depth`;
+
+# process any include directives
 while($content =~ m/(\@\@INCLUDE ([^@]*)\@\@)/) {
 	my $include;
-
-	# sanity checks to make sure that an include file isn't used twice
-	open(CHECKFILE,"<include/$2.check") and die "Duplicate inclusion of $2 while processing $filename: $!";
-	close(CHECKFILE);
-	open(CHECKFILE,">include/$2.check") or die "Can't create include check file $2.check: $!";
-	close(CHECKFILE);
 
 	open(INCLUDEFILE, "<include/$2.in") or die "Can't open include file include/$2.in: $!";
 	$include = join("", <INCLUDEFILE>);
@@ -69,7 +68,7 @@ while($content =~ m/(\@\@INCLUDE ([^@]*)\@\@)/) {
 	$content =~ s/(\@\@INCLUDE ([^@]*)\@\@)/$include/;
 }
 
-$output = $template;
+my $output = $template;
 
 $output =~ s/\@\@HEADER\@\@/$header/g;
 $output =~ s/\@\@BANNER\@\@/$banner/g;
@@ -80,8 +79,7 @@ $output =~ s/\@\@FOOTER\@\@/$footer/g;
 $output =~ s/\@\@TITLE\@\@/$title/g;
 $output =~ s/\@\@WEBDIR\@\@/$prefix/g;
 
-$filename =~ s/.base.html/.html/;
-open(FILE, ">" . $filename)
+open(FILE, ">" . $outfilename)
 	or die "Can't open output file: $!";
 print FILE $output;
 close FILE;
