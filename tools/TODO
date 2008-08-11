@@ -1,3 +1,0 @@
-* Add File::Find-based recursive directory descent for pagecreate.pl.
-* Make all Perl scripts use File::Spec for directory concatenation so this
-  can all work smoothly on Win32, both for Cywin and ActiveState Perl versions.
