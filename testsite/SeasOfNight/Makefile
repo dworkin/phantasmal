@@ -1,3 +1,3 @@
-PREFIX=../../
-DIR=Running
+PREFIX=../
+DIR=SeasOfNight
 include $(PREFIX)Makefile.in

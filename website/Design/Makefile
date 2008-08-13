@@ -1,4 +1,3 @@
-ROOT=..
-DEPTH=1
-DIRS=
-include $(ROOT)/Makefile.in
+PREFIX=../
+DIR=Design
+include $(PREFIX)Makefile.in

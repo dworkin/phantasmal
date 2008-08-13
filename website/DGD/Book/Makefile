@@ -1,4 +1,3 @@
-ROOT=../..
-DEPTH=2
-DIRS=
-include $(ROOT)/Makefile.in
+PREFIX=../../
+DIR=Book
+include $(PREFIX)Makefile.in

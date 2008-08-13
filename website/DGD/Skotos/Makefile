@@ -1,4 +1,3 @@
-ROOT=../..
-DEPTH=2
-DIRS=
-include $(ROOT)/Makefile.in
+PREFIX=../../
+DIR=Skotos
+include $(PREFIX)Makefile.in

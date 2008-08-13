@@ -22,4 +22,3 @@ tar -cv website | gzip > website.tar.gz
 cd ../..
 mv tmp/release/website.tar.gz .
 rm -rf tmp/release tmp/list
-

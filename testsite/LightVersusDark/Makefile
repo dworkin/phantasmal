@@ -1,3 +1,3 @@
 PREFIX=../
-DIR=DGD
+DIR=LightVersusDark
 include $(PREFIX)Makefile.in

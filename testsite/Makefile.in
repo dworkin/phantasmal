@@ -1,0 +1,47 @@
+PAGEGEN=$(PREFIX)bin/makepage.pl
+BASE=$(wildcard *.base.html)
+HTML=$(patsubst %.base.html,%.html,$(BASE))
+DIRS=$(patsubst %/index.base.html,%,$(wildcard */index.base.html))
+DIRS_RMAKE=$(patsubst %,%_make,$(DIRS))
+DIRS_RCLEAN=$(patsubst %,%_clean,$(DIRS))
+
+export DIRS
+export PREFIX
+
+.DELETE_ON_ERROR:
+.PHONY: msubdirs csubdirs rhtml rclean html clean $(DIRS_RMAKE) $(DIRS_RCLEAN)
+
+rhtml: html msubdirs
+rclean: clean csubdirs
+
+html: $(HTML)
+
+msubdirs: $(DIRS_RMAKE)
+csubdirs: $(DIRS_RCLEAN)
+
+$(DIRS_RMAKE):
+	$(MAKE) rhtml -C $(patsubst %_make,%,$@)
+$(DIRS_RCLEAN): 
+	$(MAKE) rclean -C $(patsubst %_clean,%,$@)
+
+clean:
+	rm -f $(HTML) pageindex.local pageindex.full
+
+$(HTML): %.html: %.base.html pageindex.full $(PREFIX)template/*.html
+	$(PAGEGEN) $<
+
+#index files
+
+pageindex.local: $(BASE) $(patsubst %,%/index.base.html,$(DIRS))
+	$(PREFIX)bin/buildlocalindex.pl > pageindex.local
+
+ifdef DIR
+pageindex.full: pageindex.local ../pageindex.full
+	$(PREFIX)bin/buildfullindex.pl $(DIR) > pageindex.full
+else
+pageindex.full: pageindex.local
+	$(PREFIX)bin/buildfullindex.pl > pageindex.full
+endif	
+
+../pageindex.full:
+	$(MAKE) pageindex.full -C ..

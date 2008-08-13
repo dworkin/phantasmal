@@ -1,4 +1,3 @@
-ROOT=..
-DEPTH=1
-DIRS=html
-include $(ROOT)/Makefile.in
+PREFIX=../
+DIR=API
+include $(PREFIX)Makefile.in
