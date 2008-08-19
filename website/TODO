@@ -1,7 +1,3 @@
-* Go through the setup section, make sure that there are simple
-instructions for Win32, for bundled Phantasmal, and for other new/odd
-stuff.
-
 * Scrap the old scripts, use kotaka's new ones.  Bash scripts are easier
 to read.  And the boot script for kotaka was written with portability in
 mind.
@@ -11,9 +7,6 @@ mind.
 * MLA citations 
 
 * Fix CVS -> SVN transitions
-
-* Create a nice index-ish sidebar, and make it automatically open and
-close tree-style
 
 * Consider migrating everything to SGML?
 

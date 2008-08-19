@@ -1,3 +1,5 @@
+(Changed, see addendum at bottom)
+
 The Phantasmal MUDLib, its component parts and associated
 documentation (hereinafter referred to as Phantasmal) are Copyright
 (C) 2001-2005 Noah Gibbs and others.  Phantasmal may be used freely
@@ -14,3 +16,21 @@ placing it voluntarily in the public domain has any legal force.  Feel
 free to use it, modify it, sell it, change the license and otherwise
 go wild, but we accept no responsibility for any of your actions, nor
 for their consequences.
+
+Shentino's Addendum
+
+    Phantasmal MUDLib, a DGD MUD Library
+    Copyright (C) 2008  Raymond Jennings
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Affero General Public License as
+    published by the Free Software Foundation, either version 3 of the
+    License, or (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Affero General Public License for more details.
+
+    You should have received a copy of the GNU Affero General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.

@@ -1,0 +1,18 @@
+This file is a note area of sorts for keeping track of "problems" that
+need to be fixed.
+
+Noted means the problem has been found to exist.
+Diagnosing means that the problem is being investigated for a cause
+Fixing means that a solution is being sought, or being worked on.
+
+Once the problem goes away, it is removed from this file.
+
+Workarounds should be noted with the problem.
+
+
+
+Noted
+-----
+
+bookbinder.pl is failing to generate XHTML 1.0 Strict compliant source
+in the index.

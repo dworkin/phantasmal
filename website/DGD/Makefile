@@ -1,3 +1,0 @@
-PREFIX=../
-DIR=DGD
-include $(PREFIX)Makefile.in

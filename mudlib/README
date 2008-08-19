@@ -1,5 +1,7 @@
                        Phantasmal MUDLib for DGD
 
+(Important: See "Shentino's Addendum" at the bottom of this file)
+
 To get non-Bundled Phantasmal running, please read the INSTALL file
 and follow the instructions you find there.  To start customizing a
 Phantasmal-based MUD, please check "http://phantasmal.sf.net/Setup".
@@ -39,3 +41,11 @@ constructed.  It's available by CVS from Phantasmal's repository
 (module 'testgame') or as part of the bundled distribution.
 
                                                           Angelbob
+
+Shentino's Addendum
+
+In spirit with angelbob's wish to keep it free, I have claimed copyright
+of Phantasmal, and licensed it to everyone under the terms of the GNU
+Affero General Public License, version 3.
+
+Please see the file COPYING for the full text of the license.

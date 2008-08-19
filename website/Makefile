@@ -1,11 +1,12 @@
 PREFIX=
+export PREFIX
 
 rhtml:
 prereq: api book
 pclean: cleanapi cleanbook
 
 dist: prereq rhtml
-dclean: rclean pclean
+dclean: reclean pclean
 include $(PREFIX)Makefile.in
 
 .PHONY: api cleanapi book cleanbook prereq pclean dist dclean cleancheck

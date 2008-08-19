@@ -1,3 +1,0 @@
-PREFIX=../../
-DIR=Running
-include $(PREFIX)Makefile.in

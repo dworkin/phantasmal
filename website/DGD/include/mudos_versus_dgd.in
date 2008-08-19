@@ -359,7 +359,7 @@ Subject: [DGD] test
 
 This can also be done at the LPC level better than ever before:
   * The combination of LWO's and compilation-from-source makes it very 
-easy to do things like comparer = Lambda("a", "b", "return a &lt; b;"); arr 
+easy to do things like comparer = Lambda("a", "b", "return a < b;"); arr 
 = sort_array(arr, comparer);
   * Long ago, Dworkin posted a full grammar for the LPC language, 
 suitable for use in parse_string(). It has a few errors in it, and it 

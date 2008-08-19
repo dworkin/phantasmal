@@ -1,3 +1,6 @@
+Release 0.020:
+    * Brought ObjectD up to date to reflect DGD's new source/include system
+
 Release 0.019:
     * ANSI color support in UNQ markup
     * UNQ markup tag support in helpfile, descriptions, etc.
