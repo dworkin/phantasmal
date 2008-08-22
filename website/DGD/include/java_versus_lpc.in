@@ -1289,8 +1289,8 @@ special care. It is possible that when two different class loaders
 initiate loading of a class or interface denoted by N, the name N may
 denote a different class or interface in each loader.
 
-When a class or interface C = &lt;N1, L1&gt; makes a symbolic reference to a
-field or method of another class or interface D = &lt;N2, L2&gt; , the symbolic
+When a class or interface C = <N1, L1>; makes a symbolic reference to a
+field or method of another class or interface D = <N2, L2> , the symbolic
 reference includes a descriptor specifying the type of the field, or the
 return and argument types of the method. It is essential that any type
 name N mentioned in the field or method descriptor denote the same class
@@ -1423,7 +1423,7 @@ to implement it.
 If we are going to make comparisions on this level, I request that I
 be allowed to run one DGD process within gdb, communicating through a
 C backend with another DGD process :)  Still, the JVMDI interface
-&lt;does&gt; include a RedefineClasses function which performs exactly
+<does> include a RedefineClasses function which performs exactly
 the upgrade function that was being discussed.  At the JDI level,
 the method is called redefineClasses().  The documentation is at
 
@@ -1539,7 +1539,7 @@ Nothing says that it is REQUIRED to run on different virtual machine..
 > If we are going to make comparisions on this level, I request that I
 > be allowed to run one DGD process within gdb, communicating through a
 > C backend with another DGD process :)  Still, the JVMDI interface
-> &lt;does&gt; include a RedefineClasses function which performs exactly
+> <does> include a RedefineClasses function which performs exactly
 > the upgrade function that was being discussed.  At the JDI level,
 > the method is called redefineClasses().  The documentation is at
 
