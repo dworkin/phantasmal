@@ -56,7 +56,7 @@ if ($content =~ s/\@\@TITLE ([^@]*)\@\@//) {
 
 $content =~ s/\@\@SECTION ([^@]*)\@\@//;
 
-my $index = `${prefix}bin/makeindex.pl $outfilename $depth`;
+my $index = `${prefix}wshare/makeindex.pl $outfilename $depth`;
 
 # process any include directives
 while($content =~ m/(\@\@INCLUDE ([^@]*)\@\@)/) {
