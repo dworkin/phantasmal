@@ -156,11 +156,11 @@ static string better_random_string(int length)
 
     str = "";
     while (length >= 20) {
-	str += hash_sha1(random_string(20));
+	str += hash_string("SHA1", random_string(20));
 	length -= 20;
     }
     if (length >= 0) {
-	str += hash_sha1(random_string(length))[.. length - 1];
+	str += hash_string("SHA1", random_string(length))[.. length - 1];
     }
 
     return str;

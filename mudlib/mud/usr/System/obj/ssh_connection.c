@@ -70,7 +70,7 @@ private int ssh_dss_verify(string algo, string m, string public_key, string sign
 	s = "\0" + s_blob[20..39];
 	
 	w = asn_pow(s, asn_sub(q, "\2", q), q);
-	u = asn_mult(w, "\0" + hash_sha1(m), q);
+	u = asn_mult(w, "\0" + hash_string("SHA1", m), q);
 	v = asn_mult(w, r, q);
 	return asn_cmp(asn_mod(asn_mult(asn_pow(g, u, p),
 					asn_pow(y, v, p),
@@ -119,7 +119,7 @@ private int ssh_dss_verify(string algo, string m, string public_key, string sign
 			sizeof(asn1[ASN_CONTENTS]) >= 2 &&
 			asn1[ASN_CONTENTS][1][ASN_TYPE]     == ASN_PRIMITIVE &&
 			asn1[ASN_CONTENTS][1][ASN_NUMBER]   == ASN_OCTET_STR &&
-			asn1[ASN_CONTENTS][1][ASN_CONTENTS] == hash_sha1(m);
+			asn1[ASN_CONTENTS][1][ASN_CONTENTS] == hash_string("SHA1", m);
 		}
 		return FALSE;
 	    }
