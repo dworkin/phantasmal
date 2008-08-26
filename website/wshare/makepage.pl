@@ -14,7 +14,7 @@ my $buffer;	# general file buffer
 
 my @sections;
 
-open(FILE, "<" . $prefix . "template/page.html")
+open(FILE, "<" . $prefix . "wshare/page.html")
 	or die "Can't open page template: $!";
 my $template = join("", <FILE>);
 close FILE;
@@ -38,6 +38,12 @@ open(FILE, "<" . $filename)
 	or die "Can't open base file: $!";
 my $content = join("", <FILE>);
 close FILE;
+
+open(FILE, "<" . $prefix . "template/title.html")
+	or die "Can't open title template: $!";
+my $titleline = join("", <FILE>);
+close FILE;
+
 
 my $title;
 
@@ -76,6 +82,7 @@ $output =~ s/\@\@INDEX\@\@/$index/g;
 $output =~ s/\@\@CONTENT\@\@/$content/g;
 $output =~ s/\@\@FOOTER\@\@/$footer/g;
 
+$output =~ s/\@\@TITLELINE\@\@/$titleline/g;
 $output =~ s/\@\@TITLE\@\@/$title/g;
 $output =~ s/\@\@WEBDIR\@\@/$prefix/g;
 
