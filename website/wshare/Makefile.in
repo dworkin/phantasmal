@@ -1,4 +1,4 @@
-PAGEGEN=$(PREFIX)bin/makepage.pl
+PAGEGEN=$(PREFIX)wshare/makepage.pl
 BASE=$(wildcard *.base.html)
 HTML=$(patsubst %.base.html,%.html,$(BASE))
 DIRS=$(patsubst %/index.base.html,%,$(wildcard */index.base.html))
@@ -23,10 +23,10 @@ msubdirs: $(DIRS_RMAKE)
 csubdirs: $(DIRS_RCLEAN)
 ecsubdirs: $(DIRS_RECLEAN)
 
-$(DIRS_RMAKEFILE): $(PREFIX)Makefile.in
+$(DIRS_RMAKEFILE): $(PREFIX)wshare/Makefile.in
 	echo "PREFIX=../$(PREFIX)" > $@
 	echo "DIR=$(patsubst %/Makefile,%,$@)" >> $@
-	echo "include ../$(PREFIX)Makefile.in" >> $@
+	echo "include ../$(PREFIX)wshare/Makefile.in" >> $@
 
 $(DIRS_RMAKE): %_make: %/Makefile
 	$(MAKE) rhtml -C $(patsubst %_make,%,$@)
@@ -47,14 +47,14 @@ $(HTML): %.html: %.base.html pageindex.full $(PREFIX)template/*.html
 #index files
 
 pageindex.local: $(BASE) $(patsubst %,%/index.base.html,$(DIRS))
-	$(PREFIX)bin/buildlocalindex.pl > pageindex.local
+	$(PREFIX)wshare/buildlocalindex.pl > pageindex.local
 
 ifdef DIR
 pageindex.full: pageindex.local ../pageindex.full
-	$(PREFIX)bin/buildfullindex.pl $(DIR) > pageindex.full
+	$(PREFIX)wshare/buildfullindex.pl $(DIR) > pageindex.full
 else
 pageindex.full: pageindex.local
-	$(PREFIX)bin/buildfullindex.pl > pageindex.full
+	$(PREFIX)wshare/buildfullindex.pl > pageindex.full
 endif	
 
 ../pageindex.full:

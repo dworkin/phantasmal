@@ -7,7 +7,7 @@ pclean: cleanapi cleanbook
 
 dist: prereq rhtml
 dclean: reclean pclean
-include $(PREFIX)wshare/Makefile.in
+include $(PREFIX)Makefile.in
 
 .PHONY: api cleanapi book cleanbook prereq pclean dist dclean cleancheck
 
