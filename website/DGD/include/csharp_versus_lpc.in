@@ -23,7 +23,7 @@ somewhere in between Java and C++.
 
 Like Java, it has interfaces and single inheritance.  From C++, it
 inherits a number of goodies, among which are the C preprocessor,
-overloading of predefined predefined operators with the &lt;operator&gt;
+overloading of predefined predefined operators with the <operator>
 keyword, structs, function pointers, and a general sense of
 unfinished-ness: unlike Java, it is not intended to be closed and
 complete.
