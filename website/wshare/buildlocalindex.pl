@@ -21,7 +21,7 @@ sub read_file
 	my $contents;
 	
 	$read_top = 0;
-	$read_title = "";
+	$read_title = "Untitled document ($readme)";
 	$read_error = !open (FILE, "<" . $readme);
 	
 	if ($read_error) {
