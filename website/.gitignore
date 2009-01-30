@@ -1,0 +1,8 @@
+*.html
+!*.base.html
+
+Makefile
+!./Makefile
+
+pageindex.full
+pageindex.local

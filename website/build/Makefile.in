@@ -1,0 +1,62 @@
+BUILD=$(PREFIX)build
+PAGEGEN=$(BUILD)/makepage.pl
+BASE=$(wildcard *.base.html)
+HTML=$(patsubst %.base.html,%.html,$(BASE))
+DIRS=$(patsubst %/index.base.html,%,$(wildcard */index.base.html))
+DIRS_RMAKE=$(patsubst %,%_make,$(DIRS))
+DIRS_RMAKEFILE=$(patsubst %,%/Makefile,$(DIRS))
+DIRS_RCLEAN=$(patsubst %/Makefile,%_clean,$(wildcard */Makefile))
+DIRS_RECLEAN=$(patsubst %/Makefile,%_eclean,$(wildcard */Makefile))
+
+export DIRS PREFIX
+
+.DELETE_ON_ERROR:
+.PHONY: makefiles msubdirs csubdirs ecsubdirs rhtml rclean reclean html clean $(DIRS_RMAKE) $(DIRS_RCLEAN)
+
+rhtml: html msubdirs
+rclean: clean csubdirs
+reclean: clean ecsubdirs
+
+html: $(HTML)
+makefiles: $(DIRS_RMAKEFILE)
+
+msubdirs: $(DIRS_RMAKE)
+csubdirs: $(DIRS_RCLEAN)
+ecsubdirs: $(DIRS_RECLEAN)
+
+$(DIRS_RMAKEFILE): $(BUILD)/Makefile.in
+	echo "PREFIX=../$(PREFIX)" > $@
+	echo "DIR=$(patsubst %/Makefile,%,$@)" >> $@
+	echo "include ../$(BUILD)/Makefile.in" >> $@
+
+$(DIRS_RMAKE): %_make: %/Makefile
+	$(MAKE) rhtml -C $(patsubst %_make,%,$@)
+
+$(DIRS_RCLEAN):
+	$(MAKE) rclean -C $(patsubst %_clean,%,$@)
+
+$(DIRS_RECLEAN):
+	$(MAKE) reclean -C $(patsubst %_eclean,%,$@)
+	rm -f $(patsubst %_eclean,%/Makefile,$@)
+
+clean:
+	rm -f $(HTML) pageindex.local pageindex.full
+
+$(HTML): %.html: %.base.html pageindex.full $(PREFIX)template/*.html
+	$(PAGEGEN) $<
+
+#index files
+
+pageindex.local: $(BASE) $(patsubst %,%/index.base.html,$(DIRS))
+	$(BUILD)/buildlocalindex.pl > pageindex.local
+
+ifdef DIR
+pageindex.full: pageindex.local ../pageindex.full
+	$(BUILD)/buildfullindex.pl $(DIR) > pageindex.full
+else
+pageindex.full: pageindex.local
+	$(BUILD)/buildfullindex.pl > pageindex.full
+endif	
+
+../pageindex.full:
+	$(MAKE) pageindex.full -C ..

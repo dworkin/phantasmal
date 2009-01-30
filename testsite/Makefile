@@ -7,6 +7,6 @@ pclean:
 
 dist: prereq rhtml
 dclean: reclean pclean
-include $(PREFIX)wshare/Makefile.in
+include $(PREFIX)build/Makefile.in
 
 .PHONY: prereq pclean dist dclean cleancheck
