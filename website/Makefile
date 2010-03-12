@@ -14,9 +14,9 @@ include $(PREFIX)build/Makefile.in
 api:
 	cd API && ../build/apidoc.pl
 aclean:
-	cd API && rm -f html/*.base.html
+	cd API && rm -f html/*.base.html && rm -f html/*.html
 
 book:
 	cd DGD/Book/src && ../../../build/bookbinder.pl
 bclean:
-	cd DGD/Book/src && rm -f ../*.base.html
+	cd DGD/Book && rm -f *.base.html && rm -f *.html
