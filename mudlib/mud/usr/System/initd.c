@@ -87,11 +87,11 @@ static void create(varargs int clone)
     }
   }
   
-  if((major == 1 && minor < 3)) {
-    error("Need to upgrade to DGD version 1.3 or higher!");
-  } else if (major > 1 || (major == 1 && minor > 3)) {
+  if((major == 1 && minor < 4)) {
+    error("Need to upgrade to DGD version 1.4 or higher!");
+  } else if (major > 1 || (major == 1 && minor > 4)) {
     DRIVER->message("This version of Phantasmal is not tested\n");
-    DRIVER->message("with DGD beyond 1.3.X.  Please upgrade Phantasmal!\n");
+    DRIVER->message("with DGD beyond 1.4.X.  Please upgrade Phantasmal!\n");
     error("Upgrade Phantasmal!");
   }
 
@@ -112,10 +112,10 @@ static void create(varargs int clone)
   }
   if(major < 1
      || (major == 1 && minor < 3)) {
-    error("Need to upgrade to DGD version 1.3 or higher!");
+    error("Need to upgrade to Kernel Library version 1.3 or higher!");
   } else if (major > 1 || (major == 1 && minor > 3)) {
     DRIVER->message("This version of Phantasmal is not tested\n");
-    DRIVER->message("with DGD beyond 1.3.  Please upgrade Phantasmal!\n");
+    DRIVER->message("with Kernel Library beyond 1.3.  Please upgrade Phantasmal!\n");
     error("Upgrade Phantasmal!");
   } else if (minor == 3 && patch > 0) {
     DRIVER->message("This is a very new Kernel Library version, or at\n");
