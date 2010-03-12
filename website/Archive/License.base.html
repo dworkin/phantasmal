@@ -1,0 +1,89 @@
+@@TITLE License Rant@@
+
+<h2>Phantasmal's License</h2>
+
+<p>(If you actually care about software licenses for MUDs, you can also
+read my <a href="http://www.skotos.net/articles/neo3.phtml">ranting on
+the subject</a> courtesty of Skotos. I believe that the current
+situation vis-a-vis MUD software licenses is doing MUD development
+significant harm.)</p>
+
+<p>I'm a free software guy, mostly. But as Stallman has apparently
+acknowledged, there are some odd special cases. Not cases where Free
+Software or Open Source are wrong, just cases where they don't work as
+you'd hope.</p>
+
+<p>For instance, say a corporation grabs a documentation &amp;
+formatting tool. The company modifies it, passes it around the company,
+generates public documentation from it and otherwise goes wild. As long
+as that tool's binary executable file stays <i>inside</i> the
+corporation they don't have to give out any source code changes they
+make. Even if they generate publicly-distributed documentation from it.
+That's a situation where even if you GPL the tool it doesn't help.
+That's because GPL, like other similar licenses, assumes that what
+you're trying to restrict is <i>binary-only distribution</i>. And for a
+standard app that model works great. You have to distribute the app for
+the author to steal your accolades and give nothing back.</p>
+
+<p>Where it doesn't work is where the binary doesn't get distributed
+to potential users. The case above with the corporation is just such an
+example. The documentation isn't tied to the tool, it's not a
+derivative work, so none of the free software licenses on the tool make
+a whit of difference.</p>
+
+<p>Incidentally, some tools (like old versions of GNU bison) get
+around this by sticking a whacking great lump of their own code into
+their output. <i>That</i> code <i>is</i> licensed, so the resulting
+code is a derivative work. That <i>still</i> doesn't solve all the
+problems.</p>
+
+<p>MUD clients are just apps and standard Free Software and Open
+Source licenses work just fine for them. You distribute the MUD client
+binary like normal and the licenses work as intended. Somebody modifies
+the MUD client and redistributes it and then has to give out source 
+code -- just like the GPL says.</p>
+
+<p>MUD servers are another matter entirely. An example: the Phantasmal
+source code gets downloaded by Bob the Sysadmin -- so far, so good. He
+uses it to run a MUD. He makes changes which I, as the author, would
+love to have and distribute. Let's say Bob writes a feature to get all
+his NPCs to act fully intelligent using only 5% of the CPU. This is a
+great feature that the public can ooh and ahh at, and it's a result of
+my work combined with Bob's. We'd like the server to be under some wacky
+Free Software license so that Bob has to show me the changes he's made,
+and regular Phantasmal can also have these excellent uber-intelligent
+NPCs everywhere. Bob, being new to free software, isn't interested in
+releasing his spiffy new feature, and would far rather keep it to
+himself only.</p>
+
+<p>Even if I've used the GPL (which is the most restrictive Free
+Software license out there), Bob hasn't distributed me a server binary,
+so he owes me no source code. All I'm seeing are the results of Bob's
+server running, which entitles me to nothing at all -- even though
+their server is based on my work. The GPL (and all other Open Source
+and Free Software licenses) simply don't cover this at all.</p>
+
+<p>There's one more thing to consider: content. A running MUD would
+like to make certain things unavailable to its player base, like the
+solutions to all its puzzles. I don't want a license on the server to
+say &quot;you have to distribute <i>everything</i> to anybody that logs
+in&quot;. If I did, all content and puzzles would have to be public to
+all players as well... So I'd like to distinguish code from content,
+specifically general code from code supporting a particular puzzle.
+It's a very difficult distinction, especially in a legal license (and
+I'm not a lawyer).</p>
+
+<p>This is a nasty situation. Since I'm a supporter of Free Software
+and of Open Source, it bugs me. People are using Phantasmal, and I
+really wish there was a good license for this situation. If you know of
+one then please, please let me know. Hell, let Richard Stallman know
+and I'm sure he'll make sure everybody else finds out :-)</p>
+
+<p>In the mean time, Phantasmal is entirely in the public domain. If
+I'm not going to be able to restrict its use in the way I want to (so I
+can see the source code to other people's features, dammit!) I'm not
+going to restrict it at all. You still need a DGD commercial license to
+use Phantasmal to make money (or else you'll need to port it to
+something other than DGD, which would be very difficult), but that's
+just because DGD requires it -- Phantasmal can be used in any way you
+please.</p>

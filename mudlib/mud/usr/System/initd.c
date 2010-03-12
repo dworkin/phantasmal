@@ -78,15 +78,20 @@ static void create(varargs int clone)
   /* Phantasmal specifically requires a fix from DGD version 1.2.57.  This
      checks for that fix. */
   if(sscanf(status()[ST_VERSION], "DGD %d.%d.%d", major, minor, patch) != 3) {
-    error("Don't recognize DGD driver version as being of the"
-	  + " form DGD X.Y.ZZ!");
+    patch = 0;
+    if(sscanf(status()[ST_VERSION], "DGD %d.%d", major, minor) != 2) {
+      minor = 0;
+      if(sscanf(status()[ST_VERSION], "DGD %d", major) != 1) {
+        error("DGD driver version unparseable!");
+      }
+    }
   }
-  if((major == 1 && minor < 2)
-     || (major == 1 && minor == 2 && patch < 110)) {
-    error("Need to upgrade to DGD version 1.2.110 or higher!");
-  } else if (major > 1 || (major == 1 && minor > 2)) {
+  
+  if((major == 1 && minor < 3)) {
+    error("Need to upgrade to DGD version 1.3 or higher!");
+  } else if (major > 1 || (major == 1 && minor > 3)) {
     DRIVER->message("This version of Phantasmal is not tested\n");
-    DRIVER->message("with DGD beyond 1.2.XX.  Please upgrade Phantasmal!\n");
+    DRIVER->message("with DGD beyond 1.3.X.  Please upgrade Phantasmal!\n");
     error("Upgrade Phantasmal!");
   }
 
@@ -97,18 +102,22 @@ static void create(varargs int clone)
      disclaimer when the Kernel Library changes.  Seems like a good
      compromise. */
   if(sscanf(KERNEL_LIB_VERSION, "%d.%d.%d", major, minor, patch) != 3) {
-    error("Don't recognize Kernel Library version as being of the"
-	  + " form X.Y.ZZ!");
+    patch = 0;
+    if(sscanf(KERNEL_LIB_VERSION, "%d.%d", major, minor) != 2) {
+      minor = 0;
+      if(sscanf(KERNEL_LIB_VERSION, "%d", major) != 1) {
+        error("Kernel Library version unparseable!");
+      }
+    }
   }
   if(major < 1
-     || (major == 1 && minor < 2)
-     || (major == 1 && minor == 2 && patch < 39)) {
-    error("Need to upgrade to DGD version 1.2.110 or higher!");
-  } else if (major > 1 || (major == 1 && minor > 2)) {
+     || (major == 1 && minor < 3)) {
+    error("Need to upgrade to DGD version 1.3 or higher!");
+  } else if (major > 1 || (major == 1 && minor > 3)) {
     DRIVER->message("This version of Phantasmal is not tested\n");
-    DRIVER->message("with DGD beyond 1.2.XX.  Please upgrade Phantasmal!\n");
+    DRIVER->message("with DGD beyond 1.3.  Please upgrade Phantasmal!\n");
     error("Upgrade Phantasmal!");
-  } else if (minor == 2 && patch > 39) {
+  } else if (minor == 3 && patch > 0) {
     DRIVER->message("This is a very new Kernel Library version, or at\n");
     DRIVER->message("least newer than this version of Phantasmal.  If\n");
     DRIVER->message("you have problems, please upgrade Phantasmal!\n");
@@ -269,6 +278,8 @@ void save_mud_data(object user, string room_dirname, string mob_filename,
   int    cohandle, iter;
   mixed  tmp;
 
+  ACCESSD->save();
+
   if(!SYSTEM()) {
     error("Only privileged code can call save_mud_data!");
     return;
@@ -349,6 +360,8 @@ void prepare_reboot(void)
   if(find_object(LOGD)) {
     LOGD->write_syslog("Preparing to reboot MUD...", LOG_NORMAL);
   }
+
+  ACCESSD->save();
 
   /* save_mud_data(nil, "__reboot_callback"); */
 }

@@ -2,20 +2,21 @@ PREFIX=
 export PREFIX
 
 rhtml:
-prereq: api book
-pclean: cleanapi cleanbook
+prereq:
+pclean:
 
 dist: prereq rhtml
 dclean: reclean pclean
 include $(PREFIX)build/Makefile.in
 
-.PHONY: api cleanapi book cleanbook prereq pclean dist dclean cleancheck
+.PHONY: prereq pclean dist dclean cleancheck bclean aclean api book
 
 api:
 	cd API && ../build/apidoc.pl
-cleanapi:
-	rm -f API/html/*.base.html
+aclean:
+	cd API && rm -f html/*.base.html
+
 book:
 	cd DGD/Book/src && ../../../build/bookbinder.pl
-cleanbook:
-	rm -f DGD/Book/*.base.html
+bclean:
+	cd DGD/Book/src && rm -f ../*.base.html

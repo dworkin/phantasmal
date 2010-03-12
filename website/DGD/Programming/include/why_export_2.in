@@ -1,10 +1,9 @@
+From dgd@dworkin.nl  Thu Jun 23 01:54:01 2005
 From: dgd@dworkin.nl (Felix A. Croes)
 Date: Thu Jun 23 00:54:01 2005
 Subject: [DGD] Why export data structures?
 
 [oops -- original response not sent to the list]
-
-=?ISO-8859-1?Q?Petter_Nystr=F6m?= wrote:
 
 > This is really just a question out of curiousity. I was thinking of coding
 > something that relied on several objects having access to the same data

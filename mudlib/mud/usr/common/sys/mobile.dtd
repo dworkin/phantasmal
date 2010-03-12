@@ -1,7 +1,7 @@
 ~DTD{
   ~mobile{type,name?,number?,body,data?}
   ~type{string}
-  ~name{string}
+  ~name{phrase}
   ~number{int}
   ~body{int}
   ~data{unq}

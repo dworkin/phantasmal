@@ -79,7 +79,6 @@ private void unregister_my_nouns(void);
 private void register_my_adjs(void);
 private void unregister_my_adjs(void);
 
-
 static void create(varargs int clone) {
   tag::create(clone);
 
@@ -534,6 +533,7 @@ object* find_contained_objects(object user, string namestr) {
 
 
 /**** Object Description Functions ****/
+/* TODO:  locale-ify this */
 
 /* Returns true if the given string describes a single instance of this
    object type. */
@@ -563,18 +563,36 @@ object describeMany(object obj, int num) {
 
 /**** Access-Protected Functions ****/
 
-
+/* kludgy check to make sure we don't detail/contain ourselves */
+int superset_of(object sample)
+{
+	while (sample) {
+		if (this_object() == sample) {
+			return 1;
+		}
+	
+		sample = sample->get_location();
+	}
+	
+	return 0;
+}
 /* Container Functions */
 
 /* set_location sets the location variable directly.  Mostly, this shouldn't
    happen.  Instead it should be set with the assorted container commands. */
 void set_location(object new_loc) {
   if(previous_program() == OBJECT) {
+    /* kludgy check */
+    
+    if (superset_of(new_loc)) {
+    	error("Circular containment attempted");
+    }
+
     if(detail_of && detail_of != new_loc) {
       LOGD->write_syslog("Setting location of obj #" + tr_num
                          + " despite detail_of being set!", LOG_ERROR);
     }
-
+    
     location = new_loc;
   }
 }
@@ -749,10 +767,10 @@ object set_detail_of(object obj) {
   if(location && obj)
     error("Remove from container before using set_detail_of!");
 
-  detail_of = obj;
-
   if(obj)
     set_location(obj);
+  
+  detail_of = obj;
 }
 
 void add_detail(object obj) {

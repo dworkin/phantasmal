@@ -1,4 +1,0 @@
-Separate tools out into each part, so that each module is self-contained.
-
-It should be possible to independently prepare any part without
-downloading anything else.
