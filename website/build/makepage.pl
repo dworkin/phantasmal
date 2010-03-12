@@ -44,6 +44,37 @@ open(FILE, "<" . $prefix . "template/title.html")
 my $titleline = join("", <FILE>);
 close FILE;
 
+open(FILE, "<pageindex.full")
+	or die "Can't open page index: $!";
+
+my @breadcrumbs;
+my $nolast = 0;
+
+foreach (<FILE>) {
+	if ($_ =~ m/Section "(.*)"/) {
+		push @breadcrumbs,$1
+	}
+	if ($_ =~ m/Root .*/) {
+		$nolast = 1;
+	}
+}
+close FILE;
+
+my $upcount = 0;
+my $lastcrumb;
+
+if ($filename eq "index.base.html") {
+	$lastcrumb = pop @breadcrumbs;
+	$upcount++;
+}
+
+my $breadcrumbs;
+
+while (@breadcrumbs) {
+	my $crumb = shift @breadcrumbs;
+	$breadcrumbs .= "<a href=\"" . ("../" x $upcount)
+		. "index.html\">" . $crumb . "</a> > ";
+}
 
 my $title;
 
@@ -52,6 +83,17 @@ if ($content =~ s/\@\@TITLE ([^@]*)\@\@//) {
 } else {
 	$title = "(untitled)";
 	print STDERR "Warning: $filename doesn't have a title\n";
+}
+
+if ($filename eq "index.base.html") {
+	pop @breadcrumbs;
+	$upcount++;
+}
+
+if ($lastcrumb) {
+	$breadcrumbs .= $lastcrumb;
+} else {
+	$breadcrumbs .= $title;
 }
 
 $content =~ s/\@\@SECTION ([^@]*)\@\@//;
@@ -73,6 +115,8 @@ while($content =~ m/(\@\@INCLUDE ([^@]*)\@\@)/) {
 	chomp $include;
 	$content =~ s/(\@\@INCLUDE ([^@]*)\@\@)/$include/;
 }
+
+$content = "<p>" . $breadcrumbs . "</p>\n\n" . $content;
 
 my $output = $template;
 
