@@ -13,15 +13,15 @@
 </head>
 
 <body>
-  <table frame="void" rules="none">
-    <tr>
-      <td colspan="2" valign="top" class="header_pane">@@HEADER@@</td>
-    </tr>
+  <div class="header_pane">
+    @@HEADER@@
+  </div>
 
-    <tr>
-      <td colspan="2" valign="top" class="banner_pane">@@BANNER@@</td>
-    </tr>
+  <div class="banner_pane">
+    @@BANNER@@
+  </div>
 
+  <table>
     <tr>
       <td valign="top" class="index_pane">
         @@INDEX@@
@@ -30,10 +30,10 @@
         @@CONTENT@@
       </td>
     </tr>
-    
-    <tr>
-      <td colspan="2" valign="top" class="footer_pane">@@FOOTER@@</td>
-    </tr>
   </table>
+
+  <div class="footer_pane">
+    @@FOOTER@@
+  </div>
 </body>
 </html>
