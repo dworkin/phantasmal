@@ -1,0 +1,199 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html>
+<head>
+  <meta name="generator" content=
+  "HTML Tidy for Linux/x86 (vers 25 March 2009), see www.w3.org">
+
+  <title>DGD LPC Textbook</title>
+</head>
+
+<body text="#000000" bgcolor="#DDDDDD" link="#0000EF" vlink=
+"#51188E" alink="#FF0000">
+  <h1>Programming the DGD Driver</h1>
+
+  <p>Copyright 1996, 2003 Ronny Wikh and Noah Gibbs</p>
+  <hr size="4">
+
+  <h1><a name="SEC3" href="index.html#SEC3" id="SEC3">3.0 LPC
+  basics</a></h1>
+
+  <p>This chapter will teach you the very basics of programming,
+  essential for understanding what follows. It will also introduce
+  you to the concept of object oriented programming and explain
+  some of the mudlib.</p>
+  <hr size="2">
+
+  <h2><a name="SEC3.1" href="index.html#SEC3.1" id="SEC3.1">3.1
+  Basic programming concepts</a></h2>
+
+  <p>We begin with he basic programming principles and the
+  structure of LPC and the LPC environment.</p>
+
+  <h3><a name="SEC3.1.1" href="index.html#SEC3.1.1" id=
+  "SEC3.1.1">What is programming?</a></h3>
+
+  <p>This is a very philosophical question. This book will answer
+  it very practically instead. Programming basically is the art of
+  identifying a problem and putting the solution into symbols a
+  computer can understand. A good programmer has a highly developed
+  ability to see how a given problem can be split into smaller
+  problems. He has several solutions to each of those small
+  problems. He knows which particular solution he should pick to
+  make the result as effective as possible for the exact problem he
+  is solving, and the exact way he is solving it.</p>
+
+  <p>A programmer, as the previous passage suggests, actually tells
+  the computer how to solve a problem. A computer can not come up
+  with a solution to a problem itself. However, it's a lot quicker
+  than you are, so problems that you can solve but would take you
+  several lifetimes are handled quickly by the computer.</p>
+
+  <p>What you need to learn is that special way of thinking that
+  allows you to do this 'subdividing' where you see the steps
+  needed to get from the beginning state to the solved state. You
+  also need to learn the methods that make up these steps. This
+  tutorial won't teach you 'how to program', it will only teach you
+  the language used to write the program.</p>
+
+  <p>Who'll teach you programming then, if you don't already know
+  how to? Other administrators, if you're working on somebody's
+  else's game, and of course yourself. Hard work is the primary way
+  that people learn to program. But since you'll need to put many
+  hours into it, there are worse ways than a MUD to learn what you
+  need to know.</p>
+
+  <h3><a name="SEC3.1.2" href="index.html#SEC3.1.2" id=
+  "SEC3.1.2">Compiled/Interpreted code</a></h3>
+
+  <p>Programs are nothing but files full of instructions for the
+  computer. To program is to write lists of instructions in such a
+  way that the computer reaches a predefined goal and accomplishes
+  a task. Usually a program is compiled - translated - into a
+  low-level code expressed in binary symbols (high and low
+  electrical states in computer memory) which the computer
+  understands with ease. The actual language you use to program is
+  merely a convenient go-between, a compromise which both you and
+  the computer can understand. The reason you compile code is that
+  the translation step is fairly complicated and time-consuming.
+  You'd rather just do that once and then store the result, using
+  it directly over and over again.</p>
+
+  <p>LPC however, isn't usually compiled -- it's interpreted. The
+  instructions are read and translated to the computer one by one,
+  executed and forgotten. That's not 100% true. In fact, the driver
+  translates the LPC code into an intermediate simple instruction
+  code. When you run an LPC program, the instruction set is traced,
+  line by line as described above, causing the computer to execute
+  a predefined set of actions defined by the instructions.</p>
+
+  <p>The difference between having interpreted and compiled code is
+  that while the compiled code is quicker, the interpreted version
+  is much esier to modify. If you want to change something in the
+  compiled version you have to make the change in the source code,
+  then recompile and store the new version, then try it out. With
+  interpreted code you just make the change in the source and run
+  it. With LPC you need to instruct the driver to destroy the old
+  object instruction set as well -- more about that later.</p>
+
+  <h3><a name="SEC3.1.3" href="index.html#SEC3.1.3" id=
+  "SEC3.1.3">Programs</a></h3>
+
+  <p>Programs are described above as files containing instructions
+  to the computer. LPC programs are just programs written in the
+  LPC language. These files should be named something ending in the
+  letters <tt>`.c'</tt> (e.g. <tt>`test.c'</tt>) so that the driver
+  knows that it's dealing with an LPC program. Program names can be
+  any string of printable characters less than or equal to 32
+  characters in length, beginning with a letter. However, in
+  practice it is recommended that you limit yourself to less than
+  16 letter strings containing only lowercase letters. If you want
+  the name to contain two or more words, separate them with the
+  <tt>`_'</tt> character (e.g. <tt>`my_file_name.c'</tt>). If
+  you're really cautious, you can limit yourself to MS-DOS 8.3
+  filenames, those with no more than eight characters before the
+  dot, no more than one dot and no more than three characters after
+  the dot.</p>
+
+  <h3><a name="SEC3.1.4" href="index.html#SEC3.1.4" id=
+  "SEC3.1.4">Objects</a></h3>
+
+  <p>An <b>object</b> in LPC is simply a copy of an existing and
+  loaded program in computer memory. When a program is loaded into
+  memory to produce a <b>master object</b> the code is compiled to
+  produce the instruction list. A new chunk of memory is associated
+  with it for internal <b>global variables</b> (described later).
+  When a copy, a <b>clone</b> of this program is made, a special
+  reference called an <b>object pointer</b> is created. That
+  pointer is given a reference to the master code instruction list
+  and a unique chunk of memory. If you clone the object another
+  time, a new pointer is created and a new chunk of memory
+  allocated. When an object is destroyed its associated memory is
+  freed for use by other objects, but the instruction list is kept
+  untouched. An object is <i>always</i> cloned from the master
+  object. If you want to change the program you must update the
+  master object to instruct the driver that a new list of
+  instructions is to be compiled from the source code.</p>
+
+  <h3><a name="SEC3.1.5" href="index.html#SEC3.1.5" id=
+  "SEC3.1.5">Object makeup</a></h3>
+
+  <p>An object is comprised of things called <b>functions</b> and
+  <b>variables</b>. A function is a set of instructions you can
+  reference by a name. A variable is a kind of data container for
+  use by the functions. Some functions are already defined by the
+  driver. They are called <b>external functions</b>, or
+  <b>efuns</b>. DGD calls them <b>kernel functions</b>, or
+  <b>kfuns</b> Functions defined in LPC code are called <b>local
+  functions</b>, or <b>lfuns</b>. To confuse matters further there
+  is a set of functions that count as efuns, but are written in
+  LPC. These functions are sometimes called <b>simulated efuns</b>
+  or <b>sfuns</b>. DGD calls them <b>auto functions</b> or
+  <b>afuns</b>. Luckily, you don't really need to remember any of
+  that.</p>
+
+  <p>A kernel function is a function that is implemented by the
+  driver. Usually that means that it's impossible to create in LPC.
+  Take for example the function <code>write_file()</code> that
+  allows you to write bytes to a file. It's impossible to make that
+  up from other functions in LPC, so it has to be in the driver.
+  This kfun is available in <i>all</i> LPC programs under DGD,
+  though it may be masked by the AUTO object to appear different or
+  behave differently.</p>
+
+  <p>The function <code>add_exit()</code> adds an exit in a room.
+  It is only available in specific object types, rooms in this
+  case. It is written in LPC. It's a good example of a local
+  function. Lfuns are usually part of the makeup of the environment
+  in which the objects are used, and they often operate on mudlib
+  or domain data. <code>Add_exit()</code>, for instance, is aware
+  of directions and travel costs, a very limited and specific
+  concept.</p>
+
+  <p>The function <code>creator()</code> is a good example of the
+  third case. It's a function that is available in every object. It
+  returns information about who created a certain object. This
+  information is specific to the environment since it deals with
+  such notions as code localization, and mainly because the driver
+  doesn't directly export such a function. This kind of function is
+  easy to write in LPC but must be available in all objects, as if
+  it were a kernel function. The AUTO object is inherited by every
+  other object except the Driver LPC object. For reasons that are
+  explained later, this means that public functions of the AUTO
+  object are available from every other object. This is what gives
+  the name "AUTO functions", or afuns. This functionality is
+  perfectly transparent to you; you just use them as you use any
+  other kernel function.</p>
+  <hr>
+  <a href="http://sourceforge.net"><img src=
+  "http://sourceforge.net/sflogo.php?group_id=48659&amp;type=6"
+  width="210" height="62" border="0" alt=
+  "SourceForge.net Logo"></a>
+
+  <address>
+    <a href="mailto:noah_gibbs@yaNOSPAMhoo.com">Noah Gibbs</a>
+  </address><!-- Created: Mon Jun 11 21:50:30 PDT 2001 -->
+  <!-- hhmts start -->
+  Last modified: Tue Apr 8 19:53:16 PDT 2003 <!-- hhmts end -->
+</body>
+</html>
