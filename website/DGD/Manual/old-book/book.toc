@@ -1,0 +1,38 @@
+:
+  Introduction
+  Setup
+  Tutorial
+  ControlFlow
+  Misc
+
+Introduction:
+
+Setup:
+  Installing
+  RunKernel
+  KernelOverview
+
+Tutorial:
+  GettingStarted
+  VarsAndExprs
+  Loops
+  StringHandling
+  UserOutput
+  CodeInFiles
+  Arrays
+  Mappings
+  Functions
+  Objects
+  Arguments
+  VariableScope
+
+ControlFlow:
+  ForWhile
+
+ProgramStructure:
+  CPreprocessor
+
+Misc:
+  EditorQuick
+  DGDVersions
+  LPCHistory
