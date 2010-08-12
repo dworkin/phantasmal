@@ -1,0 +1,516 @@
+@@TITLE Data Types and Variables@@
+
+<h2>Data Types and Variables</h2>
+
+<p>An object holds information in <b>variables</b>. Variables are a
+sort of virtual container that holds information. It's called a
+variable because the information is allowed to change later. Most
+objects process information with <b>functions</b>. Functions can
+use and return data of various kinds.</p>
+
+<p>In principle only one kind of data type is needed, a sort of
+general container that would hold anything you wanted it to. LPC
+calls this type 'mixed'. Usually, though, it's much more useful if
+you can distinguish between different types of information. Knowing
+what's in a variable can be a very good thing. It <i>greatly</i>
+improves on the time it takes to write and debug an object.</p>
+
+<p>In LPC it is possible to use only data of type 'mixed'. In the
+first versions of the language, that was the only data type
+available. With modern LPC, however, it's better to avoid mixed
+variables when you can.</p>
+
+<p>LPC lets you declare variables of these types:</p>
+
+<dl compact>
+  <dt><tt>void</tt></dt>
+
+  <dd>Void is only used as the return type of functions that don't
+  return any data at all. You'll never declare a variable of type
+  void, though you'll use it like other types.</dd>
+
+  <dt><tt>int</tt></dt>
+
+  <dd>Integers (LPC calls them 'int' for short) are whole numbers,
+  normally between -2147483648 and 2147483647. For instance 3, 17,
+  -32, and 999 are all perfectly good integers. You can write
+  integers in a couple of different ways, such as in hexadecimal
+  (base 16), but they're still the same data type underneath,
+  they're just written differently.</dd>
+
+  <dt><tt>float</tt></dt>
+
+  <dd>
+    <p>Fractional numbers, usually approximately between
+    1.17549435e-38 and 3.40282347e+38. For instance 1.3, -348.4,
+    2.0 and 4.53e+4 are floating-point numbers (LPC calls them
+    'float'). In case you're not familiar with Scientific Notation
+    for numbers, 4.53e+4 is the same as 4.53 x 10^4, 4.53 * 10000,
+    or 45300.</p>
+
+    <p>LPC doesn't recognized numbers like <code>1.</code> or
+    <code>.4711</code> as floats. You have to specify both an
+    integer and a decimal part for every number, even if they're
+    zero for the number you're typing. LPC's just funny that
+    way.</p>
+  </dd>
+
+  <dt><tt>string</tt></dt>
+
+  <dd>Strings are simply a series of printable characters. They're
+  written with the characters in double quotes. For instance "x",
+  "the string", "Another long string with the number 5 in it".
+  Strings can contain special characters like newline (written as
+  "\n") to end a line. A lot of LPC operators can handle strings
+  directly, unlike in C. For instance, you can put two of them
+  together with <code>+</code>. This makes strings much easier to
+  use.</dd>
+
+  <dt><tt>mapping</tt></dt>
+
+  <dd>Mappings are another handy LPC feature. A mapping is simply a
+  list of associated values. Assume you want to remember the ages
+  of people. Say that Olle is 23, Peter is 54 and Anna is 15. In
+  LPC you can turn this into the mapping <code>([ "Olle":23,
+  "Peter":54, "Anna":15 ])</code>. The value to the right has been
+  associated to the key to the left. You can then find the value by
+  looking for the key. DGD lets you do intersections and unions and
+  other operations on mappings.</dd>
+
+  <dt><tt>object</tt></dt>
+
+  <dd>Object pointers are references to LPC programs that have been
+  loaded into memory. The object pointer may point to an original
+  object, or to a clone.</dd>
+
+  <dt><tt>Array</tt></dt>
+
+  <dd>All of the above can appear in arrays, indicated by a
+  <code>*</code> in front of the variable name in the declaration.
+  Arrays in LPC are more like lists than arrays in C. LPC and DGD
+  let you do unions and intersections and other array operations
+  that most languages don't.</dd>
+
+  <dt><tt>mixed</tt></dt>
+
+  <dd>Type mixed is a general descriptor covering all the others, a
+  sort of jack-of-all-trades type. An object of any other type may
+  be stored within a mixed type. But when a regular type can be
+  used, it should. Don't use mixed just because you don't want to
+  remember the type's name. The type system is there to catch
+  errors for you. Let it.</dd>
+</dl>
+
+<p>There's also a special value called <code>nil</code>, which is
+not really any of the types above. A string, mapping, array or
+mixed variable that isn't initialized has a value of nil. A
+freshly-allocated array is often allocated to nil. You can do some
+tricks like assigning nil to an entry in a mapping to remove it.
+Nil is like an undefined value, or a zero for things that aren't
+necessarily numbers. You'll see more of it in examples later
+on.</p>
+
+<p>If you need to know the limits of integers, characters or
+floating-point numbers, you can check DGD's
+<tt>include/limits.h</tt> and <tt>include/float.h</tt> files. They
+list limits of the various data types. Bear in mind that DGD can
+easily be compiled with different integer and floating point
+limits, so it's good to make your code check the sizes. They may be
+different next time your program runs!</p>
+
+<h3>Variable declarations</h3>
+
+<p>A variable is a string of letters identifying an information
+container, a place to store data. The container is given a name
+consisting of 32 characters or less, starting with a letter. No
+special character other than the '_' used to separate words is ever
+used. Variables should always be given names that reflect how they
+are used. You declare variables like this:</p>
+<pre>
+&lt;data type&gt; &lt;variable name&gt;, &lt;another variable&gt;, ..., &lt;last variable&gt;;
+e.g.
+    int        counter;
+    float      height, weight;
+    mapping    age_map;
+    
+</pre>
+
+<p>Variables must be declared at the beginning of a block,
+immediately after the first <code>{</code> and before any other
+statements. Global variables, variables that are available in all
+functions througout the program, should be declared at the top of
+the file.</p>
+
+<p>Variables are initially set to 0 or to nil, and not necessarily
+to the obvious 'empty' values. Mappings, arrays and strings will
+all be set to nil and not to <code>([])</code>, <code>({})</code>
+or <code>""</code> as you might expect.</p>
+
+<p>Arrays and mappings should be initalized to their empty values
+(<code>({})</code> and <code>([])</code> respectively) before being
+used. You can't add a value to a mapping that's set to nil, for
+instance, and you'll get a runtime error if you try.</p>
+
+<h3>Arrays and Mappings</h3>
+
+<p>It's time to dig deeper into the special types <b>array</b> and
+<b>mapping</b>. For each of these data types there exist a number
+of useful functions and operators that manipulate them and extract
+information from them. Some of those functions and operators won't
+be described in more detail until later.</p>
+
+<h4><a name="SEC3.2.13.1" href="index.html#SEC3.2.13.1" id=
+"SEC3.2.13.1">How to declare and use arrays</a></h4>
+
+<p><a name="IDX45" id="IDX45"></a> Arrays really aren't arrays in
+the proper sense of the word. They can better be seen as lists with
+fixed order. The difference is that arrays can't usually be
+manipulated easily, while LPC arrays have a rich set of operations
+to reorder them, insert into them and otherwise manipulate
+them.</p>
+
+<p>Arrays are type-specific. This means that an array of a certain
+type only can contain variables of that single type. All arrays are
+one-dimensional, which means you can't declare an array which is
+like a 2- or 3-dimensional grid rather than a list. However, the
+<code>mixed</code> type takes care of these limitations. You can
+also declare an array of arrays, which also takes care of the
+problem. A mixed variable can act as an array containing any data
+type, even other arrays. As a rule you should try to use properly
+typed arrays to minimize the probabilities of programming mistakes.
+When that's not possible, though, you can use the mixed type.</p>
+
+<p>You declare an array like this:</p>
+<pre>
+&lt;type&gt; *&lt;array name&gt;;
+e.g.
+    int *my_arr, *your_arr;
+    float *another_arr;
+    object *ob_arr;
+    
+</pre>
+
+<p>The initial values of these declared arrays is <code>nil</code>,
+<i>not</i> an empty array. I repeat: they are initialized to nil
+and <i>not</i> to an empty array. Keep this in mind!</p>
+
+<p>You can allocate and initialize an array like this:</p>
+<pre>
+&lt;array&gt; = ({ elem1, elem2, elem3, ..., elemN });
+e.g.
+    int *my_arr;
+
+    my_arr = ({ 1, 383, 5, 391, -4, 6 });
+    
+</pre>
+
+<p>You can allocate an array of type <code>mixed</code> with the
+<code>allocate</code> function, like this:</p>
+<pre>
+&lt;array&gt; = allocate(&lt;num of elements&gt;);
+e.g.
+    mixed *some_array;
+
+    some_array = allocate(4);
+    some_array[0] = "Upper Slavonia";
+    some_array[1] = ({ 1, 2, 7, 9 });
+    some_array[2] = ([ "bob" : 7 ]);
+    some_array[3] = 7;
+    
+</pre>
+
+<p>To access members of the array, use brackets after the variable
+name:</p>
+<pre>
+&lt;data variable&gt; = &lt;array&gt;[&lt;index&gt;];
+e.g.
+    val = my_arr[3];
+
+    val2 = some_array[1][3];
+    
+</pre>
+
+<p>LPC, like C, starts counting from array index 0. That means the
+index to the fourth value in an array is 3.</p>
+
+<p>To set the value of an existing position to a new value, simply
+set it using the <code>=</code> operator.</p>
+<pre>
+    my_arr[3] = 22;     /* =&gt; ({ 1, 383, 5, 22, -4, 6 }) */
+    my_arr[3] = 391;    /* =&gt; ({ 1, 383, 5, 391, -4, 6 }) */
+    
+</pre>
+
+<p>If you want to copy a subset of an array you can specify a range
+of indices within the brackets. This is called an <b>array
+slice</b>.</p>
+<pre>
+&lt;array variable&gt; = &lt;array&gt;[&lt;start_range&gt;..&lt;end_range&gt;];
+e.g.
+    your_arr = my_arr[1..3];
+    
+</pre>This will result in <code>your_arr</code> becoming the new
+array <code>({ 383, 5, 391 });</code> If you give a new value to an
+old array, the previous array is lost.
+<pre>
+e.g.
+    my_arr = ({ });
+    
+</pre>
+
+<p>This code will result in <code>my_arr</code> holding an empty
+array. The old array is deallocated and the memory previously used
+is reclaimed by the driver.</p>
+
+<p>If you index outside an array, an error occurs and execution in
+the object is aborted. However, range indexing outside the array
+does not result in an error, the range is then only constrained to
+fall within the array. So, for instance, if <code>my_arr</code> is
+an empty array, the code <code>my_arr[3..7]</code> will return an
+empty array.</p>
+
+<p>Concatenating (adding) arrays to each other is most easily done
+with the <code>+</code> operator. Simply add them as you would
+numbers. The <code>+=</code> operator works fine as well.</p>
+<pre>
+my_arr = ({ 9, 3 }) + ({ 5, 10, 3 }); /* =&gt; ({ 9, 3, 5, 10, 3 }) */
+    
+</pre>
+
+<p>Removing elements from an array is most easily done with the
+<code>-</code> or <code>-=</code> operator. Be aware that the
+operator that will remove <i>all</i> items found that match the
+item you want to remove, not just one.</p>
+<pre>
+my_arr -= ({ 3, 10 }); /* =&gt; ({ 9, 5 }) */
+    
+</pre>
+
+<p>If you want to remove a single item somewhere in the array that
+might have been repeated, you should use the range operator.</p>
+<pre>
+my_arr = ({ 9, 3, 5, 10, 3 });
+my_arr = my_arr[0..0] + my_arr[2..4]; /* =&gt; ({ 9, 5, 10, 3 }) */
+    
+</pre>
+
+<p>Be careful of the following difference. One is a list, the other
+an integer:</p>
+<pre>
+    &lt;array&gt; my_arr[0..0]   /* = ({ 9 }) */
+    &lt;int&gt;   my_arr[0]      /* = 9 */
+    
+</pre>
+
+<p>This means that if you wrote the above code as follows, it
+wouldn't work:</p>
+<pre>
+my_arr = my_arr[0] + my_arr[2..4];
+    
+</pre>
+
+<p>Instead, it would warn you that you can't add an integer to an
+array.</p>
+
+<p>You can leave one end of the array slice unspecified, which will
+use the beginning or end of the array. For instance:</p>
+<pre>
+my_arr = my_arr[..2] + ({ 3, 7, 4 }) + some_array[3..];
+    
+</pre>
+
+<p>The code above would use elements 0 through 2 of my_arr, add ({
+3, 7, 4 }) to the end, and then add all elements of some_array,
+starting at the fourth.</p>
+
+<h4><a name="SEC3.2.13.2" href="index.html#SEC3.2.13.2" id=
+"SEC3.2.13.2">How to declare and use Mappings</a></h4>
+
+<p><a name="IDX47" id="IDX47"></a> Mappings are lists of associated
+values. They are of <code>mixed</code> type, meaning that the
+different indices and the different values can be of varying types
+within the same mapping.</p>
+
+<p>Mappings can use any kind of data type for either index or
+value. The index part of the mapping in a single mapping must
+consist of unique values. There cannot be two indices of the same
+value as one would overwrite the other.</p>
+
+<p>You can declare a mapping just like any other variable, so let's
+start with a few declarations for later use:</p>
+<pre>
+mapping my_map;
+int     value;
+    
+</pre>
+
+<p>Allocating and initializing can be done in two different
+ways:</p>
+<pre>
+1:  &lt;mapping_var&gt; = ([ &lt;index1&gt;:&lt;value1&gt;, &lt;index2&gt;:&lt;value2&gt;, ... ]);
+
+2:  &lt;mapping_var&gt;[&lt;index&gt;] = value;
+    
+</pre>
+
+<p>The first is straightforward and easy.</p>
+<pre>
+1: my_map = ([ "adam":5, "bertil":8, "cecar":-4 ]);
+    
+</pre>
+
+<p>In the second case, if a given index doesn't exist in the
+mapping then it is created when referenced. If it does exist then
+the value for that index is replaced with the one being
+assigned.</p>
+<pre>
+2: my_map["adam"] = 1;    /* Creates the pair "adam":1 */
+   my_map["bertil"] = 8;  /* Creates the pair "bertil":8 */
+   my_map["adam"] = 5;    /* Replaces the old value in "adam" with 5. */
+        ...
+    
+</pre>
+
+<p>Unlike arrays there's no order in a mapping. The values are
+stored in a way that makes finding the values as quick as possible.
+There are functions that will allow you to get the component lists
+(the indices or values) from a mapping but keep in mind that they
+can be in <i>any</i> order and are not guaranteed to remain the
+same from call to call. In practice they only change order when you
+add or remove an element, but it's best not to rely on that.</p>
+
+<p>You can merge mappings with the <code>+</code> and
+<code>+=</code> operators, just as with arrays.</p>
+<pre>
+my_map += ([ "david":5, "erik":33 ]);
+    
+</pre>
+
+<p><a name="IDX48" id="IDX48"></a> Removing items in a mapping is
+simple. You can assign <code>nil</code> to that index of the array.
+Doing so will delete the index/value pair:</p>
+<pre>
+my_map["david"] = nil;
+    
+</pre>
+
+<p>Individual values can be obtained through simple indexing:</p>
+<pre>
+value = my_map["cecar"]; /* =&gt; -4 */
+    
+</pre>
+
+<p>Indexing a value that doesn't exist will <i>not</i> generate an
+error, only the value <code>nil</code>. Be <i>very</i> careful of
+this since you might indeed have legal values of nil in the mapping
+as well -- for instance, a value of <code>nil</code> might mean
+that the index has no value part, or instead that the value indeed
+<i>is</i> <code>nil</code>:</p>
+<pre>
+value = my_map["urk"]; /* =&gt; nil */
+    
+</pre>If you need to be certain, there is a function called
+<code>map_indices</code> which will return the list of indices. You
+can check to see if the index exists that way:
+<pre>
+if(map_indices(my_map) &amp; ({ "urk" })) {
+    DRIVER-&gt;message("Urk is a member of the array!\n");
+}
+    
+</pre>
+<hr size="2">
+
+<h3>Scope and prototypes</h3>
+
+<p><b>Scope</b> is a term defining where a function or variable
+declaration is valid. Since programs are read top down (just like
+you read this page), declarations of functions and variables are
+available to the below the actual declaration. However, the scope
+might be further limited.</p>
+
+<p>A variable that is declared inside a function is only valid
+until the end of that function (the terminating <code>}</code>) is
+reached. If it's declared in a block inside that function, such as
+inside a <code>for</code> loop, it's only valid until the end of
+that block (the <code>}</code> matching the beginning
+<code>{</code> of that block).</p>
+<pre>
+&lt;top of file&gt;
+int GlobCount;
+
+/* Only GlobCount is available here */
+
+void
+var_func(int arg)
+{
+    int var_1;
+
+    /* GlobCount, arg and var_1 are available here */
+    &lt; code &gt;
+
+    {
+        string var_2;
+
+        /* GlobCount, arg, var_1 and var_2 are available in this block */
+        &lt; code &gt;
+    }
+
+    /* GlobCount, arg and var_1 are available here */
+    &lt; code &gt;
+
+    {
+        int var_2;
+        mapping var_3;
+
+        /* GlobCount, arg, var_1, var_2 and var_3 are available here
+          Note that this var_2 is a NEW var_2, an int not a string */
+        &lt; code &gt;
+    }
+
+    /* GlobCount, arg and var_1 are available here */
+    &lt; code &gt;
+}
+
+/* Here only GlobCount and the function var_func are available */
+    
+</pre>
+
+<p>Function declarations follow the same rule of scope, though you
+can't declare a function inside another function. Suppose you have
+these two functions where the first uses the second:</p>
+<pre>
+int
+func_1()
+{
+    &lt; code &gt;
+    func_2("test");
+}
+
+void
+func_2(string data)
+{
+    &lt; code &gt;
+}
+    
+</pre>
+
+<p>Then you have a problem, because the first function tries to use
+the second function before it is declared. This may result in an
+error message, and it's bad practice in any case. To take care of
+this you can rearrange the functions so that <code>func_2</code>
+comes before <code>func_1</code> in the listing. This isn't always
+the best layout, and it isn't always possible. It's usually better
+to write a <b>function prototype</b>. The function prototype should
+be placed at the top of the file after the <code>inherit</code> and
+<code>#include</code> statements (described later) but
+<i>before</i> any code. It should look very much like the function
+declaration itself. In this case:</p>
+<pre>
+&lt; top of file, <code>inherit</code> and <code>#include</code> statements &gt;
+
+void func_2(string data);
+
+&lt; the actual code &gt;
+    
+</pre>
+

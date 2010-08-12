@@ -1,0 +1,291 @@
+@@TITLE The Preprocessor@@
+
+<h2>The Preprocessor</h2>
+
+<p>The preprocessor isn't a part of the LPC language proper. It's a
+special process that is run before the actual compilation of the
+program occurs. It can be seen as a very smart string translator.
+Specified strings in the code are replaced by other strings.</p>
+
+<p>All preprocessor directives are given as strings starting with
+the character <tt>#</tt> on the first non-whitespace column of the
+line. It's considered good practice to put preprocessor directives
+on the very far left of the code, with the <tt>#</tt> in the very
+first column.</p>
+
+<h3><a name="SEC3.3.1" href="index.html#SEC3.3.1" id="SEC3.3.1">The
+#include statement</a></h3>
+
+<p><a name="IDX49" id="IDX49"></a> This is by far the most common
+preprocessor command. It simply tells the preprocessor to replace
+that line with the contents of an entire other file before going
+any further.</p>
+
+<p>Data you put in included files is usually data that won't ever
+change and that you'll be referencing in several files. Instead of
+having to copy and paste the same lines into multiple places and
+maintaining multiple copies, you simply collect that data in an
+include file and include it in the program files as appropriate.
+Included file names traditionally end in <tt>.h</tt>.</p>
+
+<p>The syntax for inclusion is simple:</p>
+<pre>
+#include &lt;standard_file&gt;
+#include "special_file"
+    
+</pre>
+
+<p>Note the absence of a <code>;</code> after the line.</p>
+
+<p>There are two different ways to write this. Which you use
+depends on where the file is that you want to include. There are a
+usually standard include files which may be in any of several
+different directories. Rather than having to remember exactly where
+they are, you can just give the name of the file you want to
+include if it's in a standard include directory.</p>
+<pre>
+#include &lt;limits.h&gt;
+#include &lt;types.h&gt;
+    
+</pre>
+
+<p>If you want to include files that aren't in the standard include
+path, for example files of your own, you have to specify where they
+are. You can do that either relative to the position of the file
+that uses it or by an absolute path. (NOTE: does DGD allow
+non-absolute include paths?)</p>
+<pre>
+#include "/d/Genesis/login/login.h"
+#include "my_defs.h"
+#include "/sys/adverbs.h"     /* Same as the shorter one above */
+    
+</pre>
+
+<p>When you include standard files, <i>always</i> use the
+&lt;&gt;-path notation. Not only is it shorter and easier to
+distinguish, but also if the files move around then files included
+with relative or absolute syntax won't be found. If you use the
+special include syntax then they will be found in any standard
+directory, even if they move between them.</p>
+
+<p>It's possible to include LPC files -- entire files full of code.
+Doing so is normally considered <i>very</i> bad form. Error
+handling usually has a bad time tracing errors in included files --
+there are frequently problems with line numbers. Since you include
+the uncompiled code into several different objets, you will waste
+memory and CPU for these identical functions and variables. It also
+tends to be harder to figure out where functions are defined.</p>
+
+<p>What does the extension of the file name really have to do with
+the contents then? Technically, nothing at all. But the convention
+is to keep functions in <tt>.cc</tt> files and definitions in
+<tt>.h</tt> files. Many mudlibs enforce this, and accept only
+certain file suffixes for compilation or other tasks.</p>
+
+<h3><a name="SEC3.3.2" href="index.html#SEC3.3.2" id="SEC3.3.2">The
+#define statement</a></h3>
+
+<p><a name="IDX50" id="IDX50"></a> <a name="IDX51" id="IDX51"></a>
+#define is a very powerful <b>macro</b> or preprocessor command
+that can be abused endlessly. It's recommended that you use it with
+caution and only for simple tasks. Using it for complex tasks tends
+to make reading or debugging your code quite difficult.</p>
+
+<p>The syntax is as follows:</p>
+<pre>
+#define &lt;pattern&gt; &lt;substitute pattern&gt;
+#undef &lt;pattern&gt;
+    
+</pre>
+
+<p>Any text in the file that matches <code>&lt;pattern&gt;</code>
+will be replaced with <code>&lt;substitute pattern&gt;</code>
+before compilation occurs. A <code>#define</code> is valid from the
+line it is found on until the end of the file or an
+<code>#undef</code> command that removes it.</p>
+
+<p>Although the preprocessor allows #define labels to be any sort
+of legal text, it is customary to use only capital letters. This is
+so that they will be easily distinguishable as what they are.</p>
+
+<p>Place all defines in the beginning of the file. Again, the
+compiler doesn't enforce this but it's a very good idea. It
+guarantees not only that they are easy to find, but also that
+they're usable throughout the file.</p>
+
+<p>Common defines include paths, names and above all constants of
+any kind. By defining them, you avoid writing them over and
+over.</p>
+<pre>
+#define MAX_LOGIN  100          /* Max logged on players */
+#define MY_USER    "/usr/System/my_user" /* My user object */
+#define GREET_TEXT "Welcome!"   /* The login message */
+    
+</pre>
+
+<p>Anywhere the pattern strings above occur in the file where
+they're defined (and any file that includes it), they will be
+replaced by the defined value above. The substitution includes the
+comments above, but they're ignored by the compiler.</p>
+<pre>
+DRIVER-&gt;message(GREET_TEXT + "\n");
+    
+</pre>
+
+<p>If a macro extends beyond the end of the line you can terminate
+the lines with a <code>\</code>. That continues the macro onto the
+next line. However, you <i>must</i> put the newline immediately
+after the <code>\</code>. There may not be spaces or other
+characters between the backslash and the newline.</p>
+<pre>
+#define LONG_DEFINE  "beginning of string \
+                      and end of the same" 
+    
+</pre>
+
+<p>Function-like defines are fairly common and often abused. It's
+important to write macros such that every argument to the macro is
+enclosed in parenthesis where it's used. If you don't do that you
+can end up with some very strange results.</p>
+<pre>
+1: #define MUL_IT(a, b) a * b        /* Wrong */
+2: #define MUL_IT(a, b) (a * b)      /* Not enough */
+3: #define MUL_IT(a, b) ((a) * (b))  /* Correct */
+    
+</pre>
+
+<p>What's the big difference? Look at this example:</p>
+<pre>
+result = MUL_IT(2 + 3, 4 * 5) / 5;
+
+   Expanded with the three different macros, this becomes:
+
+1: result = 2 + 3 * 4 * 5 / 5;       /* = 14, Wrong */
+2: result = (2 + 3 * 4 * 5) / 5      /* = 12, Still wrong */
+3: result = ((2 + 3) * (4 * 5)) / 5  /* = 20, Correct! */
+    
+</pre>
+
+<p>Common problems with defined constants and functions include
+badly formulated macros, complicated macros used inside other
+macros (making the code almost impossible to understand) or
+humongous arrays or mappings in defines that are used often. The
+basic rule is to keep macros short and fairly simple.</p>
+
+<h3><a name="SEC3.3.3" href="index.html#SEC3.3.3" id="SEC3.3.3">The
+#if, #ifdef, #ifndef, #else and #elseif statements</a></h3>
+
+<p><a name="IDX52" id="IDX52"></a> <a name="IDX53" id="IDX53"></a>
+<a name="IDX54" id="IDX54"></a> <a name="IDX55" id="IDX55"></a>
+<a name="IDX56" id="IDX56"></a> The commands above are all
+preprocessor directives aimed at selecting certain parts of code
+and perhaps removing others depending on the state of a
+preprocessor variable.</p>
+
+<p>The <code>#if</code> statement looks very much like a normal if
+statement, but is written a bit differently.</p>
+
+<p>Assume you <i>may</i> have one of the following definitions
+somewhere:</p>
+<pre>
+#define code_VAR  2
+
+or
+        
+#define code_VAR  3
+    
+</pre>
+
+<p>Then you can write</p>
+<pre>
+#if code_VAR == 2
+    &lt;code that will be kept only if code_VAR == 2&gt;
+#else
+    &lt;code that will be kept only if code_VAR != 2&gt;
+#endif
+    
+</pre>
+
+<p>You don't have to have the <code>#else</code> statement there at
+all if you don't want to. You can simply use <code>#if</code> and
+<code>#endif</code>.</p>
+
+<p>It's sufficient to have the following statement to 'define' a
+preprocessor pattern as existing:</p>
+<pre>
+#define code_VAR    /* This defines the existance of code_VAR */
+    
+</pre>
+
+<p>Then you can use <code>#ifdef</code> to check for its existence,
+like this:</p>
+<pre>
+#ifdef code_VAR
+    &lt;code that will be kept only if code_VAR is defined&gt;
+#else
+    &lt;code that will be kept only if code_VAR isn't defined&gt;
+#endif
+</pre>
+
+<p>or you can use #ifndef, which is essentially an #ifdef with an
+extra "not" implied.</p>
+<pre>
+#ifndef code_VAR
+    &lt;code that will be kept only if code_VAR isn't defined&gt;
+#else
+    &lt;code that will be kept only if code_VAR is defined&gt;
+#endif
+    
+</pre>
+
+<p>Again, the <code>#else</code> is optional.</p>
+
+<p>The <code>#if/#ifdef/#ifndef</code> preprocessor commands are
+frequently used to add debug code that you don't want to have
+activated all of the time, or code that will work differently
+depending on other very rarely changing parameters. Since the
+conditions have to be hard-coded in the file and can't change
+easily at runtime, most features will use a regular <code>if</code>
+instead of an <code>#if</code>.</p>
+
+<h3>Comments</h3>
+
+<p>Comments may seem like an odd thing to start with, but they're
+everywhere so you need to be able to recognize them from the very
+start. They're also important, so you need to know how to write
+them from the very start.</p>
+
+<p>In some LPC dialects, there are two kinds of comments:</p>
+<pre>
+&lt;code&gt; // This is a comment stretching to the end of the line.
+       // NOT SUPPORTED BY DGD!
+
+&lt;code&gt; /* This is an enclosed comment */ &lt;more code&gt;
+    
+</pre>The first type of comment starts off with the <code>//</code>
+characters and then stretches all the way to the end of the line.
+If you want more lines of comments, you'll have to start off those
+as well with new <code>//</code> characters. This is like C++
+single-line comments, and DGD does <i>not</i> support them!
+
+<p>The second type has a definite length. Those comments start with
+<code>/*</code> and end with <code>*/</code>. They are useful when
+you have to write something that will stretch over several lines.
+You only have to write the comment symbol at then beginning and
+end, and not for every line in between. These are just like
+standard C comments.</p>
+
+<p>Please note that the <code>/* */</code> comment can <i>not</i>
+be nested. It is <i>not</i> correct to write something like
+this:</p>
+<pre>
+/* A comment
+   /* A nested comment */
+   the first continues
+ */
+    
+</pre>What will happen is that the comment will end with the first
+<code>*/</code> found, leaving the text <code>the first continues
+*/</code> to be interpreted as if it was LPC code. That's not valid
+LPC code, so instead you'll get an error.
+

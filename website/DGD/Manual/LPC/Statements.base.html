@@ -1,0 +1,405 @@
+@@TITLE Statements@@
+
+<h2>Statements</h2>
+
+<p>A statement is sort of a full sentence of instructions, made up
+from one or more expressions. Statements usually cover no more than
+a single line of code. Sometimes it's necessary to break it up
+though if it becomes too long simply to improve on legibility -- a
+little like avoiding long run-on sentences. For most statements you
+simply break the line between two words, but if you are in the
+middle of a string you need to add a backslash (<code>\</code>) at
+the end of the line in order for the gamedriver to understand
+what's going on.</p>
+<pre>
+DRIVER-&gt;message("This is an example of \
+a broken string.\n");
+    
+</pre>
+
+<p>However, breaking a statement with backslash is extremely ugly
+and makes the code hard to read. It's usually possible to break the
+line naturally at the end of a string, or between two operators of
+some kind, or even just split the string in half and add the two
+parts together with the <code>+</code> operator. The only time the
+backslash really is necessary is in
+<code>#define</code>-statements, which we'll mention later.</p>
+<pre>
+DRIVER-&gt;message("This is a better way of " +
+                "breaking a string.\n");
+</pre>
+
+<p>Statements in LPC almost always end with <code>;</code>. It's
+considered good practice to put a newline there as well. That is to
+say, you shouldn't put multiple statements on the same line if you
+can help it. Keeping them separate makes them easier to read.</p>
+
+<h4>The block statement</h4>
+
+<p>There are a lot of statements
+such as conditional statements that in certain circumstances
+execute only <i>one</i> specified statement and no more. Suppose
+you want to have several statements executed and not just one?
+Well, there's a special statement called <b>block</b> statement
+that will allow you to do that. A block is defined as starting with
+a <code>{</code> and ending with a <code>}</code>. Within that
+block you may have as many statements of any kind (including
+variable definitions) as you like. The block statement shouldn't
+end with a <code>;</code>, though usually it doesn't matter if you
+accidentally put one there. Example:</p>
+<pre>
+if(my_var &lt; 3)
+{
+  statement_one();
+  statement_two();
+  statement_three();
+}
+    
+</pre>
+
+<h4>The ';' statement</h4>
+
+<p>As stated <code>;</code> is mostly used to terminate statements.
+However it's also a statement in its own right.</p>
+
+<p>The <code>;</code> on it's own will simply be a null statement
+causing nothing to happen. This is useful when you have
+test-clauses and loops (described later) that perform their
+intended purpose within the test or loop clause and aren't actually
+intended to do anything else. Just remember that anywhere you're
+allowed to have a statement, you can just put a <code>;</code> as a
+statement that does nothing.</p>
+
+<h3><a name="SEC3.2.10" href="index.html#SEC3.2.10" id=
+"SEC3.2.10">Conditionals</a></h3>
+
+<p>Conditional statements are used a lot in LPC, and there are
+several ways of writing them. A very important concept is that
+<code>0</code> and <code>nil</code> are considered as <b>false</b>
+and any other value as <b>true</b> in tests. This means that empty
+listings <code>({})</code>, empty strings <code>""</code> and empty
+mappings <code>([])</code> also are evaluated as <b>true</b> since
+they aren't <code>0</code> or <code>nil</code>. You have to use
+special functions to compute their size or determine content if you
+want test them.</p>
+
+<h4><a name="SEC3.2.10.1" href="index.html#SEC3.2.10.1" id=
+"SEC3.2.10.1">The if and else statements</a></h4>
+
+<p><a name="IDX38" id="IDX38"></a> The most common conditional
+statement is the <code>if</code> statement. It's easy to use and
+can be combined with an <code>else</code> clause to do two
+different things based on a variable's value. It's written like
+this:</p>
+<pre>
+if (expression) statement;
+e.g.
+    if (a == 5)
+        a -= 4;
+    
+</pre>
+
+<p>If you want to handle the false case, you can add an
+<code>else</code> statement like this:</p>
+<pre>
+if (expression) true-statement else false-statement;
+e.g.
+    if (a == 5)
+        a -= 4;
+    else
+        a += 18;
+
+or
+
+    if(a &gt; 10)
+      a -= 10;
+    else {
+      a += 100;
+      b--;
+      a -= 10;
+    }
+    
+</pre>
+
+<h4><a name="SEC3.2.10.2" href="index.html#SEC3.2.10.2" id=
+"SEC3.2.10.2">The switch statement</a></h4>
+
+<p><a name="IDX39" id="IDX39"></a> <a name="IDX40" id="IDX40"></a>
+If one variable has to be tested for a lot of different values, the
+resulting list of <tt>`if-else-if-else'</tt> statements soon gets
+very long and hard to read. However, if the type of the value you
+are testing is an integer, a float or a string you can use a much
+denser and neater way of coding. Assume you have the following code
+you want to write:</p>
+<pre>
+if (name == "fatty")
+{
+    nat = "se";
+    desc = "blimp";
+}
+else if (name == "plugh")
+{
+    nat = "no";
+    desc = "warlock";
+}
+else if (name == "olorin")
+{
+    nat = "de";
+    desc = "bloodshot";
+}
+else
+{
+    nat = "x";
+    desc = "unknown";
+}
+    
+</pre>
+
+<p>A better way of writing this is:</p>
+<pre>
+switch (name)
+{
+case "fatty":
+    nat = "se";
+    desc = "blimp";
+    break;
+
+case "plugh":
+    nat = "no";
+    desc = "warlock";
+    break;
+
+case "olorin":
+    nat = "de";
+    desc = "bloodshot";
+    break;
+
+default:
+    nat = "x";
+    desc = "unknown";
+}
+    
+</pre>
+
+<p>The workings of this statement is simple: <code>switch</code>
+sets up the expression value within the parenthesis for matching.
+Then every expression following a <code>case</code> is compared to
+find a match.</p>
+
+<p>Note that the <code>case</code> expression <b>must</b> be a
+constant value. It can't be a variable, function call or other
+expression.</p>
+
+<p>After a match has been found the following statements are
+executed until a <code>break</code> statement is found. If no
+matching value can be found, the <code>default</code> statements
+are executed instead.</p>
+
+<p>While it's not mandatory to have a <code>default</code> section,
+it's highly recommended since that usually means that something has
+happened that wasn't predicted when writing the program. It's
+usually very good to have an error message to notify the user (or
+you) that something unexpected happened.</p>
+
+<p>If you forget to put in a 'break' statement the following 'case'
+expression will be executed. This might sound like something you
+don't want, but if in the example above the names <tt>`fatty'</tt>
+and <tt>`plugh'</tt> both should generate the same result you could
+write:</p>
+<pre>
+case "fatty":
+    /* FALLTHROUGH */
+case "plugh":
+    &lt; code &gt;
+    break;
+</pre>
+
+<p>... and save a bit of space. Writing code with switch doesn't
+make it any quicker to execute. It <i>does</i> make it a lot easier
+to read, which reduces the chance of making mistakes while coding.
+Remember to put the <code>/* FALLTHROUGH */</code> comment there
+though, or it might be hard to remember later if it was intentional
+or an omission of a <code>break</code> statement. If you have code
+that's executed before falling through to the next case, this is
+especially important. A good idea is usually to add an extra
+linefeed after a <code>break</code> statement just to give some
+extra 'breathing space' to improve on legibility.</p>
+
+<h4><a name="SEC3.2.10.3" href="index.html#SEC3.2.10.3" id=
+"SEC3.2.10.3">The ?: expression</a></h4>
+
+<p><a name="IDX41" id="IDX41"></a> This is a very condensed way of
+writing an <code>if/else</code> statement and return a value
+depending on how the test turned out. The <code>?:</code> operator
+isn't a statement, it's an expression since it returns a value.
+It's listed here instead of being listed among the expressions
+because it's effectively a conditional, though.</p>
+
+<p>Suppose you want to write the following:</p>
+<pre>
+if (test_expression)
+    var = if_expression;
+else
+    var = else_expression;
+    
+</pre>
+
+<p>You can write that in a much more condensed way:</p>
+<pre>
+var = test_expression ? if_expression : else_expression;
+e.g.
+    name = day == 2 ? "tuesday" : "another day";
+    
+</pre>
+
+<p>Opinions vary as to whether writing the conditional with this
+operator makes the code easier or harder to read. A common rule of
+thumb is that one use of the <code>?:</code> operator makes code
+clearer, but that several in a single statement only makes it
+worse. Something like this <i>definitely</i> isn't an
+improvement:</p>
+<pre>
+name = day == 2 ? time == 18 ? "miller time" : "tuesday" : "another day";
+    
+</pre>
+
+<h3><a name="SEC3.2.11" href="index.html#SEC3.2.11" id=
+"SEC3.2.11">Loop statements</a></h3>
+
+<p>There are two loop statements in LPC which incorporate the use
+of conditional statements within them. That means they can be
+programmed to execute only until a certain condition is true.</p>
+
+<h4><a name="SEC3.2.11.1" href="index.html#SEC3.2.11.1" id=
+"SEC3.2.11.1">The for statement</a></h4>
+
+<p>If you want a counter or an iterator, you should usually use the
+<b>for</b> statement. The syntax is as follows:</p>
+<pre>
+for (initalize_statement ; test_expression ; end_of_loop_statement)
+    body_statement;
+    
+</pre>When first entered, the <code>for</code> statement executes
+the <b>initialize_statement</b> part. This part usually is used to
+initialize counters or values for the loop itself. Then the first
+loop starts. Every loop starts by executing the
+<b>test_expression</b> and examining the result. This is a truth
+conditional, so any answer not equal to <code>0</code> or
+<code>nil</code> will cause the loop to be run. If the test
+expression is true then the <b>body_statement</b> is executed,
+immediately followed by the <b>end_of_loop_statement</b>. In the
+<b>body_statement</b> you usually do what you want to have done for
+this iteration. In the <b>end_of_loop_statement</b> you usually
+increment or decrement counters as needed to prepare them for the
+<b>test_expression</b> in the next loop.
+
+<p>Throughout the previous section I used the word <i>usually</i> a
+lot. This is because you don't <i>have</i> to do it that way,
+there's no rule forcing you to make use of the statements in the
+way I said. For the moment let's stick to the regular way of using
+the <b>for-statement</b>. Later on I'll describe more refined
+techniques, and you can discover your own as well.</p>
+
+<p>Assume you want to compute the sum of all integers from 7 to 123
+and don't know the formula ((x2^2 + x1^2) / 2). The most
+straightforward way of doing that is a loop.</p>
+<pre>
+result = 0;
+for (count = 7 ; count &lt; 124 ; count++)
+    result += count;
+    
+</pre>
+
+<p>First of all, <code>result</code> is set to 0. Then the actual
+<code>for</code> statement is entered. It begins by setting the
+variable count to 7. Then the loop is entered, beginning by testing
+if count (= 7) is less than 124. It is, so <code>result</code> has
+count added to it. Then count is incremented and the loop is
+entered again. This goes on until the count value reaches 124.
+Since that isn't less than 124 the loop is ended.</p>
+
+<p>The loop form above is pretty standard in C, but you may have
+realized there's another way you can write the same thing:</p>
+<pre>
+result = 0;
+for (count = 7 ; count &lt;= 123 ; count++)
+    result += count;
+    
+</pre>This way works fine too, and you may find it more
+understandable. Then again, you may not.
+
+<p>Please note that the value of count after the <code>for</code>
+statement will be 124 and <i>not</i> 123. The
+<b>test_expression</b> must evaluate to <b>false</b> in order for
+the loop to end, and in this case the value for count then must be
+124. This is true for <i>both</i> ways of writing the loop
+above!</p>
+
+<h4><a name="SEC3.2.11.2" href="index.html#SEC3.2.11.2" id=
+"SEC3.2.11.2">The while statement</a></h4>
+
+<p><a name="IDX42" id="IDX42"></a> The <b>while</b> statement is
+pretty straightforward. You can probably guess from its name what
+it does. The statement will perform another statement over and over
+until a given <code>while</code> expression returns false. The
+syntax is:</p>
+<pre>
+while (&lt;test expression&gt;)
+    
+</pre>
+
+<p>Note carefully that the test expression is checked first of all,
+before running the statement the first time. If it evaluates as
+false the first time, the body is never executed.</p>
+<pre>
+a = 0;
+while (a != 4)
+{
+    a += 5;
+    a /= 2;
+}
+    
+</pre>
+
+<h3><a name="SEC3.2.12" href="index.html#SEC3.2.12" id=
+"SEC3.2.12">The break and continue statement</a></h3>
+
+<p><a name="IDX43" id="IDX43"></a> <a name="IDX44" id="IDX44"></a>
+Sometimes during the execution of <code>switch</code>,
+<code>for</code> or <code>while</code> statements it becomes
+necessary to abort execution of the block code, and continue
+execution outside. To do that you use the <code>break</code>
+statement. It stops the execution of that block and continues after
+it.</p>
+<pre>
+while (end_condition &lt; 9999)
+{
+    /* If the time() function returns 29449494, abort execution */
+    if (time() == 29449494)
+        break;
+
+    &lt; code &gt;
+}
+
+/* Continue here both after a break or when the full loop is done. */
+&lt; code &gt;
+    
+</pre>
+
+<p>Sometimes you merely want to start over from the top of the
+<code>for</code> or <code>while</code> loop you're running. To do
+that, you use the <code>continue</code> statement.</p>
+<pre>
+/* Add all even numbers */
+sum = 0;
+for (i = 0 ; i &lt; 10000 ; i++)
+{
+    /* Start from the top of the loop if 'i' is an odd number */
+    if (i % 2)
+         continue;
+
+    sum += i;
+}
+    
+</pre>Notice that the <code>i++</code> is executed when the loop is
+continued. Only the <code>sum += i;</code> is skipped.

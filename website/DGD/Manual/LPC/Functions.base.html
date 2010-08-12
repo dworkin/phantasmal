@@ -1,0 +1,72 @@
+@@TITLE Functions@@
+
+<h2>Functions</h2>
+
+<h3>Function declarations</h3>
+
+<p>A function's declaration must state what kind of data type it
+returns, if any. A function name is a label much like a variable
+name, consisting of 32 characters or less and starting with a
+letter. No special characters other than <code>_</code> should be
+used to separate words. Use function names that clearly reflect on
+what they do. A function declaration looks like this:</p>
+<pre>
+/*
+ * Function name: &lt;Function name&gt;
+ * Description:   &lt;What it does &gt;
+ * Arguments:     <a list="" of="" the="" arguments="" and="" what=
+"" they="" contain="">
+ * Returns:       &lt;What the function returns&gt;
+ */
+&lt;return type&gt;
+&lt;function name&gt;(&lt;argument list&gt;)
+{
+   &lt;code expressions&gt;
+}
+    </a>
+</pre><a list="" of="" the="" arguments="" and="" what="" they=""
+contain="">The beginning comment, while optional, is highly
+recommended. Even if you don't use precisely this form of comment,
+you should state what the function does and what it expects to be
+given as input. Here is an example function:</a>
+<pre>
+/*
+ * Function name: compute_diam
+ * Description:   Compute the diameter of a circle given the 
+ *                circumference.
+ * Variables:     circumference - the circle's circumference
+ *                pi - a famous irrational constant
+ * Returns:       The circle's diameter
+ */
+float compute_diam(float circumference, float pi)
+{
+    float rval;
+
+    /* Circumference = pi * diameter, so
+       diameter = circumference / pi */
+
+    rval = circumference / pi;
+
+    return rval;
+}
+</pre>
+
+<p>The argument list is a comma-separated list of data types. It
+specifies what kinds of data will be sent to the function and
+assigns names to this data for later use. The data recieved will
+<i>only</i> be usable inside the function, unless you explicitly
+send it elsewhere. The function's argument names are valid only
+within that function itself.</p>
+
+<p>(In order to save space and improve on legibility in the text, I
+won't put a header on every example function).</p>
+
+<p>A function that doesn't return anything should be declared as
+<code>void</code>. For instance:</p>
+<pre>
+void write_stuff(string mess)
+{
+    write_file("/usr/Bob/myfile.txt", mess);
+}
+    
+</pre>
