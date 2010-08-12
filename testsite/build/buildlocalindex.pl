@@ -3,10 +3,13 @@
 use strict;
 
 my @read_files;
+my %ordered_content;
 my $read_title;
 my $read_section;
 my $read_top;
 my $read_error;
+my $read_sequence;
+my $top_sequence = 0;
 
 sub read_dir
 {
@@ -23,6 +26,7 @@ sub read_file
 	$read_top = 0;
 	$read_title = "Untitled document ($readme)";
 	$read_error = !open (FILE, "<" . $readme);
+	$read_sequence = "";
 	
 	if ($read_error) {
 		return;
@@ -33,6 +37,14 @@ sub read_file
 	
 	$contents =~ m/\@\@TITLE ([^@]*)\@\@/
 		and $read_title = $1;
+
+	if ($contents =~ m/\@\@SEQUENCE ([^@]*)\@\@/) {
+		$read_sequence = $1;
+		
+		if ($top_sequence < $read_sequence) {
+			$top_sequence = $read_sequence;
+		}
+	}
 	
 	if ($contents =~ m/\@\@SECTION ([^@]*)\@\@/) {
 		$read_section = $1;
@@ -68,9 +80,24 @@ foreach $test (@file_list) {
 
 		unless ($read_error) {
 			$test =~ s/.base//;
-			$index .= "File \"" . $test . "\" \"" . $read_title . "\"\n";
+			
+			if (!($read_sequence eq "")) {
+				$ordered_content{$read_sequence}
+					= "File \"" . $test . "\" \"" . $read_title . "\"\n";
+			} else {
+				$index .= "File \"" . $test . "\" \"" . $read_title . "\"\n";
+			}
 		}
 	}
+}
+
+my $sequence = 0;
+
+while ($sequence <= $top_sequence) {
+	if (exists $ordered_content{$sequence}) {
+		$index .= $ordered_content{$sequence};
+	}
+	$sequence++;
 }
 
 print $index;
