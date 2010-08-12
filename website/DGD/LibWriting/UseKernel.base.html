@@ -1,117 +1,126 @@
 @@TITLE Using the Kernel@@
 
-<h2>Should You Use the Kernel Library for Your New MUD Library?</h2>
+<h2>Should You Use the Kernel Library for Your New MUD
+Library?</h2>
 
-<p>DGD comes with a little library called the Kernel Library. It's not a
-game, or even a particularly good chat server. Most of what it does is
-infrastructure, stuff that may not be obvious when you look at what it
-does. So: what does it do for you? Why would you use it? Why wouldn't
-you use it?</p>
+<p>DGD comes with a little library called the Kernel Library. It's
+not a game, or even a particularly good chat server. Most of what
+it does is infrastructure, stuff that may not be obvious when you
+look at what it does. So: what does it do for you? Why would you
+use it? Why wouldn't you use it?</p>
 
 <h3>What Does It Provide?</h3>
 
-<p>The Kernel Library builds on top of DGD. And any game that can be
-built on top of DGD can be built on top of the Kernel Library, though it
-may require some funny contortions to make some of them work. However,
-some kinds of <i>code</i> that would otherwise work in DGD won't work
-with the Kernel Library. It's just that there's always a way to replace
-that code (in a game) with something else that works. It's a little like
-saying that you can do anything in the C programming language without
-"goto". It may take some re-structuring, but you can do it. And like
-"goto", most of the things the Kernel Library restricts are things you
-probably shouldn't use.</p>
+<p>The Kernel Library builds on top of DGD. And any game that can
+be built on top of DGD can be built on top of the Kernel Library,
+though it may require some funny contortions to make some of them
+work. However, some kinds of <i>code</i> that would otherwise work
+in DGD won't work with the Kernel Library. It's just that there's
+always a way to replace that code (in a game) with something else
+that works. It's a little like saying that you can do anything in
+the C programming language without "goto". It may take some
+re-structuring, but you can do it. And like "goto", most of the
+things the Kernel Library restricts are things you probably
+shouldn't use.</p>
 
-<p>So other than being strict with you, what does the Kernel Library do
-for you? Mainly, it provides upgradeability, security, and resource
-management. For details, read about <a href=
-"../Kernel/ScopeOfLib.html">the scope of the Kernel Library</a>.</p>
+<p>So other than being strict with you, what does the Kernel
+Library do for you? Mainly, it provides upgradeability, security,
+and resource management. For details, read about <a href=
+"../Kernel/ScopeOfLib.html">the scope of the Kernel
+Library</a>.</p>
 
-<p>For more information about building on top of the Kernel Library, see
-the <a href="../Kernel">Getting Started with the Kernel Library</a>
-section of this site.</p>
+<p>For more information about building on top of the Kernel
+Library, see the <a href="../Kernel">Getting Started with the
+Kernel Library</a> section of this site.</p>
 
 <h3>Why Would You Use It?</h3>
 
 <p>The Kernel Library provides a standard base for building. If DGD
-changes, the Kernel Library can help shield you. For instance, when the
-behavior of send_message changed several years ago, the Kernel Library
-changed its behavior so that all Kernel-based MUD Libraries still worked
-on new versions. The Kernel's abstraction layer can stay standard, even
-across different versions of DGD.</p>
+changes, the Kernel Library can help shield you. For instance, when
+the behavior of send_message changed several years ago, the Kernel
+Library changed its behavior so that all Kernel-based MUD Libraries
+still worked on new versions. The Kernel's abstraction layer can
+stay standard, even across different versions of DGD.</p>
 
 <p>The Kernel provides some future-compatibility &mdash; it uses
-thread-local storage in several places that you might not know to, so
-every Kernel-based MUD Library is more likely to work well with the
-upcoming multiprocessor version of DGD. You'll still need to fine-tune,
-but the Kernel gives the basics for free.</p>
+thread-local storage in several places that you might not know to,
+so every Kernel-based MUD Library is more likely to work well with
+the upcoming multiprocessor version of DGD. You'll still need to
+fine-tune, but the Kernel gives the basics for free.</p>
 
-<p>By keeping your programming on the straight and narrow, the Kernel
-library is also handling needs you don't (yet) know you have. For
-instance, you may not need to upgrade your objects initially, but if you
-use the Kernel then you can be certain that if that need comes up, you
-can meet it. Similarly, you may initially have only a single
-administrator on your MUD. If you then need to add a second or third
-administrator, the Kernel's built-in security makes it much easier to
-keep them from intentionally or negligently causing problems. Since the
-Kernel Library was designed with very large projects in mind, and has
-been used in very complex projects, you can be sure that it's suitable
-for them. Your own homebrew solution may require more work to fix the
-same problems.</p>
+<p>By keeping your programming on the straight and narrow, the
+Kernel library is also handling needs you don't (yet) know you
+have. For instance, you may not need to upgrade your objects
+initially, but if you use the Kernel then you can be certain that
+if that need comes up, you can meet it. Similarly, you may
+initially have only a single administrator on your MUD. If you then
+need to add a second or third administrator, the Kernel's built-in
+security makes it much easier to keep them from intentionally or
+negligently causing problems. Since the Kernel Library was designed
+with very large projects in mind, and has been used in very complex
+projects, you can be sure that it's suitable for them. Your own
+homebrew solution may require more work to fix the same
+problems.</p>
 
-<p>The Kernel provides a base for various modules and upgrades. If you
-start with it, you have several Object Daemons to choose from, and they
-should require little or no modification. Phantasmal recently added an
-SSH daemon that had been written for the Kernel Library, and it required
-only about an hour of effort to get it working... Phantasmal is
-Kernel-based, so the upgrade worked immediately and used Phantasmal's
-game code and user objects without a hitch.</p>
+<p>The Kernel provides a base for various modules and upgrades. If
+you start with it, you have several Object Daemons to choose from,
+and they should require little or no modification. Phantasmal
+recently added an SSH daemon that had been written for the Kernel
+Library, and it required only about an hour of effort to get it
+working... Phantasmal is Kernel-based, so the upgrade worked
+immediately and used Phantasmal's game code and user objects
+without a hitch.</p>
 
 <h3>Why Wouldn't You Use It</h3>
 
-<p>Some people prefer to write their own code, just in general. That's
-usually a very, very poor reason to avoid the Kernel Library &mdash; it
-solves many subtle problems, and you really need to understand them
-thoroughly if you don't use the Kernel. Thread-local storage, object
-upgrading, information being passed insecurely through the call-stack...
-These are all topics that need to be addressed, but for which there is
-no good documentation. The Kernel solves each of them, and many
-more.</p>
+<p>Some people prefer to write their own code, just in general.
+That's usually a very, very poor reason to avoid the Kernel Library
+&mdash; it solves many subtle problems, and you really need to
+understand them thoroughly if you don't use the Kernel.
+Thread-local storage, object upgrading, information being passed
+insecurely through the call-stack... These are all topics that need
+to be addressed, but for which there is no good documentation. The
+Kernel solves each of them, and many more.</p>
 
-<p>A more common reason to avoid it is that it seems too complex. The
-Kernel Library seems to give very little until you understand it well,
-and there's definitely a lot of code there. However, as this page should
-demonstrate, the Kernel Library addresses a lot of different concerns,
-and it does so quite well. It's complicated, but usually only because it
-has to be complicated. If there's something you're not concerned with
-that the Kernel Library does (like security, say), you're probably
-better off tearing the security-related code out of the Kernel Library
-and using the result than writing your own replacement... The Kernel
-does a ridiculous variety of stuff, and it will be very hard for you to
+<p>A more common reason to avoid it is that it seems too complex.
+The Kernel Library seems to give very little until you understand
+it well, and there's definitely a lot of code there. However, as
+this page should demonstrate, the Kernel Library addresses a lot of
+different concerns, and it does so quite well. It's complicated,
+but usually only because it has to be complicated. If there's
+something you're not concerned with that the Kernel Library does
+(like security, say), you're probably better off tearing the
+security-related code out of the Kernel Library and using the
+result than writing your own replacement... The Kernel does a
+ridiculous variety of stuff, and it will be very hard for you to
 make sure you do all the same things.</p>
 
-<p>Another common complaint is that the layout is unfamiliar. The Kernel
-Library has an unusual security model based on objects checking what
-program is calling them. It handles significant security and data
-integrity issues by checking the pathname of the program, so moving a
-piece of code from one directory to another (or calling it from a
-different function or object) can significantly change the behavior. The
-security model can be both powerful and elegant once you understand it,
-but it requires significant effort to understand. This is a significant
-issue &mdash; requiring MUD Library authors to understand unfamiliar
-code has held DGD back for years, and it's hard to find builders and
-coders who already know LPC, let alone DGD's Kernel Library. However,
-the only solution to the issue is to turn your MUD into yet another
-LPMUD clone. If you're doing something new and innovative, you're going
-to have to work with some unfamiliar code, and so are your builders. If
-you're <i>not</i> doing something new and innovative, why are you
-bothering to write your own MUD Library?</p>
-<hr />
+<p>Another common complaint is that the layout is unfamiliar. The
+Kernel Library has an unusual security model based on objects
+checking what program is calling them. It handles significant
+security and data integrity issues by checking the pathname of the
+program, so moving a piece of code from one directory to another
+(or calling it from a different function or object) can
+significantly change the behavior. The security model can be both
+powerful and elegant once you understand it, but it requires
+significant effort to understand. This is a significant issue
+&mdash; requiring MUD Library authors to understand unfamiliar code
+has held DGD back for years, and it's hard to find builders and
+coders who already know LPC, let alone DGD's Kernel Library.
+However, the only solution to the issue is to turn your MUD into
+yet another LPMUD clone. If you're doing something new and
+innovative, you're going to have to work with some unfamiliar code,
+and so are your builders. If you're <i>not</i> doing something new
+and innovative, why are you bothering to write your own MUD
+Library?</p>
+<hr>
 
 <h3>The Kernel Library and Persistence</h3>
 
-<p>There was an e-mail exchange between Frank Schmidt and Dworkin about
-the suitability of the Kernel Library as a general-use MUD Library. Some
-of it is excerpted below.</p>
+<p>There was an e-mail exchange between Frank Schmidt and Dworkin
+about the suitability of the Kernel Library as a general-use MUD
+Library. Some of it is excerpted below.</p>
 <pre>
 @@INCLUDE john_doe@@
-  </pre>
+  
+</pre>

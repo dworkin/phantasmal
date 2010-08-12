@@ -4,83 +4,87 @@
 
 <p>If you're running a persistent MUD, chances are good that you'll
 occasionally get a stray object sitting around, something that's no
-longer useful, and may never have been useful. You'd like to get rid of
-objects like that because otherwise they can stick around for (quite
-literally) years. How can you do it?</p>
+longer useful, and may never have been useful. You'd like to get
+rid of objects like that because otherwise they can stick around
+for (quite literally) years. How can you do it?</p>
 
-<p>The Kernel Library has some tools that you may want to use, or may
-just want to duplicate for your own MUD. For instance, it has a daemon
-called ObjRegD, which keeps a list of every clone and who owns it. That
-allows authorized users to look through the lists and get rid of old
-clones that are no longer in use, if they can figure out whether it's
-being used.</p>
+<p>The Kernel Library has some tools that you may want to use, or
+may just want to duplicate for your own MUD. For instance, it has a
+daemon called ObjRegD, which keeps a list of every clone and who
+owns it. That allows authorized users to look through the lists and
+get rid of old clones that are no longer in use, if they can figure
+out whether it's being used.</p>
 
-<p>In addition to the ObjRegD, it's possible in extreme or desperate
-cases to parse through a statedump. You could also verify the contents
-of your object management code by reading the statedump, if necessary...
-Any disagreement between them means a bug in your code. The statedump
-has a fixed format, and the code that writes and parses it (the DGD
-server) is open to you, so you can verify that format easily enough.
-Richard Braakman did this with the early DGD 1.1.X dumpfile format.</p>
+<p>In addition to the ObjRegD, it's possible in extreme or
+desperate cases to parse through a statedump. You could also verify
+the contents of your object management code by reading the
+statedump, if necessary... Any disagreement between them means a
+bug in your code. The statedump has a fixed format, and the code
+that writes and parses it (the DGD server) is open to you, so you
+can verify that format easily enough. Richard Braakman did this
+with the early DGD 1.1.X dumpfile format.</p>
 
 <h3>Garbage Collection</h3>
 
-<p>Your arrays, mappings and LWOs are all garbage-collected. That means
-they'll go away, even circular structures of them, automatically.
-Clones, however, are <i>not</i> garbage collected. In some sense it's
-impossible to lose the last reference to a clone because find_object()
-can always potentially return it.</p>
+<p>Your arrays, mappings and LWOs are all garbage-collected. That
+means they'll go away, even circular structures of them,
+automatically. Clones, however, are <i>not</i> garbage collected.
+In some sense it's impossible to lose the last reference to a clone
+because find_object() can always potentially return it.</p>
 
 <h3>Quotas</h3>
 
-<p>It's often a good idea to enforce quotas on how many LPC objects and
-how much memory a given administrator can use. By doing that, and
-allowing the administrator to list what objects he is currently being
-'billed' for (using the ObjRegD above, presumably), you can have
-administrators do much of your cleanup for you. Periodic warnings for
-admins that are near their quota is a good way to make them clean up
-<i>before</i> they hit the actual limit and things start to go
-wrong.</p>
+<p>It's often a good idea to enforce quotas on how many LPC objects
+and how much memory a given administrator can use. By doing that,
+and allowing the administrator to list what objects he is currently
+being 'billed' for (using the ObjRegD above, presumably), you can
+have administrators do much of your cleanup for you. Periodic
+warnings for admins that are near their quota is a good way to make
+them clean up <i>before</i> they hit the actual limit and things
+start to go wrong.</p>
 
 <h3>Heuristics</h3>
 
-<p>What might you want to check for to determine if an object is unused?
-Well, you can see who owns it &mdash; it's possible that you'll want to
-get rid of every object created by a now-inactive administrator when he
-leaves. However, you might want to first check the objects and make sure
-they aren't in active zones. That administrator might have done some
-building you weren't aware of. Those objects can first be transferred to
-the ownership of a different administrator, and then all the old admin's
-objects can be purged.</p>
+<p>What might you want to check for to determine if an object is
+unused? Well, you can see who owns it &mdash; it's possible that
+you'll want to get rid of every object created by a now-inactive
+administrator when he leaves. However, you might want to first
+check the objects and make sure they aren't in active zones. That
+administrator might have done some building you weren't aware of.
+Those objects can first be transferred to the ownership of a
+different administrator, and then all the old admin's objects can
+be purged.</p>
 
-<p>You could keep track of how recently an object has been referenced.
-If you update a time counter every time an object is picked up or used,
-you can determine what objects are more likely to be missed if they
-disappear. Then you can look through the least-used objects by hand and
-eliminate any that seem superfluous. However, this method has some
-pitfalls: make sure that objects like statues in highly-trafficked areas
-(which are seen often but almost never used) will not be marked as
-unused. If an object is seen often, you'll want to keep it. Similarly,
-an active player may want to keep a 'buried treasure' somewhere out of
-the way where other players can't find it. If you keep track of object
-owners, it may be easier to never get rid of an object owned by a
-currently-active player.</p>
+<p>You could keep track of how recently an object has been
+referenced. If you update a time counter every time an object is
+picked up or used, you can determine what objects are more likely
+to be missed if they disappear. Then you can look through the
+least-used objects by hand and eliminate any that seem superfluous.
+However, this method has some pitfalls: make sure that objects like
+statues in highly-trafficked areas (which are seen often but almost
+never used) will not be marked as unused. If an object is seen
+often, you'll want to keep it. Similarly, an active player may want
+to keep a 'buried treasure' somewhere out of the way where other
+players can't find it. If you keep track of object owners, it may
+be easier to never get rid of an object owned by a currently-active
+player.</p>
 
-<p>To avoid problems like the above, you might simply never get rid of
-any 'physical' object in a player-accessible zone of the MUD. That will
-make it easier to track down only unused 'virtual' objects, or objects
-with no 'physical' location.</p>
+<p>To avoid problems like the above, you might simply never get rid
+of any 'physical' object in a player-accessible zone of the MUD.
+That will make it easier to track down only unused 'virtual'
+objects, or objects with no 'physical' location.</p>
 
-<p>It's also possible to have a 'testing' flag on objects in zones that
-haven't been opened yet. That allows you to destruct them if they enter
-the game proper, but also allows you to destruct any 'spare' clones of
-them that people are carrying (especially non-admin characters!) if you
-need the space.</p>
+<p>It's also possible to have a 'testing' flag on objects in zones
+that haven't been opened yet. That allows you to destruct them if
+they enter the game proper, but also allows you to destruct any
+'spare' clones of them that people are carrying (especially
+non-admin characters!) if you need the space.</p>
 
-<p>It's possible to use the status() kfun to get the most recent stored
-size of an object. If you're trying to reduce the in-RAM footprint of
-your MUD rather than just getting rid of the largest number of (possibly
-small) objects, you might want to get a listing of objects ranked by
-size, which will let you optimize or remove the largest objects. Note
-that this doesn't give the exact current size, it just gives the size
-the last time the object was swapped to disk.</p>
+<p>It's possible to use the status() kfun to get the most recent
+stored size of an object. If you're trying to reduce the in-RAM
+footprint of your MUD rather than just getting rid of the largest
+number of (possibly small) objects, you might want to get a listing
+of objects ranked by size, which will let you optimize or remove
+the largest objects. Note that this doesn't give the exact current
+size, it just gives the size the last time the object was swapped
+to disk.</p>

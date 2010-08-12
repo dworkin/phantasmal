@@ -2,71 +2,76 @@
 
 <h2>DGD's State Dumps</h2>
 
-<p>Statedumps provide a way to dump DGD's memory space to disk, much as
-the swapfile does, and restore it at a later time. All program state is
-maintained. Pointers continue to work, call_out() statements are still
-scheduled, objects that are previously un-upgraded remain that way until
-recompiled in the standard DGD way. The only difference after a
-statedump is that network connections are broken (of course), and that
-you can alter the code of the DGD server, perhaps by upgrading versions
-or changing the configuration file. Statedumps are almost invariably
-forward compatible to new stable DGD versions, and there are several
-other upgrades you can make, such as increasing the maximum number of
-objects, which will be transparently caught and permitted with an old
-statedump file.</p>
+<p>Statedumps provide a way to dump DGD's memory space to disk,
+much as the swapfile does, and restore it at a later time. All
+program state is maintained. Pointers continue to work, call_out()
+statements are still scheduled, objects that are previously
+un-upgraded remain that way until recompiled in the standard DGD
+way. The only difference after a statedump is that network
+connections are broken (of course), and that you can alter the code
+of the DGD server, perhaps by upgrading versions or changing the
+configuration file. Statedumps are almost invariably forward
+compatible to new stable DGD versions, and there are several other
+upgrades you can make, such as increasing the maximum number of
+objects, which will be transparently caught and permitted with an
+old statedump file.</p>
 
 <p>A statedump makes the old save_object() and restore_object()
-functions redundant for saving your MUD's state as a whole, though they
-can occasionally be useful for saving an individual object or three.
-Like with save_object(), the resulting statedump file can contain
-security-sensitive information, so it should ideally be stored where
-only highly-privileged code can read it.</p>
+functions redundant for saving your MUD's state as a whole, though
+they can occasionally be useful for saving an individual object or
+three. Like with save_object(), the resulting statedump file can
+contain security-sensitive information, so it should ideally be
+stored where only highly-privileged code can read it.</p>
 
 <p>Statedumps are a highly-necessary part of <a href=
 "../LibWriting/Persistence.html">persistence</a> in a MUD Library.
-Skotos Tech's Castle Marrach used them since early development, keeping
-a 'virtual uptime' from 1999 into 2004 and beyond.</p>
+Skotos Tech's Castle Marrach used them since early development,
+keeping a 'virtual uptime' from 1999 into 2004 and beyond.</p>
 
 <p>Statedumps, like shutdowns and object recompilation, take place
-immediately after the thread that requested them has ended. The thread
-that would otherwise immediately follow will occur, but not until after
-the server has been restarted with the just-saved statedump.</p>
+immediately after the thread that requested them has ended. The
+thread that would otherwise immediately follow will occur, but not
+until after the server has been restarted with the just-saved
+statedump.</p>
 
-<p>Statedumps are able to handle DGD's normal policy of having <a href=
-"Swapping.html">far more LPC data than there is available memory</a>.
-Normally, a swapfile will be written incrementally as objects are
-swapped out. You can tell DGD when to put the finishing touches on it,
-declare it done, and that becomes your statedump. Your swapfile will
-then begin writing out (what will be) the next incremental statedump. By
-telling DGD approximately how often you'll be dumping state, you make it
-much easier for the server to write the statedump in a timely way when
-you request it &mdash; nearly all the work has been done in advance.
-However, it can be very difficult to guarantee the time taken to write a
-statedump for a large MUD, depending on what objects have or have not
-been swapped out recently.</p>
+<p>Statedumps are able to handle DGD's normal policy of having
+<a href="Swapping.html">far more LPC data than there is available
+memory</a>. Normally, a swapfile will be written incrementally as
+objects are swapped out. You can tell DGD when to put the finishing
+touches on it, declare it done, and that becomes your statedump.
+Your swapfile will then begin writing out (what will be) the next
+incremental statedump. By telling DGD approximately how often
+you'll be dumping state, you make it much easier for the server to
+write the statedump in a timely way when you request it &mdash;
+nearly all the work has been done in advance. However, it can be
+very difficult to guarantee the time taken to write a statedump for
+a large MUD, depending on what objects have or have not been
+swapped out recently.</p>
 
-<p>Statedumps are, generally speaking, the fastest way to do backups in
-DGD. You should use them regularly for that purpose, in case your game
-crashes. Castle Marrach's statedump, circa 2004, was nearly 2GB in size.
-Its statedump usually took only a few seconds, only occasionally going
-into the 10-20 seconds range. That's not a lot of time required, so
-backing up (say) every hour won't cause your MUD a lot of lag.</p>
+<p>Statedumps are, generally speaking, the fastest way to do
+backups in DGD. You should use them regularly for that purpose, in
+case your game crashes. Castle Marrach's statedump, circa 2004, was
+nearly 2GB in size. Its statedump usually took only a few seconds,
+only occasionally going into the 10-20 seconds range. That's not a
+lot of time required, so backing up (say) every hour won't cause
+your MUD a lot of lag.</p>
 
 <h3>Restoring</h3>
 
 <p>When you restore from a statedump, all your previous objects are
-exactly where they were. However, your network connections, if any, have
-been closed. You should destruct them if it's necessary to do so
-explicitly. See the Kernel Library's code for details, or use the Kernel
-Library to make even that part of restoration fully transparent.</p>
+exactly where they were. However, your network connections, if any,
+have been closed. You should destruct them if it's necessary to do
+so explicitly. See the Kernel Library's code for details, or use
+the Kernel Library to make even that part of restoration fully
+transparent.</p>
 
 <h3>Cleanup</h3>
 
-<p>A certain amount of object fragmentation is removed and other cleanup
-tasks done when objects are swapped out. For that reason, it's often
-good to make sure that DGD is permitted to do at least some <a href=
-"Swapping.html">swapping</a> rather than running your game entirely in
-RAM.</p>
+<p>A certain amount of object fragmentation is removed and other
+cleanup tasks done when objects are swapped out. For that reason,
+it's often good to make sure that DGD is permitted to do at least
+some <a href="Swapping.html">swapping</a> rather than running your
+game entirely in RAM.</p>
 <pre>
 @@INCLUDE persistence@@
 </pre>

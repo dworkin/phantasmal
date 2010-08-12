@@ -2,26 +2,28 @@
 
 <h2>Writing an InterMUD3 Server in DGD</h2>
 
-<p>InterMUD3 is a protocol for sending chat-type social commands between
-MUDs, allowing you to message players on other MUDs, and to have shared
-chat channels across more than one MUD. There are previous protocols for
-the same, but InterMUD3 is the current frontrunner for new
-implementations.</p>
+<p>InterMUD3 is a protocol for sending chat-type social commands
+between MUDs, allowing you to message players on other MUDs, and to
+have shared chat channels across more than one MUD. There are
+previous protocols for the same, but InterMUD3 is the current
+frontrunner for new implementations.</p>
 
-<p>Like FTP, InterMUD3 protocol requires outgoing network connections,
-so normally you'll need to apply the DGD network patch to implement an
-InterMUD3 server, though it would be possible to write an external
-InterMUD3 server, then have it make a connection to the DGD server and
-relay all the appropriate information, thus defining your own "passive
-InterMUD3" protocol. However, this would require significant additional
-effort, and probably a lot of work in a language other than DGD.</p>
+<p>Like FTP, InterMUD3 protocol requires outgoing network
+connections, so normally you'll need to apply the DGD network patch
+to implement an InterMUD3 server, though it would be possible to
+write an external InterMUD3 server, then have it make a connection
+to the DGD server and relay all the appropriate information, thus
+defining your own "passive InterMUD3" protocol. However, this would
+require significant additional effort, and probably a lot of work
+in a language other than DGD.</p>
 
-<p>You can find <a href="../external/I3Code.txt">Jason Cone's InterMUD3
-daemon</a> on the <a href="../Programming/Code_Examples.html">page of
-code examples</a>. However, it's not entirely complete, and requires the
-network patch for DGD.</p>
+<p>You can find <a href="../external/I3Code.txt">Jason Cone's
+InterMUD3 daemon</a> on the <a href=
+"../Programming/Code_Examples.html">page of code examples</a>.
+However, it's not entirely complete, and requires the network patch
+for DGD.</p>
 
-<p>If you decide to implement InterMUD3, you'll want to very carefully
-examine the <a href=
+<p>If you decide to implement InterMUD3, you'll want to very
+carefully examine the <a href=
 "http://cie.imaginary.com/protocols/intermud3.html">protocol
 specification</a> for it.</p>

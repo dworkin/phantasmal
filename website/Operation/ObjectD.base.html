@@ -6,11 +6,11 @@ Manager</h2>
 <h3>Known Bugs</h3>
 
 <p>Don't compile a library that isn't used by anything before the
-ObjectD gets compiled. If you do, then when you rebuild that library
-(say, during a full rebuild), you'll get a log message saying that an
-unregistered issue of the lib is being removed. This is an artifact of
-the way Phantasmal's ObjectD does object discovery during its
-initialiation.</p>
+ObjectD gets compiled. If you do, then when you rebuild that
+library (say, during a full rebuild), you'll get a log message
+saying that an unregistered issue of the lib is being removed. This
+is an artifact of the way Phantasmal's ObjectD does object
+discovery during its initialiation.</p>
 
 <h3>Major data</h3>
 
@@ -27,21 +27,23 @@ initialiation.</p>
 
   <dt>fixups</dt>
 
-  <dd>This mapping exists only during initialization. It is created by
-  the recompile_to_track_libs function from recomp_paths. It maps from a
-  library to the set of child objects that the library inherits.</dd>
+  <dd>This mapping exists only during initialization. It is created
+  by the recompile_to_track_libs function from recomp_paths. It
+  maps from a library to the set of child objects that the library
+  inherits.</dd>
 
   <dt>recomp_paths</dt>
 
-  <dd>This mapping is useful only during initialization. It is keyed by
-  object name, and the value is a list of what objects the key object is
-  inherited by. It is set indirectly by compile_object and compile_lib,
-  so it is indirectly set by recompiling all objects during init.</dd>
+  <dd>This mapping is useful only during initialization. It is
+  keyed by object name, and the value is a list of what objects the
+  key object is inherited by. It is set indirectly by
+  compile_object and compile_lib, so it is indirectly set by
+  recompiling all objects during init.</dd>
 
   <dt>all_libs</dt>
 
-  <dd>This is a mapping of library names to their most current issue
-  numbers.</dd>
+  <dd>This is a mapping of library names to their most current
+  issue numbers.</dd>
 </dl>
 
 <h3>Major Functions</h3>
@@ -49,8 +51,8 @@ initialiation.</p>
 <dl>
   <dt>recompile_to_track_libs</dt>
 
-  <dd>Builds the fixups array from recomp_paths, while destructing and
-  recompiling every library in recomp_paths.</dd>
+  <dd>Builds the fixups array from recomp_paths, while destructing
+  and recompiling every library in recomp_paths.</dd>
 
   <dt>fix_parent_arrays</dt>
 
@@ -60,9 +62,9 @@ initialiation.</p>
 
   <dt>fix_child_arrays</dt>
 
-  <dd>For every library, clear the previous issue number and the list of
-  children. For every library, register_inherit_data(). For every object
-  in ObjRegD (plus TELNET_CONN and BINARY_CONN), call
+  <dd>For every library, clear the previous issue number and the
+  list of children. For every library, register_inherit_data(). For
+  every object in ObjRegD (plus TELNET_CONN and BINARY_CONN), call
   register_inherit_data() on its issue.</dd>
 
   <dt>recompile_every_clonable</dt>
@@ -72,9 +74,9 @@ initialiation.</p>
 
   <dt>recompile_every_object</dt>
 
-  <dd>First, recompile_every_clonable(). Then recompile_to_track_libs(),
-  fix_parent_arrays(), and fix_child_arrays(). This is most of the init
-  sequence.</dd>
+  <dd>First, recompile_every_clonable(). Then
+  recompile_to_track_libs(), fix_parent_arrays(), and
+  fix_child_arrays(). This is most of the init sequence.</dd>
 
   <dt>count_clones</dt>
 
@@ -113,8 +115,8 @@ initialiation.</p>
   <li>count_clones</li>
 </ul>
 
-<p>Remember that when an object is recompiled, add_clonable or add_lib
-is called. Either will call convert_inherited_str_to_mixed, which will
-add any tracked libraries the object inherits to all_libs. The function
-will also add appropriate dependencies to recomp_paths if called during
-init.</p>
+<p>Remember that when an object is recompiled, add_clonable or
+add_lib is called. Either will call convert_inherited_str_to_mixed,
+which will add any tracked libraries the object inherits to
+all_libs. The function will also add appropriate dependencies to
+recomp_paths if called during init.</p>

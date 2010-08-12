@@ -1,177 +1,185 @@
 @@TITLE Interface Files@@
 
-<h3>Files You Need for a Phantasmal-Based
-Game</h3>
+<h3>Files You Need for a Phantasmal-Based Game</h3>
 
-<p>You'll need a <b>/usr/game</b> directory. Files that interface with
-Phantasmal go under it. So do other things, potentially. These files
-interface fairly directly and are basically mandatory. They do
-<i>not</i> include files necessary to interface with various optional
-Phantasmal daemons.</p>
+<p>You'll need a <b>/usr/game</b> directory. Files that interface
+with Phantasmal go under it. So do other things, potentially. These
+files interface fairly directly and are basically mandatory. They
+do <i>not</i> include files necessary to interface with various
+optional Phantasmal daemons.</p>
 
 <h3>Gameconfig.h</h3>
 
-<p>You'll need an /include/gameconfig.h file. Phantasmal will include
-it, and use its GAME_INITD definition to find your game's Init object. A
-common value for GAME_INITD is "/usr/game/initd". Note the lack of a
-".c" on the end. That's because it's an object name, not a filename.</p>
+<p>You'll need an /include/gameconfig.h file. Phantasmal will
+include it, and use its GAME_INITD definition to find your game's
+Init object. A common value for GAME_INITD is "/usr/game/initd".
+Note the lack of a ".c" on the end. That's because it's an object
+name, not a filename.</p>
 
-<p>It's standard practice to put similar definitions into gameconfig.h,
-constants that give filenames or object names for important game
-modules. However, GAME_INITD is the only one that's absolutely mandatory
-(or at least, mandatory without changes to Phantasmal proper).</p>
+<p>It's standard practice to put similar definitions into
+gameconfig.h, constants that give filenames or object names for
+important game modules. However, GAME_INITD is the only one that's
+absolutely mandatory (or at least, mandatory without changes to
+Phantasmal proper).</p>
 
 <h3>version.h</h3>
 
-<p>The file "/include/version.h" isn't strictly required in most cases,
-but the bundling script expects it. It should define a variable called
-GAME_VERSION which should be a string like "My Game, v. 1.7" which tells
-both what the game is and what the current version is. Remember to
-update it for each game release (if you release to the public, or
-otherwise wish to track versions).</p>
+<p>The file "/include/version.h" isn't strictly required in most
+cases, but the bundling script expects it. It should define a
+variable called GAME_VERSION which should be a string like "My
+Game, v. 1.7" which tells both what the game is and what the
+current version is. Remember to update it for each game release (if
+you release to the public, or otherwise wish to track
+versions).</p>
 
 <h3>GAME_INITD</h3>
 
-<p>When DGD starts up, it hands off control to the Kernel Library. That
-hands off control to Phantasmal, which hands off control to your game.
-It seems complicated, but you can ignore most of it. Just pretend that
-Phantasmal, the Kernel and DGD are all one thing &mdash; from your point
-of view, they are.</p>
+<p>When DGD starts up, it hands off control to the Kernel Library.
+That hands off control to Phantasmal, which hands off control to
+your game. It seems complicated, but you can ignore most of it.
+Just pretend that Phantasmal, the Kernel and DGD are all one thing
+&mdash; from your point of view, they are.</p>
 
-<p>Your GAME_INITD object is the one specified by gameconfig.h. Usually,
-that will be /usr/game/initd, which means the code is in
+<p>Your GAME_INITD object is the one specified by gameconfig.h.
+Usually, that will be /usr/game/initd, which means the code is in
 /usr/game/initd.c. It should have a function with the signature
-<tt>"static void create(void)"</tt> . When you start your MUD server,
-the create() function of the GAME_INITD will get called. So if you want
-to do things on startup, you should make sure the create() function
-exists.</p>
+<tt>"static void create(void)"</tt> . When you start your MUD
+server, the create() function of the GAME_INITD will get called. So
+if you want to do things on startup, you should make sure the
+create() function exists.</p>
 
-<p>The create() function is called with unlimited ticks and stack space.
-That means it can take as much processor time or stack space as it wants
--- functions that get called later on have to be much more careful. So
-create() is a good place to load large files, create large data
-structures and otherwise do preprocessing. Be careful, though. If the
-create() function fails, so does the startup of the whole MUD. And if
-create() runs forever, the MUD will hang without ever letting anybody
-connect. So avoid infinite loops!</p>
+<p>The create() function is called with unlimited ticks and stack
+space. That means it can take as much processor time or stack space
+as it wants -- functions that get called later on have to be much
+more careful. So create() is a good place to load large files,
+create large data structures and otherwise do preprocessing. Be
+careful, though. If the create() function fails, so does the
+startup of the whole MUD. And if create() runs forever, the MUD
+will hang without ever letting anybody connect. So avoid infinite
+loops!</p>
 
-<p>Your create() function can configure the various Phantasmal daemons
-and services. For instance, common ones to configure are SoulD and
-HelpD. If you want to configure a heart beat function or one or more
-special AUTO objects, create() is the place to do that, too. Your
-GAME_INITD has privileges that no other object in your game does, such
-as setting ConfigD's path_special object. See the API documentation on
-specific daemons for details of how to configure them, or look at a good
-example like Seas of Night.</p>
+<p>Your create() function can configure the various Phantasmal
+daemons and services. For instance, common ones to configure are
+SoulD and HelpD. If you want to configure a heart beat function or
+one or more special AUTO objects, create() is the place to do that,
+too. Your GAME_INITD has privileges that no other object in your
+game does, such as setting ConfigD's path_special object. See the
+API documentation on specific daemons for details of how to
+configure them, or look at a good example like Seas of Night.</p>
 
 <p>One of the most important things for the GAME_INITD to do is to
 register a driver object with Phantasmal. This uses ConfigD's
-set_game_driver() function, which takes a single object pointer as an
-argument. The driver object is how Phantasmal will send signals, events
-and various other input to your game.</p>
+set_game_driver() function, which takes a single object pointer as
+an argument. The driver object is how Phantasmal will send signals,
+events and various other input to your game.</p>
 
 <h3>The Driver Object</h3>
 
-<p>The object you passed to set_game_driver() is now your game driver
-object.</p>
+<p>The object you passed to set_game_driver() is now your game
+driver object.</p>
 
-<p>Phantasmal will call various functions on your driver object when
-events (like new connections) happen. The driver object must define
-functions with the correct names for Phantasmal to call. The functions
-include new_user_connection, get_welcome_message, get_suspended_message,
-and get_shutdown_message. See the API documentation for
-/usr/game/sys/gamedriver for details. Your driver object does not have
-to use that object name. Your driver only required to be a valid DGD
-object that defines functions with the correct names.</p>
+<p>Phantasmal will call various functions on your driver object
+when events (like new connections) happen. The driver object must
+define functions with the correct names for Phantasmal to call. The
+functions include new_user_connection, get_welcome_message,
+get_suspended_message, and get_shutdown_message. See the API
+documentation for /usr/game/sys/gamedriver for details. Your driver
+object does not have to use that object name. Your driver only
+required to be a valid DGD object that defines functions with the
+correct names.</p>
 
-<p>Normally when a new user connects, Phantasmal will display a welcome
-message. To determine the message, Phantasmal will call your driver's
-get_welcome_message function with the new connection object. You may
-call query_ip_name and query_ip_number on the object to determine its
-origin, and return a reasonable welcome message. If you return nil, the
-connection will be rejected.</p>
+<p>Normally when a new user connects, Phantasmal will display a
+welcome message. To determine the message, Phantasmal will call
+your driver's get_welcome_message function with the new connection
+object. You may call query_ip_name and query_ip_number on the
+object to determine its origin, and return a reasonable welcome
+message. If you return nil, the connection will be rejected.</p>
 
 <p>If Phantasmal is in the process of shutting down, the function
-get_shutdown_message will be called instead. Get_shutdown_message also
-takes a connection object as its only argument. Normally you should
-inform the user that their connection will not be accepted, since
-Phantasmal will normally reject the connection under these
+get_shutdown_message will be called instead. Get_shutdown_message
+also takes a connection object as its only argument. Normally you
+should inform the user that their connection will not be accepted,
+since Phantasmal will normally reject the connection under these
 circumstances.</p>
 
 <p>In certain circumstances, Phantasmal will turn off new incoming
 connections. For instance, it does this when recompiling the itself
 in-place. Usually the MUD will be suspended for no more than a few
-seconds at a time. A new incoming connection during those seconds will
-receive a message determined by calling get_suspended_message on your
-driver object. This function takes a single argument, a new connection
-object.</p>
+seconds at a time. A new incoming connection during those seconds
+will receive a message determined by calling get_suspended_message
+on your driver object. This function takes a single argument, a new
+connection object.</p>
 
-<p>If the new connection is allowed (that is, if get_welcome_message
-does not return nil) and the user types a line ending with a newline,
-then that line will be passed as a string to your driver's
-new_user_connection function. If that function returns nil, the
-connection is aborted. If it returns a valid DGD object, the connection
-is allowed. Any object returned should inherit from the PHANTASMAL_USER
-object, which will allow the connection to be properly set up. The
-object you return from your driver's new_user_connection function is
-called a User Object.</p>
+<p>If the new connection is allowed (that is, if
+get_welcome_message does not return nil) and the user types a line
+ending with a newline, then that line will be passed as a string to
+your driver's new_user_connection function. If that function
+returns nil, the connection is aborted. If it returns a valid DGD
+object, the connection is allowed. Any object returned should
+inherit from the PHANTASMAL_USER object, which will allow the
+connection to be properly set up. The object you return from your
+driver's new_user_connection function is called a User Object.</p>
 
 <h3>The User Object</h3>
 
-<p>Phantasmal will currently do login and password confirmation for you,
-using a standard system. This may change in the future. For now, it's
-true.</p>
+<p>Phantasmal will currently do login and password confirmation for
+you, using a standard system. This may change in the future. For
+now, it's true.</p>
 
-<p>Your User object's code should start by including &lt;config.h&gt;.
-That defines the symbol PHANTASMAL_USER. Your User object must inherit
-from PHANTASMAL_USER, and it may not be private inheritance. That's
-because Phantasmal will need to call functions from PHANTASMAL_USER, and
-your User object isn't allowed to prevent it from doing so. At least, if
-it does then things will go badly wrong...</p>
+<p>Your User object's code should start by including
+&lt;config.h&gt;. That defines the symbol PHANTASMAL_USER. Your
+User object must inherit from PHANTASMAL_USER, and it may not be
+private inheritance. That's because Phantasmal will need to call
+functions from PHANTASMAL_USER, and your User object isn't allowed
+to prevent it from doing so. At least, if it does then things will
+go badly wrong...</p>
 
-<p>After a successful login, Phantasmal will pass new commands to the
-process_command() function of the User Object. Functions like message()
-and send_phrase() may be used to pass information back across the
-network connection to be viewed by the human user. See the API
-documentation for the /usr/game/obj/user object for details on what
-functions your User object may call, and what functions will be
-automatically called upon it. Note that your User object doesn't need to
-be called /usr/game/obj/user. It can be located at any path, as long as
-your User object inherits from the PHANTASMAL_USER library.</p>
+<p>After a successful login, Phantasmal will pass new commands to
+the process_command() function of the User Object. Functions like
+message() and send_phrase() may be used to pass information back
+across the network connection to be viewed by the human user. See
+the API documentation for the /usr/game/obj/user object for details
+on what functions your User object may call, and what functions
+will be automatically called upon it. Note that your User object
+doesn't need to be called /usr/game/obj/user. It can be located at
+any path, as long as your User object inherits from the
+PHANTASMAL_USER library.</p>
 
 <h2>Package Files</h2>
 
-<p>Files in this category don't interface with Phantasmal, exactly, but
-you should still have them.</p>
+<p>Files in this category don't interface with Phantasmal, exactly,
+but you should still have them.</p>
 
 <h3>Game.dgd</h3>
 
-<p>Depending on your game, this may be called mygame.dgd or test.dgd or
-game.dgd or anything else you like. However, you should supply such a
-.dgd file and make sure it has reasonable settings for object swapping.
-If you use a start script and an install script (like the testgame
-module does), then be sure to set the directory entry to "RUN INSTALL
-SCRIPT FIRST" or something like it, so that DGD will object if you try
-to start the MUD without using the install script first.</p>
+<p>Depending on your game, this may be called mygame.dgd or
+test.dgd or game.dgd or anything else you like. However, you should
+supply such a .dgd file and make sure it has reasonable settings
+for object swapping. If you use a start script and an install
+script (like the testgame module does), then be sure to set the
+directory entry to "RUN INSTALL SCRIPT FIRST" or something like it,
+so that DGD will object if you try to start the MUD without using
+the install script first.</p>
 
 <h3>Documentation</h3>
 
-<p>A README file, perhaps an INSTALL file, the license for your code...
-These are all good things to have. You should include them.</p>
+<p>A README file, perhaps an INSTALL file, the license for your
+code... These are all good things to have. You should include
+them.</p>
 
 <h3>Bundled directory</h3>
 
-<p>If your game is going to be capable of being bundled with DGD and
-Phantasmal for easy distribution, you should include a "bundled"
-subdirectory with files to copy into the top-level files. I include a
-README and an INSTALL file there (note that top-level files by those
-names will be deleted during copyover!), as well as scripts to install
-and run the MUD. You may do the same, or include any other files you
-like.</p>
+<p>If your game is going to be capable of being bundled with DGD
+and Phantasmal for easy distribution, you should include a
+"bundled" subdirectory with files to copy into the top-level files.
+I include a README and an INSTALL file there (note that top-level
+files by those names will be deleted during copyover!), as well as
+scripts to install and run the MUD. You may do the same, or include
+any other files you like.</p>
 
 <h3>Users directory</h3>
 
 <p>Your game should have a /usr/game/users directory. This is where
-files for information about game users will be stored. Please bear this
-in mind, and grant access to the /usr/game directory carefully, if at
-all, to your builders.</p>
+files for information about game users will be stored. Please bear
+this in mind, and grant access to the /usr/game directory
+carefully, if at all, to your builders.</p>

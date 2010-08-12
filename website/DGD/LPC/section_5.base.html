@@ -1,54 +1,51 @@
-  <h1>Chapter 5: The Driver Interface</h1>
+<h1>Chapter 5: The Driver Interface</h1>
 
-  <p>So far, we've dwelt on the LPC language and the parts of it
-  that DGD supports or encourages. But to actually <i>do</i>
-  anything in DGD, you need an interface to standard libraries and
-  an interface to outside events.</p>
+<p>So far, we've dwelt on the LPC language and the parts of it that
+DGD supports or encourages. But to actually <i>do</i> anything in
+DGD, you need an interface to standard libraries and an interface
+to outside events.</p>
 
-  <p>There are a reasonable variety of libraries (aka MUD libraries
-  or mudlibs) available for DGD, including the Kernel Library,
-  Phantasmal, Melville, GurbaLib, 2.4.5, Inferno, BBLib and others.
-  There are also libraries that aren't generally available. Skotos'
-  libraries and the libraries for Yahoo Chat are examples. There
-  are probably more, unreleased and unknown, waiting in the
-  wings.</p>
+<p>There are a reasonable variety of libraries (aka MUD libraries
+or mudlibs) available for DGD, including the Kernel Library,
+Phantasmal, Melville, GurbaLib, 2.4.5, Inferno, BBLib and others.
+There are also libraries that aren't generally available. Skotos'
+libraries and the libraries for Yahoo Chat are examples. There are
+probably more, unreleased and unknown, waiting in the wings.</p>
 
-  <p>Each of these libraries exists on top of another interface.
-  Phantasmal, BBLib and Skotos' libraries all build on the Kernel
-  Library. Melville and 2.4.5 work directly on top of DGD's
-  interface.</p>
+<p>Each of these libraries exists on top of another interface.
+Phantasmal, BBLib and Skotos' libraries all build on the Kernel
+Library. Melville and 2.4.5 work directly on top of DGD's
+interface.</p>
 
-  <p>This chapter will discuss DGD's direct interface, the lowest
-  level of interface available to a library. The Kernel Library, a
-  very different but very valuable resource, will be discussed in
-  chapter 6.</p>
+<p>This chapter will discuss DGD's direct interface, the lowest
+level of interface available to a library. The Kernel Library, a
+very different but very valuable resource, will be discussed in
+chapter 6.</p>
 
-  <p>The latest updates on DGD configuration files and the
-  interface to the driver object can be found in DGD's "doc"
-  directory, in a file called "Introduction". If there is any
-  conflict between what you read here and that file in your copy of
-  DGD, that file is correct. Some details change from version to
-  version of DGD, and their Introduction file will give the
-  details.</p>
+<p>The latest updates on DGD configuration files and the interface
+to the driver object can be found in DGD's "doc" directory, in a
+file called "Introduction". If there is any conflict between what
+you read here and that file in your copy of DGD, that file is
+correct. Some details change from version to version of DGD, and
+their Introduction file will give the details.</p>
 
-  <h2><a name="SEC5.1" href="index.html#SEC5.1" id="SEC5.1">5.1
-  DGD's Configuration File</a></h2>
+<h2><a name="SEC5.1" href="index.html#SEC5.1" id="SEC5.1">5.1 DGD's
+Configuration File</a></h2>
 
-  <p>Every time you run DGD, you need to tell it a configuration
-  file. You can also optionally give it a statedump, but that won't
-  be covered until later. If your DGD driver binary is called
-  "driver" and your configuration file was called "mud.dgd", you'd
-  type "./driver mud.dgd", at least under Unix. On a Windows
-  system, you'd just say "driver mud.dgd". More likely you'd need
-  to give a pathname, like "driver ..\mud.dgd", but we're assuming
-  here that you know the basics of command lines and pathnames. If
-  you don't, maybe you should find a hobby other than running a MUD
-  -- or just learn to use your OS's command line, it's not that
-  difficult.</p>
+<p>Every time you run DGD, you need to tell it a configuration
+file. You can also optionally give it a statedump, but that won't
+be covered until later. If your DGD driver binary is called
+"driver" and your configuration file was called "mud.dgd", you'd
+type "./driver mud.dgd", at least under Unix. On a Windows system,
+you'd just say "driver mud.dgd". More likely you'd need to give a
+pathname, like "driver ..\mud.dgd", but we're assuming here that
+you know the basics of command lines and pathnames. If you don't,
+maybe you should find a hobby other than running a MUD -- or just
+learn to use your OS's command line, it's not that difficult.</p>
 
-  <p>That configuration file is pretty complicated and arcane
-  looking. Let's examine one, shall we?</p>
-  <pre>
+<p>That configuration file is pretty complicated and arcane
+looking. Let's examine one, shall we?</p>
+<pre>
 telnet_port     = 8888;                 /* telnet port number */
 binary_port     = 8889;                 /* binary port number */
 directory       = "/code/phantasmal/testgame";  /* Replace w/ your absolute
@@ -74,17 +71,17 @@ create          = "_F_create";          /* name of create function */
     
 </pre>
 
-  <h3><a name="SEC5.1.1" href="index.html#SEC5.1.1" id=
-  "SEC5.1.1">5.1.1 Network and Directories</a></h3>
+<h3><a name="SEC5.1.1" href="index.html#SEC5.1.1" id=
+"SEC5.1.1">5.1.1 Network and Directories</a></h3>
 
-  <p>Note that text surrounded by <b>/* */</b> are comments, just
-  like in LPC.</p>
+<p>Note that text surrounded by <b>/* */</b> are comments, just
+like in LPC.</p>
 
-  <p>The first entries are the telnet_port and binary_port entries.
-  Either can be a single entry, like above, or an array like the
-  include_dirs entry is above. For instance, if you wanted three
-  binary ports, you could say something like:</p>
-  <pre>
+<p>The first entries are the telnet_port and binary_port entries.
+Either can be a single entry, like above, or an array like the
+include_dirs entry is above. For instance, if you wanted three
+binary ports, you could say something like:</p>
+<pre>
 binary_port = ({ 8889, 8890, 9725 })
     
 </pre>Versions of DGD before the late 1.2 series would only allow a
@@ -95,636 +92,622 @@ personal version allow outgoing connections if you look around on
 the internet for a bit. You're taking your security in your own
 hands if you do this, though.
 
-  <p>The directory entry is an absolute path to the place to find
-  the library's code. An absolute path means it starts with a slash
-  or backslash, not dots or a tilde. On Unix systems, use slashes.
-  On Windows systems, use backslashes.</p>
-
-  <p>Swap_file is the name of the swap file that DGD will use for
-  your objects when they're not in the active set in RAM (if you
-  don't know what this means, don't worry). The swap file of a
-  running game can get big. You can control just <i>how</i> big
-  with the swap_sectors and sector_size entries in this file.
-  Usually it stays pretty small for a test program.</p>
-
-  <p>The dump_file is where DGD will put your statedump when your
-  library requests one. Statedumps are a way of saving and
-  restoring an entire running MUD all at once.</p>
-
-  <h3><a name="SEC5.1.2" href="index.html#SEC5.1.2" id=
-  "SEC5.1.2">5.1.2 Resource Limits</a></h3>
-
-  <p>The users entry is how many simultaneous users your MUD
-  supports. The sky's the limit, but bear in mind that you can
-  increase this later if you need to. Also bear in mind that your
-  current hardware will only be powerful enough to support a
-  certain number of people well. Would you rather have fifty people
-  gush about how incredible your MUD is, or five hundred talk about
-  how slow and buggy it is?</p>
-
-  <p>"Editors" is how many people can be simultaneously editing
-  files. DGD has a built-in editor that few people would want to
-  use. This is how many instances can be running at once. The
-  ed_tmpfile entry is the filename that editor temp files will use
-  when people are mid-edit.</p>
-
-  <h3><a name="SEC5.1.3" href="index.html#SEC5.1.3" id=
-  "SEC5.1.3">5.1.3 Memory and Swapping</a></h3>
-
-  <p>Swap_size is the total number of sectors in the swap file, and
-  sector_size is how big one of those sectors is. Every object
-  (except Light-Weight Objects, LWOs, which we talk about later) in
-  LPC takes some number of sectors. If it takes less than some
-  whole number of sectors, the number gets rounded up. So if an LPC
-  object requires 2 sectors plus five bytes, it'll get rounded up
-  to three sectors. If your sector_size is very small, you won't
-  waste much memory but swapping will be slower. If the sector_size
-  is large then you'll find that DGD swaps things to and from the
-  disk faster, but you waste more memory. The usual default
-  sector_size is 512 bytes, and it works pretty well for most
-  simple applications. Larger applications that swap massive
-  volumes of data should consider increasing the size, though that
-  can actually worsen the problem in some cases.</p>
-
-  <p>The swap_size is simpler to choose than sector_size. You'll
-  find yourself having to increase it periodically as your game
-  gets bigger and you start running out of memory or sectors. In
-  some cases, the MUD running very slowly can be a symptom of too
-  small a swap_size, so try increasing it every so often to see if
-  it helps performance.</p>
-
-  <p>The cache_size is how many of those sectors stay in RAM. The
-  bigger this is, the faster your library runs and the more of your
-  memory (as opposed to disk space) it takes up. You'll need to
-  decide how much memory you want to devote to your running game.
-  Making this bigger than swap_size is pretty pointless. Making
-  them equal just means that everything runs in memory instead of
-  on disk, so DGD effectively stops being disk-based. Since DGD
-  understands what it's doing better than your OS's virtual memory
-  system, you should only make DGD fully memory-based for libraries
-  that can hold everything in available RAM all at once. Do
-  everybody a favor -- don't do this on the same machine you use
-  for your desktop.</p>
-
-  <p>Several (or many) times a second, DGD will swap some objects
-  from memory to disk. That way, it uses less of your RAM on LPC
-  objects it isn't currently playing with. It dumps the stuff you
-  haven't been using recently first, and it chooses some fraction
-  to dump out to the disk. It will only do this if more than
-  cache_size entries are currently in memory. The swap_fragment is
-  the denominator of the fraction. That means that if swap_fragment
-  is 50, DGD will dump 1/50th of your objects to the disk when it
-  swaps. So if you had 500 objects in memory and you didn't load
-  any more in, you might have 500, then 490, then 481, then 462,
-  and so on, as DGD dumps 1/50th of each new number of objects. DGD
-  swaps objects out at the end of each thread of execution. We'll
-  cover what that means in a later chapter.</p>
-
-  <p>The static_chunk and dynamic_chunk tell DGD how much memory to
-  use in a way that's pretty difficult to understand. Unless you
-  start running out of memory, I wouldn't recommend touching these.
-  Consulting with the author of DGD or the DGD mailing list would
-  be appropriate if you're doing a really large application and you
-  need the app to be very carefully memory tuned.</p>
-
-  <h3><a name="SEC5.1.4" href="index.html#SEC5.1.4" id=
-  "SEC5.1.4">5.1.4 LPC and Interface</a></h3>
-
-  <p>The typechecking determines how carefully DGD checks your LPC
-  code for correctness and questionable behavior. A typechecking
-  value of 2 is the strictest, and the default for most libraries.
-  It's highly recommended that your library leave it on that
-  setting so DGD can catch more of your bugs for you.</p>
-
-  <p>If you reduce it to 1, the values "nil" and "0" stop being
-  different from each other, just like in many other LPC dialects.
-  If you reduce typechecking to 0, function typechecking mostly
-  goes away and "nil" is still the same thing as "0".</p>
-
-  <p>The include_file is automatically included by every LPC
-  program as it's compiled. This is a way for you to add standard
-  #defines and things that every file will have automatically
-  defined. Be careful what you put in this file because there are
-  some things you can't put before an "inherit" statement, and
-  you'd like to be able to use inheritance in at least <i>some</i>
-  LPC stuff.</p>
-
-  <p>The include_dirs are a list of directories that will be
-  automatically searched for LPC include files. If you use C or C++
-  for anything, this is like the include directories that you put
-  in the command line or the project settings. This tells DGD where
-  you're going to put all your header files. You can use a tilde in
-  these paths to mean the user's home directory. Note that this is
-  the user's home in the DGD directories, not the home directories
-  of the person installing DGD in the first place.</p>
-
-  <p>The auto_object is automatically inherited by every other
-  object in the game except the Driver. This is one of your big
-  ways to interface with DGD. The auto_object entry tells DGD where
-  to find this object. The path is relative to the base directory
-  you gave in the "directory" entry.</p>
-
-  <p>The driver_object gets called by DGD to notify your library of
-  external events. It's the only object that doesn't inherit from
-  the auto object (other than the auto object itself). Section 5.2
-  gives the details of when and how the driver is called.</p>
-
-  <p>When an object is initialized, a create function is called.
-  The name of this function is given by the create entry in this
-  file. If the create function doesn't exist, it doesn't get
-  called. You can put a create function in the auto object, which
-  guarantees it exists, but make sure you understand about nomask
-  functions and how regular functions can be masked before you do
-  this.</p>
-
-  <p>The array_size entry gives the maximum number of objects that
-  can be in an array or mapping. Since DGD will store the entire
-  array or mapping in a single in-memory object which will be
-  swapped all at once, it's in your best interests to keep this
-  number reasonable. There are <i>still</i> some ways you can make
-  unreasonably large objects that get swapped all at once, but this
-  helps keep simple bugs from destroying your library's
-  performance.</p>
-
-  <p>The objects entry tells DGD the maximum number of objects you
-  want to allow. If you want to make this much above 64,000 you'll
-  need to change some compile options within the DGD code, though
-  they're pretty easy to modify. This total only counts regular DGD
-  objects, not arrays, mappings or Light-Weight Objects, so this
-  really doesn't limit you very much. Again, this exists to keep
-  simple bugs from utterly destroying your performance in ways that
-  are very difficult to track down.</p>
-
-  <p>DGD allows you to make a function call with a built-in time
-  delay. After the delay is up, the call happens. This is called a
-  call_out. The number of these that can be stacked up and waiting
-  to happen is given by the call_outs entry. Multiprocessor and
-  versions of DGD after the late 1.2 series don't necessarily limit
-  the number of call_outs. This entry may not make any difference
-  for those versions of DGD.</p>
-
-  <h2><a name="SEC5.2" href="index.html#SEC5.2" id="SEC5.2">5.2 DGD
-  Library API</a></h2>
-
-  <p>A library under DGD is basically a set of LPC programs that
-  respond to events of various kinds, especially network events.
-  The library needs to receive these events from DGD, and to
-  request services from DGD in response. For instance, DGD might
-  tell the library that a new incoming connection has been
-  attempted, and the library would need to tell DGD to accept the
-  connection and send a banner and login prompt.</p>
-
-  <p>The Driver object accepts notification of various internal and
-  external events. DGD calls different functions on the Driver to
-  let it know that specific things have occurred. The Auto object
-  modifies how the library can request services from DGD, and what
-  is or isn't allowed.</p>
-
-  <h3><a name="SEC5.2.1" href="index.html#SEC5.2.1" id=
-  "SEC5.2.1">The Auto Object</a></h3>
-
-  <p>Only the Auto object and the Driver object are guaranteed
-  access to DGD's standard functions in their original form. In
-  most DGD libraries, the Auto object will override some of these
-  functions and substitute new ones with the same names so that the
-  underlying version is masked. For instance, the Kernel Library
-  uses this to supply a new get_dir function, one that returns a
-  list of compiled objects in the directory along with the file
-  names, sizes and modification times.</p>
-
-  <p>Some libraries use this trick for security. For instance, the
-  Kernel Library carefully checks all calls to read and write files
-  so that only users with the correct permissions can perform those
-  operations. The Kernel Library also overrides the create()
-  function to do extra bookkeeping and keep track of owners and
-  creators for LPC objects.</p>
-
-  <p>The Auto object also allows the library to add convenience
-  functions. The Melville library supplies an input_to() function,
-  which allows an object to set what function will handle the next
-  network input to arrive. Melville also supplies simple string
-  handling functions and other basic standard library functions
-  which the DGD driver doesn't have by default.</p>
-
-  <h3><a name="SEC5.2.2" href="index.html#SEC5.2.2" id=
-  "SEC5.2.2">The Driver</a></h3>
-
-  <p>(Note: big chunks of this section are based on the standard
-  DGD documentation. The copyright to that documentation is held by
-  Felix Croes, the author of DGD. The material is used with
-  permission)</p>
-
-  <p>The Driver is notified by DGD when various events occur, and
-  it's also called by DGD to query certain information. It needs to
-  define a lot of functions, which do many and various things.
-  Those functions are:</p>
-
-  <dl>
-    <dt>void initialize(void)</dt>
-
-    <dd>This function is called when the system starts up
-    originally, or after a reboot, but not after restoring from a
-    statedump.</dd>
-
-    <dt>void restored(void)</dt>
-
-    <dd>This function is called when the system is restored from a
-    statedump.</dd>
-
-    <dt>string path_read(string path)</dt>
-
-    <dd>Used to translate a path for the built-in editor read
-    command. If this function returns nil, the file can't be
-    read.</dd>
-
-    <dt>string path_write(string path)</dt>
-
-    <dd>Used to translate a path for the built-in editor write
-    command. If this function returns nil, the file can't be
-    written to.</dd>
-
-    <dt>object call_object(string objname)</dt>
-
-    <dd>When a call_other(object,...) happens, including with the
-    object.call() syntax, DGD calls this function in the Driver to
-    find "object", the object whose function is being called. You
-    can call compile_object() from call_object(). That may be a
-    good idea if the object isn't already compiled.</dd>
-
-    <dt>object inherit_program(string file, string program, int
-    priv)</dt>
-
-    <dd>When one program inherits another, DGD calls
-    inherit_program in the Driver to find the LPC object for the
-    program being inherited from. If priv is 1, it's private
-    inheritance. Otherwise, it's normal inheritance. "File" is the
-    one choosing to inherit, and "program" is the one being
-    inherited. You can call compile_object() from
-    inherit_program(). That's probably a good idea if "program"
-    hasn't already been compiled.</dd>
-
-    <dt>string path_include(string file, string path)</dt>
-
-    <dd>An "include" statement in an LPC file will substitute the
-    text of the included file directly, so nothing needs to be
-    compiled (unlike call_object or inherit_program above).
-    However, the Driver can still choose what file will be
-    included. When the file is included, DGD will call the Driver's
-    path_include function, and the returned string is the path of
-    the file that will be included. If nil is returned, no file
-    will be included and a compile error will occur. If a path to a
-    file that doesn't exist is returned, pretty much the same thing
-    will happen.</dd>
-
-    <dt>void recompile(object obj)</dt>
-
-    <dd>This function is called by DGD to indicate to the Driver
-    that the parent class of an object is out of date. If the
-    Driver responds by actually recompiling the object then it will
-    use the new version of the parent class, and will again be
-    up-to-date. See the section on inheritance for further details.
-    This is a pretty complicated subject if you want to do it
-    well.</dd>
-
-    <dt>object telnet_connect(int port)</dt>
-
-    <dd>Note: this didn't take a "port" parameter in older versions
-    of DGD.<br>
-    This function should create and return a User object for the
-    new connection on the given telnet port. "Port" will be an
-    offset into the array of telnet ports, so if there's only a
-    single telnet port it will always have a value of zero. If nil
-    is returned, the new connection will be rejected. See <a href=
-    "#SEC5.2.3">section 5.2.3</a> for details on creating a User
-    object.</dd>
-
-    <dt>object binary_connect(int port)</dt>
-
-    <dd>Note: this didn't take a "port" parameter in older versions
-    of DGD.<br>
-    This function should create and return a User object for the
-    new connection on the given binary port. "Port" will be an
-    offset into the array of binary ports, so if there's only a
-    single binary port it will always have a value of zero. If nil
-    is returned, the new connection will be rejected. See <a href=
-    "#SEC5.2.3">section 5.2.3</a> for details on creating a User
-    object.</dd>
-
-    <dt>void interrupt(void)</dt>
-
-    <dd>This function is called if DGD receives a kill signal, for
-    instance if the computer's user shuts it down from the command
-    line or the Windows Task Manager. Normally, it will shut down
-    the system and perhaps dump state. Sometimes a forcible
-    shutdown happens as a result of a bug, so it may be useful to
-    save additional debugging information when this occurs.</dd>
-
-    <dt>void compile_error(string file, int line, string err)</dt>
-
-    <dd>DGD calls this function in the driver to let it know that a
-    compile error has occurred. Usually this is a syntax error of
-    some kind, or a type error. Several of these can happen in
-    sequence for a single LPC file being compiled before a runtime
-    error results from the failed compilation. "File" is the file
-    being compiled, "line" is the line number in that file where
-    the error occurred, and "err" is a human-readable description
-    of what the error was.</dd>
-
-    <dt>void runtime_error(string error, int caught, int
-    ticks)</dt>
-
-    <dd>The driver receives this function call when a runtime error
-    of some kind occurs in normal, non-atomic code. This may be a
-    failed function call, a lack of ticks or stack space, an
-    explicit error signalled with the error() function, or many
-    other possible problems. If the error is caught by a
-    <b>catch</b> construct, "caught" will be equal to 1 plus an
-    index into the return value of call_trace() indicating the
-    frame in which the error was caught. "Error" is a
-    human-readable description of the error that occurred. "Ticks"
-    tells how many ticks of processor time were available when the
-    error occurred. Note that runtime_error is called with
-    unlimited processor time and stack space, so don't worry about
-    it being called when a function runs out of ticks -- that will
-    work just fine.</dd>
-
-    <dt>void atomic_error(string error, int atom, int ticks)</dt>
-
-    <dd>This function is essentially the same as runtime_error, but
-    is called when the error occurs in atomic code. "Atom" is an
-    index into the return value of call_trace() indicating the
-    frame in which the atomic code begins. Atomic_error, like
-    runtime_error, is called with unlimited stack space and
-    processor ticks.<br>
-    Note that atomic_error, since it is called atomically, may not
-    write to files or network connections.</dd>
-
-    <dt>int compile_rlimits(string objname)</dt>
-
-    <dd>If an LPC program uses the rlimits() construct, DGD will
-    call this function on the Driver with that object's name. If
-    the compile_rlimits function returns nonzero then that object
-    is allowed to use rlimits() without restriction. If
-    compile_rlimits returns 0 then every time the object tries to
-    use rlimits(), DGD will query the Driver with runtime_rlimits
-    to make sure it's okay.</dd>
-
-    <dt>int runtime_rlimits(object obj, int stack, int ticks)</dt>
-
-    <dd>DGD calls this function of the Driver to see if the
-    supplied object is permitted to use rlimits() with the given
-    arguments. A value less than zero for stack or ticks means
-    unlimited, while a value of zero means no change. A positive
-    value will set the limit to that value. If runtime_rlimits
-    returns 0, the usage is illegal and will abort with an error. A
-    nonzero return value means the rlimits call is legal.</dd>
-
-    <dt>void remove_program(string objname, int timestamp, int
-    index)</dt>
-
-    <dd>Whenever a master object is removed, DGD calls this
-    function on the Driver object. The object has already been
-    destructed by the time this function is called, so
-    find_object() on objname will fail or return a different issue.
-    The index is a unique number for each issue of the object, so
-    if multiple versions are compiled with the same name, each one
-    will still have a different index for this call.<br>
-    It's very important to track object removal because when a
-    master object is destructed, all of its clones and child
-    objects are destructed as well. Since this code should
-    <i>really</i> never be allowed to fail, it's called with
-    unlimited stack and processor time. It's also called from
-    inside a catch{} statement.<br>
-    It's important to track object inheritance, but doing so well
-    can be very complex. Read about Object Inheritance for
-    details.</dd>
-  </dl>
-
-  <h3><a name="SEC5.2.3" href="index.html#SEC5.2.3" id=
-  "SEC5.2.3">The User Object</a></h3>
-
-  <p>The User object is allocated by the Driver (or another LPC
-  program) and passed to DGD as the return value of
-  telnet_connect() or binary_connect().</p>
-
-  <p>The User object, like the Driver, defines specific functions.
-  DGD will call those functions to notify the user object that
-  certain things have happened. The User object must be a regular
-  DGD object, created with clone_object() or compile_object(). It
-  may not be a Light-Weight Object created with new_object().</p>
-
-  <p>DGD calls the following functions on a User object:</p>
-
-  <dl>
-    <dt>int open(void)</dt>
-
-    <dd>A connection has just been opened for this object. If the
-    user object is for a telnet (not a binary) connection, the
-    return value is ignored. For a binary connection, if the return
-    value is zero, nothing further happens. If the return value is
-    nonzero, a UDP connection will be opened, and UDP packets from
-    the same host and port as the TCP connection may be received by
-    this user object. After the first UDP packet is received, UDP
-    packets may also be sent with the send_datagram() kfun.</dd>
-
-    <dt>void close(int flag)</dt>
-
-    <dd>The connection for this object has been closed. The
-    function is called when the network connection goes linkdead
-    (i.e. the connection is severed by the other end, or stops
-    responding) or when the user object is destructed. If the user
-    object was destructed, the flag parameter will have a value of
-    1. Otherwise it will have a value of 0.</dd>
-
-    <dt>void receive_message(string message)</dt>
-
-    <dd>This function is called with data received from the
-    network. DGD's telnet connections are always line-mode rather
-    than character-mode, and since the newline at the end is
-    implied, they remove it before receive_message() returns the
-    message that was received. Telnet connections also filter out
-    any non-ASCII or high-ASCII characters such as international
-    character sets, special terminal codes and ANSI color codes.
-    Binary connections do no filtering, and simply return data as
-    it was received.</dd>
-
-    <dt>void message_done(void)</dt>
-
-    <dd>This function is called when a buffered string that
-    couldn't be sent immediately and entirely is fully transmitted.
-    Sometimes when send_message is called, only some of the bytes
-    can be immediately accepted. This function is called on the
-    User object to indicate that more can now be accepted.</dd>
-  </dl>
-
-  <h3><a name="SEC5.2.4" href="index.html#SEC5.2.4" id=
-  "SEC5.2.4">Object Creation and Initialization</a></h3>
-
-  <p>When an object is initialized, its create function is called.
-  The create function is called "create" by default. It takes no
-  arguments and returns none. The name of the function that gets
-  called can be changed by the DGD Configuration File (see section
-  5.1.4).</p>
-
-  <p>When an LPC object is cloned, it gets initialized. This means
-  its create function is called. Therefore, every cloned object is
-  initialized by the time it is first used.</p>
-
-  <p>An LPC master object isn't initialized when it is compiled.
-  Instead, it is initialized the first time one of its functions is
-  called. This means that, for instance, if you have a master
-  object that registers itself with another object in its create
-  function, you must call a function on the master object (whether
-  or not the function is defined by the object) to have DGD call
-  its create function. If you call a function that doesn't exist,
-  it won't do anything and nil will be returned, just as usual.
-  However, the create function will still be called if the object
-  was not previously initialized.</p>
-
-  <h2><a name="SEC5.3" href="index.html#SEC5.3" id="SEC5.3">5.3 DGD
-  Memory Management</a></h2>
-
-  <p>DGD is a disk-based driver. This means that by default, it
-  stores everything on the disk and keeps little or nothing in RAM
-  besides the base driver. That's a good thing, because it means
-  that even if your game takes many gigabytes of storage, you'll
-  have only the currently-used stuff taking up RAM space. When your
-  game is idle, your machine won't have to store all the extra
-  stuff in RAM.</p>
-
-  <p>However, DGD doesn't use a standard virtual memory system like
-  your machine's Operating System does. Instead, it uses a special,
-  customizable system that knows more about your LPC program and
-  how it operates. DGD's system can also be configured specifically
-  for your application. All of this means that a well-tuned DGD
-  application can manage its memory much, much better than an
-  application that lets the Operating System do all the work for
-  it.</p>
-
-  <h3><a name="SEC5.3.1" href="index.html#SEC5.3.1" id=
-  "SEC5.3.1">5.3.1 Threads of Execution</a></h3>
-
-  <p>DGD does a lot of things at the end of threads of execution.
-  Swapping objects out to disk, recompiling objects and destructing
-  objects all occur at the end of the thread of execution that
-  requests them rather than occurring immediately. Since so many
-  things happen at thread's end, it's important to know what a
-  thread is and when it ends. Note that DGD's threads of execution
-  are <i>not</i> similar to threads in most other languages.</p>
-
-  <p>DGD threads happen very quickly and end very quickly. Unlike
-  "normal" threads, they don't ever appear to happen in parallel.
-  While DGD may actually execute more than one on a multiprocessor
-  machine, you'll never see that happening. Instead, DGD uses its
-  powerful atomic function mechanisms to make sure you'll never see
-  any conflict, and if another thread would conflict with yours, it
-  gets killed and later restarted. So in essence, DGD will always
-  act as though the threads started and stopped one after the
-  other, never overlapping. You can simply write your code as
-  though you were on a regular single processor machine and it will
-  execute flawlessly on a multiprocessor machine. For maximum speed
-  there are some tweaks that need to occur, but that's a very
-  advanced discussion for a later book.</p>
-
-  <p>DGD threads start when DGD calls into the driver or user
-  object. That happens when a new connection occurs, when new
-  network input arrives, when a scheduled call_out occurs, when an
-  object is destructed or recompiled, and when the Operating System
-  sends DGD a signal telling it that it has been killed, among
-  other times. A thread can never spawn another thread and wait for
-  the result -- remember that DGD always behaves as though only a
-  single thread is running. So if one of the driver functions is
-  called while other code is waiting, then that function call will
-  not spawn a second thread. It will occur within the first
-  thread.</p>
-
-  <p>When the function that spawned the thread returns, the thread
-  of execution is over. When that happens, any objects scheduled to
-  be recompiled or destructed will be. DGD may swap out objects
-  that haven't been referenced in awhile. If any call_outs are due,
-  DGD will choose one and call it. If new network data has arrived
-  or a new connection was made, DGD will call the driver or User
-  object to notify it. And so on...</p>
-
-  <h3><a name="SEC5.3.2" href="index.html#SEC5.3.2" id=
-  "SEC5.3.2">5.3.2 Objects and Swapping</a></h3>
-
-  <p>DGD objects take up space. The sector_size in the
-  Configuration file is the unit DGD uses for swapping. Any DGD
-  object will take up a certain number of sectors (rounded up), and
-  will be swapped in and out as a unit. Note that this refers only
-  to normal DGD objects. It doesn't apply to Lightweight Objects,
-  arrays or mappings.</p>
-
-  <p>When DGD has more than cache_size sectors in memory at the end
-  of a thread of execution, it will begin swapping out objects.
-  Starting with the in-memory object that was used least recently,
-  DGD will remove objects from memory until it has cleared up
-  1/swap_fragment sectors. So if swap_fragment is 32, it will clear
-  at least one thirty-second of all the sectors in the cache. It
-  will do this by removing objects from memory, starting with the
-  least recently used.</p>
-
-  <p>When cache_size is large, DGD can have a lot of objects in
-  memory at once before it starts swapping them out. Since
-  swap_size is how large absolutely <i>everything</i> can be in
-  total, if cache_size is as large as swap_size then nothing will
-  ever be swapped out to disk. This means that DGD will stop acting
-  like a disk-based MUD and rely on your Operating System to handle
-  swapping, if any needs to happen. It'll try to just keep
-  everything in memory all the time, though your Operating System
-  will probably only allow that if you actually <i>use</i>
-  everything in memory constantly.</p>
-
-  <p>The sector_size can also be important to tune. If it's small
-  then DGD will waste very little space since objects won't carry
-  much overhead. But if it's small then an object will require a
-  lot of sectors -- if sector_size was half as large, each object
-  would require about twice as many sectors, for instance. When
-  that happens, DGD has to keep track of more sectors and has to
-  swap more often. In general, use trial-and-error to tune the
-  sector_size, if you need to at all. Or ask the DGD mailing list,
-  which is a wonderful source of information.</p>
-
-  <h4><a name="SEC5.3.2.1" href="index.html#SEC5.3.2.1" id=
-  "SEC5.3.2.1">5.3.2.1 Lightweight Objects</a></h4>
-
-  <p>DGD swaps regular objects in and out individually, and it
-  swaps them as a whole. That means that if any part of the object
-  is in memory, the whole object is in memory. It also means that
-  the object is swapped into memory by itself -- it doesn't carry
-  other DGD objects with it.</p>
-
-  <p>Lightweight Objects (LWOs), arrays and mappings are all
-  exceptions to this rule. They are not standard DGD objects, and
-  they aren't managed like regular DGD objects. Instead, each
-  array, mapping or LWO is inside a regular DGD object and it gets
-  swapped into and out of memory with its parent object. This is
-  why references to arrays, mappings and LWOs are all copied at the
-  end of thread execution -- that way they live inside the object
-  that has a reference to them, not another object elsewhere.
-  Copying is the simplest way to achieve that.</p>
-
-  <p>An LWO, like an array or mapping, lacks some of the normal
-  characteristics of normal DGD objects. Like arrays and mappings,
-  they are garbage-collected and can't be explictly destructed.
-  When you're done with them, remove the last reference to them and
-  they will go away automatically. Since DGD can detect circular
-  links among data structures, you don't need to worry about the
-  usual problems with reference counting. DGD will garbage collect
-  fully, correctly and quickly, unlike Perl or Java.</p>
-
-  <p>The DGD editor, the DGD parse_string function and the
-  telnet_connect and binary_connect functions all involve special
-  objects. An LWO, an array or a mapping cannot be used for these
-  special objects. Only a full, normal DGD object can. Similarly,
-  LWOs may not have call_outs. This means that a call_out cannot be
-  scheduled from a function defined by an LWO.</p>
-
-  <p>Be careful... Destructing the master object from which an LWO
-  is created will destroy all the LWOs made from it. In this
-  respect, it is like a cloned object. Since arrays and mappings
-  have no master object, this isn't true of them.</p>
-
-  <h3><a name="SEC5.3.3" href="index.html#SEC5.3.3" id=
-  "SEC5.3.3">5.3.3 Dynamic and Static Memory</a></h3>
+<p>The directory entry is an absolute path to the place to find the
+library's code. An absolute path means it starts with a slash or
+backslash, not dots or a tilde. On Unix systems, use slashes. On
+Windows systems, use backslashes.</p>
+
+<p>Swap_file is the name of the swap file that DGD will use for
+your objects when they're not in the active set in RAM (if you
+don't know what this means, don't worry). The swap file of a
+running game can get big. You can control just <i>how</i> big with
+the swap_sectors and sector_size entries in this file. Usually it
+stays pretty small for a test program.</p>
+
+<p>The dump_file is where DGD will put your statedump when your
+library requests one. Statedumps are a way of saving and restoring
+an entire running MUD all at once.</p>
+
+<h3><a name="SEC5.1.2" href="index.html#SEC5.1.2" id=
+"SEC5.1.2">5.1.2 Resource Limits</a></h3>
+
+<p>The users entry is how many simultaneous users your MUD
+supports. The sky's the limit, but bear in mind that you can
+increase this later if you need to. Also bear in mind that your
+current hardware will only be powerful enough to support a certain
+number of people well. Would you rather have fifty people gush
+about how incredible your MUD is, or five hundred talk about how
+slow and buggy it is?</p>
+
+<p>"Editors" is how many people can be simultaneously editing
+files. DGD has a built-in editor that few people would want to use.
+This is how many instances can be running at once. The ed_tmpfile
+entry is the filename that editor temp files will use when people
+are mid-edit.</p>
+
+<h3><a name="SEC5.1.3" href="index.html#SEC5.1.3" id=
+"SEC5.1.3">5.1.3 Memory and Swapping</a></h3>
+
+<p>Swap_size is the total number of sectors in the swap file, and
+sector_size is how big one of those sectors is. Every object
+(except Light-Weight Objects, LWOs, which we talk about later) in
+LPC takes some number of sectors. If it takes less than some whole
+number of sectors, the number gets rounded up. So if an LPC object
+requires 2 sectors plus five bytes, it'll get rounded up to three
+sectors. If your sector_size is very small, you won't waste much
+memory but swapping will be slower. If the sector_size is large
+then you'll find that DGD swaps things to and from the disk faster,
+but you waste more memory. The usual default sector_size is 512
+bytes, and it works pretty well for most simple applications.
+Larger applications that swap massive volumes of data should
+consider increasing the size, though that can actually worsen the
+problem in some cases.</p>
+
+<p>The swap_size is simpler to choose than sector_size. You'll find
+yourself having to increase it periodically as your game gets
+bigger and you start running out of memory or sectors. In some
+cases, the MUD running very slowly can be a symptom of too small a
+swap_size, so try increasing it every so often to see if it helps
+performance.</p>
+
+<p>The cache_size is how many of those sectors stay in RAM. The
+bigger this is, the faster your library runs and the more of your
+memory (as opposed to disk space) it takes up. You'll need to
+decide how much memory you want to devote to your running game.
+Making this bigger than swap_size is pretty pointless. Making them
+equal just means that everything runs in memory instead of on disk,
+so DGD effectively stops being disk-based. Since DGD understands
+what it's doing better than your OS's virtual memory system, you
+should only make DGD fully memory-based for libraries that can hold
+everything in available RAM all at once. Do everybody a favor --
+don't do this on the same machine you use for your desktop.</p>
+
+<p>Several (or many) times a second, DGD will swap some objects
+from memory to disk. That way, it uses less of your RAM on LPC
+objects it isn't currently playing with. It dumps the stuff you
+haven't been using recently first, and it chooses some fraction to
+dump out to the disk. It will only do this if more than cache_size
+entries are currently in memory. The swap_fragment is the
+denominator of the fraction. That means that if swap_fragment is
+50, DGD will dump 1/50th of your objects to the disk when it swaps.
+So if you had 500 objects in memory and you didn't load any more
+in, you might have 500, then 490, then 481, then 462, and so on, as
+DGD dumps 1/50th of each new number of objects. DGD swaps objects
+out at the end of each thread of execution. We'll cover what that
+means in a later chapter.</p>
+
+<p>The static_chunk and dynamic_chunk tell DGD how much memory to
+use in a way that's pretty difficult to understand. Unless you
+start running out of memory, I wouldn't recommend touching these.
+Consulting with the author of DGD or the DGD mailing list would be
+appropriate if you're doing a really large application and you need
+the app to be very carefully memory tuned.</p>
+
+<h3><a name="SEC5.1.4" href="index.html#SEC5.1.4" id=
+"SEC5.1.4">5.1.4 LPC and Interface</a></h3>
+
+<p>The typechecking determines how carefully DGD checks your LPC
+code for correctness and questionable behavior. A typechecking
+value of 2 is the strictest, and the default for most libraries.
+It's highly recommended that your library leave it on that setting
+so DGD can catch more of your bugs for you.</p>
+
+<p>If you reduce it to 1, the values "nil" and "0" stop being
+different from each other, just like in many other LPC dialects. If
+you reduce typechecking to 0, function typechecking mostly goes
+away and "nil" is still the same thing as "0".</p>
+
+<p>The include_file is automatically included by every LPC program
+as it's compiled. This is a way for you to add standard #defines
+and things that every file will have automatically defined. Be
+careful what you put in this file because there are some things you
+can't put before an "inherit" statement, and you'd like to be able
+to use inheritance in at least <i>some</i> LPC stuff.</p>
+
+<p>The include_dirs are a list of directories that will be
+automatically searched for LPC include files. If you use C or C++
+for anything, this is like the include directories that you put in
+the command line or the project settings. This tells DGD where
+you're going to put all your header files. You can use a tilde in
+these paths to mean the user's home directory. Note that this is
+the user's home in the DGD directories, not the home directories of
+the person installing DGD in the first place.</p>
+
+<p>The auto_object is automatically inherited by every other object
+in the game except the Driver. This is one of your big ways to
+interface with DGD. The auto_object entry tells DGD where to find
+this object. The path is relative to the base directory you gave in
+the "directory" entry.</p>
+
+<p>The driver_object gets called by DGD to notify your library of
+external events. It's the only object that doesn't inherit from the
+auto object (other than the auto object itself). Section 5.2 gives
+the details of when and how the driver is called.</p>
+
+<p>When an object is initialized, a create function is called. The
+name of this function is given by the create entry in this file. If
+the create function doesn't exist, it doesn't get called. You can
+put a create function in the auto object, which guarantees it
+exists, but make sure you understand about nomask functions and how
+regular functions can be masked before you do this.</p>
+
+<p>The array_size entry gives the maximum number of objects that
+can be in an array or mapping. Since DGD will store the entire
+array or mapping in a single in-memory object which will be swapped
+all at once, it's in your best interests to keep this number
+reasonable. There are <i>still</i> some ways you can make
+unreasonably large objects that get swapped all at once, but this
+helps keep simple bugs from destroying your library's
+performance.</p>
+
+<p>The objects entry tells DGD the maximum number of objects you
+want to allow. If you want to make this much above 64,000 you'll
+need to change some compile options within the DGD code, though
+they're pretty easy to modify. This total only counts regular DGD
+objects, not arrays, mappings or Light-Weight Objects, so this
+really doesn't limit you very much. Again, this exists to keep
+simple bugs from utterly destroying your performance in ways that
+are very difficult to track down.</p>
+
+<p>DGD allows you to make a function call with a built-in time
+delay. After the delay is up, the call happens. This is called a
+call_out. The number of these that can be stacked up and waiting to
+happen is given by the call_outs entry. Multiprocessor and versions
+of DGD after the late 1.2 series don't necessarily limit the number
+of call_outs. This entry may not make any difference for those
+versions of DGD.</p>
+
+<h2><a name="SEC5.2" href="index.html#SEC5.2" id="SEC5.2">5.2 DGD
+Library API</a></h2>
+
+<p>A library under DGD is basically a set of LPC programs that
+respond to events of various kinds, especially network events. The
+library needs to receive these events from DGD, and to request
+services from DGD in response. For instance, DGD might tell the
+library that a new incoming connection has been attempted, and the
+library would need to tell DGD to accept the connection and send a
+banner and login prompt.</p>
+
+<p>The Driver object accepts notification of various internal and
+external events. DGD calls different functions on the Driver to let
+it know that specific things have occurred. The Auto object
+modifies how the library can request services from DGD, and what is
+or isn't allowed.</p>
+
+<h3><a name="SEC5.2.1" href="index.html#SEC5.2.1" id="SEC5.2.1">The
+Auto Object</a></h3>
+
+<p>Only the Auto object and the Driver object are guaranteed access
+to DGD's standard functions in their original form. In most DGD
+libraries, the Auto object will override some of these functions
+and substitute new ones with the same names so that the underlying
+version is masked. For instance, the Kernel Library uses this to
+supply a new get_dir function, one that returns a list of compiled
+objects in the directory along with the file names, sizes and
+modification times.</p>
+
+<p>Some libraries use this trick for security. For instance, the
+Kernel Library carefully checks all calls to read and write files
+so that only users with the correct permissions can perform those
+operations. The Kernel Library also overrides the create() function
+to do extra bookkeeping and keep track of owners and creators for
+LPC objects.</p>
+
+<p>The Auto object also allows the library to add convenience
+functions. The Melville library supplies an input_to() function,
+which allows an object to set what function will handle the next
+network input to arrive. Melville also supplies simple string
+handling functions and other basic standard library functions which
+the DGD driver doesn't have by default.</p>
+
+<h3><a name="SEC5.2.2" href="index.html#SEC5.2.2" id="SEC5.2.2">The
+Driver</a></h3>
+
+<p>(Note: big chunks of this section are based on the standard DGD
+documentation. The copyright to that documentation is held by Felix
+Croes, the author of DGD. The material is used with permission)</p>
+
+<p>The Driver is notified by DGD when various events occur, and
+it's also called by DGD to query certain information. It needs to
+define a lot of functions, which do many and various things. Those
+functions are:</p>
+
+<dl>
+  <dt>void initialize(void)</dt>
+
+  <dd>This function is called when the system starts up originally,
+  or after a reboot, but not after restoring from a statedump.</dd>
+
+  <dt>void restored(void)</dt>
+
+  <dd>This function is called when the system is restored from a
+  statedump.</dd>
+
+  <dt>string path_read(string path)</dt>
+
+  <dd>Used to translate a path for the built-in editor read
+  command. If this function returns nil, the file can't be
+  read.</dd>
+
+  <dt>string path_write(string path)</dt>
+
+  <dd>Used to translate a path for the built-in editor write
+  command. If this function returns nil, the file can't be written
+  to.</dd>
+
+  <dt>object call_object(string objname)</dt>
+
+  <dd>When a call_other(object,...) happens, including with the
+  object.call() syntax, DGD calls this function in the Driver to
+  find "object", the object whose function is being called. You can
+  call compile_object() from call_object(). That may be a good idea
+  if the object isn't already compiled.</dd>
+
+  <dt>object inherit_program(string file, string program, int
+  priv)</dt>
+
+  <dd>When one program inherits another, DGD calls inherit_program
+  in the Driver to find the LPC object for the program being
+  inherited from. If priv is 1, it's private inheritance.
+  Otherwise, it's normal inheritance. "File" is the one choosing to
+  inherit, and "program" is the one being inherited. You can call
+  compile_object() from inherit_program(). That's probably a good
+  idea if "program" hasn't already been compiled.</dd>
+
+  <dt>string path_include(string file, string path)</dt>
+
+  <dd>An "include" statement in an LPC file will substitute the
+  text of the included file directly, so nothing needs to be
+  compiled (unlike call_object or inherit_program above). However,
+  the Driver can still choose what file will be included. When the
+  file is included, DGD will call the Driver's path_include
+  function, and the returned string is the path of the file that
+  will be included. If nil is returned, no file will be included
+  and a compile error will occur. If a path to a file that doesn't
+  exist is returned, pretty much the same thing will happen.</dd>
+
+  <dt>void recompile(object obj)</dt>
+
+  <dd>This function is called by DGD to indicate to the Driver that
+  the parent class of an object is out of date. If the Driver
+  responds by actually recompiling the object then it will use the
+  new version of the parent class, and will again be up-to-date.
+  See the section on inheritance for further details. This is a
+  pretty complicated subject if you want to do it well.</dd>
+
+  <dt>object telnet_connect(int port)</dt>
+
+  <dd>Note: this didn't take a "port" parameter in older versions
+  of DGD.<br>
+  This function should create and return a User object for the new
+  connection on the given telnet port. "Port" will be an offset
+  into the array of telnet ports, so if there's only a single
+  telnet port it will always have a value of zero. If nil is
+  returned, the new connection will be rejected. See <a href=
+  "#SEC5.2.3">section 5.2.3</a> for details on creating a User
+  object.</dd>
+
+  <dt>object binary_connect(int port)</dt>
+
+  <dd>Note: this didn't take a "port" parameter in older versions
+  of DGD.<br>
+  This function should create and return a User object for the new
+  connection on the given binary port. "Port" will be an offset
+  into the array of binary ports, so if there's only a single
+  binary port it will always have a value of zero. If nil is
+  returned, the new connection will be rejected. See <a href=
+  "#SEC5.2.3">section 5.2.3</a> for details on creating a User
+  object.</dd>
+
+  <dt>void interrupt(void)</dt>
+
+  <dd>This function is called if DGD receives a kill signal, for
+  instance if the computer's user shuts it down from the command
+  line or the Windows Task Manager. Normally, it will shut down the
+  system and perhaps dump state. Sometimes a forcible shutdown
+  happens as a result of a bug, so it may be useful to save
+  additional debugging information when this occurs.</dd>
+
+  <dt>void compile_error(string file, int line, string err)</dt>
+
+  <dd>DGD calls this function in the driver to let it know that a
+  compile error has occurred. Usually this is a syntax error of
+  some kind, or a type error. Several of these can happen in
+  sequence for a single LPC file being compiled before a runtime
+  error results from the failed compilation. "File" is the file
+  being compiled, "line" is the line number in that file where the
+  error occurred, and "err" is a human-readable description of what
+  the error was.</dd>
+
+  <dt>void runtime_error(string error, int caught, int ticks)</dt>
+
+  <dd>The driver receives this function call when a runtime error
+  of some kind occurs in normal, non-atomic code. This may be a
+  failed function call, a lack of ticks or stack space, an explicit
+  error signalled with the error() function, or many other possible
+  problems. If the error is caught by a <b>catch</b> construct,
+  "caught" will be equal to 1 plus an index into the return value
+  of call_trace() indicating the frame in which the error was
+  caught. "Error" is a human-readable description of the error that
+  occurred. "Ticks" tells how many ticks of processor time were
+  available when the error occurred. Note that runtime_error is
+  called with unlimited processor time and stack space, so don't
+  worry about it being called when a function runs out of ticks --
+  that will work just fine.</dd>
+
+  <dt>void atomic_error(string error, int atom, int ticks)</dt>
+
+  <dd>This function is essentially the same as runtime_error, but
+  is called when the error occurs in atomic code. "Atom" is an
+  index into the return value of call_trace() indicating the frame
+  in which the atomic code begins. Atomic_error, like
+  runtime_error, is called with unlimited stack space and processor
+  ticks.<br>
+  Note that atomic_error, since it is called atomically, may not
+  write to files or network connections.</dd>
+
+  <dt>int compile_rlimits(string objname)</dt>
+
+  <dd>If an LPC program uses the rlimits() construct, DGD will call
+  this function on the Driver with that object's name. If the
+  compile_rlimits function returns nonzero then that object is
+  allowed to use rlimits() without restriction. If compile_rlimits
+  returns 0 then every time the object tries to use rlimits(), DGD
+  will query the Driver with runtime_rlimits to make sure it's
+  okay.</dd>
+
+  <dt>int runtime_rlimits(object obj, int stack, int ticks)</dt>
+
+  <dd>DGD calls this function of the Driver to see if the supplied
+  object is permitted to use rlimits() with the given arguments. A
+  value less than zero for stack or ticks means unlimited, while a
+  value of zero means no change. A positive value will set the
+  limit to that value. If runtime_rlimits returns 0, the usage is
+  illegal and will abort with an error. A nonzero return value
+  means the rlimits call is legal.</dd>
+
+  <dt>void remove_program(string objname, int timestamp, int
+  index)</dt>
+
+  <dd>Whenever a master object is removed, DGD calls this function
+  on the Driver object. The object has already been destructed by
+  the time this function is called, so find_object() on objname
+  will fail or return a different issue. The index is a unique
+  number for each issue of the object, so if multiple versions are
+  compiled with the same name, each one will still have a different
+  index for this call.<br>
+  It's very important to track object removal because when a master
+  object is destructed, all of its clones and child objects are
+  destructed as well. Since this code should <i>really</i> never be
+  allowed to fail, it's called with unlimited stack and processor
+  time. It's also called from inside a catch{} statement.<br>
+  It's important to track object inheritance, but doing so well can
+  be very complex. Read about Object Inheritance for details.</dd>
+</dl>
+
+<h3><a name="SEC5.2.3" href="index.html#SEC5.2.3" id="SEC5.2.3">The
+User Object</a></h3>
+
+<p>The User object is allocated by the Driver (or another LPC
+program) and passed to DGD as the return value of telnet_connect()
+or binary_connect().</p>
+
+<p>The User object, like the Driver, defines specific functions.
+DGD will call those functions to notify the user object that
+certain things have happened. The User object must be a regular DGD
+object, created with clone_object() or compile_object(). It may not
+be a Light-Weight Object created with new_object().</p>
+
+<p>DGD calls the following functions on a User object:</p>
+
+<dl>
+  <dt>int open(void)</dt>
+
+  <dd>A connection has just been opened for this object. If the
+  user object is for a telnet (not a binary) connection, the return
+  value is ignored. For a binary connection, if the return value is
+  zero, nothing further happens. If the return value is nonzero, a
+  UDP connection will be opened, and UDP packets from the same host
+  and port as the TCP connection may be received by this user
+  object. After the first UDP packet is received, UDP packets may
+  also be sent with the send_datagram() kfun.</dd>
+
+  <dt>void close(int flag)</dt>
+
+  <dd>The connection for this object has been closed. The function
+  is called when the network connection goes linkdead (i.e. the
+  connection is severed by the other end, or stops responding) or
+  when the user object is destructed. If the user object was
+  destructed, the flag parameter will have a value of 1. Otherwise
+  it will have a value of 0.</dd>
+
+  <dt>void receive_message(string message)</dt>
+
+  <dd>This function is called with data received from the network.
+  DGD's telnet connections are always line-mode rather than
+  character-mode, and since the newline at the end is implied, they
+  remove it before receive_message() returns the message that was
+  received. Telnet connections also filter out any non-ASCII or
+  high-ASCII characters such as international character sets,
+  special terminal codes and ANSI color codes. Binary connections
+  do no filtering, and simply return data as it was received.</dd>
+
+  <dt>void message_done(void)</dt>
+
+  <dd>This function is called when a buffered string that couldn't
+  be sent immediately and entirely is fully transmitted. Sometimes
+  when send_message is called, only some of the bytes can be
+  immediately accepted. This function is called on the User object
+  to indicate that more can now be accepted.</dd>
+</dl>
+
+<h3><a name="SEC5.2.4" href="index.html#SEC5.2.4" id=
+"SEC5.2.4">Object Creation and Initialization</a></h3>
+
+<p>When an object is initialized, its create function is called.
+The create function is called "create" by default. It takes no
+arguments and returns none. The name of the function that gets
+called can be changed by the DGD Configuration File (see section
+5.1.4).</p>
+
+<p>When an LPC object is cloned, it gets initialized. This means
+its create function is called. Therefore, every cloned object is
+initialized by the time it is first used.</p>
+
+<p>An LPC master object isn't initialized when it is compiled.
+Instead, it is initialized the first time one of its functions is
+called. This means that, for instance, if you have a master object
+that registers itself with another object in its create function,
+you must call a function on the master object (whether or not the
+function is defined by the object) to have DGD call its create
+function. If you call a function that doesn't exist, it won't do
+anything and nil will be returned, just as usual. However, the
+create function will still be called if the object was not
+previously initialized.</p>
+
+<h2><a name="SEC5.3" href="index.html#SEC5.3" id="SEC5.3">5.3 DGD
+Memory Management</a></h2>
+
+<p>DGD is a disk-based driver. This means that by default, it
+stores everything on the disk and keeps little or nothing in RAM
+besides the base driver. That's a good thing, because it means that
+even if your game takes many gigabytes of storage, you'll have only
+the currently-used stuff taking up RAM space. When your game is
+idle, your machine won't have to store all the extra stuff in
+RAM.</p>
+
+<p>However, DGD doesn't use a standard virtual memory system like
+your machine's Operating System does. Instead, it uses a special,
+customizable system that knows more about your LPC program and how
+it operates. DGD's system can also be configured specifically for
+your application. All of this means that a well-tuned DGD
+application can manage its memory much, much better than an
+application that lets the Operating System do all the work for
+it.</p>
+
+<h3><a name="SEC5.3.1" href="index.html#SEC5.3.1" id=
+"SEC5.3.1">5.3.1 Threads of Execution</a></h3>
+
+<p>DGD does a lot of things at the end of threads of execution.
+Swapping objects out to disk, recompiling objects and destructing
+objects all occur at the end of the thread of execution that
+requests them rather than occurring immediately. Since so many
+things happen at thread's end, it's important to know what a thread
+is and when it ends. Note that DGD's threads of execution are
+<i>not</i> similar to threads in most other languages.</p>
+
+<p>DGD threads happen very quickly and end very quickly. Unlike
+"normal" threads, they don't ever appear to happen in parallel.
+While DGD may actually execute more than one on a multiprocessor
+machine, you'll never see that happening. Instead, DGD uses its
+powerful atomic function mechanisms to make sure you'll never see
+any conflict, and if another thread would conflict with yours, it
+gets killed and later restarted. So in essence, DGD will always act
+as though the threads started and stopped one after the other,
+never overlapping. You can simply write your code as though you
+were on a regular single processor machine and it will execute
+flawlessly on a multiprocessor machine. For maximum speed there are
+some tweaks that need to occur, but that's a very advanced
+discussion for a later book.</p>
+
+<p>DGD threads start when DGD calls into the driver or user object.
+That happens when a new connection occurs, when new network input
+arrives, when a scheduled call_out occurs, when an object is
+destructed or recompiled, and when the Operating System sends DGD a
+signal telling it that it has been killed, among other times. A
+thread can never spawn another thread and wait for the result --
+remember that DGD always behaves as though only a single thread is
+running. So if one of the driver functions is called while other
+code is waiting, then that function call will not spawn a second
+thread. It will occur within the first thread.</p>
+
+<p>When the function that spawned the thread returns, the thread of
+execution is over. When that happens, any objects scheduled to be
+recompiled or destructed will be. DGD may swap out objects that
+haven't been referenced in awhile. If any call_outs are due, DGD
+will choose one and call it. If new network data has arrived or a
+new connection was made, DGD will call the driver or User object to
+notify it. And so on...</p>
+
+<h3><a name="SEC5.3.2" href="index.html#SEC5.3.2" id=
+"SEC5.3.2">5.3.2 Objects and Swapping</a></h3>
+
+<p>DGD objects take up space. The sector_size in the Configuration
+file is the unit DGD uses for swapping. Any DGD object will take up
+a certain number of sectors (rounded up), and will be swapped in
+and out as a unit. Note that this refers only to normal DGD
+objects. It doesn't apply to Lightweight Objects, arrays or
+mappings.</p>
+
+<p>When DGD has more than cache_size sectors in memory at the end
+of a thread of execution, it will begin swapping out objects.
+Starting with the in-memory object that was used least recently,
+DGD will remove objects from memory until it has cleared up
+1/swap_fragment sectors. So if swap_fragment is 32, it will clear
+at least one thirty-second of all the sectors in the cache. It will
+do this by removing objects from memory, starting with the least
+recently used.</p>
+
+<p>When cache_size is large, DGD can have a lot of objects in
+memory at once before it starts swapping them out. Since swap_size
+is how large absolutely <i>everything</i> can be in total, if
+cache_size is as large as swap_size then nothing will ever be
+swapped out to disk. This means that DGD will stop acting like a
+disk-based MUD and rely on your Operating System to handle
+swapping, if any needs to happen. It'll try to just keep everything
+in memory all the time, though your Operating System will probably
+only allow that if you actually <i>use</i> everything in memory
+constantly.</p>
+
+<p>The sector_size can also be important to tune. If it's small
+then DGD will waste very little space since objects won't carry
+much overhead. But if it's small then an object will require a lot
+of sectors -- if sector_size was half as large, each object would
+require about twice as many sectors, for instance. When that
+happens, DGD has to keep track of more sectors and has to swap more
+often. In general, use trial-and-error to tune the sector_size, if
+you need to at all. Or ask the DGD mailing list, which is a
+wonderful source of information.</p>
+
+<h4><a name="SEC5.3.2.1" href="index.html#SEC5.3.2.1" id=
+"SEC5.3.2.1">5.3.2.1 Lightweight Objects</a></h4>
+
+<p>DGD swaps regular objects in and out individually, and it swaps
+them as a whole. That means that if any part of the object is in
+memory, the whole object is in memory. It also means that the
+object is swapped into memory by itself -- it doesn't carry other
+DGD objects with it.</p>
+
+<p>Lightweight Objects (LWOs), arrays and mappings are all
+exceptions to this rule. They are not standard DGD objects, and
+they aren't managed like regular DGD objects. Instead, each array,
+mapping or LWO is inside a regular DGD object and it gets swapped
+into and out of memory with its parent object. This is why
+references to arrays, mappings and LWOs are all copied at the end
+of thread execution -- that way they live inside the object that
+has a reference to them, not another object elsewhere. Copying is
+the simplest way to achieve that.</p>
+
+<p>An LWO, like an array or mapping, lacks some of the normal
+characteristics of normal DGD objects. Like arrays and mappings,
+they are garbage-collected and can't be explictly destructed. When
+you're done with them, remove the last reference to them and they
+will go away automatically. Since DGD can detect circular links
+among data structures, you don't need to worry about the usual
+problems with reference counting. DGD will garbage collect fully,
+correctly and quickly, unlike Perl or Java.</p>
+
+<p>The DGD editor, the DGD parse_string function and the
+telnet_connect and binary_connect functions all involve special
+objects. An LWO, an array or a mapping cannot be used for these
+special objects. Only a full, normal DGD object can. Similarly,
+LWOs may not have call_outs. This means that a call_out cannot be
+scheduled from a function defined by an LWO.</p>
+
+<p>Be careful... Destructing the master object from which an LWO is
+created will destroy all the LWOs made from it. In this respect, it
+is like a cloned object. Since arrays and mappings have no master
+object, this isn't true of them.</p>
+
+<h3><a name="SEC5.3.3" href="index.html#SEC5.3.3" id=
+"SEC5.3.3">5.3.3 Dynamic and Static Memory</a></h3>

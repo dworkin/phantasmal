@@ -2,14 +2,14 @@
 
 <h2>Dealing with the driver-&gt;interrupt() Call</h2>
 
-<p>When your MUD's driver object receives a call to interrupt() from
-DGD, it means the server has received a kill signal. Normally, that
-means you'll want to force all users to quit, dump any appropriate
-state, and call shutdown(). You may also want to write to a log file or
-set up an error message to let somebody know that the MUD has received
-an error or kill signal and shut down.</p>
+<p>When your MUD's driver object receives a call to interrupt()
+from DGD, it means the server has received a kill signal. Normally,
+that means you'll want to force all users to quit, dump any
+appropriate state, and call shutdown(). You may also want to write
+to a log file or set up an error message to let somebody know that
+the MUD has received an error or kill signal and shut down.</p>
 
-<p>Note that shutdown() will not take effect until the end of the thread
-in which you call it. If shutdown() is not called within interrupt, DGD
-will not shut down. So you can start a timer or other shutdown sequence
-if necessary.</p>
+<p>Note that shutdown() will not take effect until the end of the
+thread in which you call it. If shutdown() is not called within
+interrupt, DGD will not shut down. So you can start a timer or
+other shutdown sequence if necessary.</p>

@@ -2,62 +2,64 @@
 
 <h2>Verbs for Mobile Actions</h2>
 
-<p>For each <a href="MobAction.html">Mobile Action</a> that is to be
-executed, there must be an action structure, which encapsulates the
-basic action, and a set of parameters of that action.</p>
+<p>For each <a href="MobAction.html">Mobile Action</a> that is to
+be executed, there must be an action structure, which encapsulates
+the basic action, and a set of parameters of that action.</p>
 
-<p>Every action has an actor - that is, it is performed <i>by</i> some
-mobile. It may have one or more direct objects which can be mobiles or
-non-sentient objects. For instance, the "take" action will operate on a
-single object (which may be sentient or not). Movement actions ("move
-north") will have a direction as an argument. Communication actions will
-have what to communicate, and possibly who to communicate it to.</p>
+<p>Every action has an actor - that is, it is performed <i>by</i>
+some mobile. It may have one or more direct objects which can be
+mobiles or non-sentient objects. For instance, the "take" action
+will operate on a single object (which may be sentient or not).
+Movement actions ("move north") will have a direction as an
+argument. Communication actions will have what to communicate, and
+possibly who to communicate it to.</p>
 
-<p>A given mobile is permitted to override any verb it is to perform.
-That is, a "black bear" mobile type may override the movement operation
-to leave bear footprints, or to growl periodically, or whatever is
-deemed appropriate.</p>
+<p>A given mobile is permitted to override any verb it is to
+perform. That is, a "black bear" mobile type may override the
+movement operation to leave bear footprints, or to growl
+periodically, or whatever is deemed appropriate.</p>
 
-<p>A mobile can perceive when another mobile near it is about to perform
-an action. Phantasmal permits the mobile to notice the pending action
-and prevent it.</p>
+<p>A mobile can perceive when another mobile near it is about to
+perform an action. Phantasmal permits the mobile to notice the
+pending action and prevent it.</p>
 
 <p>Different actions will notify different locations when they are
-pending. For instance, a movement action will notify the location from
-which the mobile is moving, and the new location <i>to</i> which it is
-moving. A mobile in either location can prevent the movement if it
-wishes. A communication action will notify the room from which the
-communication is occurring, and possibly also a wider area in some
-cases. In every case, the room where the mobile is taking action will be
-notified.</p>
+pending. For instance, a movement action will notify the location
+from which the mobile is moving, and the new location <i>to</i>
+which it is moving. A mobile in either location can prevent the
+movement if it wishes. A communication action will notify the room
+from which the communication is occurring, and possibly also a
+wider area in some cases. In every case, the room where the mobile
+is taking action will be notified.</p>
 
 <p>Example:</p>
 
 <ul>
-  <li>Mobile A sends out notification of pending action Move(north) to
-  room MyRoom</li>
+  <li>Mobile A sends out notification of pending action Move(north)
+  to room MyRoom</li>
 
-  <li>Mobile B is in MyRoom, and receives notification that A is about
-  to move north</li>
+  <li>Mobile B is in MyRoom, and receives notification that A is
+  about to move north</li>
 
   <li>Mobile B is blocking the north exit, and returns a value to
-  Phantasmal indicating that the action is not permitted, and should be
-  cancelled.</li>
+  Phantasmal indicating that the action is not permitted, and
+  should be cancelled.</li>
 
   <li>Mobile A is told that his action has been prevented by Mobile
   B.</li>
 </ul>
 
-<p>For a specific action to occur, there are several notifications that
-go out. The first notification tells nearby actors that the action is
-preparing to take place, and gives them a chance to prevent it. The
-second notification indicates that the action will take place, and may
-not be cancelled. The third notification is to indicate that the action
-has successfully completed. In each case, the action structure will be
-sent out with the notification.</p>
+<p>For a specific action to occur, there are several notifications
+that go out. The first notification tells nearby actors that the
+action is preparing to take place, and gives them a chance to
+prevent it. The second notification indicates that the action will
+take place, and may not be cancelled. The third notification is to
+indicate that the action has successfully completed. In each case,
+the action structure will be sent out with the notification.</p>
 
-<p>It may be useful to have a specific Phantasmal-based game be able to
-categorize 'subscriptions' to these events, since the game will
-potentially alter what verbs notify what areas, and may have particular
-kinds of events that are never subscribed to, or otherwise highly
-optimizable. That is beyond the current scope of this document.</p>
+<p>It may be useful to have a specific Phantasmal-based game be
+able to categorize 'subscriptions' to these events, since the game
+will potentially alter what verbs notify what areas, and may have
+particular kinds of events that are never subscribed to, or
+otherwise highly optimizable. That is beyond the current scope of
+this document.</p>

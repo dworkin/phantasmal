@@ -2,168 +2,177 @@
 
 <h2>Object Inheritance</h2>
 
-<p><i>Note: a lot of this is new to Phantasmal 0.016. If you're still
-using a previous version, allow me to recommend the <a href=
+<p><i>Note: a lot of this is new to Phantasmal 0.016. If you're
+still using a previous version, allow me to recommend the <a href=
 "OldInheritance.html">old inheritance tutorial</a> rather than this
 one.</i></p>
 
-<p>One way to potentially save yourself some time, when building objects
-that have some relationship to each other, is to build a parent object
-for some or all of them. If you're building a large number of
-sun-drenched rooms in an outdoor labyrinth then lots of them are likely
-to have grass, sunlight, a hedge, a view of a tower and so on. You can
-put all those various details into a single parent object and make your
-tens or hundreds of labyrinth rooms all implement them automatically.
-This tutorial can show you how.</p>
+<p>One way to potentially save yourself some time, when building
+objects that have some relationship to each other, is to build a
+parent object for some or all of them. If you're building a large
+number of sun-drenched rooms in an outdoor labyrinth then lots of
+them are likely to have grass, sunlight, a hedge, a view of a tower
+and so on. You can put all those various details into a single
+parent object and make your tens or hundreds of labyrinth rooms all
+implement them automatically. This tutorial can show you how.</p>
 
-<p>As a time-saver, inheritance is primarily a way to inherit <a href=
-"Details.html">object details</a>. That's a useful thing, but it doesn't
-do everything. Object nouns and adjectives will also be inheritable as
-of Phantasmal 0.016. Things like weights and heights already are. We're
-considering inheriting object descriptions, but it's not entirely clear
-how the commands for that should work.</p>
+<p>As a time-saver, inheritance is primarily a way to inherit
+<a href="Details.html">object details</a>. That's a useful thing,
+but it doesn't do everything. Object nouns and adjectives will also
+be inheritable as of Phantasmal 0.016. Things like weights and
+heights already are. We're considering inheriting object
+descriptions, but it's not entirely clear how the commands for that
+should work.</p>
 
 <p>So, back to that sun-drenched labyrinth. You're going to need a
-parent room, which should be clearly marked as such and not connected
-(via exits) to any other room anywhere. That keeps people from randomly
-walking into it and changing stuff. So use <b>@make_room</b> to make the
-parent room. Your parent rooms are allowed to have their own parents,
-but in this example there's probably no reason to bother. Take note of
-the parent room's object number when <b>@make_room</b> tells you what it
-is.</p>
+parent room, which should be clearly marked as such and not
+connected (via exits) to any other room anywhere. That keeps people
+from randomly walking into it and changing stuff. So use
+<b>@make_room</b> to make the parent room. Your parent rooms are
+allowed to have their own parents, but in this example there's
+probably no reason to bother. Take note of the parent room's object
+number when <b>@make_room</b> tells you what it is.</p>
 
-<p>For your brief and glance descriptions you should put something like
-"labyrinth parent room", and for your look description you should put
-something like "this room contains details for other labyrinth rooms.
-You should never, never be able to enter it." You shouldn't add any
-exits to or from it. Remember that if anybody ever changes something
-here it will be propagated to all your child rooms, so only change the
-parent room if you actually <i>mean</i> to.</p>
+<p>For your brief and glance descriptions you should put something
+like "labyrinth parent room", and for your look description you
+should put something like "this room contains details for other
+labyrinth rooms. You should never, never be able to enter it." You
+shouldn't add any exits to or from it. Remember that if anybody
+ever changes something here it will be propagated to all your child
+rooms, so only change the parent room if you actually <i>mean</i>
+to.</p>
 
-<p>You'll also want an ordinary labyrinth test room to try out the nifty
-inheritance tricks. Go ahead and create one with <b>@make_room</b>. Up
-to this point, when <b>@make_room</b> asks you for a parent object,
-you've probably just been hitting enter to leave it blank. And that's
-been the right thing to do. But when you make the labyrinth test room,
-you should instead type the number of the labyrinth parent room -- the
-one we told you to take note of awhile back. You wrote it down when
-<b>@make_room</b> told it to you, right?</p>
+<p>You'll also want an ordinary labyrinth test room to try out the
+nifty inheritance tricks. Go ahead and create one with
+<b>@make_room</b>. Up to this point, when <b>@make_room</b> asks
+you for a parent object, you've probably just been hitting enter to
+leave it blank. And that's been the right thing to do. But when you
+make the labyrinth test room, you should instead type the number of
+the labyrinth parent room -- the one we told you to take note of
+awhile back. You wrote it down when <b>@make_room</b> told it to
+you, right?</p>
 
-<p>The description can be whatever you like, but for the full example
-experience, I recommend mentioning sunshine and a distant tower in the
-description. That way people can look at them.</p>
+<p>The description can be whatever you like, but for the full
+example experience, I recommend mentioning sunshine and a distant
+tower in the description. That way people can look at them.</p>
 
-<p>Now, go ahead and make a new detail with <b>@make_detail</b>. Make it
-a part of the labyrinth <i>parent</i> room, not the labyrinth
-<i>test</i> room. Describe the sunshine playing on the grass and hedges,
-and how you can see the dust motes swirling in it. Give the sunshine
-nouns like <b>sun</b>, <b>sunshine</b>, <b>dust</b> and <b>motes</b>,
-and adjectives like <b>bright</b>, <b>shiny</b> and <b>dust</b>. That's
-so that you can look at the dust motes, the shiny motes or the sunshine
-and get the same description back.</p>
+<p>Now, go ahead and make a new detail with <b>@make_detail</b>.
+Make it a part of the labyrinth <i>parent</i> room, not the
+labyrinth <i>test</i> room. Describe the sunshine playing on the
+grass and hedges, and how you can see the dust motes swirling in
+it. Give the sunshine nouns like <b>sun</b>, <b>sunshine</b>,
+<b>dust</b> and <b>motes</b>, and adjectives like <b>bright</b>,
+<b>shiny</b> and <b>dust</b>. That's so that you can look at the
+dust motes, the shiny motes or the sunshine and get the same
+description back.</p>
 
-<p>To test it out, go to the labyrinth parent room and look at the dust
-motes. Now go back to the labyrinth test room and do the same. If you
-want, go ahead and add more details to the labyrinth parent room for
-things like grass, the tower, the hedges and the other stuff you can
-see. If you were a <a href="http://www.skotos.net">Skotos</a> builder
-doing a Castle Marrach room you'd be spending two or three hours at
-least on all the descriptions, so don't be shy about taking ten or
-fifteen minutes on this. Your best role-players will eat this stuff up.
-And remember, every minute you spend on the details in the parent room
+<p>To test it out, go to the labyrinth parent room and look at the
+dust motes. Now go back to the labyrinth test room and do the same.
+If you want, go ahead and add more details to the labyrinth parent
+room for things like grass, the tower, the hedges and the other
+stuff you can see. If you were a <a href=
+"http://www.skotos.net">Skotos</a> builder doing a Castle Marrach
+room you'd be spending two or three hours at least on all the
+descriptions, so don't be shy about taking ten or fifteen minutes
+on this. Your best role-players will eat this stuff up. And
+remember, every minute you spend on the details in the parent room
 is that much more detail in <i>every</i> child room. That's how
 inheritance in Phantasmal saves you time!</p>
 
-<p>So test it out. Make another child room. That's another room like the
-labyrinth test room, one that also inherits from the labyrinth parent
-room (whose number you still remember, yeah?). After making this
-fresh-minted room with <b>@make_room</b> and giving it the labyrinth
-parent room as a parent, go ahead and look around at the grass, the dust
-motes, and everything else you made details for. And there they are!</p>
+<p>So test it out. Make another child room. That's another room
+like the labyrinth test room, one that also inherits from the
+labyrinth parent room (whose number you still remember, yeah?).
+After making this fresh-minted room with <b>@make_room</b> and
+giving it the labyrinth parent room as a parent, go ahead and look
+around at the grass, the dust motes, and everything else you made
+details for. And there they are!</p>
 
-<p>Note how just by making a room with a cool parent, you've suddenly
-gotten a lot of details for free. This is inheritance, but it's not the
-kind you're used to in an Object Oriented programming language (just in
-case you're a programmer). That kind of inheritance is also called
-<b>code inheritance</b> because it's code being inherited. Those
-languages almost never allow <b>data inheritance</b>, which is what
-you're seeing here in Phantasmal. That's because these details are
-object data, not methods or any other kind of code. MUDs tend to be
-better served by data inheritance, at least for "physical" objects in
-the MUD world.</p>
+<p>Note how just by making a room with a cool parent, you've
+suddenly gotten a lot of details for free. This is inheritance, but
+it's not the kind you're used to in an Object Oriented programming
+language (just in case you're a programmer). That kind of
+inheritance is also called <b>code inheritance</b> because it's
+code being inherited. Those languages almost never allow <b>data
+inheritance</b>, which is what you're seeing here in Phantasmal.
+That's because these details are object data, not methods or any
+other kind of code. MUDs tend to be better served by data
+inheritance, at least for "physical" objects in the MUD world.</p>
 
-<p>What if you want to make a room that's a little different? Let's say
-you want a cool, shady labyrinth room in one specific place, but you'd
-like the grass, the view of the tower and so on to stay the same. Make a
-new room and call it "shady labyrinth room". Describe it appropriately.
-But make sure that its parent is still the same labyrinth parent. So to
-start out with, it looks just like the other sunny labyrinth rooms. How
-do you change it?</p>
+<p>What if you want to make a room that's a little different? Let's
+say you want a cool, shady labyrinth room in one specific place,
+but you'd like the grass, the view of the tower and so on to stay
+the same. Make a new room and call it "shady labyrinth room".
+Describe it appropriately. But make sure that its parent is still
+the same labyrinth parent. So to start out with, it looks just like
+the other sunny labyrinth rooms. How do you change it?</p>
 
-<p>First, add a detail to the new shady room. You might give it nouns
-like 'hedge', 'shade' and 'shadow', and adjectives like 'shady' and
-'cool'. Then when a player looks at the cool shadow or the shady hedge,
-he'll see the new shady version. Check out your new room with the
-<b>@stat</b> command -- you should see a detail list with the new
-detail, and also a detail list with the full set of details from the
-parent as well.</p>
+<p>First, add a detail to the new shady room. You might give it
+nouns like 'hedge', 'shade' and 'shadow', and adjectives like
+'shady' and 'cool'. Then when a player looks at the cool shadow or
+the shady hedge, he'll see the new shady version. Check out your
+new room with the <b>@stat</b> command -- you should see a detail
+list with the new detail, and also a detail list with the full set
+of details from the parent as well.</p>
 
-<p>But you'd like to get rid of the sunshine and dust motes above, since
-they shouldn't be here, or shouldn't look the same. To do that, remove
-the detail from the child object. That's right: <i>remove the parent's
-detail from the child object</i>. Each child object keeps a list of
-parent details that it overrides -- details that the parent has, but the
-child does not. By removing the parent's detail, you add the removed
-detail to that internal list. Doublecheck with <b>@stat</b>. The parent
-detail for sunshine and dust motes should be gone.</p>
+<p>But you'd like to get rid of the sunshine and dust motes above,
+since they shouldn't be here, or shouldn't look the same. To do
+that, remove the detail from the child object. That's right:
+<i>remove the parent's detail from the child object</i>. Each child
+object keeps a list of parent details that it overrides -- details
+that the parent has, but the child does not. By removing the
+parent's detail, you add the removed detail to that internal list.
+Doublecheck with <b>@stat</b>. The parent detail for sunshine and
+dust motes should be gone.</p>
 
 <h3>Multiple Inheritance</h3>
 
-<p>An object can have more than one parent. Some attributes like weight,
-height, weight_capacity and so on are inherited entirely from the first
-parent. Other attributes like nouns and details are combined from all
-parents. If you wanted to make certain labyrinth rooms shady and other
-sunny, and make certain rooms large and others small, you could make
-large and small parent rooms, and shady and sunny parent rooms, then
-inherit from either large or small and either shady or sunny to combine
-them. The volume capacity of the room (and thus, how many players may be
-inside it at once) is set from the first parent, which would be either
-large or small. However, the details are from <i>all</i> parents, so the
-room would also inherit the shady or sunny detail objects from the shady
-or sunny rooms. Additional parent objects that add extra details, nouns,
-adjectives, etc are called <b>mixin</b> objects, or <b>mixin</b> parents
-because the mix additional details in without interacting directly with
-the other parent classes.</p>
+<p>An object can have more than one parent. Some attributes like
+weight, height, weight_capacity and so on are inherited entirely
+from the first parent. Other attributes like nouns and details are
+combined from all parents. If you wanted to make certain labyrinth
+rooms shady and other sunny, and make certain rooms large and
+others small, you could make large and small parent rooms, and
+shady and sunny parent rooms, then inherit from either large or
+small and either shady or sunny to combine them. The volume
+capacity of the room (and thus, how many players may be inside it
+at once) is set from the first parent, which would be either large
+or small. However, the details are from <i>all</i> parents, so the
+room would also inherit the shady or sunny detail objects from the
+shady or sunny rooms. Additional parent objects that add extra
+details, nouns, adjectives, etc are called <b>mixin</b> objects, or
+<b>mixin</b> parents because the mix additional details in without
+interacting directly with the other parent classes.</p>
 
 <p>Usually it's easier to inherit another room from a parent object
 before having the child inherit it than to make mixin objects. For
-instance, if all rooms were the same size but you had both shady and
-sunny rooms, then you could make a "labyrinth room" parent, and then
-inherit shady and sunny children from it. However, if you have multiple
-attributes that vary independently, you may find a mixin parent is
-easiest. For instance, you could have <i>shady, small</i> rooms,
-<i>sunny, large</i> rooms, <i>shady, large</i> rooms or <i>sunny,
-small</i> rooms in the above, so it made sense. If every small room is
-also shady and every large room is also sunny, you're probably better
-off avoiding multiple inheritance -- it can be complicated to use. The
-single-inheritance solution is easier.</p>
+instance, if all rooms were the same size but you had both shady
+and sunny rooms, then you could make a "labyrinth room" parent, and
+then inherit shady and sunny children from it. However, if you have
+multiple attributes that vary independently, you may find a mixin
+parent is easiest. For instance, you could have <i>shady, small</i>
+rooms, <i>sunny, large</i> rooms, <i>shady, large</i> rooms or
+<i>sunny, small</i> rooms in the above, so it made sense. If every
+small room is also shady and every large room is also sunny, you're
+probably better off avoiding multiple inheritance -- it can be
+complicated to use. The single-inheritance solution is easier.</p>
 
 <h3>The @set_object_parent command</h3>
 
-<p>The only other thing you should know about inheritance is the way to
-change or remove object parents. The <b>@set_obj_parent</b> command is
-your friend here (check its online help!). You can set an object #1124's
-parent to object #375 by saying "@set_obj_parent #1124 set #375". You
-can then make it parentless again by saying "@set_obj_parent #1124
-none". You can set multiple parents by saying "@set_obj_par #1124 add
-#391 #241", or "@set_obj_par #1124 set #375 #391 #241". Note that the
-order of the parents matters, and that added parents are appended to the
-<i>end</i> of the list.</p>
+<p>The only other thing you should know about inheritance is the
+way to change or remove object parents. The <b>@set_obj_parent</b>
+command is your friend here (check its online help!). You can set
+an object #1124's parent to object #375 by saying "@set_obj_parent
+#1124 set #375". You can then make it parentless again by saying
+"@set_obj_parent #1124 none". You can set multiple parents by
+saying "@set_obj_par #1124 add #391 #241", or "@set_obj_par #1124
+set #375 #391 #241". Note that the order of the parents matters,
+and that added parents are appended to the <i>end</i> of the
+list.</p>
 
-<p>Note that parents are also called <b>Archetypes</b>, and that Skotos
-calls them <i>ur-objects</i>. Phantasmal uses the internal name
-'archetype', but tends to call them parents in the help and tutorials
-because people find the word less imposing.</p>
+<p>Note that parents are also called <b>Archetypes</b>, and that
+Skotos calls them <i>ur-objects</i>. Phantasmal uses the internal
+name 'archetype', but tends to call them parents in the help and
+tutorials because people find the word less imposing.</p>
 
 <p>Now go build some more stuff by following the <a href=
 "../index.html">tutorials</a>.</p>

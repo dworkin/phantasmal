@@ -2,14 +2,15 @@
 
 <h2>Should You Start From the Melville MUD Library?</h2>
 
-<p>There are several pieces of code that you can start from when writing
-your own MUD Library. One choice is Melville, written by MobyDick (aka
-Stephen Schmidt). You should compare and contrast with other choices,
-like the <a href="../Kernel">Kernel Library</a>, <a href=
-"http://phantasmal.sf.net">Phantasmal</a>, and perhaps others like
-<a href="http://mudos.org">Lima</a>, LDMUD, <a href=
-"http://web.cold.org">ColdCore</a>, or even Diku-based MUDs like ROM,
-Merc or <a href="http://www.circlemud.org">CircleMUD</a>.</p>
+<p>There are several pieces of code that you can start from when
+writing your own MUD Library. One choice is Melville, written by
+MobyDick (aka Stephen Schmidt). You should compare and contrast
+with other choices, like the <a href="../Kernel">Kernel
+Library</a>, <a href="http://phantasmal.sf.net">Phantasmal</a>, and
+perhaps others like <a href="http://mudos.org">Lima</a>, LDMUD,
+<a href="http://web.cold.org">ColdCore</a>, or even Diku-based MUDs
+like ROM, Merc or <a href=
+"http://www.circlemud.org">CircleMUD</a>.</p>
 
 <h3>Why You'd Use It</h3>
 
@@ -17,47 +18,49 @@ Merc or <a href="http://www.circlemud.org">CircleMUD</a>.</p>
 David Jackson some time ago. While the email is getting older, the
 reasons are still basically correct.</p>
 
-<p>Melville may be a very minimal framework from which to operate, but
-the structure for something very functional and very powerful is there.
-This is a good thing. The code is very well commented, and it's very,
-very easy to extend. For instance, David Jackson says: "I added
-functional, working, and debugged code for doors in less than an
-hour."</p>
+<p>Melville may be a very minimal framework from which to operate,
+but the structure for something very functional and very powerful
+is there. This is a good thing. The code is very well commented,
+and it's very, very easy to extend. For instance, David Jackson
+says: "I added functional, working, and debugged code for doors in
+less than an hour."</p>
 
-<p>Most standard features are documented somewhere within the code, or
-within the DGD documentation itself. Mobydick's coding may not be the
-most elegant, but it is certainly very, very readable and easy to
-follow. This is a good thing. Melville is getting older, and DGD is
-advancing rapidly, so some newer features like LWOs, statedumps and
-atomic functions aren't included, but that also helps to simplify the
-code.</p>
+<p>Most standard features are documented somewhere within the code,
+or within the DGD documentation itself. Mobydick's coding may not
+be the most elegant, but it is certainly very, very readable and
+easy to follow. This is a good thing. Melville is getting older,
+and DGD is advancing rapidly, so some newer features like LWOs,
+statedumps and atomic functions aren't included, but that also
+helps to simplify the code.</p>
 
-<p>It's very easy to spot areas that you may want to extend it. This is
-a good thing. Mobydick was wise enough to point out exactly where the
-code might need to be extended, or where he simply did not feel
-compelled to add functionality. This makes it very easy to gain a higher
-grasp of what is going on in the lib. This is a very good thing.</p>
+<p>It's very easy to spot areas that you may want to extend it.
+This is a good thing. Mobydick was wise enough to point out exactly
+where the code might need to be extended, or where he simply did
+not feel compelled to add functionality. This makes it very easy to
+gain a higher grasp of what is going on in the lib. This is a very
+good thing.</p>
 
 <h3>Why You Wouldn't Use It</h3>
 
-<p>Melville's author actually suggests that it's now the wrong place to
-start. He believes that the Kernel Library, or (better yet) something
-based on it makes more sense. Melville was a good, powerful
-state-of-the-art beginning when it was written, but its organization and
-features are better for building a 1994-era MUD than a modern one.
-Melville's structure is very familiar, but can be significantly limiting
-if you don't want to build Yet Another LPMUD.</p>
+<p>Melville's author actually suggests that it's now the wrong
+place to start. He believes that the Kernel Library, or (better
+yet) something based on it makes more sense. Melville was a good,
+powerful state-of-the-art beginning when it was written, but its
+organization and features are better for building a 1994-era MUD
+than a modern one. Melville's structure is very familiar, but can
+be significantly limiting if you don't want to build Yet Another
+LPMUD.</p>
 
-<p>Melville also fails to take advantage of a number of powerful DGD
-functions like additional AUTO objects and all the functionality
-mentioned above as too new for Melville. Much of it would be more
-difficult to retrofit into Melville's structure than it would be to
-write new structure from scratch.</p>
+<p>Melville also fails to take advantage of a number of powerful
+DGD functions like additional AUTO objects and all the
+functionality mentioned above as too new for Melville. Much of it
+would be more difficult to retrofit into Melville's structure than
+it would be to write new structure from scratch.</p>
 
-<p>Similarly, Melville fails to have a lot of the structure that makes
-the Kernel Library so powerful, and it would be very difficult to hack
-that functionality into Melville.</p>
-<hr />
+<p>Similarly, Melville fails to have a lot of the structure that
+makes the Kernel Library so powerful, and it would be very
+difficult to hack that functionality into Melville.</p>
+<hr>
 <pre>
 @@INCLUDE cancel_input_to@@
 </pre>

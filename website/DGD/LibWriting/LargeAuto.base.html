@@ -2,109 +2,113 @@
 
 <h2>Designing Your AUTO Object</h2>
 
-<p>There are a number of tradeoffs in designing your AUTO object. One of
-the simplest, and the most fundamental, is: how much functionality will
-it have? Will you have a simple AUTO object with only the barest and
-most necessary functionality, rather like the Kernel Library? Will you
-have an AUTO object containing a wide variety of standard library
-functions on strings and data structures? Will you include functions on
-finding an object's physical (in the MUD) environment and inventory?</p>
+<p>There are a number of tradeoffs in designing your AUTO object.
+One of the simplest, and the most fundamental, is: how much
+functionality will it have? Will you have a simple AUTO object with
+only the barest and most necessary functionality, rather like the
+Kernel Library? Will you have an AUTO object containing a wide
+variety of standard library functions on strings and data
+structures? Will you include functions on finding an object's
+physical (in the MUD) environment and inventory?</p>
 
-<p>Remember that any data in your AUTO object is duplicated throughout
-every object in the MUD. This includes LWOs and other objects that you
-may want to be fairly small &mdash; DGD has no structures, so if your
-single global AUTO object is huge, then there will be no such thing as a
-small object in your MUD unless you build it out of arrays and
-mappings.</p>
+<p>Remember that any data in your AUTO object is duplicated
+throughout every object in the MUD. This includes LWOs and other
+objects that you may want to be fairly small &mdash; DGD has no
+structures, so if your single global AUTO object is huge, then
+there will be no such thing as a small object in your MUD unless
+you build it out of arrays and mappings.</p>
 
 <p>However, remember also that if you take all the data and
-functionality out of the AUTO object, you'll need to explicitly inherit
-other libraries and perhaps use (slow) call_other() statements to call
-your commonly-used functions.</p>
+functionality out of the AUTO object, you'll need to explicitly
+inherit other libraries and perhaps use (slow) call_other()
+statements to call your commonly-used functions.</p>
 
 <h3>Driver Issues, Size and Space</h3>
 
-<p>In DGD, there is an obscure cost associated with functions in the
-AUTO object that are neither static nor private: all such functions have
-a cost of two bytes a piece in <i>every</i> inheriting object's program.
-This is also true for non-private functions in all other (i.e. non-auto)
-objects.</p>
+<p>In DGD, there is an obscure cost associated with functions in
+the AUTO object that are neither static nor private: all such
+functions have a cost of two bytes a piece in <i>every</i>
+inheriting object's program. This is also true for non-private
+functions in all other (i.e. non-auto) objects.</p>
 
-<p>Normally, this is not much of a problem. However, if you were to have
-200 such functions in the auto object, every other program in the game
-but that of the driver object would become 400 bytes larger.</p>
+<p>Normally, this is not much of a problem. However, if you were to
+have 200 such functions in the auto object, every other program in
+the game but that of the driver object would become 400 bytes
+larger.</p>
 
-<p>You can solve this by either keeping such functions out of the AUTO
-object, or by making the functions static so that only subclasses can
-call them.</p>
+<p>You can solve this by either keeping such functions out of the
+AUTO object, or by making the functions static so that only
+subclasses can call them.</p>
 
-<p>There is no speed issue with a large number of functions. DGD does
-excellent caching, and on average the cost of a function call does not
-increase with the number of functions available. However, do remember
-that regardless of other factors, no amount of caching will make a
-call_other() as fast as a local function call.</p>
+<p>There is no speed issue with a large number of functions. DGD
+does excellent caching, and on average the cost of a function call
+does not increase with the number of functions available. However,
+do remember that regardless of other factors, no amount of caching
+will make a call_other() as fast as a local function call.</p>
 
 <h3>Function Performance</h3>
 
 <p>There are several performance issues to consider when deciding
 whether to put a particular function into the AUTO object.</p>
 
-<p>A call to a function in the auto object uses the special CALL_AFUNC
-instruction, which is 3 bytes in size. Exactly the same functionality
-would be available with the CALL_DFUNC instruction, which takes 4 bytes.
-Thus, programs that call functions in the auto object will be slightly
-smaller. In the most extreme case, a function that consists of nothing
-but function calls will be almost 25% smaller if CALL_AFUNC can be used
-for every call. There will be a barely measurable performance
-difference.</p>
+<p>A call to a function in the auto object uses the special
+CALL_AFUNC instruction, which is 3 bytes in size. Exactly the same
+functionality would be available with the CALL_DFUNC instruction,
+which takes 4 bytes. Thus, programs that call functions in the auto
+object will be slightly smaller. In the most extreme case, a
+function that consists of nothing but function calls will be almost
+25% smaller if CALL_AFUNC can be used for every call. There will be
+a barely measurable performance difference.</p>
 
-<p>Note that programs larger than 2K are compressed before being saved
-in the swap file, where the compression factor depends on the redundancy
-of the byte code, so the size advantage in the swap file would be much
-less than 25% if the function mentioned above is large enough.</p>
+<p>Note that programs larger than 2K are compressed before being
+saved in the swap file, where the compression factor depends on the
+redundancy of the byte code, so the size advantage in the swap file
+would be much less than 25% if the function mentioned above is
+large enough.</p>
 
-<p>Inheriting a utility object, which itself does not inherit anything,
-increases the size of the inheriting program by about 16 bytes.</p>
+<p>Inheriting a utility object, which itself does not inherit
+anything, increases the size of the inheriting program by about 16
+bytes.</p>
 
-<p>Putting everything into the auto object increases the size of the
-working set. For a single object the difference won't amount to much,
-but a mudlib wholly designed with the idea of keeping the working set
-small will have a performance advantage. For a different take on
-"working set", consider processor cache vs. main memory, rather than
-main memory vs. disk storage. The Xeon processor has a 1 Mb cache.
-Keeping the working set small enough to fit inside that cache will be an
-enormous speedup.</p>
+<p>Putting everything into the auto object increases the size of
+the working set. For a single object the difference won't amount to
+much, but a mudlib wholly designed with the idea of keeping the
+working set small will have a performance advantage. For a
+different take on "working set", consider processor cache vs. main
+memory, rather than main memory vs. disk storage. The Xeon
+processor has a 1 Mb cache. Keeping the working set small enough to
+fit inside that cache will be an enormous speedup.</p>
 
-<p>You can move functions into a separate 'manager' object rather than
-the AUTO object. You'll be replacing calls to an inherited function with
-call_other statements. A call_other is slower than a local function
-call, especially if the first argument is a string (since an additional
-call_other to the driver object will be needed to resolve the object
-name).</p>
+<p>You can move functions into a separate 'manager' object rather
+than the AUTO object. You'll be replacing calls to an inherited
+function with call_other statements. A call_other is slower than a
+local function call, especially if the first argument is a string
+(since an additional call_other to the driver object will be needed
+to resolve the object name).</p>
 
 <h3>Multiple Files and File Size</h3>
 
-<p>It's often convenient to break functionality up into separate files.
-Normally in DGD that means parent objects. The functionality and
-variable scope are kept separate, and cleanliness is maintained. The
-AUTO object can't inherit from any libraries. If it did, they would
-inherit it again (since every library does), which would make a circular
-dependency.</p>
+<p>It's often convenient to break functionality up into separate
+files. Normally in DGD that means parent objects. The functionality
+and variable scope are kept separate, and cleanliness is
+maintained. The AUTO object can't inherit from any libraries. If it
+did, they would inherit it again (since every library does), which
+would make a circular dependency.</p>
 
 <p>However, if you're making a large AUTO object and want the
-convenience of multiple files, you <i>can</i> use #include to put them
-all in one place rather than using 'inherit'. This is one of the few
-times that #include is a reasonable way to add functions to an
-object.</p>
-<hr />
+convenience of multiple files, you <i>can</i> use #include to put
+them all in one place rather than using 'inherit'. This is one of
+the few times that #include is a reasonable way to add functions to
+an object.</p>
+<hr>
 <pre>
 @@INCLUDE mudlibs@@
 </pre>
-<hr />
+<hr>
 <pre>
 @@INCLUDE masking_kfuns@@
 </pre>
-<hr />
+<hr>
 <pre>
 @@INCLUDE getting_started_with_dgd@@
 </pre>

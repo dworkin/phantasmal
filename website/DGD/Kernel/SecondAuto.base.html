@@ -2,54 +2,58 @@
 
 <h2>Additional and Non-Standard AUTO Objects</h2>
 
-<p><i>Klib inheritance and inclusion mechanism changed, this stuff is
-out of date now.</i></p>
+<p><i>Klib inheritance and inclusion mechanism changed, this stuff
+is out of date now.</i></p>
 
-<p>The Kernel Library has a much-misunderstood feature that allows you
-to change the effective AUTO object of programs. This document describes
-how to do it.</p>
+<p>The Kernel Library has a much-misunderstood feature that allows
+you to change the effective AUTO object of programs. This document
+describes how to do it.</p>
 
-<p>In this case, "changing the effective AUTO object" just means having
-objects implicitly inherit (as with AUTO) from another object. Note that
-the object being implicitly inherited from, like all objects, will
-inherit from the AUTO object itself. Obviously, there are some possible
-problems with cyclic inheritance if you aren't careful here.</p>
+<p>In this case, "changing the effective AUTO object" just means
+having objects implicitly inherit (as with AUTO) from another
+object. Note that the object being implicitly inherited from, like
+all objects, will inherit from the AUTO object itself. Obviously,
+there are some possible problems with cyclic inheritance if you
+aren't careful here.</p>
 
-<p>First off, you'll need an object manager. Your object manager doesn't
-have to do anything fancy. It doesn't have to track objects, or respond
-in any complicated way to any of the function calls it receives.
-However, it <i>does</i> have to exist and be registered with the Kernel
-Library via DRIVER-&gt;set_object_manager(). See
-&frasl;doc&frasl;kernel&frasl;hook&frasl;driver for details about what
-functions your object manager needs to define.</p>
+<p>First off, you'll need an object manager. Your object manager
+doesn't have to do anything fancy. It doesn't have to track
+objects, or respond in any complicated way to any of the function
+calls it receives. However, it <i>does</i> have to exist and be
+registered with the Kernel Library via
+DRIVER-&gt;set_object_manager(). See
+&frasl;doc&frasl;kernel&frasl;hook&frasl;driver for details about
+what functions your object manager needs to define.</p>
 
-<p>Add the line <tt>#include "AUTO"</tt> to the standard include file,
-which is usually "&frasl;include&frasl;std.h". Create an empty file,
-called AUTO, in the &frasl;include directory. This makes sure that most
-objects will transparently, automatically include the (empty) AUTO file,
-which will do nothing.</p>
+<p>Add the line <tt>#include "AUTO"</tt> to the standard include
+file, which is usually "&frasl;include&frasl;std.h". Create an
+empty file, called AUTO, in the &frasl;include directory. This
+makes sure that most objects will transparently, automatically
+include the (empty) AUTO file, which will do nothing.</p>
 
 <p>However, the objects you have specifically chosen to implicitly
-include your alternate AUTO file are different. You're going to make a
-file called something like "&frasl;include&frasl;second_auto.h". That
-file contains only the line <tt>inherit
-"&frasl;usr&frasl;Bob&frasl;myauto";</tt></p>
+include your alternate AUTO file are different. You're going to
+make a file called something like
+"&frasl;include&frasl;second_auto.h". That file contains only the
+line <tt>inherit "&frasl;usr&frasl;Bob&frasl;myauto";</tt></p>
 
 <p>The way you'll choose what objects will use your alternate AUTO
-object is with your object manager, which will need to contain a call to
-path_special. Your path_special call will return the filename of your
-include file (such as "&frasl;include&frasl;second_auto.h") when it sees
-the name of a file that you want to have that second AUTO object.</p>
+object is with your object manager, which will need to contain a
+call to path_special. Your path_special call will return the
+filename of your include file (such as
+"&frasl;include&frasl;second_auto.h") when it sees the name of a
+file that you want to have that second AUTO object.</p>
 
 <p>Please note that your second AUTO object will inherit from the
-regular first AUTO object, just like any other library. It'll need to be
-a library (because other programs inherit from it). And make sure it
-doesn't inherit from itself, and that no libraries it inherits from also
-inherit from it.</p>
+regular first AUTO object, just like any other library. It'll need
+to be a library (because other programs inherit from it). And make
+sure it doesn't inherit from itself, and that no libraries it
+inherits from also inherit from it.</p>
 
-<p>Note that programs under &frasl;kernel can't inherit a second AUTO
-object. You don't get to mess with them. Similarly, nothing under
-&frasl;usr&frasl;System can get a second AUTO object. They just get the
-regular one. If you really need objects under &frasl;usr&frasl;System to
-inherit from your additional AUTO object, you can have them inherit from
-it explicitly, with an 'inherit' statement, like usual.</p>
+<p>Note that programs under &frasl;kernel can't inherit a second
+AUTO object. You don't get to mess with them. Similarly, nothing
+under &frasl;usr&frasl;System can get a second AUTO object. They
+just get the regular one. If you really need objects under
+&frasl;usr&frasl;System to inherit from your additional AUTO
+object, you can have them inherit from it explicitly, with an
+'inherit' statement, like usual.</p>

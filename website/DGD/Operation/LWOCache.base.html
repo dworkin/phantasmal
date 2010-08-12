@@ -1,36 +1,38 @@
 @@TITLE LWOs and Swapping@@
 
-<h2>Using Regular DGD Objects and LWOs &mdash; Swapping Behavior</h2>
+<h2>Using Regular DGD Objects and LWOs &mdash; Swapping
+Behavior</h2>
 
-<p>Before dealing specifically with LWOs, make sure you understand DGD's
-<a href="Swapping.html">normal swapping behavior</a>.</p>
+<p>Before dealing specifically with LWOs, make sure you understand
+DGD's <a href="Swapping.html">normal swapping behavior</a>.</p>
 
 <p>An LWO is an object which is 'embedded' in another DGD object.
-Regular DGD objects swap as usual, but an LWO swaps as part of another
-object's data. When the LWO's 'parent' object (not in an inheritance
-sense, but in the sense of whose data space contains references to it)
-is swapped out, so is the LWO. The LWO doesn't get its own sectors in
-the swapfile. Instead, the LWO is part of the space taken up by its host
-object.</p>
+Regular DGD objects swap as usual, but an LWO swaps as part of
+another object's data. When the LWO's 'parent' object (not in an
+inheritance sense, but in the sense of whose data space contains
+references to it) is swapped out, so is the LWO. The LWO doesn't
+get its own sectors in the swapfile. Instead, the LWO is part of
+the space taken up by its host object.</p>
 
-<p>Like an array or mapping, an LWO is copied if an object (other than
-its host object) has a reference to it at the end of a thread of
-execution. That is, the LWO is referenced by more than one regular DGD
-object for <i>no longer</i> than one thread of execution. After that, it
-is copied. Be careful passing references to LWOs around for this reason
-&mdash; you don't want duplicate copies, which are large, wasteful and
-may cause data inconsistencies.</p>
+<p>Like an array or mapping, an LWO is copied if an object (other
+than its host object) has a reference to it at the end of a thread
+of execution. That is, the LWO is referenced by more than one
+regular DGD object for <i>no longer</i> than one thread of
+execution. After that, it is copied. Be careful passing references
+to LWOs around for this reason &mdash; you don't want duplicate
+copies, which are large, wasteful and may cause data
+inconsistencies.</p>
 
-<p>Like arrays or mappings, LWOs are garbage collected, so when the last
-reference to them disappears, so do they. This is true even in circular
-structures. LWOs may not be explicitly destructed.</p>
+<p>Like arrays or mappings, LWOs are garbage collected, so when the
+last reference to them disappears, so do they. This is true even in
+circular structures. LWOs may not be explicitly destructed.</p>
 
-<p>LWOs cannot be used as an editor, user or parser object, nor can they
-have callouts. It is not clear (to me, right this second) whether a
-parse_string() call in an LWO will store its generated automaton cache
-in the LWO or the host heavyweight DGD object. If the master object of
-an LWO is destructed, the LWO is destroyed as well, along with all
-others created from that master object.</p>
+<p>LWOs cannot be used as an editor, user or parser object, nor can
+they have callouts. It is not clear (to me, right this second)
+whether a parse_string() call in an LWO will store its generated
+automaton cache in the LWO or the host heavyweight DGD object. If
+the master object of an LWO is destructed, the LWO is destroyed as
+well, along with all others created from that master object.</p>
 
-<p>If you've been looking for structures in DGD, LWOs fill roughly that
-need.</p>
+<p>If you've been looking for structures in DGD, LWOs fill roughly
+that need.</p>

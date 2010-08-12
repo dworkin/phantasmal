@@ -2,36 +2,39 @@
 
 <h2>Attributes for On-Line Creation</h2>
 
-<p>On-Line Creation (OLC) is used extensively in Phantasmal. Normally,
-all features of Phantasmal are first enabled by allowing them to be used
-from the command line. The @make_room command and its derivatives can
-make this especially easy.</p>
+<p>On-Line Creation (OLC) is used extensively in Phantasmal.
+Normally, all features of Phantasmal are first enabled by allowing
+them to be used from the command line. The @make_room command and
+its derivatives can make this especially easy.</p>
 
-<p>The first generation of @make_room code, while simple, was not very
-general. It used a lot of hardcoded checks and repetitive code to make
-sure, for each question that it asked, that a reasonable answer was
-given.</p>
+<p>The first generation of @make_room code, while simple, was not
+very general. It used a lot of hardcoded checks and repetitive code
+to make sure, for each question that it asked, that a reasonable
+answer was given.</p>
 
-<p>Fundamentally, for every question it asked, @make_room would give an
-initial summary of the question (along with a prompt) and wait for a
-response. If the response was considered unacceptable for some reason,
-@make_room would explain why and then prompt again for data. At any
-time, 'quit' could be typed to exit @make_room mode and return to the
-standard command line.</p>
+<p>Fundamentally, for every question it asked, @make_room would
+give an initial summary of the question (along with a prompt) and
+wait for a response. If the response was considered unacceptable
+for some reason, @make_room would explain why and then prompt again
+for data. At any time, 'quit' could be typed to exit @make_room
+mode and return to the standard command line.</p>
 
-<p>There were some odd concerns. Inheritance, for instance, required a
-user to be able to enter special values to indicate that the value
-should simply be inherited from the appropriate parent(s). Being able to
-edit the object again afterward was difficult as well, since there was
-no equivalent @edit_room command.</p>
+<p>There were some odd concerns. Inheritance, for instance,
+required a user to be able to enter special values to indicate that
+the value should simply be inherited from the appropriate
+parent(s). Being able to edit the object again afterward was
+difficult as well, since there was no equivalent @edit_room
+command.</p>
 
 <p>State has functions to return:</p>
 
 <ul>
-  <li>Initial greeting text, querying the value, ending with prompt</li>
+  <li>Initial greeting text, querying the value, ending with
+  prompt</li>
 
-  <li>Function to determine whether the value is acceptable, and return
-  an error message telling why it isn't if it isn't. Error message
-  should be "quit" if the string entered was "quit", or we should
-  otherwise quit @make_room mode if that response is given.</li>
+  <li>Function to determine whether the value is acceptable, and
+  return an error message telling why it isn't if it isn't. Error
+  message should be "quit" if the string entered was "quit", or we
+  should otherwise quit @make_room mode if that response is
+  given.</li>
 </ul>

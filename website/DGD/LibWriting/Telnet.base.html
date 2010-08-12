@@ -2,75 +2,80 @@
 
 <h2>Implementing Extended Telnet Protocol in DGD</h2>
 
-<p>DGD has 'telnet ports', which implement the basic telnet protocol.
-However, they do so in a very limited and rigid way, and Dworkin has no
-intention of extending them, or even modifying their behavior. The
-network patch for DGD makes no change in this, and the ANSI color patch,
-while it allows certain outgoing high-ASCII characters, still requires
-patching DGD. What should you do to fix this?</p>
+<p>DGD has 'telnet ports', which implement the basic telnet
+protocol. However, they do so in a very limited and rigid way, and
+Dworkin has no intention of extending them, or even modifying their
+behavior. The network patch for DGD makes no change in this, and
+the ANSI color patch, while it allows certain outgoing high-ASCII
+characters, still requires patching DGD. What should you do to fix
+this?</p>
 
-<p>The best answer is to implement your own telnet server in LPC and
-connect it to a DGD binary port. This allows you to configure the result
-in LPC rather than patching DGD, and lets you send things like
-international high-ASCII characters and ANSI color codes when and how
-you like. It also lets you handle parts of the telnet protocol that DGD
-does not, such as changes in the screen size, and default terminal
-settings.</p>
+<p>The best answer is to implement your own telnet server in LPC
+and connect it to a DGD binary port. This allows you to configure
+the result in LPC rather than patching DGD, and lets you send
+things like international high-ASCII characters and ANSI color
+codes when and how you like. It also lets you handle parts of the
+telnet protocol that DGD does not, such as changes in the screen
+size, and default terminal settings.</p>
 
-<p>If you want to implement the telnet protocol, you may find <a href=
-"http://www.cryosphere.org/mud-protocol.html">this page</a> highly
-useful. You'll also want to use some RFCs. Here are some potentially
-useful ones:</p>
+<p>If you want to implement the telnet protocol, you may find
+<a href="http://www.cryosphere.org/mud-protocol.html">this page</a>
+highly useful. You'll also want to use some RFCs. Here are some
+potentially useful ones:</p>
 <pre>
   RFC 854 - Telnet protocol specification.
   RFC 855 - Telnet option specifications.
   RFC 1091 - Telnet terminal-type option.
-  </pre>
+  
+</pre>
 
-<p>There are bugs in how older MUD servers treat newlines, and the same
-is true of older clients. However, the bugs seem to be all different and
-highly platform-dependent, so you'll need to work this one out for
-yourself. Whether a telnet linefeed is newline-then-CR or
-CR-then-newline or just one or just the other seems to be highly
-platform dependent. When in doubt, be tolerant.</p>
+<p>There are bugs in how older MUD servers treat newlines, and the
+same is true of older clients. However, the bugs seem to be all
+different and highly platform-dependent, so you'll need to work
+this one out for yourself. Whether a telnet linefeed is
+newline-then-CR or CR-then-newline or just one or just the other
+seems to be highly platform dependent. When in doubt, be
+tolerant.</p>
 
-<p>Be sure to test with a variety of telnet clients. Even recent clients
-seem to have a variety of odd bugs in the protocol. When testing,
-remember that some clients will even do odd things like detect the
-string "password" and turn off character echo afterward rather than
-relying on the server to turn off echo at the appropriate times.</p>
+<p>Be sure to test with a variety of telnet clients. Even recent
+clients seem to have a variety of odd bugs in the protocol. When
+testing, remember that some clients will even do odd things like
+detect the string "password" and turn off character echo afterward
+rather than relying on the server to turn off echo at the
+appropriate times.</p>
 <pre>
 @@INCLUDE mexican_characters@@
-  </pre>
-<hr />
+  
+</pre>
+<hr>
 <pre>
 @@INCLUDE telnet_echo_cr@@
 </pre>
-<hr />
+<hr>
 <pre>
 @@INCLUDE telnet_protocol@@
 </pre>
-<hr />
+<hr>
 <pre>
 @@INCLUDE ansi_colors_1@@
 </pre>
-<hr />
+<hr>
 <pre>
 @@INCLUDE ansi_colors_2@@
 </pre>
-<hr />
+<hr>
 <pre>
 @@INCLUDE ansi_colors_3@@
 </pre>
-<hr />
+<hr>
 <pre>
 @@INCLUDE ansi_patch@@
 </pre>
-<hr />
+<hr>
 <pre>
 @@INCLUDE ansi_colors_4@@
 </pre>
-<hr />
+<hr>
 <pre>
 @@INCLUDE implementing_ansi@@
 </pre>

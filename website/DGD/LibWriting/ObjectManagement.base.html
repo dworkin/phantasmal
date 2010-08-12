@@ -3,140 +3,145 @@
 <h2>Managing and Upgrading DGD Objects</h2>
 
 <p>DGD is impressive in the degree of upgradability and <a href=
-"Persistence.html">persistence</a> that it offers. However, to take full
-advantage of the upgradability, you'll need to observe some ground
-rules.</p>
+"Persistence.html">persistence</a> that it offers. However, to take
+full advantage of the upgradability, you'll need to observe some
+ground rules.</p>
 
-<p>DGD's <a href="../Kernel/Inheritance.html">inheritance</a> features
-aren't quite the same as a regular LPMUD, though they're far more
-powerful if used correctly.</p>
+<p>DGD's <a href="../Kernel/Inheritance.html">inheritance</a>
+features aren't quite the same as a regular LPMUD, though they're
+far more powerful if used correctly.</p>
 
-<p>You'd like to be able to upgrade all your code while leaving your
-data in place. For instance, you'd like to be able to write a new
-feature for your MUD, and enable it while players are logged in. Before
-the recompile, the feature isn't there. After the recompile, it is.
-Players don't see any difference until they try the new command, which
-works after the recompile. This is less of a pipe-dream than it sounds.
-<a href="http://phantasmal.sf.net">Phantasmal</a> already does it using
-the %full_rebuild command, and the Kernel Library has a less automated,
+<p>You'd like to be able to upgrade all your code while leaving
+your data in place. For instance, you'd like to be able to write a
+new feature for your MUD, and enable it while players are logged
+in. Before the recompile, the feature isn't there. After the
+recompile, it is. Players don't see any difference until they try
+the new command, which works after the recompile. This is less of a
+pipe-dream than it sounds. <a href=
+"http://phantasmal.sf.net">Phantasmal</a> already does it using the
+%full_rebuild command, and the Kernel Library has a less automated,
 more awkward way to do it, but it can work. Sadly, few other DGD
 libraries (except the closed-source <a href=
 "http://www.skotos.net">Skotos</a> servers) seem to do this.</p>
 
-<p>One reason that few libraries bother to do this is that it requires
-tracking all object compilation and inheritance. The Kernel Library
-makes this slightly easier by encapsulating that functionality into an
-Object Manager (see the LPC Examples section for several Object
-Managers, or download Phantasmal and look at that one).</p>
+<p>One reason that few libraries bother to do this is that it
+requires tracking all object compilation and inheritance. The
+Kernel Library makes this slightly easier by encapsulating that
+functionality into an Object Manager (see the LPC Examples section
+for several Object Managers, or download Phantasmal and look at
+that one).</p>
 
-<p>There are some other related tricks you can do. It's usually very
-convenient to call a function on objects that are recompiled but also
-have data. The data may need to be updated after the change in code.
-Phantasmal calls an "upgraded" function in any recompiled master object,
-if it exists (if clones or LWOs need to be updated, the master must keep
-a list of them or they must be looked up using the Kernel Library
-tracking facilities). <a href="http://www.skotos.net">Skotos'</a>
-libraries use a different method based on the call_touch kfun to update
-objects as they are used. This makes a great deal of sense, given the
-quantities of objects that Skotos' libraries deal with.</p>
+<p>There are some other related tricks you can do. It's usually
+very convenient to call a function on objects that are recompiled
+but also have data. The data may need to be updated after the
+change in code. Phantasmal calls an "upgraded" function in any
+recompiled master object, if it exists (if clones or LWOs need to
+be updated, the master must keep a list of them or they must be
+looked up using the Kernel Library tracking facilities). <a href=
+"http://www.skotos.net">Skotos'</a> libraries use a different
+method based on the call_touch kfun to update objects as they are
+used. This makes a great deal of sense, given the quantities of
+objects that Skotos' libraries deal with.</p>
 
-<p>As a random aside, remember that an object isn't compiled until the
-end of the thread where compile_object() gets called. So there are some
-subtle issues about what version of the "upgraded" function gets called.
-The old one, already compiled into the object? The new one, the one that
-isn't currently compiled? You may need to call_out() to a function that
-will call upgraded() <i>after</i> the end of the current thread so that
-the object will be recompiled, and the <i>new</i> version of upgraded()
-will be called.</p>
+<p>As a random aside, remember that an object isn't compiled until
+the end of the thread where compile_object() gets called. So there
+are some subtle issues about what version of the "upgraded"
+function gets called. The old one, already compiled into the
+object? The new one, the one that isn't currently compiled? You may
+need to call_out() to a function that will call upgraded()
+<i>after</i> the end of the current thread so that the object will
+be recompiled, and the <i>new</i> version of upgraded() will be
+called.</p>
 
 <p>John "West" McKenna's Inferno library has a significantly more
-complex approach, which allows for more interesting upgrades in some
-cases. Its upgrader builds a list of objects that need recompiling. It
-calls uninit() on them, then upgrading(). Then it recompiles, then
-calles upgraded() and finally init().</p>
+complex approach, which allows for more interesting upgrades in
+some cases. Its upgrader builds a list of objects that need
+recompiling. It calls uninit() on them, then upgrading(). Then it
+recompiles, then calles upgraded() and finally init().</p>
 
 <p>The uninit() and init() functions are expected to do everything
-that's required when an object moves from one place to another except
-the actual move. This includes removing&frasl;adding commands defined by
-the object from&frasl;to the user's grammar table.</p>
+that's required when an object moves from one place to another
+except the actual move. This includes removing&frasl;adding
+commands defined by the object from&frasl;to the user's grammar
+table.</p>
 
-<p>upgrading() and upgraded() are very rarely used. They're there in
-case the new version of the code needs extra initialising.</p>
+<p>upgrading() and upgraded() are very rarely used. They're there
+in case the new version of the code needs extra initialising.</p>
 
 <p>The Kernel Library uses what's called an <a href=
-"../Kernel/ObjectManager.html">Object Manager</a>, or ObjectD, to do all
-of this. That doesn't change what you can do, but it does alter some of
-the code.</p>
+"../Kernel/ObjectManager.html">Object Manager</a>, or ObjectD, to
+do all of this. That doesn't change what you can do, but it does
+alter some of the code.</p>
 
 <h3>Turning Stuff Off</h3>
 
 <p>If you're upgrading more than one object, or you're upgrading an
-object and its upgraded() function hasn't been called yet, you'll need
-to be sure to suspend network connections and network input while all
-that is going on. If you're halfway through an upgrade, it's dangerous
-to allow commands to execute, whether from players or NPCs, because
-objects may call other objects that aren't recompiled or upgraded yet.
-If you turn off new network connections, and turn off call_out()
-statements to every object except the one doing the upgrading (the
-Kernel Library has good ways to do this) then you can do a multi-object
-upgrade safely.</p>
+object and its upgraded() function hasn't been called yet, you'll
+need to be sure to suspend network connections and network input
+while all that is going on. If you're halfway through an upgrade,
+it's dangerous to allow commands to execute, whether from players
+or NPCs, because objects may call other objects that aren't
+recompiled or upgraded yet. If you turn off new network
+connections, and turn off call_out() statements to every object
+except the one doing the upgrading (the Kernel Library has good
+ways to do this) then you can do a multi-object upgrade safely.</p>
 
 <p>If you do this, be absolutely <i>certain</i> to have appropriate
-catch() and rlimits() statements that will allow you to turn call_out()
-statements and network input back on. Otherwise an error in an
-upgraded() function can hang your MUD completely, with no way to fix it,
-not even with the 'safety' binary port that the Kernel Library
-supplies.</p>
+catch() and rlimits() statements that will allow you to turn
+call_out() statements and network input back on. Otherwise an error
+in an upgraded() function can hang your MUD completely, with no way
+to fix it, not even with the 'safety' binary port that the Kernel
+Library supplies.</p>
 <pre>
 @@INCLUDE compile_object_kfun@@
 </pre>
-<hr />
+<hr>
 <pre>
 @@INCLUDE recursion_recompile_1@@
 </pre>
-<hr />
+<hr>
 <pre>
 @@INCLUDE recursion_recompile_2@@
 </pre>
-<hr />
+<hr>
 <pre>
 @@INCLUDE recursion_recompile_3@@
 </pre>
-<hr />
+<hr>
 <pre>
 @@INCLUDE dgd_patch_1@@
 </pre>
-<hr />
+<hr>
 <pre>
 @@INCLUDE dgd_patch_2@@
 </pre>
-<hr />
+<hr>
 <pre>
 @@INCLUDE object_handling@@
 </pre>
-<hr />
+<hr>
 <pre>
 @@INCLUDE inherits@@
 </pre>
-<hr />
+<hr>
 
 <p>(Blocking Input - necessary for upgrades!)</p>
 <pre>
 @@INCLUDE fatal_error_crash_1@@
 </pre>
-<hr />
+<hr>
 <pre>
 @@INCLUDE fatal_error_crash_2@@
 </pre>
-<hr />
+<hr>
 <pre>
 @@INCLUDE telnet_blocking@@
 </pre>
-<hr />
+<hr>
 <pre>
 @@INCLUDE players_inheritance_cloning_1@@
 </pre>
-<hr />
+<hr>
 <pre>
 @@INCLUDE players_inheritance_cloning_2@@
 </pre>

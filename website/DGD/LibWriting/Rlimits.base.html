@@ -3,64 +3,68 @@
 <h2>Using rlimits() in your Library</h2>
 
 <p>The rlimits() DGD construct can be used to keep your MUD running
-despite infinite loops and infinite recursions in code. In combination
-with status(), it can be used for profiling your code and keeping track
-of how much processor time each wizard, or each function, is taking up.
-If you're not using the Kernel Library, you need to understand rlimits()
-intimately to avoid infinite recursions and loops. If you <i>are</i>
-using the Kernel Library, it can still be useful here and there.</p>
+despite infinite loops and infinite recursions in code. In
+combination with status(), it can be used for profiling your code
+and keeping track of how much processor time each wizard, or each
+function, is taking up. If you're not using the Kernel Library, you
+need to understand rlimits() intimately to avoid infinite
+recursions and loops. If you <i>are</i> using the Kernel Library,
+it can still be useful here and there.</p>
 
-<p>It turns out that rlimits() isn't actually a function, which is why
-it can have the odd syntax it does. Specifically, it gets used this
-way:</p>
+<p>It turns out that rlimits() isn't actually a function, which is
+why it can have the odd syntax it does. Specifically, it gets used
+this way:</p>
 <pre>
 rlimits(-1;-1) {
   &frasl;* Some code goes here *&frasl;
 }
-  </pre>
+  
+</pre>
 
-<p>Rlimits has two parameters, both set to -1 above. The first is the
-limit on the stack depth, the second is the limit on the tick count. If
-the code inside the curly braces exceeds either limit, an error occurs.
-When either limit is -1, that means unlimited &mdash; no limit to stack
-depth, or no limit to tick count.</p>
+<p>Rlimits has two parameters, both set to -1 above. The first is
+the limit on the stack depth, the second is the limit on the tick
+count. If the code inside the curly braces exceeds either limit, an
+error occurs. When either limit is -1, that means unlimited &mdash;
+no limit to stack depth, or no limit to tick count.</p>
 
 <p>The stack depth is a measure of how many functions are active at
 once. Functions call each other, and those call other functions, to
-greater and greater depth, and more data is allocated. As that happens,
-the stack depth gets closer and closer to the limit. This prevents an
-infinite (or just very deep) recursion inside the rlimits()
-statement.</p>
+greater and greater depth, and more data is allocated. As that
+happens, the stack depth gets closer and closer to the limit. This
+prevents an infinite (or just very deep) recursion inside the
+rlimits() statement.</p>
 
-<p>Ticks are a processor-independent measurement of how much time the
-code is likely to take. Felix calls them "a weighted measure of the
-number of instructions and the size of the datastructures manipulated by
-these instructions". Since DGD focuses strongly on compatibility, it's
-important that the measurement be cross-platform. Each operation in DGD
-takes a number of ticks, depending on what the operation is, and what
-data it is operating on. Some operations, like 32-bit integer addition,
-will always take the same number of ticks. Some operations, like
-parse_string(), will take a widely-varying number of ticks, depending on
-what the inputs to that operation are.</p>
+<p>Ticks are a processor-independent measurement of how much time
+the code is likely to take. Felix calls them "a weighted measure of
+the number of instructions and the size of the datastructures
+manipulated by these instructions". Since DGD focuses strongly on
+compatibility, it's important that the measurement be
+cross-platform. Each operation in DGD takes a number of ticks,
+depending on what the operation is, and what data it is operating
+on. Some operations, like 32-bit integer addition, will always take
+the same number of ticks. Some operations, like parse_string(),
+will take a widely-varying number of ticks, depending on what the
+inputs to that operation are.</p>
 
-<p>The status() call returns an array of interesting information. One
-offset within this array is to the current tick count, which increases
-over time as operations occur. This can be used to determine how close
-to the tick limit your code is, and to profile code or 'bill' different
-operations for the number of ticks they use up.</p>
+<p>The status() call returns an array of interesting information.
+One offset within this array is to the current tick count, which
+increases over time as operations occur. This can be used to
+determine how close to the tick limit your code is, and to profile
+code or 'bill' different operations for the number of ticks they
+use up.</p>
 
-<p>The use of rlimits() is to prevent infinite recursions or infinite
-loops in suspect code &mdash; code that you're not entirely sure will
-return in a reasonable amount of time, or at all. Any operation based on
-player data, for instance, is likely to be in this category since
-somebody might want to bring your MUD to a halt with a complicated
-operation. Your library may want to limit its <i>own</i> actions as
-well, so that faulty code on your part is less likely to crash the
-entire game.</p>
+<p>The use of rlimits() is to prevent infinite recursions or
+infinite loops in suspect code &mdash; code that you're not
+entirely sure will return in a reasonable amount of time, or at
+all. Any operation based on player data, for instance, is likely to
+be in this category since somebody might want to bring your MUD to
+a halt with a complicated operation. Your library may want to limit
+its <i>own</i> actions as well, so that faulty code on your part is
+less likely to crash the entire game.</p>
 
-<p>To be <i>really</i> certain, just set up an rlimits() call from every
-place that DGD calls into your code. That means the driver object and
-the user object, several calls in each.</p>
+<p>To be <i>really</i> certain, just set up an rlimits() call from
+every place that DGD calls into your code. That means the driver
+object and the user object, several calls in each.</p>
 
 <p>Good places to set rlimits() include:</p>
 
@@ -77,40 +81,42 @@ the user object, several calls in each.</p>
   <li>open(), close() in USER object</li>
 </ul>
 
-<p>You should also be careful to specifically limit any user-supplied
-code or builder-supplied code. If you have room scripts or other
-(relatively) inessential code, don't be shy about putting an rlimits()
-around it with a more restrictive set of limits. That keeps such code
-from burning through too many of your ticks.</p>
+<p>You should also be careful to specifically limit any
+user-supplied code or builder-supplied code. If you have room
+scripts or other (relatively) inessential code, don't be shy about
+putting an rlimits() around it with a more restrictive set of
+limits. That keeps such code from burning through too many of your
+ticks.</p>
 
-<p>Rlimits often goes well with a catch() statement so that if the code
-runs too long or recurses too deep, you can log a more meaningful error
-about exactly what code caused the problem.</p>
+<p>Rlimits often goes well with a catch() statement so that if the
+code runs too long or recurses too deep, you can log a more
+meaningful error about exactly what code caused the problem.</p>
 
-<p>You'll want to make sure that an rlimits() <i>inside</i> the one you
-put in place can't override you. Somebody can put an rlimits(-1;-1)
-somewhere inside the code you limited, and then the error won't be
-caused if they go into an infinite loop. Luckily, DGD will query your
-DRIVER object every time somebody attempts an rlimits() statement, so
-you'll need to make sure your rlimits() statement works (to limit them)
-and their doesn't work when they try to override you. See the Kernel
-Library for good examples of how to use rlimits(), including not letting
-the code you call override your limits. The MudOSalike package, by Frank
-Schmidt, is also a good example of rlimits().</p>
+<p>You'll want to make sure that an rlimits() <i>inside</i> the one
+you put in place can't override you. Somebody can put an
+rlimits(-1;-1) somewhere inside the code you limited, and then the
+error won't be caused if they go into an infinite loop. Luckily,
+DGD will query your DRIVER object every time somebody attempts an
+rlimits() statement, so you'll need to make sure your rlimits()
+statement works (to limit them) and their doesn't work when they
+try to override you. See the Kernel Library for good examples of
+how to use rlimits(), including not letting the code you call
+override your limits. The MudOSalike package, by Frank Schmidt, is
+also a good example of rlimits().</p>
 
 <p>Here is a bit of a tutorial, this one by Erwin Harte:</p>
 <pre>
 @@INCLUDE eharte_tutorial@@
 </pre>
-<hr />
+<hr>
 <pre>
 @@INCLUDE catch_rlimits@@
 </pre>
-<hr />
+<hr>
 <pre>
 @@INCLUDE rlimits_1@@
 </pre>
-<hr />
+<hr>
 <pre>
 @@INCLUDE rlimits_2@@
 </pre>

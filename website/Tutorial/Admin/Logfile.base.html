@@ -7,64 +7,69 @@
 going to do about it?</p>
 
 <p>If I were you, I'd learn about it. This tutorial can help. First
-you'll need to find it. Check out "/log/System.log" first, that's the
-default location. If it's not there you'll just have to check the
-"/include/config" file for something that looks like a logfile. Have a
-look in your logfile. If you've been ignoring it up until now, it's
-probably got a lot of random stuff in it. Mmm... Stuff. You may even
-remember specific errors you've gotten and see them there.</p>
+you'll need to find it. Check out "/log/System.log" first, that's
+the default location. If it's not there you'll just have to check
+the "/include/config" file for something that looks like a logfile.
+Have a look in your logfile. If you've been ignoring it up until
+now, it's probably got a lot of random stuff in it. Mmm... Stuff.
+You may even remember specific errors you've gotten and see them
+there.</p>
 
-<p>You may want to go ahead and remove the old logfile or back it up,
-just so you don't have to scroll past all the old stuff. So do that now
-if you're gonna. Then, at the MUD command line and with an administrator
-character, type something like "%log YOUR AD HERE, ONLY $99.99!". Now
-have a look in the logfile again.</p>
+<p>You may want to go ahead and remove the old logfile or back it
+up, just so you don't have to scroll past all the old stuff. So do
+that now if you're gonna. Then, at the MUD command line and with an
+administrator character, type something like "%log YOUR AD HERE,
+ONLY $99.99!". Now have a look in the logfile again.</p>
 
-<p>Those spamming bastards! They're everywhere! Even in your logfile.
-No, I'm being silly. That is (of course) the message you just typed, in
-the logfile, with a little header above it. The header tells you who
-typed it, what file the message came from and various things like
-that.</p>
+<p>Those spamming bastards! They're everywhere! Even in your
+logfile. No, I'm being silly. That is (of course) the message you
+just typed, in the logfile, with a little header above it. The
+header tells you who typed it, what file the message came from and
+various things like that.</p>
 
 <p>It's kind of inconvenient to have to look at the logfile in the
-terminal window and type the MUD commands from the MUD window, isn't it?
-You can view the logfile more easily by subscribing to the Logfile
-channel. You're an administrator, you can do that. Go ahead and type
-"channels", which will show you your available channels. Note that both
-the <b>Logfile</b> and <b>Error</b> channels are available. I highly
-recommend subscribing to one or the other, but not both. Any error will
-also make it into the logfile and you probably don't want to see it
-twice (three times in some cases).</p>
+terminal window and type the MUD commands from the MUD window,
+isn't it? You can view the logfile more easily by subscribing to
+the Logfile channel. You're an administrator, you can do that. Go
+ahead and type "channels", which will show you your available
+channels. Note that both the <b>Logfile</b> and <b>Error</b>
+channels are available. I highly recommend subscribing to one or
+the other, but not both. Any error will also make it into the
+logfile and you probably don't want to see it twice (three times in
+some cases).</p>
 
-<p>Go ahead and subscribe to the logfile with a command like "channels
-Logfile on". The try some test-logging... Type "%log d00dz! 37337
-\/\/AR3Z 5173 @ 127.0.0.1!". Bastards! Now they even spam your terminal
-with their filth! You should bring down their vile warez site with a
-denial-of-service attack!</p>
+<p>Go ahead and subscribe to the logfile with a command like
+"channels Logfile on". The try some test-logging... Type "%log
+d00dz! 37337 \/\/AR3Z 5173 @ 127.0.0.1!". Bastards! Now they even
+spam your terminal with their filth! You should bring down their
+vile warez site with a denial-of-service attack!</p>
 
-<p>But seriously, now you can tell that you're seeing what gets written
-to the logfile as it gets written. Go you! You can subscribe to only
-certain notification levels if you prefer. There's a special syntax for
-subscribing to channels that only administrators get -- check the usage
-information. To subscribe to errors only, for instance, you can type
-"channels logfile on err". You may need to unsubscribe and resubscribe
-to do this, though.</p>
+<p>But seriously, now you can tell that you're seeing what gets
+written to the logfile as it gets written. Go you! You can
+subscribe to only certain notification levels if you prefer.
+There's a special syntax for subscribing to channels that only
+administrators get -- check the usage information. To subscribe to
+errors only, for instance, you can type "channels logfile on err".
+You may need to unsubscribe and resubscribe to do this, though.</p>
 
-<p>The error channel doesn't currently respect the level setting. All
-errors are considered equal severity, so if you subscribe to the error
-channel you see all of them. Still, it can be very useful. Note: errors
-that are caught with a catch{} construct in the code don't show up on
-the error channel or in the logfile. Caught errors are considered
-routine so you don't want them cluttering up your log.</p>
+<p>The error channel doesn't currently respect the level setting.
+All errors are considered equal severity, so if you subscribe to
+the error channel you see all of them. Still, it can be very
+useful. Note: errors that are caught with a catch{} construct in
+the code don't show up on the error channel or in the logfile.
+Caught errors are considered routine so you don't want them
+cluttering up your log.</p>
 
-<p>There's one more nifty command to play with -- <b>%log_subscribe</b>.
-It lets you choose what goes into the logfile and what doesn't. Every
-log message has a severity like "verbose", "normal", "warning", "error"
-and "fatal". There are equivalent numbers for the various severities.
-With <b>%log_subscribe</b> you can choose, for each file, what severity
-of error gets written to the logfile. This may not affect what winds up
-on the Logfile channel, though. The syntax for <b>%log_subscribe</b> is:
-"%log_subscribe &lt;file&gt; &lt;level&gt;". If you want the settings to
-persist across shutdowns, it's currently better to change the
+<p>There's one more nifty command to play with --
+<b>%log_subscribe</b>. It lets you choose what goes into the
+logfile and what doesn't. Every log message has a severity like
+"verbose", "normal", "warning", "error" and "fatal". There are
+equivalent numbers for the various severities. With
+<b>%log_subscribe</b> you can choose, for each file, what severity
+of error gets written to the logfile. This may not affect what
+winds up on the Logfile channel, though. The syntax for
+<b>%log_subscribe</b> is: "%log_subscribe &lt;file&gt;
+&lt;level&gt;". If you want the settings to persist across
+shutdowns, it's currently better to change the
 "/data/system/logd_channels.unq" file, which has the same
 functionality.</p>

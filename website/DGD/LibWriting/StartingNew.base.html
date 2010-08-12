@@ -2,67 +2,69 @@
 
 <h2>Should You Write Your New MUD Library From Scratch?</h2>
 
-<p>First off, you should probably be aware that starting from scratch
-has prevented MUDs from advancing significantly since the early 1980's.
-I've written a <a href=
-"http://www.skotos.net/articles/neo3.phtml">previous rant</a> on the
-subject, which I continue to stand by. Since MUD authors are unwilling
-to use the work of others, an author who can write good dynamic content
-will write a MUD with no interMUD support, a lousy help system, and
-essentially every other feature done poorly. He will plan to release a
-version with "all the trimmings", and it will never be released. Future
-MUD authors will throw his work away because it isn't complete, and
-they'll start from scratch on their own, and have the same problem.</p>
+<p>First off, you should probably be aware that starting from
+scratch has prevented MUDs from advancing significantly since the
+early 1980's. I've written a <a href=
+"http://www.skotos.net/articles/neo3.phtml">previous rant</a> on
+the subject, which I continue to stand by. Since MUD authors are
+unwilling to use the work of others, an author who can write good
+dynamic content will write a MUD with no interMUD support, a lousy
+help system, and essentially every other feature done poorly. He
+will plan to release a version with "all the trimmings", and it
+will never be released. Future MUD authors will throw his work away
+because it isn't complete, and they'll start from scratch on their
+own, and have the same problem.</p>
 
-<p>And so MUD Libraries will remain awful because nobody is willing to
-put more than six months of hard effort into a five-to-ten-year job. It
-could take less time than that, but only with a coordinated team of
-skilled programmers with a good understanding of previous work.
-Occasionally a coordinated team of skilled programmers starts work on a
-MUD, but invariably not one of them has really read the source code of
-more than one or two previous MUDs. As a result, the work of Diku
-authors, LPC authors, MUSH authors and MOO authors is never brought into
-a single codebase &mdash; no programmer is familiar with all of their
-work, and nobody bothers to become so, even though it's all available
-for free if you bother to look.</p>
+<p>And so MUD Libraries will remain awful because nobody is willing
+to put more than six months of hard effort into a five-to-ten-year
+job. It could take less time than that, but only with a coordinated
+team of skilled programmers with a good understanding of previous
+work. Occasionally a coordinated team of skilled programmers starts
+work on a MUD, but invariably not one of them has really read the
+source code of more than one or two previous MUDs. As a result, the
+work of Diku authors, LPC authors, MUSH authors and MOO authors is
+never brought into a single codebase &mdash; no programmer is
+familiar with all of their work, and nobody bothers to become so,
+even though it's all available for free if you bother to look.</p>
 
-<p>The best codebases, like SMAUG, are produced by improving an existing
-codebase, cutting out its problems and adding good new features. While
-it would be nice to produce a good new codebase on a completely new
-design, nobody has ever done so in the MUD community. Raw, decent new
-codebases that will (eventually) be improved by other people to the
-point of being good seem to happen. The DikuMUD codebase is a fine
-example.</p>
+<p>The best codebases, like SMAUG, are produced by improving an
+existing codebase, cutting out its problems and adding good new
+features. While it would be nice to produce a good new codebase on
+a completely new design, nobody has ever done so in the MUD
+community. Raw, decent new codebases that will (eventually) be
+improved by other people to the point of being good seem to happen.
+The DikuMUD codebase is a fine example.</p>
 
 <p>Occasionally, a MUD will put together a good game with a so-so
-codebase (Blood Dusk is the only example I can come up with offhand) and
-then never release their code. Many groups start with a good concept and
-say they'll release their code "as soon as it works". At least 75% of
-these groups, and probably more than 90%, never release anything. The
-MUD Library never works to their satisfaction, or the effort stalls, and
-they don't release their code after it fails to work, either. So all
-their effort turned out to be for nothing. They never got any use out of
-it, and they never released it, so it was all worthless to everybody,
-even the authors.</p>
+codebase (Blood Dusk is the only example I can come up with
+offhand) and then never release their code. Many groups start with
+a good concept and say they'll release their code "as soon as it
+works". At least 75% of these groups, and probably more than 90%,
+never release anything. The MUD Library never works to their
+satisfaction, or the effort stalls, and they don't release their
+code after it fails to work, either. So all their effort turned out
+to be for nothing. They never got any use out of it, and they never
+released it, so it was all worthless to everybody, even the
+authors.</p>
 
-<p>But hey, maybe you're planning to never release your code, none of
-it, back into the public domain. A few people manage to write MUDs that
-way and run a decent game. Most of <i>them</i> fail, too, mainly because
-they start from scratch. But your chances seem to be higher than zero if
-you do it that way, so if you're doing that you could start from
-scratch.</p>
+<p>But hey, maybe you're planning to never release your code, none
+of it, back into the public domain. A few people manage to write
+MUDs that way and run a decent game. Most of <i>them</i> fail, too,
+mainly because they start from scratch. But your chances seem to be
+higher than zero if you do it that way, so if you're doing that you
+could start from scratch.</p>
 
-<p>Statistically speaking, you're much, <i>much</i> better off starting
-from somebody else's codebase. Either way, if you want the MUD not to
-immediately go under, you should open it for testing and <i>keep it
-running</i> as early as possible. Otherwise you won't catch errors
-quickly, and the MUD won't just be not running... It won't even be
-runnable, because your co-builders (or you) have broken things and can't
-run the MUD to test them.</p>
+<p>Statistically speaking, you're much, <i>much</i> better off
+starting from somebody else's codebase. Either way, if you want the
+MUD not to immediately go under, you should open it for testing and
+<i>keep it running</i> as early as possible. Otherwise you won't
+catch errors quickly, and the MUD won't just be not running... It
+won't even be runnable, because your co-builders (or you) have
+broken things and can't run the MUD to test them.</p>
 
-<p>If you want to build a game, first and foremost, the best way is to
-start with somebody else's code. If you want to build a good MUD Library
-for other people's games, first and foremost, the best way is still to
-start with somebody else's code. But, if what you want is a rough
-library with a new concept, one that will eventually influence others,
-then you may want to start from scratch.</p>
+<p>If you want to build a game, first and foremost, the best way is
+to start with somebody else's code. If you want to build a good MUD
+Library for other people's games, first and foremost, the best way
+is still to start with somebody else's code. But, if what you want
+is a rough library with a new concept, one that will eventually
+influence others, then you may want to start from scratch.</p>

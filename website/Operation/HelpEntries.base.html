@@ -21,32 +21,35 @@ through (or not) and tossed out to make room for the next one.
 See also:  %log_subscribe, logfile, log channel
 
 }}
-    </pre>
+    
+</pre>
 
-<p>The "name" field tells the Help system what queries to return this
-entry for. We'll get to that soon. The "keywords" field gives a list of
-keywords -- the query supplies a corresponding list, and only a query
-with the keywords in the help entry will return this entry. For
-instance, this entry has the "admin" keyword, so only queries by admin
-characters will be returned.</p>
+<p>The "name" field tells the Help system what queries to return
+this entry for. We'll get to that soon. The "keywords" field gives
+a list of keywords -- the query supplies a corresponding list, and
+only a query with the keywords in the help entry will return this
+entry. For instance, this entry has the "admin" keyword, so only
+queries by admin characters will be returned.</p>
 
-<p>The "desc" field is a standard UNQ Phrase structure. The one shown
-here is English-only. The description is what you get when you ask for
-help on an appropriate thing from the "name" field.</p>
+<p>The "desc" field is a standard UNQ Phrase structure. The one
+shown here is English-only. The description is what you get when
+you ask for help on an appropriate thing from the "name" field.</p>
 
 <p>The "name" field here seems incomplete. If you asked for help on
-"log" or "write log", you'd hope it would give you help as well. As it
-turns out, it does.</p>
+"log" or "write log", you'd hope it would give you help as well. As
+it turns out, it does.</p>
 
 <p>The Help system ignores most non-alphanumeric characters, and it
-treats <b>-</b> and <b>_</b> as being the same as spaces. That means
-that <b>%write_log</b> is the same as <b>write_log</b> is the same as
-<b>write log</b> is the same as <b>@#$write@#$-log@#$#</b>. They're all
-different from <b>writelog</b>, which is the same as <b>%writelog</b>,
-<b>write@log</b>, and <b>@#$@#write#@#%log@#@#</b>.</p>
+treats <b>-</b> and <b>_</b> as being the same as spaces. That
+means that <b>%write_log</b> is the same as <b>write_log</b> is the
+same as <b>write log</b> is the same as <b>@#$write@#$-log@#$#</b>.
+They're all different from <b>writelog</b>, which is the same as
+<b>%writelog</b>, <b>write@log</b>, and
+<b>@#$@#write#@#%log@#@#</b>.</p>
 
 <p>Soon, words will work in any order. That means that <b>write log
-data</b> would be the same as <b>data write log</b> would be the same as
-<b>write_data-log</b> and <b>@#$#@log@#%#%-@#$#@$write_-data@#$@</b>. So
-you see, the quite brief set of names above actually matches a
-surprising number of help queries, useful and otherwise.</p>
+data</b> would be the same as <b>data write log</b> would be the
+same as <b>write_data-log</b> and
+<b>@#$#@log@#%#%-@#$#@$write_-data@#$@</b>. So you see, the quite
+brief set of names above actually matches a surprising number of
+help queries, useful and otherwise.</p>

@@ -2,82 +2,90 @@
 
 <h2>MUD Visibility and Perception for Phantasmal</h2>
 
-<p>Visibility should be important to Phantasmal -- light levels, lines
-of sight, ability to notice details. These things are linked.</p>
+<p>Visibility should be important to Phantasmal -- light levels,
+lines of sight, ability to notice details. These things are
+linked.</p>
 
-<p>Most MUDs place limited importance on visibility because allowing
-very perceptive characters to notice vast amounts of detail gets very
-distracting very quickly. In, say, a forest setting, there are simply
-too many things going on. The challenge, then, is not to determine
-whether a character can detect particular things, but to reduce the
-amount of detail coming in to a manageable level. Phantasmal will
-eventually attempt both tasks.</p>
+<p>Most MUDs place limited importance on visibility because
+allowing very perceptive characters to notice vast amounts of
+detail gets very distracting very quickly. In, say, a forest
+setting, there are simply too many things going on. The challenge,
+then, is not to determine whether a character can detect particular
+things, but to reduce the amount of detail coming in to a
+manageable level. Phantasmal will eventually attempt both
+tasks.</p>
 
 <h3>Detecting Detail</h3>
 
 <p>Detecting detail is a matter of determining what the player can
 determine about the environment around him. There are many events
-occurring constantly -- mobiles move, objects are gotten and dropped,
-mobiles speak or fidget. The question, then, is which ones the player or
-character can detect, and how those events appear.</p>
+occurring constantly -- mobiles move, objects are gotten and
+dropped, mobiles speak or fidget. The question, then, is which ones
+the player or character can detect, and how those events
+appear.</p>
 
-<p>Lines of sight are among the simplest ways to manage this -- in a
-given location, there is effectively a list of other locations that are
-visible. Since it isn't really possible to tell where a character is
-within that location (Phantasmal doesn't use a coordinate grid), we must
-simply assume that character can potentially see events in every
-location on the list of visible locations. Audible locations are similar
--- a character can hear events occurring in any location on the "audible
-list", potentially.</p>
+<p>Lines of sight are among the simplest ways to manage this -- in
+a given location, there is effectively a list of other locations
+that are visible. Since it isn't really possible to tell where a
+character is within that location (Phantasmal doesn't use a
+coordinate grid), we must simply assume that character can
+potentially see events in every location on the list of visible
+locations. Audible locations are similar -- a character can hear
+events occurring in any location on the "audible list",
+potentially.</p>
 
 <p>Other senses -- taste, touch and smell -- are all localized. A
-character can only taste, touch or smell in his current location, or one
-containing it. Smells can propagate, but a character cannot
+character can only taste, touch or smell in his current location,
+or one containing it. Smells can propagate, but a character cannot
 instantaneously detect a smell in another location.</p>
 
-<p>Locations that are visible or audible from the current location will
-still (usually) transmit sights and sounds less well than if the
-character were standing in that location. Each will effectively have a
-percentage of the visibility/audibility that is actually transmitted.
-Note that in the case of visibility, this is not transitive -- you can't
-see a location that is visible from another location automatically.
-Otherwise you could always see around corners! While it might make sense
-to propagate sounds automatically (and at some level, this will need to
-occur), Phantasmal will internally simply use an audible-list just like
-the visible-list since all of this information can be determined when
+<p>Locations that are visible or audible from the current location
+will still (usually) transmit sights and sounds less well than if
+the character were standing in that location. Each will effectively
+have a percentage of the visibility/audibility that is actually
+transmitted. Note that in the case of visibility, this is not
+transitive -- you can't see a location that is visible from another
+location automatically. Otherwise you could always see around
+corners! While it might make sense to propagate sounds
+automatically (and at some level, this will need to occur),
+Phantasmal will internally simply use an audible-list just like the
+visible-list since all of this information can be determined when
 the objects are connected by exits.</p>
 
 <p>Objects in Phantasmal can have alternate low-light descriptions.
-These are usually part of the markup of the object description, though
-they can be detected programmatically if necessary. These are not
-specifically low-light descriptions, but are rather low-detail
-descriptions. For instance, an object seen through fog, or in darkness,
-or far away, or without glasses, would use this description. Thus a
-tall, brown-haired man might be "a man" or "somebody tall" at a
-distance. Similarly, to recognize another character you must be close
-enough and in good enough lighting and visibility to know who you're
-looking at.</p>
+These are usually part of the markup of the object description,
+though they can be detected programmatically if necessary. These
+are not specifically low-light descriptions, but are rather
+low-detail descriptions. For instance, an object seen through fog,
+or in darkness, or far away, or without glasses, would use this
+description. Thus a tall, brown-haired man might be "a man" or
+"somebody tall" at a distance. Similarly, to recognize another
+character you must be close enough and in good enough lighting and
+visibility to know who you're looking at.</p>
 
 <p>Conceivably, this could be used to "mis-recognize" people for
-mysterious, dramatic or comedic effect. That's longer term, though.</p>
+mysterious, dramatic or comedic effect. That's longer term,
+though.</p>
 
-<p>And finally, some objects require appropriate skills, abilities or
-characteristics to recognize. For instance, you might need to be an
-Angel or Demon to recognize a "tin can of mighty slaying, blessed to the
-Lord", or have a good grasp of philately to notice a valuable misprint
-stamp on a postcard. Objects in the class heirarchy can mark themselves
-as requiring particular skills or attributes to recognize, and players
-without those skills or attributes will simply see the object as the
-next-most-general in the heirarchy -- the valuable misprint stamp would
-be simply a stamp, the blessed tin can would be simply a tin can, or
+<p>And finally, some objects require appropriate skills, abilities
+or characteristics to recognize. For instance, you might need to be
+an Angel or Demon to recognize a "tin can of mighty slaying,
+blessed to the Lord", or have a good grasp of philately to notice a
+valuable misprint stamp on a postcard. Objects in the class
+heirarchy can mark themselves as requiring particular skills or
+attributes to recognize, and players without those skills or
+attributes will simply see the object as the next-most-general in
+the heirarchy -- the valuable misprint stamp would be simply a
+stamp, the blessed tin can would be simply a tin can, or
 garbage.</p>
 
 <h3>Managing Detail</h3>
 
 <p>The most difficult part is not creating all of this detail, but
-keeping the player from being overwhelmed. Phantasmal eventually hopes
-to have several mechanisms for this -- Object Grouping, Event Grouping,
-Perceptual Thresholds, and Automatic Detail Adjustment.</p>
+keeping the player from being overwhelmed. Phantasmal eventually
+hopes to have several mechanisms for this -- Object Grouping, Event
+Grouping, Perceptual Thresholds, and Automatic Detail
+Adjustment.</p>
 
 <h4>Object Grouping</h4>
 
@@ -87,44 +95,48 @@ separate document</a>, and relies heavily on the <a href=
 
 <h4>Event Grouping</h4>
 
-<p>Event Grouping is the idea that many events occurring simultaneously
-can be grouped into a single message. For instance, twenty balloons
-popping at once (perhaps a result of an air pressure change) might say
-that "a large cluster of balloons all pop at once" rather than having
-twenty separate messages about the balloons popping. The trick is to
-detect that these events are occurring roughly simultaneously.</p>
+<p>Event Grouping is the idea that many events occurring
+simultaneously can be grouped into a single message. For instance,
+twenty balloons popping at once (perhaps a result of an air
+pressure change) might say that "a large cluster of balloons all
+pop at once" rather than having twenty separate messages about the
+balloons popping. The trick is to detect that these events are
+occurring roughly simultaneously.</p>
 
-<p>Similarly, <a href="Actions.html">events of different types could be
-grouped</a> in essentially the same way -- the sound of a cannon
-roaring, the smell of gunpowder and a small tremor in the earth could be
-grouped together into "a cannon fires nearby! It's incredibly loud!",
-but a character farther away would only feel the tremor, and a deaf
-character in the dark might only smell gunpowder. This combination, if
-implemented well, could also allow certain deception to occur. For
-instance, a spell that caused a tremor in the earth could be masked by
-cannonfire, or a magically-muffled cannon could be used to convince
-nearby enemies that such a spell had been cast (but the smell might give
-it away!).</p>
+<p>Similarly, <a href="Actions.html">events of different types
+could be grouped</a> in essentially the same way -- the sound of a
+cannon roaring, the smell of gunpowder and a small tremor in the
+earth could be grouped together into "a cannon fires nearby! It's
+incredibly loud!", but a character farther away would only feel the
+tremor, and a deaf character in the dark might only smell
+gunpowder. This combination, if implemented well, could also allow
+certain deception to occur. For instance, a spell that caused a
+tremor in the earth could be masked by cannonfire, or a
+magically-muffled cannon could be used to convince nearby enemies
+that such a spell had been cast (but the smell might give it
+away!).</p>
 
-<p>Obviously there's a limit to what events can be grouped, but in many
-cases (such as the cannon above), the events could be dispatched all at
-once, <a href="EventModel.html">specifically marked as being
-mergeable</a>. Characters that could detect all of the events would see
-them as merged, while characters that couldn't perceive one or more
-would see only the relevant parts of the event. As the grouping system
-got better it could notice events like separate balloons popping
-independently and group them, or group all sounds or smells together if
-they occur quickly, and so on.</p>
+<p>Obviously there's a limit to what events can be grouped, but in
+many cases (such as the cannon above), the events could be
+dispatched all at once, <a href="EventModel.html">specifically
+marked as being mergeable</a>. Characters that could detect all of
+the events would see them as merged, while characters that couldn't
+perceive one or more would see only the relevant parts of the
+event. As the grouping system got better it could notice events
+like separate balloons popping independently and group them, or
+group all sounds or smells together if they occur quickly, and so
+on.</p>
 
-<p>More difficult is grouping <i>sequential</i> events that are related.
-For instance, sharpening a sword might involve taking out a whetstone,
-oiling it, using it many times and then putting everything away again.
-It isn't necessary to give continual updates on the status of the
-activity unless something interrupts it. So the events should be grouped
-as a sequence, so that if all goes well the player will see only " you
-begin sharpening the sword" and, eventually, "you finish sharpening the
-sword". However, if the whetstone oil contains nasty grit which prevents
-you from using it, you might see:</p>
+<p>More difficult is grouping <i>sequential</i> events that are
+related. For instance, sharpening a sword might involve taking out
+a whetstone, oiling it, using it many times and then putting
+everything away again. It isn't necessary to give continual updates
+on the status of the activity unless something interrupts it. So
+the events should be grouped as a sequence, so that if all goes
+well the player will see only " you begin sharpening the sword"
+and, eventually, "you finish sharpening the sword". However, if the
+whetstone oil contains nasty grit which prevents you from using it,
+you might see:</p>
 <pre>
   &gt; sharpen sword
   You take out a whetstone from your backpack.
@@ -138,74 +150,79 @@ you from using it, you might see:</p>
 <h4>Perceptual Thresholds</h4>
 
 <p>Perceptual Thresholds are a name for preventing a character from
-detecting things that are too far apart in intensity. Thus, it's very
-difficult to smell something subtle when there's red herring in the air.
-It's hard to see the fine detail of a Ming vase when you're blinded by a
-flash of magnesium powder burning, and when a cannon goes off, it's hard
-to hear yourself think :-)</p>
+detecting things that are too far apart in intensity. Thus, it's
+very difficult to smell something subtle when there's red herring
+in the air. It's hard to see the fine detail of a Ming vase when
+you're blinded by a flash of magnesium powder burning, and when a
+cannon goes off, it's hard to hear yourself think :-)</p>
 
-<p>Mathematically, this means that any character, for a given sense,
-will have a dynamic range of detail. For instance, the character will
-have a perception for smell, which determines how minute an odor can be
-detected or how much can be found out about an odor, but then will also
-have a range of smells available, so a high-dynamic-range smeller (like
-a bloodhound) might be better at tracking traces of an odor past a very
-powerful other odor like pickled fish or rotten eggs. The higher the
-dynamic range, the more powerful the interfering odor can be or the more
-miniscule the traces of the other odor can be.</p>
+<p>Mathematically, this means that any character, for a given
+sense, will have a dynamic range of detail. For instance, the
+character will have a perception for smell, which determines how
+minute an odor can be detected or how much can be found out about
+an odor, but then will also have a range of smells available, so a
+high-dynamic-range smeller (like a bloodhound) might be better at
+tracking traces of an odor past a very powerful other odor like
+pickled fish or rotten eggs. The higher the dynamic range, the more
+powerful the interfering odor can be or the more miniscule the
+traces of the other odor can be.</p>
 
-<p>Due to Perceptual Thresholds, you might think it would be impossible
-to find small things for the sheer rush and bustle of large things. And
-that would be correct. Therefore, in implementing commands like
-"search", it is important to tune the Perceptual Thresholds
-appropriately. Essentially, a search command will broaden a character's
-dynamic range temporarily (and quite possibly increase his or her basic
-perceptiveness as well) in return for the character staying in one place
-and taking no other actions.</p>
+<p>Due to Perceptual Thresholds, you might think it would be
+impossible to find small things for the sheer rush and bustle of
+large things. And that would be correct. Therefore, in implementing
+commands like "search", it is important to tune the Perceptual
+Thresholds appropriately. Essentially, a search command will
+broaden a character's dynamic range temporarily (and quite possibly
+increase his or her basic perceptiveness as well) in return for the
+character staying in one place and taking no other actions.</p>
 
-<p>Similarly, it might be a good idea to have a "watch" or "concentrate"
-command so that the player can pay attention to a particular thing
-specifically, no matter what distractions are attempted. This would be
-useful to guard an item, to foil a thief's attempts to hide, or to
-notice when a particular signal is given.</p>
+<p>Similarly, it might be a good idea to have a "watch" or
+"concentrate" command so that the player can pay attention to a
+particular thing specifically, no matter what distractions are
+attempted. This would be useful to guard an item, to foil a thief's
+attempts to hide, or to notice when a particular signal is
+given.</p>
 
 <h4>Automatic Detail Adjustment</h4>
 
-<p>When a character has a vast amount of information coming in, even if
-none of that information is especially intense (as in Perceptual
-Thresholds above), the least noteworthy (probably approximated as the
-least-perceptible by default) will be lost until a reasonable amount of
-information is available. For instance, a character running rapidly
-through the woods will probably get shorter room descriptions (cutting
-out less perceptible or noteworthy bits) and won't see the ants crawling
-along or hear the birdsong -- those things aren't as noteworthy as the
-basic room description, and the information is simply coming in too
-fast.</p>
+<p>When a character has a vast amount of information coming in,
+even if none of that information is especially intense (as in
+Perceptual Thresholds above), the least noteworthy (probably
+approximated as the least-perceptible by default) will be lost
+until a reasonable amount of information is available. For
+instance, a character running rapidly through the woods will
+probably get shorter room descriptions (cutting out less
+perceptible or noteworthy bits) and won't see the ants crawling
+along or hear the birdsong -- those things aren't as noteworthy as
+the basic room description, and the information is simply coming in
+too fast.</p>
 
-<p>If the character is perceiving many tiny events like the movement of
-ants and distant birdsong, then a few more obvious nearby events like
-the motion and sound of a river will drown out the smaller events
-automatically via Perceptual Thresholds (see above). However, if the
-forest is relatively quiet or the perceiver has a wide dynamic range,
-then all events will be at a fairly similar perceptual level and all
-will potentially be perceptible.</p>
+<p>If the character is perceiving many tiny events like the
+movement of ants and distant birdsong, then a few more obvious
+nearby events like the motion and sound of a river will drown out
+the smaller events automatically via Perceptual Thresholds (see
+above). However, if the forest is relatively quiet or the perceiver
+has a wide dynamic range, then all events will be at a fairly
+similar perceptual level and all will potentially be
+perceptible.</p>
 
-<p>When a large number of events are all perceptible at once and Event
-Grouping (see above) is unable to reduce the amount of detail to
-something manageable, it becomes necessary to give the player a
-temporarily-reduced dynamic range of perception, just to reduce the flow
-of incoming information. Essentially, less perceptible events are
-dropped from the flow of information to the player, but not necessarily
-to the character. A character will still usually react to the stimuli in
-the normal way. However, most characters' reactions to most stimuli is
-to simply observe and ignore.</p>
+<p>When a large number of events are all perceptible at once and
+Event Grouping (see above) is unable to reduce the amount of detail
+to something manageable, it becomes necessary to give the player a
+temporarily-reduced dynamic range of perception, just to reduce the
+flow of incoming information. Essentially, less perceptible events
+are dropped from the flow of information to the player, but not
+necessarily to the character. A character will still usually react
+to the stimuli in the normal way. However, most characters'
+reactions to most stimuli is to simply observe and ignore.</p>
 
-<p>The subtlety about this reduced perceptual range is that events will
-continue to come in at different times, and what events cannot (usually)
-be predicted in advance. Therefore, the interface will need to detect
-when a player is overloaded and throttle back the character's effective
-dynamic range of perception until the number of events is again
-manageable. This is conceptually similar to old-style MUD commands like
-"verbose" and "terse" for room descriptions. The player is requesting a
-level of detail, and the interface adjusts itself to provide
-approximately that level of detail.</p>
+<p>The subtlety about this reduced perceptual range is that events
+will continue to come in at different times, and what events cannot
+(usually) be predicted in advance. Therefore, the interface will
+need to detect when a player is overloaded and throttle back the
+character's effective dynamic range of perception until the number
+of events is again manageable. This is conceptually similar to
+old-style MUD commands like "verbose" and "terse" for room
+descriptions. The player is requesting a level of detail, and the
+interface adjusts itself to provide approximately that level of
+detail.</p>

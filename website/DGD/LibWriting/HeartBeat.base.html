@@ -2,110 +2,115 @@
 
 <h2>Heart-Beat and Resets in DGD</h2>
 
-<p>Most LP-type MUDs have a function called something like reset(), or
-heart_beat(), which is called periodically. It might be called every few
-seconds, or every few minutes, or just when a player enters a new room
-for the first time, or for the first time in a long while. Since DGD has
-no reset or heartbeat functionality, how would you implement the same
-functionality?</p>
+<p>Most LP-type MUDs have a function called something like reset(),
+or heart_beat(), which is called periodically. It might be called
+every few seconds, or every few minutes, or just when a player
+enters a new room for the first time, or for the first time in a
+long while. Since DGD has no reset or heartbeat functionality, how
+would you implement the same functionality?</p>
 
 <h3>Periodic Calls</h3>
 
 <p>DGD doesn't have alarm() statements and you don't want to run a
-single thread of execution for all that long. Remember that swapping and
-recompiling happen between threads, and you can't normally run a thread
-while another thread is executing. So you'll need to repond periodically
-to a timer, and you'll have to use DGD's call_out() kfun to do it. Have
-each call_out handler schedule itself to be run after a given interval
-&mdash; a few seconds, a few minutes, whatever. Then have it execute the
-statements you want to happen every so many seconds. Remember to
-schedule the new call_out() <i>first</i>, because if an error happens
-somewhere in the call_out handler, you don't want it to permanently stop
-the timer.</p>
+single thread of execution for all that long. Remember that
+swapping and recompiling happen between threads, and you can't
+normally run a thread while another thread is executing. So you'll
+need to repond periodically to a timer, and you'll have to use
+DGD's call_out() kfun to do it. Have each call_out handler schedule
+itself to be run after a given interval &mdash; a few seconds, a
+few minutes, whatever. Then have it execute the statements you want
+to happen every so many seconds. Remember to schedule the new
+call_out() <i>first</i>, because if an error happens somewhere in
+the call_out handler, you don't want it to permanently stop the
+timer.</p>
 
-<p>You'll probably want to use catch() and rlimits() statements when
-calling periodic functions. That will avoid infinite loops and make sure
-that if one object's function has an error, the next object's function
-still gets called. The catch() and rlimits() are useful no matter how
-you choose to handle timing.</p>
+<p>You'll probably want to use catch() and rlimits() statements
+when calling periodic functions. That will avoid infinite loops and
+make sure that if one object's function has an error, the next
+object's function still gets called. The catch() and rlimits() are
+useful no matter how you choose to handle timing.</p>
 
 <h3>Resets</h3>
 
 <p>In addition to periodic timing, you can call functions when idle
-objects are used again, something like a reset(). When the object is
-used (a room being visited, for instance), you can set a variable to the
-current time, showing the the object to be in use. Then when a player
-uses the object again (comes back into a room), check the time variable.
-If it's been longer than the reset period, call the reset() function to
-put the room back into a pristine state. If it hasn't, don't do
-anything.</p>
+objects are used again, something like a reset(). When the object
+is used (a room being visited, for instance), you can set a
+variable to the current time, showing the the object to be in use.
+Then when a player uses the object again (comes back into a room),
+check the time variable. If it's been longer than the reset period,
+call the reset() function to put the room back into a pristine
+state. If it hasn't, don't do anything.</p>
 
 <p>A variation on the idle timer above would be to use DGD's
-call_touch() kfun on idle objects. The call_touch kfun specifies an LPC
-function to call on the object when it is next accessed by LPC code. If
-you rarely or never call functions on idle LPC objects, this can replace
-your own timer. Specifically, you can set a call_out with a given delay
-when the resettable object is used. When the object is next used, cancel
-that call_out and set another one with the same delay. If the object
-ever goes unused for long enough, the call_out will trigger. The
-call_out can use the call_touch kfun to schedule a reset for the next
-time the object is accessed. The object, being idle for awhile, will be
-swapped to disk. And then, when it finally gets used again, it will be
-reset when retrieved.</p>
+call_touch() kfun on idle objects. The call_touch kfun specifies an
+LPC function to call on the object when it is next accessed by LPC
+code. If you rarely or never call functions on idle LPC objects,
+this can replace your own timer. Specifically, you can set a
+call_out with a given delay when the resettable object is used.
+When the object is next used, cancel that call_out and set another
+one with the same delay. If the object ever goes unused for long
+enough, the call_out will trigger. The call_out can use the
+call_touch kfun to schedule a reset for the next time the object is
+accessed. The object, being idle for awhile, will be swapped to
+disk. And then, when it finally gets used again, it will be reset
+when retrieved.</p>
 
 <p>You may find yourself unnecessarily calling the call_touch()-set
-function when you do operations that touch every object in your MUD. For
-instance, saving objects on shutdown may touch every object, so you'll
-find that you reset all of them. However, if you're careful (for
-instance, you can use statedumps instead of datafiles, which won't
-trigger your call_touch functions), you can avoid this problem.</p>
+function when you do operations that touch every object in your
+MUD. For instance, saving objects on shutdown may touch every
+object, so you'll find that you reset all of them. However, if
+you're careful (for instance, you can use statedumps instead of
+datafiles, which won't trigger your call_touch functions), you can
+avoid this problem.</p>
 
 <h3>Finding All the Objects</h3>
 
 <p>You can add objects to a registry when they're created, like the
-Kernel Library does with its ObjRegD. If you do so, then you've got a
-list of all the LPC objects in the MUD. By using those lists, it would
-be straightforward (but somewhat slow) to call a function on every LPC
-object, including clones, in the game. Your auto object would build the
-lists &mdash; see the Kernel Library code for details on how. If you use
-the Kernel Library, a HeartBeatD in the System directory would run
-through the lists and call the heartbeat function on each object every
-so often, in response to a call_out timer. If you don't use the Kernel,
-then you'll need to track objects within your AUTO object somehow, and
-have a HeartBeatD or similar daemon call periodically in the same
-way.</p>
+Kernel Library does with its ObjRegD. If you do so, then you've got
+a list of all the LPC objects in the MUD. By using those lists, it
+would be straightforward (but somewhat slow) to call a function on
+every LPC object, including clones, in the game. Your auto object
+would build the lists &mdash; see the Kernel Library code for
+details on how. If you use the Kernel Library, a HeartBeatD in the
+System directory would run through the lists and call the heartbeat
+function on each object every so often, in response to a call_out
+timer. If you don't use the Kernel, then you'll need to track
+objects within your AUTO object somehow, and have a HeartBeatD or
+similar daemon call periodically in the same way.</p>
 
 <h3>Swapping Behavior</h3>
 
-<p>If you have a function that is called on every object in the MUD,
-you'll find that you drag every object into memory every time it gets
-called. Since DGD is designed to handle MUDs much larger than available
-memory, you're potentially getting yourself into a sticky situation.</p>
+<p>If you have a function that is called on every object in the
+MUD, you'll find that you drag every object into memory every time
+it gets called. Since DGD is designed to handle MUDs much larger
+than available memory, you're potentially getting yourself into a
+sticky situation.</p>
 
 <p>The problem can be partially solved by making objects idle if no
-players are near them. That means that rooms without players won't be
-reset, which is good for saving swapping and CPU time, but means a
-heartbeat function can't be used as a consistent counter &mdash; it
-skips when the object is idle.</p>
+players are near them. That means that rooms without players won't
+be reset, which is good for saving swapping and CPU time, but means
+a heartbeat function can't be used as a consistent counter &mdash;
+it skips when the object is idle.</p>
 
 <h3>Logging Out Idle Players</h3>
 
-<p>Either of of the above can be used to log off idle players. It's easy
-to measure a player's idle time &mdash; just reset it every time you
-receive new network input to that player's user object. Then either have
-a timer that checks periodically (say every one minute) and logs out
-every player that has been idle too long, or have a per-player call_out
-statement. When the player sends network input, set a call_out() for
-three hours in the future to log him out. When he sends input again,
-cancel the old call_out and set up a new one for three hours from the
-<i>new</i> input time. Continue until the player quits. Make sure to
-remove the last call_out if you're not destructing the object it gets
-set on! Or continue until the call_out() happens and the player is
-logged out for being idle.</p>
+<p>Either of of the above can be used to log off idle players. It's
+easy to measure a player's idle time &mdash; just reset it every
+time you receive new network input to that player's user object.
+Then either have a timer that checks periodically (say every one
+minute) and logs out every player that has been idle too long, or
+have a per-player call_out statement. When the player sends network
+input, set a call_out() for three hours in the future to log him
+out. When he sends input again, cancel the old call_out and set up
+a new one for three hours from the <i>new</i> input time. Continue
+until the player quits. Make sure to remove the last call_out if
+you're not destructing the object it gets set on! Or continue until
+the call_out() happens and the player is logged out for being
+idle.</p>
 
-<p>While you could do it on-demand by checking at every network input,
-that's not actually useful. That would log the player out for idleness
-only if they ever came back and typed something again, which misses the
-point. You'd rather close their connection as soon as possible after
-they're idle to free up resources for your MUD. For this reason, the
-call_touch approach isn't useful.</p>
+<p>While you could do it on-demand by checking at every network
+input, that's not actually useful. That would log the player out
+for idleness only if they ever came back and typed something again,
+which misses the point. You'd rather close their connection as soon
+as possible after they're idle to free up resources for your MUD.
+For this reason, the call_touch approach isn't useful.</p>

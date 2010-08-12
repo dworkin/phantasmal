@@ -4,74 +4,76 @@
 
 <p>Imagine a 'perfect' MUD, one that handles multiple languages,
 differing perceptions and event grouping, including everything that
-<a href="Visibility.html">the Visibility</a> document mentions, and does
-it all seamlessly and flawlessly. Let's describe what it actually does
-and start assigning some names to components.</p>
+<a href="Visibility.html">the Visibility</a> document mentions, and
+does it all seamlessly and flawlessly. Let's describe what it
+actually does and start assigning some names to components.</p>
 
 <p>There are <em>instant</em> events going on all the time.
-<em>Instant</em> events are anything that can echo text to a player. For
-example, if somebody says something in a room, that's a simple
-<em>instant</em> event. If a cannon fires, or a man in a suit enters the
-room, those are also <em>instant</em> events. The text that is displayed
-may be different for different players. In some cases no text may happen
-at all. If no players' characters are in the room, or the event is too
-subtle for them to perceive, or if the event gets grouped with other
-events and echoed later, then no text will be displayed for the event.
-Different text will be sent to different players if the players speak
-different languages, and perhaps if the characters have different levels
-of some specific perception skill.</p>
+<em>Instant</em> events are anything that can echo text to a
+player. For example, if somebody says something in a room, that's a
+simple <em>instant</em> event. If a cannon fires, or a man in a
+suit enters the room, those are also <em>instant</em> events. The
+text that is displayed may be different for different players. In
+some cases no text may happen at all. If no players' characters are
+in the room, or the event is too subtle for them to perceive, or if
+the event gets grouped with other events and echoed later, then no
+text will be displayed for the event. Different text will be sent
+to different players if the players speak different languages, and
+perhaps if the characters have different levels of some specific
+perception skill.</p>
 
-<p>Some events will have multiple components -- an obvious component and
-a hidden one, for instance, or components for multiple different senses
-such as hearing and sight. The player will receive different text in
-different circumstances for these events, and our perfect MUD will group
-the various components into a potentially smaller number of pieces of
-text. The cannon firing, despite the hearing and smell components, can
-still all be grouped together as "the cannon fires". Sets of events that
-are grouped together, and all go off together from the same trigger, are
-called Composite Events. They are the easiest kind of events to combine
+<p>Some events will have multiple components -- an obvious
+component and a hidden one, for instance, or components for
+multiple different senses such as hearing and sight. The player
+will receive different text in different circumstances for these
+events, and our perfect MUD will group the various components into
+a potentially smaller number of pieces of text. The cannon firing,
+despite the hearing and smell components, can still all be grouped
+together as "the cannon fires". Sets of events that are grouped
+together, and all go off together from the same trigger, are called
+Composite Events. They are the easiest kind of events to combine
 into less text since they are already lumped together.</p>
 
-<p>Every event will consist of some pieces of player-perceivable markup
-(PPM). A piece of PPM can appear differently to a character depending on
-skills known, light level, and other factors described <a href=
-"Visibility.html">here</a>. Traditionally, <em>instant</em> events in
-MUDs consist of one chunk of PPM each for "to actor", "to victim",
-possibly "to self" for reflexive verbs, and "to others". Specific
-multi-targeted events might have more, and untargeted events will have
-fewer.</p>
+<p>Every event will consist of some pieces of player-perceivable
+markup (PPM). A piece of PPM can appear differently to a character
+depending on skills known, light level, and other factors described
+<a href="Visibility.html">here</a>. Traditionally, <em>instant</em>
+events in MUDs consist of one chunk of PPM each for "to actor", "to
+victim", possibly "to self" for reflexive verbs, and "to others".
+Specific multi-targeted events might have more, and untargeted
+events will have fewer.</p>
 
-<p>Every PPM will effectively consist of a set of Phrases. A Phrase (in
-Phantasmal) is a string which can appear differently to different
-players, but not usually to different characters. A Phrase can often
-translate itself into different languages, so it will appear differently
-to a player who has requested an English interface than one who asks to
-view the MUD in Spanish. It may also contain simple markup like bold,
-italics, or color codes, which are individually translated by different
-players' terminals.</p>
+<p>Every PPM will effectively consist of a set of Phrases. A Phrase
+(in Phantasmal) is a string which can appear differently to
+different players, but not usually to different characters. A
+Phrase can often translate itself into different languages, so it
+will appear differently to a player who has requested an English
+interface than one who asks to view the MUD in Spanish. It may also
+contain simple markup like bold, italics, or color codes, which are
+individually translated by different players' terminals.</p>
 
 <p>Phantasmal doesn't yet support a separate PPM object, though it
 probably should. And it should name it something snappier :-)</p>
 
-<p>Each <em>instant</em> action will also carry information about what
-sense it occurs in (sight, sound, taste, touch, vibration, infrared,
-ESP, etc). This may be combined with information about what skills are
-required to perceive the event.</p>
+<p>Each <em>instant</em> action will also carry information about
+what sense it occurs in (sight, sound, taste, touch, vibration,
+infrared, ESP, etc). This may be combined with information about
+what skills are required to perceive the event.</p>
 
 <p><em>Timed</em> events are, in effect, scripted arrangements of
 <em>instant</em> actions. A <em>timed</em> event is an action that
-conceptually occurs over a significant period of time without changing.
-A buzzing sound, the sharpening of a blade, the smell of banana leaves
-and an army shuffling down a muddy slope could all be represented as
-<em>timed</em> events. The common factor is that each of these takes a
-nonzero period of time within the MUD.</p>
+conceptually occurs over a significant period of time without
+changing. A buzzing sound, the sharpening of a blade, the smell of
+banana leaves and an army shuffling down a muddy slope could all be
+represented as <em>timed</em> events. The common factor is that
+each of these takes a nonzero period of time within the MUD.</p>
 
-<p><em>Timed</em> events consist of an <em>instant</em> event to begin,
-another for people coming into range (walking into a room with the
-sound, for instance, or coming into view of the muddy slope), another
-for when the event stops, another for when you exit its field of
-influence and a final event for when it is interrupted. Thus, for the
-buzzing sound:</p>
+<p><em>Timed</em> events consist of an <em>instant</em> event to
+begin, another for people coming into range (walking into a room
+with the sound, for instance, or coming into view of the muddy
+slope), another for when the event stops, another for when you exit
+its field of influence and a final event for when it is
+interrupted. Thus, for the buzzing sound:</p>
 <pre>
   &gt; north
   You enter the aviary.
@@ -96,9 +98,9 @@ buzzing sound:</p>
   The buzzing sound stops abruptly.
 </pre>
 
-<p>The Continuing Action may have different 'ending' events depending on
-how it finishes. For instance, the action of drawing a sword might be an
-event designed to allow for interruption:</p>
+<p>The Continuing Action may have different 'ending' events
+depending on how it finishes. For instance, the action of drawing a
+sword might be an event designed to allow for interruption:</p>
 <pre>
   &gt; draw sword
   You draw your sword with a flourish.
@@ -111,10 +113,10 @@ event designed to allow for interruption:</p>
   You draw your sword with a flourish.
 </pre>
 
-<p>Note that the sword-drawing event has no starting sub-event (or else
-that event is silent). The event says that you draw your sword if the
-action completes successfully, but says that you reach for your sword if
-it's interrupted.</p>
+<p>Note that the sword-drawing event has no starting sub-event (or
+else that event is silent). The event says that you draw your sword
+if the action completes successfully, but says that you reach for
+your sword if it's interrupted.</p>
 
 <p>An example of a complex action with several senses:</p>
 <pre>

@@ -2,52 +2,55 @@
 
 <h2>Configuring the ParseD</h2>
 
-<p>The command line is the most direct interface between your players
-and your MUD. Phantasmal offers customization of the parser so that you
-can give your players the best possible experience in interacting with
-your game. The following is Phantasmal's idealized parsing architecture.
-Not all of it will be immediately available.</p>
+<p>The command line is the most direct interface between your
+players and your MUD. Phantasmal offers customization of the parser
+so that you can give your players the best possible experience in
+interacting with your game. The following is Phantasmal's idealized
+parsing architecture. Not all of it will be immediately
+available.</p>
 
 <h3>How the Parser Works</h3>
 
 <h4>Tokenizing and Parts of Speech</h4>
 
-<p>First, the parser looks over various words and decides what parts of
-speech they're allowed to be. For instance, the word "fast" can be an
-adjective or adverb, but can also be a noun or a verb. Most words aren't
-quite as versatile -- "green" is a noun or an adjective, but almost
-never a verb, and definitely not an adverb.</p>
+<p>First, the parser looks over various words and decides what
+parts of speech they're allowed to be. For instance, the word
+"fast" can be an adjective or adverb, but can also be a noun or a
+verb. Most words aren't quite as versatile -- "green" is a noun or
+an adjective, but almost never a verb, and definitely not an
+adverb.</p>
 
-<p>Some parts of speech are gathered from your existing data. Since your
-objects already have a wide variety of nouns and adjectives, Phantasmal
-registers all of them with the ParseD. If you see a message like "I
-don't know the word 'clock'", it probably means that you have no object
-in your game with the noun 'clock'. You can add it to the game's
-vocabulary simply by creating a clock object anywhere in your MUD.
-Adjectives (and eventually plural and possessive nouns) work the same
-way.</p>
+<p>Some parts of speech are gathered from your existing data. Since
+your objects already have a wide variety of nouns and adjectives,
+Phantasmal registers all of them with the ParseD. If you see a
+message like "I don't know the word 'clock'", it probably means
+that you have no object in your game with the noun 'clock'. You can
+add it to the game's vocabulary simply by creating a clock object
+anywhere in your MUD. Adjectives (and eventually plural and
+possessive nouns) work the same way.</p>
 
-<p>Verbs are registered specifically with the parser. Note that verbs
-are <i>not</i> the same as actions in your MUD. For instance, it's quite
-reasonable to make the phrase "get down" mean to dance, even though
-'get' usually means to take an object. Most MUDs don't allow this, or
-would require you to code it into the 'get' action. Verbs are
-categorized as either <b>intransitive</b> (i.e. not taking a direct
-object), <b>transitive</b> (i.e. taking a direct object, and perhaps an
-indirect object as well), or both. An example of a verb which is both is
-'sing' -- you may say 'sing' by itself, or give it a direct object, as
-in "sing something by Vivaldi".</p>
+<p>Verbs are registered specifically with the parser. Note that
+verbs are <i>not</i> the same as actions in your MUD. For instance,
+it's quite reasonable to make the phrase "get down" mean to dance,
+even though 'get' usually means to take an object. Most MUDs don't
+allow this, or would require you to code it into the 'get' action.
+Verbs are categorized as either <b>intransitive</b> (i.e. not
+taking a direct object), <b>transitive</b> (i.e. taking a direct
+object, and perhaps an indirect object as well), or both. An
+example of a verb which is both is 'sing' -- you may say 'sing' by
+itself, or give it a direct object, as in "sing something by
+Vivaldi".</p>
 
-<p>Adverbs currently don't do anything, but they'll eventually be able
-to be registered. Those will be important primarily for social verbs,
-though phrases like "walk carefully" or "sneak silently" should
-eventually be possible, and may even modify the action if the game so
-chooses.</p>
+<p>Adverbs currently don't do anything, but they'll eventually be
+able to be registered. Those will be important primarily for social
+verbs, though phrases like "walk carefully" or "sneak silently"
+should eventually be possible, and may even modify the action if
+the game so chooses.</p>
 
-<p>Special words like conjunctions (and, but, yet, so, for, and, nor)
-and prepositions (into, around, under, behind, of, on, on top of,
-underneath, etc) are currently hardcoded into the parser, and are likely
-to be for quite some time.</p>
+<p>Special words like conjunctions (and, but, yet, so, for, and,
+nor) and prepositions (into, around, under, behind, of, on, on top
+of, underneath, etc) are currently hardcoded into the parser, and
+are likely to be for quite some time.</p>
 
 <p>This division by what parts of speech a word may be is called
 'tokenizing'. The now-categorized words are called 'tokens'.</p>
@@ -55,85 +58,93 @@ to be for quite some time.</p>
 <h4>Grammar and Parsing</h4>
 
 <p>The parser will then examine all of these words and come up with
-possible sentence structures. For instance, the phrase "move the box
-under the table" might be parsed with the prepositional phrase modifying
-the box, or modifying the table. "Fast and quickly run" can mean either
-of two things, depending on whether 'fast' is meant as a verb or an
-adverb. Each sentences can each have attributes for things like grammar
-and perceived appropriateness.</p>
+possible sentence structures. For instance, the phrase "move the
+box under the table" might be parsed with the prepositional phrase
+modifying the box, or modifying the table. "Fast and quickly run"
+can mean either of two things, depending on whether 'fast' is meant
+as a verb or an adverb. Each sentences can each have attributes for
+things like grammar and perceived appropriateness.</p>
 
-<p>At this point, the sentences have been parsed only grammatically. The
-nouns haven't been checked against available people and objects, and the
-verbs (and corresponding actions) haven't been checked to see if they
-are possible or appropriate. "Eat the red shoe behind the mother of
-checkered bobcat" will be considered just as valid as "go north", except
-perhaps for the grammatical nitpick in the former.</p>
+<p>At this point, the sentences have been parsed only
+grammatically. The nouns haven't been checked against available
+people and objects, and the verbs (and corresponding actions)
+haven't been checked to see if they are possible or appropriate.
+"Eat the red shoe behind the mother of checkered bobcat" will be
+considered just as valid as "go north", except perhaps for the
+grammatical nitpick in the former.</p>
 
 <h4>Verb Resolution and Binding</h4>
 
 <p>The next stage accomplishes <i>verb resolution</i> and
-<i>binding</i>. Verb resolution checks the appropriateness of certain
-grammatical constructions, and maps the sentence into an action. Binding
-matches noun phrases to objects in the environment.</p>
+<i>binding</i>. Verb resolution checks the appropriateness of
+certain grammatical constructions, and maps the sentence into an
+action. Binding matches noun phrases to objects in the
+environment.</p>
 
-<p>The various parsed sentences from the previous stage are passed to an
-LPC object representing the verb. That object decides how binding should
-be accomplished, and calls an internal Binder API to accomplish the
-actual binding. Verbs that take hypothetical subjects may do no binding
-at all -- 'watch for hairy green forks' may be a perfectly valid thing
-to say even if no hairy green forks exist anywhere in the game. The
-'watch' verb would simply choose not to bind that noun phrase, and
-instead pass it through verbatim to the 'watch' action.</p>
+<p>The various parsed sentences from the previous stage are passed
+to an LPC object representing the verb. That object decides how
+binding should be accomplished, and calls an internal Binder API to
+accomplish the actual binding. Verbs that take hypothetical
+subjects may do no binding at all -- 'watch for hairy green forks'
+may be a perfectly valid thing to say even if no hairy green forks
+exist anywhere in the game. The 'watch' verb would simply choose
+not to bind that noun phrase, and instead pass it through verbatim
+to the 'watch' action.</p>
 
-<p>For most actions, the binding will locate an object in the immediate
-environment. For instance, in the phrase "get the third sticky grape",
-binding would look for objects that might be called sticky grapes, and
-choose the third of them. There may eventually even be support for
-comparative and superlative adjectives -- "get the hottest potato in the
-bin". But currently no such thing exists.</p>
+<p>For most actions, the binding will locate an object in the
+immediate environment. For instance, in the phrase "get the third
+sticky grape", binding would look for objects that might be called
+sticky grapes, and choose the third of them. There may eventually
+even be support for comparative and superlative adjectives -- "get
+the hottest potato in the bin". But currently no such thing
+exists.</p>
 
-<p>More complex sentence structures are possible, and binding will occur
-on them in this stage as well. In the phrase "remove a pen from the big
-box", the big box will also be resolved by the binder.</p>
+<p>More complex sentence structures are possible, and binding will
+occur on them in this stage as well. In the phrase "remove a pen
+from the big box", the big box will also be resolved by the
+binder.</p>
 
-<p>Normally, if an object can't be found by the binder or for some other
-reason the sentence seems impossible, it still won't be thrown out. If
-the player types "get the green emerald" and there's no emerald
-available, it's important to receive a message like "You can't find
-one.". So the sentence should be marked as unlikely (in case there's
-some other way to parse the sentence that makes more sense), but it
-shouldn't be rejected outright since they may indeed have meant what
-they typed, even if it's not currently possible.</p>
+<p>Normally, if an object can't be found by the binder or for some
+other reason the sentence seems impossible, it still won't be
+thrown out. If the player types "get the green emerald" and there's
+no emerald available, it's important to receive a message like "You
+can't find one.". So the sentence should be marked as unlikely (in
+case there's some other way to parse the sentence that makes more
+sense), but it shouldn't be rejected outright since they may indeed
+have meant what they typed, even if it's not currently
+possible.</p>
 
 <h4>Action Resolution</h4>
 
-<p>Once the verbs have done appropriate preprocessing, the action object
-receives the mostly-parsed sentence structure. Action structures are
-fully specific to your game, and so they can decode information like
-whether a particular noun is edible. That's useful so you can realize
-that "take cake from oven and eat it" probably means to eat the cake,
-not the oven. The 'eat' action will rate both as possible meanings, but
-the cake should score higher for appropriateness, and so it should be
-chosen in favor of trying to eat the oven.</p>
+<p>Once the verbs have done appropriate preprocessing, the action
+object receives the mostly-parsed sentence structure. Action
+structures are fully specific to your game, and so they can decode
+information like whether a particular noun is edible. That's useful
+so you can realize that "take cake from oven and eat it" probably
+means to eat the cake, not the oven. The 'eat' action will rate
+both as possible meanings, but the cake should score higher for
+appropriateness, and so it should be chosen in favor of trying to
+eat the oven.</p>
 
-<p>The actions should encode only things reasonably known to the player
-character. For instance, if an object is poisonous but the character
-doesn't know that, the parser should treat it like any other edible
-object. If a particular action will result in disaster but the player
-couldn't reasonably know, don't mark it as unlikely. Players will find
-ways to cheat by referring to the action ambiguously. On the other hand,
-if one possible interpretation is to stick a dagger into the character's
-own eye, the player probably didn't mean that. At least, not if there's
-another choice.</p>
+<p>The actions should encode only things reasonably known to the
+player character. For instance, if an object is poisonous but the
+character doesn't know that, the parser should treat it like any
+other edible object. If a particular action will result in disaster
+but the player couldn't reasonably know, don't mark it as unlikely.
+Players will find ways to cheat by referring to the action
+ambiguously. On the other hand, if one possible interpretation is
+to stick a dagger into the character's own eye, the player probably
+didn't mean that. At least, not if there's another choice.</p>
 
 <h4>Finally, Choosing an Action</h4>
 
-<p>There are now one or more possible interpretations of the player's
-input that Phantasmal has scrutinized, and it's merely a matter of
-deciding on which. Based on appropriateness, grammar, likeliness to
-damage the character and other factors, ParseD will decide which
-interpretations are most likely. If there is only one candidate, or only
-one credible candidate, that action will be taken. If the obvious action
-is also dangerous, the player may be prompted to see if he <i>really</i>
-meant to type that. If there are multiple good possibilities, the player
-may be prompted which he meant.</p>
+<p>There are now one or more possible interpretations of the
+player's input that Phantasmal has scrutinized, and it's merely a
+matter of deciding on which. Based on appropriateness, grammar,
+likeliness to damage the character and other factors, ParseD will
+decide which interpretations are most likely. If there is only one
+candidate, or only one credible candidate, that action will be
+taken. If the obvious action is also dangerous, the player may be
+prompted to see if he <i>really</i> meant to type that. If there
+are multiple good possibilities, the player may be prompted which
+he meant.</p>

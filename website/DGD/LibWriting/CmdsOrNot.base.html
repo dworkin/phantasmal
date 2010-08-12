@@ -2,72 +2,76 @@
 
 <h2>Should Your MUD Library Use &frasl;cmd or a Wiztool?</h2>
 
-<p>There are two common ways of adding commands to DGD programs. One is
-to have a directory of objects, traditionally called &frasl;cmd, and add
-text commands to it by adding LPC files, each with the same name as the
-command they will implement. The other is to have a single object, often
-called a Wiztool, which takes the input and executes an appropriate
-command based on it.</p>
+<p>There are two common ways of adding commands to DGD programs.
+One is to have a directory of objects, traditionally called
+&frasl;cmd, and add text commands to it by adding LPC files, each
+with the same name as the command they will implement. The other is
+to have a single object, often called a Wiztool, which takes the
+input and executes an appropriate command based on it.</p>
 
 <p>There are also a few hybrid approaches, such as the Skotos
-verb&frasl;action approach. Each action has an associated grammar in
-Skotos' parser, which resolves to a structure like <tt>[ "attack",
-&lt;Bobo#7&gt;, &lt;sword#317&gt; ]</tt>. There, each action would
-presumably have a &frasl;cmd-style LPC object to execute the action.
-However, the verbs add to a single central grammar, which parses and
-dispatches them wiztool-style.</p>
+verb&frasl;action approach. Each action has an associated grammar
+in Skotos' parser, which resolves to a structure like <tt>[
+"attack", &lt;Bobo#7&gt;, &lt;sword#317&gt; ]</tt>. There, each
+action would presumably have a &frasl;cmd-style LPC object to
+execute the action. However, the verbs add to a single central
+grammar, which parses and dispatches them wiztool-style.</p>
 
 <h3>Advantages of the Wiztool model</h3>
 
-<p>In the kernel library, each player with wizard-level access has his
-or her own wiztool, with its own privileges.
+<p>In the kernel library, each player with wizard-level access has
+his or her own wiztool, with its own privileges.
 &frasl;kernel&frasl;lib&frasl;wiztool masks all functions that are
-relevant to security, so that any inheriting object only has the level
-of access appropriate for the owner of that object.</p>
+relevant to security, so that any inheriting object only has the
+level of access appropriate for the owner of that object.</p>
 
 <p>As a result, command security is handled by only three objects:
-&frasl;kernel&frasl;sys&frasl;driver, &frasl;kernel&frasl;lib&frasl;auto
-and &frasl;kernel&frasl;lib&frasl;wiztool. This reduces the number of
-locations where security problems can occur to a very small number.</p>
+&frasl;kernel&frasl;sys&frasl;driver,
+&frasl;kernel&frasl;lib&frasl;auto and
+&frasl;kernel&frasl;lib&frasl;wiztool. This reduces the number of
+locations where security problems can occur to a very small
+number.</p>
 
-<p>The wiztool model allows commands with similar functionality to share
-code easily. It also makes it easy to see what commands use what
-variables and functions. This can aid debugging and security
+<p>The wiztool model allows commands with similar functionality to
+share code easily. It also makes it easy to see what commands use
+what variables and functions. This can aid debugging and security
 auditing.</p>
 
-<p>The Kernel Library prevents any object from ever changing its owner
-once it is created. This allows a wiztool to be sure on whose behalf it
-acts, and prevents security problems.</p>
+<p>The Kernel Library prevents any object from ever changing its
+owner once it is created. This allows a wiztool to be sure on whose
+behalf it acts, and prevents security problems.</p>
 
 <h3>Problems with the Wiztool model</h3>
 
-<p>By storing a lot of functionality in a small number of files, the
-wiztool model may make it more likely that an error will cause more
-problems. Storing all commands in user.c may cause problems in logging
-in if it disrupts some vital part of user functionality, for
-instance.</p>
+<p>By storing a lot of functionality in a small number of files,
+the wiztool model may make it more likely that an error will cause
+more problems. Storing all commands in user.c may cause problems in
+logging in if it disrupts some vital part of user functionality,
+for instance.</p>
 
 <h3>Advantages of the &frasl;cmds model</h3>
 
-<p>The &frasl;cmds model has the aesthetic appeal of putting different
-commands' code in different files, which can be a large maintenance
-improvement. It can also make it possible for only certain admins to
-edit certain commands, rather than all commands being necessarily
-ultra-high-security.</p>
+<p>The &frasl;cmds model has the aesthetic appeal of putting
+different commands' code in different files, which can be a large
+maintenance improvement. It can also make it possible for only
+certain admins to edit certain commands, rather than all commands
+being necessarily ultra-high-security.</p>
 
 <p>The &frasl;cmds model is already familiar to a lot of LPMUD
-programmers. They generally have more trouble adapting to the Wiztool
-model. The Diku model, while different from both Wiztool and &frasl;cmds
-models, is more similar to the &frasl;smds model.</p>
+programmers. They generally have more trouble adapting to the
+Wiztool model. The Diku model, while different from both Wiztool
+and &frasl;cmds models, is more similar to the &frasl;smds
+model.</p>
 
 <h3>Problems with the &frasl;cmds model</h3>
 
-<p>There is a peculiarity in the &frasl;cmds model: the commands are not
-just in separate files, but they are even in separate instantiated
-<i>LPC objects</i>. This has been known to lead to security problems.
-Shared command objects require a high access level. They may have this
-always, or they may acquire a specific player's privileges for each
-command; each of these methods has its problems.</p>
+<p>There is a peculiarity in the &frasl;cmds model: the commands
+are not just in separate files, but they are even in separate
+instantiated <i>LPC objects</i>. This has been known to lead to
+security problems. Shared command objects require a high access
+level. They may have this always, or they may acquire a specific
+player's privileges for each command; each of these methods has its
+problems.</p>
 <pre>
 @@INCLUDE couple_of_questions@@
 </pre>

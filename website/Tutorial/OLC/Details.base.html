@@ -3,61 +3,66 @@
 <h2>Object Details</h2>
 
 <p>Ah, object details, the season when a young man's fancy turns to
-love. No, wait, that's spring, and it's the season when the road to his
-house turns to mud. Well, close enough.</p>
+love. No, wait, that's spring, and it's the season when the road to
+his house turns to mud. Well, close enough.</p>
 
-<p>Object details replace the now-obsolete <a href="NoDesc.html">NoDesc
-Scenery Objects</a>. The idea is that if an object can be referred to,
-but it's not something you can pick up and move around, then it's
-probably a detail of the room it's in. For instance a lamp-post, grass,
-the sparkle of sun on water, and the wall of a building are all
-essentially integral parts of the room they're in -- they're not
-something the player can pick up and move around, though they might be
-things he can look at, put things into, or otherwise manipulate.</p>
+<p>Object details replace the now-obsolete <a href=
+"NoDesc.html">NoDesc Scenery Objects</a>. The idea is that if an
+object can be referred to, but it's not something you can pick up
+and move around, then it's probably a detail of the room it's in.
+For instance a lamp-post, grass, the sparkle of sun on water, and
+the wall of a building are all essentially integral parts of the
+room they're in -- they're not something the player can pick up and
+move around, though they might be things he can look at, put things
+into, or otherwise manipulate.</p>
 
-<p>An object detail can't be picked up. That's a part of what it is. An
-object detail <i>can</i> be a container, though -- think of a hole in
-the trunk of a tree, for instance. An object detail is part of some
-other object, and can't be moved to other objects (except by builders,
-who can do whatever they please to a detail, including turning it into a
-non-detail, if they know how). An object detail may be openable or
-lockable, just like any other container. When you look in your inventory
-or around the room, open object details will be searched through just
-like other open containers, and sometimes even more aggressively than
-other kinds of containers.</p>
+<p>An object detail can't be picked up. That's a part of what it
+is. An object detail <i>can</i> be a container, though -- think of
+a hole in the trunk of a tree, for instance. An object detail is
+part of some other object, and can't be moved to other objects
+(except by builders, who can do whatever they please to a detail,
+including turning it into a non-detail, if they know how). An
+object detail may be openable or lockable, just like any other
+container. When you look in your inventory or around the room, open
+object details will be searched through just like other open
+containers, and sometimes even more aggressively than other kinds
+of containers.</p>
 
-<p>Currently details can't be detached (by a player, not a builder) or
-broken off of their location object (also called their detail-of
-object), but scripts will eventually allow this. So they're part of the
-object they're part of, and they can't be removed. Phantasmal chooses to
-consider this a good thing.</p>
+<p>Currently details can't be detached (by a player, not a builder)
+or broken off of their location object (also called their detail-of
+object), but scripts will eventually allow this. So they're part of
+the object they're part of, and they can't be removed. Phantasmal
+chooses to consider this a good thing.</p>
 
-<p>So how do you make one? The easiest way is to say "@make_detail",
-pretty much like how you make a room. You'll need to tell the detail
-what object it's a detail <i>of</i>, unlike with a room, so you'll need
-that object's number. And you'll need to answer a lot of the same kinds
-of questions you would for any other object. Give it a try.</p>
+<p>So how do you make one? The easiest way is to say
+"@make_detail", pretty much like how you make a room. You'll need
+to tell the detail what object it's a detail <i>of</i>, unlike with
+a room, so you'll need that object's number. And you'll need to
+answer a lot of the same kinds of questions you would for any other
+object. Give it a try.</p>
 
-<p>You'll definitely want your detail to have a noun and probably some
-adjectives -- you want to be able to look at it, for starters. So if you
-make a "grass" detail, you can "look grass", and if the grass is a
-detail of your current room, you should see its description. You can
-also "glance grass" to see its glance description. Pretty cool, no?</p>
+<p>You'll definitely want your detail to have a noun and probably
+some adjectives -- you want to be able to look at it, for starters.
+So if you make a "grass" detail, you can "look grass", and if the
+grass is a detail of your current room, you should see its
+description. You can also "glance grass" to see its glance
+description. Pretty cool, no?</p>
 
-<p>At the moment, details are mostly used the same way Phantasmal used
-to use NoDesc objects, and the way many MUDs use "keyword" objects --
-things that can be looked at but not picked up. And since Phantasmal
-makes them first-class objects, some of the usual problems ("get grass"
--- "You don't see that here!") are less severe. Details also have the
-excellent property that they can be inherited. You'll find out about
-that in <a href="Inheritance.html">another tutorial</a>.</p>
+<p>At the moment, details are mostly used the same way Phantasmal
+used to use NoDesc objects, and the way many MUDs use "keyword"
+objects -- things that can be looked at but not picked up. And
+since Phantasmal makes them first-class objects, some of the usual
+problems ("get grass" -- "You don't see that here!") are less
+severe. Details also have the excellent property that they can be
+inherited. You'll find out about that in <a href=
+"Inheritance.html">another tutorial</a>.</p>
 
-<p>If you want to change a detail's location after creating it, you'll
-need to use the <b>@set_obj_detail</b> function. To set object number
-#112 (a detail) to be a detail of base object #37, you'd say
-"@set_obj_detail #37 #112". To make a detail stop being a detail and
-start just being an object, set its base object to #-1 that way --
-"@set_obj_detail #-1 #112".</p>
+<p>If you want to change a detail's location after creating it,
+you'll need to use the <b>@set_obj_detail</b> function. To set
+object number #112 (a detail) to be a detail of base object #37,
+you'd say "@set_obj_detail #37 #112". To make a detail stop being a
+detail and start just being an object, set its base object to #-1
+that way -- "@set_obj_detail #-1 #112".</p>
 
 <p>Speaking of which, go <a href="index.html">read more OLC
 tutorials</a>. It's good for you!</p>

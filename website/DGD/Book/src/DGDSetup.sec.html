@@ -1,240 +1,194 @@
 @@SECTION Setup Setting Up DGD
 
-<p>
-  The first step in learning any new programming language is to set up
-  the tools.  For most languages, that means the compiler or
-  interpreter and possibly a debugger.  For DGD, that means setting up
-  the DGD driver, sometimes called the DGD server or DGD interpreter.
-</p>
+<p>The first step in learning any new programming language is to
+set up the tools. For most languages, that means the compiler or
+interpreter and possibly a debugger. For DGD, that means setting up
+the DGD driver, sometimes called the DGD server or DGD
+interpreter.</p>
 
-<p>
-  You'll need to download the DGD driver from the internet unless you
-  have a copy on other media.  Make sure to get a recent copy of DGD,
-  version 1.2 or later.
-</p>
+<p>You'll need to download the DGD driver from the internet unless
+you have a copy on other media. Make sure to get a recent copy of
+DGD, version 1.2 or later.</p>
 
 @@SECTION Setup.Installing Installing DGD
 
-<p>
-  The DGD driver changes a lot from year to year, so any instructions
-  on installation may be out of date.  These instructions are valid as
-  of early 2005 (DGD version 1.2.101), but if you have any problems
-  with them you should try a <a
-  href="http://www.google.com">Google</a> search on &quot;DGD&quot;,
-  &quot;compiling DGD&quot; or &quot;installing DGD&quot; to find out
-  more about the latest instructions.  First, and more importantly,
-  you should read any documentation that comes with the package you
-  downloaded about how to install it.
-</p>
+<p>The DGD driver changes a lot from year to year, so any
+instructions on installation may be out of date. These instructions
+are valid as of early 2005 (DGD version 1.2.101), but if you have
+any problems with them you should try a <a href=
+"http://www.google.com">Google</a> search on "DGD", "compiling DGD"
+or "installing DGD" to find out more about the latest instructions.
+First, and more importantly, you should read any documentation that
+comes with the package you downloaded about how to install it.</p>
 
-<p>
-  It's possible that you'll be able to find DGD in an
-  easily-installable form like RPM files or FreeBSD's ports tree or a
-  self-extracting archive with an InstallShield installer.  The usual
-  choice, though, is to download a simple archive file (.zip for
-  Windows, .sit.hqx for Macintosh and .tar.gz for Unix) and install it
-  for yourself.
-</p>
+<p>It's possible that you'll be able to find DGD in an
+easily-installable form like RPM files or FreeBSD's ports tree or a
+self-extracting archive with an InstallShield installer. The usual
+choice, though, is to download a simple archive file (.zip for
+Windows, .sit.hqx for Macintosh and .tar.gz for Unix) and install
+it for yourself.</p>
 
-<p>
-  To install DGD, you'll need to compile it.  This means you'll need a
-  compiler, such as GCC on Unix, CodeWarrior on the Macintosh or
-  Visual C++ on Windows.
-</p>
+<p>To install DGD, you'll need to compile it. This means you'll
+need a compiler, such as GCC on Unix, CodeWarrior on the Macintosh
+or Visual C++ on Windows.</p>
 
-<p>
-  I'll refer to the directory you installed DGD into as <tt>dgd</tt>
-  in this section.  So if you installed DGD into <tt>C:\PROGS\DGD</tt>
-  then the path <tt>dgd/src</tt> would be the same as
-  <tt>C:\PROGS\DGD\src</tt>.
-</p>
+<p>I'll refer to the directory you installed DGD into as
+<tt>dgd</tt> in this section. So if you installed DGD into
+<tt>C:\PROGS\DGD</tt> then the path <tt>dgd/src</tt> would be the
+same as <tt>C:\PROGS\DGD\src</tt>.</p>
 
-<p>
-  First, look in <tt>dgd/doc/Platforms</tt>.  You'll see a chart like this:
-</p>
-
+<p>First, look in <tt>dgd/doc/Platforms</tt>. You'll see a chart
+like this:</p>
 <pre>
-DARWIN		Darwin/OS X.  Also works for NetBSD, FreeBSD, OpenBSD and Linux.
-LINUX		Older versions of Linux.  Copy src/host/Makefile.sysv to
-		src/host/Makefile.
-SUNOS4		SunOS 4.x.
-SOLARIS		SunOS 5.x.  In src/Makefile set LIBS to -lsocket -lnsl.  Older
-		versions also require src/host/Makefile.sysv to be copied to
-		src/host/Makefile.
-DECALPHA	DEC Alpha.  Copy src/host/Makefile.sysv to src/host/Makefile.
-BEOS		BeOS.  In src/Makefile set LIBS to -lbe -ltracker, and copy
-		src/host/Makefile.beos to src/host/Makefile.
-WIN32		Windows NT or Windows 95.  Follow the instructions in
-		src/host/pc/README.
-MACOS		Mac System 6 to 9.  Follow the instructions in
-		src/host/mac/README.
-GENERIC_BSD	BSD Unix.
-GENERIC_SYSV	SYSV Unix.  Copy src/host/Makefile.sysv to src/host/Makefile.
+DARWIN          Darwin/OS X.  Also works for NetBSD, FreeBSD, OpenBSD and Linux.
+LINUX           Older versions of Linux.  Copy src/host/Makefile.sysv to
+                src/host/Makefile.
+SUNOS4          SunOS 4.x.
+SOLARIS         SunOS 5.x.  In src/Makefile set LIBS to -lsocket -lnsl.  Older
+                versions also require src/host/Makefile.sysv to be copied to
+                src/host/Makefile.
+DECALPHA        DEC Alpha.  Copy src/host/Makefile.sysv to src/host/Makefile.
+BEOS            BeOS.  In src/Makefile set LIBS to -lbe -ltracker, and copy
+                src/host/Makefile.beos to src/host/Makefile.
+WIN32           Windows NT or Windows 95.  Follow the instructions in
+                src/host/pc/README.
+MACOS           Mac System 6 to 9.  Follow the instructions in
+                src/host/mac/README.
+GENERIC_BSD     BSD Unix.
+GENERIC_SYSV    SYSV Unix.  Copy src/host/Makefile.sysv to src/host/Makefile.
 </pre>
 
-<p>
-  You'll need to follow the instructions for your platform.  For
-  instance, on Linux you'd want to copy
-  <tt>dgd/src/host/Makefile.sysv</tt> to
-  <tt>dgd/src/host/Makefile</tt>.  For Macintosh or Windows you'd want
-  to read the appropriate README file and follow its instructions.
-  It'll tell you where to find a project file for DGD for your
-  compiler.  Normally those files ship with DGD, so the README file
-  will just tell you the right subdirectory to look in.
-</p>
+<p>You'll need to follow the instructions for your platform. For
+instance, on Linux you'd want to copy
+<tt>dgd/src/host/Makefile.sysv</tt> to
+<tt>dgd/src/host/Makefile</tt>. For Macintosh or Windows you'd want
+to read the appropriate README file and follow its instructions.
+It'll tell you where to find a project file for DGD for your
+compiler. Normally those files ship with DGD, so the README file
+will just tell you the right subdirectory to look in.</p>
 
-<p>
-  If you have troubles compiling the server, you can ask the DGD
-  mailing list for help.  Please try a few web searches first to see
-  if your problem is already known, and if it's in the DGD mailing
-  list archives.  You'll always look better asking questions on the
-  list if you've obviously made an effort on your own behalf first.
-  It makes people more likely to help you.  The DGD mailing list is a
-  very powerful tool, and has many of the most competent DGD users in
-  the world reading it regularly.  Try to be respectful of it, so that
-  its readers will, in turn, respect <em>you</em>.
-</p>
+<p>If you have troubles compiling the server, you can ask the DGD
+mailing list for help. Please try a few web searches first to see
+if your problem is already known, and if it's in the DGD mailing
+list archives. You'll always look better asking questions on the
+list if you've obviously made an effort on your own behalf first.
+It makes people more likely to help you. The DGD mailing list is a
+very powerful tool, and has many of the most competent DGD users in
+the world reading it regularly. Try to be respectful of it, so that
+its readers will, in turn, respect <em>you</em>.</p>
 
-<p>
-  To find the DGD mailing list, try doing a Google search for
-  &quot;DGD Mailing List&quot;.  You should be able to find a page
-  that will tell you how to sign up for that list, and how to find the
-  old archived messages from the list.
-</p>
-
+<p>To find the DGD mailing list, try doing a Google search for "DGD
+Mailing List". You should be able to find a page that will tell you
+how to sign up for that list, and how to find the old archived
+messages from the list.</p>
 
 @@SECTION Setup.RunKernel Running the Kernel Library
 
-<p>
-  You'll need to run the Kernel Library to do most of the exercises in
-  this book.  A copy comes with every copy of DGD.  So if you've
-  already installed DGD, you've already installed the Kernel.
-</p>
+<p>You'll need to run the Kernel Library to do most of the
+exercises in this book. A copy comes with every copy of DGD. So if
+you've already installed DGD, you've already installed the
+Kernel.</p>
 
-<p>
-  Your copy of DGD came with a file called <tt>mud.dgd</tt>.  Look in
-  DGD's directory and you should find it pretty quickly.  You'll need
-  to edit that file before you can use it.
-</p>
+<p>Your copy of DGD came with a file called <tt>mud.dgd</tt>. Look
+in DGD's directory and you should find it pretty quickly. You'll
+need to edit that file before you can use it.</p>
 
-<p>
-  In <tt>mud.dgd</tt>, you'll see various lines assigning values to
-  various names.  One line will say something like <code>directory =
-  &quot;/home/dworkin/dgd/mud&quot;</code>.  You'll need to change
-  that path to the absolute path for the directory where you installed
-  the Kernel Library.  That's the <tt>mud</tt> subdirectory of DGD.
-  For instance, if you installed DGD into <tt>~alan/dgd</tt> on your
-  Unix system, you'd change the filename in quotes to
-  <tt>/home/alan/dgd/mud</tt>.  If your DGD directory wound up in
-  <tt>C:\Programs</tt> on your Windows machine, you'd change the line
-  to <code>directory = &quot;C:\Programs\DGD\mud&quot;</code>.  The
-  end of the line, the part surrounded by stars and slashes, is a
-  comment.  You can ignore it or remove it entirely (including all the
-  stars and slashes).
-</p>
+<p>In <tt>mud.dgd</tt>, you'll see various lines assigning values
+to various names. One line will say something like <code>directory
+= "/home/dworkin/dgd/mud"</code>. You'll need to change that path
+to the absolute path for the directory where you installed the
+Kernel Library. That's the <tt>mud</tt> subdirectory of DGD. For
+instance, if you installed DGD into <tt>~alan/dgd</tt> on your Unix
+system, you'd change the filename in quotes to
+<tt>/home/alan/dgd/mud</tt>. If your DGD directory wound up in
+<tt>C:\Programs</tt> on your Windows machine, you'd change the line
+to <code>directory = "C:\Programs\DGD\mud"</code>. The end of the
+line, the part surrounded by stars and slashes, is a comment. You
+can ignore it or remove it entirely (including all the stars and
+slashes).</p>
 
-<p>
-  Note that the path has to be an <em>absolute</em> path.  That means
-  you have to start it with a slash on Unix.  You'd use a backslash or
-  a drive letter on Windows.  But you <em>can't</em> just start it
-  with the name of the directory where you installed DGD and leave out
-  where on the drive that directory is, that won't work.  No relative
-  paths.  So <tt>/home/bob/dgd/mud</tt> and
-  <tt>C:\Programs\DGD\MUD</tt> are fine, but <tt>DGD\MUD</tt> isn't.
-</p>
+<p>Note that the path has to be an <em>absolute</em> path. That
+means you have to start it with a slash on Unix. You'd use a
+backslash or a drive letter on Windows. But you <em>can't</em> just
+start it with the name of the directory where you installed DGD and
+leave out where on the drive that directory is, that won't work. No
+relative paths. So <tt>/home/bob/dgd/mud</tt> and
+<tt>C:\Programs\DGD\MUD</tt> are fine, but <tt>DGD\MUD</tt>
+isn't.</p>
 
-<p>
-  Once you've done that, you'll need to run the DGD program.  If
-  you're running on Windows and you compiled with Visual C++, you can
-  run dgd by double-clicking it and then choose the mud.dgd program
-  from the menu.  If you compiled on Unix or used the Cygnus tools on
-  Windows, you'll need to run the program from the command line, with
-  the .dgd file as an argument.  For instance, from Unix, in the DGD
-  directory, you might type <kbd>./bin/driver mud.dgd</kbd>.  Note
-  that while Win32 permits you to run DGD from the command line, you
-  won't get proper error output if you do.  So it's recommended you
-  run DGD and then choose a configuration file from the menu instead.
-</p>
+<p>Once you've done that, you'll need to run the DGD program. If
+you're running on Windows and you compiled with Visual C++, you can
+run dgd by double-clicking it and then choose the mud.dgd program
+from the menu. If you compiled on Unix or used the Cygnus tools on
+Windows, you'll need to run the program from the command line, with
+the .dgd file as an argument. For instance, from Unix, in the DGD
+directory, you might type <kbd>./bin/driver mud.dgd</kbd>. Note
+that while Win32 permits you to run DGD from the command line, you
+won't get proper error output if you do. So it's recommended you
+run DGD and then choose a configuration file from the menu
+instead.</p>
 
-<p>
-  If you've done it correctly then DGD will print messages about what
-  version you're running and various other things.  Then nothing
-  visible will happen.  If you're not used to running your own MUD
-  server, this can be a bit disconcerting.  Don't worry, it's normal.
-  In fact, if DGD stops and goes back to the command line (usually
-  with an error message), <em>that</em> would be abnormal.  The
-  messages DGD prints will look something like this:
-</p>
-
+<p>If you've done it correctly then DGD will print messages about
+what version you're running and various other things. Then nothing
+visible will happen. If you're not used to running your own MUD
+server, this can be a bit disconcerting. Don't worry, it's normal.
+In fact, if DGD stops and goes back to the command line (usually
+with an error message), <em>that</em> would be abnormal. The
+messages DGD prints will look something like this:</p>
 <pre>
 Jan 29 16:09:52 ** DGD 1.2.73
 Jan 29 16:09:52 ** Initializing...
 Jan 29 16:09:53 ** Initialization complete.
 </pre>
 
-<p>
-  Once you're running the server, you'll need to telnet to your MUD.
-  That requires a telnet client or MUD client.  On Unix, the simplest
-  method is to run telnet from the command line.  The syntax is simply
-  <kbd>telnet &lt;host&gt; &lt;port&gt;</kbd>, where host is the name
-  or IP address of the host you're telnetting to, and port is the port
-  number.  If you leave off the port number, telnet will use port 23
-  by default, which is almost never what you want for a MUD.
-</p>
+<p>Once you're running the server, you'll need to telnet to your
+MUD. That requires a telnet client or MUD client. On Unix, the
+simplest method is to run telnet from the command line. The syntax
+is simply <kbd>telnet &lt;host&gt; &lt;port&gt;</kbd>, where host
+is the name or IP address of the host you're telnetting to, and
+port is the port number. If you leave off the port number, telnet
+will use port 23 by default, which is almost never what you want
+for a MUD.</p>
 
-<p>
-  On Windows, you'll want to download a MUD client like zMUD or a
-  terminal program like TeraTerm or Putty.  Do a web search on one of
-  those names, or just on 'Windows terminal program' or 'Win32 MUD
-  client' or similar.
-</p>
+<p>On Windows, you'll want to download a MUD client like zMUD or a
+terminal program like TeraTerm or Putty. Do a web search on one of
+those names, or just on 'Windows terminal program' or 'Win32 MUD
+client' or similar.</p>
 
-<p>
-  Telnet back to your own machine, on the port where DGD is running.
-  Normally your machine's address will be 127.0.0.1 when you telnet to
-  it, which is called the <dfn>localhost</dfn> address.  The Kernel
-  Library will usually start its telnet server on port 6047, though
-  you can check the file <tt>mud.dgd</tt> to be sure.  You'll want to
-  telnet to the telnet port, not the binary port, from that file.
-  Your telnet program will attempt to connect to the wrong port if you
-  don't tell it the correct port number.
-</p>
+<p>Telnet back to your own machine, on the port where DGD is
+running. Normally your machine's address will be 127.0.0.1 when you
+telnet to it, which is called the <dfn>localhost</dfn> address. The
+Kernel Library will usually start its telnet server on port 6047,
+though you can check the file <tt>mud.dgd</tt> to be sure. You'll
+want to telnet to the telnet port, not the binary port, from that
+file. Your telnet program will attempt to connect to the wrong port
+if you don't tell it the correct port number.</p>
 
-<p>
-  The Kernel Library will ask you for a login name.  Tell it you are
-  <kbd>admin</kbd>.  Then choose a password for this account.  The
-  admin account is special, and gets a lot of privileges that other
-  accounts don't &mdash; you won't be able to do many of the exercises
-  in this book except with a privileged account.
-</p>
-
+<p>The Kernel Library will ask you for a login name. Tell it you
+are <kbd>admin</kbd>. Then choose a password for this account. The
+admin account is special, and gets a lot of privileges that other
+accounts don't &mdash; you won't be able to do many of the
+exercises in this book except with a privileged
+account.</p>
 
 @@SECTION Setup.KernelOverview An Overview of the Kernel Library
 
-<p>
-  To use the Kernel Library, you'll need a quick overview of what you
-  can do with it.  This entire section applies only to the unmodified
-  Kernel Library -- any of this can be changed.  But when you start, this
-  section describes how the interface works.
-</p>
+<p>To use the Kernel Library, you'll need a quick overview of what
+you can do with it. This entire section applies only to the
+unmodified Kernel Library -- any of this can be changed. But when
+you start, this section describes how the interface works.</p>
 
-<p>
-  You can quit by typing <kbd>quit</kbd>, which is useful to know.
-  You can chat with others on the server by typing <kbd>say</kbd>, a
-  space, and what you want to say.  This will send the message to
-  everyone else currently logged in.  You can type <kbd>people</kbd>
-  to see who is currently logged in.  All of these operations can be
-  performed by any user.
-</p>
+<p>You can quit by typing <kbd>quit</kbd>, which is useful to know.
+You can chat with others on the server by typing <kbd>say</kbd>, a
+space, and what you want to say. This will send the message to
+everyone else currently logged in. You can type <kbd>people</kbd>
+to see who is currently logged in. All of these operations can be
+performed by any user.</p>
 
-<p>
-  The admin user can also type <kbd>shutdown</kbd> to shut down the
-  server.  He can also use the &quot;code&quot; command, which you'll
-  learn about in the next chapter.
-</p>
+<p>The admin user can also type <kbd>shutdown</kbd> to shut down
+the server. He can also use the "code" command, which you'll learn
+about in the next chapter.</p>
 
-<p>
-  The Kernel Library actually has a number of other commands, most of
-  them only for administrators, not players.  Those will be covered
-  later as we need them.
-</p>
+<p>The Kernel Library actually has a number of other commands, most
+of them only for administrators, not players. Those will be covered
+later as we need them.</p>

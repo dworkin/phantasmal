@@ -11,16 +11,16 @@
 
   <li>Normal in-MUD portable objects, containers, etc</li>
 
-  <li>Object details - objects can be part of other objects, and details
-  can also be containers, etc</li>
+  <li>Object details - objects can be part of other objects, and
+  details can also be containers, etc</li>
 
   <li>Full weight, volume and size systems for objects</li>
 
-  <li>Normal in-MUD online communication with says, chatting, emotes,
-  social commands, etc</li>
+  <li>Normal in-MUD online communication with says, chatting,
+  emotes, social commands, etc</li>
 
-  <li>Powerful online help-system that matches queries in many different
-  ways, including Soundex (phonetic)</li>
+  <li>Powerful online help-system that matches queries in many
+  different ways, including Soundex (phonetic)</li>
 </ul>
 
 <h3>Admin &amp; Builder Features</h3>
@@ -34,21 +34,22 @@
 
   <li>Typed, inherited tag system for custom properties</li>
 
-  <li>Carefully-vetted scripting interface to allow semi-trusted code to
-  run without causing your MUD damage</li>
+  <li>Carefully-vetted scripting interface to allow semi-trusted
+  code to run without causing your MUD damage</li>
 
-  <li>Full, heavily-documented OLC (online creation) commands. Anything
-  that Phantasmal supports can be created online</li>
+  <li>Full, heavily-documented OLC (online creation) commands.
+  Anything that Phantasmal supports can be created online</li>
 
-  <li>Massive documentation - in-game help, online tutorials, HTTPable
-  help, downloadable web site archives on DGD and Phantasmal</li>
+  <li>Massive documentation - in-game help, online tutorials,
+  HTTPable help, downloadable web site archives on DGD and
+  Phantasmal</li>
 
-  <li>Full, instant code upgrades for all in-game code - never be forced
-  to reboot the server again!</li>
+  <li>Full, instant code upgrades for all in-game code - never be
+  forced to reboot the server again!</li>
 
   <li>Support for full or partial <a href=
-  "DGD/LibWriting/Persistence.html">persistent operation</a> in the DGD
-  sense. Statedumps, upgrades, the works.</li>
+  "DGD/LibWriting/Persistence.html">persistent operation</a> in the
+  DGD sense. Statedumps, upgrades, the works.</li>
 </ul>
 
 <h3>Architectural Features</h3>
@@ -61,48 +62,49 @@
 
   <li>Robust error-tolerant object load and save</li>
 
-  <li>Phrase structures support markup and internationalization (e.g.
-  Spanish-lang support) for almost all in-game text</li>
+  <li>Phrase structures support markup and internationalization
+  (e.g. Spanish-lang support) for almost all in-game text</li>
 </ul>
 
 <h3>The Details</h3>
 
-<p>Phantasmal is a good base to begin construction from, but not a full
-game by itself. Seas of Night is a test game to show off Phantasmal's
-power as a library. Some listed features require Seas of Night or
-another Phantasmal-based library.</p>
+<p>Phantasmal is a good base to begin construction from, but not a
+full game by itself. Seas of Night is a test game to show off
+Phantasmal's power as a library. Some listed features require Seas
+of Night or another Phantasmal-based library.</p>
 
-<p>Phantasmal has scripts, though it needs to integrate them into more
-of what it does. It has tags, which are arbitrary object properties that
-make scripts really interesting.</p>
+<p>Phantasmal has scripts, though it needs to integrate them into
+more of what it does. It has tags, which are arbitrary object
+properties that make scripts really interesting.</p>
 
-<p>Objects use a set of object descriptions inspired by Skotos' series
-of Building Blocks <a href=
+<p>Objects use a set of object descriptions inspired by Skotos'
+series of Building Blocks <a href=
 "http://www.skotos.net/articles">articles</a>. Details also work
 similarly.</p>
 
-<p>Phantasmal is built on the DGD Kernel Library. This gives it a good,
-secure base. It also allows Phantasmal's secure scripts and
+<p>Phantasmal is built on the DGD Kernel Library. This gives it a
+good, secure base. It also allows Phantasmal's secure scripts and
 rebuild-in-place.</p>
 
-<p>Phantasmal is localized. That means object and room descriptions use
-Phrase structures rather than simple strings so that any such
-description is automatically localizable to any supported language. Note
-that unicode characters are not yet supported. Spanish is the only
-current suggested locale, and many messages still need to be localized.
-It's a good test for the various systems nonetheless. Wish I was a
-better translator!</p>
+<p>Phantasmal is localized. That means object and room descriptions
+use Phrase structures rather than simple strings so that any such
+description is automatically localizable to any supported language.
+Note that unicode characters are not yet supported. Spanish is the
+only current suggested locale, and many messages still need to be
+localized. It's a good test for the various systems nonetheless.
+Wish I was a better translator!</p>
 
-<p>In case of problems the binary port is still configured for emergency
-administrator login, and all the old wiz commands work just like the
-<a href="DGD/Kernel/Commands.html">unmodified Kernel MUDLib</a>. On the
-regular port most of them have a % on the front, so they have names like
-%grant, %compile and so on.</p>
+<p>In case of problems the binary port is still configured for
+emergency administrator login, and all the old wiz commands work
+just like the <a href="DGD/Kernel/Commands.html">unmodified Kernel
+MUDLib</a>. On the regular port most of them have a % on the front,
+so they have names like %grant, %compile and so on.</p>
 
-<p><a href="http://plunq.sourceforge.net/name.html">UNQ</a> files supply
-non-statedump structured data storage very similar to XML in many ways,
-including Document Type Definitions to simplify parsing. Localized
-structures and help files are stored this way. The UNQ parsing system is
-doing well and supports backslash escaping and markup. UNQ Document Type
-Definitions (DTDs) are well supported and greatly aid parsing most of
-the objects that Phantasmal stores in files.</p>
+<p><a href="http://plunq.sourceforge.net/name.html">UNQ</a> files
+supply non-statedump structured data storage very similar to XML in
+many ways, including Document Type Definitions to simplify parsing.
+Localized structures and help files are stored this way. The UNQ
+parsing system is doing well and supports backslash escaping and
+markup. UNQ Document Type Definitions (DTDs) are well supported and
+greatly aid parsing most of the objects that Phantasmal stores in
+files.</p>

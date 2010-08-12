@@ -2,22 +2,23 @@
 
 <h2>Basic Objects the Old Way</h2>
 
-<p>Phantasmal originally did its creation and editing of new objects
-with a command-line syntax for setting all the individual fields.
-Phantasmal has started the sea-change to the newer, easier way but it
-can still be a good idea to know the old syntax. The new way may not
-have the to-die-for absolute latest feature you're looking for, or you
-may just find the old one more convenient for minor edits.</p>
+<p>Phantasmal originally did its creation and editing of new
+objects with a command-line syntax for setting all the individual
+fields. Phantasmal has started the sea-change to the newer, easier
+way but it can still be a good idea to know the old syntax. The new
+way may not have the to-die-for absolute latest feature you're
+looking for, or you may just find the old one more convenient for
+minor edits.</p>
 
-<p>Go ahead and type "@new_room #2". It doesn't have to be room number
-2, but this example will assume you cleared a bunch of stuff out. If you
-didn't, pick a free number other than two, or just type "@new_room" and
-let the MUD assign you a new room in whatever zone you're currently
-standing in.</p>
+<p>Go ahead and type "@new_room #2". It doesn't have to be room
+number 2, but this example will assume you cleared a bunch of stuff
+out. If you didn't, pick a free number other than two, or just type
+"@new_room" and let the MUD assign you a new room in whatever zone
+you're currently standing in.</p>
 
-<p>So let's make it more interesting. Type "@stat #2" which will show
-you some things about your room. It probably looks pretty generic at
-this point. Mine looks like this:</p>
+<p>So let's make it more interesting. Type "@stat #2" which will
+show you some things about your room. It probably looks pretty
+generic at this point. Mine looks like this:</p>
 <pre>
 &gt; @stat #2
 Location:  (none)
@@ -39,11 +40,12 @@ Contains 0 mobiles.
 Registered with MAPD as a room.
 </pre>
 
-<p>That means it's nowhere, it contains nothing, its descriptions are
-quite generic, it has no nouns or adjectives. And what's "enUS"?</p>
+<p>That means it's nowhere, it contains nothing, its descriptions
+are quite generic, it has no nouns or adjectives. And what's
+"enUS"?</p>
 
-<p>Patience, grasshopper. Type "@goto #2" You'll show up in your room.
-For me, it looks like this:</p>
+<p>Patience, grasshopper. Type "@goto #2" You'll show up in your
+room. For me, it looks like this:</p>
 <pre>
 &gt; @goto #2
 You teleport to a room.
@@ -55,8 +57,8 @@ Exits:
 </pre>
 
 <p>Now type "@set_brief #2 my boudoir". And then type "look" You'll
-notice the room's name changed. You can also type "@stat #2" to see the
-same change.</p>
+notice the room's name changed. You can also type "@stat #2" to see
+the same change.</p>
 
 <p>Type "@set_look #2". You'll see something like this:</p>
 <pre>
@@ -66,25 +68,25 @@ Enter text at the prompt.  Enter ~ on a line by itself to end.
  &gt;
 </pre>
 
-<p>Type several lines of description for your room. Then, after hitting
-return on the last one, go ahead and type a tilde (~) and hit return.
-That should finish off the description, which you're now stuck with
-until next time you change it. In addition to @set_brief and @set_look,
-there's @set_glance and @set_examine. I highly recommend their @help
-files.</p>
+<p>Type several lines of description for your room. Then, after
+hitting return on the last one, go ahead and type a tilde (~) and
+hit return. That should finish off the description, which you're
+now stuck with until next time you change it. In addition to
+@set_brief and @set_look, there's @set_glance and @set_examine. I
+highly recommend their @help files.</p>
 
-<p>Okay, so now you can give an object a basic description. Fair enough.
-What else can you do with it? Well, you can move it around. Go ahead and
-move it to wherever you're standing -- type "@move #2 here", which will
-teleport it to be inside whatever room you're standing in. You can also
-teleport it somewhere else -- for instance "@move #2 #0" will move it
-into The Void. You can teleport there ("@goto #0") to make sure it
-arrived okay.</p>
+<p>Okay, so now you can give an object a basic description. Fair
+enough. What else can you do with it? Well, you can move it around.
+Go ahead and move it to wherever you're standing -- type "@move #2
+here", which will teleport it to be inside whatever room you're
+standing in. You can also teleport it somewhere else -- for
+instance "@move #2 #0" will move it into The Void. You can teleport
+there ("@goto #0") to make sure it arrived okay.</p>
 
-<p>You can also add nouns and adjectives to it, but we'll cover that in
-the section on <a href="Portables.html">portables</a>. If you haven't
-had a look at the build help yet by typing "@help builder" I highly
-recommend it.</p>
+<p>You can also add nouns and adjectives to it, but we'll cover
+that in the section on <a href="Portables.html">portables</a>. If
+you haven't had a look at the build help yet by typing "@help
+builder" I highly recommend it.</p>
 
 <p>You can also read some more <a href=
 "../index.html">tutorials</a>.</p>

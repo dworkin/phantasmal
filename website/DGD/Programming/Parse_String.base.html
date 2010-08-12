@@ -2,59 +2,62 @@
 
 <h2>Using DGD's parse_string Kfun</h2>
 
-<p>The parse_string kfun is a very powerful parser to which you supply a
-grammar of your choice. It's much like lex and yacc, and defines its own
-mini-language within DGD, much as lex and yacc do with C.</p>
+<p>The parse_string kfun is a very powerful parser to which you
+supply a grammar of your choice. It's much like lex and yacc, and
+defines its own mini-language within DGD, much as lex and yacc do
+with C.</p>
 
 <p>For a basic overview of parse_string(), please read
-dgd&frasl;doc&frasl;parser. It came with your DGD distribution. It will
-answer your basic questions. It's the most updated and most definitive
-document on how parse_string() behaves.</p>
+dgd&frasl;doc&frasl;parser. It came with your DGD distribution. It
+will answer your basic questions. It's the most updated and most
+definitive document on how parse_string() behaves.</p>
 
 <h3>Tokenizing</h3>
 
-<p>A parse_string() grammar has two types of symbols. One is for tokens,
-the other (called a 'production') is for nonterminal symbols. Every
-grammar must contain at least one token rule and at least one production
-rule.</p>
+<p>A parse_string() grammar has two types of symbols. One is for
+tokens, the other (called a 'production') is for nonterminal
+symbols. Every grammar must contain at least one token rule and at
+least one production rule.</p>
 
 <p>The input string is first broken up into tokens and whitespace.
-Whitespace is ignored. The entire input must be parsed into valid, legal
-tokens or the parsing fails entirely. Then the tokens are parsed
-according to the nonterminal rules. There is a special 'whitespace'
-token rule, called 'whitespace', which is how whitespace is
-distinguished from regular tokens.</p>
+Whitespace is ignored. The entire input must be parsed into valid,
+legal tokens or the parsing fails entirely. Then the tokens are
+parsed according to the nonterminal rules. There is a special
+'whitespace' token rule, called 'whitespace', which is how
+whitespace is distinguished from regular tokens.</p>
 
 <p>Tokens match longest-first &mdash; that is, the token rule that
-matches the longest chunk of test will be used, even if another token
-rule matches a shorter string 'more exactly'. If two rules match the
-same string (and thus the same length), then the rule that is first in
-the grammar will be used.</p>
+matches the longest chunk of test will be used, even if another
+token rule matches a shorter string 'more exactly'. If two rules
+match the same string (and thus the same length), then the rule
+that is first in the grammar will be used.</p>
 
-<p>There is a special token rule, called 'nomatch'. If you say, in your
-grammar, <tt>mytoken = nomatch</tt>, then the token 'mytoken' will be
-used for any string that doesn't match another token. The nomatch rule
-can be quite inefficient. On a complicated grammar, though, it's usually
-still more efficient than using sscanf() or implode()&frasl;explode()
-rather than parse_string().</p>
+<p>There is a special token rule, called 'nomatch'. If you say, in
+your grammar, <tt>mytoken = nomatch</tt>, then the token 'mytoken'
+will be used for any string that doesn't match another token. The
+nomatch rule can be quite inefficient. On a complicated grammar,
+though, it's usually still more efficient than using sscanf() or
+implode()&frasl;explode() rather than parse_string().</p>
 
 <h3>Production Rules</h3>
 
 <h3>Literal Strings</h3>
 
-<p>If you use literal strings (like 'foo') in your production rules,
-then those literal strings will effectively be defined as tokens, and
-they will come 'first' in your grammar. That means that they will be
-matched as literal strings in preference to any other rule that you
-define. That can cause a problem with a grammar like:</p>
+<p>If you use literal strings (like 'foo') in your production
+rules, then those literal strings will effectively be defined as
+tokens, and they will come 'first' in your grammar. That means that
+they will be matched as literal strings in preference to any other
+rule that you define. That can cause a problem with a grammar
+like:</p>
 <pre>
   word = &frasl;[a-z]+&frasl;
 
   rule : word 'foo'
-  </pre>
+  
+</pre>
 
-<p>Then the 'word' regexp will never match 'foo' because it is used in
-the grammar. A workaround here is to do something like this:</p>
+<p>Then the 'word' regexp will never match 'foo' because it is used
+in the grammar. A workaround here is to do something like this:</p>
 <pre>
   word = &frasl;[a-z]+&frasl;
 
@@ -62,157 +65,163 @@ the grammar. A workaround here is to do something like this:</p>
 
   _word : word
   _word : 'foo'
-  </pre>
+  
+</pre>
 
 <h3>Ambiguous Matching</h3>
 
 <p>DGD's parse_string, unlike most parsers, keeps track of all your
 ambiguous matches. That fact is both a great power and a great
-responsibility. What that means is that if your grammar allows something
-to be parsed a couple of different ways then DGD will keep track of them
-all while parsing. If there are two ways to parse a double-if statement
-with else (the else can go with either if) in your grammar, and you feed
-parse_string a chunk with fifteen of those, you'll find that DGD is
-keeping track of 2^15 (that's a little more than 32,500) different
-interpretations of your file. Then it will cheerfully return only the
-first. That's slow, just in case you hadn't guessed.</p>
+responsibility. What that means is that if your grammar allows
+something to be parsed a couple of different ways then DGD will
+keep track of them all while parsing. If there are two ways to
+parse a double-if statement with else (the else can go with either
+if) in your grammar, and you feed parse_string a chunk with fifteen
+of those, you'll find that DGD is keeping track of 2^15 (that's a
+little more than 32,500) different interpretations of your file.
+Then it will cheerfully return only the first. That's slow, just in
+case you hadn't guessed.</p>
 
-<p>Similarly, if your grammar contains a rule like <tt>element_list:
-element_list ',' element_list</tt> and also a rule to have
-<tt>element_list</tt> match, say, an integer, then the input
-"17,25,3,17534,37,3524,2,1,359" will also have many possible parse
-trees, and will also take a very long time to complete. In a library
-like the Kernel Library that tries to prevent infinite loops, you'll
-usually find you're out of ticks and one of your rlimits() statements
-interrupts you midway through the parsing.</p>
+<p>Similarly, if your grammar contains a rule like
+<tt>element_list: element_list ',' element_list</tt> and also a
+rule to have <tt>element_list</tt> match, say, an integer, then the
+input "17,25,3,17534,37,3524,2,1,359" will also have many possible
+parse trees, and will also take a very long time to complete. In a
+library like the Kernel Library that tries to prevent infinite
+loops, you'll usually find you're out of ticks and one of your
+rlimits() statements interrupts you midway through the parsing.</p>
 
-<p>However, sometimes you <i>want</i> ambiguous parsing. For instance,
-you may have a natural language parser for player commands, and you'd
-like the player to be able to type "get down" and have it mean either of
-"get down from the platform" or "take the down pillow" according to two
-different grammar rules. DGD's parse_string will return both parses, and
-you can decide which makes more sense for the player currently. Most
-parsers won't find all ambiguous matches for a given grammar and
-input.</p>
+<p>However, sometimes you <i>want</i> ambiguous parsing. For
+instance, you may have a natural language parser for player
+commands, and you'd like the player to be able to type "get down"
+and have it mean either of "get down from the platform" or "take
+the down pillow" according to two different grammar rules. DGD's
+parse_string will return both parses, and you can decide which
+makes more sense for the player currently. Most parsers won't find
+all ambiguous matches for a given grammar and input.</p>
 
 <p>The parse_string() kfun allows you to specify how many ambiguous
-parsings you want returned. However, DGD will track all of them (or at
-least the first 32000 and some), no matter how few you specify,
-throughout the process. That's necessary because the LPC functions that
-you call on nonterminal rules can disqualify a particular parse tree, so
-you may need to keep all of them around to try out. If you say you want
-the first three returned, but only two of the first 10,000 parse trees
-turns out to be valid after your LPC code is called, then DGD did the
-right thing by not throwing away the next 10,000 parse trees, right?</p>
+parsings you want returned. However, DGD will track all of them (or
+at least the first 32000 and some), no matter how few you specify,
+throughout the process. That's necessary because the LPC functions
+that you call on nonterminal rules can disqualify a particular
+parse tree, so you may need to keep all of them around to try out.
+If you say you want the first three returned, but only two of the
+first 10,000 parse trees turns out to be valid after your LPC code
+is called, then DGD did the right thing by not throwing away the
+next 10,000 parse trees, right?</p>
 
-<p>Note that you can apply rules in different orders and get to the same
-parse tree. This does <i>not</i> cause ambiguous parsing, and does
-<i>not</i> come with a big speed penalty. When figuring out whether you
-can have ambiguous parses with your grammar, just look at whether the
-same input string can match multiple different parse trees.</p>
+<p>Note that you can apply rules in different orders and get to the
+same parse tree. This does <i>not</i> cause ambiguous parsing, and
+does <i>not</i> come with a big speed penalty. When figuring out
+whether you can have ambiguous parses with your grammar, just look
+at whether the same input string can match multiple different parse
+trees.</p>
 
 <h3>Efficiency of parse_string() vs sscanf() vs explode()</h3>
 
 <p>The sscanf() solution is usually fastest for simple operations,
 especially if most of the text is static and there is only a single
-occurrence of the string you're trying to extract. If there are multiple
-occurrences and the pattern is simple, explode() (or a combination of
-explode() and implode()) is usually fastest. parse_string() is likely to
-be fastest in other cases, especially with a complex grammar.</p>
+occurrence of the string you're trying to extract. If there are
+multiple occurrences and the pattern is simple, explode() (or a
+combination of explode() and implode()) is usually fastest.
+parse_string() is likely to be fastest in other cases, especially
+with a complex grammar.</p>
 
 <h3>Caching</h3>
 
-<p>parse_string() precalculates a significant amount of state (called a
-DFA) when it determines how to parse according to a particular grammar.
-When you first call parse_string(), this DFA is created and stored in
-the object that called parse_string(). That means that if you have
-multiple grammars, it is often faster to store them in multiple,
-separate objects so that each object can keep its own precalculated DFA
-rather than having to recalculate every time it changes from one grammar
-to another.</p>
+<p>parse_string() precalculates a significant amount of state
+(called a DFA) when it determines how to parse according to a
+particular grammar. When you first call parse_string(), this DFA is
+created and stored in the object that called parse_string(). That
+means that if you have multiple grammars, it is often faster to
+store them in multiple, separate objects so that each object can
+keep its own precalculated DFA rather than having to recalculate
+every time it changes from one grammar to another.</p>
 
 <h3>Other Tutorials</h3>
 
-<p>A fellow on the list named Steve Foley has graciously put together a
-tutorial on parse_string, with the aid of Erwin Harte. You can find it
-<a href="../external/parse_string.html">here</a>.</p>
+<p>A fellow on the list named Steve Foley has graciously put
+together a tutorial on parse_string, with the aid of Erwin Harte.
+You can find it <a href=
+"../external/parse_string.html">here</a>.</p>
 
 <h3>Books</h3>
 
-<p>Dworkin says: you can read up on grammars in books about compiler
-construction, the Chomsky language hierarchy, or even in Linux
-documentation for flex and yacc. A good book about compiler construction
-is:<br />
+<p>Dworkin says: you can read up on grammars in books about
+compiler construction, the Chomsky language hierarchy, or even in
+Linux documentation for flex and yacc. A good book about compiler
+construction is:<br>
 <i>Aho, Sethi, Ullman: Compilers -- Principles, Techniques, and
-Tools<br />
+Tools<br>
 Addison Wesley 1986, second edition</i></p>
 
-<p>Par Winzell recommends the Dragon Book:<br />
-<i>Principles, Techniques and Tools, by Alfred V. Aho, Ravi Sethi, and
-Jeffrey D. Ullman<br />
+<p>Par Winzell recommends the Dragon Book:<br>
+<i>Principles, Techniques and Tools, by Alfred V. Aho, Ravi Sethi,
+and Jeffrey D. Ullman<br>
 Addison-Wesley 1986; ISBN 0-201-10088-6)</i></p>
 
 <h3>Examples</h3>
 
 <ul>
-  <li><a href="../external/lpc_grammar.txt">An (outdated) grammar for
-  DGD's LPC dialect</a></li>
+  <li><a href="../external/lpc_grammar.txt">An (outdated) grammar
+  for DGD's LPC dialect</a></li>
 
-  <li><a href="../external/ps_example_1.txt">Dworkin's example of using
-  functions to affect the final parse tree</a></li>
+  <li><a href="../external/ps_example_1.txt">Dworkin's example of
+  using functions to affect the final parse tree</a></li>
 
-  <li><a href="../external/ps_example_2.txt">Efficiency of sscanf versus
-  parse_string</a></li>
+  <li><a href="../external/ps_example_2.txt">Efficiency of sscanf
+  versus parse_string</a></li>
 
-  <li><a href="../external/ps_example_3.txt">A Skotos grammar to parse
-  LPC values</a></li>
+  <li><a href="../external/ps_example_3.txt">A Skotos grammar to
+  parse LPC values</a></li>
 
-  <li><a href="../external/ps_example_4.txt">Dworkin discussing simple
-  left-recursive rules for lists</a></li>
+  <li><a href="../external/ps_example_4.txt">Dworkin discussing
+  simple left-recursive rules for lists</a></li>
 
-  <li><a href="../external/ps_example_5.txt">Erwin's solution for Robert
-  Forshaw's data format</a></li>
+  <li><a href="../external/ps_example_5.txt">Erwin's solution for
+  Robert Forshaw's data format</a></li>
 </ul>
-<hr />
+<hr>
 <!-- ********************************************************* -->
 
 <h3>More Messages About Using parse_string()</h3>
 <pre>
 @@INCLUDE parse_string@@
 </pre>
-<hr />
+<hr>
 <pre>
 @@INCLUDE nomatch_patch@@
 </pre>
-<hr />
+<hr>
 <pre>
 @@INCLUDE string_parsing@@
 </pre>
-<hr />
+<hr>
 <pre>
 @@INCLUDE parse_string_example@@
 </pre>
-<hr />
+<hr>
 <pre>
 @@INCLUDE parse_string_virtual_objects@@
 </pre>
-<hr />
+<hr>
 <pre>
 @@INCLUDE debugging_parse_string@@
 </pre>
-<hr />
+<hr>
 <pre>
 @@INCLUDE parse_string_weirdness_1@@
 </pre>
-<hr />
+<hr>
 <pre>
 @@INCLUDE parse_string_weirdness_2@@
 </pre>
-<hr />
+<hr>
 <pre>
 @@INCLUDE comments_parse_grammars@@
 </pre>
-<hr />
+<hr>
 <pre>
 @@INCLUDE question@@
 </pre>

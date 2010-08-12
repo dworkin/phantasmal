@@ -2,47 +2,47 @@
 
 <h2>Writing an HTTPD in DGD</h2>
 
-<p>If you write an HTTPD that can read files in your MUD (as opposed to
-one that presents an entirely different file model, something it makes
-up), remember not to let people randomly get code out of your MUD
-directories. Be sure to only send out the files you intend people to
-get. Be careful to normalize filenames first (remove leading '..' paths,
-et cetera) so that nobody can fool you by using a different path format.
-This helps to keep your HTTPD from causing security problems in your
-MUD.</p>
+<p>If you write an HTTPD that can read files in your MUD (as
+opposed to one that presents an entirely different file model,
+something it makes up), remember not to let people randomly get
+code out of your MUD directories. Be sure to only send out the
+files you intend people to get. Be careful to normalize filenames
+first (remove leading '..' paths, et cetera) so that nobody can
+fool you by using a different path format. This helps to keep your
+HTTPD from causing security problems in your MUD.</p>
 
 <p>You can also allow players to play over HTTP, or some related
-protocol. If so, please remember <i>not</i> to identify your players by
-IP address. Issues like firewalls and NAT can greatly confuse your MUD
-server, causing multiple players to be treated as one, or a player to
-suddenly lose connection when he appears to change IP addresses. Cookies
-are one of several more reliable tracking methods, though there are
-certainly others.</p>
+protocol. If so, please remember <i>not</i> to identify your
+players by IP address. Issues like firewalls and NAT can greatly
+confuse your MUD server, causing multiple players to be treated as
+one, or a player to suddenly lose connection when he appears to
+change IP addresses. Cookies are one of several more reliable
+tracking methods, though there are certainly others.</p>
 
-<p>Bear in mind that standard HTTP does not allow 'push' code for things
-like 'tell' and 'say', nor for sudden events like a creature entering a
-room and attacking. For that reason, Java (or Javascript?) or some more
-proprietary replacement like ActiveX may be necessary to allow your MUD
-proper two-way interactivity.</p>
+<p>Bear in mind that standard HTTP does not allow 'push' code for
+things like 'tell' and 'say', nor for sudden events like a creature
+entering a room and attacking. For that reason, Java (or
+Javascript?) or some more proprietary replacement like ActiveX may
+be necessary to allow your MUD proper two-way interactivity.</p>
 
-<p>More complex setups can work quite well, of course. Christopher Allen
-describes the Skotos setup like this:</p>
+<p>More complex setups can work quite well, of course. Christopher
+Allen describes the Skotos setup like this:</p>
 
-<p style="color: #FF00C0">You might want to take a look at a couple of
-Skotos games, in particular, Castle Marrach and Grendel's Revenge. Both
-have gifs and jpegs under client control.</p>
+<p style="color: #FF00C0">You might want to take a look at a couple
+of Skotos games, in particular, Castle Marrach and Grendel's
+Revenge. Both have gifs and jpegs under client control.</p>
 
 <p style="color: #FF00C0">Our basic technique is to have a pane for
-flowing text that is imbedded inside an html page. This text pane can
-receive special commands that it will send out to the DOM of the web
-page it sits inside. This allows us to change the whole web page
-dynamically. We have three clients that use this technique, an Active-X
-client that is based on Pueblo, a Java client, and a Mozilla Javascript
-client.</p>
+flowing text that is imbedded inside an html page. This text pane
+can receive special commands that it will send out to the DOM of
+the web page it sits inside. This allows us to change the whole web
+page dynamically. We have three clients that use this technique, an
+Active-X client that is based on Pueblo, a Java client, and a
+Mozilla Javascript client.</p>
 
 <p>The RFC for HTTP 1.0 is <a href=
-"http://www.ics.uci.edu/pub/ietf/http/rfc1945.html">here</a>. It may be
-useful for your implementation efforts.</p>
+"http://www.ics.uci.edu/pub/ietf/http/rfc1945.html">here</a>. It
+may be useful for your implementation efforts.</p>
 
 <p>To set cookies, you may find Javascript is useful. The following
 script was obtained by Wes Connell off a Javascript help page:</p>
@@ -77,7 +77,8 @@ document.cookie = name + "=; expires=Thu, 01-Jan-70 00:00:01 GMT" +  "; path=&fr
 }
 &frasl;&frasl;--&gt;
 &lt;&frasl;script&gt;
-  </pre>
+  
+</pre>
 
 <p>Using the above, the following code can be included:</p>
 <pre>
@@ -85,16 +86,17 @@ send_html_output("&lt;script language="JavaScript"&gt;);
 send_html_output("setCookie(\"ACCOUNTNAME\", account_name);");
 send_html_output("setCookie(\"PASSWORD\", encrypted_password);");
 send_html_output("&lt;&frasl;script&gt;");
-  </pre>
-<hr />
+  
+</pre>
+<hr>
 <pre>
 @@INCLUDE http_1@@
 </pre>
-<hr />
+<hr>
 <pre>
 @@INCLUDE http_2@@
 </pre>
-<hr />
+<hr>
 <pre>
 @@INCLUDE http_3@@
 </pre>
