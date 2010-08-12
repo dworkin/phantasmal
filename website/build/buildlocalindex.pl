@@ -62,6 +62,8 @@ my @file_list = @read_files;
 my $index = "Section \"" . $read_section . "\"\n";
 $index .= "Root \"" . $read_section . "\"\n";
 
+my $postindex;
+
 foreach $test (@file_list) {
 	unless ($test eq "index.base.html") {
 		read_file($test);
@@ -77,7 +79,7 @@ foreach $test (@file_list) {
 				$ordered_content{$read_sequence}
 					= "File \"" . $test . "\" \"" . $read_title . "\"\n";
 			} else {
-				$index .= "File \"" . $test . "\" \"" . $read_title . "\"\n";
+				$postindex .= "File \"" . $test . "\" \"" . $read_title . "\"\n";
 			}
 		}
 	}
@@ -91,5 +93,7 @@ while ($sequence <= $top_sequence) {
 	}
 	$sequence++;
 }
+
+$index .= $postindex;
 
 print $index;
