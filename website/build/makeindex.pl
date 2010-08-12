@@ -9,7 +9,7 @@ my $outfilename = shift @ARGV;
 my $depth = shift @ARGV;
 
 # generate the index in the sidebar
-my $index = "<table summary=\"index\">\n";
+my $index;
 open(FILE, "<pageindex.full")
 	or die "Can't open index.full: $!";
 $buffer = join("", <FILE>);
@@ -48,12 +48,17 @@ foreach $line (@index_lines) {
 	unless ($skipflag) {
 		my $indexline = "";
 		
-		$old_indent = $indent;
+		while ($old_indent < $indent) {
+			$index .= "<ul>";
+			$old_indent++;
+		}
 		
-		$indexline .= "<tr>" .
-			("<td><img src=\"\@\@WEBDIR\@\@images/16x1_transparent.png\" alt=\"\"/></td>" x $indent) .
-			"<td colspan=\"" .
-			(1 + $depth - $indent) . "\">";
+		while ($old_indent > $indent) {
+			$index .= "</ul>";
+			$old_indent--;
+		}
+		
+		$indexline .= "<li>";
 		
 		if ($name eq $outfilename) {
 			$indexline .= $label;
@@ -61,12 +66,17 @@ foreach $line (@index_lines) {
 			$indexline .= "<a href=\"" . $name . "\">" . $label . "</a>";
 		}
 		
-		$indexline .= "</td></tr>\n";
+		$indexline .= "</li>\n";
 		
 		$index .= $indexline;
 	}
 }
 
-$index .= "</table>\n";
+$indent = 0;
+
+while ($old_indent > $indent) {
+	$index .= "</ul>";
+	$old_indent--;
+}
 
 print $index;
