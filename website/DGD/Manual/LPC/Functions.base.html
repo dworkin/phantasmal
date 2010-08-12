@@ -13,9 +13,8 @@ what they do. A function declaration looks like this:</p>
 <pre>
 /*
  * Function name: &lt;Function name&gt;
- * Description:   &lt;What it does &gt;
- * Arguments:     <a list="" of="" the="" arguments="" and="" what=
-"" they="" contain="">
+ * Description:   &lt;What it does&gt;
+ * Arguments:     &lt;a list of the arguments and what they contain&gt;
  * Returns:       &lt;What the function returns&gt;
  */
 &lt;return type&gt;
@@ -23,12 +22,13 @@ what they do. A function declaration looks like this:</p>
 {
    &lt;code expressions&gt;
 }
-    </a>
-</pre><a list="" of="" the="" arguments="" and="" what="" they=""
-contain="">The beginning comment, while optional, is highly
-recommended. Even if you don't use precisely this form of comment,
-you should state what the function does and what it expects to be
-given as input. Here is an example function:</a>
+</pre>
+
+<p>The beginning comment, while optional, is highly recommended. Even if
+you don't use precisely this form of comment, you should state what the
+function does and what it expects to be given as input. Here is an
+example function:</p>
+
 <pre>
 /*
  * Function name: compute_diam
@@ -63,10 +63,127 @@ won't put a header on every example function).</p>
 
 <p>A function that doesn't return anything should be declared as
 <code>void</code>. For instance:</p>
+
 <pre>
 void write_stuff(string mess)
 {
     write_file("/usr/Bob/myfile.txt", mess);
 }
+</pre>
+
+<h3>Function calls</h3>
+
+<p>There are two kinds of function calls, internal and external.
+We've only discussed internal calls so far.</p>
+
+<h4>Making object-internal function calls</h4>
+
+<p>Making an internal function call is as simple as writing the function
+name and putting any arguments within parentheses afterwards. The
+argument list is simply a list of expressions, or nothing. A function
+call is an expression if it returns a value. A function call followed by
+a <code>;</code> is a statement.</p>
+
+<pre>
+&lt;function&gt;(&lt;argument list&gt;);
+e.g.
+    pi = atan(1.0) * 4;
     
 </pre>
+
+<h4>Making single object-external function calls</h4>
+
+<p>An external call is a call from one object into another. In order to
+do that you need an object reference to the object you want to call. We
+haven't discussed exactly how you acquire an object reference yet, but
+assume for the moment that it already is done for you. Object references
+(the same thing as object pointers) can be stored in variables of type
+<code>object</code>.</p>
+
+<pre>
+mixed &lt;object reference/object path&gt;-&gt;&lt;function&gt;(&lt;argument list&gt;);
+mixed call_other(&lt;ob ref/ob path&gt;, "&lt;function&gt;", &lt;arg list&gt;);
+e.g.
+    /*
+     * Assume that I want to call the function 'compute_pi' in the
+     * object "/d/Mydom/thewiz/math_ob", and that I also have the
+     * proper object pointer to it stored in the variable 'math_ob'
+     */
+    pi = math_ob-&gt;compute_pi(1.0);
+    pi = "/d/Mydom/thewiz/math_ob"-&gt;compute_pi(1.0);
+    pi = call_other(math_ob, "compute_pi", 1.0);
+    pi = call_other("/d/Mydom/thewiz/math_ob", "compute_pi", 1.0);
+    
+</pre>
+
+<p>Note that you can either use the <code>call_other</code>
+function or just use the -&gt; notation. One is syntactic sugar for
+the other. The behavior is identical either way. Note that if you
+use the <code>call_other()</code> form, you need to put quotes
+around the function name since you're actually supplying any string
+-- which can be a variable, or the result of a computation:</p>
+<pre>
+pi = call_other(math_ob, "computer" + "_pi", 1.0);
+    
+</pre>
+
+<p>If the object you call hasn't been loaded into memory yet, it
+will be. If it has a <code>create()</code> function that hasn't
+been called, that function will be called (note that the
+<code>create()</code> function may have a different name if DGD is
+configured differently). If an external call is made to a function
+that doesn't exist in the object you call, nil will be silently
+returned without any error messages.</p>
+
+<p>If you use an object path (a string) instead of an object
+reference, the <b>master object</b> will be called. The master
+object can contain data just like any of the clones, and is often a
+good place to store a central copy of information that all clones
+want to use without each one needing its own copy.</p>
+
+<h4>Call-by-value versus Call-by-reference</h4>
+
+<p>In LPC, most values are passed by value. What that means is that
+when you pass, say, an integer variable with a value of 3 into a
+function and you change that variable in the function, the variable
+doesn't change outside the function . So the following code doesn't
+do what it looks like it's supposed to. In fact, it does
+nothing:</p>
+<pre>
+/* Swap two integers */
+void swap(int a, int b) {
+  int tmp;
+  tmp = b;
+  b = a;
+  a = b;
+}
+    
+</pre>
+
+<p>The reason it doesn't work is because LPC makes the function's
+parameters new variables and copies the values in. You're swapping
+the value of the parameters, but those variables are going to
+disappear at the end of the function. This is called call-by-value
+because only the value gets passed in -- the original variable is
+copied so the function never sees it. In C, we could use pointers
+to pass references. In other languages, we could do what's called
+call-by-reference, and the swap routine above could actually swap
+the values of the two variables once the function was finished. LPC
+passes arrays by reference. That means that if you change an
+element in the array, it's changed <i>everywhere</i>, not just in
+that one function.</p>
+
+<p>LPC passes several types by reference: arrays, mappings and
+objects. A mixed type is passed either by value or reference
+depending on what type it "really" is underneath.</p>
+
+<p>This has security implications. For instance, let's say a
+function on your MUD keeps an array of all users. When queried, it
+passes the array of users to a calling function. But a wizard on
+your MUD would be able call that function and remove other users
+from the array. That's a <i>bad</i> thing. So instead, you just
+copy the array before returning it. If you just pass the array back
+as an array or mixed variable, it's call-by-reference and the
+wizard can change your copy. If you copy it first, it doesn't
+matter how it's passed because he's looking at a different
+copy.</p>
