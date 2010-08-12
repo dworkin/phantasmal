@@ -361,7 +361,7 @@ sub write_out_html {
 	    . "for writing\n: $!";
 
     print FILE "\@\@TITLE Top Level\@\@\n";
-    print FILE "\@\@SECTION DGD Reference Manual\@\@\n\n";
+    print FILE "\@\@SECTION DGD Reference Manual (legacy)\@\@\n\n";
     print FILE "<h1> Top-Level </h1>\n";
 
     print FILE $toc_accum;
