@@ -15,7 +15,7 @@ sub read_dir
 {
 	my $readme = shift;
 	
-	@read_files = split(" ", `cd $readme; ls *.base.html`);
+	@read_files = split(" ", `cd $readme; ls *.base.html; ls */index.base.html`);
 }
 
 sub read_file
@@ -57,22 +57,10 @@ read_file("index.base.html");
 read_dir(".");
 
 my $test;
-my @dir_list = split(" ", $ENV{"DIRS"});
 my @file_list = @read_files;
 
 my $index = "Section \"" . $read_section . "\"\n";
-
-read_file("index.base.html");
-
 $index .= "Root \"" . $read_section . "\"\n";
-
-foreach $test (@dir_list) {
-	read_file($test . "/index.base.html");
-	
-	unless ($read_error) {
-		$index .= "Directory \"" . $test . "\" \"" . $read_section . "\"\n";
-	}
-}
 
 foreach $test (@file_list) {
 	unless ($test eq "index.base.html") {
@@ -80,6 +68,10 @@ foreach $test (@file_list) {
 
 		unless ($read_error) {
 			$test =~ s/.base//;
+			
+			if ($test =~ m/\/index.html/) {
+				$read_title = $read_section;
+			}
 			
 			if (!($read_sequence eq "")) {
 				$ordered_content{$read_sequence}
