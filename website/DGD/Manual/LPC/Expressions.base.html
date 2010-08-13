@@ -1,4 +1,5 @@
 @@TITLE Expressions@@
+@@SEQUENCE 4@@
 
 <h2>Expressions</h2>
 
@@ -42,8 +43,7 @@ notation to save space and reduce complexity.</p>
   <dd>A variable.</dd>
 </dl>
 
-<h4><a name="SEC3.2.7.1" href="index.html#SEC3.2.7.1" id=
-"SEC3.2.7.1">Miscellaneous operators</a></h4>
+<h4>Miscellaneous operators</h4>
 
 <dl compact>
   <dt>(E)</dt>
@@ -57,7 +57,7 @@ notation to save space and reduce complexity.</p>
 
   <dt>E1, E2</dt>
 
-  <dd><a name="IDX13" id="IDX13"></a> The first expression is
+  <dd>The first expression is
   evaluated first and the result stored, then E2 is evaluated and
   the result is thrown away. Finally, the stored result of E1 is
   returned as the value of the entire expression. The statement
@@ -65,7 +65,7 @@ notation to save space and reduce complexity.</p>
 
   <dt>V = E</dt>
 
-  <dd><a name="IDX14" id="IDX14"></a> The variable is given the
+  <dd>The variable is given the
   value of the expression. The resulting value of this entire
   expression is also the value of E. For instance, <code>a = b =
   4;</code> will set a and b to be 4. It can also be written
@@ -73,15 +73,12 @@ notation to save space and reduce complexity.</p>
   execution.</dd>
 </dl>
 
-<h4><a name="SEC3.2.7.2" href="index.html#SEC3.2.7.2" id=
-"SEC3.2.7.2">Arithmetic operators</a></h4>
+<h4>Arithmetic operators</h4>
 
 <dl compact>
   <dt>E1 + E2</dt>
 
   <dd>
-    <a name="IDX15" id="IDX15"></a>
-
     <p>The expressions are evaluated and the results added to each
     other. You can add integers, floats, strings, arrays and
     mappings. Strings, arrays and mappings are simply concatenated
@@ -95,8 +92,6 @@ notation to save space and reduce complexity.</p>
   <dt>E1 - E2</dt>
 
   <dd>
-    <a name="IDX16" id="IDX16"></a>
-
     <p>E2 is subtracted from E1. You can subtract integers, floats
     and any type from arrays of the same type. For arrays the item,
     if it exists in the array it is subtracted from, is removed
@@ -106,20 +101,18 @@ notation to save space and reduce complexity.</p>
 
   <dt>E1 * E2</dt>
 
-  <dd><a name="IDX17" id="IDX17"></a> E1 is multiplied by E2. This
-  only works on integers and floats.</dd>
+  <dd>E1 is multiplied by E2. This only works on integers and
+  floats.</dd>
 
   <dt>E1 / E2</dt>
 
-  <dd><a name="IDX18" id="IDX18"></a> E1 is divided by E2. This
-  only works on integers and floats.</dd>
+  <dd>E1 is divided by E2. This only works on integers and floats.</dd>
 
   <dt>E1 % E2</dt>
 
-  <dd><a name="IDX19" id="IDX19"></a> The remainder (also called
-  the modulus) of the expression 'E1 / E2' is returned. This only
-  works with integers. For instance, <code>14 % 3</code> will yield
-  2 as the remainder.</dd>
+  <dd>The remainder (also called the modulus) of the expression 'E1 /
+  E2' is returned. This only works with integers. For instance, <code>14
+  % 3</code> will yield 2 as the remainder.</dd>
 
   <dt>-E</dt>
 
@@ -130,8 +123,6 @@ notation to save space and reduce complexity.</p>
   <dt>E++, ++E</dt>
 
   <dd>
-    <a name="IDX20" id="IDX20"></a>
-
     <p>The expression E is incremented by one. If the operator is
     in front of the expression (called "prefix") then the
     incremented value is returned, otherwise the previous value is.
@@ -142,30 +133,27 @@ notation to save space and reduce complexity.</p>
     <p>The value of <code>++a</code> is also an lvalue, which means
     it can be assigned to. If you don't immediately know what that
     means, don't do that.</p>
-    <pre>
+<pre>
 'a = 3; b = ++a;' will yield the result 'a = 4, b = 4', while
 'a = 3; b = a++;' will yield the result 'a = 4, b = 3'.
-        
 </pre>
   </dd>
 
   <dt>E--, --E</dt>
 
   <dd>
-    <a name="IDX21" id="IDX21"></a> The expression 'E' is
-    decremented by one. If the operator is in front of the
-    expression, the decrement is done before the value is returned,
-    otherwise afterwards. This only works on integers.
+    The expression 'E' is decremented by one. If the operator is in
+    front of the expression, the decrement is done before the value is
+    returned, otherwise afterwards. This only works on integers.
+
     <pre>
 'a = 3; b = --a;' will yield the result 'a = 2, b = 2', while
 'a = 3; b = a--;' will yield the result 'a = 2, b = 3'.
-        
 </pre>
   </dd>
 </dl>
 
-<h4><a name="SEC3.2.7.3" href="index.html#SEC3.2.7.3" id=
-"SEC3.2.7.3">Boolean operators</a></h4>
+<h4>Boolean operators</h4>
 
 <p>Boolean operators are applicable only to integers with the
 exception of the <code>&amp;</code> and <code>|</code> operators,
@@ -178,7 +166,7 @@ of the <code>~</code>-operator.</p>
   <dt>E1 &amp; E2</dt>
 
   <dd>
-    <a name="IDX22" id="IDX22"></a> E1 and E2. Every bit which is
+    E1 and E2. Every bit which is
     set in both E1 and E2 will also be set in the result. Any bit
     which is zero in either one will be zero in the result.
     <pre>
@@ -194,7 +182,7 @@ arrays. Thus, it performs a kind of set-intersection on the arrays.
   <dt>E1 | E2</dt>
 
   <dd>
-    <a name="IDX23" id="IDX23"></a> E1 or E2. Every bit which is
+    E1 or E2. Every bit which is
     set in either E1 or E2 will be set in the result. Any bit which
     is zero in both E1 and E2 will be zero in the result.
     <pre>
@@ -211,7 +199,7 @@ as E1 + E2.
   <dt>E1 ^ E2</dt>
 
   <dd>
-    <a name="IDX24" id="IDX24"></a> E1 xor (exclusive or) E2. A bit
+    E1 xor (exclusive or) E2. A bit
     which is zero in both or one in both is zero in the result. A
     bit which is set in either E1 or E2, but not both, is one in
     the result.
@@ -226,7 +214,7 @@ as E1 + E2.
   <dt>~E</dt>
 
   <dd>
-    <a name="IDX25" id="IDX25"></a> 1-complement of E (invert E).
+    1-complement of E (invert E).
     This is a unary operator, meaning it takes only one argument. A
     bit which is one in the argument will be zero in the result and
     vice-versa.
@@ -245,7 +233,7 @@ and all will be made clear.
   <dt>E1 &lt;&lt; E2</dt>
 
   <dd>
-    <a name="IDX26" id="IDX26"></a> E1 is shifted left E2 steps.
+    E1 is shifted left E2 steps.
     This multiplies the value of E1 by two to the power of E2. For
     instance, if E2 was three, <code>E1 &lt;&lt; E2</code> would be
     <code>E1 * 8</code>.
@@ -258,7 +246,7 @@ and all will be made clear.
   <dt>E1 &gt;&gt; E2</dt>
 
   <dd>
-    <a name="IDX27" id="IDX27"></a> E1 is shifted right E2 steps.
+    E1 is shifted right E2 steps.
     This divides the value of E1 by two to the power of E2, rounded
     down. For instance, if E2 was five, <code>E1 &gt;&gt; E2</code>
     would be equal to <code>E1 / 32</code>.
@@ -269,77 +257,74 @@ and all will be made clear.
   </dd>
 </dl>
 
-<h4><a name="SEC3.2.7.4" href="index.html#SEC3.2.7.4" id=
-"SEC3.2.7.4">Conditional (logical) operators</a></h4>
+<h4>Conditional (logical) operators</h4>
 
 <dl compact>
   <dt>E1 || E2</dt>
 
-  <dd><a name="IDX28" id="IDX28"></a> Returns true if E1 or E2
+  <dd>Returns true if E1 or E2
   evaluates as true. Will not evaluate E2 if E1 is true. The fact
   that it won't evaluate the second argument if the first is true
   is called "short circuit evaluation".</dd>
 
   <dt>E1 &amp;&amp; E2</dt>
 
-  <dd><a name="IDX29" id="IDX29"></a> Returns true if both E1 and
+  <dd>Returns true if both E1 and
   E2 evaluates as true. Will not evaluate E2 if E1 is false. The
   fact that it won't evaluate the second argument if the first is
   false is called "short circuit evaluation".</dd>
 
   <dt>!E</dt>
 
-  <dd><a name="IDX30" id="IDX30"></a> Returns true if E is false
-  and vice versa.</dd>
+  <dd>Returns true if E is false and vice versa.</dd>
+  
 </dl>
 
-<h4><a name="SEC3.2.7.5" href="index.html#SEC3.2.7.5" id=
-"SEC3.2.7.5">Comparative operators</a></h4>
+<h4>Comparative operators</h4>
 
 <dl compact>
   <dt>E1 == E2</dt>
 
-  <dd><a name="IDX31" id="IDX31"></a> Returns true if E1 is equal
+  <dd>Returns true if E1 is equal
   to E2. This operator can be used on all types, but see the
   special section later on arrays and mappings. Equality works
   differently on them than you might think.</dd>
 
   <dt>E1 != E2</dt>
 
-  <dd><a name="IDX32" id="IDX32"></a> Returns true if E1 isn't
+  <dd>Returns true if E1 isn't
   equal to E2. This operator can be used on all kinds of types, but
   see the special section later on arrays and mappings. It works
   differently on them than you might think.</dd>
 
   <dt>E1 &gt; E2</dt>
 
-  <dd><a name="IDX33" id="IDX33"></a> Returns true if E1 is greater
+  <dd>Returns true if E1 is greater
   than E2. This operator can be used on all types except arrays and
   mappings.</dd>
 
   <dt>E1 &lt; E2</dt>
 
-  <dd><a name="IDX34" id="IDX34"></a> Returns true if E1 is less
+  <dd>Returns true if E1 is less
   than E2. Can be used on all types except arrays and
   mappings.</dd>
 
   <dt>E1 &gt;= E2</dt>
 
-  <dd><a name="IDX35" id="IDX35"></a> Returns true if E1 is greater
+  <dd>Returns true if E1 is greater
   or equal to E2. This operator can be used on all types except
   arrays and mappings.</dd>
 
   <dt>E1 &lt;= E2</dt>
 
-  <dd><a name="IDX36" id="IDX36"></a> Returns true if E1 is less or
+  <dd>Returns true if E1 is less or
   equal to E2. This operator can be used on all types except arrays
   and mappings.</dd>
 </dl>
 
-<h3><a name="SEC3.2.8" href="index.html#SEC3.2.8" id=
-"SEC3.2.8">Prefix allocation</a></h3>
+<h3>Prefix allocation</h3>
 
-<p><a name="IDX37" id="IDX37"></a> All of the arithmetic and
+<p>All of the arithmetic and
 boolean operator expressions can be written in a shorter way if
 what you want to do is use an operator on a variable and a value
 (or two variables) and then store the result in the variable.</p>
@@ -363,8 +348,7 @@ c =+ 7;      /* c = (+7), probably not what you wanted. */
 c + = 7;     /* Error!  Don't use the extra space. */
 </pre>
 
-<h3><a name="SEC3.2.9" href="index.html#SEC3.2.9" id=
-"SEC3.2.9">Precedence and Order of evaluation</a></h3>
+<h3>Precedence and Order of evaluation</h3>
 
 <p>The table below summarizes the rules for precedence and
 associativity of all operators, including those which we have not

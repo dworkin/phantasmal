@@ -1,4 +1,5 @@
 @@TITLE Statements@@
+@@SEQUENCE 5@@
 
 <h2>Statements</h2>
 
@@ -70,8 +71,7 @@ intended to do anything else. Just remember that anywhere you're
 allowed to have a statement, you can just put a <code>;</code> as a
 statement that does nothing.</p>
 
-<h3><a name="SEC3.2.10" href="index.html#SEC3.2.10" id=
-"SEC3.2.10">Conditionals</a></h3>
+<h3>Conditionals</h3>
 
 <p>Conditional statements are used a lot in LPC, and there are
 several ways of writing them. A very important concept is that
@@ -83,10 +83,9 @@ they aren't <code>0</code> or <code>nil</code>. You have to use
 special functions to compute their size or determine content if you
 want test them.</p>
 
-<h4><a name="SEC3.2.10.1" href="index.html#SEC3.2.10.1" id=
-"SEC3.2.10.1">The if and else statements</a></h4>
+<h4>The if and else statements</h4>
 
-<p><a name="IDX38" id="IDX38"></a> The most common conditional
+<p>The most common conditional
 statement is the <code>if</code> statement. It's easy to use and
 can be combined with an <code>else</code> clause to do two
 different things based on a variable's value. It's written like
@@ -121,11 +120,9 @@ or
     
 </pre>
 
-<h4><a name="SEC3.2.10.2" href="index.html#SEC3.2.10.2" id=
-"SEC3.2.10.2">The switch statement</a></h4>
+<h4>The switch statement</h4>
 
-<p><a name="IDX39" id="IDX39"></a> <a name="IDX40" id="IDX40"></a>
-If one variable has to be tested for a lot of different values, the
+<p>If one variable has to be tested for a lot of different values, the
 resulting list of <tt>`if-else-if-else'</tt> statements soon gets
 very long and hard to read. However, if the type of the value you
 are testing is an integer, a float or a string you can use a much
@@ -225,10 +222,9 @@ especially important. A good idea is usually to add an extra
 linefeed after a <code>break</code> statement just to give some
 extra 'breathing space' to improve on legibility.</p>
 
-<h4><a name="SEC3.2.10.3" href="index.html#SEC3.2.10.3" id=
-"SEC3.2.10.3">The ?: expression</a></h4>
+<h4>The ? : expression</h4>
 
-<p><a name="IDX41" id="IDX41"></a> This is a very condensed way of
+<p>This is a very condensed way of
 writing an <code>if/else</code> statement and return a value
 depending on how the test turned out. The <code>?:</code> operator
 isn't a statement, it's an expression since it returns a value.
@@ -263,15 +259,13 @@ name = day == 2 ? time == 18 ? "miller time" : "tuesday" : "another day";
     
 </pre>
 
-<h3><a name="SEC3.2.11" href="index.html#SEC3.2.11" id=
-"SEC3.2.11">Loop statements</a></h3>
+<h3>Loop statements</h3>
 
 <p>There are two loop statements in LPC which incorporate the use
 of conditional statements within them. That means they can be
 programmed to execute only until a certain condition is true.</p>
 
-<h4><a name="SEC3.2.11.1" href="index.html#SEC3.2.11.1" id=
-"SEC3.2.11.1">The for statement</a></h4>
+<h4>The for statement</h4>
 
 <p>If you want a counter or an iterator, you should usually use the
 <b>for</b> statement. The syntax is as follows:</p>
@@ -335,10 +329,9 @@ the loop to end, and in this case the value for count then must be
 124. This is true for <i>both</i> ways of writing the loop
 above!</p>
 
-<h4><a name="SEC3.2.11.2" href="index.html#SEC3.2.11.2" id=
-"SEC3.2.11.2">The while statement</a></h4>
+<h4>The while statement</h4>
 
-<p><a name="IDX42" id="IDX42"></a> The <b>while</b> statement is
+<p>The <b>while</b> statement is
 pretty straightforward. You can probably guess from its name what
 it does. The statement will perform another statement over and over
 until a given <code>while</code> expression returns false. The
@@ -361,11 +354,9 @@ while (a != 4)
     
 </pre>
 
-<h3><a name="SEC3.2.12" href="index.html#SEC3.2.12" id=
-"SEC3.2.12">The break and continue statement</a></h3>
+<h3>The break and continue statement</h3>
 
-<p><a name="IDX43" id="IDX43"></a> <a name="IDX44" id="IDX44"></a>
-Sometimes during the execution of <code>switch</code>,
+<p>Sometimes during the execution of <code>switch</code>,
 <code>for</code> or <code>while</code> statements it becomes
 necessary to abort execution of the block code, and continue
 execution outside. To do that you use the <code>break</code>

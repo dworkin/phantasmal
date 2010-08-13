@@ -1,4 +1,5 @@
 @@TITLE The Preprocessor@@
+@@SEQUENCE 2@@
 
 <h2>The Preprocessor</h2>
 
@@ -7,19 +8,16 @@ special process that is run before the actual compilation of the
 program occurs. It can be seen as a very smart string translator.
 Specified strings in the code are replaced by other strings.</p>
 
-<p>All preprocessor directives are given as strings starting with
-the character <tt>#</tt> on the first non-whitespace column of the
-line. It's considered good practice to put preprocessor directives
-on the very far left of the code, with the <tt>#</tt> in the very
-first column.</p>
+<p>All preprocessor directives are given as strings starting with the
+character <tt>#</tt> on the first non-whitespace column of the line.
+It's considered good practice to put preprocessor directives on the very
+far left of the code, with the <tt>#</tt> in the very first column.</p>
 
-<h3><a name="SEC3.3.1" href="index.html#SEC3.3.1" id="SEC3.3.1">The
-#include statement</a></h3>
+<h3>The #include statement</h3>
 
-<p><a name="IDX49" id="IDX49"></a> This is by far the most common
-preprocessor command. It simply tells the preprocessor to replace
-that line with the contents of an entire other file before going
-any further.</p>
+<p>This is by far the most common preprocessor command. It simply tells
+the preprocessor to replace that line with the contents of an entire
+other file before going any further.</p>
 
 <p>Data you put in included files is usually data that won't ever
 change and that you'll be referencing in several files. Instead of
@@ -82,16 +80,15 @@ is to keep functions in <tt>.cc</tt> files and definitions in
 <tt>.h</tt> files. Many mudlibs enforce this, and accept only
 certain file suffixes for compilation or other tasks.</p>
 
-<h3><a name="SEC3.3.2" href="index.html#SEC3.3.2" id="SEC3.3.2">The
-#define statement</a></h3>
+<h3>The #define statement</h3>
 
-<p><a name="IDX50" id="IDX50"></a> <a name="IDX51" id="IDX51"></a>
-#define is a very powerful <b>macro</b> or preprocessor command
+<p>#define is a very powerful <b>macro</b> or preprocessor command
 that can be abused endlessly. It's recommended that you use it with
 caution and only for simple tasks. Using it for complex tasks tends
 to make reading or debugging your code quite difficult.</p>
 
 <p>The syntax is as follows:</p>
+
 <pre>
 #define &lt;pattern&gt; &lt;substitute pattern&gt;
 #undef &lt;pattern&gt;
@@ -172,21 +169,18 @@ macros (making the code almost impossible to understand) or
 humongous arrays or mappings in defines that are used often. The
 basic rule is to keep macros short and fairly simple.</p>
 
-<h3><a name="SEC3.3.3" href="index.html#SEC3.3.3" id="SEC3.3.3">The
-#if, #ifdef, #ifndef, #else and #elseif statements</a></h3>
+<h3>The #if, #ifdef, #ifndef, #else and #elseif statements</h3>
 
-<p><a name="IDX52" id="IDX52"></a> <a name="IDX53" id="IDX53"></a>
-<a name="IDX54" id="IDX54"></a> <a name="IDX55" id="IDX55"></a>
-<a name="IDX56" id="IDX56"></a> The commands above are all
-preprocessor directives aimed at selecting certain parts of code
-and perhaps removing others depending on the state of a
-preprocessor variable.</p>
+<p>The commands above are all preprocessor directives aimed at selecting
+certain parts of code and perhaps removing others depending on the state
+of a preprocessor variable.</p>
 
 <p>The <code>#if</code> statement looks very much like a normal if
 statement, but is written a bit differently.</p>
 
 <p>Assume you <i>may</i> have one of the following definitions
 somewhere:</p>
+
 <pre>
 #define code_VAR  2
 
@@ -197,6 +191,7 @@ or
 </pre>
 
 <p>Then you can write</p>
+
 <pre>
 #if code_VAR == 2
     &lt;code that will be kept only if code_VAR == 2&gt;
