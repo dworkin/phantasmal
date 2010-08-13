@@ -21,6 +21,8 @@ my $line;
 my $indent;
 my $old_indent = 0;
 
+$index .= "<ul>\n";
+
 foreach $line (@index_lines) {
 	my $word;
 	
@@ -49,12 +51,12 @@ foreach $line (@index_lines) {
 		my $indexline = "";
 		
 		while ($old_indent < $indent) {
-			$index .= "<ul>";
+			$index .= "<ul>\n";
 			$old_indent++;
 		}
 		
 		while ($old_indent > $indent) {
-			$index .= "</ul>";
+			$index .= "</ul>\n";
 			$old_indent--;
 		}
 		
@@ -75,8 +77,10 @@ foreach $line (@index_lines) {
 $indent = 0;
 
 while ($old_indent > $indent) {
-	$index .= "</ul>";
+	$index .= "</ul>\n";
 	$old_indent--;
 }
+
+$index .= "</ul>\n";
 
 print $index;
