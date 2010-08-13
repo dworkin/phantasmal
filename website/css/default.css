@@ -21,6 +21,7 @@ a:active {
 ul {
 	list-style-type: disc;
 	margin: 0;
+	padding: 0 1em;
 }
 
 img {
@@ -60,11 +61,11 @@ div, div > p {
 }
 
 .index_pane {
-	width: 30%;
+	width: 25%;
 }
 
 .content_pane {
-	width: 70%;
+	width: 75%;
 }
 
 .banner_pane, .index_pane, .content_pane {
