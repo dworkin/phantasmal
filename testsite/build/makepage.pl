@@ -97,6 +97,7 @@ if ($lastcrumb) {
 }
 
 $content =~ s/\@\@SECTION ([^@]*)\@\@//;
+$content =~ s/\@\@SEQUENCE ([^@]*)\@\@//;
 
 my $index = `${prefix}build/makeindex.pl $outfilename $depth`;
 
