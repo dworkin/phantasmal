@@ -1,0 +1,5 @@
+In response to a recent request, I, Noah Gibbs, am happy to relicense anything
+I have written about, or in, DGD under the CC0 license.
+
+This includes the Phantasmal MUD library and the bulk of the "website" directory, though much content of the web site was taken from the old DGD email list archive, from a variety of authors.
+
